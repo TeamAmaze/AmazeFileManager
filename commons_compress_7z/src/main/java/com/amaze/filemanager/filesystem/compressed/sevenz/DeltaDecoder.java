@@ -39,7 +39,8 @@ class DeltaDecoder extends CoderBase {
       final InputStream in,
       final long uncompressedLength,
       final Coder coder,
-      final byte[] password)
+      final byte[] password,
+      final int maxMemoryLimitInKb)
       throws IOException {
     return new DeltaOptions(getOptionsFromCoder(coder)).getInputStream(in);
   }
@@ -50,7 +51,7 @@ class DeltaDecoder extends CoderBase {
     final int distance = numberOptionOrDefault(options, 1);
     try {
       return new DeltaOptions(distance).getOutputStream(new FinishableWrapperOutputStream(out));
-    } catch (final UnsupportedOptionsException ex) {
+    } catch (final UnsupportedOptionsException ex) { // NOSONAR
       throw new IOException(ex.getMessage());
     }
   }

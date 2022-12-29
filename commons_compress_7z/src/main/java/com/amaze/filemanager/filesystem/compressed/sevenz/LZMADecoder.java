@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.compress.MemoryLimitException;
 import org.apache.commons.compress.utils.ByteUtils;
 import org.apache.commons.compress.utils.FlushShieldFilterOutputStream;
 import org.tukaani.xz.LZMA2Options;
@@ -41,14 +42,27 @@ class LZMADecoder extends CoderBase {
       final InputStream in,
       final long uncompressedLength,
       final Coder coder,
-      final byte[] password)
+      final byte[] password,
+      final int maxMemoryLimitInKb)
       throws IOException {
+    if (coder.properties == null) {
+      throw new IOException("Missing LZMA properties");
+    }
+    if (coder.properties.length < 1) {
+      throw new IOException("LZMA properties too short");
+    }
     final byte propsByte = coder.properties[0];
     final int dictSize = getDictionarySize(coder);
     if (dictSize > LZMAInputStream.DICT_SIZE_MAX) {
       throw new IOException("Dictionary larger than 4GiB maximum size used in " + archiveName);
     }
-    return new LZMAInputStream(in, uncompressedLength, propsByte, dictSize);
+    final int memoryUsageInKb = LZMAInputStream.getMemoryUsage(dictSize, propsByte);
+    if (memoryUsageInKb > maxMemoryLimitInKb) {
+      throw new MemoryLimitException(memoryUsageInKb, maxMemoryLimitInKb);
+    }
+    final LZMAInputStream lzmaIn = new LZMAInputStream(in, uncompressedLength, propsByte, dictSize);
+    lzmaIn.enableRelaxedEndCondition();
+    return lzmaIn;
   }
 
   @SuppressWarnings("resource")
@@ -62,8 +76,8 @@ class LZMADecoder extends CoderBase {
   byte[] getOptionsAsProperties(final Object opts) throws IOException {
     final LZMA2Options options = getOptions(opts);
     final byte props = (byte) ((options.getPb() * 5 + options.getLp()) * 9 + options.getLc());
-    int dictSize = options.getDictSize();
-    byte[] o = new byte[5];
+    final int dictSize = options.getDictSize();
+    final byte[] o = new byte[5];
     o[0] = props;
     ByteUtils.toLittleEndian(o, dictSize, 1, 4);
     return o;
@@ -71,13 +85,19 @@ class LZMADecoder extends CoderBase {
 
   @Override
   Object getOptionsFromCoder(final Coder coder, final InputStream in) throws IOException {
+    if (coder.properties == null) {
+      throw new IOException("Missing LZMA properties");
+    }
+    if (coder.properties.length < 1) {
+      throw new IOException("LZMA properties too short");
+    }
     final byte propsByte = coder.properties[0];
     int props = propsByte & 0xFF;
-    int pb = props / (9 * 5);
+    final int pb = props / (9 * 5);
     props -= pb * 9 * 5;
-    int lp = props / 9;
-    int lc = props - lp * 9;
-    LZMA2Options opts = new LZMA2Options();
+    final int lp = props / 9;
+    final int lc = props - lp * 9;
+    final LZMA2Options opts = new LZMA2Options();
     opts.setPb(pb);
     opts.setLcLp(lc, lp);
     opts.setDictSize(getDictionarySize(coder));

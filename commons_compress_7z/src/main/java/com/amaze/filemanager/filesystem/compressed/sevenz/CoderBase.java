@@ -24,11 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.compress.utils.ByteUtils;
+
 /** Base Codec class. */
 abstract class CoderBase {
   private final Class<?>[] acceptableOptions;
-  private static final byte[] NONE = new byte[0];
-
   /**
    * @param acceptableOptions types that can be used as options for this codec.
    */
@@ -52,7 +52,7 @@ abstract class CoderBase {
    * @return property-bytes to write in a Folder block
    */
   byte[] getOptionsAsProperties(final Object options) throws IOException {
-    return NONE;
+    return ByteUtils.EMPTY_BYTE_ARRAY;
   }
 
   /**
@@ -69,16 +69,17 @@ abstract class CoderBase {
   abstract InputStream decode(
       final String archiveName,
       final InputStream in,
-      long uncomressedLength,
+      long uncompressedLength,
       final Coder coder,
-      byte[] password)
+      byte[] password,
+      int maxMemoryLimitInKb)
       throws IOException;
 
   /**
    * @return a stream that writes to out using the given configuration.
    */
   OutputStream encode(final OutputStream out, final Object options) throws IOException {
-    throw new UnsupportedOperationException("method doesn't support writing");
+    throw new UnsupportedOperationException("Method doesn't support writing");
   }
 
   /**

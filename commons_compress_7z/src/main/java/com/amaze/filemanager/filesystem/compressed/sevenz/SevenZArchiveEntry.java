@@ -20,10 +20,13 @@
 
 package com.amaze.filemanager.filesystem.compressed.sevenz;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -50,6 +53,7 @@ public class SevenZArchiveEntry implements ArchiveEntry {
   private long crc, compressedCrc;
   private long size, compressedSize;
   private Iterable<? extends SevenZMethodConfiguration> contentMethods;
+  static final SevenZArchiveEntry[] EMPTY_SEVEN_Z_ARCHIVE_ENTRY_ARRAY = new SevenZArchiveEntry[0];
 
   public SevenZArchiveEntry() {}
 
@@ -369,7 +373,7 @@ public class SevenZArchiveEntry implements ArchiveEntry {
   /**
    * Gets the CRC.
    *
-   * @since Compress 1.7
+   * @since 1.7
    * @return the CRC
    */
   public long getCrcValue() {
@@ -379,7 +383,7 @@ public class SevenZArchiveEntry implements ArchiveEntry {
   /**
    * Sets the CRC.
    *
-   * @since Compress 1.7
+   * @since 1.7
    * @param crc the CRC
    */
   public void setCrcValue(final long crc) {
@@ -411,7 +415,7 @@ public class SevenZArchiveEntry implements ArchiveEntry {
   /**
    * Gets the compressed CRC.
    *
-   * @since Compress 1.7
+   * @since 1.7
    * @return the CRC
    */
   long getCompressedCrcValue() {
@@ -421,7 +425,7 @@ public class SevenZArchiveEntry implements ArchiveEntry {
   /**
    * Sets the compressed CRC.
    *
-   * @since Compress 1.7
+   * @since 1.7
    * @param crc the CRC
    */
   void setCompressedCrcValue(final long crc) {
@@ -489,6 +493,21 @@ public class SevenZArchiveEntry implements ArchiveEntry {
   }
 
   /**
+   * Sets the (compression) methods to use for entry's content - the default is LZMA2.
+   *
+   * <p>Currently only {@link SevenZMethod#COPY}, {@link SevenZMethod#LZMA2}, {@link
+   * SevenZMethod#BZIP2} and {@link SevenZMethod#DEFLATE} are supported when writing archives.
+   *
+   * <p>The methods will be consulted in iteration order to create the final output.
+   *
+   * @param methods the methods to use for the content
+   * @since 1.22
+   */
+  public void setContentMethods(SevenZMethodConfiguration... methods) {
+    setContentMethods(Arrays.asList(methods));
+  }
+
+  /**
    * Gets the (compression) methods to use for entry's content - the default is LZMA2.
    *
    * <p>Currently only {@link SevenZMethod#COPY}, {@link SevenZMethod#LZMA2}, {@link
@@ -501,6 +520,41 @@ public class SevenZArchiveEntry implements ArchiveEntry {
    */
   public Iterable<? extends SevenZMethodConfiguration> getContentMethods() {
     return contentMethods;
+  }
+
+  @Override
+  public int hashCode() {
+    final String n = getName();
+    return n == null ? 0 : n.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    final SevenZArchiveEntry other = (SevenZArchiveEntry) obj;
+    return Objects.equals(name, other.name)
+        && hasStream == other.hasStream
+        && isDirectory == other.isDirectory
+        && isAntiItem == other.isAntiItem
+        && hasCreationDate == other.hasCreationDate
+        && hasLastModifiedDate == other.hasLastModifiedDate
+        && hasAccessDate == other.hasAccessDate
+        && creationDate == other.creationDate
+        && lastModifiedDate == other.lastModifiedDate
+        && accessDate == other.accessDate
+        && hasWindowsAttributes == other.hasWindowsAttributes
+        && windowsAttributes == other.windowsAttributes
+        && hasCrc == other.hasCrc
+        && crc == other.crc
+        && compressedCrc == other.compressedCrc
+        && size == other.size
+        && compressedSize == other.compressedSize
+        && equalSevenZMethods(contentMethods, other.contentMethods);
   }
 
   /**
@@ -530,5 +584,26 @@ public class SevenZArchiveEntry implements ArchiveEntry {
     ntfsEpoch.set(1601, 0, 1, 0, 0, 0);
     ntfsEpoch.set(Calendar.MILLISECOND, 0);
     return ((date.getTime() - ntfsEpoch.getTimeInMillis()) * 1000 * 10);
+  }
+
+  private boolean equalSevenZMethods(
+      final Iterable<? extends SevenZMethodConfiguration> c1,
+      final Iterable<? extends SevenZMethodConfiguration> c2) {
+    if (c1 == null) {
+      return c2 == null;
+    }
+    if (c2 == null) {
+      return false;
+    }
+    final Iterator<? extends SevenZMethodConfiguration> i2 = c2.iterator();
+    for (SevenZMethodConfiguration element : c1) {
+      if (!i2.hasNext()) {
+        return false;
+      }
+      if (!element.equals(i2.next())) {
+        return false;
+      }
+    }
+    return !i2.hasNext();
   }
 }
