@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -21,5 +22,6 @@ android {
 
 dependencies {
     implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
-    implementation 'org.tukaani:xz:1.8'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.tukaani:xz:1.9'
 }
