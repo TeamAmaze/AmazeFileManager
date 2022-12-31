@@ -44,7 +44,6 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.DragToTrashListener;
 import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
-import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -68,11 +67,11 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.preference.PreferenceManager;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
-public class TabFragment extends Fragment implements ViewPager.OnPageChangeListener {
+public class TabFragment extends Fragment {
   private final Logger LOG = LoggerFactory.getLogger(TabFragment.class);
 
   private static final String KEY_PATH = "path";
@@ -86,7 +85,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
   private final List<Fragment> fragments = new ArrayList<>();
   private ScreenSlidePagerAdapter sectionsPagerAdapter;
-  private DisablableViewPager viewPager;
+  private ViewPager2 viewPager;
   private SharedPreferences sharedPrefs;
   private String path;
 
@@ -132,9 +131,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     }
 
     requireMainActivity().supportInvalidateOptionsMenu();
-    viewPager.addOnPageChangeListener(this);
+    viewPager.registerOnPageChangeCallback(new OnPageChangeCallbackImpl());
 
-    sectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
+    sectionsPagerAdapter = new ScreenSlidePagerAdapter(this);
     if (savedInstanceState == null) {
       int lastOpenTab = sharedPrefs.getInt(PREFERENCE_CURRENT_TAB, DEFAULT_CURRENT_TAB);
       MainActivity.currentTab = lastOpenTab;
@@ -160,7 +159,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         LOG.warn("failed to clear fragments", e);
       }
 
-      sectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
+      sectionsPagerAdapter = new ScreenSlidePagerAdapter(this);
 
       viewPager.setAdapter(sectionsPagerAdapter);
       int pos1 = savedInstanceState.getInt(KEY_POSITION, 0);
@@ -251,82 +250,80 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     }
   }
 
-  @Override
-  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    final MainFragment mainFragment = requireMainActivity().getCurrentMainFragment();
-    if (mainFragment == null
-        || mainFragment.getMainFragmentViewModel() == null
-        || mainFragment.getMainActivity().getListItemSelected()) {
-      return; // we do not want to update toolbar colors when ActionMode is activated
-    }
-
-    // during the config change
-    @ColorInt int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
-
-    colorDrawable.setColor(color);
-    requireMainActivity().updateViews(colorDrawable);
-  }
-
-  @Override
-  public void onPageSelected(int p1) {
-    requireMainActivity()
-        .getAppbar()
-        .getAppbarLayout()
-        .animate()
-        .translationY(0)
-        .setInterpolator(new DecelerateInterpolator(2))
-        .start();
-
-    MainActivity.currentTab = p1;
-
-    if (sharedPrefs != null) {
-      sharedPrefs.edit().putInt(PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
-    }
-
-    Fragment fragment = fragments.get(p1);
-    if (fragment instanceof MainFragment) {
-      MainFragment ma = (MainFragment) fragment;
-      if (ma.getCurrentPath() != null) {
-        requireMainActivity().getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
-        updateBottomBar(ma);
-      }
-    }
-
-    if (circleDrawable1 != null && circleDrawable2 != null) updateIndicator(p1);
-  }
-
-  @Override
-  public void onPageScrollStateChanged(int state) {
-    // nothing to do
-  }
-
   public void setPagingEnabled(boolean isPaging) {
-    viewPager.setPagingEnabled(isPaging);
+    viewPager.setUserInputEnabled(isPaging);
   }
 
   public void setCurrentItem(int index) {
     viewPager.setCurrentItem(index);
   }
 
-  private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-    public ScreenSlidePagerAdapter(FragmentManager fm) {
+  private class OnPageChangeCallbackImpl extends ViewPager2.OnPageChangeCallback {
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+      final MainFragment mainFragment = requireMainActivity().getCurrentMainFragment();
+      if (mainFragment == null
+          || mainFragment.getMainFragmentViewModel() == null
+          || mainFragment.getMainActivity().getListItemSelected()) {
+        return; // we do not want to update toolbar colors when ActionMode is activated
+      }
+
+      // during the config change
+      @ColorInt
+      int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
+
+      colorDrawable.setColor(color);
+      requireMainActivity().updateViews(colorDrawable);
+    }
+
+    @Override
+    public void onPageSelected(int p1) {
+      requireMainActivity()
+          .getAppbar()
+          .getAppbarLayout()
+          .animate()
+          .translationY(0)
+          .setInterpolator(new DecelerateInterpolator(2))
+          .start();
+
+      MainActivity.currentTab = p1;
+
+      if (sharedPrefs != null) {
+        sharedPrefs.edit().putInt(PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
+      }
+
+      Fragment fragment = fragments.get(p1);
+      if (fragment instanceof MainFragment) {
+        MainFragment ma = (MainFragment) fragment;
+        if (ma.getCurrentPath() != null) {
+          requireMainActivity().getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
+          updateBottomBar(ma);
+        }
+      }
+
+      if (circleDrawable1 != null && circleDrawable2 != null) updateIndicator(p1);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+      // nothing to do
+    }
+  }
+
+  private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
+    public ScreenSlidePagerAdapter(Fragment fm) {
       super(fm);
     }
 
     @Override
-    public int getItemPosition(@NonNull Object object) {
-      int index = fragments.indexOf(object);
-      if (index == -1) return POSITION_NONE;
-      else return index;
-    }
-
-    public int getCount() {
+    public int getItemCount() {
       return fragments.size();
     }
 
     @NonNull
     @Override
-    public Fragment getItem(int position) {
+    public Fragment createFragment(int position) {
       Fragment f;
       f = fragments.get(position);
       return f;
