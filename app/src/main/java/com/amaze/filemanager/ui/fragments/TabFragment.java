@@ -66,6 +66,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -133,7 +134,7 @@ public class TabFragment extends Fragment {
     requireMainActivity().supportInvalidateOptionsMenu();
     viewPager.registerOnPageChangeCallback(new OnPageChangeCallbackImpl());
 
-    sectionsPagerAdapter = new ScreenSlidePagerAdapter(this);
+    sectionsPagerAdapter = new ScreenSlidePagerAdapter(requireActivity());
     if (savedInstanceState == null) {
       int lastOpenTab = sharedPrefs.getInt(PREFERENCE_CURRENT_TAB, DEFAULT_CURRENT_TAB);
       MainActivity.currentTab = lastOpenTab;
@@ -159,7 +160,7 @@ public class TabFragment extends Fragment {
         LOG.warn("failed to clear fragments", e);
       }
 
-      sectionsPagerAdapter = new ScreenSlidePagerAdapter(this);
+      sectionsPagerAdapter = new ScreenSlidePagerAdapter(requireActivity());
 
       viewPager.setAdapter(sectionsPagerAdapter);
       int pos1 = savedInstanceState.getInt(KEY_POSITION, 0);
@@ -312,8 +313,8 @@ public class TabFragment extends Fragment {
   }
 
   private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
-    public ScreenSlidePagerAdapter(Fragment fm) {
-      super(fm);
+    public ScreenSlidePagerAdapter(FragmentActivity fragmentActivity) {
+      super(fragmentActivity);
     }
 
     @Override

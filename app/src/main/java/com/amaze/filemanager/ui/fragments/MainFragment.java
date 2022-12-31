@@ -141,6 +141,8 @@ public class MainFragment extends Fragment
         AdjustListViewForTv<ItemViewHolder> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
+  private static final String KEY_FRAGMENT_MAIN = "main";
+
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -283,6 +285,15 @@ public class MainFragment extends Fragment
     listView.setItemAnimator(animator);
     mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(this);
     loadViews();
+  }
+
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+
+    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+    fragmentManager.executePendingTransactions();
+    fragmentManager.putFragment(outState, KEY_FRAGMENT_MAIN, this);
   }
 
   public void stopAnimation() {
