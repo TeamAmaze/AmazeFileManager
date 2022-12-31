@@ -759,6 +759,12 @@ You only need to do this once, until the next time you select a new location for
     <string name="ui_summary">Control what information to show, customize the sidebar, and toggle UI preferences</string>
     <string name="behavior_summary">Modify behaviors such as advanced search and whether to open files as a new task</string>
     <string name="security_summary">Set up password and encryption</string>
+    <string name="backup_summary">Export/Import Amaze settings</string>
+
+    <string name="pref_export">Export</string>
+    <string name="pref_export_summary">Export settings</string>
+    <string name="pref_import">Import</string>
+    <string name="pref_import_summary">Import settings</string>
 
     <string name="quick_desc">Files recently accessed through Amaze</string>
     <string name="recent_desc">Recently created or modified files</string>
@@ -789,6 +795,12 @@ You only need to do this once, until the next time you select a new location for
     <string name="protocol_ftp" translatable="false">FTP</string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Unavailable</string>
+
+    <string name="exporting_failed">Exporting failed: could not write the backup file</string>
+    <string name="importing_failed">Importing failed: could not read the backup file</string>
+    <string name="importing_completed">Importing completed</string>
+    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="import_failed_for">Import failed for:</string>
     <string name="free_of">"%s\n%s free of %s</string>
     <string name="cloud_error_fdroid">Amaze Cloud Plugin not supported with F-Droid version. Please use Play Store version of Amaze.</string>
     <string name="disable_player_intent_filters">Disable player intent filters</string>

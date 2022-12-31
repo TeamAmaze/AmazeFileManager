@@ -50,6 +50,13 @@
     <Preference
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:icon="@drawable/ic_preference_settings_backup_restore"
+        app:key="backup"
+        app:summary="@string/backup_summary"
+        app:title="@string/backup" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:icon="@drawable/ic_preference_info"
         app:key="about"
         app:title="@string/about_amaze_file_manager_label" />
