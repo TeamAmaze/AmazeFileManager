@@ -148,7 +148,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
                     PreferenceManager.getDefaultSharedPreferences(requireActivity()).edit()
 
                 for ((key, value) in map)
-                    putBoolean(editor, key, value)
+                    storePreference(editor, key, value)
 
                 editor?.apply()
 
@@ -178,7 +178,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun putBoolean(editor: SharedPreferences.Editor?, key: String?, value: Any) {
+    private fun storePreference(editor: SharedPreferences.Editor?, key: String?, value: Any) {
         try {
             when (value::class.simpleName) {
                 "Boolean" -> editor?.putBoolean(key, value as Boolean)
