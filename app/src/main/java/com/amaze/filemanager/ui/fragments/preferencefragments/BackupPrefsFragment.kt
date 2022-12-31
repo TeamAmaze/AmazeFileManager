@@ -36,11 +36,14 @@ import com.amaze.filemanager.TagsHelper
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.*
 
 class BackupPrefsFragment : BasePrefsFragment() {
 
     private val TAG: String = TagsHelper.getTag(BasePrefsFragment::class.java)
+    private val log: Logger = LoggerFactory.getLogger(BackupPrefsFragment::class.java)
 
     companion object {
         val IMPORT_BACKUP_FILE: Int = 2
@@ -83,7 +86,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
             startActivity(intent)
         } catch (e: IOException) {
             Toast.makeText(context, getString(R.string.exporting_failed), Toast.LENGTH_SHORT).show()
-            e.printStackTrace()
+            log.error(getString(R.string.exporting_failed), e)
         }
     }
 
@@ -170,7 +173,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
                     getString(R.string.importing_failed),
                     Toast.LENGTH_SHORT
                 ).show()
-                e.printStackTrace()
+                log.error(getString(R.string.importing_failed), e)
             }
         } else {
             Toast.makeText(context, getString(R.string.unknown_error), Toast.LENGTH_SHORT).show()
@@ -194,7 +197,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
                 "${getString(R.string.import_failed_for)} $key",
                 Toast.LENGTH_SHORT
             ).show()
-            e.printStackTrace()
+            log.error("${getString(R.string.import_failed_for)} $key", e)
         }
     }
 
