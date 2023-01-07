@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.database
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.util.Base64
@@ -54,7 +53,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P]
 )
 class UtilitiesDatabaseMigrationTest {
 

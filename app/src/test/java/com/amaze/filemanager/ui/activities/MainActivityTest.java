@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.P;
@@ -79,7 +78,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    sdk = {JELLY_BEAN, KITKAT, P},
+    sdk = {KITKAT, P},
     shadows = {
       ShadowMultiDex.class,
       ShadowStorageManager.class,

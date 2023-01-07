@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks
 
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Looper
@@ -61,7 +60,7 @@ import org.robolectric.shadows.ShadowToast
         ShadowTabHandler::class,
         ShadowPasswordUtil::class
     ],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P]
 )
 abstract class AbstractDeleteTaskTestBase {
 

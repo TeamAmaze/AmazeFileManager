@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.utils
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.text.SpannedString
@@ -32,7 +31,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [JELLY_BEAN, KITKAT, P])
+@Config(sdk = [KITKAT, P])
 class MinMaxInputFilterTest {
 
     /**

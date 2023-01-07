@@ -24,7 +24,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
@@ -68,7 +67,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
 class EncryptServiceTest {
 
     private lateinit var service: EncryptService

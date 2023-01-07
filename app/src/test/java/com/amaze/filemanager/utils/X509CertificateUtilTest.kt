@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.utils
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -43,7 +42,7 @@ import javax.security.cert.X509Certificate
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P]
 )
 class X509CertificateUtilTest {
 

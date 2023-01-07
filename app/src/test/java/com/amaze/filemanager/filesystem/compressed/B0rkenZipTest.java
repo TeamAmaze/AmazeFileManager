@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.filesystem.compressed;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static kotlin.io.ConstantsKt.DEFAULT_BUFFER_SIZE;
@@ -56,7 +55,7 @@ import kotlin.io.ByteStreamsKt;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+    sdk = {KITKAT, P})
 public class B0rkenZipTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");

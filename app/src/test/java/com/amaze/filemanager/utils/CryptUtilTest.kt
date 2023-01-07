@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.utils
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN_MR2
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
@@ -48,7 +47,7 @@ import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [JELLY_BEAN_MR2, KITKAT, P]
+    sdk = [KITKAT, P]
 )
 class CryptUtilTest {
 

@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.dialogs
 
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
@@ -41,7 +40,7 @@ import org.robolectric.annotation.Config
  * Base class for various tests related to file encryption.
  */
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class, ShadowTabHandler::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class, ShadowTabHandler::class], sdk = [KITKAT, P])
 abstract class AbstractEncryptDialogTests {
 
     protected lateinit var scenario: ActivityScenario<MainActivity>

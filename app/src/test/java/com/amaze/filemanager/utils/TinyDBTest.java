@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.utils;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertArrayEquals;
@@ -38,7 +37,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {JELLY_BEAN, KITKAT, P})
+@Config(sdk = {KITKAT, P})
 public class TinyDBTest {
 
   private SharedPreferences prefs;

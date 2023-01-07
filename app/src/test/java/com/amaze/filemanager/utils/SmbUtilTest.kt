@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.utils
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
@@ -47,7 +46,7 @@ import org.robolectric.annotation.Config
 @Suppress("StringLiteralDuplication")
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [JELLY_BEAN, KITKAT, P],
+    sdk = [KITKAT, P],
     shadows = [ShadowPasswordUtil::class, ShadowSmbUtil::class]
 )
 class SmbUtilTest {

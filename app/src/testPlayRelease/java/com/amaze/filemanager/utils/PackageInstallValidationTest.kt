@@ -24,7 +24,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
@@ -66,7 +65,7 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("SdCardPath")
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [JELLY_BEAN, KITKAT, P],
+    sdk = [KITKAT, P],
     shadows = [ShadowPackageManager::class, ShadowMultiDex::class, ShadowTabHandler::class]
 )
 class PackageInstallValidationTest {
