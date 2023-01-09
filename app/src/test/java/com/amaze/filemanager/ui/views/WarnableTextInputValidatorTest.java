@@ -36,6 +36,7 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.R;
 
 import android.content.Context;
+import android.os.Build;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -45,7 +46,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class WarnableTextInputValidatorTest {
 
   private Context context;

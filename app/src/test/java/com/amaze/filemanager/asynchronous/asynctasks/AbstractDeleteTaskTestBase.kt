@@ -20,16 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks
 
+import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Looper
 import android.os.storage.StorageManager
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -44,6 +47,7 @@ import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -60,11 +64,17 @@ import org.robolectric.shadows.ShadowToast
         ShadowTabHandler::class,
         ShadowPasswordUtil::class
     ],
-    sdk = [KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 abstract class AbstractDeleteTaskTestBase {
 
     private var ctx: Context? = null
+
+    @Rule
+    @JvmField
+    @RequiresApi(Build.VERSION_CODES.R)
+    val allFilesPermissionRule = GrantPermissionRule
+        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     /**
      * Test case setup.

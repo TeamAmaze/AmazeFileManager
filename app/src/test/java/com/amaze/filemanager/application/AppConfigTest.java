@@ -44,13 +44,14 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
 
+import android.os.Build;
 import android.os.StrictMode;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class AppConfigTest {
 
   @After

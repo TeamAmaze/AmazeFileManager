@@ -46,6 +46,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
+import android.os.Build;
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -57,7 +58,7 @@ import io.reactivex.schedulers.Schedulers;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public abstract class AbstractSftpServerTest {
 
   protected SshServer server;

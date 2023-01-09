@@ -45,6 +45,7 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
+import android.os.Build;
 import android.os.Environment;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -55,7 +56,7 @@ import kotlin.io.ByteStreamsKt;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class B0rkenZipTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");

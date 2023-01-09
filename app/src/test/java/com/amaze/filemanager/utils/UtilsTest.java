@@ -56,7 +56,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class UtilsTest {
 
   @Test

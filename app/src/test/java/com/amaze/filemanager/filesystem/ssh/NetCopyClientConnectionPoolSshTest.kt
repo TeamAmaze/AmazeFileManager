@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh
 
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -69,7 +70,7 @@ import java.security.KeyPair
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class NetCopyClientConnectionPoolSshTest {
 

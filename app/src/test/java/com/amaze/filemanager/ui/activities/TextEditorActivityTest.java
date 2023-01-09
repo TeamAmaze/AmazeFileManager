@@ -48,6 +48,7 @@ import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.widget.TextView;
 
@@ -57,7 +58,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";

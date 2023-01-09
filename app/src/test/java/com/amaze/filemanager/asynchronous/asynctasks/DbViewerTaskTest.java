@@ -47,6 +47,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -57,7 +58,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class DbViewerTaskTest {
 
   private WebView webView;

@@ -58,6 +58,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecom
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.Context;
+import android.os.Build;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -65,7 +66,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class CompressedHelperTest {
 
   private Context context;

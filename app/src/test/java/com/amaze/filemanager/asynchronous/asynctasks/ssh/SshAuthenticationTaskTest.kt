@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
 import android.content.Context
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
@@ -60,7 +61,7 @@ import java.net.SocketException
 import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 @Suppress("StringLiteralDuplication")
 class SshAuthenticationTaskTest {
 

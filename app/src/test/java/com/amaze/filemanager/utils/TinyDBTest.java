@@ -31,13 +31,14 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 
 import androidx.preference.PreferenceManager;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class TinyDBTest {
 
   private SharedPreferences prefs;

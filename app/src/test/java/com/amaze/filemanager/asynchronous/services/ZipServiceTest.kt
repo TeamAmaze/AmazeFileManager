@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.services
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Looper.getMainLooper
@@ -56,7 +57,7 @@ import kotlin.random.Random
 
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 class ZipServiceTest {
 
     val dt = DateTimeFormatter.ofPattern("yyyyMMddkkmm")

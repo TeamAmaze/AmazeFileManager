@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
@@ -45,7 +46,7 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class ReadTextFileCallableTest {
 

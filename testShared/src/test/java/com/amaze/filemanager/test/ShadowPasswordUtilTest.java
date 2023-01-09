@@ -43,6 +43,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.PasswordUtil;
 
+import android.os.Build;
 import android.util.Base64;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -55,7 +56,7 @@ import io.reactivex.schedulers.Schedulers;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowPasswordUtil.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class ShadowPasswordUtilTest {
 
   @Before

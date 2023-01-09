@@ -36,13 +36,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import jcifs.ResolverType;
 import jcifs.context.BaseContext;
 
-@Config(sdk = {KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 @RunWith(AndroidJUnit4.class)
 public class CifsContextsTest {
 

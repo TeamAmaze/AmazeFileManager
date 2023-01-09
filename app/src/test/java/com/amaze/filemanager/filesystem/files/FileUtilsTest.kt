@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.files
 
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,7 +36,7 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(sdk = [KITKAT, P])
+@Config(sdk = [KITKAT, P, Build.VERSION_CODES.R])
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class FileUtilsTest {
 

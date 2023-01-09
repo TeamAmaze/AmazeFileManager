@@ -39,6 +39,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.OpenableColumns;
 
@@ -48,7 +49,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class EditableFileAbstractionTest {
 
   @Test(expected = IllegalArgumentException.class)
