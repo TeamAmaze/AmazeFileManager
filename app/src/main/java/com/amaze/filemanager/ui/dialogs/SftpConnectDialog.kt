@@ -248,8 +248,7 @@ class SftpConnectDialog : DialogFragment() {
                     requireArguments().getInt(ARG_PORT),
                     requireArguments().getString(ARG_DEFAULT_PATH, ""),
                     requireArguments().getString(ARG_USERNAME)!!,
-                    requireArguments().getString(ARG_PASSWORD),
-                    selectedParsedKeyPair
+                    requireArguments().getString(ARG_PASSWORD)
                 )
             )
         }
@@ -269,8 +268,7 @@ class SftpConnectDialog : DialogFragment() {
                             port,
                             defaultPath,
                             username,
-                            requireArguments().getString(ARG_PASSWORD, null),
-                            selectedParsedKeyPair
+                            requireArguments().getString(ARG_PASSWORD, null)
                         )
                     )
                     val i = DataUtils.getInstance().containsServer(
@@ -363,8 +361,7 @@ class SftpConnectDialog : DialogFragment() {
                     port,
                     defaultPath,
                     username,
-                    arguments?.getString(ARG_PASSWORD, null),
-                    selectedParsedKeyPair
+                    arguments?.getString(ARG_PASSWORD, null)
                 )
             )?.let { sshHostKey ->
                 NetCopyClientConnectionPool.removeConnection(
@@ -765,8 +762,7 @@ class SftpConnectDialog : DialogFragment() {
             port,
             defaultPath,
             username,
-            password,
-            selectedParsedKeyPair
+            password
         )
     }
 

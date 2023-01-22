@@ -25,6 +25,36 @@ import org.junit.Test
 
 @Suppress("StringLiteralDuplication")
 class NetCopyClientUtilTest {
+
+    /**
+     * Test [NetCopyClientUtils.deriveUriFrom].
+     */
+    @Test
+    fun testDeriveUriFrom() {
+        assertEquals(
+            "ssh://user:password@127.0.0.1:22222/",
+            NetCopyClientUtils.deriveUriFrom(
+                prefix = "ssh://",
+                username = "user",
+                password = "password",
+                hostname = "127.0.0.1",
+                port = 22222,
+                defaultPath = null
+            )
+        )
+        assertEquals(
+            "ssh://user@127.0.0.1:22222/",
+            NetCopyClientUtils.deriveUriFrom(
+                prefix = "ssh://",
+                username = "user",
+                password = null,
+                hostname = "127.0.0.1",
+                port = 22222,
+                defaultPath = null
+            )
+        )
+    }
+
     /**
      * Test [NetCopyClientUtils.extractRemotePathFrom].
      */

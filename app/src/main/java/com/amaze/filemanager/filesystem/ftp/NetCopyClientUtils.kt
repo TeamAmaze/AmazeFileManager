@@ -47,7 +47,6 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.slf4j.LoggerFactory
 import java.io.IOException
-import java.security.KeyPair
 
 object NetCopyClientUtils {
 
@@ -222,18 +221,20 @@ object NetCopyClientUtils {
         port: Int,
         defaultPath: String? = null,
         username: String,
-        password: String? = null,
-        selectedParsedKeyPair: KeyPair? = null
+        password: String? = null
     ): String {
         // FIXME: should be caller's responsibility
         var pathSuffix = defaultPath
         if (pathSuffix == null) pathSuffix = SLASH.toString()
-        return if (selectedParsedKeyPair != null) {
-            "$prefix$username@$hostname:$port$pathSuffix"
-        } else if (username == "" && (password == "" || password == null)) {
+        val thisPassword = if (password == "" || password == null) {
+            ""
+        } else {
+            ":$password"
+        }
+        return if (username == "" && (true == password?.isEmpty())) {
             "$prefix$hostname:$port$pathSuffix"
         } else {
-            "$prefix$username:$password@$hostname:$port$pathSuffix"
+            "$prefix$username$thisPassword@$hostname:$port$pathSuffix"
         }
     }
 
