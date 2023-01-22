@@ -420,7 +420,7 @@ public class HybridFile {
    */
   public String getPath() {
     try {
-      return URLDecoder.decode(path, "UTF-8");
+      return URLDecoder.decode(path.replace("+", "%2b"), "UTF-8");
     } catch (UnsupportedEncodingException | IllegalArgumentException e) {
       LOG.warn("failed to decode path {}", path, e);
       return path;
@@ -550,7 +550,7 @@ public class HybridFile {
         String thisPath = path;
         if (thisPath.contains("%")) {
           try {
-            thisPath = URLDecoder.decode(path, Charsets.UTF_8.name());
+            thisPath = URLDecoder.decode(getPath(), Charsets.UTF_8.name());
           } catch (UnsupportedEncodingException ignored) {
           }
         }
@@ -940,12 +940,12 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         NetCopyClientUtils.INSTANCE.<SSHClient, Boolean>execute(
-            new SFtpClientTemplate<Boolean>(path, false) {
+            new SFtpClientTemplate<Boolean>(getPath(), false) {
               @Override
               public Boolean execute(@NonNull SFTPClient client) {
                 try {
                   for (RemoteResourceInfo info :
-                      client.ls(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path))) {
+                      client.ls(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath()))) {
                     boolean isDirectory = false;
                     try {
                       isDirectory = SshClientUtils.isDirectory(client, info);
@@ -953,7 +953,7 @@ public class HybridFile {
                       LOG.warn("IOException checking isDirectory(): " + info.getPath());
                       continue;
                     }
-                    HybridFileParcelable f = new HybridFileParcelable(path, isDirectory, info);
+                    HybridFileParcelable f = new HybridFileParcelable(getPath(), isDirectory, info);
                     onFileFound.onFileFound(f);
                   }
                 } catch (IOException e) {
@@ -990,10 +990,10 @@ public class HybridFile {
         }
         break;
       case FTP:
-        String thisPath = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path);
+        String thisPath = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath());
         FTPFile[] ftpFiles =
             NetCopyClientUtils.INSTANCE.execute(
-                new FtpClientTemplate<FTPFile[]>(path, false) {
+                new FtpClientTemplate<FTPFile[]>(getPath(), false) {
                   public FTPFile[] executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
                     ftpClient.changeWorkingDirectory(thisPath);
@@ -1001,7 +1001,7 @@ public class HybridFile {
                   }
                 });
         for (FTPFile ftpFile : ftpFiles) {
-          onFileFound.onFileFound(new HybridFileParcelable(path, ftpFile));
+          onFileFound.onFileFound(new HybridFileParcelable(getPath(), ftpFile));
         }
         break;
       case OTG:
@@ -1089,11 +1089,11 @@ public class HybridFile {
       case SFTP:
         inputStream =
             SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(path, false) {
+                new SFtpClientTemplate<InputStream>(getPath(), false) {
                   @Override
                   public InputStream execute(@NonNull final SFTPClient client) throws IOException {
                     final RemoteFile rf =
-                        client.open(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                        client.open(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath()));
                     return rf.new RemoteFileInputStream() {
                       @Override
                       public void close() throws IOException {
@@ -1119,7 +1119,7 @@ public class HybridFile {
       case FTP:
         inputStream =
             NetCopyClientUtils.INSTANCE.execute(
-                new FtpClientTemplate<InputStream>(path, false) {
+                new FtpClientTemplate<InputStream>(getPath(), false) {
                   public InputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
                     String parent = getParent(AppConfig.getInstance());

@@ -22,19 +22,22 @@ package com.amaze.filemanager.filesystem.ssh
 
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.test.randomBytes
 import com.amaze.filemanager.utils.OnFileFound
 import org.awaitility.Awaitility.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -42,14 +45,14 @@ import java.nio.file.Paths
  * Test listing files on SSH server.
  */
 @Suppress("StringLiteralDuplication")
-class ListFilesOnSshdTest : AbstractSftpServerTest() {
+class FilesOnSshdTest : AbstractSftpServerTest() {
 
     /**
      * Test list directories normally
      */
     @Test
     fun testNormalListDirs() {
-        for (s in arrayOf("sysroot", "srv", "var", "tmp", "bin", "lib", "usr")) {
+        for (s in arrayOf("sysroot", "srv", "var", "tmp", "bin", "lib", "usr", "sysroot+v2")) {
             File(Environment.getExternalStorageDirectory(), s).mkdir()
         }
         assertTrue(performVerify())
@@ -59,26 +62,55 @@ class ListFilesOnSshdTest : AbstractSftpServerTest() {
      * Test list directories and symbolic links
      */
     @Test
-    @Throws(Exception::class)
     fun testListDirsAndSymlinks() {
         createNecessaryDirsForSymlinkRelatedTests()
         assertTrue(performVerify())
     }
 
-    @Throws(IOException::class)
+    /**
+     * Test listing directories and files with special characters. This includes colon signs, which
+     * is possible - even on Windows. See #2964
+     */
+    @Test
+    fun testListFilesWithSpecialChars() {
+        createFilesAndDirectoriesWithSpecialChars()
+        performVerify2()
+        val file = HybridFile(
+            OpenMode.SFTP,
+            "ssh://$USERNAME:$encryptedPassword@$HOST:$serverPort/sysroot%2Bv2/test%2Bfile.bin"
+        )
+        val content = file.getInputStream(AppConfig.getInstance())?.readBytes()
+        assertNotNull(content)
+        assertTrue(true == content?.isNotEmpty())
+    }
+
     private fun createNecessaryDirsForSymlinkRelatedTests() {
-        val sysroot = File(Environment.getExternalStorageDirectory(), "sysroot")
-        sysroot.mkdir()
-        for (s in arrayOf("srv", "var", "tmp")) {
-            val subdir = File(sysroot, s)
-            subdir.mkdir()
-            Files.createSymbolicLink(
-                Paths.get(File(Environment.getExternalStorageDirectory(), s).absolutePath),
-                Paths.get(subdir.absolutePath)
-            )
+        Environment.getExternalStorageDirectory().let { root ->
+            val sysroot = File(root, "sysroot")
+            sysroot.mkdir()
+            for (s in arrayOf("srv", "var", "tmp")) {
+                val subdir = File(sysroot, s)
+                subdir.mkdir()
+                Files.createSymbolicLink(
+                    Paths.get(File(root, s).absolutePath),
+                    Paths.get(subdir.absolutePath)
+                )
+            }
+            for (s in arrayOf("bin", "lib", "usr")) {
+                File(root, s).mkdir()
+            }
+            File(root, "sysroot+v2").mkdirs()
         }
-        for (s in arrayOf("bin", "lib", "usr")) {
-            File(Environment.getExternalStorageDirectory(), s).mkdir()
+    }
+
+    private fun createFilesAndDirectoriesWithSpecialChars() {
+        File(Environment.getExternalStorageDirectory(), "sysroot+v2").let {
+            it.mkdirs()
+            File(it, "D:").run {
+                mkdirs()
+                File(this, "Users").mkdirs()
+            }
+            ByteArrayInputStream(randomBytes()).copyTo(FileOutputStream(File(it, "test+file.bin")))
         }
     }
 
@@ -98,10 +130,71 @@ class ListFilesOnSshdTest : AbstractSftpServerTest() {
                 }
             }
         )
-        await().until { result.size == 7 }
+        await().until { result.size == 8 }
         assertThat<List<String>>(
             result,
-            Matchers.hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr")
+            Matchers.hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr", "sysroot+v2")
+        )
+        return true
+    }
+
+    private fun performVerify2(): Boolean {
+        val result: MutableList<String> = ArrayList()
+        var file = HybridFile(
+            OpenMode.SFTP,
+            "ssh://$USERNAME:$encryptedPassword@$HOST:$serverPort/sysroot%2Bv2"
+        )
+        file.forEachChildrenFile(
+            ApplicationProvider.getApplicationContext(),
+            false,
+            object : OnFileFound {
+                override fun onFileFound(fileFound: HybridFileParcelable) {
+                    result.add(fileFound.name)
+                }
+            }
+        )
+        await().until { result.size == 2 }
+        assertThat<List<String>>(
+            result,
+            Matchers.hasItems("test+file.bin", "D:")
+        )
+        result.clear()
+        file = HybridFile(
+            OpenMode.SFTP,
+            "ssh://$USERNAME:$encryptedPassword@$HOST:$serverPort/sysroot%2Bv2/D:"
+        )
+        file.forEachChildrenFile(
+            ApplicationProvider.getApplicationContext(),
+            false,
+            object : OnFileFound {
+                override fun onFileFound(fileFound: HybridFileParcelable) {
+                    result.add(fileFound.name)
+                }
+            }
+        )
+        await().until { result.size == 1 }
+        assertThat<List<String>>(
+            result,
+            Matchers.hasItems("Users")
+        )
+        result.clear()
+        file = HybridFile(
+            OpenMode.SFTP,
+            "ssh://$USERNAME:$encryptedPassword@$HOST:$serverPort/sysroot%2Bv2/D%3A"
+        )
+        file.forEachChildrenFile(
+            ApplicationProvider.getApplicationContext(),
+            false,
+            object : OnFileFound {
+                override fun onFileFound(fileFound: HybridFileParcelable) {
+                    result.add(fileFound.name)
+                }
+            }
+        )
+        await().until { result.size == 1 }
+        assertThat<List<String>>(
+            result,
+            Matchers.hasItems("Users")
         )
         return true
     }
@@ -153,10 +246,10 @@ class ListFilesOnSshdTest : AbstractSftpServerTest() {
                 }
             }
         )
-        await().until { dirs.size == 7 }
+        await().until { dirs.size == 8 }
         assertThat<List<String>>(
             dirs,
-            Matchers.hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr")
+            Matchers.hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr", "sysroot+v2")
         )
         assertThat<List<String>>(
             files,
@@ -236,10 +329,10 @@ class ListFilesOnSshdTest : AbstractSftpServerTest() {
                 }
             }
         )
-        await().until { result2.size == 7 }
+        await().until { result2.size == 8 }
         assertThat<List<String>>(
             result2,
-            Matchers.hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr")
+            Matchers.hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr", "sysroot+v2")
         )
     }
 }
