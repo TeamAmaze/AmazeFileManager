@@ -23,13 +23,15 @@ package com.amaze.filemanager.filesystem.ftp
 import android.annotation.SuppressLint
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.auth.FtpAuthenticationTask
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairObservable
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.extractBaseUriFrom
 import com.amaze.filemanager.utils.PasswordUtil
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Observable.create
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
@@ -254,10 +256,23 @@ object NetCopyClientConnectionPool {
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
         if (true == pem?.isNotEmpty()) {
+            val observable = PemToKeyPairObservable(pem)
             keyPair.set(
-                PemToKeyPairTask(
-                    pem
-                ) { }.execute().get()
+                create(observable)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retryWhen { exceptions ->
+                        exceptions.flatMap { exception ->
+                            create<Any> { subscriber ->
+                                observable.displayPassphraseDialog(exception, {
+                                    subscriber.onNext(Unit)
+                                }, {
+                                    subscriber.onError(exception)
+                                })
+                            }
+                        }
+                    }
+                    .blockingFirst()
             )
         }
         val hostKey = utilsHandler.getRemoteHostKey(url) ?: return null

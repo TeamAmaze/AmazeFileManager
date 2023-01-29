@@ -11,7 +11,7 @@
         android:paddingLeft="@dimen/md_dialog_frame_margin"
         android:paddingRight="@dimen/md_dialog_frame_margin">
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/singleedittext_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
