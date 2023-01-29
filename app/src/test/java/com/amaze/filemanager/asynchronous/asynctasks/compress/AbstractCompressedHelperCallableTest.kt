@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
@@ -37,7 +37,7 @@ import java.io.FileOutputStream
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 abstract class AbstractCompressedHelperCallableTest {
 
     private lateinit var systemTz: TimeZone

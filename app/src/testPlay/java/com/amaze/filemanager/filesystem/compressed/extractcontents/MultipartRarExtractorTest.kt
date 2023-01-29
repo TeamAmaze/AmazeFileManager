@@ -44,7 +44,7 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.JELLY_BEAN, Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P]
 )
 class MultipartRarExtractorTest {
 

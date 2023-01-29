@@ -22,6 +22,7 @@ package com.amaze.filemanager.test
 
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Environment
 import android.os.Parcel
 import android.os.UserHandle
@@ -33,6 +34,7 @@ import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import org.robolectric.Shadows
+import org.robolectric.shadows.ShadowEnvironment
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.random.Random
@@ -99,6 +101,15 @@ object TestUtils {
         parcel.writeString("1234-5678")
         parcel.writeString(Environment.MEDIA_MOUNTED)
         addVolumeToStorageManager(parcel)
+
+        /*
+         * Monkey-patch ShadowEnvironment for Environment.isExternalStorageManager() to work.
+         *
+         * See https://github.com/robolectric/robolectric/issues/7300
+         */
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.R) {
+            ShadowEnvironment.addExternalDir(Environment.getExternalStorageDirectory().absolutePath)
+        }
     }
 
     /**

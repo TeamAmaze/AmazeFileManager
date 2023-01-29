@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
@@ -49,6 +48,7 @@ import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.widget.TextView;
 
@@ -58,7 +58,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";

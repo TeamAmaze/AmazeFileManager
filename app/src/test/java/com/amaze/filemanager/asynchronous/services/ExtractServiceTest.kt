@@ -20,16 +20,20 @@
 
 package com.amaze.filemanager.asynchronous.services
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -47,6 +51,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -92,6 +97,12 @@ class ExtractServiceTest {
     private val multiVolumeRarFileV5Part1: File
     private val multiVolumeRarFileV5Part2: File
     private val multiVolumeRarFileV5Part3: File
+
+    @Rule
+    @JvmField
+    @RequiresApi(VERSION_CODES.R)
+    val allFilesPermissionRule = GrantPermissionRule
+        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     init {
         Environment.getExternalStorageDirectory().run {

@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.P;
@@ -42,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockedConstruction;
@@ -63,15 +63,18 @@ import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.utils.PasswordUtil;
 import com.amaze.filemanager.utils.SmbUtil;
 
+import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
 import android.util.Base64;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -79,7 +82,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    sdk = {JELLY_BEAN, KITKAT, P},
+    sdk = {KITKAT, P, Build.VERSION_CODES.R},
     shadows = {
       ShadowMultiDex.class,
       ShadowStorageManager.class,
@@ -97,6 +100,11 @@ public class MainActivityTest {
   private static final String[] BUNDLE_KEYS = {
     "address", "port", "keypairName", "name", "username", "password", "edit"
   };
+
+  @Rule
+  @RequiresApi(Build.VERSION_CODES.R)
+  public final GrantPermissionRule allFilesPermissionRule =
+      GrantPermissionRule.grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
 
   private MockedConstruction<SftpConnectDialog> mc;
 

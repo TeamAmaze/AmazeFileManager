@@ -20,17 +20,19 @@
 
 package com.amaze.filemanager.filesystem
 
+import android.Manifest
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Looper
 import android.os.storage.StorageManager
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
@@ -44,6 +46,7 @@ import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.android.util.concurrent.InlineExecutorService
@@ -61,19 +64,25 @@ import org.robolectric.shadows.ShadowSQLiteConnection
         ShadowTabHandler::class,
         ShadowPasswordUtil::class
     ],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 abstract class AbstractOperationsTestBase {
 
-    protected var ctx: Context? = null
+    private var ctx: Context? = null
 
-    protected val blankCallback = object : Operations.ErrorCallBack {
+    private val blankCallback = object : Operations.ErrorCallBack {
         override fun exists(file: HybridFile?) = Unit
         override fun launchSAF(file: HybridFile?) = Unit
         override fun launchSAF(file: HybridFile?, file1: HybridFile?) = Unit
         override fun done(hFile: HybridFile?, b: Boolean) = Unit
         override fun invalidName(file: HybridFile?) = Unit
     }
+
+    @Rule
+    @JvmField
+    @RequiresApi(Build.VERSION_CODES.R)
+    val allFilesPermissionRule = GrantPermissionRule
+        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     /**
      * Test case setup.

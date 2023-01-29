@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.filesystem.smb;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
@@ -37,13 +36,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import jcifs.ResolverType;
 import jcifs.context.BaseContext;
 
-@Config(sdk = {JELLY_BEAN, KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 @RunWith(AndroidJUnit4.class)
 public class CifsContextsTest {
 

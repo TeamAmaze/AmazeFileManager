@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.fileoperations.filesystem.smbstreamer;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertArrayEquals;
@@ -52,7 +51,7 @@ import jcifs.smb.SmbFile;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+    sdk = {KITKAT, P})
 public class StreamSourceTest {
   private SmbFile file;
   private StreamSource ss;
