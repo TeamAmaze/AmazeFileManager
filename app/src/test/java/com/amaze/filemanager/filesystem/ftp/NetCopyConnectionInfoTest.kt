@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -36,7 +36,7 @@ import java.net.URLEncoder.encode
 /* ktlint-disable max-line-length */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [JELLY_BEAN, KITKAT, P],
+    sdk = [KITKAT, P, VERSION_CODES.R],
     shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class]
 )
 @Suppress("StringLiteralDuplication")

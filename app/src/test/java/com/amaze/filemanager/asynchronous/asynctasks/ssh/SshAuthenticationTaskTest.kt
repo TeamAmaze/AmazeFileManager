@@ -27,9 +27,12 @@ import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.ShadowPasswordUtil
+import com.amaze.filemanager.utils.PasswordUtil
 import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -61,7 +64,10 @@ import java.net.SocketException
 import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Config(
+    shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+)
 @Suppress("StringLiteralDuplication")
 class SshAuthenticationTaskTest {
 
@@ -95,7 +101,7 @@ class SshAuthenticationTaskTest {
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
-            password = "password"
+            password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password")
         )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
@@ -108,6 +114,7 @@ class SshAuthenticationTaskTest {
                 result = it
                 latch.countDown()
             }, {
+                it.printStackTrace()
                 task.onError(it)
                 e = it
                 latch.countDown()
@@ -282,7 +289,7 @@ class SshAuthenticationTaskTest {
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
-            password = "password"
+            password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password")
         )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
