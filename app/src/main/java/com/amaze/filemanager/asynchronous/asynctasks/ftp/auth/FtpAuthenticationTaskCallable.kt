@@ -53,7 +53,7 @@ open class FtpAuthenticationTaskCallable(
             )
         } else {
             ftpClient.login(
-                username,
+                decode(username, UTF_8.name()),
                 decode(
                     PasswordUtil.decryptPassword(AppConfig.getInstance(), password),
                     UTF_8.name()

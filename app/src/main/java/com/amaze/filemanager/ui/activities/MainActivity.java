@@ -522,6 +522,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void onPermissionGranted() {
     drawer.refreshDrawer();
     TabFragment tabFragment = getTabFragment();
@@ -1975,11 +1976,11 @@ public class MainActivity extends PermissionsActivity
     }
     SmbConnectDialog smbConnectDialog = new SmbConnectDialog();
     Bundle bundle = new Bundle();
-    bundle.putString("name", name);
-    bundle.putString("path", path);
-    bundle.putBoolean("edit", edit);
+    bundle.putString(SmbConnectDialog.ARG_NAME, name);
+    bundle.putString(SmbConnectDialog.ARG_PATH, path);
+    bundle.putBoolean(SmbConnectDialog.ARG_EDIT, edit);
     smbConnectDialog.setArguments(bundle);
-    smbConnectDialog.show(getFragmentManager(), "smbdailog");
+    smbConnectDialog.show(getSupportFragmentManager(), SmbConnectDialog.TAG);
   }
 
   @SuppressLint("CheckResult")
@@ -2049,13 +2050,12 @@ public class MainActivity extends PermissionsActivity
   public void addConnection(
       boolean edit,
       @NonNull final String name,
-      @NonNull final String path,
-      @Nullable final String encryptedPath,
+      @NonNull final String encryptedPath,
       @Nullable final String oldname,
       @Nullable final String oldPath) {
-    String[] s = new String[] {name, path};
+    String[] s = new String[] {name, encryptedPath};
     if (!edit) {
-      if ((dataUtils.containsServer(path)) == -1) {
+      if ((dataUtils.containsServer(encryptedPath)) == -1) {
         Completable.fromRunnable(
                 () ->
                     utilsHandler.saveToDatabase(
@@ -2069,7 +2069,7 @@ public class MainActivity extends PermissionsActivity
                   // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
                   executeWithMainFragment(
                       mainFragment -> {
-                        mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
+                        mainFragment.loadlist(encryptedPath, false, OpenMode.UNKNOWN, true);
                         return null;
                       },
                       true);
@@ -2085,12 +2085,13 @@ public class MainActivity extends PermissionsActivity
       int i = dataUtils.containsServer(new String[] {oldname, oldPath});
       if (i != -1) {
         dataUtils.removeServer(i);
-
-        AppConfig.getInstance()
-            .runInBackground(
+        Flowable.fromCallable(
                 () -> {
-                  utilsHandler.renameSMB(oldname, oldPath, name, path);
-                });
+                  utilsHandler.renameSMB(oldname, oldPath, name, encryptedPath);
+                  return true;
+                })
+            .subscribeOn(Schedulers.io())
+            .subscribe();
         // mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
       }
       dataUtils.addServer(s);

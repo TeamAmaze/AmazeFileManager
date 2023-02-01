@@ -61,7 +61,7 @@ class SshAuthenticationTaskCallable(
             sshClient.connect(hostname, port)
             if (privateKey != null) {
                 sshClient.authPublickey(
-                    username,
+                    decode(username, UTF_8.name()),
                     object : KeyProvider {
                         override fun getPrivate(): PrivateKey = privateKey.private
 
@@ -73,9 +73,12 @@ class SshAuthenticationTaskCallable(
                 sshClient
             } else {
                 sshClient.authPassword(
-                    username,
+                    decode(username, UTF_8.name()),
                     decode(
-                        PasswordUtil.decryptPassword(AppConfig.getInstance(), password!!),
+                        PasswordUtil.decryptPassword(
+                            AppConfig.getInstance(),
+                            password!!
+                        ),
                         UTF_8.name()
                     )
                 )

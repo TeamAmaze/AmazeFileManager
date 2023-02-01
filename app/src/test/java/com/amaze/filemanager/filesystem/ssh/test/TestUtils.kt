@@ -35,12 +35,10 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter
 import org.json.JSONObject
 import org.robolectric.Shadows
 import java.io.StringWriter
-import java.net.URLEncoder.encode
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.PrivateKey
 import java.security.SecureRandom
-import kotlin.text.Charsets.UTF_8
 
 /**
  * Test support util methods.
@@ -74,8 +72,8 @@ object TestUtils {
             }
         )
         if (validUsername != "" && validPassword != "") {
-            fullUri.append(encode(validUsername, UTF_8.name()))
-            fullUri.append(':').append(encode(validPassword, UTF_8.name())).append("@")
+            fullUri.append(validUsername)
+            fullUri.append(':').append(validPassword).append("@")
         }
         fullUri.append("${NetCopyClientConnectionPoolFtpTest.HOST}:$port")
 
@@ -100,7 +98,8 @@ object TestUtils {
         validUsername: String,
         validPassword: String?,
         privateKey: PrivateKey?,
-        subpath: String? = null
+        subpath: String? = null,
+        port: Int = NetCopyClientConnectionPoolSshTest.PORT
     ) {
         val utilsHandler = AppConfig.getInstance().utilsHandler
         var privateKeyContents: String? = null
@@ -113,10 +112,10 @@ object TestUtils {
             privateKeyContents = writer.toString()
         }
         val fullUri: StringBuilder = StringBuilder()
-            .append(SSH_URI_PREFIX).append(encode(validUsername, UTF_8.name()))
-        if (validPassword != null) fullUri.append(':').append(encode(validPassword, UTF_8.name()))
+            .append(SSH_URI_PREFIX).append(validUsername)
+        if (validPassword != null) fullUri.append(':').append(validPassword)
         fullUri.append(
-            "@${NetCopyClientConnectionPoolSshTest.HOST}:${NetCopyClientConnectionPoolSshTest.PORT}"
+            "@${NetCopyClientConnectionPoolSshTest.HOST}:$port"
         )
 
         if (true == subpath?.isNotEmpty()) {
@@ -126,7 +125,7 @@ object TestUtils {
         if (validPassword != null) utilsHandler.saveToDatabase(
             OperationData(
                 UtilsHandler.Operation.SFTP,
-                encryptFtpPathAsNecessary(fullUri.toString()),
+                fullUri.toString(),
                 "Test",
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 null,

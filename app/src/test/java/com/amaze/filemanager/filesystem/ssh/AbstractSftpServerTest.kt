@@ -30,6 +30,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.shutdown
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider
+import com.amaze.filemanager.filesystem.ssh.test.TestUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.utils.PasswordUtil
@@ -54,7 +55,9 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.io.IOException
 import java.net.BindException
+import java.net.URLEncoder.encode
 import java.nio.file.Paths
+import kotlin.text.Charsets.UTF_8
 
 /**
  * Base class for all SSH server related tests.
@@ -67,7 +70,7 @@ import java.nio.file.Paths
 abstract class AbstractSftpServerTest {
 
     protected var encryptedPassword: String? =
-        PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)
+        PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)?.replace("\n", "")
     protected var serverPort = 0
     private lateinit var server: SshServer
 
@@ -84,6 +87,13 @@ abstract class AbstractSftpServerTest {
             64000
         )
         prepareSshConnection()
+        TestUtils.saveSshConnectionSettings(
+            hostKeyPair = hostKeyProvider.keyPair,
+            validUsername = encode(USERNAME, UTF_8.name()),
+            validPassword = encryptedPassword,
+            privateKey = null,
+            port = 64000
+        )
     }
 
     /**
@@ -106,7 +116,7 @@ abstract class AbstractSftpServerTest {
             serverPort,
             hostFingerprint,
             USERNAME,
-            PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD),
+            PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)?.replace("\n", ""),
             null
         )
     }

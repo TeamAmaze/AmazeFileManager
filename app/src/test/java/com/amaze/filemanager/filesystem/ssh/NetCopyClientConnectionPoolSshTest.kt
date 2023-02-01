@@ -317,23 +317,25 @@ class NetCopyClientConnectionPoolSshTest {
     private fun doRunTest(validUsername: String, validPassword: String, subPath: String? = null) {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val encodedPassword = encode(validPassword, UTF_8.name())
+        val encryptedPassword = PasswordUtil.encryptPassword(
+            AppConfig.getInstance(),
+            encodedPassword
+        )?.replace("\n", "")
         val mock = createSshServer(validUsername, validPassword)
         TestUtils.saveSshConnectionSettings(
             hostKeyPair,
-            validUsername,
-            validPassword,
+            encodedUsername,
+            encryptedPassword,
             null,
             subPath
         )
         assertNotNull(
             getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    if (subPath.isNullOrEmpty()) {
-                        "ssh://$encodedUsername:$encodedPassword@$HOST:$PORT"
-                    } else {
-                        "ssh://$encodedUsername:$encodedPassword@$HOST:$PORT$subPath"
-                    }
-                )
+                if (subPath.isNullOrEmpty()) {
+                    "ssh://$encodedUsername:$encryptedPassword@$HOST:$PORT"
+                } else {
+                    "ssh://$encodedUsername:$encryptedPassword@$HOST:$PORT$subPath"
+                }
             )
         )
         assertNull(
@@ -370,7 +372,7 @@ class NetCopyClientConnectionPoolSshTest {
         val mock = createSshServer(validUsername, null)
         TestUtils.saveSshConnectionSettings(
             hostKeyPair,
-            validUsername,
+            encodedUsername,
             null,
             validPrivateKey,
             subPath

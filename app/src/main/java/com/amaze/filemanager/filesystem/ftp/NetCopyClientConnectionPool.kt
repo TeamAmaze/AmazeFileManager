@@ -212,6 +212,7 @@ object NetCopyClientConnectionPool {
     fun removeConnection(url: String, callback: () -> Unit) {
         Maybe.fromCallable(AsyncRemoveConnection(url))
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { callback.invoke() }
     }
 

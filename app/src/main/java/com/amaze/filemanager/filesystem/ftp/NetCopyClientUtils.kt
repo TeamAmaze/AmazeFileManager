@@ -39,6 +39,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLAS
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
 import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.urlEncoded
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
@@ -112,16 +113,14 @@ object NetCopyClientUtils {
      * @return SSH URL with the password (if exists) encrypted
      */
     fun encryptFtpPathAsNecessary(fullUri: String): String {
-        return NetCopyConnectionInfo(fullUri).run {
-            val uriWithoutProtocol: String = fullUri.substring(prefix.length)
-            if (uriWithoutProtocol.substringBefore(AT).indexOf(COLON) > 0) {
-                SmbUtil.getSmbEncryptedPath(
-                    AppConfig.getInstance(),
-                    fullUri
-                )
-            } else {
+        val uriWithoutProtocol: String = fullUri.substringAfter("://")
+        return if (uriWithoutProtocol.substringBefore(AT).indexOf(COLON) > 0) {
+            SmbUtil.getSmbEncryptedPath(
+                AppConfig.getInstance(),
                 fullUri
-            }
+            )
+        } else {
+            fullUri
         }
     }
 
@@ -133,12 +132,16 @@ object NetCopyClientUtils {
      * @return SSH URL with the password (if exists) decrypted
      */
     fun decryptFtpPathAsNecessary(fullUri: String): String {
-        return NetCopyConnectionInfo(fullUri).runCatching {
-            val uriWithoutProtocol: String = fullUri.substring(prefix.length)
-            if (uriWithoutProtocol.lastIndexOf(COLON) > 0) SmbUtil.getSmbDecryptedPath(
-                AppConfig.getInstance(),
+        return runCatching {
+            val uriWithoutProtocol: String = fullUri.substringAfter("://")
+            if (uriWithoutProtocol.lastIndexOf(COLON) > 0) {
+                SmbUtil.getSmbDecryptedPath(
+                    AppConfig.getInstance(),
+                    fullUri
+                )
+            } else {
                 fullUri
-            ) else fullUri
+            }
         }.getOrElse { e ->
             LOG.error("Error decrypting path", e)
             fullUri
@@ -221,7 +224,8 @@ object NetCopyClientUtils {
         port: Int,
         defaultPath: String? = null,
         username: String,
-        password: String? = null
+        password: String? = null,
+        edit: Boolean = false
     ): String {
         // FIXME: should be caller's responsibility
         var pathSuffix = defaultPath
@@ -229,7 +233,11 @@ object NetCopyClientUtils {
         val thisPassword = if (password == "" || password == null) {
             ""
         } else {
-            ":$password"
+            ":${if (edit) {
+                password
+            } else {
+                password.urlEncoded()
+            }}"
         }
         return if (username == "" && (true == password?.isEmpty())) {
             "$prefix$hostname:$port$pathSuffix"

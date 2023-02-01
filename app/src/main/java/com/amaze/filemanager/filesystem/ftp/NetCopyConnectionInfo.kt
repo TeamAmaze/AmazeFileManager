@@ -25,7 +25,6 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
-import java.net.URLDecoder.decode
 
 /**
  * Container object for SSH/FTP/FTPS URL, encapsulating logic for splitting information from given
@@ -64,9 +63,12 @@ class NetCopyConnectionInfo(url: String) {
         // (No, don't break it down to lines)
 
         /* ktlint-disable max-line-length */
-        private const val URI_REGEX = "^(?:(?![^:@]+:[^:@\\/]*@)([^:\\/?#.]+):)?(?:\\/\\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\\/?#]*)(?::(\\d*))?)(((\\/(?:[^?#](?![^?#\\/]*\\.[^?#\\/.]+(?:[?#]|$)))*\\/?)?([^?#\\/]*))(?:\\?([^#]*))?(?:#(.*))?)"
+        private const val URI_REGEX = "^(?:(?![^:@]+:[^:@/]*@)([^:/?#.]+):)?(?://)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:/?#]*)(?::(\\d*))?)(((/(?:[^?#](?![^?#/]*\\.[^?#/.]+(?:[?#]|$)))*/?)?([^?#/]*))(?:\\?([^#]*))?(?:#(.*))?)"
 
         /* ktlint-enable max-line-length */
+
+        const val MULTI_SLASH = "(?<=[^:])(//+)"
+
         const val AND = '&'
         const val AT = '@'
         const val SLASH = '/'
@@ -80,7 +82,7 @@ class NetCopyConnectionInfo(url: String) {
                 url.startsWith(FTPS_URI_PREFIX) or
                 url.startsWith(SMB_URI_PREFIX)
         ) {
-            "Argument is not a SSH URI: $url"
+            "Argument is not a supported remote URI: $url"
         }
         val regex = Regex(URI_REGEX)
         val matches = regex.find(url)
@@ -92,11 +94,11 @@ class NetCopyConnectionInfo(url: String) {
                 host = it[6]
                 val credential = it[3]
                 if (!credential.contains(COLON)) {
-                    username = decode(credential, Charsets.UTF_8.name())
+                    username = credential
                     password = null
                 } else {
-                    username = decode(credential.substringBefore(COLON), Charsets.UTF_8.name())
-                    password = decode(credential.substringAfter(COLON), Charsets.UTF_8.name())
+                    username = credential.substringBefore(COLON)
+                    password = credential.substringAfter(COLON)
                 }
                 port = if (it[7].isNotEmpty()) {
                     /*
@@ -121,19 +123,21 @@ class NetCopyConnectionInfo(url: String) {
                 } else {
                     null
                 }
-                defaultPath = if (it[9].isEmpty()) {
-                    null
-                } else if (it[9] == SLASH.toString()) {
-                    SLASH.toString()
-                } else if (!it[9].endsWith(SLASH)) {
-                    if (it[11].isEmpty()) {
-                        it[10]
+                defaultPath = (
+                    if (it[9].isEmpty()) {
+                        null
+                    } else if (it[9] == SLASH.toString()) {
+                        SLASH.toString()
+                    } else if (!it[9].endsWith(SLASH)) {
+                        if (it[11].isEmpty()) {
+                            it[10]
+                        } else {
+                            it[10].substringBeforeLast(SLASH)
+                        }
                     } else {
-                        it[10].substringBeforeLast(SLASH)
+                        it[9]
                     }
-                } else {
-                    it[9]
-                }
+                    )?.replace(Regex(MULTI_SLASH), SLASH.toString())
                 filename = it[11].ifEmpty { null }
             }
         }
@@ -147,7 +151,9 @@ class NetCopyConnectionInfo(url: String) {
             filename
         } else if (defaultPath != null && true == defaultPath?.isNotEmpty()) {
             defaultPath!!.substringAfterLast(SLASH)
-        } else null
+        } else {
+            null
+        }
     }
 
     override fun toString(): String {

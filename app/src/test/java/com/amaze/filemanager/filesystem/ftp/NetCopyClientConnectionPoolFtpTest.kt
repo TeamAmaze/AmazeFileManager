@@ -28,7 +28,6 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.shutdown
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.encryptFtpPathAsNecessary
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
@@ -207,20 +206,20 @@ class NetCopyClientConnectionPoolFtpTest {
     private fun doRunTest(validUsername: String, validPassword: String) {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val encodedPassword = encode(validPassword, UTF_8.name())
+        val encryptedPassword = PasswordUtil.encryptPassword(
+            AppConfig.getInstance(),
+            encodedPassword
+        )?.replace("\n", "")
         val mock = createFTPClient(validUsername, validPassword)
         TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
         assertNotNull(
             getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://$encodedUsername:$encodedPassword@127.0.0.1:22222"
-                )
+                "ftp://$encodedUsername:$encryptedPassword@127.0.0.1:22222"
             )
         )
         assertNull(
             getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://$encodedInvalidUsername:$encodedInvalidPassword@127.0.0.1:22222"
-                )
+                "ftp://$encodedInvalidUsername:$encodedInvalidPassword@127.0.0.1:22222"
             )
         )
         verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT

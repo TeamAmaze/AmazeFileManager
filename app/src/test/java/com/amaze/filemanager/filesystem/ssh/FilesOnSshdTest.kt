@@ -40,6 +40,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 
 /**
  * Test listing files on SSH server.
@@ -153,7 +154,7 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
                 }
             }
         )
-        await().until { result.size == 2 }
+        await().atMost(90, TimeUnit.SECONDS).until { result.size == 2 }
         assertThat<List<String>>(
             result,
             Matchers.hasItems("test+file.bin", "D:")

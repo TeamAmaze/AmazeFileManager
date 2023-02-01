@@ -20,9 +20,6 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
-import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION_CODES.KITKAT
-import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
@@ -31,12 +28,12 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.net.URLDecoder.decode
 import java.net.URLEncoder.encode
 
 /* ktlint-disable max-line-length */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [KITKAT, P, VERSION_CODES.R],
     shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class]
 )
 @Suppress("StringLiteralDuplication")
@@ -46,8 +43,15 @@ class NetCopyConnectionInfoTest {
      * Test unsupported URL prefixes should throw IllegalArgumentException.
      */
     @Test(expected = IllegalArgumentException::class)
-    fun testUnsupportedPrefix() {
+    fun testUnsupportedHttpPrefix() {
         NetCopyConnectionInfo("http://github.com")
+    }
+
+    /**
+     * Test to verify SMB prefix is supported.
+     */
+    @Test
+    fun testSmbPrefixSupported() {
         NetCopyConnectionInfo("smb://user:pass@127.0.0.1")
     }
 
@@ -276,7 +280,8 @@ class NetCopyConnectionInfoTest {
         ).run {
             assertEquals("ftp://", prefix)
             assertEquals("testuser", username)
-            assertEquals("testP@##word", password)
+            assertEquals("testP%40%23%23word", password)
+            assertEquals("testP@##word", decode("testP@##word", Charsets.UTF_8.name()))
             assertEquals("127.0.0.1", host)
             assertEquals(22222, port)
             assertNull(defaultPath)
@@ -298,8 +303,33 @@ class NetCopyConnectionInfoTest {
             assertEquals("ssh://", this.prefix)
             assertEquals("127.0.0.1", this.host)
             assertEquals(32, this.port)
-            assertEquals(username, this.username)
-            assertEquals(password, this.password)
+            assertEquals(username, decode(this.username, Charsets.UTF_8.name()))
+            assertEquals(password, decode(this.password, Charsets.UTF_8.name()))
+        }
+    }
+
+    /**
+     * Test parsing cleaning up duplicated slashes.
+     */
+    @Test
+    fun testParseDuplicatedSlashes() {
+        NetCopyConnectionInfo("smb://user:pass@127.0.0.1/test/1/2/3/4.txt").run {
+            assertEquals("smb://user@127.0.0.1/test/1/2/3", this.toString())
+            assertEquals("4.txt", this.lastPathSegment())
+        }
+        NetCopyConnectionInfo("smb://user:pass@127.0.0.1/test//1///2////3/4.txt").run {
+            assertEquals("smb://user@127.0.0.1/test/1/2/3", this.toString())
+            assertEquals("4.txt", this.lastPathSegment())
+        }
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1/a/b/c/d/e").run {
+            assertEquals("ssh://user@127.0.0.1/a/b/c/d/e", this.toString())
+            assertNotNull(this.lastPathSegment())
+        }
+        NetCopyConnectionInfo(
+            "ftp://127.0.0.1////a/bunch///of///slash//folders////////////test.log"
+        ).run {
+//            assertEquals("ftp://127.0.0.1/a/bunch/of/slash/folders", this.toString())
+            assertEquals("test.log", this.lastPathSegment())
         }
     }
 }
