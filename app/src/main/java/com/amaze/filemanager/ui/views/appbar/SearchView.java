@@ -236,4 +236,5 @@ public class SearchView {
   public interface SearchListener {
     void onSearch(String queue);
   }
+
 }

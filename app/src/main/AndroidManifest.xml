@@ -62,7 +62,9 @@
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
             android:theme="@style/appCompatBlack"
-            android:configChanges="uiMode" >
+            android:configChanges="uiMode"
+            android:windowSoftInputMode="adjustPan"
+           >
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
