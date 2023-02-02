@@ -21,7 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, VERSION_CODES.R]
 )
 class PemToKeyPairObservableRsaTest {
 
