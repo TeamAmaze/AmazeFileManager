@@ -336,6 +336,7 @@ public class MainActivity extends PermissionsActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
 
+
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
