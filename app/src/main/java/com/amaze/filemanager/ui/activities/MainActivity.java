@@ -1271,8 +1271,8 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    drawer.onConfigurationChanged(newConfig);
     // Pass any configuration change to the drawer toggls
+    drawer.onConfigurationChanged(newConfig);
   }
 
   @Override
@@ -2387,15 +2387,14 @@ public class MainActivity extends PermissionsActivity
       return true;
     }
   }
-
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *
-   * @param dialog
-   * @param folder selected folder
    * @see FtpServerFragment#changeFTPServerPath(String)
    * @see FolderChooserDialog
    * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
+   * @param dialog
+   * @param folder selected folder
    */
   @Override
   public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
@@ -2487,8 +2486,8 @@ public class MainActivity extends PermissionsActivity
   /**
    * Do nothing other than dismissing the folder selection dialog.
    *
-   * @param dialog
    * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
+   * @param dialog
    */
   @Override
   public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
