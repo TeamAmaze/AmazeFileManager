@@ -23,25 +23,35 @@ package com.amaze.filemanager.ui.views.appbar;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
+import java.util.ArrayList;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 /**
  * SearchView, a simple view to search
@@ -50,25 +60,33 @@ import androidx.core.content.ContextCompat;
  */
 public class SearchView {
 
-  private MainActivity mainActivity;
-  private AppBar appbar;
+  private final MainActivity mainActivity;
+  private final AppBar appbar;
 
-  private RelativeLayout searchViewLayout;
-  private AppCompatEditText searchViewEditText;
-  private ImageView clearImageView;
-  private ImageView backImageView;
+  private final ConstraintLayout searchViewLayout;
+  private final AppCompatEditText searchViewEditText;
+  private final ImageView clearImageView, backImageView;
+  private final TextView recentHintTV;
+  private final ChipGroup recentChipGroup;
+
+  private final SearchListener searchListener;
 
   private boolean enabled = false;
 
-  public SearchView(
-      final AppBar appbar, final MainActivity a, final SearchListener searchListener) {
-    mainActivity = a;
+  public SearchView(final AppBar appbar, MainActivity mainActivity, SearchListener searchListener) {
+
+    this.mainActivity = mainActivity;
+    this.searchListener = searchListener;
     this.appbar = appbar;
 
-    searchViewLayout = a.findViewById(R.id.search_view);
-    searchViewEditText = a.findViewById(R.id.search_edit_text);
-    clearImageView = a.findViewById(R.id.search_close_btn);
-    backImageView = a.findViewById(R.id.img_view_back);
+    searchViewLayout = mainActivity.findViewById(R.id.search_view);
+    searchViewEditText = mainActivity.findViewById(R.id.search_edit_text);
+    clearImageView = mainActivity.findViewById(R.id.search_close_btn);
+    backImageView = mainActivity.findViewById(R.id.img_view_back);
+    recentChipGroup = mainActivity.findViewById(R.id.searchRecentItemsChipGroup);
+    recentHintTV = mainActivity.findViewById(R.id.searchRecentHintTV);
+
+    initRecentSearches(mainActivity);
 
     clearImageView.setOnClickListener(v -> searchViewEditText.setText(""));
 
@@ -77,16 +95,76 @@ public class SearchView {
     searchViewEditText.setOnEditorActionListener(
         (v, actionId, event) -> {
           if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            searchListener.onSearch(searchViewEditText.getText().toString());
+
+            String s = searchViewEditText.getText().toString();
+
+            searchListener.onSearch(s);
             appbar.getSearchView().hideSearchView();
+
+            String preferenceString =
+                PreferenceManager.getDefaultSharedPreferences(mainActivity)
+                    .getString(PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, null);
+
+            ArrayList<String> recentSearches =
+                preferenceString != null
+                    ? new Gson()
+                        .fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType())
+                    : new ArrayList<>();
+
+            recentSearches.add(s);
+
+            if (recentSearches.size() > 5) recentSearches.remove(0);
+
+            PreferenceManager.getDefaultSharedPreferences(mainActivity)
+                .edit()
+                .putString(
+                    PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS,
+                    new Gson().toJson(recentSearches))
+                .apply();
+
+            initRecentSearches(mainActivity);
+
             return true;
           }
           return false;
         });
 
-    initSearchViewColor(a);
-    // searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-    // searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
+    initSearchViewColor(mainActivity);
+  }
+
+  private void initRecentSearches(Context context) {
+
+    String preferenceString =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getString(PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, null);
+
+    if (preferenceString == null) {
+      recentHintTV.setVisibility(View.GONE);
+      recentChipGroup.setVisibility(View.GONE);
+      return;
+    }
+
+    recentHintTV.setVisibility(View.VISIBLE);
+    recentChipGroup.setVisibility(View.VISIBLE);
+
+    recentChipGroup.removeAllViews();
+
+    ArrayList<String> recentSearches =
+        new Gson().fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType());
+
+    for (String string : recentSearches) {
+      Chip chip = new Chip(new ContextThemeWrapper(context, R.style.ChipStyle));
+
+      chip.setText(string);
+
+      recentChipGroup.addView(chip);
+
+      chip.setOnClickListener(
+          v -> {
+            searchListener.onSearch(((Chip) v).getText().toString());
+            appbar.getSearchView().hideSearchView();
+          });
+    }
   }
 
   /** show search view with a circular reveal animation */
