@@ -708,7 +708,12 @@ class SftpConnectDialog : DialogFragment() {
         hostKeyFingerprint: String?,
         encryptedPath: String
     ): Boolean {
-        DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(oldPath))
+        val i = DataUtils.getInstance().containsServer(oldPath)
+
+        if (i != -1) {
+            DataUtils.getInstance().removeServer(i)
+        }
+
         DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
         DataUtils.getInstance().servers.sortWith(BookSorter())
         (activity as MainActivity).drawer.refreshDrawer()

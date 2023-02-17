@@ -1061,11 +1061,14 @@ public class MainFragment extends Fragment
             } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
               loadlist(currentFile.getParent(getContext()), true, currentFile.getMode(), false);
             } else {
-              loadlist(
-                  currentFile.getParent(getContext()),
-                  true,
-                  mainFragmentViewModel.getOpenMode(),
-                  false);
+
+              String parent = currentFile.getParent(getContext());
+
+              if (parent == null)
+                parent =
+                    mainFragmentViewModel.getHome(); // fall back by traversing back to home folder
+
+              loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
             }
           } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
             if (mainFragmentViewModel.getCurrentPath() != null) {

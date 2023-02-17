@@ -80,6 +80,10 @@ public class CloudHandler {
             throwable -> LOG.warn("failed to delete cloud connection", throwable));
   }
 
+  public void clearAllCloudConnections() {
+    database.cloudEntryDao().clear().subscribeOn(Schedulers.io()).blockingGet();
+  }
+
   public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
       throws CloudPluginException {
 
