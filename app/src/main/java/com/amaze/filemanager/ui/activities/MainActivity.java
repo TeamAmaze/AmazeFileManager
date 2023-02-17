@@ -2314,7 +2314,8 @@ public class MainActivity extends PermissionsActivity
      *
      * TODO: find a fix for repeated callbacks to onLoadFinished()
      */
-    if ((cloudCursorData != null && cloudCursorData == data)
+    if (cloudCursorData == null
+        || cloudCursorData == data
         || data.isClosed()
         || cloudCursorData.isClosed()) return;
     cloudCursorData = data;
