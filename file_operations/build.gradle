@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 19
@@ -51,7 +51,7 @@ android {
     }
 
     kotlinOptions {
-        useIR = true
+        jvmTarget = '11'
     }
 }
 
