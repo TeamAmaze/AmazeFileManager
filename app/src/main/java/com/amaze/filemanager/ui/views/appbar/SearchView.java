@@ -111,6 +111,8 @@ public class SearchView {
                         .fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType())
                     : new ArrayList<>();
 
+            if (s.isEmpty() || recentSearches.contains(s)) return false;
+
             recentSearches.add(s);
 
             if (recentSearches.size() > 5) recentSearches.remove(0);
