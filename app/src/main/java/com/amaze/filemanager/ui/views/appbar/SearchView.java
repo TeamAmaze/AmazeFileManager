@@ -65,7 +65,10 @@ public class SearchView {
 
   private final ConstraintLayout searchViewLayout;
   private final AppCompatEditText searchViewEditText;
-  private final ImageView clearImageView, backImageView;
+
+  private final ImageView clearImageView;
+  private final ImageView backImageView;
+
   private final TextView recentHintTV;
   private final ChipGroup recentChipGroup;
 
