@@ -9,17 +9,17 @@
     android:gravity="center_vertical"
     android:visibility="gone">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_view_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
         android:layout_marginRight="@dimen/search_view_back_margin_left_right"
-        android:src="@drawable/ic_arrow_back_black_24dp"
         app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
         app:layout_constraintEnd_toStartOf="@id/search_edit_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+        app:layout_constraintTop_toTopOf="@id/search_edit_text"
+        app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/search_edit_text"
@@ -37,17 +37,17 @@
         app:layout_constraintStart_toEndOf="@id/img_view_back"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/search_close_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
         android:layout_marginRight="@dimen/search_view_info_margin_left_right"
-        android:src="@drawable/ic_close_black_24dp"
         app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/search_edit_text"
-        app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+        app:layout_constraintTop_toTopOf="@id/search_edit_text"
+        app:srcCompat="@drawable/ic_close_black_24dp" />
 
     <TextView
         android:id="@+id/searchRecentHintTV"
