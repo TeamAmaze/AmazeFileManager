@@ -526,5 +526,11 @@
     <string name="got_it">Понял!</string>
     <string name="enable_marquee_filename">Включить эффект бегущей строки для имён файлов</string>
     <string name="close">Закрыть</string>
+    
+    
+    <!--- Add New line for translate --->
+        <string name="intent_save_as">Сохранить как&#8230;</string>
+	
+	
     </resources>
 
