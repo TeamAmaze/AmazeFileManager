@@ -549,6 +549,8 @@
 	<!--- Behavior --->
 	
 	
+	<!--- Part of the elements of the side menu --->
+	<string name="analyse_storage">Анализ хранилища</string>	
 	
     </resources>
 
