@@ -533,17 +533,21 @@
 	<string name="appearance">Внешний вид</string>
 		<string name="appearance_summary">Настройте тему, цвета и внешний вид файлового менеджера</string>
 	<string name="behavior">Поведение</string>
+		<string name="behavior_summary">Изменить поведение, такое как расширенный поиск и открывать ли файлы как новую задачу</string>
 	
 	<!--- Appearance --->
 	<string name="select_color_config">Выбрать цветовую схему</string>
 	
-	<string name="preselected_configs_title">Выбрать схему</string>
-		<string name="orange">Оранжевый</string>
-		<string name="blue">Синий</string>
-		<string name="green">Зелёный</string>
-		<string name="custom">Своя</string>
-		<string name="random">Случайная</string>
-	<string name="customize">Настроить свою схему</string>
+		<string name="preselected_configs_title">Выбрать схему</string>
+			<string name="orange">Оранжевый</string>
+			<string name="blue">Синий</string>
+			<string name="green">Зелёный</string>
+			<string name="custom">Своя</string>
+			<string name="random">Случайная</string>
+		<string name="customize">Настроить свою схему</string>
+	
+	<!--- Behavior --->
+	
 	
 	
     </resources>
