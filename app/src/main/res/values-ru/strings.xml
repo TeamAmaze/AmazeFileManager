@@ -80,7 +80,6 @@
     <string name="directorysort">Режим сортировки каталога</string>
     <string name="sort_by">Сортировать</string>
     <string name="theme">Темы</string>
-    <string name="random">Случайный скин</string>
     <string name="random_summary">Устанавливает случайную тему при запуске</string>
     <string name="colorize">Раскрасить иконки</string>
     <string name="colorize_summary">Устанавливает цвета иконок отличающиеся от темы</string>
@@ -101,7 +100,7 @@
     <!-- Theme -->
     <string name="light">Светлый</string>
     <string name="dark">Тёмный</string>
-    <string name="daytime">Дневное время</string>
+    <string name="daytime">Время суток</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Папки на вершине</string>
@@ -242,7 +241,7 @@
     <string name="bluetooth">Bluetooth</string>
     <string name="folders">Папки</string>
     <string name="videos">Видео</string>
-    <string name="apks">Apk</string>
+    <string name="apks">APK</string>
     <string name="documents">Документы</string>
     <string name="images">Изображения</string>
     <string name="clear">Очистить</string>
@@ -520,16 +519,31 @@
     <string name="scp_port">Порт</string>
     <string name="add_shortcut_not_supported_by_launcher">Создание ярлыков не поддерживается Вашим лаунчером.</string>
     
-    <string name="orange">Оранжевый</string>
-    <string name="blue">Синий</string>
-    <string name="green">Зелёный</string>
+   
     <string name="got_it">Понял!</string>
     <string name="enable_marquee_filename">Включить эффект бегущей строки для имён файлов</string>
     <string name="close">Закрыть</string>
     
     
-    <!--- Add New line for translate --->
+	<!--- Add New line for translate --->
         <string name="intent_save_as">Сохранить как&#8230;</string>
+	<string name="select_save_location">Выбрать местом для сохранения</string>
+	
+	<!--- Add new line for Settings menu --->
+	<string name="appearance">Внешний вид</string>
+		<string name="appearance_summary">Настройте тему, цвета и внешний вид файлового менеджера</string>
+	<string name="behavior">Поведение</string>
+	
+	<!--- Appearance --->
+	<string name="select_color_config">Выбрать цветовую схему</string>
+	
+	<string name="preselected_configs_title">Выбрать схему</string>
+		<string name="orange">Оранжевый</string>
+		<string name="blue">Синий</string>
+		<string name="green">Зелёный</string>
+		<string name="custom">Своя</string>
+		<string name="random">Случайная</string>
+	<string name="customize">Настроить свою схему</string>
 	
 	
     </resources>
