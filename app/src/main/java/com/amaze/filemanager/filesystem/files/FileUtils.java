@@ -402,7 +402,8 @@ public class FileUtils {
 
     if (files.size() > 1)
       for (File file : files)
-        if (!mime.equals(MimeTypes.getMimeType(file.getPath(), file.isDirectory()))) {
+        if (mime == null
+            || !mime.equals(MimeTypes.getMimeType(file.getPath(), file.isDirectory()))) {
           isGenericFileType = true;
           break;
         }
