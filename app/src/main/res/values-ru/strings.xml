@@ -525,11 +525,11 @@
     <string name="close">Закрыть</string>
     
     
-	<!--- Add New line for translate --->
+	<!-- Add New line for translate -->
         <string name="intent_save_as">Сохранить как&#8230;</string>
 	<string name="select_save_location">Выбрать местом для сохранения</string>
 	
-	<!--- Add new line for Settings menu --->
+	<!-- Add new line for Settings menu -->
 	<string name="appearance">Внешний вид</string>
 		<string name="appearance_summary">Настройте тему, цвета и внешний вид файлового менеджера</string>
 	
@@ -541,7 +541,7 @@
 		<string name="security_summary">Настройка пароля и шифрования</string>
 		
 	
-	<!--- Appearance --->
+	<!-- Appearance -->
 	<string name="select_color_config">Выбрать цветовую схему</string>
 	
 		<string name="preselected_configs_title">Выбрать схему</string>
@@ -553,7 +553,7 @@
 		<string name="customize">Настроить свою схему</string>
 	
 	
-	<!--- Interface --->
+	<!-- Interface -->
 	<string name="drag_and_drop_preference">Выберите «Назначение перетаскивания» (Экспериментально)</string>
 		<string name="drag_to_move_copy">Нажмите и перетащите, чтобы переместить или скопировать файлы</string>
 		<string name="drag_to_select">Нажмите и перетащите, чтобы выбрать файлы</string>
@@ -567,7 +567,7 @@
 	
 			<string name="recent_desc">Недавно созданные или измененные файлы</string>
 	
-	<!--- Behavior --->
+	<!-- Behavior -->
 	<string name="typeable_paths_title">Пользовательский путь</string>
 		<string name="typeable_paths_summary">Долгое нажатие на панель пути для ввода пользовательского пути</string>
 	<string name="preference_newstack_title">Открывать файлы как новую задачу</string>
@@ -579,7 +579,7 @@
 	<string name="disable_player_intent_filters">Отключить медиаплееры в выборе</string>
 		<string name="disable_player_intent_filters_summary">Отключает встроенные медиаплееры Amaze от выбора файлов</string>
 	
-		<!--- Advanced --->
+		<!-- Advanced -->
 	<string name="advanced">Продвинутые</string>
 	
 		<string name="legacy_listing_title">Используйте устаревший список для root</string>
@@ -588,7 +588,7 @@
 	
 	
 	
-	<!--- Part of the elements of the side menu --->
+	<!-- Part of the elements of the side menu -->
 	<string name="analyse_storage">Анализ хранилища</string>	
 	
     </resources>
