@@ -101,6 +101,7 @@
     <string name="light">Светлый</string>
     <string name="dark">Тёмный</string>
     <string name="daytime">Время суток</string>
+	<string name="system">Системная (тема как в системе)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Папки на вершине</string>
@@ -533,6 +534,8 @@
 	<string name="appearance">Внешний вид</string>
 		<string name="appearance_summary">Настройте тему, цвета и внешний вид файлового менеджера</string>
 	
+	
+	
 		<string name="ui_summary">Контролируйте, какую информацию показывать, настраивайте боковую панель и переключайте настройки пользовательского интерфейса</string>
 	
 	<string name="behavior">Поведение</string>
@@ -586,6 +589,14 @@
 			<string name="legacy_listing_summary">Если включено, используется устаревший метод для списка файлов</string>
 
 	
+	<!-- Export/Import settings Amaze -->
+	
+		<string name="backup_summary">Экспорт/Импорт настроек Amaze</string>
+		
+			<string name="pref_export">Экспорт</string>
+				<string name="pref_export_summary">Сохранить настройки</string>
+			<string name="pref_import">Импорт</string>
+				<string name="pref_import_summary">Восстановить настройки</string>
 	
 	
 	<!-- Part of the elements of the side menu -->
