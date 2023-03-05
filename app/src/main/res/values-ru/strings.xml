@@ -101,6 +101,7 @@
     <string name="light">Светлый</string>
     <string name="dark">Тёмный</string>
     <string name="daytime">Время суток</string>
+	<string name="black">Чёрная (для OLED экранов)</string>
 	<string name="system">Системная (тема как в системе)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
