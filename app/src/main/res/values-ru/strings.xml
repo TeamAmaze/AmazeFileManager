@@ -530,6 +530,7 @@
 	<!-- Add New line for translate -->
         <string name="intent_save_as">Сохранить как&#8230;</string>
 	<string name="select_save_location">Выбрать местом для сохранения</string>
+	<string name="go">Вперёд</string>
 	
 	<!-- Add new line for Settings menu -->
 	<string name="appearance">Внешний вид</string>
