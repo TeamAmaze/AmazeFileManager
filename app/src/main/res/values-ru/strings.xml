@@ -532,8 +532,14 @@
 	<!--- Add new line for Settings menu --->
 	<string name="appearance">Внешний вид</string>
 		<string name="appearance_summary">Настройте тему, цвета и внешний вид файлового менеджера</string>
+	
+		<string name="ui_summary">Контролируйте, какую информацию показывать, настраивайте боковую панель и переключайте настройки пользовательского интерфейса</string>
+	
 	<string name="behavior">Поведение</string>
 		<string name="behavior_summary">Изменить поведение, такое как расширенный поиск и открывать ли файлы как новую задачу</string>
+	
+		<string name="security_summary">Настройка пароля и шифрования</string>
+		
 	
 	<!--- Appearance --->
 	<string name="select_color_config">Выбрать цветовую схему</string>
@@ -546,7 +552,40 @@
 			<string name="random">Случайная</string>
 		<string name="customize">Настроить свою схему</string>
 	
+	
+	<!--- Interface --->
+	<string name="drag_and_drop_preference">Выберите «Назначение перетаскивания» (Экспериментально)</string>
+		<string name="drag_to_move_copy">Нажмите и перетащите, чтобы переместить или скопировать файлы</string>
+		<string name="drag_to_select">Нажмите и перетащите, чтобы выбрать файлы</string>
+		<string name="disable">Отключено</string>
+	
+<string name="sidebar_preferences">Боковая панель</string>
+		
+		<string name="show_bookmarks_pref_title">Показать закладки</string>
+	
+			<string name="quick_desc">Файлы, недавно полученные через Amaze</string>
+	
+			<string name="recent_desc">Недавно созданные или измененные файлы</string>
+	
 	<!--- Behavior --->
+	<string name="typeable_paths_title">Пользовательский путь</string>
+		<string name="typeable_paths_summary">Долгое нажатие на панель пути для ввода пользовательского пути</string>
+	<string name="preference_newstack_title">Открывать файлы как новую задачу</string>
+		<string name="preference_newstack_summary">Позволяет открывать файлы в отдельных задачах. Получите к ним доступ с экрана недавних приложений.</string>
+	<string name="preference_delete_confirmation">Подтверждение перед удалением</string>
+		<string name="preference_delete_confirmation_summary">Запрашивает подтверждение перед удалением файлов. Отключение это крайне обескураживает!</string>
+	<string name="clear_open_file">Очистить кеш</string>
+		<string name="clear_open_file_summary">Очищает выбранные приложения для открытия файлов по умолчанию</string>
+	<string name="disable_player_intent_filters">Отключить медиаплееры в выборе</string>
+		<string name="disable_player_intent_filters_summary">Отключает встроенные медиаплееры Amaze от выбора файлов</string>
+	
+		<!--- Advanced --->
+	<string name="advanced">Продвинутые</string>
+	
+		<string name="legacy_listing_title">Используйте устаревший список для root</string>
+			<string name="legacy_listing_summary">Если включено, используется устаревший метод для списка файлов</string>
+
+	
 	
 	
 	<!--- Part of the elements of the side menu --->
