@@ -22,10 +22,14 @@ package com.amaze.filemanager.ui.views.appbar;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -37,6 +41,7 @@ import com.google.gson.reflect.TypeToken;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.view.ContextThemeWrapper;
@@ -49,9 +54,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * SearchView, a simple view to search
@@ -63,16 +69,20 @@ public class SearchView {
   private final MainActivity mainActivity;
   private final AppBar appbar;
 
-  private final ConstraintLayout searchViewLayout;
+  private final NestedScrollView searchViewLayout;
   private final AppCompatEditText searchViewEditText;
 
   private final ImageView clearImageView;
   private final ImageView backImageView;
 
   private final TextView recentHintTV;
+  private final TextView searchResultsHintTV;
+
   private final ChipGroup recentChipGroup;
+  private final RecyclerView recyclerView;
 
   private final SearchListener searchListener;
+  private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
   private boolean enabled = false;
 
@@ -88,10 +98,21 @@ public class SearchView {
     backImageView = mainActivity.findViewById(R.id.img_view_back);
     recentChipGroup = mainActivity.findViewById(R.id.searchRecentItemsChipGroup);
     recentHintTV = mainActivity.findViewById(R.id.searchRecentHintTV);
+    searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
+    recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
 
     initRecentSearches(mainActivity);
 
-    clearImageView.setOnClickListener(v -> searchViewEditText.setText(""));
+    searchRecyclerViewAdapter = new SearchRecyclerViewAdapter();
+    recyclerView.setAdapter(searchRecyclerViewAdapter);
+
+    clearRecyclerView();
+
+    clearImageView.setOnClickListener(
+        v -> {
+          searchViewEditText.setText("");
+          clearRecyclerView();
+        });
 
     backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
 
@@ -99,35 +120,11 @@ public class SearchView {
         (v, actionId, event) -> {
           if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-            String s = searchViewEditText.getText().toString();
+            String s = searchViewEditText.getText().toString().trim();
 
-            searchListener.onSearch(s);
-            appbar.getSearchView().hideSearchView();
+            search(s);
 
-            String preferenceString =
-                PreferenceManager.getDefaultSharedPreferences(mainActivity)
-                    .getString(PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, null);
-
-            ArrayList<String> recentSearches =
-                preferenceString != null
-                    ? new Gson()
-                        .fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType())
-                    : new ArrayList<>();
-
-            if (s.isEmpty() || recentSearches.contains(s)) return false;
-
-            recentSearches.add(s);
-
-            if (recentSearches.size() > 5) recentSearches.remove(0);
-
-            PreferenceManager.getDefaultSharedPreferences(mainActivity)
-                .edit()
-                .putString(
-                    PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS,
-                    new Gson().toJson(recentSearches))
-                .apply();
-
-            initRecentSearches(mainActivity);
+            saveRecentPreference(s);
 
             return true;
           }
@@ -135,6 +132,65 @@ public class SearchView {
         });
 
     initSearchViewColor(mainActivity);
+  }
+
+  private void search(String s) {
+
+    clearRecyclerView();
+
+    searchResultsHintTV.setVisibility(View.VISIBLE);
+
+    ArrayList<HybridFileParcelable> hybridFileParcelables = new ArrayList<>();
+
+    boolean showHiddenFiles =
+        PreferenceManager.getDefaultSharedPreferences(mainActivity)
+            .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
+
+    ListFilesCommand.INSTANCE.listFiles(
+        mainActivity.getCurrentMainFragment().getPath(),
+        mainActivity.isRootExplorer(),
+        showHiddenFiles,
+        mode -> null,
+        hybridFileParcelable -> {
+          if (showHiddenFiles || !hybridFileParcelable.isHidden())
+            if (hybridFileParcelable
+                .getName(mainActivity)
+                .toLowerCase()
+                .contains(s.toLowerCase())) {
+              hybridFileParcelables.add(hybridFileParcelable);
+
+              searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+
+              searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
+            }
+          return null;
+        });
+  }
+
+  private void saveRecentPreference(String s) {
+
+    String preferenceString =
+        PreferenceManager.getDefaultSharedPreferences(mainActivity)
+            .getString(PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, null);
+
+    ArrayList<String> recentSearches =
+        preferenceString != null
+            ? new Gson().fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType())
+            : new ArrayList<>();
+
+    if (s.isEmpty() || recentSearches.contains(s)) return;
+
+    recentSearches.add(s);
+
+    if (recentSearches.size() > 5) recentSearches.remove(0);
+
+    PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        .edit()
+        .putString(
+            PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, new Gson().toJson(recentSearches))
+        .apply();
+
+    initRecentSearches(mainActivity);
   }
 
   private void initRecentSearches(Context context) {
@@ -166,8 +222,10 @@ public class SearchView {
 
       chip.setOnClickListener(
           v -> {
-            searchListener.onSearch(((Chip) v).getText().toString());
-            appbar.getSearchView().hideSearchView();
+            String s = ((Chip) v).getText().toString();
+
+            searchViewEditText.setText(s);
+            search(s);
           });
     }
   }
@@ -251,6 +309,8 @@ public class SearchView {
       animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 1f, 0f);
     }
 
+    clearRecyclerView();
+
     // removing background fade view
     mainActivity.hideSmokeScreen();
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -314,6 +374,14 @@ public class SearchView {
       default:
         break;
     }
+  }
+
+  @SuppressLint("NotifyDataSetChanged")
+  private void clearRecyclerView() {
+    searchRecyclerViewAdapter.submitList(new ArrayList<>());
+    searchRecyclerViewAdapter.notifyDataSetChanged();
+
+    searchResultsHintTV.setVisibility(View.GONE);
   }
 
   public interface SearchListener {
