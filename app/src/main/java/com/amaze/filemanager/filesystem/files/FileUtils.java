@@ -395,18 +395,17 @@ public class FileUtils {
     ArrayList<Uri> uris = new ArrayList<>();
     boolean isGenericFileType = false;
 
-    for (File f : files)
+    String mime = files.size() > 1 ? MimeTypes.getMimeType(files.get(0).getPath(),
+            files.get(0).isDirectory()) : null;
+
+    for (File f : files) {
       uris.add(FileProvider.getUriForFile(activity, activity.getPackageName(), f));
-
-    String mime = MimeTypes.getMimeType(files.get(0).getPath(), files.get(0).isDirectory());
-
-    if (files.size() > 1)
-      for (File file : files)
-        if (mime == null
-            || !mime.equals(MimeTypes.getMimeType(file.getPath(), file.isDirectory()))) {
-          isGenericFileType = true;
-          break;
-        }
+      if (mime == null
+              || !mime.equals(MimeTypes.getMimeType(f.getPath(), f.isDirectory()))) {
+        isGenericFileType = true;
+        break;
+      }
+    }
 
     if (isGenericFileType || mime == null) mime = MimeTypes.ALL_MIME_TYPES;
 
