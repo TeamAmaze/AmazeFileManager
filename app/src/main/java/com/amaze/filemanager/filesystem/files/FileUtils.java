@@ -389,26 +389,28 @@ public class FileUtils {
     }.execute(paths);
   }
 
-  public static void shareFiles(ArrayList<File> a, Activity c, AppTheme appTheme, int fab_skin) {
+  public static void shareFiles(
+      ArrayList<File> files, Activity activity, AppTheme appTheme, int fab_skin) {
 
     ArrayList<Uri> uris = new ArrayList<>();
-    boolean b = true;
-    for (File f : a) {
-      uris.add(FileProvider.getUriForFile(c, c.getPackageName(), f));
+    boolean isGenericFileType = false;
+
+    String mime = files.size() > 1 ? MimeTypes.getMimeType(files.get(0).getPath(),
+            files.get(0).isDirectory()) : null;
+
+    for (File f : files) {
+      uris.add(FileProvider.getUriForFile(activity, activity.getPackageName(), f));
+      if (mime == null
+              || !mime.equals(MimeTypes.getMimeType(f.getPath(), f.isDirectory()))) {
+        isGenericFileType = true;
+        break;
+      }
     }
 
-    String mime = MimeTypes.getMimeType(a.get(0).getPath(), a.get(0).isDirectory());
-    if (a.size() > 1)
-      for (File f : a) {
-        if (!mime.equals(MimeTypes.getMimeType(f.getPath(), f.isDirectory()))) {
-          b = false;
-        }
-      }
+    if (isGenericFileType || mime == null) mime = MimeTypes.ALL_MIME_TYPES;
 
-    if (!b || mime == (null)) mime = MimeTypes.ALL_MIME_TYPES;
     try {
-
-      new ShareTask(c, uris, appTheme, fab_skin).execute(mime);
+      new ShareTask(activity, uris, appTheme, fab_skin).execute(mime);
     } catch (Exception e) {
       LOG.warn("failed to get share files", e);
     }
