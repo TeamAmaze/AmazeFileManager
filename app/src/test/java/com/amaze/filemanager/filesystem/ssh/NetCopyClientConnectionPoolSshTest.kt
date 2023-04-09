@@ -24,6 +24,7 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSHClientFactory
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
@@ -33,6 +34,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.encryptFtpPathAsN
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
+import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.Utils
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
@@ -61,7 +63,10 @@ import org.mockito.kotlin.verify
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowSQLiteConnection
 import java.io.IOException
+import java.net.URLEncoder.encode
 import java.security.KeyPair
+import java.security.PrivateKey
+import kotlin.text.Charsets.UTF_8
 
 /**
  * Tests for [NetCopyClientConnectionPool] with SSH connections.
@@ -97,7 +102,10 @@ class NetCopyClientConnectionPoolSshTest {
                 PORT,
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 "testuser",
-                "testpassword",
+                PasswordUtil.encryptPassword(
+                    AppConfig.getInstance(),
+                    "testpassword"
+                ),
                 null
             )
         )
@@ -108,7 +116,10 @@ class NetCopyClientConnectionPoolSshTest {
                 PORT,
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 "invaliduser",
-                "invalidpassword",
+                PasswordUtil.encryptPassword(
+                    AppConfig.getInstance(),
+                    "invalidpassword"
+                ),
                 null
             )
         )
@@ -170,40 +181,9 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrl() {
+        val validUsername = "testuser"
         val validPassword = "testpassword"
-        val mock = createSshServer("testuser", validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword("testuser", "testpassword")
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -213,51 +193,9 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlHavingSubpath() {
+        val validUsername = "testuser"
         val validPassword = "testpassword"
-        val mock = createSshServer("testuser", validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            validPassword,
-            null,
-            "/home/testuser"
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testpassword@127.0.0.1:22222/home/testuser"
-                )
-            )
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222/home/testuser"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, Mockito.atLeastOnce())
-            .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.public))
-        verify(mock, Mockito.atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, Mockito.atLeastOnce()).connect("127.0.0.1", 22222)
-        verify(mock).authPassword("testuser", "testpassword")
-        // invalid username won't give host key. Should never called this
-        verify(mock, Mockito.never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword, "/home/testuser")
     }
 
     /**
@@ -266,27 +204,16 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlAndKeyAuth() {
-        val mock = createSshServer("testuser", null)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            null,
-            userKeyPair.private
-        )
-        assertNotNull(getConnection<SSHClient>("ssh://testuser@127.0.0.1:22222"))
-        assertNull(getConnection<SSHClient>("ssh://invaliduser@127.0.0.1:22222"))
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPublickey("testuser", sshKeyProvider)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPublickey("invaliduser", sshKeyProvider)
+        doRunTest(validUsername = "testuser", validPrivateKey = userKeyPair.private)
+    }
+
+    /**
+     * Test getting connection with URL/URI using key authentication having complex username.
+     */
+    @Test
+    @Throws(IOException::class)
+    fun testGetConnectionWithUrlAndKeyAuthHavingComplexUsername() {
+        doRunTest(validUsername = "test@example.com", validPrivateKey = userKeyPair.private)
     }
 
     /**
@@ -296,27 +223,7 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlAndKeyAuthHavingSubpath() {
-        val mock = createSshServer("testuser", null)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            null,
-            userKeyPair.private,
-            "/home/testuser"
-        )
-        assertNotNull(getConnection<SSHClient>("ssh://testuser@127.0.0.1:22222/home/testuser"))
-        assertNotNull(getConnection<SSHClient>("ssh://testuser@127.0.0.1:22222"))
-        assertNull(getConnection<SSHClient>("ssh://invaliduser@127.0.0.1:22222/home/testuser"))
-        assertNull(getConnection<SSHClient>("ssh://invaliduser@127.0.0.1:22222"))
-        verify(mock, Mockito.atLeastOnce())
-            .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.public))
-        verify(mock, Mockito.atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, Mockito.atLeastOnce()).connect("127.0.0.1", 22222)
-        verify(mock).authPublickey("testuser", sshKeyProvider)
-        // invalid username won't give host key. Should never called this
-        verify(mock, Mockito.never())
-            .authPublickey("invaliduser", sshKeyProvider)
+        doRunTest("testuser", userKeyPair.private, "/home/testuser")
     }
 
     /**
@@ -325,82 +232,20 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlHavingComplexPassword1() {
+        val validUsername = "testuser"
         val validPassword = "testP@ssw0rd"
-        val mock = createSshServer("testuser", validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testP@ssw0rd@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword("testuser", validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
-     * Test getting connection with URL/URI having complex password (case 2)
+     * Test getting connection with URL/URI having complex passwords (case 2)
      */
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlHavingComplexPassword2() {
+        val validUsername = "testuser"
         val validPassword = "testP@##word"
-        val mock = createSshServer("testuser", validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testP@##word@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword("testuser", validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -409,40 +254,9 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlHavingComplexCredential1() {
-        val validPassword = "testP@##word"
-        val mock = createSshServer("testuser", validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testP@##word@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword("testuser", validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        val validUsername = "test@example.com"
+        val validPassword = "testP@ssw0rd"
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -451,126 +265,9 @@ class NetCopyClientConnectionPoolSshTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlHavingComplexCredential2() {
-        val validPassword = "testP@##word"
-        val mock = createSshServer("testuser", validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            "testuser",
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://testuser:testP@##word@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword("testuser", validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
-    }
-
-    /**
-     * Test getting connection with URL/URI having complex credentials (case 3)
-     */
-    @Test
-    @Throws(IOException::class)
-    fun testGetConnectionWithUrlHavingComplexCredential3() {
-        val validUsername = "test@example.com"
-        val validPassword = "testP@ssw0rd"
-        val mock = createSshServer(validUsername, validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            validUsername,
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://test@example.com:testP@ssw0rd@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword(validUsername, validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
-    }
-
-    /**
-     * Test getting connection with URL/URI having complex credentials (case 4)
-     */
-    @Test
-    @Throws(IOException::class)
-    fun testGetConnectionWithUrlHavingComplexCredential4() {
         val validUsername = "test@example.com"
         val validPassword = "testP@ssw0##$"
-        val mock = createSshServer(validUsername, validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            validUsername,
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://test@example.com:testP@ssw0##$@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword(validUsername, validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -581,39 +278,7 @@ class NetCopyClientConnectionPoolSshTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword1() {
         val validUsername = "test@example.com"
         val validPassword = "abcd-efgh"
-        val mock = createSshServer(validUsername, validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            validUsername,
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://test@example.com:abcd-efgh@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword(validUsername, validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -624,39 +289,7 @@ class NetCopyClientConnectionPoolSshTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword2() {
         val validUsername = "test@example.com"
         val validPassword = "---------------"
-        val mock = createSshServer(validUsername, validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            validUsername,
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://test@example.com:---------------@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword(validUsername, validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -667,39 +300,7 @@ class NetCopyClientConnectionPoolSshTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword3() {
         val validUsername = "test@example.com"
         val validPassword = "--agdiuhdpost15"
-        val mock = createSshServer(validUsername, validPassword)
-        TestUtils.saveSshConnectionSettings(
-            hostKeyPair,
-            validUsername,
-            validPassword,
-            null
-        )
-        assertNotNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://test@example.com:--agdiuhdpost15@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce())
-            .addHostKeyVerifier(
-                SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
-            )
-        verify(mock, atLeastOnce()).connectTimeout =
-            NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).authPassword(validUsername, validPassword)
-        // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -710,24 +311,41 @@ class NetCopyClientConnectionPoolSshTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword4() {
         val validUsername = "test@example.com"
         val validPassword = "t-h-i-s-i-s-p-a-s-s-w-o-r-d-"
+        doRunTest(validUsername, validPassword)
+    }
+
+    private fun doRunTest(validUsername: String, validPassword: String, subPath: String? = null) {
+        val encodedUsername = encode(validUsername, UTF_8.name())
+        val encodedPassword = encode(validPassword, UTF_8.name())
+        val encryptedPassword = PasswordUtil.encryptPassword(
+            AppConfig.getInstance(),
+            encodedPassword
+        )?.replace("\n", "")
         val mock = createSshServer(validUsername, validPassword)
         TestUtils.saveSshConnectionSettings(
             hostKeyPair,
-            validUsername,
-            validPassword,
-            null
+            encodedUsername,
+            encryptedPassword,
+            null,
+            subPath
         )
         assertNotNull(
             getConnection<SSHClient>(
-                encryptFtpPathAsNecessary(
-                    "ssh://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:22222"
-                )
+                if (subPath.isNullOrEmpty()) {
+                    "ssh://$encodedUsername:$encryptedPassword@$HOST:$PORT"
+                } else {
+                    "ssh://$encodedUsername:$encryptedPassword@$HOST:$PORT$subPath"
+                }
             )
         )
         assertNull(
             getConnection<SSHClient>(
                 encryptFtpPathAsNecessary(
-                    "ssh://invaliduser:invalidpassword@127.0.0.1:22222"
+                    if (subPath.isNullOrEmpty()) {
+                        "ssh://$encodedInvalidUsername:$encodedInvalidPassword@$HOST:$PORT"
+                    } else {
+                        "ssh://$encodedInvalidUsername:$encodedInvalidPassword@$HOST:$PORT$subPath"
+                    }
                 )
             )
         )
@@ -742,7 +360,53 @@ class NetCopyClientConnectionPoolSshTest {
         verify(mock, atLeastOnce()).connect(HOST, PORT)
         verify(mock).authPassword(validUsername, validPassword)
         // invalid username won't give host key. Should never called this
-        verify(mock, never()).authPassword("invaliduser", "invalidpassword")
+        verify(mock, never()).authPassword(invalidUsername, invalidPassword)
+    }
+
+    private fun doRunTest(
+        validUsername: String,
+        validPrivateKey: PrivateKey = userKeyPair.private,
+        subPath: String? = null
+    ) {
+        val encodedUsername = encode(validUsername, UTF_8.name())
+        val mock = createSshServer(validUsername, null)
+        TestUtils.saveSshConnectionSettings(
+            hostKeyPair,
+            encodedUsername,
+            null,
+            validPrivateKey,
+            subPath
+        )
+        assertNotNull(
+            getConnection<SSHClient>(
+                if (subPath.isNullOrEmpty()) {
+                    "ssh://$encodedUsername@$HOST:$PORT"
+                } else {
+                    "ssh://$encodedUsername@$HOST:$PORT$subPath"
+                }
+            )
+        )
+        assertNull(
+            getConnection<SSHClient>(
+                if (subPath.isNullOrEmpty()) {
+                    "ssh://$encodedInvalidUsername@$HOST:$PORT"
+                } else {
+                    "ssh://$encodedInvalidUsername@$HOST:$PORT$subPath"
+                }
+            )
+        )
+        verify(mock, atLeastOnce())
+            .addHostKeyVerifier(
+                SecurityUtils.getFingerprint(
+                    hostKeyPair.public
+                )
+            )
+        verify(mock, atLeastOnce()).connectTimeout =
+            NetCopyClientConnectionPool.CONNECT_TIMEOUT
+        verify(mock, atLeastOnce()).connect(HOST, PORT)
+        verify(mock).authPublickey(validUsername, sshKeyProvider)
+        // invalid username won't give host key. Should never called this
+        verify(mock, never()).authPublickey(invalidPassword, sshKeyProvider)
     }
 
     @Throws(IOException::class)
@@ -789,6 +453,10 @@ class NetCopyClientConnectionPoolSshTest {
 
         const val HOST = "127.0.0.1"
         const val PORT = 22222
+        private const val invalidUsername = "invaliduser"
+        private const val invalidPassword = "invalidpassword"
+        private val encodedInvalidUsername = encode(invalidUsername, UTF_8.name())
+        private val encodedInvalidPassword = encode(invalidPassword, UTF_8.name())
 
         lateinit var hostKeyPair: KeyPair
         lateinit var userKeyPair: KeyPair
