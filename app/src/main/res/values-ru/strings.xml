@@ -79,6 +79,7 @@
     <string name="question_set_path_as_home">Вы хотите установить текущий путь как домашний для этой вкладки?</string>
     <string name="directorysort">Режим сортировки каталога</string>
     <string name="sort_by">Сортировать</string>
+	<string name="sort_only_this">Только для этой папки</string>
     <string name="theme">Темы</string>
     <string name="random_summary">Устанавливает случайную тему при запуске</string>
     <string name="colorize">Раскрасить иконки</string>
@@ -139,6 +140,7 @@
     <string name="gridcolumnno">Количество колонок в сетке</string>
     <string name="set_random">Изменения будут использованы после перезапуска приложения</string>
     <string name="authors">Авторы</string>
+	<string name="developers">Разработчики</string>
     <string name="changelog">История изменений</string>
     <string name="ok">Да</string>
     <string name="ui">Интерфейс</string>
@@ -602,7 +604,19 @@
 	
 	
 	<!-- Part of the elements of the side menu -->
-	<string name="analyse_storage">Анализ хранилища</string>	
+	<string name="analyse_storage">Анализ хранилища</string>
+	
+	<string name="libraries">Библиотеки</string>
+	<string name="license">Лицензия</string>
+	<string name="about_amaze">Файловый менеджер с Material дизайном для Android</string>
+	<string name="source_title">Исходный код</string>
+		<string name="source_summary">Посмотрите наш код на GitHub</string>
+	<string name="share_logs">Поделиться логами</string>
+		<string name="share_logs_summary">Поделитесь захваченными логами через email / telegram</string>
+	
+	<string name="folderfilecount">%1$d папок и %2$d файлов</string>
+	
+	<string name="create_hidden_file_warn">Созданный файл будет скрыт в списке файлов.</string>
 	
     </resources>
 
