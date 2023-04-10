@@ -623,5 +623,7 @@
 	<string name="select_by_date">Выбрать по дате</string>
 	<string name="select_similar">Выбрать походжие</string>
 	
+	<string name="free_of">"%s\n%s свободно из %s</string>
+	
     </resources>
 
