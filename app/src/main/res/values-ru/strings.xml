@@ -625,5 +625,26 @@
 	
 	<string name="free_of">"%s\n%s свободно из %s</string>
 	
+	<!-- error activity -->
+    <string name="sorry_string">Извините, этого не должно было случиться.</string>
+    <string name="guru_meditation" translatable="false">Guru Meditation.</string>
+    <string name="error_report_button_text">Отчет об ошибках через e-mail</string>
+    <string name="error_report_button_telegram">Отчет об ошибках через telegram</string>
+    <string name="copy_for_github">Скопировать отформатированный отчёт</string>
+    <string name="error_report_open_issue_button_text">Отчет на GitHub</string>
+    <string name="error_report_open_github_notice">Пожалуйста, проверьте, существует ли проблема, обсуждающая ваш сбой.</string>
+    <string name="error_snackbar_message">Извините, что-то пошло не так.</string>
+    <string name="error_snackbar_action">Запрос</string>
+    <string name="what_device_headline">Информация:</string>
+    <string name="what_happened_headline">Что случилось:</string>
+    <string name="info_labels">Что:\\nЗапрос:\\nВемя по GMT:\\nПакет:\\nВерсия:\\nВерсия OS:\\nУстройство:\\nМодель:\\nПродукт:</string>
+    <string name="your_comment">Ваш комментарий (на Английском):</string>
+    <string name="error_details_headline">Детали:</string>
+    <string name="app_ui_crash">Ошибка Приложения/UI</string>
+    <string name="error_report_title">Отчет об ошибке</string>
+    <string name="crash_report_copied">Отчет о ошибке скопирован в буфер обмена</string>
+	
+	
+	
     </resources>
 
