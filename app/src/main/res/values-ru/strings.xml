@@ -618,5 +618,10 @@
 	
 	<string name="create_hidden_file_warn">Созданный файл будет скрыт в списке файлов.</string>
 	
+	<string name="select_inverse">Инвертировать выбор</string>
+	<string name="select_by_type">Выбрать по типу</string>
+	<string name="select_by_date">Выбрать по дате</string>
+	<string name="select_similar">Выбрать походжие</string>
+	
     </resources>
 
