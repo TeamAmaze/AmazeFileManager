@@ -104,8 +104,13 @@ class UtilsHandlerTest {
                 saveToDatabase(o)
                 val verify = smbList
                 assertEquals(1, verify.size)
-                // UtilsHandler.getSmbList() will decrypt password when return
-                assertEquals(path, verify[0][1])
+                assertEquals(
+                    SmbUtil.getSmbEncryptedPath(
+                        AppConfig.getInstance(),
+                        path
+                    ),
+                    verify[0][1]
+                )
             }
             utilitiesDatabase.run {
                 val verify = smbEntryDao().list().blockingGet()

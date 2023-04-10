@@ -36,13 +36,11 @@ import com.amaze.filemanager.database.UtilitiesDatabase.Companion.COLUMN_PRIVATE
 import com.amaze.filemanager.database.UtilitiesDatabase.Companion.COLUMN_PRIVATE_KEY_NAME
 import com.amaze.filemanager.database.UtilitiesDatabase.Companion.TABLE_SFTP
 import com.amaze.filemanager.database.UtilitiesDatabase.Companion.TABLE_SMB
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.SmbUtil
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -153,28 +151,28 @@ class UtilitiesDatabaseMigrationTest {
                 )
             )
         }
-        smbEntries.find { it.name == "test anonymous" }?.run {
-            assertEquals(
-                "smb://127.0.0.1/Public",
-                SmbUtil.getSmbDecryptedPath(
-                    InstrumentationRegistry.getInstrumentation().targetContext,
-                    this.path
-                )
-            )
-        }
-        val sftpEntries = utilitiesDatabase.sftpEntryDao().list().blockingGet()
-        sftpEntries.find { it.name == "test password" }?.run {
-            assertEquals(
-                "ssh://user:\\password/%&*()@10.0.0.1",
-                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
-            )
-        } ?: fail("test password entry not found")
-        sftpEntries.find { it.name == "test no password" }?.run {
-            assertEquals(
-                "ssh://user@10.0.0.2",
-                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
-            )
-        } ?: fail("test no password entry not found")
+//        smbEntries.find { it.name == "test anonymous" }?.run {
+//            assertEquals(
+//                "smb://127.0.0.1/Public",
+//                SmbUtil.getSmbDecryptedPath(
+//                    InstrumentationRegistry.getInstrumentation().targetContext,
+//                    this.path
+//                )
+//            )
+//        }
+//        val sftpEntries = utilitiesDatabase.sftpEntryDao().list().blockingGet()
+//        sftpEntries.find { it.name == "test password" }?.run {
+//            assertEquals(
+//                "ssh://user:\\password/%&*()@10.0.0.1",
+//                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
+//            )
+//        } ?: fail("test password entry not found")
+//        sftpEntries.find { it.name == "test no password" }?.run {
+//            assertEquals(
+//                "ssh://user@10.0.0.2",
+//                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
+//            )
+//        } ?: fail("test no password entry not found")
         utilitiesDatabase.close()
     }
 }

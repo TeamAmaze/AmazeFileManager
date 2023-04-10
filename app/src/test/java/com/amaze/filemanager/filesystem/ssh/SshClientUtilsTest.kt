@@ -57,8 +57,7 @@ class SshClientUtilsTest {
                 22,
                 null,
                 "root",
-                "toor",
-                null
+                "toor"
             )
         )
         assertEquals(
@@ -69,8 +68,7 @@ class SshClientUtilsTest {
                 22,
                 "",
                 "root",
-                "toor",
-                null
+                "toor"
             )
         )
     }

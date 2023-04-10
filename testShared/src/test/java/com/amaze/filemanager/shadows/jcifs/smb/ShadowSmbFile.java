@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -49,7 +50,7 @@ public class ShadowSmbFile {
 
   @Implementation
   public InputStream getInputStream() throws IOException {
-    return new FileInputStream(file);
+    return Files.newInputStream(file.toPath());
   }
 
   @Implementation
