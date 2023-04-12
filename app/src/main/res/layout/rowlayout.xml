@@ -133,11 +133,21 @@
             android:clickable="false"
             android:textSize="17sp" />
 
+        <com.amaze.filemanager.ui.views.ThemedTextView
+            android:id="@+id/appManagerPackageName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstline"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:id="@+id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/firstline"
+            android:layout_below="@id/appManagerPackageName"
             android:layout_marginTop="5dp">
 
             <TextView

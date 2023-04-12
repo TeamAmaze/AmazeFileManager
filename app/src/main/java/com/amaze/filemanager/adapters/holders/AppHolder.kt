@@ -48,8 +48,12 @@ class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
     @JvmField
     val summary: RelativeLayout = view.findViewById(R.id.summary)
 
+    @JvmField
+    val packageName: TextView = view.findViewById(R.id.appManagerPackageName)
+
     init {
         apkIcon.visibility = View.VISIBLE
+        packageName.visibility = View.VISIBLE
         view.findViewById<ImageView>(R.id.picture_icon).visibility = View.GONE
         view.findViewById<ImageView>(R.id.generic_icon).visibility = View.GONE
     }

@@ -184,6 +184,10 @@ class AppsRecyclerAdapter(
                     )
                 }
                 holder.txtTitle.text = rowItem.label
+
+                holder.packageName.text = rowItem.packageName
+                holder.packageName.isSelected = true // for marquee
+
                 val enableMarqueeFilename =
                     (fragment.requireActivity() as MainActivity)
                         .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
