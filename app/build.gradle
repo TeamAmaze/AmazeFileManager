@@ -6,7 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     packagingOptions {
         resources {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
@@ -64,8 +64,7 @@ android {
         viewBinding true
     }
 
-
-    flavorDimensions 'static'
+    flavorDimensions = ['static']
 
     productFlavors {
         fdroid {
@@ -142,6 +141,7 @@ dependencies {
     testImplementation "androidx.test:runner:$androidXTestVersion"
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
+    testImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
@@ -158,7 +158,8 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
-    // androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
+    androidTestImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
     androidTestImplementation "commons-net:commons-net:$commonsNetVersion"
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 

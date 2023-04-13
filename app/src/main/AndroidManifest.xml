@@ -57,6 +57,7 @@
         android:label="@string/appbar_name"
         android:requestLegacyExternalStorage="true"
         android:banner="@drawable/about_header"
+        android:localeConfig="@xml/locales_config"
         android:usesCleartextTraffic="true">
 
         <activity
@@ -294,6 +295,15 @@
                 <action
                     android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
+        </service>
+
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
         </service>
 
         <receiver

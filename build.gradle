@@ -13,7 +13,7 @@ buildscript {
         awaitilityVersion = "3.1.6"
         androidXCoreVersion = "1.7.0"
         androidMaterialVersion = "1.5.0" // Upgrade to 1.5 requires targetSdkVersion 31
-        androidXFragmentVersion = "1.5.5"
+        androidXFragmentVersion = "1.5.6"
         androidXAppCompatVersion = "1.6.1"
         androidXAnnotationVersion = "1.5.0"
         androidXPrefVersion = "1.2.0"
