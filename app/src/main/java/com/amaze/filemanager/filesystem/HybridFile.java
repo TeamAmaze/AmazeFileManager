@@ -118,6 +118,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.Deprecated;
+import kotlin.ReplaceWith;
 import kotlin.collections.ArraysKt;
 import kotlin.io.ByteStreamsKt;
 import kotlin.text.Charsets;
@@ -609,6 +611,9 @@ public class HybridFile {
    *
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
+  @Deprecated(
+      replaceWith = @ReplaceWith(expression = "isDirectory(Context)", imports = ""),
+      message = "")
   public boolean isDirectory() {
     boolean isDirectory;
     switch (mode) {
@@ -703,6 +708,9 @@ public class HybridFile {
   /**
    * @deprecated use {@link #folderSize(Context)}
    */
+  @Deprecated(
+      replaceWith = @ReplaceWith(expression = "folderSize(Context)", imports = ""),
+      message = "")
   public long folderSize() {
     long size = 0L;
 
@@ -1062,6 +1070,9 @@ public class HybridFile {
    *
    * @deprecated use forEachChildrenFile()
    */
+  @Deprecated(
+      replaceWith = @ReplaceWith(expression = "forEachChildrenFile", imports = ""),
+      message = "")
   public ArrayList<HybridFileParcelable> listFiles(Context context, boolean isRoot) {
     ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
     forEachChildrenFile(context, isRoot, arrayList::add);
