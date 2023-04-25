@@ -17,32 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.activities.superclasses
 
-package com.amaze.filemanager.ui.activities.superclasses;
+import androidx.appcompat.app.AppCompatActivity
+import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
+import com.amaze.filemanager.ui.provider.UtilitiesProvider
+import com.amaze.filemanager.ui.theme.AppTheme
 
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
-import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.ui.theme.AppTheme;
+/** Created by rpiotaix on 17/10/16.  */
+open class BasicActivity : AppCompatActivity() {
+    private val appConfig: AppConfig
+        get() = application as AppConfig
 
-import androidx.appcompat.app.AppCompatActivity;
+    val colorPreference: ColorPreferenceHelper
+        get() = appConfig.utilsProvider.colorPreference
 
-/** Created by rpiotaix on 17/10/16. */
-public class BasicActivity extends AppCompatActivity {
+    val appTheme: AppTheme
+        get() = appConfig.utilsProvider.appTheme
 
-  protected AppConfig getAppConfig() {
-    return (AppConfig) getApplication();
-  }
-
-  public ColorPreferenceHelper getColorPreference() {
-    return getAppConfig().getUtilsProvider().getColorPreference();
-  }
-
-  public AppTheme getAppTheme() {
-    return getAppConfig().getUtilsProvider().getAppTheme();
-  }
-
-  public UtilitiesProvider getUtilsProvider() {
-    return getAppConfig().getUtilsProvider();
-  }
+    val utilsProvider: UtilitiesProvider
+        get() = appConfig.utilsProvider
 }

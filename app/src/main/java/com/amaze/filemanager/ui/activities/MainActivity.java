@@ -210,7 +210,9 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.Unit;
 import kotlin.collections.ArraysKt;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import kotlin.text.Charsets;
 
@@ -220,7 +222,7 @@ public class MainActivity extends PermissionsActivity
         CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>,
         FolderChooserDialog.FolderCallback,
-        PermissionsActivity.OnPermissionGranted {
+        Function0<Unit> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
 
@@ -530,9 +532,8 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
-  @Override
   @SuppressLint("CheckResult")
-  public void onPermissionGranted() {
+  public Unit invoke() {
     drawer.refreshDrawer();
     TabFragment tabFragment = getTabFragment();
     boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
@@ -561,6 +562,7 @@ public class MainActivity extends PermissionsActivity
         if (main1 != null) ((MainFragment) main1).updateList(false);
       }
     }
+    return null;
   }
 
   private void checkForExternalPermission() {
@@ -1120,6 +1122,7 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.hiddenitems).setVisible(true);
       menu.findItem(R.id.view).setVisible(true);
       menu.findItem(R.id.extract).setVisible(false);
+      menu.findItem(R.id.open_in_terminal).setVisible(true);
       invalidatePasteSnackbar(true);
       findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
     } else if (fragment instanceof AppsListFragment
@@ -1133,6 +1136,7 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.home).setVisible(false);
       menu.findItem(R.id.history).setVisible(false);
       menu.findItem(R.id.extract).setVisible(false);
+      menu.findItem(R.id.open_in_terminal).setVisible(false);
       if (fragment instanceof ProcessViewerFragment) {
         menu.findItem(R.id.sort).setVisible(false);
       } else if (fragment instanceof FtpServerFragment) {
@@ -1156,6 +1160,7 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.hiddenitems).setVisible(false);
       menu.findItem(R.id.view).setVisible(false);
       menu.findItem(R.id.extract).setVisible(true);
+      menu.findItem(R.id.open_in_terminal).setVisible(false);
       invalidatePasteSnackbar(false);
     }
     return super.onPrepareOptionsMenu(menu);
@@ -1291,6 +1296,10 @@ public class MainActivity extends PermissionsActivity
               break;
             case R.id.search:
               getAppbar().getSearchView().revealSearchView();
+              break;
+            case R.id.open_in_terminal:
+              if (getFragmentAtFrame() instanceof MainFragment) {}
+
               break;
           }
           return null;

@@ -73,7 +73,7 @@ abstract class AbstractMainActivityTestBase {
     @NonNull
     @JvmField
     @RequiresApi(Build.VERSION_CODES.R)
-    val allFilesPermissionRule =
+    val allFilesPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     /**

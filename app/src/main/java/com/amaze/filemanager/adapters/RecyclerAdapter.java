@@ -1435,6 +1435,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (rowItem.isDirectory) {
       popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
       popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.open_in_terminal).setVisible(true);
 
       if (mainFragment.getMainActivity().mReturnIntent) {
         popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
@@ -1442,6 +1443,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     } else {
       popupMenu.getMenu().findItem(R.id.book).setVisible(false);
       popupMenu.getMenu().findItem(R.id.compress).setVisible(true);
+      popupMenu.getMenu().findItem(R.id.open_in_terminal).setVisible(false);
 
       if (description.endsWith(fileExtensionZip)
           || description.endsWith(fileExtensionJar)

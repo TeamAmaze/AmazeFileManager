@@ -61,6 +61,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import kotlin.Deprecated;
+import kotlin.ReplaceWith;
+
 /**
  * Created by vishal on 19/4/17.
  *
@@ -73,6 +76,7 @@ public class CloudUtil {
   /**
    * @deprecated use getCloudFiles()
    */
+  @Deprecated(replaceWith = @ReplaceWith(expression = "getCloudFiles", imports = ""), message = "")
   public static ArrayList<HybridFileParcelable> listFiles(
       String path, CloudStorage cloudStorage, OpenMode openMode) throws CloudPluginException {
     final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();

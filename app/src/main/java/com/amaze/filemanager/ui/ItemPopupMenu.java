@@ -37,6 +37,7 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.EncryptAuthenticateDialog;
 import com.amaze.filemanager.ui.dialogs.EncryptWithPresetPasswordSaveAsDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -255,6 +256,9 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         return true;
       case R.id.return_select:
         mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
+        return true;
+      case R.id.open_in_terminal:
+        OpenFolderInTerminalFragment.Companion.openTerminalOrShow(rowItem.desc, mainActivity);
         return true;
     }
     return false;

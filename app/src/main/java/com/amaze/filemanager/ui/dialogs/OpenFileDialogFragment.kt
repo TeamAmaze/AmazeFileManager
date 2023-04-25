@@ -54,6 +54,7 @@ import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.startActivityCatchingSecurityException
 import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
+import com.amaze.filemanager.utils.queryIntentActivitiesCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
@@ -159,7 +160,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
             for (
                 resolveInfo in context.packageManager
-                    .queryIntentActivities(
+                    .queryIntentActivitiesCompat(
                         chooserIntent,
                         PackageManager.MATCH_DEFAULT_ONLY,
                     )
@@ -300,7 +301,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         fragmentOpenFileDialogBinding = FragmentOpenFileDialogBinding.inflate(inflater)
         initDialogResources(viewBinding.parent)
         return viewBinding.root
@@ -408,7 +409,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
     private fun initAppDataParcelableList(intent: Intent): MutableList<AppDataParcelable> {
         val packageManager = requireContext().packageManager
         val appDataParcelableList: MutableList<AppDataParcelable> = ArrayList()
-        packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL).forEach {
+        packageManager.queryIntentActivitiesCompat(intent, PackageManager.MATCH_ALL).forEach {
             val openFileParcelable =
                 OpenFileParcelable(
                     uri,
