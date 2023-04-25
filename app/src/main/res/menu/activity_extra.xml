@@ -56,6 +56,9 @@
         android:id="@+id/sethome"
         android:title="@string/set_as_home"/>
     <item
+        android:id="@+id/open_in_terminal"
+        android:title="@string/open_in_terminal"/>
+    <item
         android:id="@+id/extract"
         android:title="@string/extract"
         android:visible="false"/>

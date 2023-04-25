@@ -29,7 +29,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment.Companion.clearPreferences
+import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment
+import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment
 import com.amaze.trashbin.TrashBinConfig
 import java.io.File
 
@@ -44,7 +45,8 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
 
         findPreference<Preference>("clear_open_file")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
-                clearPreferences(activity.prefs)
+                OpenFileDialogFragment.clearPreferences(activity.prefs)
+                OpenFolderInTerminalFragment.clearPreferences(activity.prefs)
                 AppConfig.toast(getActivity(), activity.getString(R.string.done))
                 true
             }
