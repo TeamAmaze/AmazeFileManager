@@ -444,14 +444,16 @@ public class Utils {
     shortcutIntent.setAction(Intent.ACTION_MAIN);
     shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
+    String fileName = new File(path.desc).getName();
+
     // Using file path as shortcut id.
     ShortcutInfoCompat info =
         new ShortcutInfoCompat.Builder(context, path.desc)
             .setActivity(componentName)
             .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))
             .setIntent(shortcutIntent)
-            .setLongLabel(path.desc)
-            .setShortLabel(new File(path.desc).getName())
+            .setLongLabel(fileName)
+            .setShortLabel(fileName)
             .build();
 
     ShortcutManagerCompat.requestPinShortcut(context, info, null);
