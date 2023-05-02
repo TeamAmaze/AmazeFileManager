@@ -86,6 +86,8 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
   public static final String PACKAGE_AMAZE_UTILS = "com.amaze.fileutilities";
   public static final String URL_AMAZE_UTILS = "market://details?id=" + PACKAGE_AMAZE_UTILS;
+  public static final String URL_AMAZE_UTILS_FDROID =
+      "https://f-droid.org/en/packages/" + PACKAGE_AMAZE_UTILS + "/";
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
