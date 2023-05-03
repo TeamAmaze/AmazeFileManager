@@ -26,7 +26,6 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
 import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DATA_DIRS;
 import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DEVICE_DATA_DIRS;
-import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -141,6 +140,8 @@ public class MainFragment extends Fragment
         AdjustListViewForTv<ItemViewHolder> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
+  private static final String KEY_FRAGMENT_MAIN = "main";
+
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -283,6 +284,15 @@ public class MainFragment extends Fragment
     listView.setItemAnimator(animator);
     mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(this);
     loadViews();
+  }
+
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+
+    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+    fragmentManager.executePendingTransactions();
+    fragmentManager.putFragment(outState, KEY_FRAGMENT_MAIN, this);
   }
 
   public void stopAnimation() {
@@ -1029,7 +1039,8 @@ public class MainFragment extends Fragment
                     .getSmbPath()
                     .equals(mainFragmentViewModel.getCurrentPath())) {
               StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-              if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
+              if (mainFragmentViewModel.getCurrentPath() != null
+                  && mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
                 path.append(
                     mainFragmentViewModel
                         .getCurrentPath()
@@ -1041,20 +1052,19 @@ public class MainFragment extends Fragment
                   false);
             } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
           } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
-            if (mainFragmentViewModel.getCurrentPath() != null
-                && !mainFragmentViewModel
-                    .getCurrentPath()
-                    .substring(SSH_URI_PREFIX.length())
-                    .contains("/")) {
+            if (currentFile.getParent(requireContext()) == null) {
               loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
             } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
               loadlist(currentFile.getParent(getContext()), true, currentFile.getMode(), false);
             } else {
-              loadlist(
-                  currentFile.getParent(getContext()),
-                  true,
-                  mainFragmentViewModel.getOpenMode(),
-                  false);
+
+              String parent = currentFile.getParent(getContext());
+
+              if (parent == null)
+                parent =
+                    mainFragmentViewModel.getHome(); // fall back by traversing back to home folder
+
+              loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
             }
           } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
             if (mainFragmentViewModel.getCurrentPath() != null) {

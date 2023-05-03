@@ -450,8 +450,8 @@ public class Utils {
             .setActivity(componentName)
             .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))
             .setIntent(shortcutIntent)
-            .setLongLabel(path.desc)
-            .setShortLabel(new File(path.desc).getName())
+            .setLongLabel(path.title)
+            .setShortLabel(path.title)
             .build();
 
     ShortcutManagerCompat.requestPinShortcut(context, info, null);

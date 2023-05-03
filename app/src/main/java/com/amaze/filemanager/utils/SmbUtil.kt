@@ -23,15 +23,19 @@ package com.amaze.filemanager.utils
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.filesystem.smb.CifsContexts.createWithDisableIpcSigningCheck
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import jcifs.smb.NtlmPasswordAuthenticator
 import jcifs.smb.SmbException
 import jcifs.smb.SmbFile
+import org.slf4j.LoggerFactory
 import java.net.MalformedURLException
 
 /**
@@ -42,48 +46,52 @@ import java.net.MalformedURLException
  */
 object SmbUtil {
 
-    private const val TAG = "SmbUtil"
+    @JvmStatic
+    private val LOG = LoggerFactory.getLogger(SmbUtil::class.java)
+
     const val PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck"
 
     /** Parse path to decrypt smb password  */
     @JvmStatic
     fun getSmbDecryptedPath(context: Context, path: String): String {
-        if (!(path.contains(":") && path.contains("@"))) {
-            // smb path doesn't have any credentials
-            return path
-        }
-        val buffer = StringBuilder()
-        val protocolPrefix = path.substringBefore("//")
-        val usernamePasswordSeparatorPos = path.indexOf(":", protocolPrefix.length) + 1
-        buffer.append(path.substring(0, usernamePasswordSeparatorPos))
-        val encryptedPassword = path.substring(usernamePasswordSeparatorPos, path.lastIndexOf("@"))
-        if (!TextUtils.isEmpty(encryptedPassword)) {
-            val decryptedPassword = PasswordUtil.decryptPassword(context, encryptedPassword)
-            buffer.append(decryptedPassword)
-        }
-        buffer.append(path.substring(path.lastIndexOf("@")))
-        return buffer.toString()
+        return buildPath(path, withPassword = {
+            PasswordUtil.decryptPassword(context, it.urlDecoded())
+        })
     }
 
     /** Parse path to encrypt smb password  */
     @JvmStatic
     fun getSmbEncryptedPath(context: Context, path: String): String {
-        if (!(path.contains(":") && path.contains("@"))) {
+        return buildPath(path, withPassword = {
+            PasswordUtil.encryptPassword(context, it)
+        })
+    }
+
+    // At this point, credential is URL encoded to be safe from special chars.
+    // No need to call URLEncoder.encode() again
+    private fun buildPath(path: String, withPassword: (String) -> String?): String {
+        if (!(path.contains(COLON) && path.contains(AT))) {
             // smb path doesn't have any credentials
             return path
         }
         val buffer = StringBuilder()
-        // From index zero to user name including colon
-        val protocolPrefix = path.substringBefore("//")
-        val usernamePasswordSeparatorPos = path.indexOf(":", protocolPrefix.length) + 1
-        buffer.append(path.substring(0, usernamePasswordSeparatorPos))
-        val decryptedPassword = path.substring(usernamePasswordSeparatorPos, path.lastIndexOf("@"))
-        if (!TextUtils.isEmpty(decryptedPassword)) {
-            val encryptPassword = PasswordUtil.encryptPassword(context, decryptedPassword)
-            buffer.append(encryptPassword)
+        NetCopyConnectionInfo(path).let { connectionInfo ->
+            buffer.append(connectionInfo.prefix).append(
+                connectionInfo.username.ifEmpty { "" }
+            )
+            if (false == connectionInfo.password?.isEmpty()) {
+                val password = withPassword.invoke(connectionInfo.password)
+                buffer.append(COLON).append(password?.replace("\n", ""))
+            }
+            buffer.append(AT).append(connectionInfo.host)
+            if (connectionInfo.port > 0) {
+                buffer.append(COLON).append(connectionInfo.port)
+            }
+            connectionInfo.defaultPath?.apply {
+                buffer.append(this)
+            }
         }
-        buffer.append(path.substring(path.lastIndexOf("@")))
-        return buffer.toString()
+        return buffer.toString().replace("\n", "")
     }
 
     /**
@@ -92,7 +100,7 @@ object SmbUtil {
     @JvmStatic
     @Throws(MalformedURLException::class)
     fun create(path: String): SmbFile {
-        val uri = Uri.parse(path)
+        val uri = Uri.parse(getSmbDecryptedPath(AppConfig.getInstance(), path))
         val disableIpcSigningCheck = uri.getQueryParameter(
             PARAM_DISABLE_IPC_SIGNING_CHECK
         ).toBoolean()
@@ -159,10 +167,10 @@ object SmbUtil {
                 val smbFile = create(path)
                 if (!smbFile.exists() || !smbFile.isDirectory) return@fromCallable DOESNT_EXIST
             } catch (e: SmbException) {
-                Log.w(TAG, "Error checking folder existence, assuming not exist", e)
+                LOG.warn("Error checking folder existence, assuming not exist", e)
                 return@fromCallable DOESNT_EXIST
             } catch (e: MalformedURLException) {
-                Log.w(TAG, "Error checking folder existence, assuming not exist", e)
+                LOG.warn("Error checking folder existence, assuming not exist", e)
                 return@fromCallable DOESNT_EXIST
             }
             WRITABLE_ON_REMOTE

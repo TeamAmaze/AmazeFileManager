@@ -24,6 +24,7 @@ import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DATA_DIRS;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.MULTI_SLASH;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 
 import java.io.File;
@@ -69,8 +70,8 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl;
 import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -102,6 +103,7 @@ import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -118,14 +120,13 @@ import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
-import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
 /** Hybrid file for handeling all types of files */
 public class HybridFile {
 
-  private final Logger LOG = LoggerFactory.getLogger(HybridFile.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HybridFile.class);
 
   public static final String DOCUMENT_FILE_PREFIX =
       "content://com.android.externalstorage.documents";
@@ -139,6 +140,7 @@ public class HybridFile {
   public HybridFile(OpenMode mode, String path) {
     this.path = path;
     this.mode = mode;
+    sanitizePathAsNecessary();
   }
 
   public HybridFile(OpenMode mode, String path, String name, boolean isDirectory) {
@@ -158,6 +160,7 @@ public class HybridFile {
     } else {
       this.path += "/" + name;
     }
+    sanitizePathAsNecessary();
   }
 
   public void generateMode(Context context) {
@@ -420,7 +423,7 @@ public class HybridFile {
    */
   public String getPath() {
     try {
-      return URLDecoder.decode(path, "UTF-8");
+      return URLDecoder.decode(path.replace("+", "%2b"), "UTF-8");
     } catch (UnsupportedEncodingException | IllegalArgumentException e) {
       LOG.warn("failed to decode path {}", path, e);
       return path;
@@ -533,6 +536,7 @@ public class HybridFile {
   }
 
   /** Helper method to get parent path */
+  @Nullable
   public String getParent(Context context) {
     switch (mode) {
       case SMB:
@@ -549,11 +553,14 @@ public class HybridFile {
         String thisPath = path;
         if (thisPath.contains("%")) {
           try {
-            thisPath = URLDecoder.decode(path, Charsets.UTF_8.name());
+            thisPath = URLDecoder.decode(getPath(), Charsets.UTF_8.name());
           } catch (UnsupportedEncodingException ignored) {
           }
         }
         List<String> pathSegments = Uri.parse(thisPath).getPathSegments();
+
+        if (thisPath.isEmpty() || pathSegments.isEmpty()) return null;
+
         String currentName = pathSegments.get(pathSegments.size() - 1);
         String parent = thisPath.substring(0, thisPath.lastIndexOf(currentName));
         if (ArraysKt.any(ANDROID_DATA_DIRS, dir -> parent.endsWith(dir + "/"))) {
@@ -936,22 +943,32 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         NetCopyClientUtils.INSTANCE.<SSHClient, Boolean>execute(
-            new SFtpClientTemplate<Boolean>(path, false) {
+            new SFtpClientTemplate<Boolean>(getPath(), false) {
               @Override
               public Boolean execute(@NonNull SFTPClient client) {
                 try {
-                  for (RemoteResourceInfo info :
-                      client.ls(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path))) {
-                    boolean isDirectory = false;
-                    try {
-                      isDirectory = SshClientUtils.isDirectory(client, info);
-                    } catch (IOException ifBrokenSymlink) {
-                      LOG.warn("IOException checking isDirectory(): " + info.getPath());
-                      continue;
-                    }
-                    HybridFileParcelable f = new HybridFileParcelable(path, isDirectory, info);
-                    onFileFound.onFileFound(f);
-                  }
+                  Flowable.fromIterable(
+                          client.ls(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath())))
+                      .onBackpressureBuffer()
+                      .subscribeOn(Schedulers.computation())
+                      .map(
+                          info -> {
+                            boolean isDirectory = false;
+                            try {
+                              isDirectory = SshClientUtils.isDirectory(client, info);
+                            } catch (IOException ifBrokenSymlink) {
+                              LOG.warn("IOException checking isDirectory(): " + info.getPath());
+                              return Flowable.empty();
+                            }
+                            return new HybridFileParcelable(getPath(), isDirectory, info);
+                          })
+                      .doOnNext(
+                          v -> {
+                            if (v instanceof HybridFileParcelable) {
+                              onFileFound.onFileFound((HybridFileParcelable) v);
+                            }
+                          })
+                      .blockingSubscribe();
                 } catch (IOException e) {
                   LOG.warn("IOException", e);
                   AppConfig.toast(
@@ -986,10 +1003,10 @@ public class HybridFile {
         }
         break;
       case FTP:
-        String thisPath = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path);
+        String thisPath = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath());
         FTPFile[] ftpFiles =
             NetCopyClientUtils.INSTANCE.execute(
-                new FtpClientTemplate<FTPFile[]>(path, false) {
+                new FtpClientTemplate<FTPFile[]>(getPath(), false) {
                   public FTPFile[] executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
                     ftpClient.changeWorkingDirectory(thisPath);
@@ -997,7 +1014,7 @@ public class HybridFile {
                   }
                 });
         for (FTPFile ftpFile : ftpFiles) {
-          onFileFound.onFileFound(new HybridFileParcelable(path, ftpFile));
+          onFileFound.onFileFound(new HybridFileParcelable(getPath(), ftpFile));
         }
         break;
       case OTG:
@@ -1050,8 +1067,7 @@ public class HybridFile {
     if (uriString.startsWith(SSH_URI_PREFIX)
         || uriString.startsWith(FTP_URI_PREFIX)
         || uriString.startsWith(FTPS_URI_PREFIX)) {
-      NetCopyClientConnectionPool.ConnectionInfo connInfo =
-          new NetCopyClientConnectionPool.ConnectionInfo(uriString);
+      NetCopyConnectionInfo connInfo = new NetCopyConnectionInfo(uriString);
       return connInfo.toString();
     } else {
       Uri uri = Uri.parse(uriString);
@@ -1062,14 +1078,6 @@ public class HybridFile {
   private static String formatUriForDisplayInternal(
       @NonNull String scheme, @NonNull String host, @NonNull String path) {
     return String.format("%s://%s%s", scheme, host, path);
-  }
-
-  /**
-   * @deprecated use {@link #getInputStream(Context)} which allows handling content resolver
-   */
-  @Nullable
-  public InputStream getInputStream() {
-    return getInputStream(AppConfig.getInstance());
   }
 
   /**
@@ -1086,11 +1094,11 @@ public class HybridFile {
       case SFTP:
         inputStream =
             SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(path, false) {
+                new SFtpClientTemplate<InputStream>(getPath(), false) {
                   @Override
                   public InputStream execute(@NonNull final SFTPClient client) throws IOException {
                     final RemoteFile rf =
-                        client.open(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                        client.open(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath()));
                     return rf.new RemoteFileInputStream() {
                       @Override
                       public void close() throws IOException {
@@ -1116,7 +1124,7 @@ public class HybridFile {
       case FTP:
         inputStream =
             NetCopyClientUtils.INSTANCE.execute(
-                new FtpClientTemplate<InputStream>(path, false) {
+                new FtpClientTemplate<InputStream>(getPath(), false) {
                   public InputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
                     String parent = getParent(AppConfig.getInstance());
@@ -1722,7 +1730,7 @@ public class HybridFile {
 
               @Override
               public void onError(Throwable e) {
-                LOG.warn("failed to get sha256 for sftp file", e);
+                LOG.warn("failed to get sha256 for file", e);
                 callback.apply(context.getString(R.string.error));
               }
             });
@@ -1804,5 +1812,9 @@ public class HybridFile {
         FileUtils.openFile(new File(path), activity, activity.getPrefs());
         break;
     }
+  }
+
+  private void sanitizePathAsNecessary() {
+    this.path = this.path.replaceAll(MULTI_SLASH, "/");
   }
 }

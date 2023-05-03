@@ -98,7 +98,8 @@ object TestUtils {
         validUsername: String,
         validPassword: String?,
         privateKey: PrivateKey?,
-        subpath: String? = null
+        subpath: String? = null,
+        port: Int = NetCopyClientConnectionPoolSshTest.PORT
     ) {
         val utilsHandler = AppConfig.getInstance().utilsHandler
         var privateKeyContents: String? = null
@@ -110,10 +111,11 @@ object TestUtils {
             jw.close()
             privateKeyContents = writer.toString()
         }
-        val fullUri: StringBuilder = StringBuilder().append(SSH_URI_PREFIX).append(validUsername)
+        val fullUri: StringBuilder = StringBuilder()
+            .append(SSH_URI_PREFIX).append(validUsername)
         if (validPassword != null) fullUri.append(':').append(validPassword)
         fullUri.append(
-            "@${NetCopyClientConnectionPoolSshTest.HOST}:${NetCopyClientConnectionPoolSshTest.PORT}"
+            "@${NetCopyClientConnectionPoolSshTest.HOST}:$port"
         )
 
         if (true == subpath?.isNotEmpty()) {
@@ -123,7 +125,7 @@ object TestUtils {
         if (validPassword != null) utilsHandler.saveToDatabase(
             OperationData(
                 UtilsHandler.Operation.SFTP,
-                encryptFtpPathAsNecessary(fullUri.toString()),
+                fullUri.toString(),
                 "Test",
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 null,

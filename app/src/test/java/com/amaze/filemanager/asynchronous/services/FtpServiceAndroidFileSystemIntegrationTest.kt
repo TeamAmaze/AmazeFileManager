@@ -88,7 +88,8 @@ class FtpServiceAndroidFileSystemIntegrationTest {
             Environment.DIRECTORY_DOWNLOADS,
             Environment.DIRECTORY_DCIM,
             Environment.DIRECTORY_DOCUMENTS,
-            "1/2/3/4/5/6/7"
+            "1/2/3/4/5/6/7",
+            "lost+found"
         )
     }
 

@@ -31,6 +31,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import io.reactivex.Completable;
@@ -62,4 +63,8 @@ public interface CloudEntryDao {
 
   @Delete
   Completable delete(CloudEntry entry);
+
+  @Transaction
+  @Query("DELETE FROM " + TABLE_CLOUD_PERSIST)
+  Completable clear();
 }
