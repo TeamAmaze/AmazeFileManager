@@ -146,6 +146,7 @@ public class SearchView {
         PreferenceManager.getDefaultSharedPreferences(mainActivity)
             .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
 
+    // TODO: takes too much resources & freezes main thread on huge folders
     ListFilesCommand.INSTANCE.listFiles(
         mainActivity.getCurrentMainFragment().getPath(),
         mainActivity.isRootExplorer(),

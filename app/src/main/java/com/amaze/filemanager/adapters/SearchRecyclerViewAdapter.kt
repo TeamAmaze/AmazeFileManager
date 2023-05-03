@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.adapters
 
-import android.text.format.Formatter
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,8 +30,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.utils.Utils
-import java.util.*
+import java.util.Random
 
 class SearchRecyclerViewAdapter :
     ListAdapter<HybridFileParcelable, SearchRecyclerViewAdapter.ViewHolder>(
@@ -62,28 +61,30 @@ class SearchRecyclerViewAdapter :
         val item = getItem(position)
 
         holder.fileNameTV.text = item.name
-
-        holder.dateTV.text = Utils.getDate(holder.itemView.context, item.date)
-
-        if (!item.isDirectory) {
-            holder.sizeTV.text = Formatter.formatFileSize(holder.itemView.context, item.size)
-        }
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val fileNameTV: TextView
-        val dateTV: TextView
-        val sizeTV: TextView
 
         init {
 
             view.setOnClickListener {
             }
 
+            view.findViewById<View>(R.id.searchItemSampleColorView)
+                .setBackgroundColor(getRandomColor())
+
             fileNameTV = view.findViewById(R.id.searchItemFileNameTV)
-            dateTV = view.findViewById(R.id.searchItemDateTV)
-            sizeTV = view.findViewById(R.id.searchItemSizeTV)
+        }
+
+        private fun getRandomColor(): Int {
+            val colorArray = arrayOf(
+                "#e57373", "#f06292", "#ba68c8", "#9575cd", "#7986cb", "#64b5f6", "#4fc3f7",
+                "#4dd0e1", "#4db6ac", "#81c784", "#aed581", "#dce775", "#fff176", "#ffd54f",
+                "#ffb74d", "#ff8a65", "#a1887f"
+            )
+            return Color.parseColor(colorArray[Random().nextInt(colorArray.size - 1)])
         }
     }
 }
