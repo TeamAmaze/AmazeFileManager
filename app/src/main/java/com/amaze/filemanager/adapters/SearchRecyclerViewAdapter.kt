@@ -20,16 +20,20 @@
 
 package com.amaze.filemanager.adapters
 
-import android.graphics.Color
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.colors.ColorPreference
 import java.util.Random
 
 class SearchRecyclerViewAdapter :
@@ -69,22 +73,39 @@ class SearchRecyclerViewAdapter :
 
         init {
 
-            view.setOnClickListener {
-            }
+            fileNameTV = view.findViewById(R.id.searchItemFileNameTV)
 
             view.findViewById<View>(R.id.searchItemSampleColorView)
-                .setBackgroundColor(getRandomColor())
+                .setBackgroundColor(getRandomColor(view.context))
 
-            fileNameTV = view.findViewById(R.id.searchItemFileNameTV)
+            view.setOnClickListener {
+
+                val item = getItem(adapterPosition)
+
+                if (!item.isDirectory) {
+                    item.openFile(
+                        AppConfig.getInstance().mainActivityContext as MainActivity?,
+                        false
+                    )
+                } else {
+                    (AppConfig.getInstance().mainActivityContext as MainActivity?)
+                        ?.goToMain(item.path)
+                }
+
+                (AppConfig.getInstance().mainActivityContext as MainActivity?)
+                    ?.appbar?.searchView?.hideSearchView()
+            }
         }
 
-        private fun getRandomColor(): Int {
-            val colorArray = arrayOf(
-                "#e57373", "#f06292", "#ba68c8", "#9575cd", "#7986cb", "#64b5f6", "#4fc3f7",
-                "#4dd0e1", "#4db6ac", "#81c784", "#aed581", "#dce775", "#fff176", "#ffd54f",
-                "#ffb74d", "#ff8a65", "#a1887f"
+        private fun getRandomColor(context: Context): Int {
+            return ContextCompat.getColor(
+                context,
+                ColorPreference.availableColors[
+                    Random().nextInt(
+                        ColorPreference.availableColors.size - 1
+                    )
+                ]
             )
-            return Color.parseColor(colorArray[Random().nextInt(colorArray.size - 1)])
         }
     }
 }
