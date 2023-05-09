@@ -23,7 +23,7 @@ jobs:
           distribution: "temurin"
           java-version: 11
       - name: Check formatting using spotless
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: spotlessCheck --stacktrace
 
@@ -38,10 +38,10 @@ jobs:
           distribution: "temurin"
           java-version: 11
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: assembledebug --stacktrace
       - name: Run test cases
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: jacocoTestPlayDebugUnitTestReport --stacktrace --info
