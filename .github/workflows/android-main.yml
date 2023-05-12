@@ -23,7 +23,7 @@ jobs:
           distribution: "temurin"
           java-version: 11
       - name: Check formatting using spotless
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: spotlessCheck
 
@@ -40,11 +40,11 @@ jobs:
           distribution: "temurin"
           java-version: 11
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: assembledebug
       - name: Run test cases
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: jacocoTestPlayDebugUnitTestReport
       - name: Publish test cases
@@ -76,7 +76,7 @@ jobs:
         with:
           java-version: 15
       - name: Gradle cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
       - name: AVD cache
         uses: actions/cache@v2
         id: avd-cache
