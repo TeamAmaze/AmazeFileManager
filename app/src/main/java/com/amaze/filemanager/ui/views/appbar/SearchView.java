@@ -342,7 +342,7 @@ public class SearchView {
 
         if (path != null
             && path.contains(mainActivity.getCurrentMainFragment().getPath())
-            && path.toLowerCase().contains(query.toLowerCase())) {
+            && new File(path).getName().toLowerCase().contains(query.toLowerCase())) {
 
           boolean showHiddenFiles =
               PreferenceManager.getDefaultSharedPreferences(mainActivity)
