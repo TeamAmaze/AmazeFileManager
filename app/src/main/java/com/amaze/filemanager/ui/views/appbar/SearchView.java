@@ -24,11 +24,14 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
@@ -43,7 +46,11 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.PorterDuff;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -77,6 +84,7 @@ public class SearchView {
 
   private final TextView recentHintTV;
   private final TextView searchResultsHintTV;
+  private final TextView deepSearchTV;
 
   private final ChipGroup recentChipGroup;
   private final RecyclerView recyclerView;
@@ -84,8 +92,15 @@ public class SearchView {
   private final SearchListener searchListener;
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
+  // 0 -> Basic
+  // 1 -> Indexed
+  // 2 -> Recursive
+  private int searchMode;
+
   private boolean enabled = false;
 
+  @SuppressWarnings("ConstantConditions")
+  @SuppressLint("NotifyDataSetChanged")
   public SearchView(final AppBar appbar, MainActivity mainActivity, SearchListener searchListener) {
 
     this.mainActivity = mainActivity;
@@ -99,7 +114,15 @@ public class SearchView {
     recentChipGroup = mainActivity.findViewById(R.id.searchRecentItemsChipGroup);
     recentHintTV = mainActivity.findViewById(R.id.searchRecentHintTV);
     searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
+    deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
     recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
+
+    searchMode = 0;
+    deepSearchTV.setText(
+        String.format(
+            "%s%s",
+            mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+            mainActivity.getString(R.string.try_indexed_search)));
 
     initRecentSearches(mainActivity);
 
@@ -116,22 +139,72 @@ public class SearchView {
 
     backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
 
+    searchViewEditText.addTextChangedListener(
+        new TextWatcher() {
+          @Override
+          public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+          @Override
+          public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (count > 0) searchViewEditText.setError(null);
+
+            if (count >= 3) onSearch(false);
+          }
+
+          @Override
+          public void afterTextChanged(Editable s) {}
+        });
+
     searchViewEditText.setOnEditorActionListener(
         (v, actionId, event) -> {
-          if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+          if (actionId == EditorInfo.IME_ACTION_SEARCH) return onSearch(true);
 
-            String s = searchViewEditText.getText().toString().trim();
-
-            search(s);
-
-            saveRecentPreference(s);
-
-            return true;
-          }
           return false;
         });
 
+    deepSearchTV.setOnClickListener(
+        v -> {
+          if (searchMode == 1) {
+
+            List<HybridFileParcelable> hybridFileParcelables =
+                indexedSearch(mainActivity, searchViewEditText.getText().toString().trim());
+
+            searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+            searchRecyclerViewAdapter.notifyDataSetChanged();
+
+            searchMode = 2;
+            deepSearchTV.setText(
+                String.format(
+                    "%s%s",
+                    mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+                    mainActivity.getString(R.string.try_recursive_search)));
+
+          } else if (searchMode == 2) {
+
+            deepSearchTV.setVisibility(View.GONE);
+          }
+        });
+
     initSearchViewColor(mainActivity);
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  private boolean onSearch(boolean shouldSave) {
+
+    String s = searchViewEditText.getText().toString().trim();
+
+    if (s.isEmpty()) {
+      searchViewEditText.setError(mainActivity.getString(R.string.field_empty));
+      searchViewEditText.requestFocus();
+      return false;
+    }
+
+    search(s);
+
+    if (shouldSave) saveRecentPreference(s);
+
+    return true;
   }
 
   private void search(String s) {
@@ -139,6 +212,13 @@ public class SearchView {
     clearRecyclerView();
 
     searchResultsHintTV.setVisibility(View.VISIBLE);
+    deepSearchTV.setVisibility(View.VISIBLE);
+    searchMode = 1;
+    deepSearchTV.setText(
+        String.format(
+            "%s%s",
+            mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+            mainActivity.getString(R.string.try_indexed_search)));
 
     ArrayList<HybridFileParcelable> hybridFileParcelables = new ArrayList<>();
 
@@ -229,6 +309,41 @@ public class SearchView {
             search(s);
           });
     }
+  }
+
+  private List<HybridFileParcelable> indexedSearch(MainActivity mainActivity, String query) {
+
+    ArrayList<HybridFileParcelable> list = new ArrayList<>();
+    final String[] projection = {MediaStore.Files.FileColumns.DATA};
+
+    Cursor cursor =
+        mainActivity
+            .getContentResolver()
+            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
+
+    if (cursor == null) return list;
+    else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+      do {
+        String path =
+            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
+
+        if (path != null
+            && path.contains(mainActivity.getCurrentMainFragment().getPath())
+            && path.toLowerCase().contains(query.toLowerCase())) {
+
+          boolean showHiddenFiles =
+              PreferenceManager.getDefaultSharedPreferences(mainActivity)
+                  .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
+
+          HybridFileParcelable hybridFileParcelable =
+              RootHelper.generateBaseFile(new File(path), showHiddenFiles);
+
+          if (hybridFileParcelable != null) list.add(hybridFileParcelable);
+        }
+      } while (cursor.moveToNext());
+    }
+    cursor.close();
+    return list;
   }
 
   /** show search view with a circular reveal animation */
