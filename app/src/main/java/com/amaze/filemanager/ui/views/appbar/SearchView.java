@@ -120,7 +120,7 @@ public class SearchView {
     searchMode = 0;
     deepSearchTV.setText(
         String.format(
-            "%s%s",
+            "%s %s",
             mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
             mainActivity.getString(R.string.try_indexed_search)));
 
@@ -158,7 +158,12 @@ public class SearchView {
 
     searchViewEditText.setOnEditorActionListener(
         (v, actionId, event) -> {
-          if (actionId == EditorInfo.IME_ACTION_SEARCH) return onSearch(true);
+          if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+            Utils.hideKeyboard(mainActivity);
+
+            return onSearch(true);
+          }
 
           return false;
         });
@@ -176,7 +181,7 @@ public class SearchView {
             searchMode = 2;
             deepSearchTV.setText(
                 String.format(
-                    "%s%s",
+                    "%s %s",
                     mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
                     mainActivity.getString(R.string.try_recursive_search)));
 
@@ -216,7 +221,7 @@ public class SearchView {
     searchMode = 1;
     deepSearchTV.setText(
         String.format(
-            "%s%s",
+            "%s %s",
             mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
             mainActivity.getString(R.string.try_indexed_search)));
 
@@ -306,6 +311,9 @@ public class SearchView {
             String s = ((Chip) v).getText().toString();
 
             searchViewEditText.setText(s);
+
+            Utils.hideKeyboard(mainActivity);
+
             search(s);
           });
     }
