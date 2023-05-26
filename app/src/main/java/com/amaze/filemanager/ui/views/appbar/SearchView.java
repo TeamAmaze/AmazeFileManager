@@ -243,17 +243,15 @@ public class SearchView {
         showHiddenFiles,
         mode -> null,
         hybridFileParcelable -> {
-          if (showHiddenFiles || !hybridFileParcelable.isHidden())
-            if (hybridFileParcelable
-                .getName(mainActivity)
-                .toLowerCase()
-                .contains(s.toLowerCase())) {
-              hybridFileParcelables.add(hybridFileParcelable);
+          if (hybridFileParcelable.getName(mainActivity).toLowerCase().contains(s.toLowerCase())
+              && (showHiddenFiles || !hybridFileParcelable.isHidden())) {
 
-              searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+            hybridFileParcelables.add(hybridFileParcelable);
 
-              searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
-            }
+            searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+
+            searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
+          }
           return null;
         });
   }
