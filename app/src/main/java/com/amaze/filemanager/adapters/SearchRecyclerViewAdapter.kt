@@ -65,12 +65,14 @@ class SearchRecyclerViewAdapter :
         val item = getItem(position)
 
         holder.fileNameTV.text = item.name
+        holder.filePathTV.text = item.path.substring(0, item.path.lastIndexOf("/"))
+
         holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
 
 //        val colorPreference =
 //            (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
 //
-//        if (item != null && item.isDirectory) { // always null for some reason!
+//        if (item != null && item.isDirectory) { // always false for some reason!
 //            holder.colorView.setBackgroundColor(colorPreference.iconSkin)
 //        } else {
 //            holder.colorView.setBackgroundColor(colorPreference.accent)
@@ -80,11 +82,13 @@ class SearchRecyclerViewAdapter :
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val fileNameTV: TextView
+        val filePathTV: TextView
         val colorView: View
 
         init {
 
             fileNameTV = view.findViewById(R.id.searchItemFileNameTV)
+            filePathTV = view.findViewById(R.id.searchItemFilePathTV)
             colorView = view.findViewById(R.id.searchItemSampleColorView)
 
             view.setOnClickListener {
