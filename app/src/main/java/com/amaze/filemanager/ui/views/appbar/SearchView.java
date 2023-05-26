@@ -89,7 +89,6 @@ public class SearchView {
   private final ChipGroup recentChipGroup;
   private final RecyclerView recyclerView;
 
-  private final SearchListener searchListener;
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
   // 0 -> Basic
@@ -104,7 +103,6 @@ public class SearchView {
   public SearchView(final AppBar appbar, MainActivity mainActivity, SearchListener searchListener) {
 
     this.mainActivity = mainActivity;
-    this.searchListener = searchListener;
     this.appbar = appbar;
 
     searchViewLayout = mainActivity.findViewById(R.id.search_view);
