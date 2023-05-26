@@ -65,18 +65,27 @@ class SearchRecyclerViewAdapter :
         val item = getItem(position)
 
         holder.fileNameTV.text = item.name
+        holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
+
+//        val colorPreference =
+//            (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
+//
+//        if (item != null && item.isDirectory) { // always null for some reason!
+//            holder.colorView.setBackgroundColor(colorPreference.iconSkin)
+//        } else {
+//            holder.colorView.setBackgroundColor(colorPreference.accent)
+//        }
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val fileNameTV: TextView
+        val colorView: View
 
         init {
 
             fileNameTV = view.findViewById(R.id.searchItemFileNameTV)
-
-            view.findViewById<View>(R.id.searchItemSampleColorView)
-                .setBackgroundColor(getRandomColor(view.context))
+            colorView = view.findViewById(R.id.searchItemSampleColorView)
 
             view.setOnClickListener {
 
@@ -96,16 +105,16 @@ class SearchRecyclerViewAdapter :
                     ?.appbar?.searchView?.hideSearchView()
             }
         }
+    }
 
-        private fun getRandomColor(context: Context): Int {
-            return ContextCompat.getColor(
-                context,
-                ColorPreference.availableColors[
-                    Random().nextInt(
-                        ColorPreference.availableColors.size - 1
-                    )
-                ]
-            )
-        }
+    private fun getRandomColor(context: Context): Int {
+        return ContextCompat.getColor(
+            context,
+            ColorPreference.availableColors[
+                Random().nextInt(
+                    ColorPreference.availableColors.size - 1
+                )
+            ]
+        )
     }
 }

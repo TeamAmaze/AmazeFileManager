@@ -123,6 +123,7 @@ public class SearchView {
             "%s %s",
             mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
             mainActivity.getString(R.string.try_indexed_search)));
+    deepSearchTV.setVisibility(View.GONE);
 
     initRecentSearches(mainActivity);
 
