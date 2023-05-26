@@ -170,10 +170,11 @@ public class SearchView {
 
     deepSearchTV.setOnClickListener(
         v -> {
+          String s = searchViewEditText.getText().toString().trim();
+
           if (searchMode == 1) {
 
-            List<HybridFileParcelable> hybridFileParcelables =
-                indexedSearch(mainActivity, searchViewEditText.getText().toString().trim());
+            List<HybridFileParcelable> hybridFileParcelables = indexedSearch(mainActivity, s);
 
             searchRecyclerViewAdapter.submitList(hybridFileParcelables);
             searchRecyclerViewAdapter.notifyDataSetChanged();
@@ -186,6 +187,9 @@ public class SearchView {
                     mainActivity.getString(R.string.try_recursive_search)));
 
           } else if (searchMode == 2) {
+
+            searchListener.onSearch(s);
+            appbar.getSearchView().hideSearchView();
 
             deepSearchTV.setVisibility(View.GONE);
           }
