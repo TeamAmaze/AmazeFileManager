@@ -251,15 +251,15 @@ public class LoadFilesListTask
 
   private void postListCustomPathProcess(
       @NonNull List<LayoutElementParcelable> list, @NonNull MainFragment mainFragment) {
-    int t = SortHandler.getSortType(context.get(), path);
-    int sortby;
-    int asc;
-    if (t <= 3) {
-      sortby = t;
-      asc = 1;
+
+    int sortType = SortHandler.getSortType(context.get(), path), sortBy, isAscending;
+
+    if (sortType <= 3) {
+      sortBy = sortType;
+      isAscending = 1;
     } else {
-      asc = -1;
-      sortby = t - 4;
+      isAscending = -1;
+      sortBy = sortType - 4;
     }
 
     MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
@@ -268,6 +268,7 @@ public class LoadFilesListTask
       LayoutElementParcelable layoutElementParcelable = list.get(i);
 
       if (layoutElementParcelable == null) {
+        //noinspection SuspiciousListRemoveInLoop
         list.remove(i);
         continue;
       }
@@ -280,7 +281,7 @@ public class LoadFilesListTask
     }
 
     if (viewModel != null) {
-      Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortby, asc));
+      Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortBy, isAscending));
     } else {
       LOG.error("MainFragmentViewModel is null, this is a bug");
     }
