@@ -244,10 +244,16 @@ class MainFragmentViewModel : ViewModel() {
         return mutableLiveData
     }
 
+    /**
+     * increments `fileCount`
+     */
     fun incrementFileCount() {
         fileCount++
     }
 
+    /**
+     * increments `folderCount`
+     */
     fun incrementFolderCount() {
         folderCount++
     }
