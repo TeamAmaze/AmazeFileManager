@@ -796,18 +796,19 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       hFile.generateMode(mainActivity);
       if (hFile.isSimpleFile()) {
         FileUtils.openFile(new File(pendingPath), mainActivity, mainActivity.getPrefs());
-        pendingPath = null;
+        resetPendingPath();
         return;
       }
 
       MainFragment mainFragment = mainActivity.getCurrentMainFragment();
       if (mainFragment != null) {
         mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN, false);
+        resetPendingPath();
       } else {
         mainActivity.goToMain(pendingPath);
+        resetPendingPath();
         return;
       }
-      pendingPath = null;
     }
     mainActivity.supportInvalidateOptionsMenu();
   }
