@@ -198,8 +198,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                         val editText = dialog.inputEditText
                         if (editText != null) {
                             val name = editText.text.toString()
-                            val portNumber = name.toInt()
-                            if (portNumber < 1024) {
+                            val portNumber = name.toIntOrNull()
+                            if (portNumber == null || portNumber < 1024) {
                                 Toast.makeText(
                                     activity,
                                     R.string.ftp_port_change_error_invalid,
