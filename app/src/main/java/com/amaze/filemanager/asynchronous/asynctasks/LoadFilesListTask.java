@@ -286,7 +286,6 @@ public class LoadFilesListTask
     }
 
     Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortBy, isAscending));
-
   }
 
   private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
