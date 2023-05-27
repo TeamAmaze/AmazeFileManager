@@ -252,7 +252,9 @@ public class LoadFilesListTask
   private void postListCustomPathProcess(
       @NonNull List<LayoutElementParcelable> list, @NonNull MainFragment mainFragment) {
 
-    int sortType = SortHandler.getSortType(context.get(), path), sortBy, isAscending;
+    int sortType = SortHandler.getSortType(context.get(), path);
+    int sortBy;
+    int isAscending;
 
     if (sortType <= 3) {
       sortBy = sortType;
