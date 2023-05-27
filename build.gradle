@@ -55,7 +55,7 @@ buildscript {
 }
 
 plugins {
-    id "com.diffplug.spotless" version "6.5.0"
+    id "com.diffplug.spotless" version "6.19.0"
 }
 
 allprojects {
@@ -77,16 +77,29 @@ spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java'
-        googleJavaFormat('1.15.0')
+        googleJavaFormat('1.17.0')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
     kotlin {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.kt', 'file_operations/src/**/*.kt'
-        ktlint("0.44.0").setUseExperimental(true).userData(['disabled_rules': 'no-wildcard-imports',
-                                   'kotlin_imports_layout': 'idea', 'indent_size': '4',
-                                   'max_line_length': '100'])
+        ktlint("0.49.1")
+                .setEditorConfigPath(null)
+                .editorConfigOverride(
+                        [
+                                'ktlint_standard_no-wildcard-imports': 'disabled',
+                                'kotlin_imports_layout': 'idea',
+                                'indent_size': '4',
+                                'max_line_length': 'off',
+
+                                'ij_kotlin_allow_trailing_comma': 'false',
+                                'ij_kotlin_allow_trailing_comma_on_call_site': 'false',
+
+                                'ktlint_standard_multiline-if-else' : 'disabled'
+                        ]
+                )
+
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
