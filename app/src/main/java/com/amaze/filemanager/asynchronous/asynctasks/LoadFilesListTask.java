@@ -264,6 +264,11 @@ public class LoadFilesListTask
 
     MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
 
+    if (viewModel == null) {
+      LOG.error("MainFragmentViewModel is null, this is a bug");
+      return;
+    }
+
     for (int i = 0; i < list.size(); i++) {
       LayoutElementParcelable layoutElementParcelable = list.get(i);
 
@@ -274,17 +279,14 @@ public class LoadFilesListTask
       }
 
       if (layoutElementParcelable.isDirectory) {
-        viewModel.setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
+        viewModel.incrementFolderCount();
       } else {
-        viewModel.setFileCount(mainFragment.getMainFragmentViewModel().getFileCount() + 1);
+        viewModel.incrementFileCount();
       }
     }
 
-    if (viewModel != null) {
-      Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortBy, isAscending));
-    } else {
-      LOG.error("MainFragmentViewModel is null, this is a bug");
-    }
+    Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortBy, isAscending));
+
   }
 
   private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
