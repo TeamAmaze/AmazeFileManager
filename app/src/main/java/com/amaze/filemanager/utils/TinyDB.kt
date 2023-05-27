@@ -29,9 +29,9 @@ import android.text.TextUtils
  */
 object TinyDB {
     /*
-   *  The "‚" character is not a comma, it is the SINGLE LOW-9 QUOTATION MARK. U-201A
-   *  + U-2017 + U-201A are used for separating the items in a list.
-   */
+     *  The "‚" character is not a comma, it is the SINGLE LOW-9 QUOTATION MARK. U-201A
+     *  + U-2017 + U-201A are used for separating the items in a list.
+     */
     private const val DIVIDER = "‚‗‚"
 
     /**

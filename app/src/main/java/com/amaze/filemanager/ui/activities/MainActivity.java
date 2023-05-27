@@ -276,6 +276,7 @@ public class MainActivity extends PermissionsActivity
   private UtilsHandler utilsHandler;
   private CloudHandler cloudHandler;
   private CloudLoaderAsyncTask cloudLoaderAsyncTask;
+
   /**
    * This is for a hack.
    *
@@ -2417,6 +2418,7 @@ public class MainActivity extends PermissionsActivity
       return true;
     }
   }
+
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *

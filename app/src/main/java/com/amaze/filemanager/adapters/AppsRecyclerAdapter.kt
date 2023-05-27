@@ -286,9 +286,9 @@ class AppsRecyclerAdapter(
         v.setOnClickListener { view: View? ->
             var context = fragment.context
             if ((
-                fragment.requireActivity()
-                    as MainActivity
-                ).appTheme.getSimpleTheme(fragment.requireContext()) == AppTheme.BLACK
+                    fragment.requireActivity()
+                        as MainActivity
+                    ).appTheme.getSimpleTheme(fragment.requireContext()) == AppTheme.BLACK
             ) {
                 context = ContextThemeWrapper(context, R.style.overflow_black)
             }

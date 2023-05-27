@@ -131,7 +131,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     ) R.string.deselect_all else R.string.select_all
                 )
             if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
-                .getIsCloudOpenMode()
+                    .getIsCloudOpenMode()
             ) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)

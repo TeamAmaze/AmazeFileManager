@@ -348,7 +348,7 @@ class FtpService : Service(), Runnable {
         @JvmStatic
         fun defaultPath(context: Context): String {
             return if (PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false) && SDK_INT > M
+                    .getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false) && SDK_INT > M
             ) {
                 DocumentsContract.buildTreeDocumentUri(
                     "com.android.externalstorage.documents",

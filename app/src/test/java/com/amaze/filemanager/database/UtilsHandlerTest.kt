@@ -185,13 +185,13 @@ class UtilsHandlerTest {
                 Pair(it[0], it[1])
             }
             for (
-                d in arrayOf(
-                    DIRECTORY_DOWNLOADS,
-                    DIRECTORY_DCIM,
-                    DIRECTORY_MUSIC,
-                    DIRECTORY_MOVIES,
-                    DIRECTORY_PICTURES
-                )
+            d in arrayOf(
+                DIRECTORY_DOWNLOADS,
+                DIRECTORY_DCIM,
+                DIRECTORY_MUSIC,
+                DIRECTORY_MOVIES,
+                DIRECTORY_PICTURES
+            )
             ) {
                 assertTrue(
                     verify.contains(

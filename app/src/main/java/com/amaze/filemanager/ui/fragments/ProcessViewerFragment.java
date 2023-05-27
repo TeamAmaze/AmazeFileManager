@@ -88,6 +88,7 @@ public class ProcessViewerFragment extends Fragment {
   private CardView mCardView;
   private LineChart mLineChart;
   private LineData mLineData = new LineData();
+
   /** Time in seconds just for showing to the user. No guarantees. */
   private long looseTimeInSeconds = 0L;
 

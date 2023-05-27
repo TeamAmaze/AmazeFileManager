@@ -222,8 +222,8 @@ class UtilsHandler(
         get() {
             val paths = LinkedList<String>()
             for (
-                history in utilitiesDatabase.historyEntryDao().list().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            history in utilitiesDatabase.historyEntryDao().list().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 paths.add(history.path)
             }
@@ -237,8 +237,8 @@ class UtilsHandler(
         get() {
             val paths = ConcurrentRadixTree<VoidValue>(DefaultCharArrayNodeFactory())
             for (
-                path in utilitiesDatabase.hiddenEntryDao().listPaths().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            path in utilitiesDatabase.hiddenEntryDao().listPaths().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 paths.put(path, VoidValue.SINGLETON)
             }
@@ -268,8 +268,8 @@ class UtilsHandler(
         get() {
             val row = ArrayList<Array<String>>()
             for (
-                bookmark in utilitiesDatabase.bookmarkEntryDao().list()
-                    .subscribeOn(Schedulers.io()).blockingGet()
+            bookmark in utilitiesDatabase.bookmarkEntryDao().list()
+                .subscribeOn(Schedulers.io()).blockingGet()
             ) {
                 row.add(arrayOf(bookmark.name, bookmark.path))
             }
@@ -283,8 +283,8 @@ class UtilsHandler(
         get() {
             val retval = ArrayList<Array<String>>()
             for (
-                entry in utilitiesDatabase.smbEntryDao().list().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            entry in utilitiesDatabase.smbEntryDao().list().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 try {
                     retval.add(arrayOf(entry.name, entry.path))
@@ -322,8 +322,8 @@ class UtilsHandler(
         get() {
             val retval = ArrayList<Array<String>>()
             for (
-                entry in utilitiesDatabase.sftpEntryDao().list().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            entry in utilitiesDatabase.sftpEntryDao().list().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 val path = entry.path
                 if (path == null) {

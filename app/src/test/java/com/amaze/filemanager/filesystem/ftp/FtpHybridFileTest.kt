@@ -273,13 +273,13 @@ open class FtpHybridFileTest {
     @FlakyTest()
     fun testMkdir() {
         for (
-            dir: String in arrayOf(
+        dir: String in arrayOf(
 //                "newfolder",
 //                "new folder 2",
-                "new%20folder%203",
-                "あいうえお",
-                "multiple/levels/down the pipe"
-            )
+            "new%20folder%203",
+            "あいうえお",
+            "multiple/levels/down the pipe"
+        )
         ) {
             val newFile = HybridFile(OpenMode.FTP, "$ftpUrl/$dir")
             val latch = CountDownLatch(1)

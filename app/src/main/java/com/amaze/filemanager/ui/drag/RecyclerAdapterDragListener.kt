@@ -189,7 +189,7 @@ class RecyclerAdapterDragListener(
                             TAG,
                             "Didn't find checked items in adapter, " +
                                 "checking dataUtils size ${
-                                dataUtils.checkedItemsList?.size ?: "null"}"
+                                    dataUtils.checkedItemsList?.size ?: "null"}"
                         )
                         checkedItems = dataUtils.checkedItemsList
                     }

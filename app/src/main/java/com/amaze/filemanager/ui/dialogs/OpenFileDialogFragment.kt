@@ -95,11 +95,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             if (mimeType == MimeTypes.ALL_MIME_TYPES ||
                 forceChooser ||
                 !getPreferenceAndStartActivity(
-                        uri,
-                        mimeType,
-                        useNewStack,
-                        activity
-                    )
+                    uri,
+                    mimeType,
+                    useNewStack,
+                    activity
+                )
             ) {
                 if (forceChooser) {
                     clearMimeTypePreference(
@@ -115,8 +115,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             }
         }
 
-        private fun newInstance(uri: Uri, mimeType: String, useNewStack: Boolean):
-            OpenFileDialogFragment {
+        private fun newInstance(uri: Uri, mimeType: String, useNewStack: Boolean): OpenFileDialogFragment {
             val args = Bundle()
 
             val fragment = OpenFileDialogFragment()

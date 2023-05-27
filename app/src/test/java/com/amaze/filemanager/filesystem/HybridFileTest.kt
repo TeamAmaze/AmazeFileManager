@@ -200,12 +200,12 @@ class HybridFileTest {
     @Test
     fun testGetName() {
         for (
-            name: String in arrayOf(
-                "newfolder",
-                "new folder 2",
-                "new%20folder%203",
-                "あいうえお"
-            )
+        name: String in arrayOf(
+            "newfolder",
+            "new folder 2",
+            "new%20folder%203",
+            "あいうえお"
+        )
         ) {
             val file = HybridFile(OpenMode.FTP, "ftp://user:password@127.0.0.1/$name")
             assertEquals(

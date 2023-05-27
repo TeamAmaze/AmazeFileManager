@@ -331,8 +331,7 @@ class SftpConnectDialog : DialogFragment() {
         }
     }
 
-    private fun handleOnPositiveButton(edit: Boolean):
-        MaterialDialog.SingleButtonCallback =
+    private fun handleOnPositiveButton(edit: Boolean): MaterialDialog.SingleButtonCallback =
         MaterialDialog.SingleButtonCallback { _, _ ->
             createConnectionSettings(edit).run {
                 when (prefix) {

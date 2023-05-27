@@ -90,8 +90,7 @@ class DragAndDropDialog : DialogFragment() {
                 )
             }
         }
-        private fun newInstance(pasteLocation: String, files: ArrayList<HybridFileParcelable>):
-            DragAndDropDialog {
+        private fun newInstance(pasteLocation: String, files: ArrayList<HybridFileParcelable>): DragAndDropDialog {
             val dragAndDropDialog = DragAndDropDialog()
             val args = Bundle()
             args.putString(KEY_PASTE_LOCATION, pasteLocation)

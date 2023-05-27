@@ -64,7 +64,7 @@ class SshAuthenticationTask(
                     )
             )
         } else if (TransportException::class.java
-            .isAssignableFrom(error.javaClass)
+                .isAssignableFrom(error.javaClass)
         ) {
             val disconnectReason =
                 TransportException::class.java.cast(error)!!.disconnectReason

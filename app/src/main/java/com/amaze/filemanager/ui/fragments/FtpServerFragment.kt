@@ -413,8 +413,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     }
 
     @Suppress("LabeledExpression")
-    private fun createOpenDocumentTreeIntentCallback(callback: (directoryUri: Uri) -> Unit):
-        ActivityResultLauncher<Intent> {
+    private fun createOpenDocumentTreeIntentCallback(callback: (directoryUri: Uri) -> Unit): ActivityResultLauncher<Intent> {
         return registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
