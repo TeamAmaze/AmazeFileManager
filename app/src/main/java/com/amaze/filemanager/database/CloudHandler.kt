@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
+ * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
