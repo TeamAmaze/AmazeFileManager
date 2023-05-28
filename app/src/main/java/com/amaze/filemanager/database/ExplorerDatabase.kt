@@ -334,16 +334,18 @@ abstract class ExplorerDatabase : RoomDatabase() {
                 DATABASE_NAME
             )
             return builder
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_3)
-                .addMigrations(MIGRATION_3_4)
-                .addMigrations(MIGRATION_4_5)
-                .addMigrations(MIGRATION_5_6)
-                .addMigrations(MIGRATION_6_7)
-                .addMigrations(MIGRATION_7_8)
-                .addMigrations(MIGRATION_8_9)
-                .addMigrations(MIGRATION_9_10)
-                .addMigrations(MIGRATION_10_11)
+                .addMigrations(
+                    MIGRATION_1_2,
+                    MIGRATION_2_3,
+                    MIGRATION_3_4,
+                    MIGRATION_4_5,
+                    MIGRATION_5_6,
+                    MIGRATION_6_7,
+                    MIGRATION_7_8,
+                    MIGRATION_8_9,
+                    MIGRATION_9_10,
+                    MIGRATION_10_11,
+                )
                 .build()
         }
     }
