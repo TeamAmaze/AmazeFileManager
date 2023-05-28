@@ -54,13 +54,11 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
   private final Cursor data;
   private final WeakReference<MainActivity> mainActivity;
-  private final CloudHandler cloudHandler;
   private final DataUtils dataUtils;
 
-  public CloudLoaderAsyncTask(MainActivity mainActivity, CloudHandler cloudHandler, Cursor data) {
+  public CloudLoaderAsyncTask(MainActivity mainActivity, Cursor data) {
     this.data = data;
     this.mainActivity = new WeakReference<>(mainActivity);
-    this.cloudHandler = cloudHandler;
     this.dataUtils = DataUtils.getInstance();
   }
 
@@ -114,7 +112,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               }
               cloudStorageDrive.useAdvancedAuthentication();
 
-              if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
+              if ((savedCloudEntryGdrive = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.GDRIVE)) != null) {
                 // we already have the entry and saved state, get it
 
                 try {
@@ -126,13 +124,13 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   cloudStorageDrive.login();
                   cloudEntryGdrive =
                       new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
-                  cloudHandler.updateEntry(OpenMode.GDRIVE, cloudEntryGdrive);
+                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.GDRIVE, cloudEntryGdrive);
                 }
               } else {
                 cloudStorageDrive.login();
                 cloudEntryGdrive =
                     new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
-                cloudHandler.addEntry(cloudEntryGdrive);
+                CloudHandler.addEntry(this.mainActivity.get(), cloudEntryGdrive);
               }
 
               dataUtils.addAccount(cloudStorageDrive);
@@ -186,7 +184,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 return false;
               }
 
-              if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
+              if ((savedCloudEntryDropbox = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.DROPBOX)) != null) {
                 // we already have the entry and saved state, get it
                 try {
                   cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData().value);
@@ -197,13 +195,13 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   cloudStorageDropbox.login();
                   cloudEntryDropbox =
                       new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
-                  cloudHandler.updateEntry(OpenMode.DROPBOX, cloudEntryDropbox);
+                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.DROPBOX, cloudEntryDropbox);
                 }
               } else {
                 cloudStorageDropbox.login();
                 cloudEntryDropbox =
                     new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
-                cloudHandler.addEntry(cloudEntryDropbox);
+                CloudHandler.addEntry(this.mainActivity.get(), cloudEntryDropbox);
               }
 
               dataUtils.addAccount(cloudStorageDropbox);
@@ -253,7 +251,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 return false;
               }
 
-              if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
+              if ((savedCloudEntryBox = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.BOX)) != null) {
                 // we already have the entry and saved state, get it
                 try {
                   cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData().value);
@@ -262,12 +260,12 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   // we need to persist data again
                   cloudStorageBox.login();
                   cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
-                  cloudHandler.updateEntry(OpenMode.BOX, cloudEntryBox);
+                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.BOX, cloudEntryBox);
                 }
               } else {
                 cloudStorageBox.login();
                 cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
-                cloudHandler.addEntry(cloudEntryBox);
+                CloudHandler.addEntry(this.mainActivity.get(), cloudEntryBox);
               }
 
               dataUtils.addAccount(cloudStorageBox);
@@ -315,7 +313,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 return false;
               }
 
-              if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
+              if ((savedCloudEntryOnedrive = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.ONEDRIVE)) != null) {
                 // we already have the entry and saved state, get it
                 try {
                   cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData().value);
@@ -326,13 +324,13 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   cloudStorageOnedrive.login();
                   cloudEntryOnedrive =
                       new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
-                  cloudHandler.updateEntry(OpenMode.ONEDRIVE, cloudEntryOnedrive);
+                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.ONEDRIVE, cloudEntryOnedrive);
                 }
               } else {
                 cloudStorageOnedrive.login();
                 cloudEntryOnedrive =
                     new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
-                cloudHandler.addEntry(cloudEntryOnedrive);
+                CloudHandler.addEntry(this.mainActivity.get(), cloudEntryOnedrive);
               }
 
               dataUtils.addAccount(cloudStorageOnedrive);

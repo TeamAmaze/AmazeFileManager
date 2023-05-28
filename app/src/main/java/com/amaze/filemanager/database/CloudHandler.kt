@@ -63,6 +63,14 @@ object CloudHandler {
     }
 
     @JvmStatic
+    @Throws(CloudPluginException::class)
+    fun updateEntry(context: Context, serviceType: OpenMode?, newCloudEntry: CloudEntry) {
+        if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw CloudPluginException()
+
+        cloudEntryDao.update(newCloudEntry).subscribeOn(Schedulers.io()).subscribe()
+    }
+
+    @JvmStatic
     private fun deleteCloudEntry(cloudEntry: CloudEntry) {
         cloudEntryDao
             .delete(cloudEntry)
