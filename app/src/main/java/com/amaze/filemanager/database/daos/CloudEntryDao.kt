@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,9 +21,9 @@
 package com.amaze.filemanager.database.daos
 
 import androidx.room.*
+import com.amaze.filemanager.database.ExplorerDatabase
 import com.amaze.filemanager.database.models.explorer.CloudEntry
 import io.reactivex.Completable
-import com.amaze.filemanager.database.ExplorerDatabase
 import io.reactivex.Single
 
 /**
@@ -43,7 +42,12 @@ interface CloudEntryDao {
     @Insert
     fun insert(entry: CloudEntry?): Completable
 
-    @Query("SELECT * FROM " + ExplorerDatabase.TABLE_CLOUD_PERSIST + " WHERE " + ExplorerDatabase.COLUMN_CLOUD_SERVICE + " = :serviceType")
+    @Query(
+        "SELECT * FROM " +
+            ExplorerDatabase.TABLE_CLOUD_PERSIST +
+            " WHERE " +
+            ExplorerDatabase.COLUMN_CLOUD_SERVICE + " = :serviceType"
+    )
     fun findByServiceType(serviceType: Int): Single<CloudEntry>
 
     @Query("SELECT * FROM " + ExplorerDatabase.TABLE_CLOUD_PERSIST)
@@ -58,5 +62,4 @@ interface CloudEntryDao {
     @Transaction
     @Query("DELETE FROM " + ExplorerDatabase.TABLE_CLOUD_PERSIST)
     fun clear(): Completable
-
 }

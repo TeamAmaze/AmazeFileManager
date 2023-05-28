@@ -527,8 +527,7 @@ public class MainActivity extends PermissionsActivity
     boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
     // reset home and current paths according to new storages
     if (b) {
-      TabHandler
-          .clear()
+      TabHandler.clear()
           .subscribe(
               () -> {
                 if (tabFragment != null) {
@@ -2193,7 +2192,9 @@ public class MainActivity extends PermissionsActivity
     try {
       if (CloudHandler.findEntry(this, service) != null) {
         // cloud entry already exists
-        Toast.makeText(this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG).show();
+        Toast.makeText(
+                this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG)
+            .show();
       } else if (BuildConfig.IS_VERSION_FDROID) {
         Toast.makeText(
                 this, getResources().getString(R.string.cloud_error_fdroid), Toast.LENGTH_LONG)

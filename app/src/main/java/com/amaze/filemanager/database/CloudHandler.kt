@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -108,7 +107,6 @@ object CloudHandler {
         return cloudEntryDao.list().subscribeOn(Schedulers.io()).blockingGet()
     }
 
-
     const val CLOUD_PREFIX_BOX = "box:/"
     const val CLOUD_PREFIX_DROPBOX = "dropbox:/"
     const val CLOUD_PREFIX_GOOGLE_DRIVE = "gdrive:/"
@@ -118,5 +116,4 @@ object CloudHandler {
     const val CLOUD_NAME_DROPBOX = "Dropbox"
     const val CLOUD_NAME_ONE_DRIVE = "One Drive"
     const val CLOUD_NAME_BOX = "Box"
-
 }

@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,9 +21,9 @@
 package com.amaze.filemanager.database.daos
 
 import androidx.room.*
-import io.reactivex.Completable
 import com.amaze.filemanager.database.ExplorerDatabase
 import com.amaze.filemanager.database.models.explorer.Tab
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -47,7 +46,13 @@ interface TabDao {
     @Query("DELETE FROM " + ExplorerDatabase.TABLE_TAB)
     fun clear(): Completable
 
-    @Query("SELECT * FROM " + ExplorerDatabase.TABLE_TAB + " WHERE " + ExplorerDatabase.COLUMN_TAB_NO + " = :tabNo")
+    @Query(
+        "SELECT * FROM " +
+            ExplorerDatabase.TABLE_TAB +
+            " WHERE " +
+            ExplorerDatabase.COLUMN_TAB_NO +
+            " = :tabNo"
+    )
     fun find(tabNo: Int): Single<Tab?>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -55,5 +60,4 @@ interface TabDao {
 
     @Query("SELECT * FROM " + ExplorerDatabase.TABLE_TAB)
     fun list(): Single<List<Tab>>
-
 }

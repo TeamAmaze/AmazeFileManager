@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -24,10 +23,10 @@ package com.amaze.filemanager.database.daos
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import io.reactivex.Completable
 import androidx.room.Update
 import com.amaze.filemanager.database.UtilitiesDatabase
 import com.amaze.filemanager.database.models.utilities.Grid
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -52,7 +51,12 @@ interface GridEntryDao {
     @Query("SELECT " + UtilitiesDatabase.COLUMN_PATH + " FROM " + UtilitiesDatabase.TABLE_GRID)
     fun listPaths(): Single<List<String>>
 
-    @Query("DELETE FROM " + UtilitiesDatabase.TABLE_GRID + " WHERE " + UtilitiesDatabase.COLUMN_PATH + " = :path")
+    @Query(
+        "DELETE FROM " +
+            UtilitiesDatabase.TABLE_GRID +
+            " WHERE " +
+            UtilitiesDatabase.COLUMN_PATH +
+            " = :path"
+    )
     fun deleteByPath(path: String): Completable
-
 }

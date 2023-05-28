@@ -112,7 +112,9 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               }
               cloudStorageDrive.useAdvancedAuthentication();
 
-              if ((savedCloudEntryGdrive = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.GDRIVE)) != null) {
+              if ((savedCloudEntryGdrive =
+                      CloudHandler.findEntry(this.mainActivity.get(), OpenMode.GDRIVE))
+                  != null) {
                 // we already have the entry and saved state, get it
 
                 try {
@@ -124,7 +126,8 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   cloudStorageDrive.login();
                   cloudEntryGdrive =
                       new CloudEntry(OpenMode.GDRIVE, cloudStorageDrive.saveAsString());
-                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.GDRIVE, cloudEntryGdrive);
+                  CloudHandler.updateEntry(
+                      this.mainActivity.get(), OpenMode.GDRIVE, cloudEntryGdrive);
                 }
               } else {
                 cloudStorageDrive.login();
@@ -184,7 +187,9 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 return false;
               }
 
-              if ((savedCloudEntryDropbox = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.DROPBOX)) != null) {
+              if ((savedCloudEntryDropbox =
+                      CloudHandler.findEntry(this.mainActivity.get(), OpenMode.DROPBOX))
+                  != null) {
                 // we already have the entry and saved state, get it
                 try {
                   cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData().value);
@@ -195,7 +200,8 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   cloudStorageDropbox.login();
                   cloudEntryDropbox =
                       new CloudEntry(OpenMode.DROPBOX, cloudStorageDropbox.saveAsString());
-                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.DROPBOX, cloudEntryDropbox);
+                  CloudHandler.updateEntry(
+                      this.mainActivity.get(), OpenMode.DROPBOX, cloudEntryDropbox);
                 }
               } else {
                 cloudStorageDropbox.login();
@@ -251,7 +257,9 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 return false;
               }
 
-              if ((savedCloudEntryBox = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.BOX)) != null) {
+              if ((savedCloudEntryBox =
+                      CloudHandler.findEntry(this.mainActivity.get(), OpenMode.BOX))
+                  != null) {
                 // we already have the entry and saved state, get it
                 try {
                   cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData().value);
@@ -313,7 +321,9 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 return false;
               }
 
-              if ((savedCloudEntryOnedrive = CloudHandler.findEntry(this.mainActivity.get(), OpenMode.ONEDRIVE)) != null) {
+              if ((savedCloudEntryOnedrive =
+                      CloudHandler.findEntry(this.mainActivity.get(), OpenMode.ONEDRIVE))
+                  != null) {
                 // we already have the entry and saved state, get it
                 try {
                   cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData().value);
@@ -324,7 +334,8 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                   cloudStorageOnedrive.login();
                   cloudEntryOnedrive =
                       new CloudEntry(OpenMode.ONEDRIVE, cloudStorageOnedrive.saveAsString());
-                  CloudHandler.updateEntry(this.mainActivity.get(), OpenMode.ONEDRIVE, cloudEntryOnedrive);
+                  CloudHandler.updateEntry(
+                      this.mainActivity.get(), OpenMode.ONEDRIVE, cloudEntryOnedrive);
                 }
               } else {
                 cloudStorageOnedrive.login();

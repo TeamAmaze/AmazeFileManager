@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,9 +21,9 @@
 package com.amaze.filemanager.database.daos
 
 import androidx.room.*
-import io.reactivex.Completable
 import com.amaze.filemanager.database.UtilitiesDatabase
 import com.amaze.filemanager.database.models.utilities.History
+import io.reactivex.Completable
 import io.reactivex.Single
 
 /**
@@ -49,10 +48,15 @@ interface HistoryEntryDao {
     @Query("SELECT * FROM " + UtilitiesDatabase.TABLE_HISTORY)
     fun list(): Single<List<History>>
 
-    @Query("DELETE FROM " + UtilitiesDatabase.TABLE_HISTORY + " WHERE " + UtilitiesDatabase.COLUMN_PATH + " = :path")
+    @Query(
+        "DELETE FROM " +
+            UtilitiesDatabase.TABLE_HISTORY +
+            " WHERE " +
+            UtilitiesDatabase.COLUMN_PATH +
+            " = :path"
+    )
     fun deleteByPath(path: String): Completable
 
     @Query("DELETE FROM " + UtilitiesDatabase.TABLE_HISTORY)
     fun clear(): Completable
-
 }

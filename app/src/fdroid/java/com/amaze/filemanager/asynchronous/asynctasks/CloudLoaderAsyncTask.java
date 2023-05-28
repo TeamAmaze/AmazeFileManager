@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.lang.ref.WeakReference;
 
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.database.Cursor;

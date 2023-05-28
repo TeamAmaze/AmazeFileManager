@@ -17,12 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.database.daos
 
 import androidx.room.*
+import com.amaze.filemanager.database.ExplorerDatabase
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
 import io.reactivex.Completable
-import com.amaze.filemanager.database.ExplorerDatabase
 import io.reactivex.Single
 
 /**
@@ -41,17 +42,28 @@ interface EncryptedEntryDao {
     @Insert
     fun insert(entry: EncryptedEntry): Completable
 
-    @Query("SELECT * FROM " + ExplorerDatabase.TABLE_ENCRYPTED + " WHERE " + ExplorerDatabase.COLUMN_PATH + " = :path")
+    @Query(
+        "SELECT * FROM " +
+            ExplorerDatabase.TABLE_ENCRYPTED +
+            " WHERE " +
+            ExplorerDatabase.COLUMN_PATH +
+            " = :path"
+    )
     fun select(path: String): Single<EncryptedEntry?>
 
     @Update
     fun update(entry: EncryptedEntry): Completable
 
     @Transaction
-    @Query("DELETE FROM " + ExplorerDatabase.TABLE_ENCRYPTED + " WHERE " + ExplorerDatabase.COLUMN_PATH + " = :path")
+    @Query(
+        "DELETE FROM " +
+            ExplorerDatabase.TABLE_ENCRYPTED +
+            " WHERE " +
+            ExplorerDatabase.COLUMN_PATH +
+            " = :path"
+    )
     fun delete(path: String): Completable
 
     @Query("SELECT * FROM " + ExplorerDatabase.TABLE_ENCRYPTED)
     fun list(): Single<List<EncryptedEntry>>
-
 }
