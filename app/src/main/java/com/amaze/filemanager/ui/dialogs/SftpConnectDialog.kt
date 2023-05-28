@@ -29,6 +29,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.isDigitsOnly
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -104,6 +106,20 @@ class SftpConnectDialog : DialogFragment() {
         const val ARG_KEYPAIR_NAME = "keypairName"
 
         private val VALID_PORT_RANGE = IntRange(1, 65535)
+
+        // Loosely referenced from https://dwheeler.com/essays/fixing-unix-linux-filenames.html
+        private const val pathBlockedChars = "*?<>|\\"
+
+        private val defaultPathCharFilter =
+            InputFilter { source, _, _, _, _, _ ->
+                if (source.isNotEmpty() && source.isNotBlank() &&
+                    pathBlockedChars.contains(source)
+                ) {
+                    ""
+                } else {
+                    null
+                }
+            }
     }
 
     lateinit var ctx: WeakReference<Context>
@@ -190,7 +206,7 @@ class SftpConnectDialog : DialogFragment() {
                 passwordET.setText("")
             }
         }
-
+        defaultPathET.filters = arrayOf(defaultPathCharFilter)
         // If it's new connection setup, set some default values
         // Otherwise, use given Bundle instance for filling in the blanks
         if (!edit) {
