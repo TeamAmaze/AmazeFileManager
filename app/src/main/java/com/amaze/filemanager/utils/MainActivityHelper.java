@@ -406,13 +406,12 @@ public class MainActivityHelper {
                     // update the database entry to reflect rename for encrypted file
                     if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                       try {
-                        CryptHandler cryptHandler = CryptHandler.INSTANCE;
-                        EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
+                        EncryptedEntry oldEntry = CryptHandler.findEntry(oldPath);
                         EncryptedEntry newEntry = new EncryptedEntry();
                         newEntry.setId(oldEntry.getId());
                         newEntry.setPassword(oldEntry.getPassword());
                         newEntry.setPath(newPath);
-                        cryptHandler.updateEntry(newEntry);
+                        CryptHandler.updateEntry(newEntry);
                       } catch (Exception e) {
                         LOG.warn("failure after rename, couldn't change the encrypted entry", e);
                         // couldn't change the entry, leave it alone

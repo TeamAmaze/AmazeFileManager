@@ -942,7 +942,7 @@ public class GeneralDialogCreation {
     final String path = m.getCurrentPath();
     int accentColor = m.getMainActivity().getAccent();
     String[] sort = m.getResources().getStringArray(R.array.sortby);
-    int current = SortHandler.getSortType(m.getContext(), path);
+    int current = SortHandler.getSortType(m.requireContext(), path);
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
     a.theme(appTheme.getMaterialDialogTheme(m.requireContext()));
     a.items(sort)
@@ -987,17 +987,16 @@ public class GeneralDialogCreation {
       MaterialDialog dialog,
       boolean desc) {
     final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
-    SortHandler sortHandler = SortHandler.getInstance();
     if (onlyThisFloders.contains(m.getCurrentPath())) {
-      Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
+      Sort oldSort = SortHandler.findEntry(m.getCurrentPath());
       Sort newSort = new Sort(m.getCurrentPath(), sortType);
       if (oldSort == null) {
-        sortHandler.addEntry(newSort);
+        SortHandler.addEntry(newSort);
       } else {
-        sortHandler.updateEntry(newSort);
+        SortHandler.updateEntry(newSort);
       }
     } else {
-      sortHandler.clear(m.getCurrentPath());
+      SortHandler.clear(m.getCurrentPath());
       sharedPref.edit().putString("sortby", String.valueOf(sortType)).apply();
     }
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();

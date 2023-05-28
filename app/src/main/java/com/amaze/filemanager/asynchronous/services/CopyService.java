@@ -323,8 +323,7 @@ public class CopyService extends AbstractProgressiveService {
         if (sourceFile.getName(c).endsWith(CryptUtil.CRYPT_EXTENSION)) {
           try {
 
-            CryptHandler cryptHandler = CryptHandler.INSTANCE;
-            EncryptedEntry oldEntry = cryptHandler.findEntry(sourceFile.getPath());
+            EncryptedEntry oldEntry = CryptHandler.findEntry(sourceFile.getPath());
             EncryptedEntry newEntry = new EncryptedEntry();
 
             newEntry.setPassword(oldEntry.getPassword());
@@ -334,10 +333,10 @@ public class CopyService extends AbstractProgressiveService {
 
               // file was been moved, update the existing entry
               newEntry.setId(oldEntry.getId());
-              cryptHandler.updateEntry(newEntry);
+              CryptHandler.updateEntry(newEntry);
             } else {
               // file was copied, create a new entry with same data
-              cryptHandler.addEntry(newEntry);
+              CryptHandler.addEntry(newEntry);
             }
           } catch (Exception e) {
             LOG.warn("failed to find and replace encrypted entry after copy", e);

@@ -34,7 +34,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
   private final WeakReference<MainActivity> mainActivity;
 
-  public CloudLoaderAsyncTask(MainActivity mainActivity, CloudHandler unused1, Cursor unused2) {
+  public CloudLoaderAsyncTask(MainActivity mainActivity, Cursor unused2) {
     this.mainActivity = new WeakReference<>(mainActivity);
   }
 

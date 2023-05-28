@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
+ * Oleksandr Narvatov <hipi96222@gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -31,12 +32,15 @@ import org.slf4j.LoggerFactory
 object CryptHandler {
 
     private val log: Logger = LoggerFactory.getLogger(CryptHandler::class.java)
-    private val encryptedEntryDao: EncryptedEntryDao = AppConfig.getInstance()
-        .explorerDatabase.encryptedEntryDao()
+
+    private val encryptedEntryDao: EncryptedEntryDao by lazy {
+        AppConfig.getInstance().explorerDatabase.encryptedEntryDao()
+    }
 
     /**
      * Add [EncryptedEntry] to database.
      */
+    @JvmStatic
     fun addEntry(encryptedEntry: EncryptedEntry) {
         encryptedEntryDao.insert(encryptedEntry).subscribeOn(Schedulers.io()).subscribe()
     }
@@ -44,6 +48,7 @@ object CryptHandler {
     /**
      * Remove [EncryptedEntry] of specified path.
      */
+    @JvmStatic
     fun clear(path: String) {
         encryptedEntryDao.delete(path).subscribeOn(Schedulers.io()).subscribe()
     }
@@ -51,6 +56,7 @@ object CryptHandler {
     /**
      * Update specified new [EncryptedEntry] in database.
      */
+    @JvmStatic
     fun updateEntry(newEncryptedEntry: EncryptedEntry) {
         encryptedEntryDao.update(newEncryptedEntry).subscribeOn(Schedulers.io()).subscribe()
     }
@@ -58,6 +64,7 @@ object CryptHandler {
     /**
      * Find [EncryptedEntry] of specified path. Returns null if not exist.
      */
+    @JvmStatic
     fun findEntry(path: String): EncryptedEntry? {
         return runCatching {
             encryptedEntryDao.select(path).subscribeOn(Schedulers.io()).blockingGet()
@@ -66,10 +73,12 @@ object CryptHandler {
         }.getOrNull()
     }
 
+    @JvmStatic
     val allEntries: Array<EncryptedEntry>
         get() {
             val encryptedEntryList =
                 encryptedEntryDao.list().subscribeOn(Schedulers.io()).blockingGet()
             return encryptedEntryList.toTypedArray()
         }
+
 }

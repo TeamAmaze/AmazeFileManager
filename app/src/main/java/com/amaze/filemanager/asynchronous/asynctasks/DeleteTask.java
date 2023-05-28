@@ -122,8 +122,7 @@ public class DeleteTask
 
       // delete file entry from encrypted database
       if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-        CryptHandler handler = CryptHandler.INSTANCE;
-        handler.clear(file.getPath());
+        CryptHandler.clear(file.getPath());
       }
     }
 

@@ -199,7 +199,6 @@ public class TabFragment extends Fragment {
 
   public void updatePaths(int pos) {
     // Getting old path from database before clearing
-    TabHandler tabHandler = TabHandler.getInstance();
 
     int i = 1;
     for (Fragment fragment : fragments) {
@@ -213,13 +212,13 @@ public class TabFragment extends Fragment {
               .getDrawer()
               .selectCorrectDrawerItemForPath(mainFragment.getCurrentPath());
           if (mainFragment.getMainFragmentViewModel().getOpenMode() == OpenMode.FILE) {
-            tabHandler.update(
+            TabHandler.update(
                 new Tab(
                     i,
                     mainFragment.getCurrentPath(),
                     mainFragment.getMainFragmentViewModel().getHome()));
           } else {
-            tabHandler.update(
+            TabHandler.update(
                 new Tab(
                     i,
                     mainFragment.getMainFragmentViewModel().getHome(),
@@ -342,10 +341,9 @@ public class TabFragment extends Fragment {
    * @param addTab whether new tabs should be added to ui or just change values in database
    */
   public void refactorDrawerStorages(boolean addTab) {
-    TabHandler tabHandler = TabHandler.getInstance();
-    Tab tab1 = tabHandler.findTab(1);
-    Tab tab2 = tabHandler.findTab(2);
-    Tab[] tabs = tabHandler.getAllTabs();
+    Tab tab1 = TabHandler.findTab(1);
+    Tab tab2 = TabHandler.findTab(2);
+    Tab[] tabs = TabHandler.getAllTabs();
     String firstTabPath = requireMainActivity().getDrawer().getFirstPath();
     String secondTabPath = requireMainActivity().getDrawer().getSecondPath();
 
@@ -358,8 +356,8 @@ public class TabFragment extends Fragment {
         addNewTab(1, currentSecondTab);
         addNewTab(2, currentFirstTab);
       }
-      tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab));
-      tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab));
+      TabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab));
+      TabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab));
 
       if (currentFirstTab.equalsIgnoreCase("/")) {
         sharedPrefs.edit().putBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, true).apply();
