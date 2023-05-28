@@ -75,10 +75,6 @@ object CryptHandler {
 
     @JvmStatic
     val allEntries: Array<EncryptedEntry>
-        get() {
-            val encryptedEntryList =
-                encryptedEntryDao.list().subscribeOn(Schedulers.io()).blockingGet()
-            return encryptedEntryList.toTypedArray()
-        }
+        get() = encryptedEntryDao.list().subscribeOn(Schedulers.io()).blockingGet().toTypedArray()
 
 }

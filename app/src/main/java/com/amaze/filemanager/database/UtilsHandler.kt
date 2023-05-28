@@ -215,10 +215,7 @@ class UtilsHandler(
     val historyLinkedList: LinkedList<String>
         get() {
             val paths = LinkedList<String>()
-            for (
-                history in historyEntryDao.list().subscribeOn(Schedulers.io())
-                    .blockingGet()
-            ) {
+            for (history in historyEntryDao.list().subscribeOn(Schedulers.io()).blockingGet()) {
                 paths.add(history.path)
             }
             return paths
@@ -230,10 +227,7 @@ class UtilsHandler(
     val hiddenFilesConcurrentRadixTree: ConcurrentRadixTree<VoidValue>
         get() {
             val paths = ConcurrentRadixTree<VoidValue>(DefaultCharArrayNodeFactory())
-            for (
-                path in hiddenEntryDao.listPaths().subscribeOn(Schedulers.io())
-                    .blockingGet()
-            ) {
+            for (path in hiddenEntryDao.listPaths().subscribeOn(Schedulers.io()).blockingGet()) {
                 paths.put(path, VoidValue.SINGLETON)
             }
             return paths
@@ -243,17 +237,13 @@ class UtilsHandler(
      * Return list of paths using list view.
      */
     val listViewList: ArrayList<String>
-        get() = ArrayList(
-            listEntryDao.listPaths().subscribeOn(Schedulers.io()).blockingGet()
-        )
+        get() = ArrayList(listEntryDao.listPaths().subscribeOn(Schedulers.io()).blockingGet())
 
     /**
      * Return list of paths using grid view.
      */
     val gridViewList: ArrayList<String>
-        get() = ArrayList(
-            gridEntryDao.listPaths().subscribeOn(Schedulers.io()).blockingGet()
-        )
+        get() = ArrayList(gridEntryDao.listPaths().subscribeOn(Schedulers.io()).blockingGet())
 
     /**
      * Return list of bookmarks.
@@ -261,10 +251,7 @@ class UtilsHandler(
     val bookmarksList: ArrayList<Array<String>>
         get() {
             val row = ArrayList<Array<String>>()
-            for (
-                bookmark in bookmarkEntryDao.list()
-                    .subscribeOn(Schedulers.io()).blockingGet()
-            ) {
+            for (bookmark in bookmarkEntryDao.list().subscribeOn(Schedulers.io()).blockingGet()) {
                 row.add(arrayOf(bookmark.name, bookmark.path))
             }
             return row

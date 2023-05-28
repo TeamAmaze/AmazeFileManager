@@ -53,7 +53,7 @@ object SortHandler {
     }
 
     @JvmStatic
-    fun addEntry(sort: Sort?) {
+    fun addEntry(sort: Sort) {
         sortDao.insert(sort).subscribeOn(Schedulers.io()).subscribe()
     }
 
