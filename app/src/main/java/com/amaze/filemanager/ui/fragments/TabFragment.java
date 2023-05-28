@@ -358,8 +358,8 @@ public class TabFragment extends Fragment {
         addNewTab(1, currentSecondTab);
         addNewTab(2, currentFirstTab);
       }
-      tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab)).blockingAwait();
-      tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab)).blockingAwait();
+      tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab));
+      tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab));
 
       if (currentFirstTab.equalsIgnoreCase("/")) {
         sharedPrefs.edit().putBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, true).apply();

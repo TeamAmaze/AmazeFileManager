@@ -994,7 +994,7 @@ public class GeneralDialogCreation {
       if (oldSort == null) {
         sortHandler.addEntry(newSort);
       } else {
-        sortHandler.updateEntry(oldSort, newSort);
+        sortHandler.updateEntry(newSort);
       }
     } else {
       sortHandler.clear(m.getCurrentPath());

@@ -357,7 +357,7 @@ public class MainActivity extends PermissionsActivity
 
     initialiseViews();
     utilsHandler = AppConfig.getInstance().getUtilsHandler();
-    cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase());
+    cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase().cloudEntryDao());
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);

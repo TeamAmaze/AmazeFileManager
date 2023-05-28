@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.database.daos.SortDao;
 import com.amaze.filemanager.database.models.explorer.Sort;
 
 import android.content.Context;
@@ -45,15 +46,15 @@ public class SortHandler {
 
   private final Logger LOG = LoggerFactory.getLogger(SortHandler.class);
 
-  private final ExplorerDatabase database;
+  private final SortDao sortDao;
 
-  private SortHandler(@NonNull ExplorerDatabase explorerDatabase) {
-    database = explorerDatabase;
+  private SortHandler(@NonNull SortDao dao) {
+    sortDao = dao;
   }
 
   private static class SortHandlerHolder {
     private static final SortHandler INSTANCE =
-        new SortHandler(AppConfig.getInstance().getExplorerDatabase());
+        new SortHandler(AppConfig.getInstance().getExplorerDatabase().sortDao());
   }
 
   public static SortHandler getInstance() {
@@ -77,21 +78,21 @@ public class SortHandler {
   }
 
   public void addEntry(Sort sort) {
-    database.sortDao().insert(sort).subscribeOn(Schedulers.io()).subscribe();
+    sortDao.insert(sort).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void clear(String path) {
-    database.sortDao().clear(path).subscribeOn(Schedulers.io()).subscribe();
+    sortDao.clear(path).subscribeOn(Schedulers.io()).subscribe();
   }
 
-  public void updateEntry(Sort oldSort, Sort newSort) {
-    database.sortDao().update(newSort).subscribeOn(Schedulers.io()).subscribe();
+  public void updateEntry(Sort newSort) {
+    sortDao.update(newSort).subscribeOn(Schedulers.io()).subscribe();
   }
 
   @Nullable
   public Sort findEntry(String path) {
     try {
-      return database.sortDao().find(path).subscribeOn(Schedulers.io()).blockingGet();
+      return sortDao.find(path).subscribeOn(Schedulers.io()).blockingGet();
     } catch (Exception e) {
       // catch error to handle Single#onError for blockingGet
       LOG.error(getClass().getSimpleName(), e);

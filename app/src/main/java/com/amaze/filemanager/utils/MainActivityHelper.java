@@ -412,7 +412,7 @@ public class MainActivityHelper {
                         newEntry.setId(oldEntry.getId());
                         newEntry.setPassword(oldEntry.getPassword());
                         newEntry.setPath(newPath);
-                        cryptHandler.updateEntry(oldEntry, newEntry);
+                        cryptHandler.updateEntry(newEntry);
                       } catch (Exception e) {
                         LOG.warn("failure after rename, couldn't change the encrypted entry", e);
                         // couldn't change the entry, leave it alone

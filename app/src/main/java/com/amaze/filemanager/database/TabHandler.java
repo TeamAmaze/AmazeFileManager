@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.database.daos.TabDao;
 import com.amaze.filemanager.database.models.explorer.Tab;
 
 import androidx.annotation.NonNull;
@@ -39,41 +40,37 @@ import io.reactivex.schedulers.Schedulers;
 public class TabHandler {
   private static final Logger LOG = LoggerFactory.getLogger(TabHandler.class);
 
-  private final ExplorerDatabase database;
+  private final TabDao tabDao;
 
-  private TabHandler(@NonNull ExplorerDatabase explorerDatabase) {
-    this.database = explorerDatabase;
+  private TabHandler(@NonNull TabDao tabDao) {
+    this.tabDao = tabDao;
   }
 
   private static class TabHandlerHolder {
     private static final TabHandler INSTANCE =
-        new TabHandler(AppConfig.getInstance().getExplorerDatabase());
+        new TabHandler(AppConfig.getInstance().getExplorerDatabase().tabDao());
   }
 
   public static TabHandler getInstance() {
     return TabHandlerHolder.INSTANCE;
   }
 
-  public Completable addTab(@NonNull Tab tab) {
-    return database.tabDao().insertTab(tab).subscribeOn(Schedulers.io());
+  public void addTab(@NonNull Tab tab) {
+    tabDao.insertTab(tab).subscribeOn(Schedulers.io()).blockingAwait();
   }
 
   public void update(Tab tab) {
-    database.tabDao().update(tab);
+    tabDao.update(tab).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public Completable clear() {
-    return database
-        .tabDao()
-        .clear()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread());
+    return tabDao.clear().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
   }
 
   @Nullable
   public Tab findTab(int tabNo) {
     try {
-      return database.tabDao().find(tabNo).subscribeOn(Schedulers.io()).blockingGet();
+      return tabDao.find(tabNo).subscribeOn(Schedulers.io()).blockingGet();
     } catch (Exception e) {
       // catch error to handle Single#onError for blockingGet
       LOG.error(e.getMessage());
@@ -82,7 +79,7 @@ public class TabHandler {
   }
 
   public Tab[] getAllTabs() {
-    List<Tab> tabList = database.tabDao().list().subscribeOn(Schedulers.io()).blockingGet();
+    List<Tab> tabList = tabDao.list().subscribeOn(Schedulers.io()).blockingGet();
     Tab[] tabs = new Tab[tabList.size()];
     return tabList.toArray(tabs);
   }

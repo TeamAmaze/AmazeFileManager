@@ -25,11 +25,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amaze.filemanager.database.daos.CloudEntryDao;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,7 @@ import androidx.annotation.NonNull;
 import io.reactivex.schedulers.Schedulers;
 
 /** Created by vishal on 18/4/17. */
+@SuppressLint("CheckResult")
 public class CloudHandler {
 
   public static final String CLOUD_PREFIX_BOX = "box:/";
@@ -50,46 +53,40 @@ public class CloudHandler {
   public static final String CLOUD_NAME_BOX = "Box";
   private final Logger LOG = LoggerFactory.getLogger(CloudHandler.class);
 
-  private final ExplorerDatabase database;
+  private final CloudEntryDao cloudEntryDao;
   private final Context context;
 
-  public CloudHandler(@NonNull Context context, @NonNull ExplorerDatabase explorerDatabase) {
+  public CloudHandler(@NonNull Context context, @NonNull CloudEntryDao cloudEntryDao) {
     this.context = context;
-    this.database = explorerDatabase;
+    this.cloudEntryDao = cloudEntryDao;
   }
 
   public void addEntry(CloudEntry cloudEntry) throws CloudPluginException {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    database.cloudEntryDao().insert(cloudEntry).subscribeOn(Schedulers.io()).subscribe();
+    cloudEntryDao.insert(cloudEntry).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void clear(OpenMode serviceType) {
-    database
-        .cloudEntryDao()
+    cloudEntryDao
         .findByServiceType(serviceType.ordinal())
         .subscribeOn(Schedulers.io())
         .subscribe(
-            cloudEntry ->
-                database
-                    .cloudEntryDao()
-                    .delete(cloudEntry)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(),
-            throwable -> LOG.warn("failed to delete cloud connection", throwable));
+            this::deleteCloudEntry,
+            throwable -> LOG.warn("failed to delete cloud connection", throwable)
+        );
+  }
+
+  private void deleteCloudEntry(CloudEntry cloudEntry) {
+    cloudEntryDao
+            .delete(cloudEntry)
+            .subscribeOn(Schedulers.io())
+            .subscribe();
   }
 
   public void clearAllCloudConnections() {
-    database.cloudEntryDao().clear().subscribeOn(Schedulers.io()).blockingGet();
-  }
-
-  public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
-      throws CloudPluginException {
-
-    if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
-
-    database.cloudEntryDao().update(newCloudEntry).subscribeOn(Schedulers.io()).subscribe();
+    cloudEntryDao.clear().subscribeOn(Schedulers.io()).blockingGet();
   }
 
   public CloudEntry findEntry(OpenMode serviceType) throws CloudPluginException {
@@ -97,8 +94,7 @@ public class CloudHandler {
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
     try {
-      return database
-          .cloudEntryDao()
+      return cloudEntryDao
           .findByServiceType(serviceType.ordinal())
           .subscribeOn(Schedulers.io())
           .blockingGet();
@@ -110,8 +106,9 @@ public class CloudHandler {
   }
 
   public List<CloudEntry> getAllEntries() throws CloudPluginException {
-
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
-    return database.cloudEntryDao().list().subscribeOn(Schedulers.io()).blockingGet();
+
+    return cloudEntryDao.list().subscribeOn(Schedulers.io()).blockingGet();
   }
+
 }

@@ -334,7 +334,7 @@ public class CopyService extends AbstractProgressiveService {
 
               // file was been moved, update the existing entry
               newEntry.setId(oldEntry.getId());
-              cryptHandler.updateEntry(oldEntry, newEntry);
+              cryptHandler.updateEntry(newEntry);
             } else {
               // file was copied, create a new entry with same data
               cryptHandler.addEntry(newEntry);

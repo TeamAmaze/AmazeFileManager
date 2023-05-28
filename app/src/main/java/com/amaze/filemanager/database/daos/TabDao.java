@@ -58,7 +58,7 @@ public interface TabDao {
   Single<Tab> find(int tabNo);
 
   @Update(onConflict = OnConflictStrategy.REPLACE)
-  void update(Tab tab);
+  Completable update(Tab tab);
 
   @Query("SELECT * FROM " + TABLE_TAB)
   Single<List<Tab>> list();
