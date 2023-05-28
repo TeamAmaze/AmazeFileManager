@@ -49,7 +49,7 @@ Support
 <a href="https://www.paypal.me/vishalnehra"><img width="20%" src="paypal.svg" alt="PayPal"></a>
 <a href="https://liberapay.com/Team-Amaze/donate"><img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Liberapay_logo_v2_white-on-yellow.svg" alt="Liberapay" width="80px" ></a>  
 Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive™, Dropbox, OneDrive and Box accounts.  
-Try our app - [Amaze File Utilities](https://play.google.com/store/apps/details?id=com.amaze.fileutilities)
+Try our app - [Amaze File Utilities](https://play.google.com/store/apps/details?id=com.amaze.fileutilities) ([Fdroid](https://f-droid.org/en/packages/com.amaze.fileutilities/))
 1. List videos / images / music documents in your device in a interactive UI where you're able to group / sort and quickly jump to any headers.
 2. Open videos / images / music / documents (pdf / docx / epub) with inbuilt player.
 3. Share / delete / cast on your tv
