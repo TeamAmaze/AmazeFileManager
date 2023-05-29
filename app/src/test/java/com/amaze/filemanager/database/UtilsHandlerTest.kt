@@ -66,6 +66,7 @@ class UtilsHandlerTest {
         fun bootstrap() {
             UtilitiesDatabase.overrideDatabaseBuilder = { context ->
                 Room.inMemoryDatabaseBuilder(context, UtilitiesDatabase::class.java)
+                    .allowMainThreadQueries()
             }
         }
     }
