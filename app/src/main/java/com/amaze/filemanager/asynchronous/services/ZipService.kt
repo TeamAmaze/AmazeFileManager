@@ -65,7 +65,7 @@ class ZipService : AbstractProgressiveService() {
     private lateinit var asyncTask: CompressAsyncTask
     private lateinit var mNotifyManager: NotificationManagerCompat
     private lateinit var mBuilder: NotificationCompat.Builder
-    private lateinit var progressListener: ProgressListener
+    private var progressListener: ProgressListener? = null
     private val progressHandler = ProgressHandler()
 
     // list of data packages, to initiate chart in process viewer fragment
@@ -158,9 +158,9 @@ class ZipService : AbstractProgressiveService() {
 
     override fun getNotificationCustomViewBig(): RemoteViews = customBigContentViews!!
 
-    override fun getProgressListener(): ProgressListener = progressListener
+    override fun getProgressListener(): ProgressListener? = progressListener
 
-    override fun setProgressListener(progressListener: ProgressListener) {
+    override fun setProgressListener(progressListener: ProgressListener?) {
         this.progressListener = progressListener
     }
 
