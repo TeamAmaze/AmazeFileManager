@@ -22,27 +22,8 @@ package com.amaze.filemanager.ui.fragments;
 
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.text.Spanned;
-import android.text.format.Formatter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
@@ -66,8 +47,27 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.text.Spanned;
+import android.text.format.Formatter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.Fragment;
 
 public class ProcessViewerFragment extends Fragment {
 
@@ -96,7 +96,7 @@ public class ProcessViewerFragment extends Fragment {
 
   @Override
   public View onCreateView(
-          @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     binding = ProcessparentBinding.inflate(inflater);
     View rootView = binding.getRoot();
 
@@ -111,7 +111,8 @@ public class ProcessViewerFragment extends Fragment {
         || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
       binding.deleteButton.setImageResource(R.drawable.ic_action_cancel);
-      binding.cardView.setCardBackgroundColor(Utils.getColor(getContext(), R.color.cardView_foreground));
+      binding.cardView.setCardBackgroundColor(
+          Utils.getColor(getContext(), R.color.cardView_foreground));
       binding.cardView.setCardElevation(0f);
     }
 
@@ -124,7 +125,8 @@ public class ProcessViewerFragment extends Fragment {
 
     mCopyConnection = new CustomServiceConnection(this, binding.progressChart, SERVICE_COPY);
     mExtractConnection = new CustomServiceConnection(this, binding.progressChart, SERVICE_EXTRACT);
-    mCompressConnection = new CustomServiceConnection(this, binding.progressChart, SERVICE_COMPRESS);
+    mCompressConnection =
+        new CustomServiceConnection(this, binding.progressChart, SERVICE_COMPRESS);
     mEncryptConnection = new CustomServiceConnection(this, binding.progressChart, SERVICE_ENCRYPT);
     mDecryptConnection = new CustomServiceConnection(this, binding.progressChart, SERVICE_DECRYPT);
 
@@ -267,12 +269,12 @@ public class ProcessViewerFragment extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)
             || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
-          Drawable copyIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_content_copy_white_36dp);
+          Drawable copyIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_content_copy_white_36dp);
           binding.progressImage.setImageDrawable(copyIcon);
         } else {
-          Drawable greyCopyIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_content_copy_grey600_36dp);
+          Drawable greyCopyIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_content_copy_grey600_36dp);
           binding.progressImage.setImageDrawable(greyCopyIcon);
         }
         binding.textViewProgressType.setText(
@@ -285,12 +287,12 @@ public class ProcessViewerFragment extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)
             || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
-          Drawable zipBoxIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_zip_box_white);
+          Drawable zipBoxIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_zip_box_white);
           binding.progressImage.setImageDrawable(zipBoxIcon);
         } else {
-          Drawable greyZipBoxIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_zip_box_grey);
+          Drawable greyZipBoxIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_zip_box_grey);
           binding.progressImage.setImageDrawable(greyZipBoxIcon);
         }
         binding.textViewProgressType.setText(getResources().getString(R.string.extracting));
@@ -300,12 +302,12 @@ public class ProcessViewerFragment extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)
             || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
-          Drawable zipBoxIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_zip_box_white);
+          Drawable zipBoxIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_zip_box_white);
           binding.progressImage.setImageDrawable(zipBoxIcon);
         } else {
-          Drawable greyZipBoxIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_zip_box_grey);
+          Drawable greyZipBoxIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_zip_box_grey);
           binding.progressImage.setImageDrawable(greyZipBoxIcon);
         }
         binding.textViewProgressType.setText(getResources().getString(R.string.compressing));
@@ -315,12 +317,12 @@ public class ProcessViewerFragment extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)
             || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
-          Drawable folderIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_folder_lock_white_36dp);
+          Drawable folderIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_folder_lock_white_36dp);
           binding.progressImage.setImageDrawable(folderIcon);
         } else {
-          Drawable greyFolderIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_folder_lock_grey600_36dp);
+          Drawable greyFolderIcon =
+              ContextCompat.getDrawable(requireContext(), R.drawable.ic_folder_lock_grey600_36dp);
           binding.progressImage.setImageDrawable(greyFolderIcon);
         }
         binding.textViewProgressType.setText(getResources().getString(R.string.crypt_encrypting));
@@ -330,12 +332,14 @@ public class ProcessViewerFragment extends Fragment {
         if (mainActivity.getAppTheme().equals(AppTheme.DARK)
             || mainActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
-          Drawable folderUnlockedIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_folder_lock_open_white_36dp);
+          Drawable folderUnlockedIcon =
+              ContextCompat.getDrawable(
+                  requireContext(), R.drawable.ic_folder_lock_open_white_36dp);
           binding.progressImage.setImageDrawable(folderUnlockedIcon);
         } else {
-          Drawable greyFolderUnlockedIcon = ContextCompat
-                  .getDrawable(requireContext(), R.drawable.ic_folder_lock_open_grey600_36dp);
+          Drawable greyFolderUnlockedIcon =
+              ContextCompat.getDrawable(
+                  requireContext(), R.drawable.ic_folder_lock_open_grey600_36dp);
           binding.progressImage.setImageDrawable(greyFolderUnlockedIcon);
         }
         binding.textViewProgressType.setText(getResources().getString(R.string.crypt_decrypting));
@@ -476,10 +480,9 @@ public class ProcessViewerFragment extends Fragment {
                   return;
                 }
                 processViewerFragment
-                        .getActivity()
-                        .runOnUiThread(() ->
-                                processViewerFragment.processResults(dataPackage, serviceType)
-                        );
+                    .getActivity()
+                    .runOnUiThread(
+                        () -> processViewerFragment.processResults(dataPackage, serviceType));
               }
             }
 
