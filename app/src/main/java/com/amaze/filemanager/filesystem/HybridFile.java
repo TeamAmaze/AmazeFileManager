@@ -76,7 +76,6 @@ import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
-import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.Statvfs;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -1198,14 +1197,13 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         return NetCopyClientUtils.INSTANCE.execute(
-            new SshClientTemplate<OutputStream>(path, false) {
+            new SFtpClientTemplate<OutputStream>(getPath(), false) {
+              @Nullable
               @Override
-              public OutputStream executeWithSSHClient(@NonNull final SSHClient ssh)
-                  throws IOException {
-                final SFTPClient client = ssh.newSFTPClient();
+              public OutputStream execute(@NonNull SFTPClient client) throws IOException {
                 final RemoteFile rf =
                     client.open(
-                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path),
+                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath()),
                         EnumSet.of(
                             net.schmizz.sshj.sftp.OpenMode.WRITE,
                             net.schmizz.sshj.sftp.OpenMode.CREAT));
@@ -1287,7 +1285,7 @@ public class HybridFile {
     if (isSftp()) {
       final Boolean executionReturn =
           NetCopyClientUtils.INSTANCE.<SSHClient, Boolean>execute(
-              new SFtpClientTemplate<Boolean>(path, false) {
+              new SFtpClientTemplate<Boolean>(path, true) {
                 @Override
                 public Boolean execute(SFTPClient client) throws IOException {
                   try {
@@ -1412,17 +1410,16 @@ public class HybridFile {
 
   public void mkdir(Context context) {
     if (isSftp()) {
-      NetCopyClientUtils.INSTANCE.execute(
-          new SFtpClientTemplate<Void>(path, false) {
+      NetCopyClientUtils.INSTANCE.<SSHClient, Boolean>execute(
+          new SFtpClientTemplate<Boolean>(path, true) {
             @Override
-            public Void execute(@NonNull SFTPClient client) {
+            public Boolean execute(@NonNull SFTPClient client) {
               try {
                 client.mkdir(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
               } catch (IOException e) {
                 LOG.error("Error making directory over SFTP", e);
               }
-              // FIXME: anything better than throwing a null to make Rx happy?
-              return null;
+              return true;
             }
           });
     } else if (isFtp()) {

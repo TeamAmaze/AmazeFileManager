@@ -479,7 +479,9 @@ public class CopyService extends AbstractProgressiveService {
         if (progressHandler.getCancelled()) return;
         if (sourceFile.isDirectory()) {
 
-          if (!targetFile.exists()) targetFile.mkdir(c);
+          if (!targetFile.exists()) {
+            targetFile.mkdir(c);
+          }
 
           // various checks
           // 1. source file and target file doesn't end up in loop
