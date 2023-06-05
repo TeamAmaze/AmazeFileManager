@@ -43,6 +43,14 @@ Downloads
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
 [<img alt="Get it on AFH" height="50px" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
 
+Contribute
+---
+You can contribute via one of the following ways:
+- Help us with the translations of either [Amaze File Manager](https://www.transifex.com/amaze/amaze-file-manager/) or [Amaze Utilities](https://crowdin.com/project/amaze-file-utilities)
+- [Contribute](https://github.com/TeamAmaze/AmazeFileManager/blob/release/4.0/CONTRIBUTING.md) directly to the code, help us in fixing the bugs / implement new features.
+
+_If we feel your contribution is a significant help to us, we'll award you a bounty with any of your preferred mode of payment._
+
 Support
 ---
 <a href="https://opencollective.com/TeamAmaze"><img width="20%" alt="OpenCollective" src="opencollective.svg" ></a>
@@ -66,12 +74,6 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
 ***Under the license we are not responsible for damages.***
 
 See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Privacy-Policy)
-
-Translators
-----
-Want to help translate Amaze to your language?  
-
-See [Transifex translation](https://www.transifex.com/amaze/amaze-file-manager/).
 
 Vendors/Developers
 ----
