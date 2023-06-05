@@ -48,7 +48,8 @@ Contribute
 You can contribute via one of the following ways:
 - Help us with the translations - see [Transifex translation](https://www.transifex.com/amaze/amaze-file-manager/).
 - [Contribute](https://github.com/TeamAmaze/AmazeFileManager/blob/release/4.0/CONTRIBUTING.md) directly to the code, help us in fixing the bugs / implement new features.
-- If we feel your PR is a significant help to us, we'll award you a bounty with any of your preferred mode of payment.
+
+_If we feel your contribution is a significant help to us, we'll award you a bounty with any of your preferred mode of payment._
 
 Support
 ---
