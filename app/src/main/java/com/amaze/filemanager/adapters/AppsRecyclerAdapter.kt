@@ -202,7 +202,7 @@ class AppsRecyclerAdapter(
 
                 // 	File f = new File(rowItem.getDesc());
                 if (!isBottomSheet) {
-                    holder.txtDesc.text = rowItem.fileSize
+                    holder.txtDesc.text = rowItem.fileSize + " |"
                 }
                 holder.rl.isClickable = true
                 holder.rl.nextFocusRightId = holder.about.id
