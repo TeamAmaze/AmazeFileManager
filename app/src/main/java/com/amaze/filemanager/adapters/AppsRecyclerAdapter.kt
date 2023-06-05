@@ -184,6 +184,10 @@ class AppsRecyclerAdapter(
                     )
                 }
                 holder.txtTitle.text = rowItem.label
+
+                holder.packageName.text = rowItem.packageName
+                holder.packageName.isSelected = true // for marquee
+
                 val enableMarqueeFilename =
                     (fragment.requireActivity() as MainActivity)
                         .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
@@ -198,7 +202,7 @@ class AppsRecyclerAdapter(
 
                 // 	File f = new File(rowItem.getDesc());
                 if (!isBottomSheet) {
-                    holder.txtDesc.text = rowItem.fileSize
+                    holder.txtDesc.text = rowItem.fileSize + " |"
                 }
                 holder.rl.isClickable = true
                 holder.rl.nextFocusRightId = holder.about.id
