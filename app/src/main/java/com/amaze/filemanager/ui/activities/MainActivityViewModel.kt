@@ -23,10 +23,17 @@ package com.amaze.filemanager.ui.activities
 import android.app.Application
 import androidx.collection.LruCache
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.filesystem.root.ListFilesCommand.listFiles
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivityViewModel(val applicationContext: Application) :
     AndroidViewModel(applicationContext) {
@@ -71,5 +78,36 @@ class MainActivityViewModel(val applicationContext: Application) :
      */
     fun getFromMediaFilesCache(mediaType: Int): List<LayoutElementParcelable>? {
         return mediaCacheHash[mediaType]
+    }
+
+    fun basicSearch(s: String, mainActivity: MainActivity) : MutableLiveData<ArrayList<HybridFileParcelable>> {
+
+        val hybridFileParcelables = ArrayList<HybridFileParcelable>()
+
+        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(hybridFileParcelables)
+
+        val showHiddenFiles = PreferenceManager
+            .getDefaultSharedPreferences(mainActivity)
+            .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            listFiles(
+                mainActivity.currentMainFragment!!.currentPath!!,
+                mainActivity.isRootExplorer,
+                showHiddenFiles,
+                { _: OpenMode? -> null }
+            ) { hybridFileParcelable: HybridFileParcelable ->
+                if (hybridFileParcelable.getName(mainActivity)
+                        .lowercase(Locale.getDefault())
+                        .contains(s.lowercase(Locale.getDefault()))
+                    && (showHiddenFiles || !hybridFileParcelable.isHidden)) {
+                    hybridFileParcelables.add(hybridFileParcelable)
+
+                    mutableLiveData.postValue(hybridFileParcelables)
+                }
+            }
+        }
+
+        return mutableLiveData
     }
 }

@@ -32,7 +32,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -208,14 +207,14 @@ public class SearchView {
       return false;
     }
 
-    search(s);
+    basicSearch(s);
 
     if (shouldSave) saveRecentPreference(s);
 
     return true;
   }
 
-  private void search(String s) {
+  private void basicSearch(String s) {
 
     clearRecyclerView();
 
@@ -228,30 +227,16 @@ public class SearchView {
             mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
             mainActivity.getString(R.string.try_indexed_search)));
 
-    ArrayList<HybridFileParcelable> hybridFileParcelables = new ArrayList<>();
-
-    boolean showHiddenFiles =
-        PreferenceManager.getDefaultSharedPreferences(mainActivity)
-            .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
-
-    // TODO: takes too much resources & freezes main thread on huge folders
-    ListFilesCommand.INSTANCE.listFiles(
-        mainActivity.getCurrentMainFragment().getPath(),
-        mainActivity.isRootExplorer(),
-        showHiddenFiles,
-        mode -> null,
-        hybridFileParcelable -> {
-          if (hybridFileParcelable.getName(mainActivity).toLowerCase().contains(s.toLowerCase())
-              && (showHiddenFiles || !hybridFileParcelable.isHidden())) {
-
-            hybridFileParcelables.add(hybridFileParcelable);
-
-            searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-
-            searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
-          }
-          return null;
-        });
+    mainActivity
+            .getCurrentMainFragment()
+            .getMainActivityViewModel()
+            .basicSearch(s, mainActivity)
+            .observe(
+                    mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+                    hybridFileParcelables -> {
+              searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+              searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
+            });
   }
 
   private void saveRecentPreference(String s) {
@@ -315,7 +300,7 @@ public class SearchView {
 
             Utils.hideKeyboard(mainActivity);
 
-            search(s);
+            basicSearch(s);
           });
     }
   }
