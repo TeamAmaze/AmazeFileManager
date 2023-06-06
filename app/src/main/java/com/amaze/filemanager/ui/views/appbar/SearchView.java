@@ -22,16 +22,11 @@ package com.amaze.filemanager.ui.views.appbar;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -45,9 +40,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.PorterDuff;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
@@ -172,16 +165,16 @@ public class SearchView {
 
           if (searchMode == 1) {
 
-              mainActivity
-                      .getCurrentMainFragment()
-                      .getMainActivityViewModel()
-                      .indexedSearch(mainActivity, s)
-                      .observe(
-                              mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
-                              hybridFileParcelables -> {
-                                  searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-                                  searchRecyclerViewAdapter.notifyDataSetChanged();
-                              });
+            mainActivity
+                .getCurrentMainFragment()
+                .getMainActivityViewModel()
+                .indexedSearch(mainActivity, s)
+                .observe(
+                    mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+                    hybridFileParcelables -> {
+                      searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+                      searchRecyclerViewAdapter.notifyDataSetChanged();
+                    });
 
             searchMode = 2;
             deepSearchTV.setText(

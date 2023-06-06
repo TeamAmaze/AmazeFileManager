@@ -116,9 +116,8 @@ class MainActivityViewModel(val applicationContext: Application) :
 
     fun indexedSearch(
         mainActivity: MainActivity,
-        query: String,
-    ): MutableLiveData< ArrayList<HybridFileParcelable> > {
-
+        query: String
+    ): MutableLiveData<ArrayList<HybridFileParcelable>> {
         val list = ArrayList<HybridFileParcelable>()
 
         val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(list)
@@ -128,7 +127,6 @@ class MainActivityViewModel(val applicationContext: Application) :
                 .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
 
         viewModelScope.launch(Dispatchers.IO) {
-
             val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
 
             val cursor = mainActivity
@@ -141,13 +139,12 @@ class MainActivityViewModel(val applicationContext: Application) :
                     val path =
                         cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
 
-                    if (path != null
-                        && path.contains(mainActivity.currentMainFragment?.currentPath!!)
-                        && File(path).name.lowercase(Locale.getDefault()).contains(
+                    if (path != null &&
+                        path.contains(mainActivity.currentMainFragment?.currentPath!!) &&
+                        File(path).name.lowercase(Locale.getDefault()).contains(
                             query.lowercase(Locale.getDefault())
                         )
                     ) {
-
                         val hybridFileParcelable =
                             RootHelper.generateBaseFile(File(path), showHiddenFiles)
 
