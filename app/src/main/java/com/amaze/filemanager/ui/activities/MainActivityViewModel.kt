@@ -83,10 +83,13 @@ class MainActivityViewModel(val applicationContext: Application) :
         return mediaCacheHash[mediaType]
     }
 
-    fun basicSearch(mainActivity: MainActivity, query: String): MutableLiveData<ArrayList<HybridFileParcelable>> {
+    fun basicSearch(mainActivity: MainActivity, query: String):
+        MutableLiveData<ArrayList<HybridFileParcelable>> {
         val hybridFileParcelables = ArrayList<HybridFileParcelable>()
 
-        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(hybridFileParcelables)
+        val mutableLiveData:
+            MutableLiveData<ArrayList<HybridFileParcelable>> =
+            MutableLiveData(hybridFileParcelables)
 
         val showHiddenFiles = PreferenceManager
             .getDefaultSharedPreferences(mainActivity)
@@ -100,8 +103,8 @@ class MainActivityViewModel(val applicationContext: Application) :
                 { _: OpenMode? -> null }
             ) { hybridFileParcelable: HybridFileParcelable ->
                 if (hybridFileParcelable.getName(mainActivity)
-                        .lowercase(Locale.getDefault())
-                        .contains(query.lowercase(Locale.getDefault())) &&
+                    .lowercase(Locale.getDefault())
+                    .contains(query.lowercase(Locale.getDefault())) &&
                     (showHiddenFiles || !hybridFileParcelable.isHidden)
                 ) {
                     hybridFileParcelables.add(hybridFileParcelable)
@@ -120,7 +123,9 @@ class MainActivityViewModel(val applicationContext: Application) :
     ): MutableLiveData<ArrayList<HybridFileParcelable>> {
         val list = ArrayList<HybridFileParcelable>()
 
-        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(list)
+        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(
+            list
+        )
 
         val showHiddenFiles =
             PreferenceManager.getDefaultSharedPreferences(mainActivity)
@@ -137,13 +142,15 @@ class MainActivityViewModel(val applicationContext: Application) :
             if (cursor.count > 0 && cursor.moveToFirst()) {
                 do {
                     val path =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
+                        cursor.getString(
+                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
+                        )
 
                     if (path != null &&
                         path.contains(mainActivity.currentMainFragment?.currentPath!!) &&
                         File(path).name.lowercase(Locale.getDefault()).contains(
-                            query.lowercase(Locale.getDefault())
-                        )
+                                query.lowercase(Locale.getDefault())
+                            )
                     ) {
                         val hybridFileParcelable =
                             RootHelper.generateBaseFile(File(path), showHiddenFiles)
