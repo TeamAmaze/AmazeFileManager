@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.activities
 
 import android.app.Application
+import android.provider.MediaStore
 import androidx.collection.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -29,10 +30,12 @@ import androidx.preference.PreferenceManager
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.ListFilesCommand.listFiles
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Locale
 
 class MainActivityViewModel(val applicationContext: Application) :
@@ -80,7 +83,7 @@ class MainActivityViewModel(val applicationContext: Application) :
         return mediaCacheHash[mediaType]
     }
 
-    fun basicSearch(s: String, mainActivity: MainActivity): MutableLiveData<ArrayList<HybridFileParcelable>> {
+    fun basicSearch(mainActivity: MainActivity, query: String): MutableLiveData<ArrayList<HybridFileParcelable>> {
         val hybridFileParcelables = ArrayList<HybridFileParcelable>()
 
         val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(hybridFileParcelables)
@@ -98,7 +101,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             ) { hybridFileParcelable: HybridFileParcelable ->
                 if (hybridFileParcelable.getName(mainActivity)
                         .lowercase(Locale.getDefault())
-                        .contains(s.lowercase(Locale.getDefault())) &&
+                        .contains(query.lowercase(Locale.getDefault())) &&
                     (showHiddenFiles || !hybridFileParcelable.isHidden)
                 ) {
                     hybridFileParcelables.add(hybridFileParcelable)
@@ -106,6 +109,57 @@ class MainActivityViewModel(val applicationContext: Application) :
                     mutableLiveData.postValue(hybridFileParcelables)
                 }
             }
+        }
+
+        return mutableLiveData
+    }
+
+    fun indexedSearch(
+        mainActivity: MainActivity,
+        query: String,
+    ): MutableLiveData< ArrayList<HybridFileParcelable> > {
+
+        val list = ArrayList<HybridFileParcelable>()
+
+        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(list)
+
+        val showHiddenFiles =
+            PreferenceManager.getDefaultSharedPreferences(mainActivity)
+                .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+
+            val cursor = mainActivity
+                .contentResolver
+                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
+                ?: return@launch
+
+            if (cursor.count > 0 && cursor.moveToFirst()) {
+                do {
+                    val path =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA))
+
+                    if (path != null
+                        && path.contains(mainActivity.currentMainFragment?.currentPath!!)
+                        && File(path).name.lowercase(Locale.getDefault()).contains(
+                            query.lowercase(Locale.getDefault())
+                        )
+                    ) {
+
+                        val hybridFileParcelable =
+                            RootHelper.generateBaseFile(File(path), showHiddenFiles)
+
+                        if (hybridFileParcelable != null) {
+                            list.add(hybridFileParcelable)
+                            mutableLiveData.postValue(list)
+                        }
+                    }
+                } while (cursor.moveToNext())
+            }
+
+            cursor.close()
         }
 
         return mutableLiveData

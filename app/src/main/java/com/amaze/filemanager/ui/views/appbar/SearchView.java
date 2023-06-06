@@ -172,10 +172,16 @@ public class SearchView {
 
           if (searchMode == 1) {
 
-            List<HybridFileParcelable> hybridFileParcelables = indexedSearch(mainActivity, s);
-
-            searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-            searchRecyclerViewAdapter.notifyDataSetChanged();
+              mainActivity
+                      .getCurrentMainFragment()
+                      .getMainActivityViewModel()
+                      .indexedSearch(mainActivity, s)
+                      .observe(
+                              mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+                              hybridFileParcelables -> {
+                                  searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+                                  searchRecyclerViewAdapter.notifyDataSetChanged();
+                              });
 
             searchMode = 2;
             deepSearchTV.setText(
@@ -230,7 +236,7 @@ public class SearchView {
     mainActivity
         .getCurrentMainFragment()
         .getMainActivityViewModel()
-        .basicSearch(s, mainActivity)
+        .basicSearch(mainActivity, s)
         .observe(
             mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
             hybridFileParcelables -> {
@@ -303,41 +309,6 @@ public class SearchView {
             basicSearch(s);
           });
     }
-  }
-
-  private List<HybridFileParcelable> indexedSearch(MainActivity mainActivity, String query) {
-
-    ArrayList<HybridFileParcelable> list = new ArrayList<>();
-    final String[] projection = {MediaStore.Files.FileColumns.DATA};
-
-    Cursor cursor =
-        mainActivity
-            .getContentResolver()
-            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
-
-    if (cursor == null) return list;
-    else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path =
-            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA));
-
-        if (path != null
-            && path.contains(mainActivity.getCurrentMainFragment().getPath())
-            && new File(path).getName().toLowerCase().contains(query.toLowerCase())) {
-
-          boolean showHiddenFiles =
-              PreferenceManager.getDefaultSharedPreferences(mainActivity)
-                  .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
-
-          HybridFileParcelable hybridFileParcelable =
-              RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-
-          if (hybridFileParcelable != null) list.add(hybridFileParcelable);
-        }
-      } while (cursor.moveToNext());
-    }
-    cursor.close();
-    return list;
   }
 
   /** show search view with a circular reveal animation */
