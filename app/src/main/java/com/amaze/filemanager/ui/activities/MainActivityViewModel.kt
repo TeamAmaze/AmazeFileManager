@@ -80,8 +80,7 @@ class MainActivityViewModel(val applicationContext: Application) :
         return mediaCacheHash[mediaType]
     }
 
-    fun basicSearch(s: String, mainActivity: MainActivity) : MutableLiveData<ArrayList<HybridFileParcelable>> {
-
+    fun basicSearch(s: String, mainActivity: MainActivity): MutableLiveData<ArrayList<HybridFileParcelable>> {
         val hybridFileParcelables = ArrayList<HybridFileParcelable>()
 
         val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(hybridFileParcelables)
@@ -99,8 +98,9 @@ class MainActivityViewModel(val applicationContext: Application) :
             ) { hybridFileParcelable: HybridFileParcelable ->
                 if (hybridFileParcelable.getName(mainActivity)
                         .lowercase(Locale.getDefault())
-                        .contains(s.lowercase(Locale.getDefault()))
-                    && (showHiddenFiles || !hybridFileParcelable.isHidden)) {
+                        .contains(s.lowercase(Locale.getDefault())) &&
+                    (showHiddenFiles || !hybridFileParcelable.isHidden)
+                ) {
                     hybridFileParcelables.add(hybridFileParcelable)
 
                     mutableLiveData.postValue(hybridFileParcelables)

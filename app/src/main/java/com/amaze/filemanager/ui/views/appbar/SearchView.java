@@ -228,12 +228,12 @@ public class SearchView {
             mainActivity.getString(R.string.try_indexed_search)));
 
     mainActivity
-            .getCurrentMainFragment()
-            .getMainActivityViewModel()
-            .basicSearch(s, mainActivity)
-            .observe(
-                    mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
-                    hybridFileParcelables -> {
+        .getCurrentMainFragment()
+        .getMainActivityViewModel()
+        .basicSearch(s, mainActivity)
+        .observe(
+            mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+            hybridFileParcelables -> {
               searchRecyclerViewAdapter.submitList(hybridFileParcelables);
               searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
             });
