@@ -107,14 +107,6 @@ public class SearchView {
     deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
     recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
 
-    searchMode = 0;
-    deepSearchTV.setText(
-        String.format(
-            "%s %s",
-            mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
-            mainActivity.getString(R.string.try_indexed_search)));
-    deepSearchTV.setVisibility(View.GONE);
-
     initRecentSearches(mainActivity);
 
     searchRecyclerViewAdapter = new SearchRecyclerViewAdapter();
@@ -304,10 +296,22 @@ public class SearchView {
     }
   }
 
+  private void resetSearchMode() {
+    searchMode = 0;
+    deepSearchTV.setText(
+        String.format(
+            "%s %s",
+            mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+            mainActivity.getString(R.string.try_indexed_search)));
+    deepSearchTV.setVisibility(View.GONE);
+  }
+
   /** show search view with a circular reveal animation */
   public void revealSearchView() {
     final int START_RADIUS = 16;
     int endRadius = Math.max(appbar.getToolbar().getWidth(), appbar.getToolbar().getHeight());
+
+    resetSearchMode();
 
     Animator animator;
     if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
