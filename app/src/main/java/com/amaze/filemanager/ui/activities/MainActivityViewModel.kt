@@ -83,6 +83,9 @@ class MainActivityViewModel(val applicationContext: Application) :
         return mediaCacheHash[mediaType]
     }
 
+    /**
+     * Perform basic search: searches on the current directory
+     */
     fun basicSearch(mainActivity: MainActivity, query: String):
         MutableLiveData<ArrayList<HybridFileParcelable>> {
         val hybridFileParcelables = ArrayList<HybridFileParcelable>()
@@ -117,6 +120,9 @@ class MainActivityViewModel(val applicationContext: Application) :
         return mutableLiveData
     }
 
+    /**
+     * Perform indexed search: on MediaStore items from the current directory & it's children
+     */
     fun indexedSearch(
         mainActivity: MainActivity,
         query: String
