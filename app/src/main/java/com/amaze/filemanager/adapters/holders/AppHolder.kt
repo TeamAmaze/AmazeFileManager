@@ -60,7 +60,7 @@ class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
         packageName.visibility = View.VISIBLE
 
         val layoutParams = txtDesc.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.setMargins(txtDesc.marginLeft, txtDesc.marginTop, 8, txtDesc.marginBottom)
+        layoutParams.setMargins(txtDesc.marginLeft, txtDesc.marginTop, 4, txtDesc.marginBottom)
         txtDesc.layoutParams = layoutParams
 
         view.findViewById<ImageView>(R.id.picture_icon).visibility = View.GONE
