@@ -10,7 +10,7 @@ Please keep in mind the points below before considering contributing to Amaze:
 You won't be able to claim the license for changes made by you unless you do that. 
 If there's no license header in any file, please include one from [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) webpage.
 - Please follow [Android/JAVA code style](https://source.android.com/source/code-style.html) for writing any code, but do not use the Hungarian notation proposed - discussion [here](https://github.com/TeamAmaze/AmazeFileManager/issues/986). 
-Also, follow [Android Material Design guidelines](https://material.io/guidelines/material-design/introduction.html) in case you make changes to any UI element.
+Also, follow [Android Material Design guidelines](https://m2.material.io/design/introduction) in case you make changes to any UI element.
 - To file a bug report, it is recommended to include the steps to reproduce it; and even better, it helps us a lot if you can capture the error messages in logcat too 
 It is also recommended to enroll to our beta program from Play Store to test and verify any fix for the same.
 
