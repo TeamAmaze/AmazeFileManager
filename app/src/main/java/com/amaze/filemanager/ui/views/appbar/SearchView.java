@@ -112,8 +112,6 @@ public class SearchView {
     searchRecyclerViewAdapter = new SearchRecyclerViewAdapter();
     recyclerView.setAdapter(searchRecyclerViewAdapter);
 
-    clearRecyclerView();
-
     clearImageView.setOnClickListener(
         v -> {
           searchViewEditText.setText("");
@@ -312,6 +310,7 @@ public class SearchView {
     int endRadius = Math.max(appbar.getToolbar().getWidth(), appbar.getToolbar().getHeight());
 
     resetSearchMode();
+      clearRecyclerView();
 
     Animator animator;
     if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
