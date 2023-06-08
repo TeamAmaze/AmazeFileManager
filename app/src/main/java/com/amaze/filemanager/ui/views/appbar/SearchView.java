@@ -83,9 +83,9 @@ public class SearchView {
 
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
-  // 0 -> Basic
-  // 1 -> Indexed
-  // 2 -> Recursive
+  // 0 -> Basic Search
+  // 1 -> Indexed Search
+  // 2 -> Deep Search
   private int searchMode;
 
   private boolean enabled = false;
@@ -173,7 +173,7 @@ public class SearchView {
                 String.format(
                     "%s %s",
                     mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
-                    mainActivity.getString(R.string.try_recursive_search)));
+                    mainActivity.getString(R.string.try_deep_search)));
 
           } else if (searchMode == 2) {
 
