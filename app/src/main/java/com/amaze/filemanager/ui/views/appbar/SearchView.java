@@ -160,6 +160,8 @@ public class SearchView {
 
           if (searchMode == 1) {
 
+            saveRecentPreference(s);
+
             mainActivity
                 .getCurrentMainFragment()
                 .getMainActivityViewModel()
