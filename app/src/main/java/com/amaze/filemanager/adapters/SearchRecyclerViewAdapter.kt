@@ -69,14 +69,14 @@ class SearchRecyclerViewAdapter :
 
         holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
 
-//        val colorPreference =
-//            (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
-//
-//        if (item != null && item.isDirectory) { // always false for some reason!
-//            holder.colorView.setBackgroundColor(colorPreference.iconSkin)
-//        } else {
-//            holder.colorView.setBackgroundColor(colorPreference.accent)
-//        }
+        val colorPreference =
+            (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
+
+        if (item.isDirectory) {
+            holder.colorView.setBackgroundColor(colorPreference.primaryFirstTab)
+        } else {
+            holder.colorView.setBackgroundColor(colorPreference.accent)
+        }
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
