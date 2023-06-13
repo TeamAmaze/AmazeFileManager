@@ -1,42 +1,55 @@
-Amaze was created with a vision to provide all the basic and advanced features a file manager in Android is supposed to have, with a friendly material design.
-As with any other open source project, contributions are the key to achieve this goal of ours.
+# Contributing to Amaze
+
+Happy to see you in here! Amaze was created with a vision to provide all the basic and advanced features a file manager in Android is supposed to have, with a friendly material design. As with any other open source project, contributions are the key to achieve this goal of ours. :)
 
 Contributions are always welcome!
 
-To start contributing, we assume you know how to use git and write and debug Android apps - don't expect we can teach you ;)
+> ### Imposter's syndrome disclaimer: We want your help. No, really! Any contribution counts, no matter how small it be!
 
-Please keep in mind the points below before considering contributing to Amaze:
-- Make sure to write your name and Email-ID in format ````Name<email>```` in the license declaration above every file you make change to.
-You won't be able to claim the license for changes made by you unless you do that. 
-If there's no license header in any file, please include one from [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) webpage.
-- Please follow [Android/JAVA code style](https://source.android.com/source/code-style.html) for writing any code, but do not use the Hungarian notation proposed - discussion [here](https://github.com/TeamAmaze/AmazeFileManager/issues/986). 
-Also, follow [Android Material Design guidelines](https://material.io/guidelines/material-design/introduction.html) in case you make changes to any UI element.
-- To file a bug report, it is recommended to include the steps to reproduce it; and even better, it helps us a lot if you can capture the error messages in logcat too 
-It is also recommended to enroll to our beta program from Play Store to test and verify any fix for the same.
+# How to contribute?
 
-We work with pull requests, so, for improvements, new features or bugfixes, please submit your changes as pull requests.
-We will then:
+- **Translation**: We use [Transfeix](https://www.transifex.com/amaze/amaze-file-manager/) for our translations, feel free to contribute translations there.
+- **Monetary Contributions**: You can do monetary contributions via [OpenCollective](https://opencollective.com/TeamAmaze), [LiberaPay](https://liberapay.com/Team-Amaze/donate) or PayPal](https://www.paypal.me/vishalnehra).
+- **Bug Reports**: Reporting bugs clearly & concisely helps us improve Amaze. It would be great for us to pinpoint the cause of a bug if there are logs attached to the bug report. Or clearcut steps to reproduce the issue you are facing. Yes, good bug reports are considered as contributions too!
+- **Code Contributions**: This file discusses about code contributions.
 
-1. start review of your code for cleanliness and robustness
-2. test them to see if they work as you said
-3. merge the pull request
+To start contributing, we assume you know how to use git and write and debug Android apps.
 
-To speed up the review process, please:
+## How to get started?
 
-- write your code cleanly. We also have our day time work, we are not able to correct the mistakes in your code.
-- before opening PR, run `./gradlew spotlessCheck` and `./gradlew spotlessApply` in your local to check / fix any formatting issues.
-- describe clearly what your pull request does
-- if you're fixing a particular bug in the issue list, please explicitly say "Fixes #<issue number>" in your description
-- once you've opened PR, look out for CI builds, if there is any code smell / bug - CI will complain, please work on it to keep the code clean.
-- while not required (because automated tests can't test everything), it's recommended you to include [Robolectric](http://robolectric.org/)/[Espresso](https://developer.android.com/training/testing/espresso/) tests in your pull request
+ - You can use GitHub web interface to fork `TeamAmaze/AmazeFileManager` to `<YOUR-USERNAME>/AmazeFileManager`.
+ - The next step is to import it into Android Studio by `New Project -> Get from Version Control`.
+ - There you can paste the link to your fork.
+ - Let Android Studio import the project & download all the necessary dependencies
+ - Now you can build & run the project on an emulator/real device.
 
-Finally:
+## What to do next?
 
-- we have our day time work, so except security vulnerabilities, your submission may be left cold for a couple of days before being picked up by us
-- it's good to start a new branch to start your work. Not just for a shiny branch name, but also for your own good
-- we can be harsh when reviewing your work but because we want to have good code in our codebase. Be patient and carefully read our comments
-- we can be wrong. Again, be patient when discuss with us - we accept reason, but we never accept hate speech
+ - Go to [issues]() section & have a look at [good-first-issues](). These are low hanging fruits ready to be picked up!
+ - Have a look at [NPE Crashes]() too. These must be literally one line fixes to bugs.
+ - Or if you wanna work on a feature, please make sure no one's working on it by commenting on the thread (we'll assign it to you then).
+ - Once you have made all the necessary changes, and everything works as expected, please run `./gradlew spotlessCheck` on your local and handle any resulting formatting issues. Most of them can be fixed by running `./gradlew spotlessApply` (others would need lil manual changes)
+ - If everything looks good, push it to your fork & make a PR (please make sure to fill the PR template!)
+ - We'll look into your PR soon, give feedback, and upon the code working as expected (i.e, fixes the bug/implements feature), the code get merged to the next release branch! Yay!
 
-If we feel your PR is a significant help to us, we'll award you a bounty with any of your preferred mode of payment.  
-Please provide the details for the same once asked.
-Ready to roll? Start forking ;)
+If we feel your PR is a significant help to us, we'll award you a bounty with any of your preferred mode of payment.
+
+## Points to note
+
+ - Please follow [Android/JAVA code style](https://source.android.com/docs/setup/contribute/code-style) for writing any code. Please see [this](https://github.com/TeamAmaze/AmazeFileManager/issues/986) issue too.
+ - Also, follow [Android Material Design guidelines](https://material.io/guidelines/material-design/introduction.html) in case you make changes to any UI element.
+
+## PS: please make sure to
+
+- Follow best practices & to write _clean code_.
+- Before opening a PR, run `./gradlew spotlessCheck` on your local and handle any resulting formatting issues. Most of them can be fixed by running `./gradlew spotlessApply` (others would need lil manual changes)
+- Fill in the pull request template clearly (for eg: `fixes #XXXX` for bugfixes)
+- Once you've opened PR, look out for CI builds (`Checks` section on the top of your PR). If it's all green, you're good to go! Else, please fix the issues specified in the logs (you can get logs by clicking on the failed workflow & then the failed action).
+- Include tests (either Unit tests or automated tests like [Robolectric](http://robolectric.org/)/[Espresso](https://developer.android.com/training/testing/espresso/)) if possible to your PR
+
+### Finally!
+
+- We have our day time work, so except security vulnerabilities, your submission may be left cold for a lil while before being picked up by us :)
+- Please be patient with us while we review our code. Try to avoid favoritism, hate speech & adhere to our [code of conduct](https://github.com/TeamAmaze/AmazeFileManager/blob/release/4.0/CODE_OF_CONDUCT.md).
+
+## Ready to roll? Start [forking](https://github.com/TeamAmaze/AmazeFileManager/fork)! ;)
