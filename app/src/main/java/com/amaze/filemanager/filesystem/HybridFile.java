@@ -426,7 +426,7 @@ public class HybridFile {
     if (isLocal() || isRoot() || isDocumentFile() || isAndroidDataDir()) return path;
 
     try {
-      return URLDecoder.decode(path.replace("+", "%2b"), "UTF-8");
+      return URLDecoder.decode(path, "UTF-8");
     } catch (UnsupportedEncodingException | IllegalArgumentException e) {
       LOG.warn("failed to decode path {}", path, e);
       return path;
