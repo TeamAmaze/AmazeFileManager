@@ -25,8 +25,8 @@ To start contributing, we assume you know how to use git and write and debug And
 
 ## What to do next?
 
- - Go to [issues]() section & have a look at [good-first-issues](). These are low hanging fruits ready to be picked up!
- - Have a look at [NPE Crashes]() too. These must be literally one line fixes to bugs.
+ - Go to [issues]() section & have a look at [good-first-issues](https://github.com/TeamAmaze/AmazeFileManager/issues?q=is%3Aopen+is%3Aissue+label%3A%22Issue-Easy+%28good+first+issue%29%22). These are low hanging fruits ready to be picked up!
+ - Have a look at [NPE Crashes](https://github.com/TeamAmaze/AmazeFileManager/issues?q=is%3Aopen+is%3Aissue+label%3ACrash-NullPointerException) too. These must be literally one line fixes to bugs.
  - Or if you wanna work on a feature, please make sure no one's working on it by commenting on the thread (we'll assign it to you then).
  - Once you have made all the necessary changes, and everything works as expected, please run `./gradlew spotlessCheck` on your local and handle any resulting formatting issues. Most of them can be fixed by running `./gradlew spotlessApply` (others would need lil manual changes)
  - If everything looks good, push it to your fork & make a PR (please make sure to fill the PR template!)
