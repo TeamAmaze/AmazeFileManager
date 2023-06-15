@@ -237,7 +237,7 @@ class ZipService : AbstractProgressiveService() {
             emitter: CompletableEmitter,
             context: Context,
             baseFiles: ArrayList<File>,
-            zipPath: String,
+            zipPath: String
         ) {
             val out: OutputStream?
             val zipDirectory = File(zipPath)
