@@ -144,7 +144,7 @@ class ZipService : AbstractProgressiveService() {
         initNotificationViews()
         super.onStartCommand(intent, flags, startId)
         super.progressHalted()
-        val zipTask = CompressTask(this, baseFiles, mZipPath!!)
+        val zipTask = CompressTask(this, baseFiles, zipFile.absolutePath)
         disposables.add(zipTask.compress())
         // If we get killed, after returning from here, restart
         return START_NOT_STICKY
