@@ -184,6 +184,9 @@ class ZipService : AbstractProgressiveService() {
         private lateinit var zos: ZipOutputStream
         private lateinit var watcherUtil: ServiceWatcherUtil
 
+        /**
+         * Main use case for executing zipping task by given [zipPath]
+         */
         fun compress(): Disposable {
             return Completable.create { emitter ->
                 // setting up service watchers and initial data packages
@@ -224,6 +227,9 @@ class ZipService : AbstractProgressiveService() {
                 )
         }
 
+        /**
+         * Deletes the destination file zip file if exists
+         */
         fun cancel() {
             progressHandler.cancelled = true
             val zipFile = File(zipPath)
