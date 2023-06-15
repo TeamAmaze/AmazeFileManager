@@ -41,6 +41,7 @@ import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
@@ -715,7 +716,7 @@ public class Operations {
         super.onPostExecute(aVoid);
         if (newFile != null && oldFile != null) {
           HybridFile[] hybridFiles = {newFile, oldFile};
-          FileUtils.scanFile(context, hybridFiles);
+          MediaConnectionUtils.scanFile(context, hybridFiles);
         }
       }
     }.executeOnExecutor(executor);
