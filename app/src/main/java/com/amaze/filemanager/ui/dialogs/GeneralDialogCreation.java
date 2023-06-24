@@ -869,6 +869,15 @@ public class GeneralDialogCreation {
 
   public static void showCompressDialog(
       @NonNull final MainActivity mainActivity,
+      final HybridFileParcelable baseFile,
+      final String current) {
+    ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+    baseFiles.add(baseFile);
+    showCompressDialog(mainActivity, baseFiles, current);
+  }
+
+  public static void showCompressDialog(
+      @NonNull final MainActivity mainActivity,
       final ArrayList<HybridFileParcelable> baseFiles,
       final String current) {
     int accentColor = mainActivity.getAccent();

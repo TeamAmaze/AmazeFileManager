@@ -1392,6 +1392,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       }
     } else {
       popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.compress).setVisible(true);
 
       if (description.endsWith(fileExtensionZip)
           || description.endsWith(fileExtensionJar)
@@ -1409,8 +1410,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           || description.endsWith(fileExtensionGz)
           || description.endsWith(fileExtensionBzip2)
           || description.endsWith(fileExtensionLzma)
-          || description.endsWith(fileExtensionXz))
+          || description.endsWith(fileExtensionXz)) {
         popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+        popupMenu.getMenu().findItem(R.id.compress).setVisible(false);
+      }
     }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
