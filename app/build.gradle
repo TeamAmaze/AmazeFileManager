@@ -187,8 +187,6 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.3.1'
 
-    implementation 'com.android.volley:volley:1.2.1'
-
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
