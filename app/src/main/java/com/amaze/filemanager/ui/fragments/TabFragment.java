@@ -233,7 +233,6 @@ public class TabFragment extends Fragment {
 
   @Override
   public void onSaveInstanceState(@NonNull Bundle outState) {
-    super.onSaveInstanceState(outState);
 
     if (sharedPrefs != null) {
       sharedPrefs.edit().putInt(PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
@@ -249,6 +248,7 @@ public class TabFragment extends Fragment {
       fragmentManager.putFragment(outState, KEY_FRAGMENT_1, fragments.get(1));
       outState.putInt(KEY_POSITION, viewPager.getCurrentItem());
     }
+    super.onSaveInstanceState(outState);
   }
 
   public void setPagingEnabled(boolean isPaging) {
