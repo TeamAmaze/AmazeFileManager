@@ -254,6 +254,7 @@ class AppsRecyclerAdapter(
                     ) {
                             uri, mimeType, useNewStack ->
                         val intent = buildIntent(
+                            fragment.requireContext(),
                             uri,
                             mimeType,
                             useNewStack,
