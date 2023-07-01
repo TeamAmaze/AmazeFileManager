@@ -141,6 +141,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
          * Builds an intent which necessary permission flags for external apps to open uri file
          */
         fun buildIntent(
+            context: Context,
             uri: Uri,
             mimeType: String,
             useNewStack: Boolean,
@@ -151,6 +152,18 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             chooserIntent.action = Intent.ACTION_VIEW
             chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             chooserIntent.setDataAndType(uri, mimeType)
+
+            for (
+                resolveInfo in context.packageManager
+                    .queryIntentActivities(
+                        chooserIntent,
+                        PackageManager.MATCH_DEFAULT_ONLY
+                    )
+            ) context.grantUriPermission(
+                resolveInfo.activityInfo.packageName,
+                uri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
 
             if (useNewStack) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -187,12 +200,28 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 try {
                     val classNameAndPackageName = classAndPackageRaw.split(" ")
                     val intent = buildIntent(
+                        activity,
                         uri,
                         mimeType,
                         useNewStack,
                         classNameAndPackageName[0],
                         classNameAndPackageName[1]
                     )
+
+                    for (
+                        resolveInfo in activity.packageManager
+                            .queryIntentActivities(
+                                intent,
+                                PackageManager.MATCH_DEFAULT_ONLY
+                            )
+                    )
+                        activity.grantUriPermission(
+                            resolveInfo.activityInfo.packageName,
+                            uri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+
                     startActivity(activity, intent)
                     result = true
                 } catch (e: ActivityNotFoundException) {
@@ -305,6 +334,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         val intent = buildIntent(
+            requireContext(),
             uri!!,
             mimeType!!,
             useNewStack!!,
@@ -340,6 +370,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
     private fun loadViews(lastAppData: AppDataParcelable) {
         lastAppData.let {
             val lastAppIntent = buildIntent(
+                requireContext(),
                 it.openFileParcelable?.uri!!,
                 it.openFileParcelable?.mimeType!!,
                 it.openFileParcelable?.useNewStack!!,
@@ -417,6 +448,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         if (appDataParcelableList.size == 1) {
             requireContext().startActivityCatchingSecurityException(
                 buildIntent(
+                    requireContext(),
                     appDataParcelableList[0].openFileParcelable?.uri!!,
                     appDataParcelableList[0].openFileParcelable?.mimeType!!,
                     appDataParcelableList[0].openFileParcelable?.useNewStack!!,
