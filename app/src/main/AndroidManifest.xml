@@ -54,7 +54,8 @@
         tools:replace="android:label"
         android:label="@string/appbar_name"
         android:requestLegacyExternalStorage="true"
-        android:banner="@drawable/about_header">
+        android:banner="@drawable/about_header"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:exported="true"
