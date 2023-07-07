@@ -808,5 +808,10 @@ You only need to do this once, until the next time you select a new location for
     <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
     <string name="cloud_connection_credentials_cleared">Cloud Connection credentials cleared</string>
     <string name="cloud_connection_credentials_cleared_msg">Unfortunately, we were unable to migrate your cloud connection credentials to the new database schema, and we had to remove them from the app. Please create the cloud connection again.</string>
+    <string name="not_finding_what_you_re_looking_for">Not finding what you\'re looking for?</string>
+    <string name="try_deep_search">Try Deep Search!</string>
+    <string name="try_indexed_search">Try Indexed Search!</string>
+    <string name="search_recent">Recent</string>
+    <string name="results">Results</string>
 </resources>
 
