@@ -96,7 +96,7 @@ class SmbSearchDialog : DialogFragment() {
         }
         builder.positiveText(R.string.use_custom_ip)
         builder.positiveColor(accentColor)
-        viewModel.valHolder.value = (ComputerParcelable("-1", "-1"))
+        viewModel.valHolder.postValue(ComputerParcelable("-1", "-1"))
         listViewAdapter = ListViewAdapter(requireActivity())
         val observable = SmbDeviceScannerObservable()
         subnetScannerObserver = observable
@@ -108,7 +108,7 @@ class SmbSearchDialog : DialogFragment() {
             .subscribe(
                 { computer: ComputerParcelable ->
                     if (!listViewAdapter.contains(computer)) {
-                        viewModel.valHolder.value = computer
+                        viewModel.valHolder.postValue(computer)
                     }
                 },
                 { err: Throwable ->
@@ -156,7 +156,6 @@ class SmbSearchDialog : DialogFragment() {
                 items.add(computer)
             } else {
                 items.add(items.size - 1, computer)
-                removeDummy()
             }
             notifyDataSetChanged()
         }
