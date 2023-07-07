@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.views.drawer;
 
-import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
@@ -57,7 +56,6 @@ import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.fragments.preferencefragments.QuickAccessesPrefsFragment;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
@@ -68,8 +66,6 @@ import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -113,8 +109,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(Drawer.class);
 
-  public static final int image_selector_request_code = 31;
-
   public static final int STORAGES_GROUP = 0,
       SERVERS_GROUP = 1,
       CLOUDS_GROUP = 2,
@@ -134,7 +128,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private boolean isDrawerLocked = false;
   private FragmentTransaction pending_fragmentTransaction;
   private String pendingPath;
-  private ImageLoader mImageLoader;
   private String firstPath = null, secondPath = null;
 
   private DrawerLayout mDrawerLayout;
@@ -184,8 +177,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       mainActivity.startActivityForResult(intent1, image_selector_request_code);
       return false;
     });*/
-
-    mImageLoader = AppConfig.getInstance().getImageLoader();
 
     navView = mainActivity.findViewById(R.id.navigation);
 
@@ -742,23 +733,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
   }
 
-  public void onActivityResult(int requestCode, int responseCode, Intent intent) {
-    if (mainActivity.getPrefs() != null && intent != null && intent.getData() != null) {
-      if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-        mainActivity
-            .getContentResolver()
-            .takePersistableUriPermission(intent.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      }
-      mainActivity
-          .getPrefs()
-          .edit()
-          .putString(
-              PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, intent.getData().toString())
-          .commit();
-      setDrawerHeaderBackground();
-    }
-  }
-
   public void closeIfNotLocked() {
     if (!isLocked()) {
       close();
@@ -920,32 +894,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public int getPhoneStorageCount() {
     return phoneStorageCount;
-  }
-
-  public void setDrawerHeaderBackground() {
-    String path1 =
-        mainActivity.getPrefs().getString(PreferencesConstants.PREFERENCE_DRAWER_HEADER_PATH, null);
-    if (path1 == null) {
-      return;
-    }
-    try {
-      final ImageView headerImageView = new ImageView(mainActivity);
-      headerImageView.setImageDrawable(drawerHeaderParent.getBackground());
-      mImageLoader.get(
-          path1,
-          new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-              headerImageView.setImageBitmap(response.getBitmap());
-              drawerHeaderView.setBackgroundResource(R.drawable.amaze_header_2);
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {}
-          });
-    } catch (Exception e) {
-      LOG.warn("failed to set drawer header background", e);
-    }
   }
 
   public void selectCorrectDrawerItemForPath(final String path) {

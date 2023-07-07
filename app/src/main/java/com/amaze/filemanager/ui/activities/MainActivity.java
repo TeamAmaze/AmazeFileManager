@@ -1539,9 +1539,7 @@ public class MainActivity extends PermissionsActivity
 
   protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
     super.onActivityResult(requestCode, responseCode, intent);
-    if (requestCode == Drawer.image_selector_request_code) {
-      drawer.onActivityResult(requestCode, responseCode, intent);
-    } else if (requestCode == 3) {
+    if (requestCode == 3) {
       Uri treeUri;
       if (responseCode == Activity.RESULT_OK) {
         // Get Uri from Storage Access Framework.
@@ -1721,7 +1719,7 @@ public class MainActivity extends PermissionsActivity
           if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
-    drawer.setDrawerHeaderBackground();
+    //    drawer.setDrawerHeaderBackground();
   }
 
   /**
