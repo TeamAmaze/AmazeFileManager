@@ -85,8 +85,8 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Function;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 

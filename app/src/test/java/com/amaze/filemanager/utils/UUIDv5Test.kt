@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,13 +20,24 @@
 
 package com.amaze.filemanager.utils
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
-@Parcelize
-data class ComputerParcelable(val addr: String, val name: String) : Parcelable {
-    override fun toString(): String = "$name [$addr]"
-    override fun hashCode(): Int = addr.hashCode()
-    override fun equals(other: Any?): Boolean =
-        other is ComputerParcelable && other.addr == this.addr
+/**
+ * Test for [UUIDv5].
+ */
+class UUIDv5Test {
+
+    /**
+     * Test UUID generation. Value is based on SHA-1 hash, so it can be expected.
+     *
+     * Test case taken (again) from
+     * https://gist.github.com/icedraco/00118b4d3c91d96d8c58e837a448f1b8
+     */
+    @Test
+    fun testGenerateUUID() {
+        val url = "http://www.whatever.com/test/"
+        val uuid = UUIDv5.fromString(UUIDv5.URL, url)
+        assertEquals("1730930d-a36a-5efd-aa3f-561a164f87a4", uuid.toString())
+    }
 }

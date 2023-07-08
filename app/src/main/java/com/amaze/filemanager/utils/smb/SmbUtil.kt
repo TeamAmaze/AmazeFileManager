@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils
+package com.amaze.filemanager.utils.smb
 
 import android.content.Context
 import android.net.Uri
@@ -30,6 +30,8 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.filesystem.smb.CifsContexts.createWithDisableIpcSigningCheck
+import com.amaze.filemanager.utils.PasswordUtil
+import com.amaze.filemanager.utils.urlDecoded
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import jcifs.smb.NtlmPasswordAuthenticator

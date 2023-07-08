@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import org.junit.Test
 
 class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {

@@ -66,6 +66,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import android.annotation.SuppressLint;
