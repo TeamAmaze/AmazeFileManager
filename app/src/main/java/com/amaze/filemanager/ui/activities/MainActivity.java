@@ -1988,6 +1988,7 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+    sftpConnectDialog.setCancelable(false);
     String finalName = name;
     Flowable.fromCallable(() -> new NetCopyConnectionInfo(path))
         .flatMap(
