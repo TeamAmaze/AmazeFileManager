@@ -144,7 +144,7 @@ dependencies {
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"

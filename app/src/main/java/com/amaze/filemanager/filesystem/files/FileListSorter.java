@@ -120,7 +120,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     return 0;
   }
 
-  private static String getExtension(String a) {
+  public static String getExtension(String a) {
     return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
   }
 }
