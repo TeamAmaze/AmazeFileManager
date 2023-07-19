@@ -555,12 +555,15 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void checkForExternalPermission() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (SDK_INT >= Build.VERSION_CODES.M) {
       if (!checkStoragePermission()) {
         requestStoragePermission(this, true);
       }
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      if (SDK_INT >= Build.VERSION_CODES.R) {
         requestAllFilesAccess(this);
+      }
+      if (SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkNotificationPermission()) {
+        requestNotificationPermission(true);
       }
     }
   }

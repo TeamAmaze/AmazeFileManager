@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
+import static android.os.Build.VERSION_CODES.TIRAMISU;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -48,10 +50,11 @@ public class PermissionsActivity extends ThemedActivity
 
   private static final String TAG = PermissionsActivity.class.getSimpleName();
 
-  public static final int PERMISSION_LENGTH = 3;
+  public static final int PERMISSION_LENGTH = 4;
   public static final int STORAGE_PERMISSION = 0,
       INSTALL_APK_PERMISSION = 1,
-      ALL_FILES_PERMISSION = 2;
+      ALL_FILES_PERMISSION = 2,
+      NOTIFICATION_PERMISSION = 3;
 
   private final OnPermissionGranted[] permissionCallbacks =
       new OnPermissionGranted[PERMISSION_LENGTH];
@@ -69,7 +72,13 @@ public class PermissionsActivity extends ThemedActivity
         Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
         requestStoragePermission(permissionCallbacks[STORAGE_PERMISSION], false);
       }
-
+    } else if (requestCode == NOTIFICATION_PERMISSION && Build.VERSION.SDK_INT >= TIRAMISU) {
+      if (isGranted(grantResults)) {
+        Utils.enableScreenRotation(this);
+      } else {
+        Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
+        requestNotificationPermission(false);
+      }
     } else if (requestCode == INSTALL_APK_PERMISSION) {
       if (isGranted(grantResults)) {
         permissionCallbacks[INSTALL_APK_PERMISSION].onPermissionGranted();
@@ -82,6 +91,35 @@ public class PermissionsActivity extends ThemedActivity
     // Verify that all required contact permissions have been granted.
     return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         == PackageManager.PERMISSION_GRANTED;
+  }
+
+  @RequiresApi(TIRAMISU)
+  public boolean checkNotificationPermission() {
+    return ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        == PackageManager.PERMISSION_GRANTED;
+  }
+
+  @RequiresApi(TIRAMISU)
+  public void requestNotificationPermission(boolean isInitialStart) {
+    Utils.disableScreenRotation(this);
+    final MaterialDialog materialDialog =
+        GeneralDialogCreation.showBasicDialog(
+            this,
+            R.string.grant_notification_permission,
+            R.string.grantper,
+            R.string.grant,
+            R.string.cancel);
+    materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> finish());
+    materialDialog.setCancelable(false);
+
+    requestPermission(
+        Manifest.permission.POST_NOTIFICATIONS,
+        NOTIFICATION_PERMISSION,
+        materialDialog,
+        () -> {
+          // do nothing
+        },
+        isInitialStart);
   }
 
   public void requestStoragePermission(
