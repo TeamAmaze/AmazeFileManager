@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -94,7 +96,11 @@ class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> {
       rootView.setOnClickListener(
           v -> {
             if (dialog != null && dialog.isShowing()) dialog.dismiss();
-            context.startActivity(items.get(position));
+            try {
+              context.startActivity(items.get(position));
+            } catch (ActivityNotFoundException e) {
+              Toast.makeText(context, R.string.no_app_found, Toast.LENGTH_SHORT).show();
+            }
           });
     }
   }

@@ -43,8 +43,8 @@ import com.amaze.filemanager.database.models.utilities.Hidden
 import com.amaze.filemanager.database.models.utilities.History
 import com.amaze.filemanager.database.models.utilities.SftpEntry
 import com.amaze.filemanager.database.models.utilities.SmbEntry
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.AT
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.utils.PasswordUtil.decryptPassword
 import com.amaze.filemanager.utils.PasswordUtil.encryptPassword
 import org.slf4j.LoggerFactory

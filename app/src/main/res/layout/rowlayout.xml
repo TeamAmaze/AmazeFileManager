@@ -151,6 +151,20 @@
                 android:layout_marginEnd="10dip"
                 android:textColor="?android:attr/textColorTertiary"
                 />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:id="@+id/appManagerPackageName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/date"
+                android:layout_alignBottom="@id/date"
+                android:layout_toEndOf="@id/date"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/secondLine"
                 android:layout_width="wrap_content"

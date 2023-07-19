@@ -68,9 +68,6 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_PATH
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_ROOT_FILESYSTEM
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.getLocalInetAddress
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isConnectedToLocalNetwork
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isConnectedToWifi
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isRunning
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
@@ -80,6 +77,9 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.runIfDocumentsUIExists
 import com.amaze.filemanager.ui.theme.AppTheme
+import com.amaze.filemanager.utils.NetworkUtil.getLocalInetAddress
+import com.amaze.filemanager.utils.NetworkUtil.isConnectedToLocalNetwork
+import com.amaze.filemanager.utils.NetworkUtil.isConnectedToWifi
 import com.amaze.filemanager.utils.OneCharacterCharSequence
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.Utils
@@ -198,8 +198,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                         val editText = dialog.inputEditText
                         if (editText != null) {
                             val name = editText.text.toString()
-                            val portNumber = name.toInt()
-                            if (portNumber < 1024) {
+                            val portNumber = name.toIntOrNull()
+                            if (portNumber == null || portNumber < 1024) {
                                 Toast.makeText(
                                     activity,
                                     R.string.ftp_port_change_error_invalid,

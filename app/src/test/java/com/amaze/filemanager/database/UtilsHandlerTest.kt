@@ -35,7 +35,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -104,8 +104,13 @@ class UtilsHandlerTest {
                 saveToDatabase(o)
                 val verify = smbList
                 assertEquals(1, verify.size)
-                // UtilsHandler.getSmbList() will decrypt password when return
-                assertEquals(path, verify[0][1])
+                assertEquals(
+                    SmbUtil.getSmbEncryptedPath(
+                        AppConfig.getInstance(),
+                        path
+                    ),
+                    verify[0][1]
+                )
             }
             utilitiesDatabase.run {
                 val verify = smbEntryDao().list().blockingGet()

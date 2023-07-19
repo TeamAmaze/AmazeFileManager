@@ -37,6 +37,9 @@ buildscript {
         commonsNetVersion = "3.8.0"
         ftpserverVersion = "1.1.1"
         jsoupVersion = "1.13.1"
+        rxAndroidVersion = "2.1.1"
+        rxJavaVersion = "2.2.9"
+        okHttpVersion = "4.9.0"
     }
     repositories {
         google()
@@ -48,7 +51,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.3.1'
         classpath 'com.hiya:jacoco-android:0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.project.starter:easylauncher:4.0.0"
+        classpath "com.project.starter:easylauncher:6.1.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -76,7 +79,7 @@ allprojects {
 spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java'
+        target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java', 'portscanner/src/**/*.java'
         googleJavaFormat('1.15.0')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''

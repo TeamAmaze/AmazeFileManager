@@ -26,7 +26,6 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
 import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DATA_DIRS;
 import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DEVICE_DATA_DIRS;
-import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -1040,7 +1039,8 @@ public class MainFragment extends Fragment
                     .getSmbPath()
                     .equals(mainFragmentViewModel.getCurrentPath())) {
               StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-              if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
+              if (mainFragmentViewModel.getCurrentPath() != null
+                  && mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
                 path.append(
                     mainFragmentViewModel
                         .getCurrentPath()
@@ -1052,11 +1052,7 @@ public class MainFragment extends Fragment
                   false);
             } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
           } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
-            if (mainFragmentViewModel.getCurrentPath() != null
-                && !mainFragmentViewModel
-                    .getCurrentPath()
-                    .substring(SSH_URI_PREFIX.length())
-                    .contains("/")) {
+            if (currentFile.getParent(requireContext()) == null) {
               loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
             } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
               loadlist(currentFile.getParent(getContext()), true, currentFile.getMode(), false);

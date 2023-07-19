@@ -50,6 +50,7 @@ import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -450,10 +451,17 @@ public class Utils {
             .setActivity(componentName)
             .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))
             .setIntent(shortcutIntent)
-            .setLongLabel(path.desc)
-            .setShortLabel(new File(path.desc).getName())
+            .setLongLabel(path.title)
+            .setShortLabel(path.title)
             .build();
 
     ShortcutManagerCompat.requestPinShortcut(context, info, null);
+  }
+
+  public static void hideKeyboard(MainActivity mainActivity) {
+    View view = mainActivity.getCurrentFocus();
+    if (view != null)
+      ((InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE))
+          .hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
 }

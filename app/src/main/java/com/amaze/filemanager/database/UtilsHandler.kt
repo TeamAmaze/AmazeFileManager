@@ -25,7 +25,6 @@ import android.os.Environment
 import android.widget.Toast
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.database.models.utilities.Bookmark
 import com.amaze.filemanager.database.models.utilities.Grid
@@ -33,7 +32,6 @@ import com.amaze.filemanager.database.models.utilities.Hidden
 import com.amaze.filemanager.database.models.utilities.History
 import com.amaze.filemanager.database.models.utilities.SftpEntry
 import com.amaze.filemanager.database.models.utilities.SmbEntry
-import com.amaze.filemanager.utils.SmbUtil
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue
@@ -289,8 +287,7 @@ class UtilsHandler(
                     .blockingGet()
             ) {
                 try {
-                    val path = SmbUtil.getSmbDecryptedPath(context, entry.path)
-                    retval.add(arrayOf(entry.name, path))
+                    retval.add(arrayOf(entry.name, entry.path))
                 } catch (e: GeneralSecurityException) {
                     log.warn("failed to decrypt smb list path", e)
 
@@ -407,16 +404,10 @@ class UtilsHandler(
      * must encrypt it's password fiend first first
      */
     private fun removeSmbPath(name: String, path: String) {
-        var path = path
-        if ("" == path) utilitiesDatabase.smbEntryDao().deleteByName(name)
-            .subscribeOn(Schedulers.io()).subscribe() else {
-            try {
-                path = SmbUtil.getSmbEncryptedPath(context, path)
-            } catch (e: GeneralSecurityException) {
-                log.error("Error encrypting path", e)
-            } catch (e: IOException) {
-                log.error("Error encrypting path", e)
-            }
+        if ("" == path) {
+            utilitiesDatabase.smbEntryDao().deleteByName(name)
+                .subscribeOn(Schedulers.io()).subscribe()
+        } else {
             utilitiesDatabase
                 .smbEntryDao()
                 .deleteByNameAndPath(name, path)
@@ -464,24 +455,13 @@ class UtilsHandler(
      * Update [SmbEntry].
      */
     fun renameSMB(oldName: String, oldPath: String, newName: String, newPath: String) {
-        var oldPath = oldPath
-        var newPath = newPath
-        try {
-            oldPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), oldPath)
-            newPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), newPath)
-        } catch (e: GeneralSecurityException) {
-            log.error("Error encrypting SMB path", e)
-        } catch (e: IOException) {
-            log.error("Error encrypting SMB path", e)
-        }
-        val finalNewPath = newPath
         utilitiesDatabase
             .smbEntryDao()
             .findByNameAndPath(oldName, oldPath)
             .subscribeOn(Schedulers.io())
             .subscribe { smbEntry: SmbEntry ->
                 smbEntry.name = newName
-                smbEntry.path = finalNewPath
+                smbEntry.path = newPath
                 utilitiesDatabase
                     .smbEntryDao()
                     .update(smbEntry)

@@ -773,16 +773,15 @@ You only need to do this once, until the next time you select a new location for
     <string name="error_cant_decompress_that_file">Cannot process the requested archive</string>
     <string name="analyse_storage">Analyse Storage</string>
     <string name="amaze_file_utilities" translatable="false">Amaze File Utilities</string>
-    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our offering that has inbuilt audio/video/image/document viewers, allows you to analyse storage files for blurry/dark images, duplicate files, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
+    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our open source app that has inbuilt audio/video/image/document viewers, allows you to analyse junk files to free up storage, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
     <string name="download">Download</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Thank you for installing Amaze File Utilities. You\'re being redirected to the app.</string>
     <string name="image_viewer">Amaze Image Viewer</string>
     <string name="video_player">Amaze Video Player</string>
     <string name="amaze_audio_player">Amaze Music Player</string>
-    <string name="pdf_viewer">Amaze Pdf Viewer</string>
-    <string name="epub_viewer">Amaze Epub Viewer</string>
-    <string name="docx_viewer">Amaze Doc Viewer</string>
+    <string name="pdf_viewer">Amaze Document Viewer</string>
+    <string name="docx_viewer">Amaze Document Viewer</string>
     <string name="share_logs">Share logs</string>
     <string name="share_logs_summary">Share captured logs via email / telegram</string>
     <string name="open_with_amaze">Open with Amaze</string>
@@ -809,5 +808,12 @@ You only need to do this once, until the next time you select a new location for
     <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
     <string name="cloud_connection_credentials_cleared">Cloud Connection credentials cleared</string>
     <string name="cloud_connection_credentials_cleared_msg">Unfortunately, we were unable to migrate your cloud connection credentials to the new database schema, and we had to remove them from the app. Please create the cloud connection again.</string>
+    <string name="not_finding_what_you_re_looking_for">Not finding what you\'re looking for?</string>
+    <string name="try_deep_search">Try Deep Search!</string>
+    <string name="try_indexed_search">Try Indexed Search!</string>
+    <string name="search_recent">Recent</string>
+    <string name="results">Results</string>
+
+    <string name="grant_notification_permission">Amaze needs notification permission to display file operation progress, as well as a handy panel to start/stop the FTP server.</string>
 </resources>
 

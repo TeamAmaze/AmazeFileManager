@@ -29,14 +29,13 @@ import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.test.ShadowPasswordUtil
-import com.amaze.filemanager.utils.SmbUtil.checkFolder
-import com.amaze.filemanager.utils.SmbUtil.createFrom
-import com.amaze.filemanager.utils.SmbUtil.getSmbDecryptedPath
-import com.amaze.filemanager.utils.SmbUtil.getSmbEncryptedPath
+import com.amaze.filemanager.utils.smb.SmbUtil.checkFolder
+import com.amaze.filemanager.utils.smb.SmbUtil.createFrom
+import com.amaze.filemanager.utils.smb.SmbUtil.getSmbDecryptedPath
+import com.amaze.filemanager.utils.smb.SmbUtil.getSmbEncryptedPath
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -96,7 +95,6 @@ class SmbUtilTest {
      * Test encrypt/decrypt URIs without password. It should stay the same too.
      */
     @Test
-    @Ignore("Good idea to fix me")
     fun testEncryptWithoutPassword() {
         val path = "smb://toor@127.0.0.1"
         assertEquals(
