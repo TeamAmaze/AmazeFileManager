@@ -813,5 +813,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="try_indexed_search">Try Indexed Search!</string>
     <string name="search_recent">Recent</string>
     <string name="results">Results</string>
+
+    <string name="grant_notification_permission">Amaze needs notification permission to display file operation progress, as well as a handy panel to start/stop the FTP server.</string>
 </resources>
 
