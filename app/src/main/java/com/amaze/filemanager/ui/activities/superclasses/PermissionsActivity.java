@@ -20,14 +20,12 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
-import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.TIRAMISU;
-
+import static android.os.Build.VERSION.SDK_INT;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -100,27 +98,33 @@ public class PermissionsActivity extends ThemedActivity
     }
   }
 
-  @RequiresApi(api = TIRAMISU)
+  @RequiresApi(TIRAMISU)
+  public boolean checkNotificationPermission() {
+    return ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        == PackageManager.PERMISSION_GRANTED;
+  }
+
+  @RequiresApi(TIRAMISU)
   public void requestNotificationPermission(boolean isInitialStart) {
     Utils.disableScreenRotation(this);
     final MaterialDialog materialDialog =
-            GeneralDialogCreation.showBasicDialog(
-                    this,
-                    R.string.grant_notification_permission,
-                    R.string.grantper,
-                    R.string.grant,
-                    R.string.cancel);
+        GeneralDialogCreation.showBasicDialog(
+            this,
+            R.string.grant_notification_permission,
+            R.string.grantper,
+            R.string.grant,
+            R.string.cancel);
     materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> finish());
     materialDialog.setCancelable(false);
 
     requestPermission(
-            Manifest.permission.POST_NOTIFICATIONS,
-            NOTIFICATION_PERMISSION,
-            materialDialog,
-            () -> {
-              //do nothing
-            },
-            isInitialStart);
+        Manifest.permission.POST_NOTIFICATIONS,
+        NOTIFICATION_PERMISSION,
+        materialDialog,
+        () -> {
+          // do nothing
+        },
+        isInitialStart);
   }
 
   public void requestStoragePermission(

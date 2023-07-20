@@ -563,7 +563,7 @@ public class MainActivity extends PermissionsActivity
           requestStoragePermission(this, true);
         }
       }
-      if (SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkNotificationPermission()) {
         requestNotificationPermission(true);
       }
     }
