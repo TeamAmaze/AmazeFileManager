@@ -557,10 +557,11 @@ public class MainActivity extends PermissionsActivity
   private void checkForExternalPermission() {
     if (SDK_INT >= Build.VERSION_CODES.M) {
       if (!checkStoragePermission()) {
-        requestStoragePermission(this, true);
-      }
-      if (SDK_INT >= Build.VERSION_CODES.R) {
-        requestAllFilesAccess(this);
+        if (SDK_INT >= Build.VERSION_CODES.R) {
+          requestAllFilesAccess(this);
+        } else {
+          requestStoragePermission(this, true);
+        }
       }
       if (SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         requestNotificationPermission(true);

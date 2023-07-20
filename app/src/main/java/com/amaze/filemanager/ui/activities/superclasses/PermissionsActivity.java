@@ -20,12 +20,14 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.TIRAMISU;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -89,8 +91,13 @@ public class PermissionsActivity extends ThemedActivity
 
   public boolean checkStoragePermission() {
     // Verify that all required contact permissions have been granted.
-    return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        == PackageManager.PERMISSION_GRANTED;
+    if (SDK_INT >= Build.VERSION_CODES.R) {
+      return ActivityCompat.checkSelfPermission(this, Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+              == PackageManager.PERMISSION_GRANTED;
+    } else {
+      return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+              == PackageManager.PERMISSION_GRANTED;
+    }
   }
 
   @RequiresApi(api = TIRAMISU)
@@ -192,18 +199,29 @@ public class PermissionsActivity extends ThemedActivity
     } else if (isInitialStart) {
       ActivityCompat.requestPermissions(this, new String[] {permission}, code);
     } else {
-      Snackbar.make(
-              findViewById(R.id.content_frame),
-              R.string.grantfailed,
-              BaseTransientBottomBar.LENGTH_INDEFINITE)
-          .setAction(
-              R.string.grant,
-              v ->
-                  startActivity(
-                      new Intent(
-                          android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                          Uri.parse(String.format("package:%s", getPackageName())))))
-          .show();
+      if (SDK_INT >= Build.VERSION_CODES.R) {
+        Snackbar.make(
+                findViewById(R.id.content_frame),
+                R.string.grantfailed,
+                BaseTransientBottomBar.LENGTH_INDEFINITE)
+            .setAction(
+                R.string.grant,
+                v -> requestAllFilesAccessPermission(onPermissionGranted))
+            .show();
+      } else {
+        Snackbar.make(
+                        findViewById(R.id.content_frame),
+                        R.string.grantfailed,
+                        BaseTransientBottomBar.LENGTH_INDEFINITE)
+                .setAction(
+                        R.string.grant,
+                        v ->
+                                startActivity(
+                                        new Intent(
+                                                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                                Uri.parse(String.format("package:%s", getPackageName())))))
+                .show();
+      }
     }
   }
 
@@ -226,21 +244,26 @@ public class PermissionsActivity extends ThemedActivity
           .getActionButton(DialogAction.POSITIVE)
           .setOnClickListener(
               v -> {
-                Utils.disableScreenRotation(this);
-                permissionCallbacks[ALL_FILES_PERMISSION] = onPermissionGranted;
-                try {
-                  Intent intent =
-                      new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                          .setData(Uri.parse("package:" + getPackageName()));
-                  startActivity(intent);
-                } catch (Exception e) {
-                  Log.e(TAG, "Failed to initial activity to grant all files access", e);
-                  AppConfig.toast(this, getString(R.string.grantfailed));
-                }
+                requestAllFilesAccessPermission(onPermissionGranted);
                 materialDialog.dismiss();
               });
       materialDialog.setCancelable(false);
       materialDialog.show();
+    }
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.R)
+  private void requestAllFilesAccessPermission(@NonNull final OnPermissionGranted onPermissionGranted) {
+    Utils.disableScreenRotation(this);
+    permissionCallbacks[ALL_FILES_PERMISSION] = onPermissionGranted;
+    try {
+      Intent intent =
+              new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                      .setData(Uri.parse("package:" + getPackageName()));
+      startActivity(intent);
+    } catch (Exception e) {
+      Log.e(TAG, "Failed to initial activity to grant all files access", e);
+      AppConfig.toast(this, getString(R.string.grantfailed));
     }
   }
 
