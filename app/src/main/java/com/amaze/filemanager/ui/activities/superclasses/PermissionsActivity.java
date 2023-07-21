@@ -20,8 +20,9 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
-import static android.os.Build.VERSION_CODES.TIRAMISU;
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.TIRAMISU;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -72,7 +73,7 @@ public class PermissionsActivity extends ThemedActivity
         Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
         requestStoragePermission(permissionCallbacks[STORAGE_PERMISSION], false);
       }
-    } else if (requestCode == NOTIFICATION_PERMISSION && Build.VERSION.SDK_INT >= TIRAMISU) {
+    } else if (requestCode == NOTIFICATION_PERMISSION && SDK_INT >= TIRAMISU) {
       if (isGranted(grantResults)) {
         Utils.enableScreenRotation(this);
       } else {
@@ -90,11 +91,12 @@ public class PermissionsActivity extends ThemedActivity
   public boolean checkStoragePermission() {
     // Verify that all required contact permissions have been granted.
     if (SDK_INT >= Build.VERSION_CODES.R) {
-      return ActivityCompat.checkSelfPermission(this, Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-              == PackageManager.PERMISSION_GRANTED;
+      return ActivityCompat.checkSelfPermission(
+              this, Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+          == PackageManager.PERMISSION_GRANTED;
     } else {
       return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-              == PackageManager.PERMISSION_GRANTED;
+          == PackageManager.PERMISSION_GRANTED;
     }
   }
 
@@ -208,23 +210,21 @@ public class PermissionsActivity extends ThemedActivity
                 findViewById(R.id.content_frame),
                 R.string.grantfailed,
                 BaseTransientBottomBar.LENGTH_INDEFINITE)
-            .setAction(
-                R.string.grant,
-                v -> requestAllFilesAccessPermission(onPermissionGranted))
+            .setAction(R.string.grant, v -> requestAllFilesAccessPermission(onPermissionGranted))
             .show();
       } else {
         Snackbar.make(
-                        findViewById(R.id.content_frame),
-                        R.string.grantfailed,
-                        BaseTransientBottomBar.LENGTH_INDEFINITE)
-                .setAction(
-                        R.string.grant,
-                        v ->
-                                startActivity(
-                                        new Intent(
-                                                android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                                Uri.parse(String.format("package:%s", getPackageName())))))
-                .show();
+                findViewById(R.id.content_frame),
+                R.string.grantfailed,
+                BaseTransientBottomBar.LENGTH_INDEFINITE)
+            .setAction(
+                R.string.grant,
+                v ->
+                    startActivity(
+                        new Intent(
+                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.parse(String.format("package:%s", getPackageName())))))
+            .show();
       }
     }
   }
@@ -257,13 +257,14 @@ public class PermissionsActivity extends ThemedActivity
   }
 
   @RequiresApi(api = Build.VERSION_CODES.R)
-  private void requestAllFilesAccessPermission(@NonNull final OnPermissionGranted onPermissionGranted) {
+  private void requestAllFilesAccessPermission(
+      @NonNull final OnPermissionGranted onPermissionGranted) {
     Utils.disableScreenRotation(this);
     permissionCallbacks[ALL_FILES_PERMISSION] = onPermissionGranted;
     try {
       Intent intent =
-              new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                      .setData(Uri.parse("package:" + getPackageName()));
+          new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+              .setData(Uri.parse("package:" + getPackageName()));
       startActivity(intent);
     } catch (Exception e) {
       Log.e(TAG, "Failed to initial activity to grant all files access", e);

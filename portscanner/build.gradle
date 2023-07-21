@@ -5,11 +5,11 @@ apply plugin: 'kotlin-parcelize'
 
 android {
     namespace 'com.stealthcopter.networktools'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         minSdk 14
-        targetSdk 32
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,9 +22,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 dependencies {

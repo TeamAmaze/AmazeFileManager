@@ -251,6 +251,10 @@ dependencies {
 
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 configurations.all {
     resolutionStrategy {
         dependencySubstitution {
@@ -304,7 +308,6 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
 }
-
 
 Properties props = new Properties()
 def propFile = new File('signing.properties')
