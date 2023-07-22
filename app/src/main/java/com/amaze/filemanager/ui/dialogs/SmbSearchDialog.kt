@@ -28,9 +28,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -247,9 +247,9 @@ class SmbSearchDialog : DialogFragment() {
 
     private class ElementViewHolder(rootView: View) :
         ViewHolder(rootView) {
-        val image: ImageView = rootView.findViewById(R.id.icon)
-        val txtTitle: TextView = rootView.findViewById(R.id.firstline)
-        val txtDesc: TextView = rootView.findViewById(R.id.secondLine)
+        val image: AppCompatImageView = rootView.findViewById(R.id.icon)
+        val txtTitle: AppCompatTextView = rootView.findViewById(R.id.firstline)
+        val txtDesc: AppCompatTextView = rootView.findViewById(R.id.secondLine)
     }
 
     private class ComputerParcelableViewModel : ViewModel() {

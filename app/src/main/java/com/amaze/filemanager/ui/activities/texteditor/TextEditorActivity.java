@@ -70,20 +70,20 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
 
-  public EditText mainTextView;
-  public EditText searchEditText;
+  public AppCompatEditText mainTextView;
+  public AppCompatEditText searchEditText;
   private Typeface inputTypefaceDefault;
   private Typeface inputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
@@ -96,9 +96,9 @@ public class TextEditorActivity extends ThemedActivity
   private static final String KEY_MONOFONT = "monofont";
 
   private RelativeLayout searchViewLayout;
-  public ImageButton upButton;
-  public ImageButton downButton;
-  public ImageButton closeButton;
+  public AppCompatImageButton upButton;
+  public AppCompatImageButton downButton;
+  public AppCompatImageButton closeButton;
 
   private Snackbar loadingSnackbar;
 

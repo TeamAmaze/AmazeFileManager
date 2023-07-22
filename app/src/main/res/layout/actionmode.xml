@@ -7,14 +7,14 @@
     android:focusable="true"
     android:background="@drawable/ripple_focusable"
     >
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:gravity="start|center_vertical"
         android:layout_height="match_parent"
         android:id="@+id/item_count"/>
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/material_generic"

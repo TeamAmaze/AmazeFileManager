@@ -35,7 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="visible"
         />
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/empty_text_view"
         android:layout_width="@dimen/zero_dp"
         android:layout_height="@dimen/zero_dp"

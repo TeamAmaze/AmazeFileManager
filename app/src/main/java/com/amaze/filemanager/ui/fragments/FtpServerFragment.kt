@@ -48,13 +48,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CompoundButton
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
@@ -102,14 +102,14 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private val log: Logger = LoggerFactory.getLogger(FtpServerFragment::class.java)
 
-    private val statusText: TextView get() = binding.textViewFtpStatus
-    private val url: TextView get() = binding.textViewFtpUrl
-    private val username: TextView get() = binding.textViewFtpUsername
-    private val password: TextView get() = binding.textViewFtpPassword
-    private val port: TextView get() = binding.textViewFtpPort
-    private val sharedPath: TextView get() = binding.textViewFtpPath
-    private val ftpBtn: Button get() = binding.startStopButton
-    private val ftpPasswordVisibleButton: ImageButton get() = binding.ftpPasswordVisible
+    private val statusText: AppCompatTextView get() = binding.textViewFtpStatus
+    private val url: AppCompatTextView get() = binding.textViewFtpUrl
+    private val username: AppCompatTextView get() = binding.textViewFtpUsername
+    private val password: AppCompatTextView get() = binding.textViewFtpPassword
+    private val port: AppCompatTextView get() = binding.textViewFtpPort
+    private val sharedPath: AppCompatTextView get() = binding.textViewFtpPath
+    private val ftpBtn: AppCompatButton get() = binding.startStopButton
+    private val ftpPasswordVisibleButton: AppCompatImageButton get() = binding.ftpPasswordVisible
     private var accentColor = 0
     private var spannedStatusNoConnection: Spanned? = null
     private var spannedStatusConnected: Spanned? = null

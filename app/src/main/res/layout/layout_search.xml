@@ -56,7 +56,7 @@
             app:layout_constraintTop_toTopOf="@id/search_edit_text"
             app:srcCompat="@drawable/ic_close_black_24dp" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/searchRecentHintTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
 
         </HorizontalScrollView>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/searchDeepSearchTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchRecentItemsScrollView" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/searchResultsHintTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

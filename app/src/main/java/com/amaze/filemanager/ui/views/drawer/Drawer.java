@@ -90,16 +90,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.legacy.app.ActionBarDrawerToggle;
@@ -135,10 +136,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private CustomNavigationView navView;
   private RelativeLayout drawerHeaderParent;
   private View drawerHeaderLayout, drawerHeaderView;
-  private ImageView donateImageView;
-  private ImageView telegramImageView;
-  private ImageView instagramImageView;
-  private TextView appVersion;
+  private AppCompatImageView donateImageView;
+  private AppCompatImageView telegramImageView;
+  private AppCompatImageView instagramImageView;
+  private AppCompatTextView appVersion;
 
   /** Tablet is defined as 'width > 720dp' */
   private boolean isOnTablet = false;
@@ -660,7 +661,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         });
   }
 
-  public ImageView getDonateImageView() {
+  public AppCompatImageView getDonateImageView() {
     return this.donateImageView;
   }
 
@@ -722,7 +723,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     if (actionViewIcon != null) {
       item.setActionView(R.layout.layout_draweractionview);
 
-      ImageView imageView = item.getActionView().findViewById(R.id.imageButton);
+      AppCompatImageButton imageView = item.getActionView().findViewById(R.id.imageButton);
       imageView.setImageResource(actionViewIcon);
       if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
         imageView.setColorFilter(Color.WHITE);

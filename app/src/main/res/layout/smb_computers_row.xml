@@ -7,7 +7,7 @@
     android:background="?selectableItemBackground"
     android:padding="@dimen/material_generic">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/icon"
         android:padding="10dp"
         android:layout_width="48dip"
@@ -21,7 +21,7 @@
     android:orientation="vertical"
     android:layout_toRightOf="@id/icon"
     android:layout_height="match_parent">
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/firstline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         android:gravity="center_vertical"
 
         />
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/secondLine"
         android:textColor="?android:attr/textColorTertiary"
         android:layout_width="wrap_content"

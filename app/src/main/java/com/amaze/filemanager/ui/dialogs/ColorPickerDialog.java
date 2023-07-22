@@ -43,10 +43,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.util.Pair;
 import androidx.preference.Preference.BaseSavedState;
 import androidx.preference.PreferenceDialogFragmentCompat;
@@ -167,7 +167,7 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
         select(selectedItem, true);
       }
 
-      ((TextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
+      ((AppCompatTextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
       CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
       colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
       AppTheme appTheme =
@@ -185,7 +185,7 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
         select(selectedItem, true);
       }
 
-      ((TextView) child.findViewById(R.id.text)).setText(R.string.custom);
+      ((AppCompatTextView) child.findViewById(R.id.text)).setText(R.string.custom);
       child.findViewById(R.id.circularColorsView).setVisibility(View.INVISIBLE);
       container.addView(child);
     }
@@ -197,7 +197,7 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
         select(selectedItem, true);
       }
 
-      ((TextView) child.findViewById(R.id.text)).setText(R.string.random);
+      ((AppCompatTextView) child.findViewById(R.id.text)).setText(R.string.random);
       child.findViewById(R.id.circularColorsView).setVisibility(View.INVISIBLE);
       container.addView(child);
     }
@@ -249,9 +249,9 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
         ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();
 
     // Button views
-    ((TextView) dialog.findViewById(res.getIdentifier("button1", "id", "android")))
+    ((AppCompatTextView) dialog.findViewById(res.getIdentifier("button1", "id", "android")))
         .setTextColor(accentColor);
-    ((TextView) dialog.findViewById(res.getIdentifier("button2", "id", "android")))
+    ((AppCompatTextView) dialog.findViewById(res.getIdentifier("button2", "id", "android")))
         .setTextColor(accentColor);
 
     return dialog;
