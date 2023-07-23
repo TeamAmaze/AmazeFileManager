@@ -204,6 +204,9 @@ dependencies {
     //FTP
     implementation "commons-net:commons-net:$commonsNetVersion"
 
+    //OkHttp
+    implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
+
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
 

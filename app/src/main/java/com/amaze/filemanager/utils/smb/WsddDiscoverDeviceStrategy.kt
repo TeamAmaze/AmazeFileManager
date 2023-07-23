@@ -23,12 +23,14 @@ package com.amaze.filemanager.utils.smb
 import androidx.annotation.VisibleForTesting
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLASH
 import com.amaze.filemanager.utils.ComputerParcelable
 import com.amaze.filemanager.utils.NetworkUtil
-import com.android.volley.Response.ErrorListener
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import okhttp3.Headers.Companion.toHeaders
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.xmlpull.v1.XmlPullParser
@@ -75,7 +77,6 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
 
     private val wsdRequestHeaders = mutableMapOf(
         Pair("Accept-Encoding", "Identity"),
-        Pair("Content-Type", "application/soap+xml"),
         Pair("Connection", "Close"),
         Pair("User-Agent", "wsd")
     )
@@ -87,13 +88,9 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
         @VisibleForTesting
         set
 
-    private val queue = Volley.newRequestQueue(AppConfig.getInstance())
+    private val queue = OkHttpClient()
 
     private var cancelled = false
-
-    init {
-        queue.start()
-    }
 
     override fun discoverDevices(callback: (ComputerParcelable) -> Unit) {
         multicastForDevice { addr ->
@@ -181,21 +178,30 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
             val endpoint = urn.substringAfter(URN_UUID)
             val dest =
                 "http://${sourceAddress.hostAddress}:$TCP_PORT/$endpoint"
-            queue.add(
-                object : StringRequest(
-                    Method.POST,
-                    dest,
-                    { resp ->
+            val requestBody = wsdRequestTemplate
+                .replace("##MESSAGE_ID##", "$URN_UUID$messageId")
+                .replace("##DEST_UUID##", urn)
+                .replace("##MY_UUID##", "$URN_UUID$tempDeviceId")
+                .toRequestBody("application/soap+xml".toMediaType())
+            queue.newCall(
+                Request.Builder()
+                    .url(dest)
+                    .post(requestBody)
+                    .headers(wsdRequestHeaders.toHeaders())
+                    .build()
+            ).execute().use { resp ->
+                if (resp.isSuccessful && resp.body != null) {
+                    resp.body?.run {
                         if (log.isTraceEnabled) log.trace("Response: $resp")
                         val values = parseXmlForResponse(
-                            resp,
+                            this.string(),
                             arrayOf(WSDP_TYPES, WSA_ADDRESS, PUB_COMPUTER)
                         )
                         if (PUB_COMPUTER == values[WSDP_TYPES] && urn == values[WSA_ADDRESS]) {
                             if (true == values[PUB_COMPUTER]?.isNotEmpty()) {
                                 val computerName: String = values[PUB_COMPUTER].let {
-                                    if (it!!.contains('/')) {
-                                        it.substringBefore("/")
+                                    if (it!!.contains(SLASH)) {
+                                        it.substringBefore(SLASH)
                                     } else {
                                         it
                                     }
@@ -205,29 +211,16 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
                                 )
                             }
                         }
-                    },
-                    object : ErrorListener {
-                        override fun onErrorResponse(error: VolleyError?) {
-                            log.error("Error querying endpoint", error)
-                        }
                     }
-                ) {
-                    override fun getBody(): ByteArray {
-                        return wsdRequestTemplate
-                            .replace("##MESSAGE_ID##", "$URN_UUID$messageId")
-                            .replace("##DEST_UUID##", urn)
-                            .replace("##MY_UUID##", "$URN_UUID$tempDeviceId")
-                            .toByteArray(Charsets.UTF_8)
-                    }
-                    override fun getHeaders(): MutableMap<String, String> = wsdRequestHeaders
+                } else {
+                    log.error("Error querying endpoint", resp)
                 }
-            )
+            }
         }
     }
 
     override fun onCancel() {
         cancelled = true
-        queue.stop()
     }
 
     private fun parseXmlForResponse(xml: ByteArray, tags: Array<String>) =
