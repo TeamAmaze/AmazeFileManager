@@ -53,10 +53,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 /** Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
@@ -127,7 +127,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
    * @param position the position of the item
    * @param imageView the circular {@link CircleGradientDrawable} that is to be animated
    */
-  private void toggleChecked(int position, ImageView imageView) {
+  private void toggleChecked(int position, AppCompatImageView imageView) {
     compressedExplorerFragment.stopAnim();
     stoppedAnimation = true;
 
@@ -204,7 +204,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     } else if (viewType == TYPE_ITEM) {
       View v = mInflater.inflate(R.layout.rowlayout, parent, false);
       CompressedItemViewHolder vh = new CompressedItemViewHolder(v);
-      ImageButton about = v.findViewById(R.id.properties);
+      AppCompatImageButton about = v.findViewById(R.id.properties);
       about.setVisibility(View.INVISIBLE);
       return vh;
     } else {

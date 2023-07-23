@@ -105,9 +105,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -115,6 +112,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -438,7 +438,7 @@ public class MainFragment extends Fragment
       boolean isBackButton,
       int position,
       LayoutElementParcelable layoutElementParcelable,
-      ImageView imageView) {
+      AppCompatImageView imageView) {
     if (mainFragmentViewModel.getResults()) {
       // check to initialize search results
       // if search task is been running, cancel it
@@ -714,14 +714,14 @@ public class MainFragment extends Fragment
               return true;
             });
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-      ((ImageView) nofilesview.findViewById(R.id.image))
+      ((AppCompatImageView) nofilesview.findViewById(R.id.image))
           .setColorFilter(Color.parseColor("#666666"));
     } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
       nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-      ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+      ((AppCompatTextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     } else {
       nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-      ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+      ((AppCompatTextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     }
   }
 
@@ -967,7 +967,8 @@ public class MainFragment extends Fragment
             null,
             getResources().getString(R.string.cancel),
             (dialog, which) -> {
-              EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+              AppCompatEditText textfield =
+                  dialog.getCustomView().findViewById(R.id.singleedittext_input);
               String name1 = textfield.getText().toString().trim();
 
               getMainActivity()
@@ -998,7 +999,8 @@ public class MainFragment extends Fragment
     // place cursor at the starting of edit text by posting a runnable to edit text
     // this is done because in case android has not populated the edit text layouts yet, it'll
     // reset calls to selection if not posted in message queue
-    EditText textfield = renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield =
+        renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
     textfield.post(
         () -> {
           if (!f.isDirectory()) {

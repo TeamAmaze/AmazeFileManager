@@ -37,8 +37,6 @@ import com.amaze.filemanager.R;
 
 import android.content.Context;
 import android.os.Build;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -59,10 +57,10 @@ public class WarnableTextInputValidatorTest {
 
   @Test
   public void testValidate() {
-    EditText textfield = new AppCompatEditText(context);
+    AppCompatEditText textfield = new AppCompatEditText(context);
     WarnableTextInputLayout layout =
         new WarnableTextInputLayout(context, Robolectric.buildAttributeSet().build());
-    Button button = new AppCompatButton(context);
+    AppCompatButton button = new AppCompatButton(context);
     WarnableTextInputValidator.OnTextValidate validator =
         text ->
             ("Pass".equals(text))

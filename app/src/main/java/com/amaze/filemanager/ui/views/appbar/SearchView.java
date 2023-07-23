@@ -54,10 +54,10 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.preference.PreferenceManager;
@@ -76,12 +76,12 @@ public class SearchView {
   private final NestedScrollView searchViewLayout;
   private final AppCompatEditText searchViewEditText;
 
-  private final ImageView clearImageView;
-  private final ImageView backImageView;
+  private final AppCompatImageView clearImageView;
+  private final AppCompatImageView backImageView;
 
-  private final TextView recentHintTV;
-  private final TextView searchResultsHintTV;
-  private final TextView deepSearchTV;
+  private final AppCompatTextView recentHintTV;
+  private final AppCompatTextView searchResultsHintTV;
+  private final AppCompatTextView deepSearchTV;
 
   private final ChipGroup recentChipGroup;
   private final RecyclerView recyclerView;

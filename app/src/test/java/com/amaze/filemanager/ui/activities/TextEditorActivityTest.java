@@ -50,8 +50,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -62,7 +62,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";
-  private TextView text;
+  private AppCompatEditText text;
 
   @After
   public void tearDown() {

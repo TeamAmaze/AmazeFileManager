@@ -34,9 +34,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 /** Created by Vishal on 06-02-2015. */
@@ -46,7 +46,7 @@ public class DbViewerFragment extends Fragment {
   private View rootView;
   private Cursor schemaCursor, contentCursor;
   private RelativeLayout relativeLayout;
-  public TextView loadingText;
+  public AppCompatTextView loadingText;
   private WebView webView;
 
   @Override

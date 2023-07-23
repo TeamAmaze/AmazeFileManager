@@ -25,7 +25,7 @@
                 android:paddingBottom="@dimen/material_generic"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -43,14 +43,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_title_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_title_title"
@@ -75,14 +75,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_artist_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/artist"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_artist_title"
@@ -107,14 +107,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_album_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/album"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_album_title"
@@ -139,14 +139,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_year_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/year"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_year_title"
@@ -172,14 +172,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_duration_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/duration"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_duration_title"
@@ -204,14 +204,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_comment_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/comment"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_comment_title"
@@ -236,14 +236,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_general_container_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/container"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_general_container_title"

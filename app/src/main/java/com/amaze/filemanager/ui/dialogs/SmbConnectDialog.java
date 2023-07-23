@@ -60,7 +60,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -68,6 +67,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.DialogFragment;
 
 import jcifs.smb.SmbFile;
@@ -225,7 +225,7 @@ public class SmbConnectDialog extends DialogFragment {
     final AppCompatEditText pass = binding.passwordET;
     final AppCompatCheckBox chkSmbAnonymous = binding.chkSmbAnonymous;
     final AppCompatCheckBox chkSmbDisableIpcSignature = binding.chkSmbDisableIpcSignature;
-    TextView help = binding.wanthelp;
+    AppCompatTextView help = binding.wanthelp;
 
     EditTextColorStateUtil.setTint(getActivity(), conName, accentColor);
     EditTextColorStateUtil.setTint(getActivity(), user, accentColor);

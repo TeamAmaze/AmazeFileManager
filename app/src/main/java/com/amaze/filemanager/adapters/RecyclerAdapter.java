@@ -84,15 +84,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -200,7 +200,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    * @param position the position of the item
    * @param imageView the check {@link CircleGradientDrawable} that is to be animated
    */
-  public void toggleChecked(int position, ImageView imageView) {
+  public void toggleChecked(int position, AppCompatImageView imageView) {
     if (getItemsDigested().size() <= position || position < 0) {
       AppConfig.toast(context, R.string.operation_not_supported);
       return;
@@ -1192,7 +1192,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         .setVisibility(View.VISIBLE);
     String rememberMovePreference =
         sharedPrefs.getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, "");
-    ImageView icon =
+    AppCompatImageView icon =
         mainFragment
             .getMainActivity()
             .getTabFragment()
@@ -1204,7 +1204,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             .getTabFragment()
             .getDragPlaceholder()
             .findViewById(R.id.files_count_parent);
-    TextView filesCount =
+    AppCompatTextView filesCount =
         mainFragment
             .getMainActivity()
             .getTabFragment()
@@ -1238,7 +1238,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private void showThumbnailWithBackground(
       ItemViewHolder viewHolder,
       IconDataParcelable iconData,
-      ImageView view,
+      AppCompatImageView view,
       OnImageProcessed errorListener) {
     if (iconData.isImageBroken()) {
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
@@ -1301,7 +1301,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private void showRoundedThumbnail(
       ItemViewHolder viewHolder,
       IconDataParcelable iconData,
-      ImageView view,
+      AppCompatImageView view,
       OnImageProcessed errorListener) {
     if (iconData.isImageBroken()) {
       View iconBackground =

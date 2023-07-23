@@ -18,6 +18,7 @@
     -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -53,7 +54,7 @@
                     android:padding="@dimen/material_generic"
                     >
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/progress_image"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -62,9 +63,9 @@
                         android:layout_alignParentLeft="true"
                         />
 
-                    <ImageButton
+                    <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/delete_button"
-                        android:src="@drawable/ic_action_cancel_light"
+                        app:srcCompat="@drawable/ic_action_cancel_light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
@@ -81,7 +82,7 @@
                         android:orientation="vertical"
                         >
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/text_view_progress_type"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"

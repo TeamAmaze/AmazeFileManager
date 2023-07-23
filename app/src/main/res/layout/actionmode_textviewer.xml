@@ -14,23 +14,23 @@
         android:layout_alignParentRight="true"
         android:orientation="horizontal"
         >
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/prev"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_keyboard_arrow_up_white"
+            app:srcCompat="@drawable/ic_keyboard_arrow_up_white"
             />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/next"
             android:layout_width="50dp"
             android:layout_gravity="center_vertical"
             android:layout_height="match_parent"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_keyboard_arrow_down_white"
+            app:srcCompat="@drawable/ic_keyboard_arrow_down_white"
             />
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/close"
             android:layout_width="50dp"
             android:layout_gravity="center_vertical"

@@ -27,8 +27,8 @@ import android.content.pm.PackageManager
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatEditText
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.google.android.material.textfield.TextInputLayout
@@ -82,7 +82,7 @@ fun Context.updateAUAlias(shouldEnable: Boolean) {
 /**
  * Force keyboard pop up on focus
  */
-fun EditText.openKeyboard(context: Context) {
+fun AppCompatEditText.openKeyboard(context: Context) {
     this.requestFocus()
 
     this.postDelayed(
