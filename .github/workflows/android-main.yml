@@ -9,7 +9,7 @@ on:
 
 concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  изменение в процессе          : null
 
 jobs:
   check_spotless:
@@ -65,9 +65,8 @@ jobs:
     timeout-minutes: 30 # Emulator can get stuck
     runs-on: macos-latest
     strategy:
-      fail-fast: true
-      matrix:
-        api-level: [ 16, 19, 28 ]
+      отказоустойчивый  : null
+        API-уровень : [ 16 , 19 , 28 ]
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -90,10 +89,9 @@ jobs:
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
+          API-уровень : $ {{ matrix.api-уровень }}
+          параметры эмулятора null   : - -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back 
+          отключить-анимации : ложь
           sdcard-path-or-size: 100M
           arch: x86
           ram-size: 2048M
@@ -103,11 +101,10 @@ jobs:
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          sdcard-path-or-size: 100M
+          API-уровень : $ {{ matrix.api-уровень }}
+          параметры эмулятора   : -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back нет 
+          общественная анимацияправдаnullавда
+          SD-карта-путь-или-размер : 100M
           arch: x86
           ram-size: 2048M
           channel: canary
