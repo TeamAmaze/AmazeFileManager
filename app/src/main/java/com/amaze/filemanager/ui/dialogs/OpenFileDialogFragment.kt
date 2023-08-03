@@ -207,21 +207,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                         classNameAndPackageName[0],
                         classNameAndPackageName[1]
                     )
-
-                    for (
-                        resolveInfo in activity.packageManager
-                            .queryIntentActivities(
-                                intent,
-                                PackageManager.MATCH_DEFAULT_ONLY
-                            )
-                    )
-                        activity.grantUriPermission(
-                            resolveInfo.activityInfo.packageName,
-                            uri,
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION or
-                                Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        )
-
                     startActivity(activity, intent)
                     result = true
                 } catch (e: ActivityNotFoundException) {
