@@ -24,15 +24,12 @@ import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.CAN_
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.COPY;
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.MOVE;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.view.LayoutInflater;
-import android.widget.Toast;
-
-import androidx.annotation.IntDef;
-import androidx.appcompat.widget.AppCompatCheckBox;
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -48,12 +45,15 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.Utils;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.view.LayoutInflater;
+import android.widget.Toast;
+
+import androidx.annotation.IntDef;
+import androidx.appcompat.widget.AppCompatCheckBox;
 
 /**
  * This AsyncTask works by creating a tree where each folder that can be fusioned together with
@@ -228,7 +228,10 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     dialogBuilder.positiveText(R.string.skip);
     if (filesToCopy.get(0).getParent(context.get()).equals(path)) {
       doRenaming = true;
-      dialogBuilder.negativeText(context.get().getString(R.string.rename) + " & " + context.get().getString(R.string.save));
+      dialogBuilder.negativeText(
+          context.get().getString(R.string.rename)
+              + " & "
+              + context.get().getString(R.string.save));
     } else dialogBuilder.negativeText(R.string.overwrite);
     dialogBuilder.neutralText(R.string.cancel);
     dialogBuilder.positiveColor(accentColor);
@@ -328,24 +331,26 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
   }
 
   private void resolveByRenaming(
-          ArrayList<HybridFileParcelable> filesToCopy,
-          ArrayList<HybridFileParcelable> conflictingFiles
-  ) {
-      int appendInt = 1;
-      String newName;
-      File targetFile;
+      ArrayList<HybridFileParcelable> filesToCopy,
+      ArrayList<HybridFileParcelable> conflictingFiles) {
+    int appendInt = 1;
+    String newName;
+    File targetFile;
 
-      int conflictingFileIndex = filesToCopy.indexOf(conflictingFiles.get(0));
-      String oldName = filesToCopy.get(conflictingFileIndex).getName();
-      do {
-        newName = oldName.substring(0, oldName.lastIndexOf("."))
-                + "(" + appendInt + ")"
-                + oldName.substring(oldName.lastIndexOf("."));
-        appendInt++;
-        targetFile = new File(path, newName);
-      } while (targetFile.exists());
-      filesToCopy.get(conflictingFileIndex).setName(newName);
-      conflictingFiles.remove(0);
+    int conflictingFileIndex = filesToCopy.indexOf(conflictingFiles.get(0));
+    String oldName = filesToCopy.get(conflictingFileIndex).getName();
+    do {
+      newName =
+          oldName.substring(0, oldName.lastIndexOf("."))
+              + "("
+              + appendInt
+              + ")"
+              + oldName.substring(oldName.lastIndexOf("."));
+      appendInt++;
+      targetFile = new File(path, newName);
+    } while (targetFile.exists());
+    filesToCopy.get(conflictingFileIndex).setName(newName);
+    conflictingFiles.remove(0);
   }
 
   private void finishCopying(

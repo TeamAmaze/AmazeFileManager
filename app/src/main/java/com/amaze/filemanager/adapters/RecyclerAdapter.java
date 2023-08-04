@@ -20,23 +20,7 @@
 
 package com.amaze.filemanager.adapters;
 
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtension7zip;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApk;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApks;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarLong;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarShort;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGz;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarLong;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarShort;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionJar;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionLzma;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionRar;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTar;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTarLzma;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTarXz;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionXz;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionZip;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -46,32 +30,11 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.PopupMenu;
-import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.List;
 
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.view.ActionMode;
-import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.RecyclerView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
@@ -108,11 +71,32 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView). There
@@ -782,14 +766,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
-          MainActivityActionMode mainActivityActionMode = mainFragment.getMainActivity().mainActivityActionMode;
+          MainActivityActionMode mainActivityActionMode =
+              mainFragment.getMainActivity().mainActivityActionMode;
           PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
 
-          if (pasteHelper != null && pasteHelper.getSnackbar() != null && pasteHelper.getSnackbar().isShown()) {
+          if (pasteHelper != null
+              && pasteHelper.getSnackbar() != null
+              && pasteHelper.getSnackbar().isShown()) {
             Toast.makeText(
                     mainFragment.requireContext(),
                     mainFragment.getString(R.string.complete_paste_warning),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG)
+                .show();
             return false;
           }
           if (!isBackButton) {
@@ -1005,14 +993,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
-          MainActivityActionMode mainActivityActionMode = mainFragment.getMainActivity().mainActivityActionMode;
+          MainActivityActionMode mainActivityActionMode =
+              mainFragment.getMainActivity().mainActivityActionMode;
           PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
 
-          if (pasteHelper != null && pasteHelper.getSnackbar() != null && pasteHelper.getSnackbar().isShown()) {
+          if (pasteHelper != null
+              && pasteHelper.getSnackbar() != null
+              && pasteHelper.getSnackbar().isShown()) {
             Toast.makeText(
                     mainFragment.requireContext(),
                     mainFragment.getString(R.string.complete_paste_warning),
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG)
+                .show();
             return false;
           }
           if (!isBackButton) {
@@ -1406,14 +1398,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
 
-    MainActivityActionMode mainActivityActionMode = mainFragment.getMainActivity().mainActivityActionMode;
+    MainActivityActionMode mainActivityActionMode =
+        mainFragment.getMainActivity().mainActivityActionMode;
     PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
 
-    if (pasteHelper != null && pasteHelper.getSnackbar() != null && pasteHelper.getSnackbar().isShown()) {
+    if (pasteHelper != null
+        && pasteHelper.getSnackbar() != null
+        && pasteHelper.getSnackbar().isShown()) {
       Toast.makeText(
               mainFragment.requireContext(),
               mainFragment.getString(R.string.complete_paste_warning),
-              Toast.LENGTH_LONG).show();
+              Toast.LENGTH_LONG)
+          .show();
       return;
     }
     Context currentContext = this.context;
