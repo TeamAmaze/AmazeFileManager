@@ -159,11 +159,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                         chooserIntent,
                         PackageManager.MATCH_DEFAULT_ONLY
                     )
-            ) context.grantUriPermission(
-                resolveInfo.activityInfo.packageName,
-                uri,
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
+                ) context.grantUriPermission(
+                    resolveInfo.activityInfo.packageName,
+                    uri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
 
             if (useNewStack) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
