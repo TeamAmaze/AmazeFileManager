@@ -24,14 +24,16 @@ import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.CAN_
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.COPY;
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.MOVE;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.view.LayoutInflater;
+import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
+import androidx.annotation.IntDef;
+import androidx.appcompat.widget.AppCompatCheckBox;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
@@ -46,16 +48,12 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.Utils;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.IntDef;
-import androidx.appcompat.widget.AppCompatCheckBox;
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * This AsyncTask works by creating a tree where each folder that can be fusioned together with
@@ -88,6 +86,7 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
   private static final int UNKNOWN = -1;
   private static final int DO_NOT_REPLACE = 0;
   private static final int REPLACE = 1;
+  private boolean doRenaming = false;
 
   @IntDef({UNKNOWN, DO_NOT_REPLACE, REPLACE})
   @interface DialogState {}
@@ -227,7 +226,10 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme(context.get()));
     dialogBuilder.title(context.get().getResources().getString(R.string.paste));
     dialogBuilder.positiveText(R.string.skip);
-    dialogBuilder.negativeText(R.string.overwrite);
+    if (filesToCopy.get(0).getParent(context.get()).equals(path)) {
+      doRenaming = true;
+      dialogBuilder.negativeText(context.get().getString(R.string.rename) + " & " + context.get().getString(R.string.save));
+    } else dialogBuilder.negativeText(R.string.overwrite);
     dialogBuilder.neutralText(R.string.cancel);
     dialogBuilder.positiveColor(accentColor);
     dialogBuilder.negativeColor(accentColor);
@@ -245,10 +247,6 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
 
     final MaterialDialog dialog = dialogBuilder.build();
     dialog.show();
-    if (filesToCopy.get(0).getParent(context.get()).equals(path)) {
-      View negative = dialog.getActionButton(DialogAction.NEGATIVE);
-      negative.setEnabled(false);
-    }
   }
 
   private void onEndDialog(
@@ -310,7 +308,15 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
       String path,
       ArrayList<HybridFileParcelable> filesToCopy,
       ArrayList<HybridFileParcelable> conflictingFiles) {
-    if (counter < conflictingFiles.size()) {
+
+    if (doRenaming && dialogState != UNKNOWN) {
+      while (!conflictingFiles.isEmpty()) {
+        resolveByRenaming(filesToCopy, conflictingFiles);
+      }
+    } else if (doRenaming) {
+      resolveByRenaming(filesToCopy, conflictingFiles);
+      doRenaming = false;
+    } else if (counter < conflictingFiles.size()) {
       if (dialogState != UNKNOWN) {
         counter++;
       } else {
@@ -319,6 +325,27 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     }
 
     onEndDialog(path, filesToCopy, conflictingFiles);
+  }
+
+  private void resolveByRenaming(
+          ArrayList<HybridFileParcelable> filesToCopy,
+          ArrayList<HybridFileParcelable> conflictingFiles
+  ) {
+      int appendInt = 1;
+      String newName;
+      File targetFile;
+
+      int conflictingFileIndex = filesToCopy.indexOf(conflictingFiles.get(0));
+      String oldName = filesToCopy.get(conflictingFileIndex).getName();
+      do {
+        newName = oldName.substring(0, oldName.lastIndexOf("."))
+                + "(" + appendInt + ")"
+                + oldName.substring(oldName.lastIndexOf("."));
+        appendInt++;
+        targetFile = new File(path, newName);
+      } while (targetFile.exists());
+      filesToCopy.get(conflictingFileIndex).setName(newName);
+      conflictingFiles.remove(0);
   }
 
   private void finishCopying(

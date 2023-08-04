@@ -20,7 +20,23 @@
 
 package com.amaze.filemanager.adapters;
 
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtension7zip;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApk;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApks;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarShort;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarShort;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionJar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionLzma;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionRar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTarLzma;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTarXz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionXz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionZip;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -29,45 +45,6 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.data.IconDataParcelable;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-import com.amaze.filemanager.adapters.glide.RecyclerPreloadModelProvider;
-import com.amaze.filemanager.adapters.glide.RecyclerPreloadSizeProvider;
-import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
-import com.amaze.filemanager.adapters.holders.ItemViewHolder;
-import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.ui.ItemPopupMenu;
-import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
-import com.amaze.filemanager.ui.colors.ColorUtils;
-import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
-import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
-import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
-import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.ui.views.CircleGradientDrawable;
-import com.amaze.filemanager.utils.AnimUtils;
-import com.amaze.filemanager.utils.GlideConstants;
-import com.amaze.filemanager.utils.Utils;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 
 import android.app.Activity;
 import android.content.Context;
@@ -85,6 +62,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -94,6 +72,47 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.amaze.filemanager.GlideApp;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.glide.RecyclerPreloadModelProvider;
+import com.amaze.filemanager.adapters.glide.RecyclerPreloadSizeProvider;
+import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
+import com.amaze.filemanager.adapters.holders.ItemViewHolder;
+import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.PasteHelper;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.ui.ItemPopupMenu;
+import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
+import com.amaze.filemanager.ui.colors.ColorUtils;
+import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
+import com.amaze.filemanager.ui.icons.Icons;
+import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.CircleGradientDrawable;
+import com.amaze.filemanager.utils.AnimUtils;
+import com.amaze.filemanager.utils.GlideConstants;
+import com.amaze.filemanager.utils.MainActivityActionMode;
+import com.amaze.filemanager.utils.Utils;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView). There
@@ -763,6 +782,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
+          MainActivityActionMode mainActivityActionMode = mainFragment.getMainActivity().mainActivityActionMode;
+          PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
+
+          if (pasteHelper != null && pasteHelper.getSnackbar() != null && pasteHelper.getSnackbar().isShown()) {
+            Toast.makeText(
+                    mainFragment.requireContext(),
+                    mainFragment.getString(R.string.complete_paste_warning),
+                    Toast.LENGTH_LONG).show();
+            return false;
+          }
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
@@ -976,6 +1005,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
+          MainActivityActionMode mainActivityActionMode = mainFragment.getMainActivity().mainActivityActionMode;
+          PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
+
+          if (pasteHelper != null && pasteHelper.getSnackbar() != null && pasteHelper.getSnackbar().isShown()) {
+            Toast.makeText(
+                    mainFragment.requireContext(),
+                    mainFragment.getString(R.string.complete_paste_warning),
+                    Toast.LENGTH_LONG).show();
+            return false;
+          }
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
@@ -1366,6 +1405,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
+
+    MainActivityActionMode mainActivityActionMode = mainFragment.getMainActivity().mainActivityActionMode;
+    PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
+
+    if (pasteHelper != null && pasteHelper.getSnackbar() != null && pasteHelper.getSnackbar().isShown()) {
+      Toast.makeText(
+              mainFragment.requireContext(),
+              mainFragment.getString(R.string.complete_paste_warning),
+              Toast.LENGTH_LONG).show();
+      return;
+    }
     Context currentContext = this.context;
     if (mainFragment.getMainActivity().getAppTheme().getSimpleTheme(mainFragment.requireContext())
         == AppTheme.BLACK) {

@@ -324,7 +324,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
-  private MainActivityActionMode mainActivityActionMode;
+  public MainActivityActionMode mainActivityActionMode;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
