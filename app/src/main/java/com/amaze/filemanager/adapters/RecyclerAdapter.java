@@ -50,6 +50,7 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
@@ -766,20 +767,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
-          MainActivityActionMode mainActivityActionMode =
-              mainFragment.getMainActivity().mainActivityActionMode;
-          PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
-
-          if (pasteHelper != null
-              && pasteHelper.getSnackbar() != null
-              && pasteHelper.getSnackbar().isShown()) {
-            Toast.makeText(
-                    mainFragment.requireContext(),
-                    mainFragment.getString(R.string.complete_paste_warning),
-                    Toast.LENGTH_LONG)
-                .show();
-            return false;
-          }
+          if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
@@ -993,20 +981,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
-          MainActivityActionMode mainActivityActionMode =
-              mainFragment.getMainActivity().mainActivityActionMode;
-          PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
-
-          if (pasteHelper != null
-              && pasteHelper.getSnackbar() != null
-              && pasteHelper.getSnackbar().isShown()) {
-            Toast.makeText(
-                    mainFragment.requireContext(),
-                    mainFragment.getString(R.string.complete_paste_warning),
-                    Toast.LENGTH_LONG)
-                .show();
-            return false;
-          }
+          if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
@@ -1397,21 +1372,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
-
-    MainActivityActionMode mainActivityActionMode =
-        mainFragment.getMainActivity().mainActivityActionMode;
-    PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
-
-    if (pasteHelper != null
-        && pasteHelper.getSnackbar() != null
-        && pasteHelper.getSnackbar().isShown()) {
-      Toast.makeText(
-              mainFragment.requireContext(),
-              mainFragment.getString(R.string.complete_paste_warning),
-              Toast.LENGTH_LONG)
-          .show();
-      return;
-    }
+    if (hasPendingPasteOperation()) return;
     Context currentContext = this.context;
     if (mainFragment.getMainActivity().getAppTheme().getSimpleTheme(mainFragment.requireContext())
         == AppTheme.BLACK) {
@@ -1472,6 +1433,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     popupMenu.show();
+  }
+
+  /**
+   * Helps in deciding whether to allow file modification or not, depending on the state of the
+   * copy/paste operation.
+   *
+   * @return true if there is an unfinished copy/paste operation, false otherwise.
+   */
+  private boolean hasPendingPasteOperation() {
+    MainActivity mainActivity = mainFragment.getMainActivity();
+    if (mainActivity == null) return false;
+    MainActivityActionMode mainActivityActionMode = mainActivity.mainActivityActionMode;
+    PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
+
+    if (pasteHelper != null
+        && pasteHelper.getSnackbar() != null
+        && pasteHelper.getSnackbar().isShown()) {
+      Toast.makeText(
+              mainFragment.requireContext(),
+              mainFragment.getString(R.string.complete_paste_warning),
+              Toast.LENGTH_LONG)
+          .show();
+      return true;
+    }
+    return false;
   }
 
   private boolean getBoolean(String key) {
