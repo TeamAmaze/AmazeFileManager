@@ -70,13 +70,13 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
@@ -95,12 +95,13 @@ public class TextEditorActivity extends ThemedActivity
   private static final String KEY_ORIGINAL_TEXT = "original";
   private static final String KEY_MONOFONT = "monofont";
 
-  private RelativeLayout searchViewLayout;
+  private ConstraintLayout searchViewLayout;
   public AppCompatImageButton upButton;
   public AppCompatImageButton downButton;
-  public AppCompatImageButton closeButton;
 
   private Snackbar loadingSnackbar;
+
+  private TextEditorActivityViewModel viewModel;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -109,16 +110,15 @@ public class TextEditorActivity extends ThemedActivity
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    final TextEditorActivityViewModel viewModel =
-        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    searchViewLayout = findViewById(R.id.searchview);
+    searchViewLayout = findViewById(R.id.textEditorSearchBar);
+
     searchViewLayout.setBackgroundColor(getPrimary());
 
-    searchEditText = searchViewLayout.findViewById(R.id.search_box);
-    upButton = searchViewLayout.findViewById(R.id.prev);
-    downButton = searchViewLayout.findViewById(R.id.next);
-    closeButton = searchViewLayout.findViewById(R.id.close);
+    searchEditText = searchViewLayout.findViewById(R.id.textEditorSearchBox);
+    upButton = searchViewLayout.findViewById(R.id.textEditorSearchPrevButton);
+    downButton = searchViewLayout.findViewById(R.id.textEditorSearchNextButton);
 
     searchEditText.addTextChangedListener(this);
 
@@ -126,14 +126,9 @@ public class TextEditorActivity extends ThemedActivity
     // upButton.setEnabled(false);
     downButton.setOnClickListener(this);
     // downButton.setEnabled(false);
-    closeButton.setOnClickListener(this);
 
-    boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
-
-    getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
-
-    mainTextView = findViewById(R.id.fname);
-    scrollView = findViewById(R.id.editscroll);
+    mainTextView = findViewById(R.id.textEditorMainEditText);
+    scrollView = findViewById(R.id.textEditorScrollView);
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
@@ -144,14 +139,19 @@ public class TextEditorActivity extends ThemedActivity
       return;
     }
 
+    getSupportActionBar().setDisplayHomeAsUpEnabled(!getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK));
     getSupportActionBar().setTitle(viewModel.getFile().name);
 
     mainTextView.addTextChangedListener(this);
 
     if (getAppTheme().equals(AppTheme.DARK)) {
-      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_action_mode));
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_white));
     } else if (getAppTheme().equals(AppTheme.BLACK)) {
       mainTextView.setBackgroundColor(Utils.getColor(this, android.R.color.black));
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_white));
+    } else {
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_grey_900));
     }
 
     if (mainTextView.getTypeface() == null) {
@@ -172,7 +172,7 @@ public class TextEditorActivity extends ThemedActivity
     } else {
       load(this);
     }
-    initStatusBarResources(findViewById(R.id.texteditor));
+    initStatusBarResources(findViewById(R.id.textEditorRootView));
   }
 
   @Override
@@ -490,7 +490,7 @@ public class TextEditorActivity extends ThemedActivity
     else animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
 
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(600);
+    animator.setDuration(800);
     searchViewLayout.setVisibility(View.VISIBLE);
     searchEditText.setText("");
     animator.start();
@@ -535,6 +535,7 @@ public class TextEditorActivity extends ThemedActivity
           @Override
           public void onAnimationEnd(Animator animation) {
             searchViewLayout.setVisibility(View.GONE);
+            cleanSpans(viewModel);
             InputMethodManager inputMethodManager =
                 (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(
@@ -549,7 +550,7 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     switch (v.getId()) {
-      case R.id.prev:
+      case R.id.textEditorSearchPrevButton:
         // upButton
         if (viewModel.getCurrent() > 0) {
           unhighlightCurrentSearchResult(viewModel);
@@ -560,7 +561,7 @@ public class TextEditorActivity extends ThemedActivity
           highlightCurrentSearchResult(viewModel);
         }
         break;
-      case R.id.next:
+      case R.id.textEditorSearchNextButton:
         // downButton
         if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
           unhighlightCurrentSearchResult(viewModel);
@@ -569,11 +570,6 @@ public class TextEditorActivity extends ThemedActivity
 
           highlightCurrentSearchResult(viewModel);
         }
-        break;
-      case R.id.close:
-        // closeButton
-        findViewById(R.id.searchview).setVisibility(View.GONE);
-        cleanSpans(viewModel);
         break;
       default:
         throw new IllegalStateException();
