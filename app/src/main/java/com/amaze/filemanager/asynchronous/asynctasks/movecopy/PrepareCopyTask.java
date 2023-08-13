@@ -27,6 +27,7 @@ import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.MO
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -41,6 +42,7 @@ import com.amaze.filemanager.fileoperations.filesystem.FolderState;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.Utils;
@@ -330,7 +332,7 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     onEndDialog(path, filesToCopy, conflictingFiles);
   }
 
-  private void resolveByRenaming(
+  private String resolveByRenaming(
       ArrayList<HybridFileParcelable> filesToCopy,
       ArrayList<HybridFileParcelable> conflictingFiles) {
     int appendInt = 1;
@@ -338,19 +340,25 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     File targetFile;
 
     int conflictingFileIndex = filesToCopy.indexOf(conflictingFiles.get(0));
-    String oldName = filesToCopy.get(conflictingFileIndex).getName();
+    HybridFileParcelable originalFile = filesToCopy.get(conflictingFileIndex);
+    String oldName = originalFile.getName();
     do {
-      newName =
-          oldName.substring(0, oldName.lastIndexOf("."))
-              + "("
-              + appendInt
-              + ")"
-              + oldName.substring(oldName.lastIndexOf("."));
+      if (originalFile.isDirectory()) {
+        newName = oldName + "(" + appendInt + ")";
+      } else {
+        newName =
+            oldName.substring(0, oldName.lastIndexOf("."))
+                + "("
+                + appendInt
+                + ")"
+                + oldName.substring(oldName.lastIndexOf("."));
+      }
       appendInt++;
       targetFile = new File(path, newName);
     } while (targetFile.exists());
     filesToCopy.get(conflictingFileIndex).setName(newName);
     conflictingFiles.remove(0);
+    return newName;
   }
 
   private void finishCopying(
@@ -407,15 +415,37 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
       conflictingFiles = checkConflicts(filesToCopy, destination);
 
       for (int i = 0; i < conflictingFiles.size(); i++) {
+        String currentPath = path + "/" + conflictingFiles.get(i).getName();
+
+        // If move operation is in same directory, do nothing.
+        if (conflictingFiles.get(i).getPath().equals(currentPath) && move) {
+          filesToCopy.clear();
+          conflictingFiles.clear();
+          publishProgress(context.get().getString(R.string.same_dir_move_error));
+          break;
+        }
         if (conflictingFiles.get(i).isDirectory()) {
           if (deleteCopiedFolder == null) deleteCopiedFolder = new ArrayList<>();
-
           deleteCopiedFolder.add(new File(conflictingFiles.get(i).getPath()));
 
-          nextNodes.add(
-              new CopyNode(
-                  path + "/" + conflictingFiles.get(i).getName(context.get()),
-                  conflictingFiles.get(i).listFiles(context.get(), rootMode)));
+          if (conflictingFiles.get(i).getPath().equals(currentPath)) {
+            String newName =
+                resolveByRenaming(
+                    new ArrayList<>(Collections.singletonList(conflictingFiles.get(i))),
+                    new ArrayList<>(Collections.singletonList(conflictingFiles.get(i))));
+            String newPath = path + "/" + newName;
+
+            HybridFile hybridFile =
+                new HybridFile(conflictingFiles.get(i).getMode(), newPath, newName, true);
+            MakeDirectoryOperation.mkdirs(context.get(), hybridFile);
+            nextNodes.add(
+                new CopyNode(newPath, conflictingFiles.get(i).listFiles(context.get(), rootMode)));
+          } else {
+            nextNodes.add(
+                new CopyNode(
+                    path + "/" + conflictingFiles.get(i).getName(context.get()),
+                    conflictingFiles.get(i).listFiles(context.get(), rootMode)));
+          }
 
           filesToCopy.remove(filesToCopy.indexOf(conflictingFiles.get(i)));
           conflictingFiles.remove(i);
@@ -424,7 +454,7 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
       }
     }
 
-    /** The next 2 methods are a BFS that runs through one node at a time. */
+    // The next 2 methods are a BFS that runs through one node at a time.
     private LinkedList<CopyNode> queue = null;
 
     private Set<CopyNode> visited = null;
@@ -439,7 +469,9 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     }
 
     /**
-     * @return true if there are no more nodes
+     * Moves to the next unvisited node in tree.
+     *
+     * @return The next unvisited node if available, otherwise returns null.
      */
     CopyNode goToNextNode() {
       if (queue.isEmpty()) return null;
