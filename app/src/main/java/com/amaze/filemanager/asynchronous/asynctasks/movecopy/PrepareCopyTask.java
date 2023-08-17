@@ -435,8 +435,7 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
                     new ArrayList<>(Collections.singletonList(conflictingFiles.get(i))));
             String newPath = path + "/" + newName;
 
-            HybridFile hybridFile =
-                new HybridFile(conflictingFiles.get(i).getMode(), newPath, newName, true);
+            HybridFile hybridFile = new HybridFile(conflictingFiles.get(i).getMode(), newPath);
             MakeDirectoryOperation.mkdirs(context.get(), hybridFile);
             nextNodes.add(
                 new CopyNode(newPath, conflictingFiles.get(i).listFiles(context.get(), rootMode)));
