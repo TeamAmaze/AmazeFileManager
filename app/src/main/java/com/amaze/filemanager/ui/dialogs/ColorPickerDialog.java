@@ -46,6 +46,7 @@ import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.util.Pair;
 import androidx.preference.Preference.BaseSavedState;
@@ -249,9 +250,9 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
         ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();
 
     // Button views
-    ((AppCompatTextView) dialog.findViewById(res.getIdentifier("button1", "id", "android")))
+    ((AppCompatButton) dialog.findViewById(res.getIdentifier("button1", "id", "android")))
         .setTextColor(accentColor);
-    ((AppCompatTextView) dialog.findViewById(res.getIdentifier("button2", "id", "android")))
+    ((AppCompatButton) dialog.findViewById(res.getIdentifier("button2", "id", "android")))
         .setTextColor(accentColor);
 
     return dialog;
