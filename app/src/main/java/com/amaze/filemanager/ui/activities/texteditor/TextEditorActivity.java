@@ -49,24 +49,19 @@ import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
@@ -469,78 +464,60 @@ public class TextEditorActivity extends ThemedActivity
     }
   }
 
-  /** show search view with a circular reveal animation */
   private void revealSearchView() {
-    int startRadius = 4;
-    int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-    DisplayMetrics metrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-    // hardcoded and completely random
-    int cx = metrics.widthPixels - 160;
-    int cy = toolbar.getBottom();
-    Animator animator;
-
-    // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-      animator =
-          ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy, startRadius, endRadius);
-    else animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-
-    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(800);
     searchViewLayout.setVisibility(View.VISIBLE);
-    searchEditText.setText("");
-    animator.start();
-    animator.addListener(
-        new AnimatorListenerAdapter() {
+
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_top);
+
+    animation.setAnimationListener(
+        new Animation.AnimationListener() {
           @Override
-          public void onAnimationEnd(Animator animation) {
+          public void onAnimationStart(Animation animation) {}
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+
             searchEditText.requestFocus();
-            InputMethodManager imm =
-                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
           }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {}
         });
+
+    searchViewLayout.startAnimation(animation);
   }
 
-  /** hide search view with a circular reveal animation */
   private void hideSearchView() {
-    int endRadius = 4;
-    int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-    DisplayMetrics metrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_out_top);
 
-    // hardcoded and completely random
-    int cx = metrics.widthPixels - 160;
-    int cy = toolbar.getBottom();
-
-    Animator animator;
-    // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      animator =
-          ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy, startRadius, endRadius);
-    } else {
-      animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-    }
-
-    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(600);
-    animator.start();
-    animator.addListener(
-        new AnimatorListenerAdapter() {
+    animation.setAnimationListener(
+        new Animation.AnimationListener() {
           @Override
-          public void onAnimationEnd(Animator animation) {
+          public void onAnimationStart(Animation animation) {}
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+
             searchViewLayout.setVisibility(View.GONE);
+
             cleanSpans(viewModel);
-            InputMethodManager inputMethodManager =
-                (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(
-                searchEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+            searchEditText.setText("");
+
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(
+                    searchEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
           }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {}
         });
+
+    searchViewLayout.startAnimation(animation);
   }
 
   @Override
