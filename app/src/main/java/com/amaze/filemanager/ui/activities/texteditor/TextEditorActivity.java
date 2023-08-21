@@ -53,7 +53,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -429,7 +428,7 @@ public class TextEditorActivity extends ThemedActivity
             if (textEditorActivity == null) {
               return;
             }
-            textEditorActivity.unhighlightSearchResult(index);
+            textEditorActivity.colorSearchResult(index, getPrimary());
           };
 
       final OnAsyncTaskFinished<List<SearchResultIndex>> onAsyncTaskFinished =
@@ -445,7 +444,7 @@ public class TextEditorActivity extends ThemedActivity
             viewModel.setSearchResultIndices(data);
 
             for (SearchResultIndex searchResultIndex : data) {
-              textEditorActivity.unhighlightSearchResult(searchResultIndex);
+              textEditorActivity.colorSearchResult(searchResultIndex, getPrimary());
             }
 
             if (data.size() != 0) {
@@ -582,12 +581,12 @@ public class TextEditorActivity extends ThemedActivity
     }
 
     SearchResultIndex resultIndex = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
-    unhighlightSearchResult(resultIndex);
+    colorSearchResult(resultIndex, getPrimary());
   }
 
   private void highlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
     SearchResultIndex keyValueNew = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
-    colorSearchResult(keyValueNew, Utils.getColor(this, R.color.search_text_highlight));
+    colorSearchResult(keyValueNew, getAccent());
 
     // scrolling to the highlighted element
     scrollView.scrollTo(
@@ -596,17 +595,6 @@ public class TextEditorActivity extends ThemedActivity
             + mainTextView.getLineHeight()
             + Math.round(mainTextView.getLineSpacingExtra())
             - getSupportActionBar().getHeight());
-  }
-
-  private void unhighlightSearchResult(SearchResultIndex resultIndex) {
-    @ColorInt int color;
-    if (getAppTheme().equals(AppTheme.LIGHT)) {
-      color = Color.YELLOW;
-    } else {
-      color = Color.LTGRAY;
-    }
-
-    colorSearchResult(resultIndex, color);
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
