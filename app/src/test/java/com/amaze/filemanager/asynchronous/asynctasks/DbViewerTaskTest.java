@@ -50,8 +50,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -76,7 +76,8 @@ public class DbViewerTaskTest {
   @Test
   public void testOnPreExecute() {
     DbViewerFragment mock = mock(DbViewerFragment.class);
-    TextView loadingText = new TextView(ApplicationProvider.getApplicationContext());
+    AppCompatTextView loadingText =
+        new AppCompatTextView(ApplicationProvider.getApplicationContext());
     mock.loadingText = loadingText;
     mock.databaseViewerActivity = mock(DatabaseViewerActivity.class);
     mock.loadingText.setVisibility(View.GONE);
@@ -111,7 +112,8 @@ public class DbViewerTaskTest {
     assertNotNull(sqLiteDatabase);
 
     DbViewerFragment mock = mock(DbViewerFragment.class);
-    TextView loadingText = new TextView(ApplicationProvider.getApplicationContext());
+    AppCompatTextView loadingText =
+        new AppCompatTextView(ApplicationProvider.getApplicationContext());
     mock.loadingText = loadingText;
     Cursor schemaCursor = sqLiteDatabase.rawQuery("PRAGMA table_info('users');", null);
     Cursor contentCursor = sqLiteDatabase.rawQuery("SELECT * FROM users", null);
@@ -141,7 +143,8 @@ public class DbViewerTaskTest {
     assertNotNull(sqLiteDatabase);
 
     DbViewerFragment mock = mock(DbViewerFragment.class);
-    TextView loadingText = new TextView(ApplicationProvider.getApplicationContext());
+    AppCompatTextView loadingText =
+        new AppCompatTextView(ApplicationProvider.getApplicationContext());
     mock.loadingText = loadingText;
     mock.databaseViewerActivity = mock(DatabaseViewerActivity.class);
     mock.loadingText.setVisibility(View.GONE);

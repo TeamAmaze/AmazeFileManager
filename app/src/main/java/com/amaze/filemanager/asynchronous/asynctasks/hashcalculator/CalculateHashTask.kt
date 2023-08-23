@@ -23,8 +23,8 @@ package com.amaze.filemanager.asynchronous.asynctasks.hashcalculator
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatTextView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -32,7 +32,7 @@ import com.amaze.filemanager.filesystem.files.FileUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.Callable
 
 data class Hash(val md5: String, val sha: String)
@@ -78,8 +78,8 @@ class CalculateHashTask(
         val md5Text = hashes?.md5 ?: context.getString(R.string.unavailable)
         val shaText = hashes?.sha ?: context.getString(R.string.unavailable)
 
-        val md5HashText = view.findViewById<TextView>(R.id.t9)
-        val sha256Text = view.findViewById<TextView>(R.id.t10)
+        val md5HashText = view.findViewById<AppCompatTextView>(R.id.t9)
+        val sha256Text = view.findViewById<AppCompatTextView>(R.id.t10)
 
         val mMD5LinearLayout = view.findViewById<LinearLayout>(R.id.properties_dialog_md5)
         val mSHA256LinearLayout = view.findViewById<LinearLayout>(R.id.properties_dialog_sha256)

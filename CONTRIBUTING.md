@@ -37,7 +37,7 @@ If we feel your PR is a significant help to us, we'll award you a bounty with an
 ## Points to note
 
  - Please follow [Android/JAVA code style](https://source.android.com/docs/setup/contribute/code-style) for writing any code. Please see [this](https://github.com/TeamAmaze/AmazeFileManager/issues/986) issue too.
- - Also, follow [Android Material Design guidelines](https://material.io/guidelines/material-design/introduction.html) in case you make changes to any UI element.
+ - Also, follow [Android Material Design guidelines](https://m3.material.io/get-started) in case you make changes to any UI element.
 
 ## PS: please make sure to
 

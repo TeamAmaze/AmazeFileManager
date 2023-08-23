@@ -92,6 +92,9 @@ object PreferencesConstants {
     const val PREFERENCE_EXPORT_SETTINGS = "export_settings"
     const val PREFERENCE_IMPORT_SETTINGS = "import_settings"
 
+    // recent search items
+    const val PREFERENCE_RECENT_SEARCH_ITEMS = "recent_searches"
+
     // others
     const val PREFERENCE_CURRENT_TAB = ""
     const val PREFERENCE_BOOKMARKS_ADDED = "books_added"

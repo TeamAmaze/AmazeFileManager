@@ -133,7 +133,6 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$roomVersion"
     kapt "androidx.annotation:annotation:$androidXAnnotationVersion"
 
-    implementation "androidx.preference:preference:$androidXPrefVersion"
     implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
 
     //For tests
@@ -187,8 +186,6 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.3.1'
 
-    implementation 'com.android.volley:volley:1.2.1'
-
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
@@ -206,6 +203,9 @@ dependencies {
 
     //FTP
     implementation "commons-net:commons-net:$commonsNetVersion"
+
+    //OkHttp
+    implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
 
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
@@ -233,14 +233,15 @@ dependencies {
 
     implementation 'org.tukaani:xz:1.9'
 
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.9'
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
 
     implementation project(':commons_compress_7z')
     implementation project(':file_operations')
+    implementation project(':portscanner')
     implementation "androidx.core:core-ktx:$androidXCoreVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"

@@ -33,17 +33,17 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 
 public class FastScroller extends FrameLayout {
   private View bar;
-  private ImageView handle;
+  private AppCompatImageView handle;
   private RecyclerView recyclerView;
   private final ScrollListener scrollListener;
   boolean manuallyChangingPosition = false;

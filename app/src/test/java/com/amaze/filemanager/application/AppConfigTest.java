@@ -91,19 +91,6 @@ public class AppConfigTest {
   }
 
   @Test
-  public void testGetImageLoader() throws Exception {
-    Field requestQueue = AppConfig.class.getDeclaredField("requestQueue");
-    Field imageLoader = AppConfig.class.getDeclaredField("imageLoader");
-    requestQueue.setAccessible(true);
-    imageLoader.setAccessible(true);
-
-    assertNull(requestQueue.get(AppConfig.getInstance()));
-    assertNull(imageLoader.get(AppConfig.getInstance()));
-
-    assertNotNull(AppConfig.getInstance().getImageLoader());
-  }
-
-  @Test
   public void testGlideMemoryCategorySetToHigh() throws Exception {
     Field memoryCategory = Glide.class.getDeclaredField("memoryCategory");
     memoryCategory.setAccessible(true);

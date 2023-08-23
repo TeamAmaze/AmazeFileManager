@@ -32,7 +32,7 @@ import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_EDIT
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_NAME
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_PATH
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import io.mockk.confirmVerified
 import io.mockk.spyk
 import io.mockk.verify

@@ -25,7 +25,7 @@
                 android:paddingBottom="@dimen/material_generic"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -43,14 +43,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_video_dimensions_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dimensions"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_dimensions_title"
@@ -75,14 +75,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_video_codec_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/codec"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_codec_title"
@@ -107,14 +107,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_video_frame_rate_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/frame_rate"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_frame_rate_title"
@@ -139,14 +139,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_video_bitrate_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bitrate"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_video_bitrate_title"

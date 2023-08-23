@@ -28,6 +28,7 @@ import java.net.InetAddress;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.utils.NetworkUtil;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -104,7 +105,7 @@ public class FtpNotification {
     boolean secureConnection =
         sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
 
-    InetAddress address = FtpService.getLocalInetAddress(context);
+    InetAddress address = NetworkUtil.getLocalInetAddress(context);
 
     String address_text = "Address not found";
 

@@ -28,7 +28,6 @@ import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -46,7 +45,8 @@ public class ThemedTextView extends AppCompatTextView {
     setTextViewColor(this, context);
   }
 
-  public static void setTextViewColor(@NotNull TextView textView, @NonNull Context context) {
+  public static void setTextViewColor(
+      @NotNull AppCompatTextView textView, @NonNull Context context) {
     if (((MainActivity) context).getAppTheme().equals(AppTheme.LIGHT)) {
       textView.setTextColor(Utils.getColor(context, android.R.color.black));
     } else if (((MainActivity) context).getAppTheme().equals(AppTheme.DARK)

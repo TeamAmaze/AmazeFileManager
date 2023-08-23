@@ -159,7 +159,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
       case R.id.linear_layout_smb:
         dismiss();
         SmbSearchDialog smbDialog = new SmbSearchDialog();
-        smbDialog.show(getActivity().getFragmentManager(), "tab");
+        smbDialog.show(getActivity().getSupportFragmentManager(), "tab");
         return;
       case R.id.linear_layout_scp:
         dismiss();

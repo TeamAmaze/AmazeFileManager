@@ -60,11 +60,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/placeholder_trash_bottom"
         android:layout_width="@dimen/zero_dp"
         android:layout_height="@dimen/material_generic_large"
-        android:src="@drawable/ic_drag_to_trash"
+        app:srcCompat="@drawable/ic_drag_to_trash"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

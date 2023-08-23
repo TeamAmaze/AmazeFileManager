@@ -3,7 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
-    <View android:layout_gravity="center_horizontal" android:id="@+id/scroll_bar" android:layout_width="10dp" android:layout_height="match_parent" android:alpha="0.3" />
-    <ImageView android:layout_gravity="center_horizontal" android:id="@+id/scroll_handle" android:layout_width="10dp" android:layout_height="@dimen/fastscroller_track_height" />
+    <View
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/scroll_bar"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:alpha="0.3" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/scroll_handle"
+        android:layout_width="10dp"
+        android:layout_height="@dimen/fastscroller_track_height" />
 </FrameLayout>
 

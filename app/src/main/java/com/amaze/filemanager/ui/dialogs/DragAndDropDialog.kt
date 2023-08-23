@@ -24,8 +24,8 @@ import android.app.Dialog
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
-import android.widget.Button
-import android.widget.CheckBox
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -152,8 +152,8 @@ class DragAndDropDialog : DialogFragment() {
 
             dialog.customView?.run {
                 // Get views from custom layout to set text values.
-                val rememberCheckbox = this.findViewById<CheckBox>(R.id.remember_drag)
-                val moveButton = this.findViewById<Button>(R.id.button_move)
+                val rememberCheckbox = this.findViewById<AppCompatCheckBox>(R.id.remember_drag)
+                val moveButton = this.findViewById<AppCompatButton>(R.id.button_move)
                 moveButton.setOnClickListener {
                     mainActivity?.run {
                         if (rememberCheckbox.isChecked) {
@@ -163,7 +163,7 @@ class DragAndDropDialog : DialogFragment() {
                         dismiss()
                     }
                 }
-                val copyButton = this.findViewById<Button>(R.id.button_copy)
+                val copyButton = this.findViewById<AppCompatButton>(R.id.button_copy)
                 copyButton.setOnClickListener {
                     mainActivity?.run {
                         if (rememberCheckbox.isChecked) {

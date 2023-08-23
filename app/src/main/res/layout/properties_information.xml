@@ -25,7 +25,7 @@
                 android:paddingBottom="@dimen/material_generic"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -43,14 +43,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_name_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/name"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_file_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,14 +76,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_type_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/type"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_file_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,14 +109,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_size_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/size"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_file_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -142,14 +142,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_location_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/location"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_file_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -176,14 +176,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_accessed_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/accessed"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_file_accessed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -209,14 +209,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_modified_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/modified"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_file_modified"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

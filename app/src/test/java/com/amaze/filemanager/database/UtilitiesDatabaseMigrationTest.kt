@@ -39,7 +39,7 @@ import com.amaze.filemanager.database.UtilitiesDatabase.Companion.TABLE_SMB
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.utils.PasswordUtil
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
