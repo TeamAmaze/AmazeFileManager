@@ -40,14 +40,14 @@
         app:layout_constraintTop_toTopOf="parent"
         android:descendantFocusability="afterDescendants">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:descendantFocusability="afterDescendants">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/snackBarTextTV"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_marginStart="16dp"
@@ -56,11 +56,7 @@
                 android:padding="8dp"
                 android:textColor="@color/vectors_white"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/snackBarCancelButton"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_toStartOf="@id/snackBarCancelButton" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/snackBarCancelButton"
@@ -73,9 +69,7 @@
                 android:textAllCaps="true"
                 android:textColor="@color/vectors_white"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/snackBarActionButton"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_toStartOf="@id/snackBarActionButton"
                 android:focusable="true"
                 android:nextFocusRight="@id/snackBarActionButton"
                 android:background="@drawable/ripple_focusable"
@@ -91,15 +85,13 @@
                 android:textAllCaps="true"
                 android:textColor="@color/vectors_white"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_alignParentEnd="true"
                 android:focusable="true"
                 android:nextFocusLeft="@id/snackBarCancelButton"
                 android:background="@drawable/ripple_focusable"
                 />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
