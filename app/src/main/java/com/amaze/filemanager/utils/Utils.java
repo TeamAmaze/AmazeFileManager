@@ -50,14 +50,15 @@ import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -102,7 +103,7 @@ public class Utils {
     return location[1];
   }
 
-  public static void setTint(Context context, CheckBox box, int color) {
+  public static void setTint(Context context, AppCompatCheckBox box, int color) {
     if (Build.VERSION.SDK_INT >= 21) return;
     ColorStateList sl =
         new ColorStateList(
@@ -352,7 +353,7 @@ public class Utils {
 
     Button actionButton = customSnackView.findViewById(R.id.snackBarActionButton);
     Button cancelButton = customSnackView.findViewById(R.id.snackBarCancelButton);
-    TextView textView = customSnackView.findViewById(R.id.snackBarTextTV);
+    AppCompatTextView textView = customSnackView.findViewById(R.id.snackBarTextTV);
 
     actionButton.setText(actionTextId);
     textView.setText(text);
@@ -455,5 +456,12 @@ public class Utils {
             .build();
 
     ShortcutManagerCompat.requestPinShortcut(context, info, null);
+  }
+
+  public static void hideKeyboard(MainActivity mainActivity) {
+    View view = mainActivity.getCurrentFocus();
+    if (view != null)
+      ((InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE))
+          .hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
 }

@@ -241,6 +241,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             utilitiesProvider,
             false);
         return true;
+      case R.id.compress:
+        GeneralDialogCreation.showCompressDialog(
+            mainActivity,
+            rowItem.generateBaseFile(),
+            mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
+        return true;
       case R.id.return_select:
         mainFragment.returnIntentResults(rowItem.generateBaseFile());
         return true;

@@ -27,9 +27,9 @@ import android.os.Build
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentActivity
 import com.amaze.filemanager.R
@@ -43,7 +43,6 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 
 class MainActivityActionMode(private val mainActivityReference: WeakReference<MainActivity>) :
     ActionMode.Callback {
@@ -120,7 +119,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     mainActivity
                 )
             }
-            val textView: TextView = actionModeView!!.findViewById(R.id.item_count)
+            val textView: AppCompatTextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
             hideOption(R.id.openmulti, menu)
             menu.findItem(R.id.all)

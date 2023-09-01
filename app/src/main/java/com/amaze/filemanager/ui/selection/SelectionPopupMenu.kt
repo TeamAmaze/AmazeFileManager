@@ -24,13 +24,12 @@ import android.content.Context
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.AppCompatTextView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.theme.AppTheme
-import java.util.*
 
 class SelectionPopupMenu(
     private val recyclerAdapter: RecyclerAdapter,
@@ -102,7 +101,7 @@ class SelectionPopupMenu(
             }
         }
         actionModeView.invalidate()
-        actionModeView.findViewById<TextView>(R.id.item_count).text = recyclerAdapter
+        actionModeView.findViewById<AppCompatTextView>(R.id.item_count).text = recyclerAdapter
             .checkedItems.size.toString()
         return true
     }

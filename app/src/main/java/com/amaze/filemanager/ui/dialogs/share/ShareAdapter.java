@@ -32,10 +32,10 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 /** Created by Arpit on 01-07-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
@@ -77,8 +77,8 @@ class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> {
   class ViewHolder extends RecyclerView.ViewHolder {
     private View rootView;
 
-    private TextView textView;
-    private ImageView imageView;
+    private AppCompatTextView textView;
+    private AppCompatImageView imageView;
 
     ViewHolder(View view) {
       super(view);

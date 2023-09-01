@@ -21,7 +21,7 @@
 package com.amaze.filemanager.shadows
 
 import android.content.Context
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import jcifs.context.SingletonContext
 import jcifs.smb.SmbException
 import jcifs.smb.SmbFile

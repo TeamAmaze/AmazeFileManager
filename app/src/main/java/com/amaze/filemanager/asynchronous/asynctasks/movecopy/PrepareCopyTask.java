@@ -52,10 +52,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.annotation.IntDef;
+import androidx.appcompat.widget.AppCompatCheckBox;
 
 /**
  * This AsyncTask works by creating a tree where each folder that can be fusioned together with
@@ -222,7 +222,7 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
     copyDialogBinding.fileNameText.setText(conflictingFiles.get(counter).getName(context.get()));
 
     // checkBox
-    final CheckBox checkBox = copyDialogBinding.checkBox;
+    final AppCompatCheckBox checkBox = copyDialogBinding.checkBox;
     Utils.setTint(context.get(), checkBox, accentColor);
     dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme(context.get()));
     dialogBuilder.title(context.get().getResources().getString(R.string.paste));

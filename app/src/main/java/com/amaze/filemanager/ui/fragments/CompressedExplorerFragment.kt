@@ -40,11 +40,11 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -426,7 +426,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         // may be called multiple times if the mode is invalidated.
         override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
             compressedExplorerAdapter?.checkedItemPositions?.let { positions ->
-                (mode.customView.findViewById<View>(R.id.item_count) as TextView).text =
+                (mode.customView.findViewById<View>(R.id.item_count) as AppCompatTextView).text =
                     positions.size.toString()
                 menu.findItem(R.id.all)
                     .setTitle(
@@ -591,9 +591,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
     private fun dialogGetPasswordFromUser(filePath: String) {
         val positiveCallback =
-            SingleButtonCallback { dialog: MaterialDialog, action: DialogAction? ->
-                val editText = dialog.view.findViewById<EditText>(R.id.singleedittext_input)
-                val password: String = editText.getText().toString()
+            SingleButtonCallback { dialog: MaterialDialog, _: DialogAction? ->
+                val editText = dialog.view.findViewById<AppCompatEditText>(
+                    R.id.singleedittext_input
+                )
+                val password: String = editText.text.toString()
                 ArchivePasswordCache.getInstance()[filePath] = password
                 dialog.dismiss()
                 changePath(filePath)

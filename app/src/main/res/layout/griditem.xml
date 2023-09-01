@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/second"
     android:layout_width="match_parent"
     android:layout_height="170dp"
@@ -23,7 +24,7 @@
             android:background="#fff"
             android:foregroundGravity="fill">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/generic_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -32,7 +33,7 @@
                 android:contentDescription="@string/icon"
                 android:scaleType="centerInside" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon_thumb"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -44,12 +45,12 @@
                 android:layout_height="match_parent"
                 android:gravity="center">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/check_icon_grid"
                     android:layout_width="@dimen/check_icon_size_grid"
                     android:layout_height="@dimen/check_icon_size_grid"
                     android:alpha="0.7"
-                    android:src="@drawable/ic_grid_selection_check"
+                    app:srcCompat="@drawable/ic_grid_selection_check"
                     android:visibility="invisible" />
             </RelativeLayout>
 
@@ -73,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/properties"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +84,7 @@
                 android:background="@drawable/ripple"
                 android:clickable="true"
                 android:padding="1dp"
-                android:src="@drawable/ic_more_vert_black_48dp"
+                app:srcCompat="@drawable/ic_more_vert_black_48dp"
                 android:nextFocusUp="@id/second"
                 android:focusable="true" />
 

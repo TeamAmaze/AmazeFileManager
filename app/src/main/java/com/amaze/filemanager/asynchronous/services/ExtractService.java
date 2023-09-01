@@ -24,7 +24,6 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import org.apache.commons.compress.PasswordRequiredException;
@@ -55,11 +54,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.widget.EditText;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -70,15 +70,14 @@ public class ExtractService extends AbstractProgressiveService {
   private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
   // list of data packages,// to initiate chart in process viewer fragment
-  private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
+  private final ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
   private NotificationManagerCompat mNotifyManager;
   private NotificationCompat.Builder mBuilder;
-  private ProgressHandler progressHandler = new ProgressHandler();
+  private final ProgressHandler progressHandler = new ProgressHandler();
   private ProgressListener progressListener;
-  private int accentColor;
-  private SharedPreferences sharedPreferences;
   private RemoteViews customSmallContentViews, customBigContentViews;
+  private @Nullable DoWork extractingAsyncTask;
 
   public static final String KEY_PATH_ZIP = "zip";
   public static final String KEY_ENTRIES_ZIP = "entries";
@@ -98,8 +97,9 @@ public class ExtractService extends AbstractProgressiveService {
     String[] entries = intent.getStringArrayExtra(KEY_ENTRIES_ZIP);
 
     mNotifyManager = NotificationManagerCompat.from(getApplicationContext());
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    accentColor =
+    SharedPreferences sharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    int accentColor =
         ((AppConfig) getApplication())
             .getUtilsProvider()
             .getColorPreference()
@@ -153,7 +153,8 @@ public class ExtractService extends AbstractProgressiveService {
 
     super.onStartCommand(intent, flags, startId);
     super.progressHalted();
-    new DoWork(this, progressHandler, file, extractPath, entries).execute();
+    extractingAsyncTask = new DoWork(progressHandler, file, extractPath, entries);
+    extractingAsyncTask.execute();
 
     return START_NOT_STICKY;
   }
@@ -216,6 +217,9 @@ public class ExtractService extends AbstractProgressiveService {
   @Override
   public void onDestroy() {
     super.onDestroy();
+    if (extractingAsyncTask != null) {
+      extractingAsyncTask.cancel(true);
+    }
     unregisterReceiver(receiver1);
   }
 
@@ -228,21 +232,15 @@ public class ExtractService extends AbstractProgressiveService {
   }
 
   public class DoWork extends AsyncTask<Void, IOException, Boolean> {
-    private WeakReference<ExtractService> extractService;
     private String[] entriesToExtract;
-    private String extractionPath, compressedPath;
-    private ProgressHandler progressHandler;
+    private String extractionPath;
+    private final String compressedPath;
+    private final ProgressHandler progressHandler;
     private ServiceWatcherUtil watcherUtil;
     private boolean paused = false;
     private boolean passwordProtected = false;
 
-    private DoWork(
-        ExtractService extractService,
-        ProgressHandler progressHandler,
-        String cpath,
-        String epath,
-        String[] entries) {
-      this.extractService = new WeakReference<>(extractService);
+    private DoWork(ProgressHandler progressHandler, String cpath, String epath, String[] entries) {
       this.progressHandler = progressHandler;
       compressedPath = cpath;
       extractionPath = epath;
@@ -254,8 +252,7 @@ public class ExtractService extends AbstractProgressiveService {
       while (!isCancelled()) {
         if (paused) continue;
 
-        final ExtractService extractService = this.extractService.get();
-        if (extractService == null) return null;
+        final ExtractService extractService = ExtractService.this;
 
         File f = new File(compressedPath);
         String extractDirName = CompressedHelper.getFileName(f.getName());
@@ -394,9 +391,9 @@ public class ExtractService extends AbstractProgressiveService {
           R.string.archive_password_prompt,
           R.string.authenticate_password,
           (dialog, which) -> {
-            EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+            AppCompatEditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
             ArchivePasswordCache.getInstance().put(compressedPath, editText.getText().toString());
-            this.extractService.get().getDataPackages().clear();
+            ExtractService.this.getDataPackages().clear();
             this.paused = false;
             dialog.dismiss();
           },
@@ -413,8 +410,7 @@ public class ExtractService extends AbstractProgressiveService {
     @Override
     public void onPostExecute(Boolean hasInvalidEntries) {
       ArchivePasswordCache.getInstance().remove(compressedPath);
-      final ExtractService extractService = this.extractService.get();
-      if (extractService == null) return;
+      final ExtractService extractService = ExtractService.this;
 
       // check whether watcherutil was initialized. It was not initialized when we got exception
       // in extracting the file
@@ -453,7 +449,7 @@ public class ExtractService extends AbstractProgressiveService {
    * Class used for the client Binder. Because we know this service always runs in the same process
    * as its clients, we don't need to deal with IPC.
    */
-  private BroadcastReceiver receiver1 =
+  private final BroadcastReceiver receiver1 =
       new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

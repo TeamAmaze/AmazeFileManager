@@ -68,7 +68,6 @@ import com.amaze.filemanager.utils.AnimUtils.marqueeAfterDelay
 import com.amaze.filemanager.utils.Utils
 import com.amaze.filemanager.utils.safeLet
 import java.io.File
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class AppsRecyclerAdapter(
@@ -254,6 +253,7 @@ class AppsRecyclerAdapter(
                     ) {
                             uri, mimeType, useNewStack ->
                         val intent = buildIntent(
+                            fragment.requireContext(),
                             uri,
                             mimeType,
                             useNewStack,

@@ -40,6 +40,9 @@
         android:id="@+id/about"
         android:title="@string/properties"/>
     <item
+        android:id="@+id/compress"
+        android:title="@string/compress" />
+    <item
         android:id="@+id/share"
         android:title="@string/share" />
     <item

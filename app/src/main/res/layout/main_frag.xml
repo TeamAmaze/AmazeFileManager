@@ -21,9 +21,9 @@
     -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <!--
      As the main content view, the view below consumes the entire
@@ -78,16 +78,16 @@
                 android:background="@drawable/ripple_focusable"
                 >
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/material_generic_medium"
-                    android:src="@drawable/ic_insert_drive_file_white_36dp"/>
+                    app:srcCompat="@drawable/ic_insert_drive_file_white_36dp"/>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@android:style/TextAppearance.Medium"
                     android:layout_width="wrap_content"
                     android:textColor="#666666"

@@ -27,7 +27,7 @@
             android:descendantFocusability="afterDescendants">
 
             <!-- status -->
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_view_ftp_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_view_ftp_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 app:layout_constraintTop_toBottomOf="@id/text_view_ftp_url" />
 
             <!-- username -->
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_view_ftp_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             <!-- password -->
 
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_view_ftp_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,12 +88,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_view_ftp_username"/>
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/ftp_password_visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
-                android:src="@drawable/ic_eye_grey600_24dp"
+                app:srcCompat="@drawable/ic_eye_grey600_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_view_ftp_username"
@@ -101,7 +101,7 @@
 
 
             <!-- port -->
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_view_ftp_port"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                 app:layout_constraintTop_toBottomOf="@id/text_view_ftp_password"/>
 
             <!-- shared path -->
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_view_ftp_path"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_view_ftp_path" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/startStopButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

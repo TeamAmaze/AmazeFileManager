@@ -25,21 +25,21 @@
     <TableRow
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp" />
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text="@string/permission_read" />
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text="@string/permission_write" />
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -50,27 +50,27 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/permission_owner"
             />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/creadown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
             />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cwriteown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
             />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cexeown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,22 +81,22 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/permission_group" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/creadgroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cwritegroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cexegroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -105,22 +105,22 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/permission_other" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/creadother"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cwriteother"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <CheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cexeother"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

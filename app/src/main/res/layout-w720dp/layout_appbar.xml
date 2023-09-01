@@ -74,14 +74,14 @@
                     android:layout_height="wrap_content"
                     >
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:clickable="false"
                         android:layout_width="wrap_content"
                         style="@android:style/TextAppearance.Medium"
                         android:textColor="@android:color/white"
                         android:layout_height="wrap_content"
                         android:id="@+id/fullpath"/>
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:clickable="false"
                         android:layout_width="wrap_content"
                         style="@android:style/TextAppearance.Medium"
@@ -91,7 +91,7 @@
                         android:visibility="gone"/>
                 </LinearLayout>
             </HorizontalScrollView>
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:textSize="12sp"
                 android:paddingBottom="10dp"
