@@ -23,11 +23,12 @@ package com.amaze.filemanager.filesystem.files
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.util.Log
 import com.amaze.filemanager.filesystem.HybridFile
+import org.slf4j.LoggerFactory
 
 object MediaConnectionUtils {
-    private val TAG = MediaConnectionUtils::class.java.simpleName
+
+    private val LOG = LoggerFactory.getLogger(MediaConnectionUtils::class.java)
 
     /**
      * Invokes MediaScannerConnection#scanFile for the given files
@@ -45,9 +46,8 @@ object MediaConnectionUtils {
             context,
             paths,
             null
-        ) {
-                path: String, _: Uri? ->
-            Log.i(TAG, "public scanFile() Finished scanning path$path")
+        ) { path: String, _: Uri? ->
+            LOG.info("MediaConnectionUtils#scanFile finished scanning path$path")
         }
     }
 }
