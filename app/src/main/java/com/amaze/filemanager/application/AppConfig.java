@@ -134,7 +134,9 @@ public class AppConfig extends GlideApplication {
     // this is a static method so it is easier to call,
     // as the context checking and casting is done for you
 
-    if (context == null) return;
+    if (context == null) {
+      return;
+    }
 
     if (!(context instanceof Application)) {
       context = context.getApplicationContext();
