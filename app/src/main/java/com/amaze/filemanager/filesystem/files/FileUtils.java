@@ -749,7 +749,7 @@ public class FileUtils {
       mainActivity.startActivity(intent);
     } else {
       try {
-        openFileDialogFragmentFor(f, mainActivity,useNewStack);
+        openFileDialogFragmentFor(f, mainActivity, useNewStack);
       } catch (Exception e) {
         Toast.makeText(
                 mainActivity, mainActivity.getString(R.string.no_app_found), Toast.LENGTH_LONG)
@@ -762,11 +762,14 @@ public class FileUtils {
   private static void openFileDialogFragmentFor(
       @NonNull File file, @NonNull MainActivity mainActivity, @NonNull Boolean useNewStack) {
     openFileDialogFragmentFor(
-        file, mainActivity, MimeTypes.getMimeType(file.getAbsolutePath(), false),useNewStack);
+        file, mainActivity, MimeTypes.getMimeType(file.getAbsolutePath(), false), useNewStack);
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull File file, @NonNull MainActivity mainActivity, @NonNull String mimeType, @NonNull Boolean useNewStack) {
+      @NonNull File file,
+      @NonNull MainActivity mainActivity,
+      @NonNull String mimeType,
+      @NonNull Boolean useNewStack) {
     OpenFileDialogFragment.Companion.openFileOrShow(
         FileProvider.getUriForFile(mainActivity, mainActivity.getPackageName(), file),
         mimeType,
@@ -776,14 +779,23 @@ public class FileUtils {
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull DocumentFile file, @NonNull MainActivity mainActivity, @NonNull Boolean useNewStack) {
+      @NonNull DocumentFile file,
+      @NonNull MainActivity mainActivity,
+      @NonNull Boolean useNewStack) {
     openFileDialogFragmentFor(
-        file.getUri(), mainActivity, MimeTypes.getMimeType(file.getUri().toString(), false), useNewStack);
+        file.getUri(),
+        mainActivity,
+        MimeTypes.getMimeType(file.getUri().toString(), false),
+        useNewStack);
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull Uri uri, @NonNull MainActivity mainActivity, @NonNull String mimeType, @NonNull Boolean useNewStack) {
-    OpenFileDialogFragment.Companion.openFileOrShow(uri, mimeType, useNewStack, mainActivity, false);
+      @NonNull Uri uri,
+      @NonNull MainActivity mainActivity,
+      @NonNull String mimeType,
+      @NonNull Boolean useNewStack) {
+    OpenFileDialogFragment.Companion.openFileOrShow(
+        uri, mimeType, useNewStack, mainActivity, false);
   }
 
   private static boolean isSelfDefault(File f, Context c) {
