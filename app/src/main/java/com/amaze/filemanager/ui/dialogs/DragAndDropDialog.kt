@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.app.Dialog
 import android.content.Context
-import android.os.AsyncTask
 import android.os.Bundle
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatCheckBox
@@ -31,7 +30,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PreparePasteTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
@@ -106,15 +105,16 @@ class DragAndDropDialog : DialogFragment() {
             move: Boolean,
             mainActivity: MainActivity
         ) {
-            PrepareCopyTask(
-                pasteLocation,
-                move,
-                mainActivity,
-                mainActivity.isRootExplorer,
-                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
-                files
-            )
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            val openMode =
+                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode ?: return
+            PreparePasteTask(mainActivity)
+                .execute(
+                    pasteLocation,
+                    move,
+                    mainActivity.isRootExplorer,
+                    openMode,
+                    files
+                )
         }
     }
 

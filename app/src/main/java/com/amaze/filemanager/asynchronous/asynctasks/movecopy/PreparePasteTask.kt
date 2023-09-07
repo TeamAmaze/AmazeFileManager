@@ -37,7 +37,7 @@ import com.amaze.filemanager.fileoperations.filesystem.COPY
 import com.amaze.filemanager.fileoperations.filesystem.FolderState
 import com.amaze.filemanager.fileoperations.filesystem.MOVE
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
-import com.amaze.filemanager.filesystem.DeleteOperation
+import com.amaze.filemanager.filesystem.FilenameHelper
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation
@@ -48,11 +48,10 @@ import com.amaze.filemanager.utils.Utils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.lang.ref.WeakReference
 import java.util.LinkedList
 
@@ -77,12 +76,35 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     @Suppress("DEPRECATION")
     private var progressDialog: ProgressDialog? = null
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val coroutineScope = CoroutineScope(Job() + Dispatchers.Default)
 
     private lateinit var destination: HybridFile
     private val conflictingFiles: MutableList<HybridFileParcelable> = mutableListOf()
     private val conflictingDirActionMap = HashMap<HybridFileParcelable, String>()
 
+    private var skipAll = false
+    private var renameAll = false
+    private var overwriteAll = false
+
+    private fun startService(
+        sourceFiles: ArrayList<HybridFileParcelable>,
+        target: String,
+        openMode: OpenMode,
+        isMove: Boolean,
+        isRootMode: Boolean
+    ) {
+        val intent = Intent(context.get(), CopyService::class.java)
+        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles)
+        intent.putExtra(CopyService.TAG_COPY_TARGET, target)
+        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openMode.ordinal)
+        intent.putExtra(CopyService.TAG_COPY_MOVE, isMove)
+        intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, isRootMode)
+        ServiceWatcherUtil.runService(context.get(), intent)
+    }
+
+    /**
+     * Starts execution of [PreparePasteTask] class.
+     */
     fun execute(
         targetPath: String,
         isMove: Boolean,
@@ -118,12 +140,12 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             return
         }
 
+        val isMoveSupported = isMove &&
+            destination.mode == openMode &&
+            MoveFiles.getOperationSupportedFileSystem().contains(openMode)
+
         if (destination.usableSpace < totalBytes &&
-            !(
-                isMove &&
-                    destination.mode == openMode &&
-                    MoveFiles.getOperationSupportedFileSystem().contains(openMode)
-                )
+            !isMoveSupported
         ) {
             Toast.makeText(context.get(), R.string.in_safe, Toast.LENGTH_SHORT).show()
             return
@@ -161,27 +183,10 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         }
     }
 
-    private fun startService(
-        sourceFiles: ArrayList<HybridFileParcelable>,
-        target: String,
-        openMode: OpenMode,
-        isMove: Boolean,
-        isRootMode: Boolean
-    ) {
-        val intent = Intent(context.get(), CopyService::class.java)
-        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles)
-        intent.putExtra(CopyService.TAG_COPY_TARGET, target)
-        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openMode.ordinal)
-        intent.putExtra(CopyService.TAG_COPY_MOVE, isMove)
-        intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, isRootMode)
-        ServiceWatcherUtil.runService(context.get(), intent)
-    }
-
     private suspend fun showDialog() {
         if (conflictingFiles.isEmpty()) return
 
         val contextRef = context.get() ?: return
-
         val accentColor = contextRef.accent
         val dialogBuilder = MaterialDialog.Builder(contextRef)
         val copyDialogBinding: CopyDialogBinding =
@@ -210,25 +215,21 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             dialogBuilder.onPositive { _, _ ->
                 resultDeferred.complete(DialogAction.POSITIVE)
             }
-
             dialogBuilder.onNegative { _, _ ->
                 resultDeferred.complete(DialogAction.NEGATIVE)
             }
-
             dialogBuilder.onNeutral { _, _ ->
                 resultDeferred.complete(DialogAction.NEUTRAL)
             }
-
             dialog.show()
 
             when (resultDeferred.await()) {
                 DialogAction.POSITIVE -> {
                     if (checkBox.isChecked) {
-                        Action.renameAll = true
+                        renameAll = true
                         return
                     } else conflictingDirActionMap[hybridFileParcelable] = Action.RENAME
                 }
-
                 DialogAction.NEGATIVE -> {
                     if (hybridFileParcelable.getParent(contextRef) == targetPath) {
                         Toast.makeText(
@@ -244,16 +245,15 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                         filesToCopy.remove(hybridFileParcelable)
                         iterator.remove()
                     } else if (checkBox.isChecked) {
-                        Action.overwriteAll = true
+                        overwriteAll = true
                         return
                     } else {
                         conflictingDirActionMap[hybridFileParcelable] = Action.OVERWRITE
                     }
                 }
-
                 DialogAction.NEUTRAL -> {
                     if (checkBox.isChecked) {
-                        Action.skipAll = true
+                        skipAll = true
                         return
                     } else conflictingDirActionMap[hybridFileParcelable] = Action.SKIP
                 }
@@ -263,19 +263,19 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     private fun resolveConflict() = coroutineScope.launch {
         var index = conflictingFiles.size - 1
-        if (Action.renameAll) {
+        if (renameAll) {
             while (conflictingFiles.isNotEmpty()) {
                 conflictingDirActionMap[conflictingFiles[index]] = Action.RENAME
                 conflictingFiles.removeAt(index)
                 index--
             }
-        } else if (Action.overwriteAll) {
+        } else if (overwriteAll) {
             while (conflictingFiles.isNotEmpty()) {
                 conflictingDirActionMap[conflictingFiles[index]] = Action.OVERWRITE
                 conflictingFiles.removeAt(index)
                 index--
             }
-        } else {
+        } else if (skipAll) {
             while (conflictingFiles.isNotEmpty()) {
                 filesToCopy.remove(conflictingFiles.removeAt(index))
                 index--
@@ -352,7 +352,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         coroutineScope.cancel()
     }
 
-    inner class CopyNode(
+    private inner class CopyNode(
         val path: String,
         val filesToCopy: ArrayList<HybridFileParcelable>
     ) {
@@ -368,7 +368,10 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                     when (conflictingDirActionMap[hybridFileParcelable]) {
                         Action.RENAME -> {
                             if (hybridFileParcelable.isDirectory) {
-                                val newName = resolveByRenaming(hybridFileParcelable)
+                                val newName =
+                                    FilenameHelper.increment(
+                                        hybridFileParcelable
+                                    ).getName(context.get())
                                 val newPath = "$path/$newName"
                                 val hybridFile = HybridFile(hybridFileParcelable.mode, newPath)
                                 MakeDirectoryOperation.mkdirs(context.get()!!, hybridFile)
@@ -382,23 +385,23 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                                 iterator.remove()
                             } else {
                                 filesToCopy[filesToCopy.indexOf(hybridFileParcelable)].name =
-                                    resolveByRenaming(hybridFileParcelable)
+                                    FilenameHelper.increment(
+                                        hybridFileParcelable
+                                    ).getName(context.get())
                             }
                         }
 
-                        Action.OVERWRITE -> {
-                            DeleteOperation.deleteFile(
-                                File("$path/${hybridFileParcelable.name}"),
-                                context.get()!!
-                            )
-                        }
-
-                        else -> iterator.remove()
+                        Action.SKIP -> iterator.remove()
                     }
                 }
             }
         }
 
+        /**
+         * Starts BFS traversal of tree.
+         *
+         * @return Root node
+         */
         fun startCopy(): CopyNode {
             queue = LinkedList()
             visited = HashSet()
@@ -445,35 +448,6 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             const val SKIP = "skip"
             const val RENAME = "rename"
             const val OVERWRITE = "overwrite"
-            var skipAll = false
-            var renameAll = false
-            var overwriteAll = false
         }
-    }
-
-    /** This is temporary function and should be replaced with
-     * [FilenameHelper](https://github.com/TeamAmaze/AmazeFileManager/pull/3913) before merging.
-     * */
-    private fun resolveByRenaming(originalFile: HybridFileParcelable): String {
-        var appendInt = 1
-        var newName: String
-        var targetFile: File
-        val oldName = originalFile.name
-        do {
-            newName = if (originalFile.isDirectory) {
-                "$oldName($appendInt)"
-            } else {
-                (
-                    oldName.substring(0, oldName.lastIndexOf(".")) +
-                        "(" +
-                        appendInt +
-                        ")" +
-                        oldName.substring(oldName.lastIndexOf("."))
-                    )
-            }
-            appendInt++
-            targetFile = File(targetPath, newName)
-        } while (targetFile.exists())
-        return newName
     }
 }
