@@ -124,6 +124,7 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -142,7 +143,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.FabWithLabelView;
@@ -1785,7 +1785,34 @@ public class MainActivity extends PermissionsActivity
     FabWithLabelView newFolderFab =
         initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
-    floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
+    floatingActionButton.setOnActionSelectedListener(
+        actionItem -> {
+          MainFragment mainFragment = getCurrentMainFragment();
+
+          if (mainFragment == null) return false;
+
+          String path = mainFragment.getCurrentPath();
+
+          MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
+
+          if (mainFragmentViewModel == null) return false;
+
+          OpenMode openMode = mainFragmentViewModel.getOpenMode();
+
+          int id = actionItem.getId();
+
+          if (id == R.id.menu_new_folder)
+            mainActivity.mainActivityHelper.mkdir(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_file)
+            mainActivity.mainActivityHelper.mkfile(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_cloud)
+            new CloudSheetFragment()
+                .show(mainActivity.getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
+
+          floatingActionButton.close(true);
+          return true;
+        });
+
     floatingActionButton.setOnClickListener(
         view -> {
           fabButtonClick(cloudFab);
@@ -2376,45 +2403,6 @@ public class MainActivity extends PermissionsActivity
     tabFragment.initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
   }
 
-  private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
-
-    MainActivity mainActivity;
-    SpeedDialView floatingActionButton;
-
-    FabActionListener(MainActivity mainActivity) {
-      this.mainActivity = mainActivity;
-      this.floatingActionButton = mainActivity.floatingActionButton;
-    }
-
-    @Override
-    public boolean onActionSelected(SpeedDialActionItem actionItem) {
-      final MainFragment ma =
-          (MainFragment)
-              ((TabFragment)
-                      mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame))
-                  .getCurrentTabFragment();
-      final String path = ma.getCurrentPath();
-
-      switch (actionItem.getId()) {
-        case R.id.menu_new_folder:
-          mainActivity.mainActivityHelper.mkdir(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_file:
-          mainActivity.mainActivityHelper.mkfile(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_cloud:
-          BottomSheetDialogFragment fragment = new CloudSheetFragment();
-          fragment.show(
-              ma.getActivity().getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
-          break;
-      }
-
-      floatingActionButton.close(true);
-      return true;
-    }
-  }
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *
