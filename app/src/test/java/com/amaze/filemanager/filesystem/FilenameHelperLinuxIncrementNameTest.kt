@@ -41,7 +41,8 @@ class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementName
         val pairs = arrayOf(
             Pair("/test/file.txt", "/test/file (copy).txt"),
             Pair("sub/foo.txt", "sub/foo (copy).txt"),
-            Pair("sub/nested/foo.txt", "sub/nested/foo (copy).txt")
+            Pair("sub/nested/foo.txt", "sub/nested/foo (copy).txt"),
+            Pair("/test/afile", "/test/afile (copy)")
         )
         performTest(pairs, true)
     }

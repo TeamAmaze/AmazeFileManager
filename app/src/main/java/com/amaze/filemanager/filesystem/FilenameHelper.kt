@@ -152,7 +152,11 @@ object FilenameHelper {
         )
 
         while (retval.exists(AppConfig.getInstance())) {
-            filename = format(platform, basename, start++) + ".$extension"
+            filename = if (extension.isNotBlank()) {
+                format(platform, basename, start++) + ".$extension"
+            } else {
+                format(platform, basename, start++)
+            }
             retval = HybridFile(
                 file.mode,
                 dirname,

@@ -41,7 +41,8 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
         val pairs = arrayOf(
             Pair("/test/file.txt", "/test/file (2).txt"),
             Pair("sub/foo.txt", "sub/foo (2).txt"),
-            Pair("sub/nested/foo.txt", "sub/nested/foo (2).txt")
+            Pair("sub/nested/foo.txt", "sub/nested/foo (2).txt"),
+            Pair("/test/afile", "/test/afile (2)")
         )
         performTest(pairs, true)
     }

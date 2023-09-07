@@ -41,7 +41,8 @@ class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNam
         val pairs = arrayOf(
             Pair("/test/file.txt", "/test/file copy.txt"),
             Pair("/test/sub/foo.txt", "/test/sub/foo copy.txt"),
-            Pair("/test/sub/nested/foo.txt", "/test/sub/nested/foo copy 2.txt")
+            Pair("/test/sub/nested/foo.txt", "/test/sub/nested/foo copy 2.txt"),
+            Pair("/test/afile", "/test/afile copy")
         )
         performTest(pairs, true)
     }
