@@ -39,9 +39,10 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
     @Test
     fun testWindowsIncrementSimple() {
         val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file (2).txt"),
-            Pair("sub/foo.txt", "sub/foo (2).txt"),
-            Pair("sub/nested/foo.txt", "sub/nested/foo (2).txt")
+            Pair("/test/file.txt", "/test/file (1).txt"),
+            Pair("sub/foo.txt", "sub/foo (1).txt"),
+            Pair("sub/nested/foo.txt", "sub/nested/foo (1).txt"),
+            Pair("/test/afile", "/test/afile (1)")
         )
         performTest(pairs, true)
     }
@@ -53,14 +54,14 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
     @Test
     fun testWindowsStripRawNumbersAndIncrementsBeforeUpdatingIncrement() {
         val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo (3).txt"),
-            Pair("/test/foo 2.txt", "/test/foo (3).txt"),
-            Pair("/test/foo copy.txt", "/test/foo (3).txt"),
-            Pair("/test/qux 2.txt", "/test/qux (3).txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc (2).txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (2).txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (2).txt"),
-            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (2).txt")
+            Pair("/test/foo.txt", "/test/foo (1).txt"),
+            Pair("/test/foo 2.txt", "/test/foo (1).txt"),
+            Pair("/test/foo copy.txt", "/test/foo (1).txt"),
+            Pair("/test/qux 2.txt", "/test/qux (1).txt"),
+            Pair("/test/abc (2) - Copy.txt", "/test/abc (1).txt"),
+            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (1).txt"),
+            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (1).txt"),
+            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (1).txt")
         )
         performTest(pairs, strip = true, removeRawNumbers = true)
     }
@@ -72,14 +73,14 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
     @Test
     fun testWindowsStripBeforeUpdatingIncrement() {
         val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo (3).txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 (2).txt"),
-            Pair("/test/foo copy.txt", "/test/foo (3).txt"),
-            Pair("/test/qux 2.txt", "/test/qux 2 (2).txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc (2).txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (2).txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (2).txt"),
-            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (2).txt")
+            Pair("/test/foo.txt", "/test/foo (1).txt"),
+            Pair("/test/foo 2.txt", "/test/foo 2 (1).txt"),
+            Pair("/test/foo copy.txt", "/test/foo (1).txt"),
+            Pair("/test/qux 2.txt", "/test/qux 2 (1).txt"),
+            Pair("/test/abc (2) - Copy.txt", "/test/abc (1).txt"),
+            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (1).txt"),
+            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (1).txt"),
+            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (1).txt")
         )
         performTest(pairs, strip = true, removeRawNumbers = false)
     }
@@ -91,7 +92,7 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
     @Test
     fun testWindowsIncrementStartWithSpecifiedNumber() {
         val pairs = arrayOf(
-            Pair("/test/foo (3).txt", 1),
+            Pair("/test/foo (1).txt", 1),
             Pair("/test/foo (3).txt", 2),
             Pair("/test/foo (3).txt", 3),
             Pair("/test/foo (4).txt", 4),
@@ -117,9 +118,9 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
     @Test
     fun testWindowsIncrementStripOff() {
         val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo (3).txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 (2).txt"),
-            Pair("/test/foo copy.txt", "/test/foo copy (2).txt")
+            Pair("/test/foo.txt", "/test/foo (1).txt"),
+            Pair("/test/foo 2.txt", "/test/foo 2 (1).txt"),
+            Pair("/test/foo copy.txt", "/test/foo copy (1).txt")
         )
         performTest(pairs, false)
     }

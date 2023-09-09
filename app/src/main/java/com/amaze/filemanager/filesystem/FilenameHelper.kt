@@ -152,7 +152,11 @@ object FilenameHelper {
         )
 
         while (retval.exists(AppConfig.getInstance())) {
-            filename = format(platform, basename, start++) + ".$extension"
+            filename = if (extension.isNotBlank()) {
+                format(platform, basename, start++) + ".$extension"
+            } else {
+                format(platform, basename, start++)
+            }
             retval = HybridFile(
                 file.mode,
                 dirname,
@@ -224,7 +228,7 @@ object FilenameHelper {
             }
             // Windows and default formatting are the same.
             else -> {
-                if (n > 1) {
+                if (n >= 1) {
                     "$stem ($n)"
                 } else {
                     stem

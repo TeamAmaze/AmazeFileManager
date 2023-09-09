@@ -52,6 +52,7 @@ abstract class AbstractFilenameHelperIncrementNameTests {
     protected lateinit var file: HybridFile
 
     private val existingFiles = arrayOf(
+        "/test/afile",
         "/test/abc (2) - Copy - Copy.txt",
         "/test/abc (2) - Copy.txt",
         "/test/abc.txt",
