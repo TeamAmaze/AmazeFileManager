@@ -228,7 +228,7 @@ object FilenameHelper {
             }
             // Windows and default formatting are the same.
             else -> {
-                if (n > 1) {
+                if (n >= 1) {
                     "$stem ($n)"
                 } else {
                     stem
