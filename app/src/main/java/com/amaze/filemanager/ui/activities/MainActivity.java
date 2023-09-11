@@ -591,6 +591,13 @@ public class MainActivity extends PermissionsActivity
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when picking file
       Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(Intent.ACTION_OPEN_DOCUMENT)) {
+      mReturnIntent = true;
+      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when picking file
+      Utils.disableScreenRotation(this);
     } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
       // zip viewer intent
       Uri uri = intent.getData();
