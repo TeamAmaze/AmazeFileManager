@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -86,6 +87,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -119,7 +121,6 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -553,8 +554,23 @@ public class MainFragment extends Fragment
       LOG.debug("pickup file");
       intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
     }
-    getActivity().setResult(FragmentActivity.RESULT_OK, intent);
-    getActivity().finish();
+    requireActivity().setResult(Activity.RESULT_OK, intent);
+    requireActivity().finish();
+  }
+
+  public void returnIntentResultForSaveFile(@NonNull String filename) {
+    requireMainActivity().mReturnIntent = false;
+    Uri uri = Utils.getUriForLocalFile(requireContext(), new File(getCurrentPath(), filename));
+    requireContext()
+        .grantUriPermission(
+            BuildConfig.APPLICATION_ID,
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+    Intent intent = new Intent();
+    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+    intent.setData(uri);
+    requireActivity().setResult(Activity.RESULT_OK, intent);
+    requireActivity().finish();
   }
 
   LoadFilesListTask loadFilesListTask;

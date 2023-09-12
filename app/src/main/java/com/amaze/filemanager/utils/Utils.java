@@ -239,18 +239,25 @@ public class Utils {
         .replaceAll(INPUT_INTENT_BLACKLIST_COLON, "");
   }
 
-  /** Returns uri associated to specific basefile */
+  public static Uri getUriForLocalFile(@NonNull Context context, @NonNull File localFile) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+      return FileProvider.getUriForFile(context, context.getPackageName(), localFile);
+    } else {
+      return Uri.fromFile(localFile);
+    }
+  }
+
+  /**
+   * Returns uri associated to specific basefile
+   *
+   * <p>FIXME: what if the basefile's path is not local path?
+   */
   public static Uri getUriForBaseFile(
       @NonNull Context context, @NonNull HybridFileParcelable baseFile) {
     switch (baseFile.getMode()) {
       case FILE:
       case ROOT:
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-          return FileProvider.getUriForFile(
-              context, context.getPackageName(), new File(baseFile.getPath()));
-        } else {
-          return Uri.fromFile(new File(baseFile.getPath()));
-        }
+        return getUriForLocalFile(context, new File(baseFile.getPath()));
       case OTG:
         return OTGUtil.getDocumentFile(baseFile.getPath(), context, true).getUri();
       case SMB:

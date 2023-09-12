@@ -213,37 +213,7 @@ public class MainActivityHelper {
               ma);
           dialog.dismiss();
         },
-        (text) -> {
-          boolean isValidFilename = FileProperties.isValidFilename(text);
-
-          // The redundant equalsIgnoreCase() is needed since ".txt" itself does not end with .txt
-          // (i.e. recommended as ".txt.txt"
-          if (text.length() > 0) {
-            if (!isValidFilename || text.startsWith(" ")) {
-              return new WarnableTextInputValidator.ReturnState(
-                  WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
-            } else {
-              SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-              if (text.startsWith(".")
-                  && !prefs.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false)) {
-                return new WarnableTextInputValidator.ReturnState(
-                    WarnableTextInputValidator.ReturnState.STATE_WARNING,
-                    R.string.create_hidden_file_warn);
-              } else if (!text.toLowerCase()
-                  .endsWith(
-                      AppConstants.NEW_FILE_DELIMITER.concat(
-                          AppConstants.NEW_FILE_EXTENSION_TXT))) {
-                return new WarnableTextInputValidator.ReturnState(
-                    WarnableTextInputValidator.ReturnState.STATE_WARNING,
-                    R.string.create_file_suggest_txt_extension);
-              }
-            }
-          } else {
-            return new WarnableTextInputValidator.ReturnState(
-                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-          }
-          return new WarnableTextInputValidator.ReturnState();
-        });
+        new FilenameValidator());
   }
 
   private void mk(
@@ -825,5 +795,53 @@ public class MainActivityHelper {
 
     fragment.setArguments(args);
     fragmentManager.beginTransaction().add(fragment, MainActivity.TAG_ASYNC_HELPER).commit();
+  }
+
+  public static class FilenameValidator implements WarnableTextInputValidator.OnTextValidate {
+
+    private boolean recommendTxtExtension;
+
+    public FilenameValidator() {
+      this(true);
+    }
+
+    public FilenameValidator(boolean recommendTxtExtension) {
+      this.recommendTxtExtension = recommendTxtExtension;
+    }
+
+    @Override
+    public WarnableTextInputValidator.ReturnState isTextValid(String text) {
+      boolean isValidFilename = FileProperties.isValidFilename(text);
+
+      // The redundant equalsIgnoreCase() is needed since ".txt" itself does not end with .txt
+      // (i.e. recommended as ".txt.txt"
+      if (text.length() > 0) {
+        if (!isValidFilename || text.startsWith(" ")) {
+          return new WarnableTextInputValidator.ReturnState(
+              WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
+        } else {
+          SharedPreferences prefs =
+              PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance());
+          if (text.startsWith(".")
+              && !prefs.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false)) {
+            return new WarnableTextInputValidator.ReturnState(
+                WarnableTextInputValidator.ReturnState.STATE_WARNING,
+                R.string.create_hidden_file_warn);
+          } else if (recommendTxtExtension
+              && !text.toLowerCase()
+                  .endsWith(
+                      AppConstants.NEW_FILE_DELIMITER.concat(
+                          AppConstants.NEW_FILE_EXTENSION_TXT))) {
+            return new WarnableTextInputValidator.ReturnState(
+                WarnableTextInputValidator.ReturnState.STATE_WARNING,
+                R.string.create_file_suggest_txt_extension);
+          }
+        }
+      } else {
+        return new WarnableTextInputValidator.ReturnState(
+            WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+      }
+      return new WarnableTextInputValidator.ReturnState();
+    }
   }
 }

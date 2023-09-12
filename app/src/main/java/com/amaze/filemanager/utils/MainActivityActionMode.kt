@@ -24,6 +24,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -85,8 +86,13 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             mainActivity
                 .updateViews(
                     ColorDrawable(
-                        mainActivity.resources
-                            .getColor(R.color.holo_dark_action_mode)
+                        if (Build.VERSION.SDK_INT < VERSION_CODES.M) {
+                            mainActivity.resources
+                                .getColor(R.color.holo_dark_action_mode)
+                        } else {
+                            mainActivity.resources
+                                .getColor(R.color.holo_dark_action_mode, mainActivity.theme)
+                        }
                     )
                 )
 
@@ -127,7 +133,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     if (checkedItems.size
                         == mainFragmentViewModel.folderCount +
                         mainFragmentViewModel.fileCount
-                    ) R.string.deselect_all else R.string.select_all
+                    ) {
+                        R.string.deselect_all
+                    } else {
+                        R.string.select_all
+                    }
                 )
             if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
                 .getIsCloudOpenMode()
@@ -136,9 +146,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 hideOption(R.id.compress, menu)
                 return true
             }
-            if (mainActivity.mReturnIntent &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-            ) {
+            if (mainActivity.mReturnIntent) {
                 showOption(R.id.openmulti, menu)
             }
             // tv.setText(checkedItems.size());
@@ -154,14 +162,14 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         hideOption(R.id.openmulti, menu)
                     }
                     if (mainActivity.mReturnIntent) {
-                        if (Build.VERSION.SDK_INT >= 16) showOption(
+                        showOption(
                             R.id.openmulti,
                             menu
                         )
                     }
                 } else {
                     showOption(R.id.share, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+                    if (mainActivity.mReturnIntent) {
                         showOption(
                             R.id.openmulti,
                             menu
@@ -188,15 +196,13 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         hideOption(R.id.share, menu)
                         hideOption(R.id.openmulti, menu)
                     }
-                    if (mainActivity.mReturnIntent &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                    ) {
+                    if (mainActivity.mReturnIntent) {
                         showOption(R.id.openmulti, menu)
                     }
                 } else {
                     hideOption(R.id.openparent, menu)
                     hideOption(R.id.addshortcut, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+                    if (mainActivity.mReturnIntent) {
                         showOption(
                             R.id.openmulti,
                             menu
@@ -277,17 +283,20 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     true
                 }
                 R.id.share -> {
-                    if (checkedItems.size > 100) Toast.makeText(
-                        mainActivity,
-                        mainActivity.resources.getString(R.string.share_limit),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show() else {
+                    if (checkedItems.size > 100) {
+                        Toast.makeText(
+                            mainActivity,
+                            mainActivity.resources.getString(R.string.share_limit),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    } else {
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.also {
                                 mainFragmentViewModel ->
                             when (checkedItems[0].mode) {
                                 OpenMode.DROPBOX, OpenMode.BOX, OpenMode.GDRIVE,
-                                OpenMode.ONEDRIVE ->
+                                OpenMode.ONEDRIVE
+                                ->
                                     FileUtils.shareCloudFiles(
                                         checkedItems,
                                         checkedItems[0].mode,
@@ -372,8 +381,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         i++
                     }
                     val op =
-                        if (item.itemId == R.id.cpy) PasteHelper.OPERATION_COPY
-                        else PasteHelper.OPERATION_CUT
+                        if (item.itemId == R.id.cpy) {
+                            PasteHelper.OPERATION_COPY
+                        } else {
+                            PasteHelper.OPERATION_CUT
+                        }
                     // Making sure we don't cause an IllegalArgumentException
                     // when passing copies to PasteHelper
                     if (copies.isNotEmpty()) {
@@ -440,13 +452,17 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     mainFragmentViewModel, adapter ->
                 if (!mainFragmentViewModel.results) {
                     adapter.toggleChecked(false, mainFragmentViewModel.currentPath)
-                } else adapter.toggleChecked(false)
+                } else {
+                    adapter.toggleChecked(false)
+                }
                 mainActivity
                     .updateViews(
                         ColorDrawable(
                             if (MainActivity.currentTab == 1) {
                                 mainFragmentViewModel.primaryTwoColor
-                            } else mainFragmentViewModel.primaryColor
+                            } else {
+                                mainFragmentViewModel.primaryColor
+                            }
                         )
                     )
             }
