@@ -26,6 +26,7 @@ import android.os.Build.VERSION_CODES.N_MR1
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.amaze.filemanager.utils.NetworkUtil
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.fail
 import org.junit.Test
@@ -53,11 +54,11 @@ class FtpServiceStaticMethodsTest {
          */
         if (SDK_INT >= N_MR1) {
             ApplicationProvider.getApplicationContext<Context>().run {
-                if (!FtpService.isConnectedToLocalNetwork(this)) {
+                if (!NetworkUtil.isConnectedToLocalNetwork(this)) {
                     fail("Please connect your device to network to run this test!")
                 }
 
-                FtpService.getLocalInetAddress(this).also {
+                NetworkUtil.getLocalInetAddress(this).also {
                     assertNotNull(it)
                     assertNotNull(it?.hostAddress)
                 }

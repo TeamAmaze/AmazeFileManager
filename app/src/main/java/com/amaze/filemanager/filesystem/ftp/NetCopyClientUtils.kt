@@ -48,6 +48,10 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 object NetCopyClientUtils {
 
@@ -74,7 +78,9 @@ object NetCopyClientUtils {
      * Execute the given NetCopyClientTemplate.
      *
      * This template pattern is borrowed from Spring Framework, to simplify code on operations
-     * using SftpClientTemplate.
+     * using NetCopyClientTemplate.
+     *
+     * FIXME: Over-simplification implementation causing unnecessarily closing SSHClient.
      *
      * @param template [NetCopyClientTemplate] to execute
      * @param <T> Type of return value
@@ -187,6 +193,7 @@ object NetCopyClientUtils {
      * @param fullUri Full SSH URL
      * @return The remote path part of the full SSH URL
      */
+    @JvmStatic
     fun extractRemotePathFrom(fullUri: String): String {
         return NetCopyConnectionInfo(fullUri).let { connInfo ->
             if (true == connInfo.defaultPath?.isNotEmpty()) {
@@ -290,5 +297,17 @@ object NetCopyClientUtils {
         FTP_URI_PREFIX -> FTP_DEFAULT_PORT
         SMB_URI_PREFIX -> 0 // SMB never requires explicit port number at URL
         else -> throw IllegalArgumentException("Cannot derive default port")
+    }
+
+    /**
+     * Convenience method to format given UNIX timestamp to yyyyMMddHHmmss format.
+     */
+    @JvmStatic
+    fun getTimestampForTouch(date: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = date
+        val df: DateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.US)
+        df.calendar = calendar
+        return df.format(calendar.time)
     }
 }

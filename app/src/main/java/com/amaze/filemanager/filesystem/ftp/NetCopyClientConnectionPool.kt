@@ -70,7 +70,6 @@ object NetCopyClientConnectionPool {
     /**
      * Obtain a [NetCopyClient] connection from the underlying connection pool.
      *
-     *
      * Beneath it will return the connection if it exists; otherwise it will create a new one and
      * put it into the connection pool.
      *

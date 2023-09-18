@@ -99,6 +99,11 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         Integer.toString(FilePermission.toMask(sshFile.getAttributes().getPermissions()), 8));
   }
 
+  @Override
+  public long lastModified() {
+    return date;
+  }
+
   public String getName() {
     if (!Utils.isNullOrEmpty(name)) return name;
     else return super.getSimpleName();

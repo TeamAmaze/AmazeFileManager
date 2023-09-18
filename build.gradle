@@ -5,7 +5,7 @@ buildscript {
         kotlin_version = "1.6.10"
         robolectricVersion = '4.9'
         glideVersion = '4.11.0'
-        sshjVersion = '0.34.0'
+        sshjVersion = '0.35.0'
         jcifsVersion = '2.1.6'
         fabSpeedDialVersion = '3.1.1'
         roomVersion = '2.4.3'
