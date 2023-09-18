@@ -243,10 +243,10 @@ public class GenericCopyUtil {
 
       doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
-      LOG.debug("I/O Error!", e);
-      throw new IOException();
+      LOG.error("I/O Error copy {} to {}: {}", mSourceFile, mTargetFile, e);
+      throw new IOException(e);
     } catch (OutOfMemoryError e) {
-      LOG.warn("low memory while copying file", e);
+      LOG.warn("low memory while copying {} to {}: {}", mSourceFile, mTargetFile, e);
 
       onLowMemory.onLowMemory();
 

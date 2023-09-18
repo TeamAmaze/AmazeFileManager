@@ -45,9 +45,9 @@ class CalculateHashTask(
 
     private val log: Logger = LoggerFactory.getLogger(CalculateHashTask::class.java)
 
-    private val task: Callable<Hash> = if (file.isSftp) {
+    private val task: Callable<Hash> = if (file.isSftp && !file.isDirectory(context)) {
         CalculateHashSftpCallback(file)
-    } else if (file.isFtp) {
+    } else if (file.isFtp || file.isDirectory(context)) {
         // Don't do this. Especially when FTPClient requires thread safety.
         DoNothingCalculateHashCallback()
     } else {
