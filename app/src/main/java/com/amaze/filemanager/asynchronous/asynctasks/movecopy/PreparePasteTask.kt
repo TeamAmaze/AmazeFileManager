@@ -188,7 +188,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                 }
             )
             withContext(Dispatchers.Main) {
-                prepareDialog(conflictingFiles, conflictingDirActionMap, filesToCopy)
+                prepareDialog(conflictingFiles, filesToCopy)
                 @Suppress("DEPRECATION")
                 progressDialog?.setMessage(context.get()?.getString(R.string.copying))
             }
@@ -198,7 +198,6 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     private suspend fun prepareDialog(
         conflictingFiles: MutableList<HybridFileParcelable>,
-        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
         filesToCopy: ArrayList<HybridFileParcelable>
     ) {
         if (conflictingFiles.isEmpty()) return
@@ -223,7 +222,6 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         showDialog(
             conflictingFiles,
             filesToCopy,
-            conflictingDirActionMap,
             copyDialogBinding,
             dialogBuilder,
             checkBox
@@ -233,7 +231,6 @@ class PreparePasteTask(strongRefMain: MainActivity) {
     private suspend fun showDialog(
         conflictingFiles: MutableList<HybridFileParcelable>,
         filesToCopy: ArrayList<HybridFileParcelable>,
-        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
         copyDialogBinding: CopyDialogBinding,
         dialogBuilder: MaterialDialog.Builder,
         checkBox: AppCompatCheckBox
