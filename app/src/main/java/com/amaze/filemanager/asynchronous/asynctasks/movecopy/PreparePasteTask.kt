@@ -118,13 +118,14 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         this.openMode = openMode
         this.filesToCopy = filesToCopy
 
-        if (openMode == OpenMode.OTG ||
+        val isCloudOrRootMode = openMode == OpenMode.OTG ||
             openMode == OpenMode.GDRIVE ||
             openMode == OpenMode.DROPBOX ||
             openMode == OpenMode.BOX ||
             openMode == OpenMode.ONEDRIVE ||
             openMode == OpenMode.ROOT
-        ) {
+
+        if (isCloudOrRootMode) {
             startService(filesToCopy, targetPath, openMode, isMove, isRootMode)
         }
 
@@ -156,10 +157,22 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             "",
             context.get()?.getString(R.string.checking_conflicts)
         )
-        checkConflicts(isRootMode, filesToCopy)
+        checkConflicts(
+            isRootMode,
+            filesToCopy,
+            destination,
+            conflictingFiles,
+            conflictingDirActionMap
+        )
     }
 
-    private fun checkConflicts(isRootMode: Boolean, filesToCopy: ArrayList<HybridFileParcelable>) {
+    private fun checkConflicts(
+        isRootMode: Boolean,
+        filesToCopy: ArrayList<HybridFileParcelable>,
+        destination: HybridFile,
+        conflictingFiles: MutableList<HybridFileParcelable>,
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>
+    ) {
         coroutineScope.launch {
             destination.forEachChildrenFile(
                 context.get(),
@@ -175,15 +188,19 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                 }
             )
             withContext(Dispatchers.Main) {
-                showDialog()
+                prepareDialog(conflictingFiles, conflictingDirActionMap, filesToCopy)
                 @Suppress("DEPRECATION")
                 progressDialog?.setMessage(context.get()?.getString(R.string.copying))
             }
-            resolveConflict()
+            resolveConflict(conflictingFiles, conflictingDirActionMap, filesToCopy)
         }
     }
 
-    private suspend fun showDialog() {
+    private suspend fun prepareDialog(
+        conflictingFiles: MutableList<HybridFileParcelable>,
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
+        filesToCopy: ArrayList<HybridFileParcelable>
+    ) {
         if (conflictingFiles.isEmpty()) return
 
         val contextRef = context.get() ?: return
@@ -203,15 +220,30 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         dialogBuilder.negativeColor(accentColor)
         dialogBuilder.neutralColor(accentColor)
         dialogBuilder.negativeText(R.string.overwrite)
+        showDialog(
+            conflictingFiles,
+            filesToCopy,
+            conflictingDirActionMap,
+            copyDialogBinding,
+            dialogBuilder,
+            checkBox
+        )
+    }
 
+    private suspend fun showDialog(
+        conflictingFiles: MutableList<HybridFileParcelable>,
+        filesToCopy: ArrayList<HybridFileParcelable>,
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
+        copyDialogBinding: CopyDialogBinding,
+        dialogBuilder: MaterialDialog.Builder,
+        checkBox: AppCompatCheckBox
+    ) {
         val iterator = conflictingFiles.iterator()
         while (iterator.hasNext()) {
             val hybridFileParcelable = iterator.next()
             copyDialogBinding.fileNameText.text = hybridFileParcelable.name
-
             val dialog = dialogBuilder.build()
             val resultDeferred = CompletableDeferred<DialogAction>()
-
             dialogBuilder.onPositive { _, _ ->
                 resultDeferred.complete(DialogAction.POSITIVE)
             }
@@ -222,46 +254,49 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                 resultDeferred.complete(DialogAction.NEUTRAL)
             }
             dialog.show()
-
             when (resultDeferred.await()) {
                 DialogAction.POSITIVE -> {
                     if (checkBox.isChecked) {
                         renameAll = true
                         return
                     } else conflictingDirActionMap[hybridFileParcelable] = Action.RENAME
+                    iterator.remove()
                 }
                 DialogAction.NEGATIVE -> {
-                    if (hybridFileParcelable.getParent(contextRef) == targetPath) {
+                    if (hybridFileParcelable.getParent(context.get()) == targetPath) {
                         Toast.makeText(
-                            contextRef,
-                            R.string.same_dir_move_error,
+                            context.get(),
+                            R.string.same_dir_overwrite_error,
                             Toast.LENGTH_SHORT
                         ).show()
                         if (checkBox.isChecked) {
-                            filesToCopy.removeAll(conflictingFiles)
+                            filesToCopy.removeAll(conflictingFiles.toSet())
                             conflictingFiles.clear()
                             return
                         }
                         filesToCopy.remove(hybridFileParcelable)
-                        iterator.remove()
                     } else if (checkBox.isChecked) {
                         overwriteAll = true
                         return
-                    } else {
-                        conflictingDirActionMap[hybridFileParcelable] = Action.OVERWRITE
-                    }
+                    } else conflictingDirActionMap[hybridFileParcelable] = Action.OVERWRITE
+                    iterator.remove()
                 }
                 DialogAction.NEUTRAL -> {
                     if (checkBox.isChecked) {
                         skipAll = true
                         return
                     } else conflictingDirActionMap[hybridFileParcelable] = Action.SKIP
+                    iterator.remove()
                 }
             }
         }
     }
 
-    private fun resolveConflict() = coroutineScope.launch {
+    private fun resolveConflict(
+        conflictingFiles: MutableList<HybridFileParcelable>,
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
+        filesToCopy: ArrayList<HybridFileParcelable>
+    ) = coroutineScope.launch {
         var index = conflictingFiles.size - 1
         if (renameAll) {
             while (conflictingFiles.isNotEmpty()) {
