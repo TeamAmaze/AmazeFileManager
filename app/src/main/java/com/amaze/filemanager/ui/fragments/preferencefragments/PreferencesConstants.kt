@@ -108,5 +108,9 @@ object PreferencesConstants {
     const val PREFERENCE_APPLIST_SORTBY = "AppsListFragment.sortBy"
     const val PREFERENCE_APPLIST_ISASCENDING = "AppsListFragment.isAscending"
 
+    const val KEY_TRASH_BIN_RETENTION_DAYS = "trash_bin_retention_days"
+    const val KEY_TRASH_BIN_RETENTION_BYTES = "trash_bin_retention_bytes"
+    const val KEY_TRASH_BIN_RETENTION_NUM_OF_FILES = "trash_bin_retention_num_of_files"
+
     const val DEFAULT_PREFERENCE_DELETE_CONFIRMATION = true
 }

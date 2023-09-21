@@ -43,6 +43,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
@@ -87,6 +88,8 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.smb.SmbUtil;
+import com.amaze.trashbin.TrashBin;
+import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
@@ -99,6 +102,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
@@ -112,6 +116,7 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import kotlin.io.ByteStreamsKt;
+import kotlin.jvm.functions.Function2;
 import kotlin.text.Charsets;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
@@ -531,7 +536,8 @@ public class HybridFile {
         || path.equals("3")
         || path.equals("4")
         || path.equals("5")
-        || path.equals("6");
+        || path.equals("6")
+            || path.equals("7");
   }
 
   /** Helper method to get parent path */
@@ -1512,6 +1518,55 @@ public class HybridFile {
     return !exists();
   }
 
+  public void restoreFromBin(Context context) {
+    List<TrashBinFile> trashBinFiles = Collections.singletonList(this.toTrashBinFile(context));
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    if (trashBin != null) {
+      trashBin.moveToBin(trashBinFiles, true, (originalFilePath,
+                                               trashBinDestination) -> {
+        File source = new File(originalFilePath);
+        File dest = new File(trashBinDestination);
+        if (!source.renameTo(dest)) {
+          return false;
+        }
+        Uri uri = FileProvider.getUriForFile(
+                context,
+                context.getPackageName(), new File(originalFilePath)
+        );
+        FileUtils.scanFile(
+                uri,
+                context
+        );
+        return true;
+      });
+    }
+  }
+
+  public boolean moveToBin(Context context) {
+    List<TrashBinFile> trashBinFiles = Collections.singletonList(this.toTrashBinFile(context));
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    if (trashBin != null) {
+      trashBin.moveToBin(trashBinFiles, true, (originalFilePath,
+                                               trashBinDestination) -> {
+        File source = new File(originalFilePath);
+        File dest = new File(trashBinDestination);
+        if (!source.renameTo(dest)) {
+          return false;
+        }
+        Uri uri = FileProvider.getUriForFile(
+                context,
+                context.getPackageName(), new File(originalFilePath)
+        );
+        FileUtils.scanFile(
+                uri,
+                context
+        );
+        return true;
+      });
+    }
+    return true;
+  }
+
   /**
    * Returns the name of file excluding it's extension If no extension is found then whole file name
    * is returned
@@ -1732,6 +1787,10 @@ public class HybridFile {
               }
             });
   }
+  public TrashBinFile toTrashBinFile(Context context) {
+    return new TrashBinFile(name, isDirectory(context), path, length(context), null);
+  }
+
 
   private SshClientSessionTemplate<String> getSftpHash(String command) {
     return new SshClientSessionTemplate<String>(path) {

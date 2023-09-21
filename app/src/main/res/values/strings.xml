@@ -813,5 +813,10 @@ You only need to do this once, until the next time you select a new location for
     <string name="try_indexed_search">Try Indexed Search!</string>
     <string name="search_recent">Recent</string>
     <string name="results">Results</string>
+    <string name="trasbin_bin">Trash Bin</string>
+    <string name="delete_permanently_checkbox">Delete Permanently</string>
+    <string name="restore">Restore</string>
+    <string name="restore_files">Restore Files</string>
+    <string name="restoring">Restoring…</string>
 </resources>
 

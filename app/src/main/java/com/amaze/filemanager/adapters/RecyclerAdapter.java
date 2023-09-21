@@ -1381,6 +1381,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             view,
             sharedPrefs);
     popupMenu.inflate(R.menu.item_extras);
+    boolean isLocalFile = rowItem.generateBaseFile().isCustomPath() && rowItem.generateBaseFile().getPath().equals("7");
+    if (rowItem.generateBaseFile().isCustomPath() && isLocalFile) {
+      popupMenu.getMenu().findItem(R.id.restore).setVisible(true);
+    }
     String description = rowItem.desc.toLowerCase();
 
     if (rowItem.isDirectory) {

@@ -160,6 +160,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         GeneralDialogCreation.deleteFilesDialog(
             context, mainActivity, positions, utilitiesProvider.getAppTheme());
         return true;
+      case R.id.restore:
+
       case R.id.open_with:
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);

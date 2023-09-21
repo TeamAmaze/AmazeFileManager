@@ -679,10 +679,10 @@ public class MainActivityHelper {
         });
   }
 
-  public void deleteFiles(ArrayList<HybridFileParcelable> files) {
+  public void deleteFiles(ArrayList<HybridFileParcelable> files, boolean doDeletePermanently) {
     if (files == null || files.size() == 0) return;
     if (files.get(0).isSmb() || files.get(0).isFtp()) {
-      new DeleteTask(mainActivity).execute(files);
+      new DeleteTask(mainActivity, doDeletePermanently).execute(files);
       return;
     }
     @FolderState
@@ -692,7 +692,7 @@ public class MainActivityHelper {
       mainActivity.oparrayList = (files);
       mainActivity.operation = DELETE;
     } else if (mode == WRITABLE_OR_ON_SDCARD || mode == DOESNT_EXIST)
-      new DeleteTask(mainActivity).execute((files));
+      new DeleteTask(mainActivity, doDeletePermanently).execute((files));
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 

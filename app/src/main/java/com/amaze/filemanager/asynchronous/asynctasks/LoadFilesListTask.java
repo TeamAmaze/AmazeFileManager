@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +61,8 @@ import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
+import com.amaze.trashbin.TrashBin;
+import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
@@ -189,7 +193,8 @@ public class LoadFilesListTask
     }
 
     if (list != null
-        && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6")))) {
+        && !(openmode == OpenMode.CUSTOM && (("5").equals(path) || ("6").equals(path)
+            || ("7").equals(path)))) {
       postListCustomPathProcess(list, mainFragment);
     }
 
@@ -212,6 +217,7 @@ public class LoadFilesListTask
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
+            || 7 == mediaType
         || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null
         || forceReload) {
       switch (Integer.parseInt(path)) {
@@ -236,10 +242,13 @@ public class LoadFilesListTask
         case 6:
           list = listRecentFiles();
           break;
+        case 7:
+          list = listTrashBinFiles();
+          break;
         default:
           throw new IllegalStateException();
       }
-      if (5 != mediaType && 6 != mediaType) {
+      if (5 != mediaType && 6 != mediaType && 7 != mediaType) {
         // not saving recent files in cache
         mainActivityViewModel.getMediaCacheHash().set(mediaType, list);
       }
@@ -552,6 +561,26 @@ public class LoadFilesListTask
     }
     cursor.close();
     return recentFiles;
+  }
+
+  private @Nullable List<LayoutElementParcelable> listTrashBinFiles() {
+    final Context context = this.context.get();
+
+    if (context == null) {
+      cancel(true);
+      return null;
+    }
+
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    List<LayoutElementParcelable> deletedFiles = new ArrayList<>();
+    if (trashBin != null) {
+      for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
+        deletedFiles.add(new HybridFile(OpenMode.TRASH_BIN, trashBinFile.getPath(),
+                trashBinFile.getFileName(), trashBinFile.isDirectory())
+                .generateLayoutElement(context, false));
+      }
+    }
+    return deletedFiles;
   }
 
   private @NonNull List<LayoutElementParcelable> listAppDataDirectories(@NonNull String basePath) {

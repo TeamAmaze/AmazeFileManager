@@ -86,7 +86,7 @@ class HiddenAdapter(
                 nomediaFile.mode = OpenMode.FILE
                 val filesToDelete = ArrayList<HybridFileParcelable>()
                 filesToDelete.add(nomediaFile)
-                val task = DeleteTask(context)
+                val task = DeleteTask(context, false)
                 task.execute(filesToDelete)
             }
             DataUtils.getInstance().removeHiddenFile(hiddenFiles[position].path)

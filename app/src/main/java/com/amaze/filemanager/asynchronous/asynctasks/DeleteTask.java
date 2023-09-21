@@ -71,18 +71,23 @@ public class DeleteTask
   private final Context applicationContext;
   private final boolean rootMode;
   private CompressedExplorerFragment compressedExplorerFragment;
+
+  private boolean doDeletePermanently;
   private final DataUtils dataUtils = DataUtils.getInstance();
 
-  public DeleteTask(@NonNull Context applicationContext) {
+  public DeleteTask(@NonNull Context applicationContext, @NonNull boolean doDeletePermanently) {
     this.applicationContext = applicationContext.getApplicationContext();
+    this.doDeletePermanently = doDeletePermanently;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
   }
 
-  public DeleteTask(
-      @NonNull Context applicationContext, CompressedExplorerFragment compressedExplorerFragment) {
+  public DeleteT`ask(
+      @NonNull Context applicationContext,
+      CompressedExplorerFragment compressedExplorerFragment) {
     this.applicationContext = applicationContext.getApplicationContext();
+    this.doDeletePermanently = false;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
@@ -187,6 +192,9 @@ public class DeleteTask
         }
       default:
         try {
+          if (!doDeletePermanently) {
+            return file.moveToBin(applicationContext);
+          }
           return (file.delete(applicationContext, rootMode));
         } catch (ShellNotRunningException | SmbException e) {
           LOG.warn("failed to delete files", e);
