@@ -49,6 +49,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
 
     var actionModeView: View? = null
     var actionMode: ActionMode? = null
+    var pasteHelper: PasteHelper? = null
 
     private fun hideOption(id: Int, menu: Menu) {
         val item = menu.findItem(id)
@@ -377,7 +378,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     // Making sure we don't cause an IllegalArgumentException
                     // when passing copies to PasteHelper
                     if (copies.isNotEmpty()) {
-                        val pasteHelper = PasteHelper(mainActivity, op, copies)
+                        pasteHelper = PasteHelper(mainActivity, op, copies)
                         mainActivity.paste = pasteHelper
                     }
                     mode.finish()
