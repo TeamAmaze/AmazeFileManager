@@ -612,7 +612,6 @@ public class HybridFile {
   }
 
   public boolean isDirectory(Context context) {
-    boolean isDirectory;
     switch (mode) {
       case SFTP:
         final Boolean returnValue =
@@ -634,60 +633,46 @@ public class HybridFile {
 
         if (returnValue == null) {
           LOG.error("Error obtaining if path is directory over SFTP");
+          return false;
         }
 
-        //noinspection SimplifiableConditionalExpression
-        return returnValue == null ? false : returnValue;
+        return returnValue;
       case SMB:
         try {
-          isDirectory =
-              Single.fromCallable(() -> getSmbFile().isDirectory())
-                  .subscribeOn(Schedulers.io())
-                  .blockingGet();
+          return Single.fromCallable(() -> getSmbFile().isDirectory())
+              .subscribeOn(Schedulers.io())
+              .blockingGet();
         } catch (Exception e) {
-          isDirectory = false;
           LOG.warn("failed to get isDirectory with context for smb file", e);
+          return false;
         }
-        break;
       case FTP:
         FTPFile ftpFile = getFtpFile();
-        isDirectory = ftpFile != null && ftpFile.isDirectory();
-        break;
-      case FILE:
-        File file = getFile();
-        isDirectory = file != null && file.isDirectory();
-        break;
+        return ftpFile != null && ftpFile.isDirectory();
       case ROOT:
-        isDirectory = NativeOperations.isDirectory(path);
-        break;
+        return NativeOperations.isDirectory(path);
       case DOCUMENT_FILE:
         DocumentFile documentFile = getDocumentFile(false);
-        isDirectory = documentFile != null && documentFile.isDirectory();
-        break;
+        return documentFile != null && documentFile.isDirectory();
       case OTG:
         DocumentFile otgFile = OTGUtil.getDocumentFile(path, context, false);
-        isDirectory = otgFile != null && otgFile.isDirectory();
-        break;
+        return otgFile != null && otgFile.isDirectory();
       case DROPBOX:
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        isDirectory =
-            Single.fromCallable(
-                    () ->
-                        dataUtils
-                            .getAccount(mode)
-                            .getMetadata(CloudUtil.stripPath(mode, path))
-                            .getFolder())
-                .subscribeOn(Schedulers.io())
-                .blockingGet();
-        break;
-      default:
-        File f = getFile();
-        isDirectory = f != null && f.isDirectory();
-        break;
+        return Single.fromCallable(
+                () ->
+                    dataUtils
+                        .getAccount(mode)
+                        .getMetadata(CloudUtil.stripPath(mode, path))
+                        .getFolder())
+            .subscribeOn(Schedulers.io())
+            .blockingGet();
+      default: // also handles the case `FILE`
+        File file = getFile();
+        return file != null && file.isDirectory();
     }
-    return isDirectory;
   }
 
   /**
