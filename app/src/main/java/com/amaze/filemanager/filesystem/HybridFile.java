@@ -654,16 +654,19 @@ public class HybridFile {
         isDirectory = ftpFile != null && ftpFile.isDirectory();
         break;
       case FILE:
-        isDirectory = getFile().isDirectory();
+        File file = getFile();
+        isDirectory = file != null && file.isDirectory();
         break;
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
       case DOCUMENT_FILE:
-        isDirectory = getDocumentFile(false).isDirectory();
+        DocumentFile documentFile = getDocumentFile(false);
+        isDirectory = documentFile != null && documentFile.isDirectory();
         break;
       case OTG:
-        isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
+        DocumentFile otgFile = OTGUtil.getDocumentFile(path, context, false);
+        isDirectory = otgFile != null && otgFile.isDirectory();
         break;
       case DROPBOX:
       case BOX:
@@ -680,7 +683,8 @@ public class HybridFile {
                 .blockingGet();
         break;
       default:
-        isDirectory = getFile().isDirectory();
+        File f = getFile();
+        isDirectory = f != null && f.isDirectory();
         break;
     }
     return isDirectory;
