@@ -127,6 +127,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
         if (isCloudOrRootMode) {
             startService(filesToCopy, targetPath, openMode, isMove, isRootMode)
+            return
         }
 
         val totalBytes = FileUtils.getTotalBytes(filesToCopy, context.get())
@@ -188,7 +189,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                 }
             )
             withContext(Dispatchers.Main) {
-                prepareDialog(conflictingFiles, filesToCopy)
+                prepareDialog(conflictingFiles, conflictingDirActionMap)
                 @Suppress("DEPRECATION")
                 progressDialog?.setMessage(context.get()?.getString(R.string.copying))
             }
@@ -198,7 +199,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     private suspend fun prepareDialog(
         conflictingFiles: MutableList<HybridFileParcelable>,
-        filesToCopy: ArrayList<HybridFileParcelable>
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>
     ) {
         if (conflictingFiles.isEmpty()) return
 
@@ -219,9 +220,10 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         dialogBuilder.negativeColor(accentColor)
         dialogBuilder.neutralColor(accentColor)
         dialogBuilder.negativeText(R.string.overwrite)
+        dialogBuilder.cancelable(false)
         showDialog(
             conflictingFiles,
-            filesToCopy,
+            conflictingDirActionMap,
             copyDialogBinding,
             dialogBuilder,
             checkBox
@@ -230,7 +232,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     private suspend fun showDialog(
         conflictingFiles: MutableList<HybridFileParcelable>,
-        filesToCopy: ArrayList<HybridFileParcelable>,
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
         copyDialogBinding: CopyDialogBinding,
         dialogBuilder: MaterialDialog.Builder,
         checkBox: AppCompatCheckBox
@@ -240,6 +242,10 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             val hybridFileParcelable = iterator.next()
             copyDialogBinding.fileNameText.text = hybridFileParcelable.name
             val dialog = dialogBuilder.build()
+            if (hybridFileParcelable.getParent(context.get()) == targetPath) {
+                dialog.getActionButton(DialogAction.NEGATIVE)
+                    .isEnabled = false
+            }
             val resultDeferred = CompletableDeferred<DialogAction>()
             dialogBuilder.onPositive { _, _ ->
                 resultDeferred.complete(DialogAction.POSITIVE)
@@ -256,36 +262,25 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                     if (checkBox.isChecked) {
                         renameAll = true
                         return
-                    } else conflictingDirActionMap[hybridFileParcelable] = Action.RENAME
-                    iterator.remove()
+                    }
+                    conflictingDirActionMap[hybridFileParcelable] = Action.RENAME
                 }
                 DialogAction.NEGATIVE -> {
-                    if (hybridFileParcelable.getParent(context.get()) == targetPath) {
-                        Toast.makeText(
-                            context.get(),
-                            R.string.same_dir_overwrite_error,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        if (checkBox.isChecked) {
-                            filesToCopy.removeAll(conflictingFiles.toSet())
-                            conflictingFiles.clear()
-                            return
-                        }
-                        filesToCopy.remove(hybridFileParcelable)
-                    } else if (checkBox.isChecked) {
+                    if (checkBox.isChecked) {
                         overwriteAll = true
                         return
-                    } else conflictingDirActionMap[hybridFileParcelable] = Action.OVERWRITE
-                    iterator.remove()
+                    }
+                    conflictingDirActionMap[hybridFileParcelable] = Action.OVERWRITE
                 }
                 DialogAction.NEUTRAL -> {
                     if (checkBox.isChecked) {
                         skipAll = true
                         return
-                    } else conflictingDirActionMap[hybridFileParcelable] = Action.SKIP
-                    iterator.remove()
+                    }
+                    conflictingDirActionMap[hybridFileParcelable] = Action.SKIP
                 }
             }
+            iterator.remove()
         }
     }
 
@@ -397,16 +392,20 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             while (iterator.hasNext()) {
                 val hybridFileParcelable = iterator.next()
                 if (conflictingDirActionMap.contains(hybridFileParcelable)) {
+                    val fileAtTarget = HybridFile(
+                        hybridFileParcelable.mode,
+                        path,
+                        hybridFileParcelable.name,
+                        hybridFileParcelable.isDirectory
+                    )
                     when (conflictingDirActionMap[hybridFileParcelable]) {
                         Action.RENAME -> {
                             if (hybridFileParcelable.isDirectory) {
                                 val newName =
-                                    FilenameHelper.increment(
-                                        hybridFileParcelable
-                                    ).getName(context.get())
+                                    FilenameHelper.increment(fileAtTarget).getName(context.get())
                                 val newPath = "$path/$newName"
-                                val hybridFile = HybridFile(hybridFileParcelable.mode, newPath)
-                                MakeDirectoryOperation.mkdirs(context.get()!!, hybridFile)
+                                val newDir = HybridFile(hybridFileParcelable.mode, newPath)
+                                MakeDirectoryOperation.mkdirs(context.get()!!, newDir)
                                 @Suppress("DEPRECATION")
                                 nextNodes.add(
                                     CopyNode(
@@ -418,7 +417,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                             } else {
                                 filesToCopy[filesToCopy.indexOf(hybridFileParcelable)].name =
                                     FilenameHelper.increment(
-                                        hybridFileParcelable
+                                        fileAtTarget
                                     ).getName(context.get())
                             }
                         }
