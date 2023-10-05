@@ -562,7 +562,7 @@ public class HybridFile {
           return parent;
         }
       default:
-        if (getPath().length() == getName(context).length()) {
+        if (getPath().length() <= getName(context).length()) {
           return null;
         }
 
