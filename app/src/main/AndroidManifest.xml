@@ -85,6 +85,20 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.OPEN_DOCUMENT" />
+                <data android:mimeType="*/*" />
+                <category android:name="android.intent.category.OPENABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_DOCUMENT" />
+                <data android:mimeType="*/*" />
+                <category android:name="android.intent.category.OPENABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
             <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/zip" />

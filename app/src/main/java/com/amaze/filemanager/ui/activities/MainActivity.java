@@ -191,6 +191,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.arch.core.util.Function;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -591,6 +592,13 @@ public class MainActivity extends PermissionsActivity
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when picking file
       Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(Intent.ACTION_OPEN_DOCUMENT)) {
+      mReturnIntent = true;
+      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when picking file
+      Utils.disableScreenRotation(this);
     } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
       // zip viewer intent
       Uri uri = intent.getData();
@@ -647,6 +655,16 @@ public class MainActivity extends PermissionsActivity
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
       Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(Intent.ACTION_CREATE_DOCUMENT)) {
+      // FIXME: There may be DocumentsContract.EXTRA_INITIAL_URI in the Bundle, but we are ignoring
+      // it for now. We will provide the full path anyway
+      String filename = intent.getStringExtra(Intent.EXTRA_TITLE);
+      initFabToSaveWith(filename);
+      mReturnIntent = true;
+
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when saving a file
+      Utils.disableScreenRotation(this);
     }
   }
 
@@ -658,6 +676,15 @@ public class MainActivity extends PermissionsActivity
         BaseTransientBottomBar.LENGTH_INDEFINITE,
         R.string.save,
         () -> saveExternalIntent(uris));
+  }
+
+  private void initFabToSaveWith(@NonNull final String filename) {
+    Utils.showThemedSnackbar(
+        this,
+        getString(R.string.select_save_location),
+        BaseTransientBottomBar.LENGTH_INDEFINITE,
+        R.string.save,
+        () -> createDocumentByIntent(filename));
   }
 
   private void saveExternalIntent(final ArrayList<Uri> uris) {
@@ -715,6 +742,29 @@ public class MainActivity extends PermissionsActivity
                           data.toString(), mainFragment.getCurrentPath(), fileName));
           return null;
         });
+  }
+
+  private void createDocumentByIntent(@NonNull String filename) {
+    MaterialDialog saveAsDialog =
+        GeneralDialogCreation.showNameDialog(
+            this,
+            mainActivity.getResources().getString(R.string.entername),
+            filename,
+            getString(R.string.intent_save_as),
+            mainActivity.getResources().getString(R.string.save),
+            mainActivity.getResources().getString(android.R.string.cancel),
+            null,
+            (dialog, which) -> {
+              AppCompatEditText textfield =
+                  dialog.getCustomView().findViewById(R.id.singleedittext_input);
+              executeWithMainFragment(
+                  mainFragment -> {
+                    mainFragment.returnIntentResultForSaveFile(textfield.getText().toString());
+                    return null;
+                  });
+            },
+            new MainActivityHelper.FilenameValidator(false));
+    saveAsDialog.show();
   }
 
   public void clearFabActionItems() {
@@ -1560,12 +1610,10 @@ public class MainActivity extends PermissionsActivity
       // After confirmation, update stored value of folder.
       // Persist access permissions.
 
-      if (SDK_INT >= KITKAT) {
-        getContentResolver()
-            .takePersistableUriPermission(
-                treeUri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-      }
+      getContentResolver()
+          .takePersistableUriPermission(
+              treeUri,
+              Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
       executeWithMainFragment(
           mainFragment -> {
@@ -2239,14 +2287,14 @@ public class MainActivity extends PermissionsActivity
         args.putInt(ARGS_KEY_LOADER, service.ordinal());
 
         // check if we already had done some work on the loader
-        Loader loader = getSupportLoaderManager().getLoader(REQUEST_CODE_CLOUD_LIST_KEY);
+        Loader loader = LoaderManager.getInstance(this).getLoader(REQUEST_CODE_CLOUD_LIST_KEY);
         if (loader != null && loader.isStarted()) {
 
           // making sure that loader is not started
-          getSupportLoaderManager().destroyLoader(REQUEST_CODE_CLOUD_LIST_KEY);
+          LoaderManager.getInstance(this).destroyLoader(REQUEST_CODE_CLOUD_LIST_KEY);
         }
 
-        getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
+        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
       }
     } catch (CloudPluginException e) {
       LOG.warn("failure when adding cloud plugin connections", e);
@@ -2338,7 +2386,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
-  public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
+  public void onLoadFinished(@NonNull Loader<Cursor> loader, final Cursor data) {
     if (data == null) {
       Toast.makeText(
               this,
@@ -2370,7 +2418,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
-  public void onLoaderReset(Loader<Cursor> loader) {
+  public void onLoaderReset(@NonNull Loader<Cursor> loader) {
     // For passing code check
   }
 
@@ -2415,67 +2463,62 @@ public class MainActivity extends PermissionsActivity
    */
   @Override
   public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
-    switch (dialog.getTag()) {
-      case FtpServerFragment.TAG:
-        FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
-        if (folder.exists() && folder.isDirectory()) {
-          if (FileUtils.isRunningAboveStorage(folder.getAbsolutePath())) {
-            if (!isRootExplorer()) {
-              AlertDialog.show(
-                  this,
-                  R.string.ftp_server_root_unavailable,
-                  R.string.error,
-                  android.R.string.ok,
-                  null,
-                  false);
-            } else {
-              MaterialDialog confirmDialog =
-                  GeneralDialogCreation.showBasicDialog(
-                      this,
-                      R.string.ftp_server_root_filesystem_warning,
-                      R.string.warning,
-                      android.R.string.ok,
-                      android.R.string.cancel);
-              confirmDialog
-                  .getActionButton(DialogAction.POSITIVE)
-                  .setOnClickListener(
-                      v -> {
-                        ftpServerFragment.changeFTPServerPath(folder.getPath());
-                        Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT)
-                            .show();
-                        confirmDialog.dismiss();
-                      });
-              confirmDialog
-                  .getActionButton(DialogAction.NEGATIVE)
-                  .setOnClickListener(v -> confirmDialog.dismiss());
-              confirmDialog.show();
-            }
+    if (FtpServerFragment.TAG.equals(dialog.getTag())) {
+      FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
+      if (folder.exists() && folder.isDirectory()) {
+        if (FileUtils.isRunningAboveStorage(folder.getAbsolutePath())) {
+          if (!isRootExplorer()) {
+            AlertDialog.show(
+                this,
+                R.string.ftp_server_root_unavailable,
+                R.string.error,
+                android.R.string.ok,
+                null,
+                false);
           } else {
-            ftpServerFragment.changeFTPServerPath(folder.getPath());
-            Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+            MaterialDialog confirmDialog =
+                GeneralDialogCreation.showBasicDialog(
+                    this,
+                    R.string.ftp_server_root_filesystem_warning,
+                    R.string.warning,
+                    android.R.string.ok,
+                    android.R.string.cancel);
+            confirmDialog
+                .getActionButton(DialogAction.POSITIVE)
+                .setOnClickListener(
+                    v -> {
+                      ftpServerFragment.changeFTPServerPath(folder.getPath());
+                      Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT)
+                          .show();
+                      confirmDialog.dismiss();
+                    });
+            confirmDialog
+                .getActionButton(DialogAction.NEGATIVE)
+                .setOnClickListener(v -> confirmDialog.dismiss());
+            confirmDialog.show();
           }
         } else {
-          // try to get parent
-          String pathParentFilePath = folder.getParent();
-          if (pathParentFilePath == null) {
-            dialog.dismiss();
-            return;
-          }
-          File pathParentFile = new File(pathParentFilePath);
-          if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-            ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
-            Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
-          } else {
-            // don't have access, print error
-            Toast.makeText(this, R.string.ftp_path_change_error_invalid, Toast.LENGTH_SHORT).show();
-          }
+          ftpServerFragment.changeFTPServerPath(folder.getPath());
+          Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
         }
-        dialog.dismiss();
-        break;
-      default:
-        dialog.dismiss();
-        break;
+      } else {
+        // try to get parent
+        String pathParentFilePath = folder.getParent();
+        if (pathParentFilePath == null) {
+          dialog.dismiss();
+          return;
+        }
+        File pathParentFile = new File(pathParentFilePath);
+        if (pathParentFile.exists() && pathParentFile.isDirectory()) {
+          ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
+          Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+        } else {
+          // don't have access, print error
+          Toast.makeText(this, R.string.ftp_path_change_error_invalid, Toast.LENGTH_SHORT).show();
+        }
+      }
     }
+    dialog.dismiss();
   }
 
   /**
@@ -2515,7 +2558,6 @@ public class MainActivity extends PermissionsActivity
     executeWithMainFragment(lambda, false);
   }
 
-  @Nullable
   private void executeWithMainFragment(
       @NonNull Function<MainFragment, Void> lambda, boolean showToastIfMainFragmentIsNull) {
     final MainFragment mainFragment = getCurrentMainFragment();
