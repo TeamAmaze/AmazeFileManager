@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.base
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.theme.AppTheme
@@ -39,28 +40,33 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
      * Initializes bottom sheet ui resources based on current theme
      */
     fun initDialogResources(rootView: View) {
-        when ((activity as ThemedActivity?)!!.appTheme!!) {
-            AppTheme.DARK -> {
-                rootView.setBackgroundDrawable(
-                    context?.resources?.getDrawable(
-                        R.drawable.shape_dialog_bottomsheet_dark
+        (requireActivity() as ThemedActivity).appTheme?.let { appTheme ->
+            when (appTheme) {
+                AppTheme.DARK -> {
+                    rootView.background = ResourcesCompat.getDrawable(
+                        requireContext().resources,
+                        R.drawable.shape_dialog_bottomsheet_dark,
+                        requireActivity().theme
                     )
-                )
-            }
-            AppTheme.BLACK -> {
-                rootView.setBackgroundDrawable(
-                    context?.resources?.getDrawable(
-                        R.drawable.shape_dialog_bottomsheet_black
+                }
+                AppTheme.BLACK -> {
+                    rootView.background = ResourcesCompat.getDrawable(
+                        requireContext().resources,
+                        R.drawable.shape_dialog_bottomsheet_black,
+                        requireActivity().theme
                     )
-                )
-            }
-            AppTheme.LIGHT, AppTheme.TIMED -> {
-                rootView
-                    .setBackgroundDrawable(
-                        context?.resources?.getDrawable(
-                            R.drawable.shape_dialog_bottomsheet_white
-                        )
+                }
+                AppTheme.LIGHT, AppTheme.TIMED -> {
+                    rootView.background = ResourcesCompat.getDrawable(
+                        requireContext().resources,
+                        R.drawable.shape_dialog_bottomsheet_white,
+                        requireActivity().theme
                     )
+                }
+                AppTheme.SYSTEM -> {
+                    // do nothing
+                    // FIXME: or need to derive the necessary background based on app's accent?
+                }
             }
         }
     }

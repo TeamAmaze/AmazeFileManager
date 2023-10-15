@@ -6,7 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 31
+    compileSdk 31
     packagingOptions {
         resources {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
@@ -91,7 +91,6 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
 
     testOptions {
