@@ -391,5 +391,9 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="close">Fechar</string>
     <string name="quick_desc">Ficheiros acedidos recentemente pelo Amaze</string>
     <string name="recent_desc">Ficheiros recentemente criados ou modificados</string>
+
+    <!-- error messages -->
+    <string name="not_found_enabled_webview">Nenhum navegador encontrado</string>
+
 </resources>
 

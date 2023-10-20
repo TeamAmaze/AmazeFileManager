@@ -817,5 +817,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="same_dir_move_error">Destination and source folder shouldn\'t match to move.</string>
     <string name="checking_conflicts">Checking for conflicts</string>
     <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
+    <string name="not_found_enabled_webview">No available browser</string>
 </resources>
 

@@ -667,5 +667,6 @@
     <string name="error_permission_denied">Permissão negada</string>
     <string name="quick_desc">Arquivos recentemente acessados pelo Amaze</string>
     <string name="recent_desc">Arquivos criados ou modificados recentemente</string>
+    <string name="not_found_enabled_webview">Nenhum navegador encontrado</string>
 </resources>
 
