@@ -21,6 +21,7 @@
 package com.amaze.filemanager.adapters;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
+import static com.amaze.filemanager.filesystem.files.FileListSorter.SORT_NONE_ON_TOP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -609,34 +610,43 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   public void createHeaders(boolean invalidate, List<IconDataParcelable> uris) {
-    boolean[] headers = new boolean[] {false, false};
+    if ((mainFragment.getMainFragmentViewModel() != null
+            && mainFragment.getMainFragmentViewModel().getDsort() == SORT_NONE_ON_TOP)
+        || getItemsDigested() == null
+        || getItemsDigested().isEmpty()) {
+      return;
+    } else {
+      boolean[] headers = new boolean[] {false, false};
 
-    for (int i = 0; i < getItemsDigested().size(); i++) {
+      for (int i = 0; i < getItemsDigested().size(); i++) {
 
-      if (getItemsDigested().get(i).layoutElementParcelable != null) {
-        LayoutElementParcelable nextItem = getItemsDigested().get(i).layoutElementParcelable;
+        if (getItemsDigested().get(i).layoutElementParcelable != null) {
+          LayoutElementParcelable nextItem = getItemsDigested().get(i).layoutElementParcelable;
 
-        if (!headers[0] && nextItem.isDirectory) {
-          headers[0] = true;
-          getItemsDigested().add(i, new ListItem(TYPE_HEADER_FOLDERS));
-          uris.add(i, null);
-          continue;
-        }
+          if (nextItem != null) {
+            if (!headers[0] && nextItem.isDirectory) {
+              headers[0] = true;
+              getItemsDigested().add(i, new ListItem(TYPE_HEADER_FOLDERS));
+              uris.add(i, null);
+              continue;
+            }
 
-        if (!headers[1]
-            && !nextItem.isDirectory
-            && !nextItem.title.equals(".")
-            && !nextItem.title.equals("..")) {
-          headers[1] = true;
-          getItemsDigested().add(i, new ListItem(TYPE_HEADER_FILES));
-          uris.add(i, null);
-          continue; // leave this continue for symmetry
+            if (!headers[1]
+                && !nextItem.isDirectory
+                && !nextItem.title.equals(".")
+                && !nextItem.title.equals("..")) {
+              headers[1] = true;
+              getItemsDigested().add(i, new ListItem(TYPE_HEADER_FILES));
+              uris.add(i, null);
+              continue; // leave this continue for symmetry
+            }
+          }
         }
       }
-    }
 
-    if (invalidate) {
-      notifyDataSetChanged();
+      if (invalidate) {
+        notifyDataSetChanged();
+      }
     }
   }
 

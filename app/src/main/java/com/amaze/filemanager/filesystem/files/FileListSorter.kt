@@ -18,36 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.files;
+package com.amaze.filemanager.filesystem.files
 
-import java.util.Comparator;
+import androidx.annotation.IntDef
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable
+import java.util.Locale
 
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+/**
+ * [Comparator] implementation to sort [LayoutElementParcelable]s.
+ */
+class FileListSorter(
+    @DirSortMode dirArg: Int,
+    @SortBy sortArg: Int,
+    @SortOrder ascArg: Int
+) : Comparator<LayoutElementParcelable> {
+    private var dirsOnTop = dirArg
+    private val asc = ascArg
+    private val sort = sortArg
 
-public class FileListSorter implements Comparator<LayoutElementParcelable> {
+    private fun isDirectory(path: LayoutElementParcelable): Boolean {
+        return path.isDirectory
+    }
 
-  private int dirsOnTop = 0;
-  private int asc = 1;
-  private int sort = 0;
-
-  public FileListSorter(int dir, int sort, int asc) {
-    this.dirsOnTop = dir;
-    this.asc = asc;
-    this.sort = sort;
-  }
-
-  private boolean isDirectory(LayoutElementParcelable path) {
-    return path.isDirectory;
-  }
-
-  /**
-   * Compares two elements and return negative, zero and positive integer if first argument is less
-   * than, equal to or greater than second
-   */
-  @Override
-  public int compare(LayoutElementParcelable file1, LayoutElementParcelable file2) {
-
-    /*File f1;
+    /**
+     * Compares two elements and return negative, zero and positive integer if first argument is less
+     * than, equal to or greater than second
+     */
+    override fun compare(file1: LayoutElementParcelable, file2: LayoutElementParcelable): Int {
+        /*File f1;
 
     if(!file1.hasSymlink()) {
 
@@ -64,63 +62,90 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
     } else {
         f2=new File(file1.getSymlink());
     }*/
-
-    if (dirsOnTop == 0) {
-      if (isDirectory(file1) && !isDirectory(file2)) {
-        return -1;
-
-      } else if (isDirectory(file2) && !isDirectory(file1)) {
-        return 1;
-      }
-    } else if (dirsOnTop == 1) {
-      if (isDirectory(file1) && !isDirectory(file2)) {
-
-        return 1;
-      } else if (isDirectory(file2) && !isDirectory(file1)) {
-        return -1;
-      }
-    }
-
-    if (sort == 0) {
-
-      // sort by name
-      return asc * file1.title.compareToIgnoreCase(file2.title);
-    } else if (sort == 1) {
-
-      // sort by last modified
-      return asc * Long.valueOf(file1.date).compareTo(file2.date);
-    } else if (sort == 2) {
-
-      // sort by size
-      if (!file1.isDirectory && !file2.isDirectory) {
-
-        return asc * Long.valueOf(file1.longSize).compareTo(file2.longSize);
-      } else {
-
-        return file1.title.compareToIgnoreCase(file2.title);
-      }
-
-    } else if (sort == 3) {
-
-      // sort by type
-      if (!file1.isDirectory && !file2.isDirectory) {
-
-        final String ext_a = getExtension(file1.title);
-        final String ext_b = getExtension(file2.title);
-
-        final int res = asc * ext_a.compareTo(ext_b);
-        if (res == 0) {
-          return asc * file1.title.compareToIgnoreCase(file2.title);
+        if (dirsOnTop == SORT_DIR_ON_TOP) {
+            if (isDirectory(file1) && !isDirectory(file2)) {
+                return -1
+            } else if (isDirectory(file2) && !isDirectory(file1)) {
+                return 1
+            }
+        } else if (dirsOnTop == SORT_FILE_ON_TOP) {
+            if (isDirectory(file1) && !isDirectory(file2)) {
+                return 1
+            } else if (isDirectory(file2) && !isDirectory(file1)) {
+                return -1
+            }
         }
-        return res;
-      } else {
-        return file1.title.compareToIgnoreCase(file2.title);
-      }
-    }
-    return 0;
-  }
 
-  public static String getExtension(String a) {
-    return a.substring(a.lastIndexOf(".") + 1).toLowerCase();
-  }
+        when (sort) {
+            SORT_BY_NAME -> {
+                // sort by name
+                return asc * file1.title.compareTo(file2.title, ignoreCase = true)
+            }
+            SORT_BY_LAST_MODIFIED -> {
+                // sort by last modified
+                return asc * java.lang.Long.valueOf(file1.date).compareTo(file2.date)
+            }
+            SORT_BY_SIZE -> {
+                // sort by size
+                return if (!file1.isDirectory && !file2.isDirectory) {
+                    asc * java.lang.Long.valueOf(file1.longSize).compareTo(file2.longSize)
+                } else {
+                    file1.title.compareTo(file2.title, ignoreCase = true)
+                }
+            }
+            SORT_BY_TYPE -> {
+                // sort by type
+                return if (!file1.isDirectory && !file2.isDirectory) {
+                    val ext_a = getExtension(file1.title)
+                    val ext_b = getExtension(file2.title)
+                    val res = asc * ext_a.compareTo(ext_b)
+                    if (res == 0) {
+                        asc * file1.title.compareTo(file2.title, ignoreCase = true)
+                    } else {
+                        res
+                    }
+                } else {
+                    file1.title.compareTo(file2.title, ignoreCase = true)
+                }
+            }
+            else -> return 0
+        }
+    }
+
+    companion object {
+
+        const val SORT_BY_NAME = 0
+        const val SORT_BY_LAST_MODIFIED = 1
+        const val SORT_BY_SIZE = 2
+        const val SORT_BY_TYPE = 3
+
+        const val SORT_DIR_ON_TOP = 0
+        const val SORT_FILE_ON_TOP = 1
+        const val SORT_NONE_ON_TOP = 2
+
+        const val SORT_ASC = 1
+        const val SORT_DSC = -1
+
+        @Retention(AnnotationRetention.SOURCE)
+        @IntDef(SORT_BY_NAME, SORT_BY_LAST_MODIFIED, SORT_BY_SIZE, SORT_BY_TYPE)
+        annotation class SortBy
+
+        @Retention(AnnotationRetention.SOURCE)
+        @IntDef(SORT_DIR_ON_TOP, SORT_FILE_ON_TOP, SORT_NONE_ON_TOP)
+        annotation class DirSortMode
+
+        @Retention(AnnotationRetention.SOURCE)
+        @IntDef(SORT_ASC, SORT_DSC)
+        annotation class SortOrder
+
+        /**
+         * Convenience method to get the file extension in given path.
+         *
+         * TODO: merge with same definition somewhere else (if any)
+         */
+        @JvmStatic
+        fun getExtension(a: String): String {
+            return a.substringAfterLast('.').lowercase(Locale.getDefault())
+        }
+    }
 }

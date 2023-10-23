@@ -31,13 +31,16 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.filesystem.files.FileListSorter.Companion.DirSortMode
+import com.amaze.filemanager.filesystem.files.FileListSorter.Companion.SortBy
+import com.amaze.filemanager.filesystem.files.FileListSorter.Companion.SortOrder
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Objects
 
 class MainFragmentViewModel : ViewModel() {
 
@@ -56,11 +59,19 @@ class MainFragmentViewModel : ViewModel() {
     var searchHelper = ArrayList<HybridFileParcelable>()
     var no = 0
 
+    @SortBy
     var sortby = 0
+
+    @DirSortMode
     var dsort = 0
+
+    @SortOrder
     var asc = 0
+
     var home: String? = null
+
     var results: Boolean = false
+
     lateinit var openMode: OpenMode
 
     // defines the current visible tab, default either 0 or 1
