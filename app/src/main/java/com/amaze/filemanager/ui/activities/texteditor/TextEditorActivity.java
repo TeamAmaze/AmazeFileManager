@@ -75,7 +75,6 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.lifecycle.ViewModelProvider;
@@ -131,9 +130,7 @@ public class TextEditorActivity extends ThemedActivity
 
     boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
 
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
-    }
+    getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
     mainTextView = findViewById(R.id.fname);
     scrollView = findViewById(R.id.editscroll);
@@ -179,13 +176,12 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   @Override
-  protected void onSaveInstanceState(@NonNull Bundle outState) {
+  protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    outState.putString(
-        KEY_MODIFIED_TEXT, mainTextView.getText() != null ? mainTextView.getText().toString() : "");
+    outState.putString(KEY_MODIFIED_TEXT, mainTextView.getText().toString());
     outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
     outState.putBoolean(KEY_MONOFONT, inputTypefaceMono.equals(mainTextView.getTypeface()));
@@ -197,7 +193,6 @@ public class TextEditorActivity extends ThemedActivity
 
     if (viewModel.getOriginal() != null
         && mainTextView.isShown()
-        && mainTextView.getText() != null
         && !viewModel.getOriginal().equals(mainTextView.getText().toString())) {
       new MaterialDialog.Builder(this)
           .title(R.string.unsaved_changes)
@@ -298,13 +293,10 @@ public class TextEditorActivity extends ThemedActivity
         break;
       case R.id.save:
         // Make sure EditText is visible before saving!
-        if (mainTextView.getText() != null) {
-          saveFile(this, mainTextView.getText().toString());
-        }
+        saveFile(this, mainTextView.getText().toString());
         break;
       case R.id.details:
         if (editableFileAbstraction.scheme.equals(FILE)
-            && editableFileAbstraction.hybridFileParcelable.getFile() != null
             && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
           GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
               editableFileAbstraction.hybridFileParcelable, this, getAppTheme());
@@ -324,7 +316,7 @@ public class TextEditorActivity extends ThemedActivity
       case R.id.openwith:
         if (editableFileAbstraction.scheme.equals(FILE)) {
           File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
-          if (currentFile != null && currentFile.exists()) {
+          if (currentFile.exists()) {
             boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
             FileUtils.openWith(currentFile, this, useNewStack);
           } else {
@@ -363,8 +355,7 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
     // condition to check if callback is called in search editText
-    if (searchEditText.getText() != null
-        && charSequence.hashCode() == searchEditText.getText().hashCode()) {
+    if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
@@ -380,8 +371,7 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-    if (mainTextView.getText() != null
-        && charSequence.hashCode() == mainTextView.getText().hashCode()) {
+    if (charSequence.hashCode() == mainTextView.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
       final Timer oldTimer = viewModel.getTimer();
@@ -410,12 +400,11 @@ public class TextEditorActivity extends ThemedActivity
                   new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
 
               modified =
-                  textEditorActivity.mainTextView.getText() != null
-                      && !textEditorActivity
-                          .mainTextView
-                          .getText()
-                          .toString()
-                          .equals(viewModel.getOriginal());
+                  !textEditorActivity
+                      .mainTextView
+                      .getText()
+                      .toString()
+                      .equals(viewModel.getOriginal());
               if (viewModel.getModified() != modified) {
                 viewModel.setModified(modified);
                 invalidateOptionsMenu();
@@ -431,8 +420,7 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void afterTextChanged(Editable editable) {
     // searchBox callback block
-    if (searchEditText.getText() != null
-        && editable.hashCode() == searchEditText.getText().hashCode()) {
+    if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
       final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
 
       final OnProgressUpdate<SearchResultIndex> onProgressUpdate =
@@ -472,15 +460,13 @@ public class TextEditorActivity extends ThemedActivity
             }
           };
 
-      if (mainTextView.getText() != null) {
-        searchTextTask =
-            new SearchTextTask(
-                mainTextView.getText().toString(),
-                editable.toString(),
-                onProgressUpdate,
-                onAsyncTaskFinished);
-        searchTextTask.execute();
-      }
+      searchTextTask =
+          new SearchTextTask(
+              mainTextView.getText().toString(),
+              editable.toString(),
+              onProgressUpdate,
+              onAsyncTaskFinished);
+      searchTextTask.execute();
     }
   }
 
@@ -608,14 +594,12 @@ public class TextEditorActivity extends ThemedActivity
     colorSearchResult(keyValueNew, Utils.getColor(this, R.color.search_text_highlight));
 
     // scrolling to the highlighted element
-    if (getSupportActionBar() != null) {
-      scrollView.scrollTo(
-          0,
-          (Integer) keyValueNew.getLineNumber()
-              + mainTextView.getLineHeight()
-              + Math.round(mainTextView.getLineSpacingExtra())
-              - getSupportActionBar().getHeight());
-    }
+    scrollView.scrollTo(
+        0,
+        (Integer) keyValueNew.getLineNumber()
+            + mainTextView.getLineHeight()
+            + Math.round(mainTextView.getLineSpacingExtra())
+            - getSupportActionBar().getHeight());
   }
 
   private void unhighlightSearchResult(SearchResultIndex resultIndex) {
@@ -630,15 +614,13 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
-    if (mainTextView.getText() != null) {
-      mainTextView
-          .getText()
-          .setSpan(
-              new BackgroundColorSpan(color),
-              (Integer) resultIndex.getStartCharNumber(),
-              (Integer) resultIndex.getEndCharNumber(),
-              Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-    }
+    mainTextView
+        .getText()
+        .setSpan(
+            new BackgroundColorSpan(color),
+            (Integer) resultIndex.getStartCharNumber(),
+            (Integer) resultIndex.getEndCharNumber(),
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
   }
 
   private void cleanSpans(TextEditorActivityViewModel viewModel) {
@@ -648,12 +630,10 @@ public class TextEditorActivity extends ThemedActivity
     viewModel.setLine(0);
 
     // clearing textView spans
-    if (mainTextView.getText() != null) {
-      BackgroundColorSpan[] colorSpans =
-          mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
-      for (BackgroundColorSpan colorSpan : colorSpans) {
-        mainTextView.getText().removeSpan(colorSpan);
-      }
+    BackgroundColorSpan[] colorSpans =
+        mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
+    for (BackgroundColorSpan colorSpan : colorSpans) {
+      mainTextView.getText().removeSpan(colorSpan);
     }
   }
 }
