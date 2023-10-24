@@ -52,7 +52,6 @@ import org.apache.commons.compress.utils.BoundedInputStream;
 import org.apache.commons.compress.utils.ByteUtils;
 import org.apache.commons.compress.utils.CRC32VerifyingInputStream;
 import org.apache.commons.compress.utils.InputStreamStatistics;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Reads a 7z file, using SeekableByteChannel under the covers.
@@ -2119,7 +2118,6 @@ public class SevenZFile implements Closeable {
     return lastSegment + "~";
   }
 
-  @Nullable
   private static byte[] utf16Decode(final char[] chars) {
     if (chars == null) {
       return null;
