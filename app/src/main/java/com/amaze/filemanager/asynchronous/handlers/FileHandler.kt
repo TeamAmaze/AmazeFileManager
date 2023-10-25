@@ -93,9 +93,11 @@ class FileHandler(
                     !mainFragmentViewModel.isList
                 )
             } else {
-                val itemList = main.elementsList ?: listOf()
-                // we already have some elements in list view, invalidate the adapter
-                (listView.adapter as RecyclerAdapter).setItems(listView, itemList)
+                listView.adapter?.let {
+                    val itemList = main.elementsList ?: listOf()
+                    // we already have some elements in list view, invalidate the adapter
+                    (listView.adapter as RecyclerAdapter).setItems(listView, itemList)
+                }
             }
         } else {
             // there was no list view, means the directory was empty
