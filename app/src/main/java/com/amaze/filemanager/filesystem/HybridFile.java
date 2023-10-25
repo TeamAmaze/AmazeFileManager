@@ -555,7 +555,11 @@ public class HybridFile {
         if (thisPath.isEmpty() || pathSegments.isEmpty()) return null;
 
         String currentName = pathSegments.get(pathSegments.size() - 1);
-        String parent = thisPath.substring(0, thisPath.lastIndexOf(currentName));
+        int currentNameStartIndex = thisPath.lastIndexOf(currentName);
+        if (currentNameStartIndex < 0) {
+          return null;
+        }
+        String parent = thisPath.substring(0, currentNameStartIndex);
         if (ArraysKt.any(ANDROID_DATA_DIRS, dir -> parent.endsWith(dir + "/"))) {
           return FileProperties.unmapPathForApi30OrAbove(parent);
         } else {
