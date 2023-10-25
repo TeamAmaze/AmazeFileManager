@@ -344,6 +344,7 @@ public class DataUtils {
           if (storage instanceof OneDrive) return storage;
           break;
         default:
+          LOG.error("Unable to determine service type of storage {}", storage);
           return null;
       }
     }
