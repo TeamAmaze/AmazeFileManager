@@ -537,18 +537,16 @@ public class MainFragment extends Fragment
     requireMainActivity().mReturnIntent = false;
 
     @Nullable Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
-    if(mediaStoreUri != null) {
+    if (mediaStoreUri != null) {
       LOG.debug(
-              mediaStoreUri.toString()
-                      + "\t"
-                      + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+          mediaStoreUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
       Intent intent = new Intent();
       intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
       intent.setAction(Intent.ACTION_SEND);
 
       if (requireMainActivity().mRingtonePickerIntent) {
         intent.setDataAndType(
-                mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+            mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
       } else {
         LOG.debug("pickup file");
