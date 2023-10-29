@@ -105,7 +105,7 @@ public abstract class FileUtil {
   /** Writes uri stream from external application to the specified path */
   public static final void writeUriToStorage(
       @NonNull final MainActivity mainActivity,
-      @NonNull final ArrayList<Uri> uris,
+      @NonNull final List<Uri> uris,
       @NonNull final ContentResolver contentResolver,
       @NonNull final String currentPath) {
 
