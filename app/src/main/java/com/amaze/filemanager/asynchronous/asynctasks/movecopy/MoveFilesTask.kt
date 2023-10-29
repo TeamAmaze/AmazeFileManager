@@ -34,7 +34,7 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.CryptUtil
-import com.amaze.filemanager.filesystem.files.FileUtils
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -106,8 +106,8 @@ class MoveFilesTask(
             for (hybridFileParcelables in files) {
                 sourcesFiles.addAll(hybridFileParcelables)
             }
-            FileUtils.scanFile(applicationContext, sourcesFiles.toTypedArray())
-            FileUtils.scanFile(applicationContext, targetFiles.toTypedArray())
+            MediaConnectionUtils.scanFile(applicationContext, sourcesFiles.toTypedArray())
+            MediaConnectionUtils.scanFile(applicationContext, targetFiles.toTypedArray())
         }
 
         // updating encrypted db entry if any encrypted file was moved

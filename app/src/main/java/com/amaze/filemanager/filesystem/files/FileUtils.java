@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -42,7 +41,6 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
-import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -71,7 +69,6 @@ import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -79,7 +76,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -92,8 +88,6 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -215,76 +209,6 @@ public class FileUtils {
     } else {
       return baseFile.length(context);
     }
-  }
-
-  /**
-   * Triggers media scanner for multiple paths. The paths must all belong to same filesystem. It's
-   * upto the caller to call the mediastore scan on multiple files or only one source/target
-   * directory. Don't use filesystem API directly as files might not be present anymore (eg.
-   * move/rename) which may lead to {@link java.io.FileNotFoundException}
-   *
-   * @param hybridFiles
-   * @param context
-   */
-  @SuppressLint("CheckResult")
-  public static void scanFile(@NonNull Context context, @NonNull HybridFile[] hybridFiles) {
-    Flowable.fromCallable(
-            (Callable<Void>)
-                () -> {
-                  if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
-                    String[] paths = new String[hybridFiles.length];
-                    for (int i = 0; i < hybridFiles.length; i++) {
-                      HybridFile hybridFile = hybridFiles[i];
-                      paths[i] = hybridFile.getPath();
-                    }
-                    MediaScannerConnection.scanFile(context, paths, null, null);
-                  }
-                  for (HybridFile hybridFile : hybridFiles) {
-                    scanFile(hybridFile, context);
-                  }
-                  return null;
-                })
-        .subscribeOn(Schedulers.io());
-  }
-
-  /**
-   * Triggers media store for the file path
-   *
-   * @param hybridFile the file which was changed (directory not supported)
-   * @param context given context
-   */
-  private static void scanFile(@NonNull HybridFile hybridFile, Context context) {
-
-    if ((hybridFile.isLocal() || hybridFile.isOtgFile()) && hybridFile.exists(context)) {
-
-      Uri uri = null;
-      if (Build.VERSION.SDK_INT >= 19) {
-        DocumentFile documentFile =
-            ExternalSdCardOperation.getDocumentFile(
-                hybridFile.getFile(), hybridFile.isDirectory(context), context);
-        // If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
-        if (documentFile == null) documentFile = DocumentFile.fromFile(hybridFile.getFile());
-        uri = documentFile.getUri();
-      } else {
-        if (hybridFile.isLocal()) {
-          uri = Uri.fromFile(hybridFile.getFile());
-        }
-      }
-      if (uri != null) {
-        FileUtils.scanFile(uri, context);
-      }
-    }
-  }
-
-  /**
-   * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
-   *
-   * @param uri File's {@link Uri}
-   * @param c {@link Context}
-   */
-  private static void scanFile(@NonNull Uri uri, @NonNull Context c) {
-    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-    c.sendBroadcast(mediaScanIntent);
   }
 
   public static void crossfade(View buttons, final View pathbar) {
