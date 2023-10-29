@@ -83,7 +83,7 @@ public class DeleteTask
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
   }
 
-  public DeleteT`ask(
+  public DeleteTask(
       @NonNull Context applicationContext,
       CompressedExplorerFragment compressedExplorerFragment) {
     this.applicationContext = applicationContext.getApplicationContext();
