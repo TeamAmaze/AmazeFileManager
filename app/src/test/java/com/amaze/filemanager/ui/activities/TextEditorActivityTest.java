@@ -104,7 +104,7 @@ public class TextEditorActivityTest {
         Robolectric.buildActivity(TextEditorActivity.class, intent).create().start().visible();
 
     TextEditorActivity activity = controller.get();
-    text = activity.findViewById(R.id.fname);
+    text = activity.findViewById(R.id.textEditorMainEditText);
     activity.onDestroy();
   }
 

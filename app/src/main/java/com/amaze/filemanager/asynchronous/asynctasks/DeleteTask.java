@@ -38,7 +38,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
@@ -48,12 +48,9 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -112,13 +109,9 @@ public class DeleteTask
       }
 
       // delete file from media database
-      if (!file.isSmb()) {
-        try {
-          deleteFromMediaDatabase(applicationContext, file.getPath());
-        } catch (Exception e) {
-          FileUtils.scanFile(applicationContext, files.toArray(new HybridFile[files.size()]));
-        }
-      }
+      if (!file.isSmb())
+        MediaConnectionUtils.scanFile(
+            applicationContext, files.toArray(new HybridFile[files.size()]));
 
       // delete file entry from encrypted database
       if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
@@ -193,14 +186,5 @@ public class DeleteTask
           throw e;
         }
     }
-  }
-
-  private void deleteFromMediaDatabase(final Context context, final String file) {
-    final String where = MediaStore.MediaColumns.DATA + "=?";
-    final String[] selectionArgs = new String[] {file};
-    final ContentResolver contentResolver = context.getContentResolver();
-    final Uri filesUri = MediaStore.Files.getContentUri("external");
-    // Delete the entry from the media database. This will actually delete media files.
-    contentResolver.delete(filesUri, where, selectionArgs);
   }
 }

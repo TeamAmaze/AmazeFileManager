@@ -411,13 +411,17 @@ public class HybridFile {
   }
 
   /**
-   * Path accessor. Avoid direct access to path since path may have been URL encoded.
+   * Path accessor. Avoid direct access to path (for non-local files) since path may have been URL
+   * encoded.
    *
-   * @return URL decoded path
+   * @return URL decoded path (for non-local files); the actual path for local files
    */
   public String getPath() {
+
+    if (isLocal() || isRoot() || isDocumentFile() || isAndroidDataDir()) return path;
+
     try {
-      return URLDecoder.decode(path.replace("+", "%2b"), "UTF-8");
+      return URLDecoder.decode(path, "UTF-8");
     } catch (UnsupportedEncodingException | IllegalArgumentException e) {
       LOG.warn("failed to decode path {}", path, e);
       return path;
