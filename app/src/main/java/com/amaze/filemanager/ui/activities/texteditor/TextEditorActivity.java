@@ -123,6 +123,9 @@ public class TextEditorActivity extends ThemedActivity
     downButton.setOnClickListener(this);
     // downButton.setEnabled(false);
 
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
+    }
     mainTextView = findViewById(R.id.textEditorMainEditText);
     scrollView = findViewById(R.id.textEditorScrollView);
 
@@ -469,15 +472,15 @@ public class TextEditorActivity extends ThemedActivity
             }
           };
 
-      if (mainTextView.getText() == null) return;
-
-      searchTextTask =
-          new SearchTextTask(
-              mainTextView.getText().toString(),
-              editable.toString(),
-              onProgressUpdate,
-              onAsyncTaskFinished);
-      searchTextTask.execute();
+      if (mainTextView.getText() != null) {
+        searchTextTask =
+            new SearchTextTask(
+                mainTextView.getText().toString(),
+                editable.toString(),
+                onProgressUpdate,
+                onAsyncTaskFinished);
+        searchTextTask.execute();
+      }
     }
   }
 
@@ -583,26 +586,26 @@ public class TextEditorActivity extends ThemedActivity
     colorSearchResult(keyValueNew, getAccent());
 
     // scrolling to the highlighted element
-    if (getSupportActionBar() != null) return;
-
-    scrollView.scrollTo(
-        0,
-        (Integer) keyValueNew.getLineNumber()
-            + mainTextView.getLineHeight()
-            + Math.round(mainTextView.getLineSpacingExtra())
-            - getSupportActionBar().getHeight());
+    if (getSupportActionBar() != null) {
+      scrollView.scrollTo(
+          0,
+          (Integer) keyValueNew.getLineNumber()
+              + mainTextView.getLineHeight()
+              + Math.round(mainTextView.getLineSpacingExtra())
+              - getSupportActionBar().getHeight());
+    }
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
-    if (mainTextView.getText() == null) return;
-
-    mainTextView
-        .getText()
-        .setSpan(
-            new BackgroundColorSpan(color),
-            (Integer) resultIndex.getStartCharNumber(),
-            (Integer) resultIndex.getEndCharNumber(),
-            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    if (mainTextView.getText() != null) {
+      mainTextView
+          .getText()
+          .setSpan(
+              new BackgroundColorSpan(color),
+              (Integer) resultIndex.getStartCharNumber(),
+              (Integer) resultIndex.getEndCharNumber(),
+              Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    }
   }
 
   private void cleanSpans(TextEditorActivityViewModel viewModel) {
@@ -612,12 +615,12 @@ public class TextEditorActivity extends ThemedActivity
     viewModel.setLine(0);
 
     // clearing textView spans
-    if (mainTextView.getText() == null) return;
-
-    BackgroundColorSpan[] colorSpans =
-        mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
-    for (BackgroundColorSpan colorSpan : colorSpans) {
-      mainTextView.getText().removeSpan(colorSpan);
+    if (mainTextView.getText() != null) {
+      BackgroundColorSpan[] colorSpans =
+          mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
+      for (BackgroundColorSpan colorSpan : colorSpans) {
+        mainTextView.getText().removeSpan(colorSpan);
+      }
     }
   }
 }
