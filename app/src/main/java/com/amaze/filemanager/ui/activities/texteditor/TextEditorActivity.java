@@ -124,6 +124,7 @@ public class TextEditorActivity extends ThemedActivity
     // downButton.setEnabled(false);
 
     if (getSupportActionBar() != null) {
+      boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
       getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
     }
     mainTextView = findViewById(R.id.textEditorMainEditText);
