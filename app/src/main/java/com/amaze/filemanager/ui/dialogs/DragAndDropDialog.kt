@@ -22,16 +22,15 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.app.Dialog
 import android.content.Context
-import android.os.AsyncTask
 import android.os.Bundle
-import android.widget.Button
-import android.widget.CheckBox
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PreparePasteTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
@@ -106,15 +105,16 @@ class DragAndDropDialog : DialogFragment() {
             move: Boolean,
             mainActivity: MainActivity
         ) {
-            PrepareCopyTask(
-                pasteLocation,
-                move,
-                mainActivity,
-                mainActivity.isRootExplorer,
-                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
-                files
-            )
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            val openMode =
+                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode ?: return
+            PreparePasteTask(mainActivity)
+                .execute(
+                    pasteLocation,
+                    move,
+                    mainActivity.isRootExplorer,
+                    openMode,
+                    files
+                )
         }
     }
 
@@ -152,8 +152,8 @@ class DragAndDropDialog : DialogFragment() {
 
             dialog.customView?.run {
                 // Get views from custom layout to set text values.
-                val rememberCheckbox = this.findViewById<CheckBox>(R.id.remember_drag)
-                val moveButton = this.findViewById<Button>(R.id.button_move)
+                val rememberCheckbox = this.findViewById<AppCompatCheckBox>(R.id.remember_drag)
+                val moveButton = this.findViewById<AppCompatButton>(R.id.button_move)
                 moveButton.setOnClickListener {
                     mainActivity?.run {
                         if (rememberCheckbox.isChecked) {
@@ -163,7 +163,7 @@ class DragAndDropDialog : DialogFragment() {
                         dismiss()
                     }
                 }
-                val copyButton = this.findViewById<Button>(R.id.button_copy)
+                val copyButton = this.findViewById<AppCompatButton>(R.id.button_copy)
                 copyButton.setOnClickListener {
                     mainActivity?.run {
                         if (rememberCheckbox.isChecked) {

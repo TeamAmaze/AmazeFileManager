@@ -27,7 +27,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.files.FileUtils.getPathsInPath
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -362,6 +364,26 @@ class FileUtilsTest {
             assertEquals("smb://user;workgroup:password@1.2.3.4", first)
             assertEquals("/user/My Documents", second)
         }
+    }
+
+    /**
+     * Test [FileUtils.parseName] for special cases
+     */
+    @Test
+    fun testParseStringForSpecialCases() {
+        // Found on TranceLove's GPD XD Gen 1 running LegacyROM (4.4.4) that dirs doesn't even
+        // report default folder node size = 4096 or anything
+        val lsLine = "drwxr-xr-x root     root              2023-10-21 13:57 acct"
+
+        val systemTz = TimeZone.getDefault()
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
+        val result = FileUtils.parseName(lsLine, false)
+        assertNotNull(result)
+        assertEquals("acct", result.name)
+        assertEquals("drwxr-xr-x", result.permission)
+        assertTrue(result.isDirectory)
+        TimeZone.setDefault(systemTz)
     }
 
     /**

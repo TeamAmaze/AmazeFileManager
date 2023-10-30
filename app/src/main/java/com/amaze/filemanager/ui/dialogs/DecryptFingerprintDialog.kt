@@ -25,8 +25,8 @@ import android.content.Intent
 import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
 import android.view.View
-import android.widget.Button
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatButton
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.files.CryptUtil
@@ -62,7 +62,9 @@ object DecryptFingerprintDialog {
         val builder = MaterialDialog.Builder(c)
         builder.title(c.getString(R.string.crypt_decrypt))
         val rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null)
-        val cancelButton = rootView.findViewById<Button>(R.id.button_decrypt_fingerprint_cancel)
+        val cancelButton = rootView.findViewById<AppCompatButton>(
+            R.id.button_decrypt_fingerprint_cancel
+        )
         cancelButton.setTextColor(accentColor)
         builder.customView(rootView, true)
         builder.canceledOnTouchOutside(false)

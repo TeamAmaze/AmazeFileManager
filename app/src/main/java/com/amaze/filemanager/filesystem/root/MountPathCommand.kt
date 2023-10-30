@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem.root
 
 import android.os.Build
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
+import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object MountPathCommand : IRootCommand() {
@@ -38,7 +39,8 @@ object MountPathCommand : IRootCommand() {
      * @return String the root of mount point that was ro, and mounted to rw; null otherwise
      */
     @Throws(ShellNotRunningException::class)
-    fun mountPath(path: String, operation: String): String? {
+    fun mountPath(pathArg: String, operation: String): String? {
+        val path = RootHelper.getCommandLineString(pathArg)
         return when (operation) {
             READ_WRITE -> mountReadWrite(path)
             READ_ONLY -> {
@@ -96,7 +98,9 @@ object MountPathCommand : IRootCommand() {
                 return if (mountOutput.isNotEmpty()) {
                     // command failed, and we got a reason echo'ed
                     null
-                } else mountPoint
+                } else {
+                    mountPoint
+                }
             }
         }
         return null

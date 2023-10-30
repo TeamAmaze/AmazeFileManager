@@ -63,6 +63,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
@@ -105,9 +106,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -115,6 +113,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -438,7 +439,7 @@ public class MainFragment extends Fragment
       boolean isBackButton,
       int position,
       LayoutElementParcelable layoutElementParcelable,
-      ImageView imageView) {
+      AppCompatImageView imageView) {
     if (mainFragmentViewModel.getResults()) {
       // check to initialize search results
       // if search task is been running, cancel it
@@ -536,25 +537,27 @@ public class MainFragment extends Fragment
 
     requireMainActivity().mReturnIntent = false;
 
-    Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
-    LOG.debug(
-        mediaStoreUri.toString()
-            + "\t"
-            + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-    Intent intent = new Intent();
-    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    intent.setAction(Intent.ACTION_SEND);
+    @Nullable Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
+    if (mediaStoreUri != null) {
+      LOG.debug(
+          mediaStoreUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+      Intent intent = new Intent();
+      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      intent.setAction(Intent.ACTION_SEND);
 
-    if (requireMainActivity().mRingtonePickerIntent) {
-      intent.setDataAndType(
-          mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
+      if (requireMainActivity().mRingtonePickerIntent) {
+        intent.setDataAndType(
+            mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
+      } else {
+        LOG.debug("pickup file");
+        intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
+      }
+      requireActivity().setResult(FragmentActivity.RESULT_OK, intent);
     } else {
-      LOG.debug("pickup file");
-      intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
+      LOG.warn("Unable to get URI from baseFile [{}]", baseFile.getPath());
     }
-    getActivity().setResult(FragmentActivity.RESULT_OK, intent);
-    getActivity().finish();
+    requireActivity().finish();
   }
 
   LoadFilesListTask loadFilesListTask;
@@ -714,14 +717,14 @@ public class MainFragment extends Fragment
               return true;
             });
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-      ((ImageView) nofilesview.findViewById(R.id.image))
+      ((AppCompatImageView) nofilesview.findViewById(R.id.image))
           .setColorFilter(Color.parseColor("#666666"));
     } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
       nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-      ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+      ((AppCompatTextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     } else {
       nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-      ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+      ((AppCompatTextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     }
   }
 
@@ -967,7 +970,8 @@ public class MainFragment extends Fragment
             null,
             getResources().getString(R.string.cancel),
             (dialog, which) -> {
-              EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+              AppCompatEditText textfield =
+                  dialog.getCustomView().findViewById(R.id.singleedittext_input);
               String name1 = textfield.getText().toString().trim();
 
               getMainActivity()
@@ -998,7 +1002,8 @@ public class MainFragment extends Fragment
     // place cursor at the starting of edit text by posting a runnable to edit text
     // this is done because in case android has not populated the edit text layouts yet, it'll
     // reset calls to selection if not posted in message queue
-    EditText textfield = renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield =
+        renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
     textfield.post(
         () -> {
           if (!f.isDirectory()) {
@@ -1401,7 +1406,7 @@ public class MainFragment extends Fragment
           LOG.warn("failure when hiding file", e);
         }
       }
-      FileUtils.scanFile(
+      MediaConnectionUtils.scanFile(
           requireMainActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});
     }
   }

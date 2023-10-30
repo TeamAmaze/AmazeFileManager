@@ -31,7 +31,7 @@
             android:visibility="gone"
             android:textSize="@dimen/md_content_textsize"
             />
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/donate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:background="@drawable/ripple_focusable"
             android:nextFocusRight="@+id/action_bar"
             />
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/telegram"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             android:layout_toStartOf="@+id/donate"
             android:background="@drawable/ripple_focusable"
             />
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/instagram"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

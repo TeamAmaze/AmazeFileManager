@@ -54,12 +54,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.widget.EditText;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
@@ -391,7 +391,7 @@ public class ExtractService extends AbstractProgressiveService {
           R.string.archive_password_prompt,
           R.string.authenticate_password,
           (dialog, which) -> {
-            EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+            AppCompatEditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
             ArchivePasswordCache.getInstance().put(compressedPath, editText.getText().toString());
             ExtractService.this.getDataPackages().clear();
             this.paused = false;

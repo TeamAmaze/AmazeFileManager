@@ -49,9 +49,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.FileProvider;
@@ -66,7 +66,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
   private AppBarLayout mAppBarLayout;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
-  private TextView mTitleTextView;
+  private AppCompatTextView mTitleTextView;
   private View mAuthorsDivider, mDeveloper1Divider;
   private Billing billing;
 

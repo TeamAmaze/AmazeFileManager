@@ -124,6 +124,7 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -142,7 +143,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.FabWithLabelView;
@@ -247,7 +247,7 @@ public class MainActivity extends PermissionsActivity
   public ArrayList<String> oppatheList;
 
   // This holds the Uris to be written at initFabToSave()
-  private ArrayList<Uri> urisToBeSaved;
+  private List<Uri> urisToBeSaved;
 
   public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
@@ -324,7 +324,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
-  private MainActivityActionMode mainActivityActionMode;
+  public MainActivityActionMode mainActivityActionMode;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -634,9 +634,15 @@ public class MainActivity extends PermissionsActivity
       } else {
         // save a single file to filesystem
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
-        initFabToSave(uris);
+        if (uri != null
+            && uri.getScheme() != null
+            && uri.getScheme().startsWith(ContentResolver.SCHEME_FILE)) {
+          ArrayList<Uri> uris = new ArrayList<>();
+          uris.add(uri);
+          initFabToSave(uris);
+        } else {
+          Toast.makeText(this, R.string.error_unsupported_or_null_uri, Toast.LENGTH_LONG).show();
+        }
       }
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
@@ -655,7 +661,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
-  private void initFabToSave(final ArrayList<Uri> uris) {
+  private void initFabToSave(final List<Uri> uris) {
     Utils.showThemedSnackbar(
         this,
         getString(R.string.select_save_location),
@@ -664,7 +670,7 @@ public class MainActivity extends PermissionsActivity
         () -> saveExternalIntent(uris));
   }
 
-  private void saveExternalIntent(final ArrayList<Uri> uris) {
+  private void saveExternalIntent(final List<Uri> uris) {
     executeWithMainFragment(
         mainFragment -> {
           if (uris != null && uris.size() > 0) {
@@ -1789,7 +1795,34 @@ public class MainActivity extends PermissionsActivity
     FabWithLabelView newFolderFab =
         initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
-    floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
+    floatingActionButton.setOnActionSelectedListener(
+        actionItem -> {
+          MainFragment mainFragment = getCurrentMainFragment();
+
+          if (mainFragment == null) return false;
+
+          String path = mainFragment.getCurrentPath();
+
+          MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
+
+          if (mainFragmentViewModel == null) return false;
+
+          OpenMode openMode = mainFragmentViewModel.getOpenMode();
+
+          int id = actionItem.getId();
+
+          if (id == R.id.menu_new_folder)
+            mainActivity.mainActivityHelper.mkdir(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_file)
+            mainActivity.mainActivityHelper.mkfile(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_cloud)
+            new CloudSheetFragment()
+                .show(mainActivity.getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
+
+          floatingActionButton.close(true);
+          return true;
+        });
+
     floatingActionButton.setOnClickListener(
         view -> {
           fabButtonClick(cloudFab);
@@ -1992,6 +2025,7 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+    sftpConnectDialog.setCancelable(false);
     String finalName = name;
     Flowable.fromCallable(() -> new NetCopyConnectionInfo(path))
         .flatMap(
@@ -2380,45 +2414,6 @@ public class MainActivity extends PermissionsActivity
     tabFragment.initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
   }
 
-  private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
-
-    MainActivity mainActivity;
-    SpeedDialView floatingActionButton;
-
-    FabActionListener(MainActivity mainActivity) {
-      this.mainActivity = mainActivity;
-      this.floatingActionButton = mainActivity.floatingActionButton;
-    }
-
-    @Override
-    public boolean onActionSelected(SpeedDialActionItem actionItem) {
-      final MainFragment ma =
-          (MainFragment)
-              ((TabFragment)
-                      mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame))
-                  .getCurrentTabFragment();
-      final String path = ma.getCurrentPath();
-
-      switch (actionItem.getId()) {
-        case R.id.menu_new_folder:
-          mainActivity.mainActivityHelper.mkdir(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_file:
-          mainActivity.mainActivityHelper.mkfile(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_cloud:
-          BottomSheetDialogFragment fragment = new CloudSheetFragment();
-          fragment.show(
-              ma.getActivity().getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
-          break;
-      }
-
-      floatingActionButton.close(true);
-      return true;
-    }
-  }
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *

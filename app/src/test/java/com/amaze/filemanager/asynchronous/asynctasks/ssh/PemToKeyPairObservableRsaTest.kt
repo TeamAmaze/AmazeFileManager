@@ -25,7 +25,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -232,7 +232,7 @@ class PemToKeyPairObservableRsaTest {
                 )
                 dialog.customView?.run {
                     lap++
-                    findViewById<EditText>(R.id.singleedittext_input)?.run {
+                    findViewById<AppCompatEditText>(R.id.singleedittext_input)?.run {
                         this.setText("test")
                     } ?: fail("Text field not found")
                 } ?: fail("No view found at dialog")

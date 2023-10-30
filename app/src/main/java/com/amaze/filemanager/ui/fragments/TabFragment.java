@@ -60,10 +60,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -94,7 +94,7 @@ public class TabFragment extends Fragment {
   private Indicator indicator;
 
   /** views for circlular drawables below android lollipop */
-  private ImageView circleDrawable1, circleDrawable2;
+  private AppCompatImageView circleDrawable1, circleDrawable2;
 
   /** color drawable for action bar background */
   private final ColorDrawable colorDrawable = new ColorDrawable();
@@ -459,7 +459,7 @@ public class TabFragment extends Fragment {
     final MainFragment mainFragment = requireMainActivity().getCurrentMainFragment();
     View leftPlaceholder = rootView.findViewById(R.id.placeholder_drag_left);
     View rightPlaceholder = rootView.findViewById(R.id.placeholder_drag_right);
-    ImageView dragToTrash = rootView.findViewById(R.id.placeholder_trash_bottom);
+    AppCompatImageView dragToTrash = rootView.findViewById(R.id.placeholder_trash_bottom);
     DataUtils dataUtils = DataUtils.getInstance();
     if (destroy) {
       leftPlaceholder.setOnDragListener(null);
