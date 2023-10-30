@@ -18,36 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks.compress
+package com.amaze.filemanager.filesystem.compressed.extractcontents
 
-import android.os.Environment
-import org.junit.Assert
-import org.junit.Test
-import java.io.File
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZstdExtractor
 
-class UnknownCompressedHelperCallableTest : AbstractCompressedHelperCallableTest() {
+class ZstdExtractorTest : AbstractCompressedFileExtractorTest() {
 
-    /**
-     * Test file decompression.
-     */
-    @Test
-    fun testExtract() {
-        listOf("lzma", "gz", "xz", "bz2", "zst").forEach { ext ->
-            doTestExtract(
-                UnknownCompressedFileHelperCallable(
-                    File(
-                        Environment.getExternalStorageDirectory(),
-                        "test.txt.$ext"
-                    ).absolutePath,
-                    false
-                )
-            )
-        }
-    }
+    override fun extractorClass(): Class<out Extractor> = ZstdExtractor::class.java
 
-    private fun doTestExtract(task: CompressedHelperCallable) {
-        val result = task.call()
-        Assert.assertEquals(1, result.size.toLong())
-        Assert.assertEquals("test.txt", result[0].name)
-    }
+    override val archiveType: String = "zst"
 }

@@ -41,6 +41,7 @@ buildscript {
         rxAndroidVersion = "2.1.1"
         rxJavaVersion = "2.2.9"
         okHttpVersion = "4.9.0"
+        zstdJniVersion = "1.5.2-5"
     }
     repositories {
         google()
