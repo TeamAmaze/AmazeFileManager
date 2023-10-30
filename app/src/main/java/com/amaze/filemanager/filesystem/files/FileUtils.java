@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -865,10 +867,19 @@ public class FileUtils {
       }
       link = new StringBuilder(link.toString().trim());
     }
-    long Size = (size == null || size.trim().length() == 0) ? -1 : Long.parseLong(size);
+    long Size;
+    if (size == null || size.trim().length() == 0) {
+      Size = -1;
+    } else {
+      try {
+        Size = Long.parseLong(size);
+      } catch (NumberFormatException ifItIsNotANumber) {
+        Size = -1;
+      }
+    }
     if (date.trim().length() > 0 && !isStat) {
       ParsePosition pos = new ParsePosition(0);
-      SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
+      SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm", Locale.US);
       Date stringDate = simpledateformat.parse(date, pos);
       if (stringDate == null) {
         LOG.warn("parseName: unable to parse datetime string [" + date + "]");
