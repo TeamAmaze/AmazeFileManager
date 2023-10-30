@@ -71,6 +71,9 @@ class SelectionPopupMenu(
                         popupMenu.menu.findItem(R.id.select_similar).isVisible = false
                     }
                 }
+                if (recyclerAdapter.checkedItems.size < 2) {
+                    popupMenu.menu.findItem(R.id.select_fill).isVisible = false
+                }
                 popupMenu.setOnMenuItemClickListener(popupMenu)
                 popupMenu.show()
             }
@@ -98,6 +101,9 @@ class SelectionPopupMenu(
             }
             R.id.select_similar -> {
                 recyclerAdapter.toggleSimilarNames()
+            }
+            R.id.select_fill -> {
+                recyclerAdapter.toggleFill()
             }
         }
         actionModeView.invalidate()

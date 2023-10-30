@@ -32,7 +32,9 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -375,6 +377,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           currentItem.setChecked(true);
           notifyItemChanged(y);
         }
+      }
+    }
+  }
+
+  public void toggleFill() {
+    ArrayList<Integer> checkedItemsIndexes = getCheckedItemsIndex();
+    Collections.sort(checkedItemsIndexes);
+    if (checkedItemsIndexes.size() >= 2) {
+      for (int i = checkedItemsIndexes.get(0);
+          i < checkedItemsIndexes.get(checkedItemsIndexes.size() - 1);
+          i++) {
+        Objects.requireNonNull(getItemsDigested()).get(i).setChecked(true);
+        notifyItemChanged(i);
       }
     }
   }
