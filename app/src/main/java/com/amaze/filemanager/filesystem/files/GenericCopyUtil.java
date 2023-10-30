@@ -271,7 +271,7 @@ public class GenericCopyUtil {
       // If target file is copied onto the device and copy was successful, trigger media store
       // rescan
       if (mTargetFile != null) {
-        FileUtils.scanFile(mContext, new HybridFile[] {mTargetFile});
+        MediaConnectionUtils.scanFile(mContext, new HybridFile[] {mTargetFile});
       }
     }
   }

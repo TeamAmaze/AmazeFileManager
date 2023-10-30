@@ -287,7 +287,18 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 )?.run {
                     try {
                         if (moveToFirst()) {
-                            fileName = getString(0)
+                            fileName = getString(0).let {
+                                /*
+                                 * Strip any slashes to prevent possibility to access files outside
+                                 * cache dir if malicious ContentProvider gives malicious value
+                                 * of MediaStore.MediaColumns.DISPLAY_NAME when querying
+                                 */
+                                if (it.contains(File.pathSeparator)) {
+                                    it.substringAfterLast(File.pathSeparatorChar)
+                                } else {
+                                    it
+                                }
+                            }
                             compressedFile = File(requireContext().cacheDir, fileName)
                         } else {
                             // At this point, we know nothing the file the URI represents, we are doing everything

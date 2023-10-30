@@ -35,7 +35,8 @@ import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
+import java.nio.charset.CoderMalfunctionError;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -2121,13 +2122,22 @@ public class SevenZFile implements Closeable {
     if (chars == null) {
       return null;
     }
-    final ByteBuffer encoded = Charset.forName("UTF-16LE").encode(CharBuffer.wrap(chars));
-    if (encoded.hasArray()) {
-      return encoded.array();
+
+    try {
+      final ByteBuffer encoded = StandardCharsets.UTF_16LE.encode(CharBuffer.wrap(chars));
+
+      if (encoded.hasArray()) {
+        return encoded.array();
+      }
+      final byte[] e = new byte[encoded.remaining()];
+      encoded.get(e);
+
+      return e;
+
+    } catch (CoderMalfunctionError e) {
+      e.printStackTrace();
+      return null;
     }
-    final byte[] e = new byte[encoded.remaining()];
-    encoded.get(e);
-    return e;
   }
 
   private static int assertFitsIntoNonNegativeInt(final String what, final long value)

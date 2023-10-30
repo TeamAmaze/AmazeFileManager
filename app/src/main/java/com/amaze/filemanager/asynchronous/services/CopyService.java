@@ -43,6 +43,7 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.filesystem.root.MoveFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -461,7 +462,7 @@ public class CopyService extends AbstractProgressiveService {
               e);
           failedFOps.add(sourceFile);
         }
-        FileUtils.scanFile(c, new HybridFile[] {targetFile});
+        MediaConnectionUtils.scanFile(c, new HybridFile[] {targetFile});
       }
 
       private void copyFiles(

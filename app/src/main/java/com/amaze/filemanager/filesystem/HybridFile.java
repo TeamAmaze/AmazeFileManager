@@ -411,13 +411,17 @@ public class HybridFile {
   }
 
   /**
-   * Path accessor. Avoid direct access to path since path may have been URL encoded.
+   * Path accessor. Avoid direct access to path (for non-local files) since path may have been URL
+   * encoded.
    *
-   * @return URL decoded path
+   * @return URL decoded path (for non-local files); the actual path for local files
    */
   public String getPath() {
+
+    if (isLocal() || isRoot() || isDocumentFile() || isAndroidDataDir()) return path;
+
     try {
-      return URLDecoder.decode(path.replace("+", "%2b"), "UTF-8");
+      return URLDecoder.decode(path, "UTF-8");
     } catch (UnsupportedEncodingException | IllegalArgumentException e) {
       LOG.warn("failed to decode path {}", path, e);
       return path;
@@ -562,7 +566,7 @@ public class HybridFile {
           return parent;
         }
       default:
-        if (getPath().length() == getName(context).length()) {
+        if (getPath().length() <= getName(context).length()) {
           return null;
         }
 
@@ -612,7 +616,6 @@ public class HybridFile {
   }
 
   public boolean isDirectory(Context context) {
-    boolean isDirectory;
     switch (mode) {
       case SFTP:
         final Boolean returnValue =
@@ -634,56 +637,46 @@ public class HybridFile {
 
         if (returnValue == null) {
           LOG.error("Error obtaining if path is directory over SFTP");
+          return false;
         }
 
-        //noinspection SimplifiableConditionalExpression
-        return returnValue == null ? false : returnValue;
+        return returnValue;
       case SMB:
         try {
-          isDirectory =
-              Single.fromCallable(() -> getSmbFile().isDirectory())
-                  .subscribeOn(Schedulers.io())
-                  .blockingGet();
+          return Single.fromCallable(() -> getSmbFile().isDirectory())
+              .subscribeOn(Schedulers.io())
+              .blockingGet();
         } catch (Exception e) {
-          isDirectory = false;
           LOG.warn("failed to get isDirectory with context for smb file", e);
+          return false;
         }
-        break;
       case FTP:
         FTPFile ftpFile = getFtpFile();
-        isDirectory = ftpFile != null && ftpFile.isDirectory();
-        break;
-      case FILE:
-        isDirectory = getFile().isDirectory();
-        break;
+        return ftpFile != null && ftpFile.isDirectory();
       case ROOT:
-        isDirectory = NativeOperations.isDirectory(path);
-        break;
+        return NativeOperations.isDirectory(path);
       case DOCUMENT_FILE:
-        isDirectory = getDocumentFile(false).isDirectory();
-        break;
+        DocumentFile documentFile = getDocumentFile(false);
+        return documentFile != null && documentFile.isDirectory();
       case OTG:
-        isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
-        break;
+        DocumentFile otgFile = OTGUtil.getDocumentFile(path, context, false);
+        return otgFile != null && otgFile.isDirectory();
       case DROPBOX:
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        isDirectory =
-            Single.fromCallable(
-                    () ->
-                        dataUtils
-                            .getAccount(mode)
-                            .getMetadata(CloudUtil.stripPath(mode, path))
-                            .getFolder())
-                .subscribeOn(Schedulers.io())
-                .blockingGet();
-        break;
-      default:
-        isDirectory = getFile().isDirectory();
-        break;
+        return Single.fromCallable(
+                () ->
+                    dataUtils
+                        .getAccount(mode)
+                        .getMetadata(CloudUtil.stripPath(mode, path))
+                        .getFolder())
+            .subscribeOn(Schedulers.io())
+            .blockingGet();
+      default: // also handles the case `FILE`
+        File file = getFile();
+        return file != null && file.isDirectory();
     }
-    return isDirectory;
   }
 
   /**
