@@ -407,5 +407,8 @@ to ordenador.</li><li/><br/>\\n
     <string name="blue">Azul</string>
     <string name="green">Verde</string>
     <string name="close">Zarrar</string>
-    </resources>
+
+    <string name="not_found_enabled_webview">Nun s\'atopó navegador disponible</string>
+
+</resources>
 
