@@ -28,6 +28,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.net.UnknownHostException
@@ -97,7 +98,7 @@ object NetworkUtil {
     /**
      * Determine device's IP address.
      *
-     * Caveat: doesn't handle IPv6 addresses well.
+     * Caveat: doesn't handle IPv6 addresses well. Forcing return IPv4 if possible.
      */
     @JvmStatic
     fun getLocalInetAddress(context: Context): InetAddress? {
@@ -115,7 +116,8 @@ object NetworkUtil {
                 netinterface.inetAddresses.iterator().forEach { address ->
                     // this is the condition that sometimes gives problems
                     if (!address.isLoopbackAddress &&
-                        !address.isLinkLocalAddress
+                        !address.isLinkLocalAddress &&
+                        address is Inet4Address
                     ) {
                         return address
                     }

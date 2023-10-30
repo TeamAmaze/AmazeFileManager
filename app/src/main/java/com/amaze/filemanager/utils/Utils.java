@@ -23,7 +23,11 @@ package com.amaze.filemanager.utils;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -39,6 +43,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -46,6 +52,7 @@ import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
@@ -88,6 +95,9 @@ public class Utils {
 
   public static final String EMAIL_NOREPLY_REPORTS = "no-reply@teamamaze.xyz";
   public static final String EMAIL_SUPPORT = "support@teamamaze.xyz";
+
+  private static final Logger log = LoggerFactory.getLogger(Utils.class);
+  private static boolean isToastShowing = false;
 
   // methods for fastscroller
   public static float clamp(float min, float max, float value) {
@@ -378,7 +388,22 @@ public class Utils {
   public static void openURL(String url, Context context) {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.setData(Uri.parse(url));
-    context.startActivity(intent);
+
+    PackageManager packageManager = context.getPackageManager();
+    List<ResolveInfo> webViews =
+        packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+    if (!webViews.isEmpty()) {
+      context.startActivity(intent);
+    } else {
+      log.warn("A browser is not available");
+      if (!isToastShowing) {
+        isToastShowing = true;
+        Toast.makeText(context, R.string.not_found_enabled_webview, Toast.LENGTH_SHORT).show();
+        // Prevents a myriad of duplicates
+        new Handler().postDelayed(() -> isToastShowing = false, 2200);
+      }
+    }
   }
 
   /** Open telegram in browser */

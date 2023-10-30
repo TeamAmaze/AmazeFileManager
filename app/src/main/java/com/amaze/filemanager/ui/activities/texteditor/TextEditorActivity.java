@@ -49,35 +49,30 @@ import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
@@ -96,12 +91,13 @@ public class TextEditorActivity extends ThemedActivity
   private static final String KEY_ORIGINAL_TEXT = "original";
   private static final String KEY_MONOFONT = "monofont";
 
-  private RelativeLayout searchViewLayout;
+  private ConstraintLayout searchViewLayout;
   public AppCompatImageButton upButton;
   public AppCompatImageButton downButton;
-  public AppCompatImageButton closeButton;
 
   private Snackbar loadingSnackbar;
+
+  private TextEditorActivityViewModel viewModel;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -110,16 +106,15 @@ public class TextEditorActivity extends ThemedActivity
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    final TextEditorActivityViewModel viewModel =
-        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    searchViewLayout = findViewById(R.id.searchview);
+    searchViewLayout = findViewById(R.id.textEditorSearchBar);
+
     searchViewLayout.setBackgroundColor(getPrimary());
 
-    searchEditText = searchViewLayout.findViewById(R.id.search_box);
-    upButton = searchViewLayout.findViewById(R.id.prev);
-    downButton = searchViewLayout.findViewById(R.id.next);
-    closeButton = searchViewLayout.findViewById(R.id.close);
+    searchEditText = searchViewLayout.findViewById(R.id.textEditorSearchBox);
+    upButton = searchViewLayout.findViewById(R.id.textEditorSearchPrevButton);
+    downButton = searchViewLayout.findViewById(R.id.textEditorSearchNextButton);
 
     searchEditText.addTextChangedListener(this);
 
@@ -127,16 +122,12 @@ public class TextEditorActivity extends ThemedActivity
     // upButton.setEnabled(false);
     downButton.setOnClickListener(this);
     // downButton.setEnabled(false);
-    closeButton.setOnClickListener(this);
-
-    boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
 
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
     }
-
-    mainTextView = findViewById(R.id.fname);
-    scrollView = findViewById(R.id.editscroll);
+    mainTextView = findViewById(R.id.textEditorMainEditText);
+    scrollView = findViewById(R.id.textEditorScrollView);
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
@@ -147,14 +138,23 @@ public class TextEditorActivity extends ThemedActivity
       return;
     }
 
-    getSupportActionBar().setTitle(viewModel.getFile().name);
+    ActionBar actionBar = getSupportActionBar();
+
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(!getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK));
+      actionBar.setTitle(viewModel.getFile().name);
+    }
 
     mainTextView.addTextChangedListener(this);
 
     if (getAppTheme().equals(AppTheme.DARK)) {
-      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_action_mode));
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_white));
     } else if (getAppTheme().equals(AppTheme.BLACK)) {
       mainTextView.setBackgroundColor(Utils.getColor(this, android.R.color.black));
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_white));
+    } else {
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_grey_900));
     }
 
     if (mainTextView.getTypeface() == null) {
@@ -175,7 +175,7 @@ public class TextEditorActivity extends ThemedActivity
     } else {
       load(this);
     }
-    initStatusBarResources(findViewById(R.id.texteditor));
+    initStatusBarResources(findViewById(R.id.textEditorRootView));
   }
 
   @Override
@@ -441,7 +441,7 @@ public class TextEditorActivity extends ThemedActivity
             if (textEditorActivity == null) {
               return;
             }
-            textEditorActivity.unhighlightSearchResult(index);
+            textEditorActivity.colorSearchResult(index, getPrimary());
           };
 
       final OnAsyncTaskFinished<List<SearchResultIndex>> onAsyncTaskFinished =
@@ -457,7 +457,7 @@ public class TextEditorActivity extends ThemedActivity
             viewModel.setSearchResultIndices(data);
 
             for (SearchResultIndex searchResultIndex : data) {
-              textEditorActivity.unhighlightSearchResult(searchResultIndex);
+              textEditorActivity.colorSearchResult(searchResultIndex, getPrimary());
             }
 
             if (data.size() != 0) {
@@ -484,77 +484,60 @@ public class TextEditorActivity extends ThemedActivity
     }
   }
 
-  /** show search view with a circular reveal animation */
   private void revealSearchView() {
-    int startRadius = 4;
-    int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-    DisplayMetrics metrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-    // hardcoded and completely random
-    int cx = metrics.widthPixels - 160;
-    int cy = toolbar.getBottom();
-    Animator animator;
-
-    // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-      animator =
-          ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy, startRadius, endRadius);
-    else animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-
-    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(600);
     searchViewLayout.setVisibility(View.VISIBLE);
-    searchEditText.setText("");
-    animator.start();
-    animator.addListener(
-        new AnimatorListenerAdapter() {
+
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_top);
+
+    animation.setAnimationListener(
+        new Animation.AnimationListener() {
           @Override
-          public void onAnimationEnd(Animator animation) {
+          public void onAnimationStart(Animation animation) {}
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+
             searchEditText.requestFocus();
-            InputMethodManager imm =
-                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
           }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {}
         });
+
+    searchViewLayout.startAnimation(animation);
   }
 
-  /** hide search view with a circular reveal animation */
   private void hideSearchView() {
-    int endRadius = 4;
-    int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-    DisplayMetrics metrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_out_top);
 
-    // hardcoded and completely random
-    int cx = metrics.widthPixels - 160;
-    int cy = toolbar.getBottom();
-
-    Animator animator;
-    // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      animator =
-          ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy, startRadius, endRadius);
-    } else {
-      animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-    }
-
-    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(600);
-    animator.start();
-    animator.addListener(
-        new AnimatorListenerAdapter() {
+    animation.setAnimationListener(
+        new Animation.AnimationListener() {
           @Override
-          public void onAnimationEnd(Animator animation) {
+          public void onAnimationStart(Animation animation) {}
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+
             searchViewLayout.setVisibility(View.GONE);
-            InputMethodManager inputMethodManager =
-                (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(
-                searchEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            cleanSpans(viewModel);
+            searchEditText.setText("");
+
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(
+                    searchEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
           }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {}
         });
+
+    searchViewLayout.startAnimation(animation);
   }
 
   @Override
@@ -563,7 +546,7 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     switch (v.getId()) {
-      case R.id.prev:
+      case R.id.textEditorSearchPrevButton:
         // upButton
         if (viewModel.getCurrent() > 0) {
           unhighlightCurrentSearchResult(viewModel);
@@ -574,7 +557,7 @@ public class TextEditorActivity extends ThemedActivity
           highlightCurrentSearchResult(viewModel);
         }
         break;
-      case R.id.next:
+      case R.id.textEditorSearchNextButton:
         // downButton
         if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
           unhighlightCurrentSearchResult(viewModel);
@@ -583,11 +566,6 @@ public class TextEditorActivity extends ThemedActivity
 
           highlightCurrentSearchResult(viewModel);
         }
-        break;
-      case R.id.close:
-        // closeButton
-        findViewById(R.id.searchview).setVisibility(View.GONE);
-        cleanSpans(viewModel);
         break;
       default:
         throw new IllegalStateException();
@@ -600,12 +578,12 @@ public class TextEditorActivity extends ThemedActivity
     }
 
     SearchResultIndex resultIndex = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
-    unhighlightSearchResult(resultIndex);
+    colorSearchResult(resultIndex, getPrimary());
   }
 
   private void highlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
     SearchResultIndex keyValueNew = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
-    colorSearchResult(keyValueNew, Utils.getColor(this, R.color.search_text_highlight));
+    colorSearchResult(keyValueNew, getAccent());
 
     // scrolling to the highlighted element
     if (getSupportActionBar() != null) {
@@ -616,17 +594,6 @@ public class TextEditorActivity extends ThemedActivity
               + Math.round(mainTextView.getLineSpacingExtra())
               - getSupportActionBar().getHeight());
     }
-  }
-
-  private void unhighlightSearchResult(SearchResultIndex resultIndex) {
-    @ColorInt int color;
-    if (getAppTheme().equals(AppTheme.LIGHT)) {
-      color = Color.YELLOW;
-    } else {
-      color = Color.LTGRAY;
-    }
-
-    colorSearchResult(resultIndex, color);
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {

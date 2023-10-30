@@ -627,4 +627,5 @@
     <string name="unknown">ezezaguna</string>
     <string name="multiple_invalid_archive_entries">Artxiboko zenbait fitxategi ezin dira erauzi; artxiboa hondatua egon daiteke edo jatorri maltzurrekoa izan daiteke.</string>
     <string name="saf_otg_explanation">Androiden fitxategi-sistemara joango zara orain segurtasun arrazoiengatik. Hautatu USB gailua ezkerreko zerrendatik.</string>
+    <string name="not_found_enabled_webview">Ez da nabigatzaile erabilgaririk aurkitu</string>
 </resources>

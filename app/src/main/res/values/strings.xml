@@ -813,9 +813,11 @@ You only need to do this once, until the next time you select a new location for
     <string name="try_indexed_search">Try Indexed Search!</string>
     <string name="search_recent">Recent</string>
     <string name="results">Results</string>
+    <string name="error_unsupported_or_null_uri">Invalid, unsupported, or no URI was provided</string>
     <string name="complete_paste_warning">Please complete paste operation first</string>
     <string name="same_dir_move_error">Destination and source folder shouldn\'t match to move.</string>
     <string name="checking_conflicts">Checking for conflicts</string>
     <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
+    <string name="not_found_enabled_webview">No available browser</string>
 </resources>
 
