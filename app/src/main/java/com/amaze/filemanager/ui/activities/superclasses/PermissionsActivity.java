@@ -33,6 +33,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -91,9 +92,13 @@ public class PermissionsActivity extends ThemedActivity
   public boolean checkStoragePermission() {
     // Verify that all required contact permissions have been granted.
     if (SDK_INT >= Build.VERSION_CODES.R) {
-      return ActivityCompat.checkSelfPermission(
-              this, Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-          == PackageManager.PERMISSION_GRANTED;
+      return (ActivityCompat.checkSelfPermission(
+                  this, Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+              == PackageManager.PERMISSION_GRANTED)
+          || (ActivityCompat.checkSelfPermission(
+                  this, Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+              == PackageManager.PERMISSION_GRANTED)
+          || Environment.isExternalStorageManager();
     } else {
       return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
           == PackageManager.PERMISSION_GRANTED;
@@ -266,6 +271,16 @@ public class PermissionsActivity extends ThemedActivity
           new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
               .setData(Uri.parse("package:" + getPackageName()));
       startActivity(intent);
+    } catch (ActivityNotFoundException anf) {
+      // fallback
+      try {
+        Intent intent =
+            new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                .setData(Uri.parse("package:$packageName"));
+        startActivity(intent);
+      } catch (Exception e) {
+        AppConfig.toast(this, getString(R.string.grantfailed));
+      }
     } catch (Exception e) {
       Log.e(TAG, "Failed to initial activity to grant all files access", e);
       AppConfig.toast(this, getString(R.string.grantfailed));
