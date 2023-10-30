@@ -247,7 +247,7 @@ public class MainActivity extends PermissionsActivity
   public ArrayList<String> oppatheList;
 
   // This holds the Uris to be written at initFabToSave()
-  private ArrayList<Uri> urisToBeSaved;
+  private List<Uri> urisToBeSaved;
 
   public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
@@ -324,7 +324,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
-  private MainActivityActionMode mainActivityActionMode;
+  public MainActivityActionMode mainActivityActionMode;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -630,9 +630,15 @@ public class MainActivity extends PermissionsActivity
       } else {
         // save a single file to filesystem
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
-        initFabToSave(uris);
+        if (uri != null
+            && uri.getScheme() != null
+            && uri.getScheme().startsWith(ContentResolver.SCHEME_FILE)) {
+          ArrayList<Uri> uris = new ArrayList<>();
+          uris.add(uri);
+          initFabToSave(uris);
+        } else {
+          Toast.makeText(this, R.string.error_unsupported_or_null_uri, Toast.LENGTH_LONG).show();
+        }
       }
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
@@ -651,7 +657,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
-  private void initFabToSave(final ArrayList<Uri> uris) {
+  private void initFabToSave(final List<Uri> uris) {
     Utils.showThemedSnackbar(
         this,
         getString(R.string.select_save_location),
@@ -660,7 +666,7 @@ public class MainActivity extends PermissionsActivity
         () -> saveExternalIntent(uris));
   }
 
-  private void saveExternalIntent(final ArrayList<Uri> uris) {
+  private void saveExternalIntent(final List<Uri> uris) {
     executeWithMainFragment(
         mainFragment -> {
           if (uris != null && uris.size() > 0) {

@@ -107,6 +107,7 @@
         app:srcCompat="@drawable/ic_more_vert_black_48dp"
         android:nextFocusLeft="@id/second"
         android:focusable="true"
+        android:contentDescription="@string/properties"
         />
 
     <RelativeLayout

@@ -47,7 +47,7 @@ import androidx.annotation.WorkerThread;
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
  * in the same filesystem, else starting the copy service. Be advised - do not start this AsyncTask
- * directly but use {@link PrepareCopyTask} instead
+ * directly but use {@link PreparePasteTask} instead
  */
 public class MoveFiles implements Callable<MoveFilesReturn> {
 
