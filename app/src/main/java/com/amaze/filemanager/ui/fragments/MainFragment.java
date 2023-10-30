@@ -537,25 +537,27 @@ public class MainFragment extends Fragment
 
     requireMainActivity().mReturnIntent = false;
 
-    Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
-    LOG.debug(
-        mediaStoreUri.toString()
-            + "\t"
-            + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-    Intent intent = new Intent();
-    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    intent.setAction(Intent.ACTION_SEND);
+    @Nullable Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
+    if (mediaStoreUri != null) {
+      LOG.debug(
+          mediaStoreUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+      Intent intent = new Intent();
+      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      intent.setAction(Intent.ACTION_SEND);
 
-    if (requireMainActivity().mRingtonePickerIntent) {
-      intent.setDataAndType(
-          mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
+      if (requireMainActivity().mRingtonePickerIntent) {
+        intent.setDataAndType(
+            mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
+      } else {
+        LOG.debug("pickup file");
+        intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
+      }
+      requireActivity().setResult(FragmentActivity.RESULT_OK, intent);
     } else {
-      LOG.debug("pickup file");
-      intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
+      LOG.warn("Unable to get URI from baseFile [{}]", baseFile.getPath());
     }
-    getActivity().setResult(FragmentActivity.RESULT_OK, intent);
-    getActivity().finish();
+    requireActivity().finish();
   }
 
   LoadFilesListTask loadFilesListTask;
