@@ -6,7 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     packagingOptions {
         resources {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 19
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 118
         versionName "3.8.5"
         multiDexEnabled true
@@ -85,13 +85,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
-        useIR = true
+        jvmTarget = '11'
     }
 
     testOptions {
@@ -144,7 +143,7 @@ dependencies {
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
@@ -252,14 +251,18 @@ dependencies {
     implementation 'com.github.TeamAmaze:AmazeTrashBin:1.0.7'
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 configurations.all {
     resolutionStrategy {
         dependencySubstitution {
-            substitute module("commons-logging:commons-logging-api:1.1") with module("commons-logging:commons-logging:1.1.1")
-            substitute module("com.android.support:support-annotations:27.1.1") with module("com.android.support:support-annotations:27.0.2")
+            substitute module("commons-logging:commons-logging-api:1.1") using module("commons-logging:commons-logging:1.1.1")
+            substitute module("com.android.support:support-annotations:27.1.1") using module("com.android.support:support-annotations:27.0.2")
             // These two lines are added to prevent possible class clashes between awaitility (which uses hamcrest 2.1) and junit (which uses hamcrest 1.3).
-            substitute module('org.hamcrest:hamcrest-core:1.3') with module("org.hamcrest:hamcrest:2.1")
-            substitute module('org.hamcrest:hamcrest-library:1.3') with module("org.hamcrest:hamcrest:2.1")
+            substitute module('org.hamcrest:hamcrest-core:1.3') using module("org.hamcrest:hamcrest:2.1")
+            substitute module('org.hamcrest:hamcrest-library:1.3') using module("org.hamcrest:hamcrest:2.1")
         }
     }
 }
@@ -305,7 +308,6 @@ tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
 }
-
 
 Properties props = new Properties()
 def propFile = new File('signing.properties')

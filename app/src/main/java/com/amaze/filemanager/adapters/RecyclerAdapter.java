@@ -21,6 +21,7 @@
 package com.amaze.filemanager.adapters;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
+import static com.amaze.filemanager.filesystem.files.FileListSorter.SORT_NONE_ON_TOP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -31,7 +32,9 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +50,10 @@ import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
@@ -62,6 +67,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
+import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.Utils;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
@@ -85,6 +91,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -374,6 +381,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
   }
 
+  public void toggleFill() {
+    ArrayList<Integer> checkedItemsIndexes = getCheckedItemsIndex();
+    Collections.sort(checkedItemsIndexes);
+    if (checkedItemsIndexes.size() >= 2) {
+      for (int i = checkedItemsIndexes.get(0);
+          i < checkedItemsIndexes.get(checkedItemsIndexes.size() - 1);
+          i++) {
+        Objects.requireNonNull(getItemsDigested()).get(i).setChecked(true);
+        notifyItemChanged(i);
+      }
+    }
+  }
+
   public void toggleSimilarNames() {
     ArrayList<Integer> checkedItemsIndexes = getCheckedItemsIndex();
     for (int i = 0; i < checkedItemsIndexes.size(); i++) {
@@ -605,34 +625,43 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   public void createHeaders(boolean invalidate, List<IconDataParcelable> uris) {
-    boolean[] headers = new boolean[] {false, false};
+    if ((mainFragment.getMainFragmentViewModel() != null
+            && mainFragment.getMainFragmentViewModel().getDsort() == SORT_NONE_ON_TOP)
+        || getItemsDigested() == null
+        || getItemsDigested().isEmpty()) {
+      return;
+    } else {
+      boolean[] headers = new boolean[] {false, false};
 
-    for (int i = 0; i < getItemsDigested().size(); i++) {
+      for (int i = 0; i < getItemsDigested().size(); i++) {
 
-      if (getItemsDigested().get(i).layoutElementParcelable != null) {
-        LayoutElementParcelable nextItem = getItemsDigested().get(i).layoutElementParcelable;
+        if (getItemsDigested().get(i).layoutElementParcelable != null) {
+          LayoutElementParcelable nextItem = getItemsDigested().get(i).layoutElementParcelable;
 
-        if (!headers[0] && nextItem.isDirectory) {
-          headers[0] = true;
-          getItemsDigested().add(i, new ListItem(TYPE_HEADER_FOLDERS));
-          uris.add(i, null);
-          continue;
-        }
+          if (nextItem != null) {
+            if (!headers[0] && nextItem.isDirectory) {
+              headers[0] = true;
+              getItemsDigested().add(i, new ListItem(TYPE_HEADER_FOLDERS));
+              uris.add(i, null);
+              continue;
+            }
 
-        if (!headers[1]
-            && !nextItem.isDirectory
-            && !nextItem.title.equals(".")
-            && !nextItem.title.equals("..")) {
-          headers[1] = true;
-          getItemsDigested().add(i, new ListItem(TYPE_HEADER_FILES));
-          uris.add(i, null);
-          continue; // leave this continue for symmetry
+            if (!headers[1]
+                && !nextItem.isDirectory
+                && !nextItem.title.equals(".")
+                && !nextItem.title.equals("..")) {
+              headers[1] = true;
+              getItemsDigested().add(i, new ListItem(TYPE_HEADER_FILES));
+              uris.add(i, null);
+              continue; // leave this continue for symmetry
+            }
+          }
         }
       }
-    }
 
-    if (invalidate) {
-      notifyDataSetChanged();
+      if (invalidate) {
+        notifyDataSetChanged();
+      }
     }
   }
 
@@ -763,6 +792,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
+          if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
@@ -976,6 +1006,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
+          if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
@@ -1366,6 +1397,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
+    if (hasPendingPasteOperation()) return;
     Context currentContext = this.context;
     if (mainFragment.getMainActivity().getAppTheme().getSimpleTheme(mainFragment.requireContext())
         == AppTheme.BLACK) {
@@ -1430,6 +1462,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     popupMenu.show();
+  }
+
+  /**
+   * Helps in deciding whether to allow file modification or not, depending on the state of the
+   * copy/paste operation.
+   *
+   * @return true if there is an unfinished copy/paste operation, false otherwise.
+   */
+  private boolean hasPendingPasteOperation() {
+    MainActivity mainActivity = mainFragment.getMainActivity();
+    if (mainActivity == null) return false;
+    MainActivityActionMode mainActivityActionMode = mainActivity.mainActivityActionMode;
+    PasteHelper pasteHelper = mainActivityActionMode.getPasteHelper();
+
+    if (pasteHelper != null
+        && pasteHelper.getSnackbar() != null
+        && pasteHelper.getSnackbar().isShown()) {
+      Toast.makeText(
+              mainFragment.requireContext(),
+              mainFragment.getString(R.string.complete_paste_warning),
+              Toast.LENGTH_LONG)
+          .show();
+      return true;
+    }
+    return false;
   }
 
   private boolean getBoolean(String key) {

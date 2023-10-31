@@ -4,10 +4,11 @@
     android:minHeight="50dip"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:focusable="true"
     android:background="?selectableItemBackground"
     android:padding="@dimen/material_generic">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
         android:padding="10dp"
         android:layout_width="48dip"

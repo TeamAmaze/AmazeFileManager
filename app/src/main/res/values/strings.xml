@@ -749,6 +749,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
     <string name="select_similar">Select similar</string>
+    <string name="select_fill">Select fill</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
         \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
@@ -813,6 +814,13 @@ You only need to do this once, until the next time you select a new location for
     <string name="try_indexed_search">Try Indexed Search!</string>
     <string name="search_recent">Recent</string>
     <string name="results">Results</string>
+    <string name="grant_notification_permission">Amaze needs notification permission to display file operation progress, as well as a handy panel to start/stop the FTP server.</string>
+    <string name="error_unsupported_or_null_uri">Invalid, unsupported, or no URI was provided</string>
+    <string name="complete_paste_warning">Please complete paste operation first</string>
+    <string name="same_dir_move_error">Destination and source folder shouldn\'t match to move.</string>
+    <string name="checking_conflicts">Checking for conflicts</string>
+    <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
+    <string name="not_found_enabled_webview">No available browser</string>
     <string name="trasbin_bin">Trash Bin</string>
     <string name="delete_permanently_checkbox">Delete Permanently</string>
     <string name="restore">Restore</string>
