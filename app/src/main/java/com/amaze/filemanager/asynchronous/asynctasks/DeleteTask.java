@@ -81,8 +81,7 @@ public class DeleteTask
   }
 
   public DeleteTask(
-      @NonNull Context applicationContext,
-      CompressedExplorerFragment compressedExplorerFragment) {
+      @NonNull Context applicationContext, CompressedExplorerFragment compressedExplorerFragment) {
     this.applicationContext = applicationContext.getApplicationContext();
     this.doDeletePermanently = false;
     rootMode =
@@ -188,7 +187,7 @@ public class DeleteTask
           if (!doDeletePermanently) {
             return file.moveToBin(applicationContext);
           }
-          return (file.delete(applicationContext, rootMode));
+          return file.delete(applicationContext, rootMode);
         } catch (ShellNotRunningException | SmbException e) {
           LOG.warn("failed to delete files", e);
           throw e;

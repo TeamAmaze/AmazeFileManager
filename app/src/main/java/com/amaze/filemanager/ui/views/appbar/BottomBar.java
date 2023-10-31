@@ -177,7 +177,9 @@ public class BottomBar implements View.OnTouchListener {
                   final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
                   Objects.requireNonNull(mainFragment);
                   if (mainFragment.getMainFragmentViewModel() != null
-                      && OpenMode.CUSTOM != mainFragment.getMainFragmentViewModel().getOpenMode()) {
+                      && OpenMode.CUSTOM != mainFragment.getMainFragmentViewModel().getOpenMode()
+                      && OpenMode.TRASH_BIN
+                          != mainFragment.getMainFragmentViewModel().getOpenMode()) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
@@ -382,6 +384,7 @@ public class BottomBar implements View.OnTouchListener {
         newPath = mainActivityHelper.parseOTGPath(news);
         break;
       case CUSTOM:
+      case TRASH_BIN:
         newPath = mainActivityHelper.getIntegralNames(news);
         break;
       case DROPBOX:

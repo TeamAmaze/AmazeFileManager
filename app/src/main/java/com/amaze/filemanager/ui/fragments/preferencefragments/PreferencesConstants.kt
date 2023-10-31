@@ -76,6 +76,10 @@ object PreferencesConstants {
     const val PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack"
     const val PREFERENCE_DELETE_CONFIRMATION = "delete_confirmation"
     const val PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS = "disable_player_intent_filters"
+    const val PREFERENCE_TRASH_BIN_RETENTION_NUM_OF_FILES = "retention_num_of_files"
+    const val PREFERENCE_TRASH_BIN_RETENTION_DAYS = "retention_days"
+    const val PREFERENCE_TRASH_BIN_RETENTION_BYTES = "retention_bytes"
+    const val PREFERENCE_TRASH_BIN_CLEANUP_INTERVAL = "cleanup_interval"
 
     // security_prefs.xml
     const val PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint"
@@ -111,6 +115,7 @@ object PreferencesConstants {
     const val KEY_TRASH_BIN_RETENTION_DAYS = "trash_bin_retention_days"
     const val KEY_TRASH_BIN_RETENTION_BYTES = "trash_bin_retention_bytes"
     const val KEY_TRASH_BIN_RETENTION_NUM_OF_FILES = "trash_bin_retention_num_of_files"
+    const val KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS = "trash_bin_cleanup_interval_hours"
 
     const val DEFAULT_PREFERENCE_DELETE_CONFIRMATION = true
 }

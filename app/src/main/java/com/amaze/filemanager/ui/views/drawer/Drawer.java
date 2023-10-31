@@ -589,15 +589,16 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         R.drawable.ic_round_analytics_24,
         null);
 
-    // initially load trash bin items with "7" but ones listed they're referred as @link{OpenMode.TRASH_BIN}
+    // initially load trash bin items with "7" but ones listed they're referred as
+    // @link{OpenMode.TRASH_BIN}
     addNewItem(
-            menu,
-            LASTGROUP,
-            order++,
-            R.string.trasbin_bin,
-            new MenuMetadata("7"),
-            R.drawable.round_delete_outline_24,
-            null);
+        menu,
+        LASTGROUP,
+        order++,
+        R.string.trash_bin,
+        new MenuMetadata("7"),
+        R.drawable.round_delete_outline_24,
+        null);
 
     addNewItem(
         menu,

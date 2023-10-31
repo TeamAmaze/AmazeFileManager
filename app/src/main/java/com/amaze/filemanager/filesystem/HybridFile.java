@@ -42,11 +42,11 @@ import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -68,6 +68,7 @@ import com.amaze.filemanager.fileoperations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl;
 import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
@@ -104,7 +105,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
-import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
@@ -117,7 +117,6 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import kotlin.io.ByteStreamsKt;
-import kotlin.jvm.functions.Function2;
 import kotlin.text.Charsets;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
@@ -163,6 +162,8 @@ public class HybridFile {
     } else if (isRoot() && path.equals("/")) {
       // root of filesystem, don't concat another '/'
       this.path += name;
+    } else if (isTrashBin()) {
+      this.path = path;
     } else {
       this.path += "/" + name;
     }
@@ -190,6 +191,8 @@ public class HybridFile {
       mode = OpenMode.GDRIVE;
     } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
       mode = OpenMode.DROPBOX;
+    } else if (path.equals("7") || isTrashBin()) {
+      mode = OpenMode.TRASH_BIN;
     } else if (context == null) {
       mode = OpenMode.FILE;
     } else {
@@ -235,6 +238,10 @@ public class HybridFile {
 
   public boolean isRoot() {
     return mode == OpenMode.ROOT;
+  }
+
+  public boolean isTrashBin() {
+    return mode == OpenMode.TRASH_BIN;
   }
 
   public boolean isSmb() {
@@ -339,6 +346,7 @@ public class HybridFile {
       case NFS:
         break;
       case FILE:
+      case TRASH_BIN:
         return getFile().lastModified();
       case DOCUMENT_FILE:
         return getDocumentFile(false).lastModified();
@@ -384,6 +392,7 @@ public class HybridFile {
         return s;
       case NFS:
       case FILE:
+      case TRASH_BIN:
         s = getFile().length();
         return s;
       case ROOT:
@@ -424,7 +433,8 @@ public class HybridFile {
    */
   public String getPath() {
 
-    if (isLocal() || isRoot() || isDocumentFile() || isAndroidDataDir()) return path;
+    if (isLocal() || isTrashBin() || isRoot() || isDocumentFile() || isAndroidDataDir())
+      return path;
 
     try {
       return URLDecoder.decode(path, "UTF-8");
@@ -471,6 +481,8 @@ public class HybridFile {
         return OTGUtil.getDocumentFile(
                 path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
             .getName();
+      case TRASH_BIN:
+        return name;
       default:
         if (path.isEmpty()) {
           return "";
@@ -535,8 +547,7 @@ public class HybridFile {
         || path.equals("3")
         || path.equals("4")
         || path.equals("5")
-        || path.equals("6")
-            || path.equals("7");
+        || path.equals("6");
   }
 
   /** Helper method to get parent path */
@@ -552,6 +563,8 @@ public class HybridFile {
       case FILE:
       case ROOT:
         return getFile().getParent();
+      case TRASH_BIN:
+        return "7";
       case SFTP:
       case DOCUMENT_FILE:
         String thisPath = path;
@@ -619,6 +632,7 @@ public class HybridFile {
         isDirectory = false;
         break;
       case FILE:
+      case TRASH_BIN:
       default:
         isDirectory = getFile().isDirectory();
         break;
@@ -684,6 +698,7 @@ public class HybridFile {
                         .getFolder())
             .subscribeOn(Schedulers.io())
             .blockingGet();
+      case TRASH_BIN:
       default: // also handles the case `FILE`
         File file = getFile();
         return file != null && file.isDirectory();
@@ -705,6 +720,7 @@ public class HybridFile {
         size = smbFile != null ? FileUtils.folderSize(getSmbFile()) : 0;
         break;
       case FILE:
+      case TRASH_BIN:
         size = FileUtils.folderSize(getFile(), null);
         break;
       case ROOT:
@@ -747,6 +763,7 @@ public class HybridFile {
         size = (smbFile != null) ? FileUtils.folderSize(smbFile) : 0L;
         break;
       case FILE:
+      case TRASH_BIN:
         size = FileUtils.folderSize(getFile(), null);
         break;
       case ROOT:
@@ -774,7 +791,6 @@ public class HybridFile {
                 mode, dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
         break;
       case FTP:
-
       default:
         return 0l;
     }
@@ -796,6 +812,7 @@ public class HybridFile {
         break;
       case FILE:
       case ROOT:
+      case TRASH_BIN:
         size = getFile().getUsableSpace();
         break;
       case DROPBOX:
@@ -881,6 +898,7 @@ public class HybridFile {
         break;
       case FILE:
       case ROOT:
+      case TRASH_BIN:
         size = getFile().getTotalSpace();
         break;
       case DROPBOX:
@@ -1023,6 +1041,7 @@ public class HybridFile {
           LOG.warn("failed to get children file for cloud file", e);
         }
         break;
+      case TRASH_BIN:
       default:
         ListFilesCommand.INSTANCE.listFiles(
             path,
@@ -1174,6 +1193,7 @@ public class HybridFile {
         LOG.debug(CloudUtil.stripPath(mode, path));
         inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(mode, path));
         break;
+      case TRASH_BIN:
       default:
         try {
           inputStream = new FileInputStream(path);
@@ -1264,6 +1284,7 @@ public class HybridFile {
           outputStream = null;
         }
         break;
+      case TRASH_BIN:
       default:
         try {
           outputStream = FileUtil.getOutputStream(getFile(), context);
@@ -1324,6 +1345,9 @@ public class HybridFile {
       exists = getFile().exists();
     } else if (isRoot()) {
       return RootHelper.fileExists(path);
+    } else if (isTrashBin()) {
+      if (getFile() != null) return getFile().exists();
+      else return false;
     }
 
     return exists;
@@ -1364,7 +1388,8 @@ public class HybridFile {
         && !isDropBoxFile()
         && !isBoxFile()
         && !isSftp()
-        && !isFtp();
+        && !isFtp()
+        && !isTrashBin();
   }
 
   public boolean setLastModified(final long date) {
@@ -1411,6 +1436,9 @@ public class HybridFile {
                   return 0 == cmd.getExitStatus();
                 }
               }));
+    } else if (isTrashBin()) {
+      // do nothing
+      return true;
     } else {
       File f = getFile();
       return f.setLastModified(date);
@@ -1473,6 +1501,7 @@ public class HybridFile {
       } catch (Exception e) {
         LOG.warn("failed to create folder for cloud file", e);
       }
+    } else if (isTrashBin()) { // do nothing
     } else MakeDirectoryOperation.mkdirs(context, this);
   }
 
@@ -1509,6 +1538,13 @@ public class HybridFile {
         LOG.error("Error delete SMB file", e);
         throw e;
       }
+    } else if (isTrashBin()) {
+      try {
+        deletePermanentlyFromBin(context);
+      } catch (Exception e) {
+        LOG.error("failed to delete trash bin file", e);
+        throw e;
+      }
     } else {
       if (isRoot() && rootmode) {
         setMode(OpenMode.ROOT);
@@ -1524,23 +1560,18 @@ public class HybridFile {
     List<TrashBinFile> trashBinFiles = Collections.singletonList(this.toTrashBinFile(context));
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     if (trashBin != null) {
-      trashBin.moveToBin(trashBinFiles, true, (originalFilePath,
-                                               trashBinDestination) -> {
-        File source = new File(originalFilePath);
-        File dest = new File(trashBinDestination);
-        if (!source.renameTo(dest)) {
-          return false;
-        }
-        Uri uri = FileProvider.getUriForFile(
-                context,
-                context.getPackageName(), new File(originalFilePath)
-        );
-        FileUtils.scanFile(
-                uri,
-                context
-        );
-        return true;
-      });
+      trashBin.moveToBin(
+          trashBinFiles,
+          true,
+          (originalFilePath, trashBinDestination) -> {
+            File source = new File(originalFilePath);
+            File dest = new File(trashBinDestination);
+            if (!source.renameTo(dest)) {
+              return false;
+            }
+            MediaConnectionUtils.scanFile(context, new HybridFile[] {this});
+            return true;
+          });
     }
   }
 
@@ -1548,25 +1579,34 @@ public class HybridFile {
     List<TrashBinFile> trashBinFiles = Collections.singletonList(this.toTrashBinFile(context));
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     if (trashBin != null) {
-      trashBin.moveToBin(trashBinFiles, true, (originalFilePath,
-                                               trashBinDestination) -> {
-        File source = new File(originalFilePath);
-        File dest = new File(trashBinDestination);
-        if (!source.renameTo(dest)) {
-          return false;
-        }
-        Uri uri = FileProvider.getUriForFile(
-                context,
-                context.getPackageName(), new File(originalFilePath)
-        );
-        FileUtils.scanFile(
-                uri,
-                context
-        );
-        return true;
-      });
+      trashBin.moveToBin(
+          trashBinFiles,
+          true,
+          (originalFilePath, trashBinDestination) -> {
+            File source = new File(originalFilePath);
+            File dest = new File(trashBinDestination);
+            return source.renameTo(dest);
+          });
     }
     return true;
+  }
+
+  public boolean deletePermanentlyFromBin(Context context) {
+    List<TrashBinFile> trashBinFiles =
+        Collections.singletonList(this.toTrashBinRestoreFile(context));
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    AtomicBoolean isDelete = new AtomicBoolean(false);
+    if (trashBin != null) {
+      trashBin.deletePermanently(
+          trashBinFiles,
+          s -> {
+            LOG.info("deleting from bin at path " + s);
+            isDelete.set(DeleteOperation.deleteFile(getFile(), context));
+            return isDelete.get();
+          },
+          true);
+    }
+    return isDelete.get();
   }
 
   /**
@@ -1589,6 +1629,7 @@ public class HybridFile {
     switch (mode) {
       case FILE:
       case ROOT:
+      case TRASH_BIN:
         File file = getFile();
         LayoutElementParcelable layoutElement;
         if (isDirectory(c)) {
@@ -1789,10 +1830,34 @@ public class HybridFile {
               }
             });
   }
+
+  /**
+   * Returns trash bin file with path that points to deleted path
+   *
+   * @param context
+   * @return
+   */
   public TrashBinFile toTrashBinFile(Context context) {
-    return new TrashBinFile(name, isDirectory(context), path, length(context), null);
+    return new TrashBinFile(getName(context), isDirectory(context), path, length(context), null);
   }
 
+  /**
+   * Returns trash bin file with path that points to where the file should be restored
+   *
+   * @param context
+   * @return
+   */
+  public TrashBinFile toTrashBinRestoreFile(Context context) {
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
+      if (trashBinFile.getDeletedPath(trashBin.getConfig()).equals(path)) {
+        // finding path to restore to
+        return new TrashBinFile(
+            getName(context), isDirectory(context), trashBinFile.getPath(), length(context), null);
+      }
+    }
+    return null;
+  }
 
   private SshClientSessionTemplate<String> getRemoteShellCommandLineResult(String command) {
     return new SshClientSessionTemplate<String>(path) {

@@ -69,7 +69,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.Config;
 import jcifs.smb.SmbException;
-import kotlin.jvm.functions.Function1;
 
 @AcraCore(
     buildConfigClass = BuildConfig.class,
@@ -92,8 +91,8 @@ public class AppConfig extends GlideApplication {
 
   private TrashBinConfig trashBinConfig;
   private TrashBin trashBin;
-  private static final String TRASH_BIN_BASE_PATH = Environment.getExternalStorageDirectory().getPath()
-          + File.separator + ".AmazeData";
+  private static final String TRASH_BIN_BASE_PATH =
+      Environment.getExternalStorageDirectory().getPath() + File.separator + ".AmazeData";
 
   public UtilitiesProvider getUtilsProvider() {
     return utilsProvider;
@@ -273,17 +272,24 @@ public class AppConfig extends GlideApplication {
 
   public TrashBin getTrashBinInstance() {
     if (trashBin == null) {
-      trashBin = new TrashBin(getTrashBinConfig(), s -> {
-        runInBackground(() -> {
-          HybridFile file = new HybridFile(OpenMode.FILE, s);
-          try {
-            file.delete(getMainActivityContext(), false);
-          } catch (ShellNotRunningException | SmbException e) {
-            log.warn("failed to delete file in trash bin cleanup", e);
-          }
-        });
-        return true;
-      }, null);
+      trashBin =
+          new TrashBin(
+              getApplicationContext(),
+              true,
+              getTrashBinConfig(),
+              s -> {
+                runInBackground(
+                    () -> {
+                      HybridFile file = new HybridFile(OpenMode.TRASH_BIN, s);
+                      try {
+                        file.delete(getMainActivityContext(), false);
+                      } catch (ShellNotRunningException | SmbException e) {
+                        log.warn("failed to delete file in trash bin cleanup", e);
+                      }
+                    });
+                return true;
+              },
+              null);
     }
     return trashBin;
   }
@@ -292,22 +298,25 @@ public class AppConfig extends GlideApplication {
     if (trashBinConfig == null) {
       SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-      int days = sharedPrefs.getInt(
+      int days =
+          sharedPrefs.getInt(
               PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
-              TrashBinConfig.RETENTION_DAYS_INFINITE
-      );
-      long bytes = sharedPrefs.getLong(
+              TrashBinConfig.RETENTION_DAYS_INFINITE);
+      long bytes =
+          sharedPrefs.getLong(
               PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
-              TrashBinConfig.RETENTION_BYTES_INFINITE
-      );
-      int numOfFiles = sharedPrefs.getInt(
+              TrashBinConfig.RETENTION_BYTES_INFINITE);
+      int numOfFiles =
+          sharedPrefs.getInt(
               PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
-              TrashBinConfig.RETENTION_NUM_OF_FILES
-      );
-      trashBinConfig = new TrashBinConfig(
-              TRASH_BIN_BASE_PATH, days, bytes,
-              numOfFiles, false, true
-      );
+              TrashBinConfig.RETENTION_NUM_OF_FILES);
+      int intervalHours =
+          sharedPrefs.getInt(
+              PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
+              TrashBinConfig.INTERVAL_CLEANUP_HOURS);
+      trashBinConfig =
+          new TrashBinConfig(
+              TRASH_BIN_BASE_PATH, days, bytes, numOfFiles, intervalHours, false, true);
     }
     return trashBinConfig;
   }

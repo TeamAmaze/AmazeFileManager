@@ -130,8 +130,9 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainFragmentViewModel.fileCount
                     ) R.string.deselect_all else R.string.select_all
                 )
-            if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
-                .getIsCloudOpenMode()
+            if (mainFragmentViewModel.openMode != OpenMode.FILE &&
+                mainFragmentViewModel.openMode != OpenMode.TRASH_BIN &&
+                !mainFragmentViewModel.getIsCloudOpenMode()
             ) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)
@@ -218,6 +219,17 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 hideOption(R.id.compress, menu)
                 hideOption(R.id.hide, menu)
                 hideOption(R.id.addshortcut, menu)
+                if (mainFragmentViewModel.openMode == OpenMode.TRASH_BIN) {
+                    hideOption(R.id.openmulti, menu)
+                    hideOption(R.id.cpy, menu)
+                    hideOption(R.id.cut, menu)
+                    hideOption(R.id.share, menu)
+                    hideOption(R.id.hide, menu)
+                    hideOption(R.id.addshortcut, menu)
+                    hideOption(R.id.ex, menu)
+                    showOption(R.id.delete, menu)
+                    showOption(R.id.restore, menu)
+                }
             }
         }
         return true // Return false if nothing is done
@@ -270,6 +282,15 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 }
                 R.id.delete -> {
                     GeneralDialogCreation.deleteFilesDialog(
+                        mainActivity,
+                        mainActivity,
+                        checkedItems,
+                        mainActivity.utilsProvider.appTheme
+                    )
+                    true
+                }
+                R.id.restore -> {
+                    GeneralDialogCreation.restoreFilesDialog(
                         mainActivity,
                         mainActivity,
                         checkedItems,

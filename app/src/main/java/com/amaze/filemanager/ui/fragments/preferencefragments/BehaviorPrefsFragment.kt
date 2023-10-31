@@ -22,11 +22,15 @@ package com.amaze.filemanager.ui.fragments.preferencefragments
 
 import android.os.Bundle
 import android.os.Environment
+import android.text.InputType
 import androidx.preference.Preference
+import androidx.preference.PreferenceManager
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment.Companion.clearPreferences
+import com.amaze.trashbin.TrashBinConfig
 import java.io.File
 
 class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCallback {
@@ -59,6 +63,26 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
                 .show(activity)
             true
         }
+        findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_RETENTION_NUM_OF_FILES)
+            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            trashBinRetentionNumOfFiles()
+            true
+        }
+        findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_RETENTION_DAYS)
+            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            trashBinRetentionDays()
+            true
+        }
+        findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_RETENTION_BYTES)
+            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            trashBinRetentionBytes()
+            true
+        }
+        findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_CLEANUP_INTERVAL)
+            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            trashBinCleanupInterval()
+            true
+        }
     }
 
     override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {
@@ -70,5 +94,173 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             e.apply()
         }
         dialog.dismiss()
+    }
+
+    private fun trashBinRetentionNumOfFiles() {
+        val dialogBuilder = MaterialDialog.Builder(activity)
+        dialogBuilder.title(
+            resources.getString(R.string.trash_bin_retention_num_of_files_title)
+        )
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val numOfFiles = sharedPrefs.getInt(
+            PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
+            TrashBinConfig.RETENTION_NUM_OF_FILES
+        )
+        dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
+        dialogBuilder.input(
+            "",
+            "$numOfFiles",
+            true
+        ) { _, _ -> }
+        dialogBuilder.theme(
+            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+        )
+        dialogBuilder.positiveText(resources.getString(R.string.ok))
+        dialogBuilder.negativeText(resources.getString(R.string.cancel))
+        dialogBuilder.neutralText(resources.getString(R.string.default_string))
+        dialogBuilder.positiveColor(activity.accent)
+        dialogBuilder.negativeColor(activity.accent)
+        dialogBuilder.neutralColor(activity.accent)
+        dialogBuilder.onPositive { dialog, _ ->
+            val inputText = dialog.inputEditText?.text.toString()
+            sharedPrefs.edit().putInt(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
+                inputText.toInt()
+            ).apply()
+        }
+        dialogBuilder.onNeutral { _, _ ->
+            sharedPrefs.edit().putInt(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
+                TrashBinConfig.RETENTION_NUM_OF_FILES
+            ).apply()
+        }
+        dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
+        dialogBuilder.build().show()
+    }
+
+    private fun trashBinRetentionDays() {
+        val dialogBuilder = MaterialDialog.Builder(activity)
+        dialogBuilder.title(
+            resources.getString(R.string.trash_bin_retention_days_title)
+        )
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val days = sharedPrefs.getInt(
+            PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
+            TrashBinConfig.RETENTION_DAYS_INFINITE
+        )
+        dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
+        dialogBuilder.input(
+            "",
+            "$days",
+            true
+        ) { _, _ -> }
+        dialogBuilder.theme(
+            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+        )
+        dialogBuilder.positiveText(resources.getString(R.string.ok))
+        dialogBuilder.negativeText(resources.getString(R.string.cancel))
+        dialogBuilder.neutralText(resources.getString(R.string.default_string))
+        dialogBuilder.positiveColor(activity.accent)
+        dialogBuilder.negativeColor(activity.accent)
+        dialogBuilder.neutralColor(activity.accent)
+        dialogBuilder.onPositive { dialog, _ ->
+            val inputText = dialog.inputEditText?.text.toString()
+            sharedPrefs.edit().putInt(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
+                inputText.toInt()
+            ).apply()
+        }
+        dialogBuilder.onNeutral { _, _ ->
+            sharedPrefs.edit().putInt(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
+                TrashBinConfig.RETENTION_DAYS_INFINITE
+            ).apply()
+        }
+        dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
+        dialogBuilder.build().show()
+    }
+
+    private fun trashBinRetentionBytes() {
+        val dialogBuilder = MaterialDialog.Builder(activity)
+        dialogBuilder.title(
+            resources.getString(R.string.trash_bin_retention_bytes_title)
+        )
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val bytes = sharedPrefs.getLong(
+            PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
+            TrashBinConfig.RETENTION_BYTES_INFINITE
+        )
+        dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
+        dialogBuilder.input(
+            "",
+            "$bytes",
+            true
+        ) { _, _ -> }
+        dialogBuilder.theme(
+            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+        )
+        dialogBuilder.positiveText(resources.getString(R.string.ok))
+        dialogBuilder.negativeText(resources.getString(R.string.cancel))
+        dialogBuilder.neutralText(resources.getString(R.string.default_string))
+        dialogBuilder.positiveColor(activity.accent)
+        dialogBuilder.negativeColor(activity.accent)
+        dialogBuilder.neutralColor(activity.accent)
+        dialogBuilder.onPositive { dialog, _ ->
+            val inputText = dialog.inputEditText?.text.toString()
+            sharedPrefs.edit().putLong(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
+                inputText.toLong()
+            ).apply()
+        }
+        dialogBuilder.onNeutral { _, _ ->
+            sharedPrefs.edit().putLong(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
+                TrashBinConfig.RETENTION_BYTES_INFINITE
+            ).apply()
+        }
+        dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
+        dialogBuilder.build().show()
+    }
+
+    private fun trashBinCleanupInterval() {
+        val dialogBuilder = MaterialDialog.Builder(activity)
+        dialogBuilder.title(
+            resources.getString(R.string.trash_bin_cleanup_interval_title)
+        )
+        val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val intervalHours = sharedPrefs.getInt(
+            PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
+            TrashBinConfig.INTERVAL_CLEANUP_HOURS
+        )
+        dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
+        dialogBuilder.input(
+            "",
+            "$intervalHours",
+            true
+        ) { _, _ -> }
+        dialogBuilder.theme(
+            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+        )
+        dialogBuilder.positiveText(resources.getString(R.string.ok))
+        dialogBuilder.negativeText(resources.getString(R.string.cancel))
+        dialogBuilder.neutralText(resources.getString(R.string.default_string))
+        dialogBuilder.positiveColor(activity.accent)
+        dialogBuilder.negativeColor(activity.accent)
+        dialogBuilder.neutralColor(activity.accent)
+        dialogBuilder.onPositive { dialog, _ ->
+            val inputText = dialog.inputEditText?.text.toString()
+            sharedPrefs.edit().putInt(
+                PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
+                inputText.toInt()
+            ).apply()
+        }
+        dialogBuilder.onNeutral { _, _ ->
+            sharedPrefs.edit().putInt(
+                PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
+                TrashBinConfig.INTERVAL_CLEANUP_HOURS
+            ).apply()
+        }
+        dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
+        dialogBuilder.build().show()
     }
 }

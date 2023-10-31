@@ -33,8 +33,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +61,7 @@ import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
+import com.amaze.filemanager.utils.Utils;
 import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -139,7 +138,9 @@ public class LoadFilesListTask
     MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
     MainActivityViewModel mainActivityViewModel = mainFragment.getMainActivityViewModel();
 
-    if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
+    if (OpenMode.UNKNOWN.equals(openmode)
+        || OpenMode.CUSTOM.equals(openmode)
+        || OpenMode.TRASH_BIN.equals(openmode)) {
       hFile = new HybridFile(openmode, path);
       hFile.generateMode(mainFragment.getActivity());
       openmode = hFile.getMode();
@@ -163,6 +164,7 @@ public class LoadFilesListTask
         list = listSftp(mainActivityViewModel);
         break;
       case CUSTOM:
+      case TRASH_BIN:
         list = getCachedMediaList(mainActivityViewModel);
         break;
       case OTG:
@@ -195,8 +197,8 @@ public class LoadFilesListTask
     }
 
     if (list != null
-        && !(openmode == OpenMode.CUSTOM && (("5").equals(path) || ("6").equals(path)
-            || ("7").equals(path)))) {
+        && !(openmode == OpenMode.CUSTOM
+            && (("5").equals(path) || ("6").equals(path) || ("7").equals(path)))) {
       postListCustomPathProcess(list, mainFragment);
     }
 
@@ -219,7 +221,7 @@ public class LoadFilesListTask
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
-            || 7 == mediaType
+        || 7 == mediaType
         || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null
         || forceReload) {
       switch (Integer.parseInt(path)) {
@@ -577,9 +579,22 @@ public class LoadFilesListTask
     List<LayoutElementParcelable> deletedFiles = new ArrayList<>();
     if (trashBin != null) {
       for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
-        deletedFiles.add(new HybridFile(OpenMode.TRASH_BIN, trashBinFile.getPath(),
-                trashBinFile.getFileName(), trashBinFile.isDirectory())
-                .generateLayoutElement(context, false));
+        HybridFile hybridFile =
+            new HybridFile(
+                OpenMode.TRASH_BIN,
+                trashBinFile.getDeletedPath(
+                    AppConfig.getInstance().getTrashBinInstance().getConfig()),
+                trashBinFile.getFileName(),
+                trashBinFile.isDirectory());
+        if (trashBinFile.getDeleteTime() != null) {
+          hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
+        }
+        LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
+        element.date = trashBinFile.getDeleteTime();
+        element.longSize = trashBinFile.getSizeBytes();
+        element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
+        element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
+        deletedFiles.add(element);
       }
     }
     return deletedFiles;

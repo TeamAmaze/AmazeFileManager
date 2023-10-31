@@ -94,6 +94,7 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -209,11 +210,15 @@ public class GeneralDialogCreation {
             PreferencesConstants.PREFERENCE_DELETE_CONFIRMATION,
             PreferencesConstants.DEFAULT_PREFERENCE_DELETE_CONFIRMATION);
     View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_delete, null);
-    final AppCompatCheckBox deletePermanentlyCheckbox = dialogView.findViewById(R.id.delete_permanently_checkbox);
+    TextView deleteDisclaimerTextView = dialogView.findViewById(R.id.dialog_delete_disclaimer);
+    final AppCompatCheckBox deletePermanentlyCheckbox =
+        dialogView.findViewById(R.id.delete_permanently_checkbox);
     if (positions.get(0).generateBaseFile().isLocal()) {
       // FIXME: make sure dialog is not shown for zero items
       // allow trash bin delete only for local files for now
       deletePermanentlyCheckbox.setVisibility(View.VISIBLE);
+    } else {
+      deleteDisclaimerTextView.setText(context.getString(R.string.dialog_delete_disclaimer));
     }
     // Build dialog with custom view layout and accent color.
     MaterialDialog dialog =
@@ -229,8 +234,10 @@ public class GeneralDialogCreation {
                 (dialog1, which) -> {
                   Toast.makeText(context, context.getString(R.string.deleting), Toast.LENGTH_SHORT)
                       .show();
-                  mainActivity.mainActivityHelper.deleteFiles(itemsToDelete,
-                          deletePermanentlyCheckbox.isChecked());
+                  mainActivity.mainActivityHelper.deleteFiles(
+                      itemsToDelete,
+                      deletePermanentlyCheckbox.isChecked()
+                          || deletePermanentlyCheckbox.getVisibility() == View.GONE);
                 })
             .build();
 
@@ -335,8 +342,10 @@ public class GeneralDialogCreation {
           updateViews(sizeTotal, files, directories, counterFiles, counterDirectories);
         } else {
           Toast.makeText(context, context.getString(R.string.deleting), Toast.LENGTH_SHORT).show();
-          mainActivity.mainActivityHelper.deleteFiles(itemsToDelete,
-                  deletePermanentlyCheckbox.isChecked());
+          mainActivity.mainActivityHelper.deleteFiles(
+              itemsToDelete,
+              deletePermanentlyCheckbox.isChecked()
+                  || deletePermanentlyCheckbox.getVisibility() == View.GONE);
         }
       }
 
@@ -409,41 +418,45 @@ public class GeneralDialogCreation {
 
   @SuppressWarnings("ConstantConditions")
   public static void restoreFilesDialog(
-          @NonNull final Context context,
-          @NonNull final MainActivity mainActivity,
-          @NonNull final List<LayoutElementParcelable> positions,
-          @NonNull AppTheme appTheme) {
+      @NonNull final Context context,
+      @NonNull final MainActivity mainActivity,
+      @NonNull final List<LayoutElementParcelable> positions,
+      @NonNull AppTheme appTheme) {
 
     final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
     int accentColor = mainActivity.getAccent();
     View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_delete, null);
-    final AppCompatCheckBox deletePermanentlyCheckbox = dialogView.findViewById(R.id.delete_permanently_checkbox);
+    TextView deleteDisclaimerTextView = dialogView.findViewById(R.id.dialog_delete_disclaimer);
+    deleteDisclaimerTextView.setText(context.getString(R.string.dialog_restore_disclaimer));
     // Build dialog with custom view layout and accent color.
     MaterialDialog dialog =
-            new MaterialDialog.Builder(context)
-                    .title(context.getString(R.string.restore_files))
-                    .customView(dialogView, true)
-                    .theme(appTheme.getMaterialDialogTheme(context))
-                    .negativeText(context.getString(R.string.cancel).toUpperCase())
-                    .positiveText(context.getString(R.string.done).toUpperCase())
-                    .positiveColor(accentColor)
-                    .negativeColor(accentColor)
-                    .onPositive(
-                            (dialog1, which) -> {
-                              Toast.makeText(context, context.getString(R.string.processing), Toast.LENGTH_SHORT)
-                                      .show();
-                              mainActivity.mainActivityHelper.deleteFiles(itemsToDelete,
-                                      deletePermanentlyCheckbox.isChecked());
-                            })
-                    .build();
+        new MaterialDialog.Builder(context)
+            .title(context.getString(R.string.restore_files))
+            .customView(dialogView, true)
+            .theme(appTheme.getMaterialDialogTheme(context))
+            .negativeText(context.getString(R.string.cancel).toUpperCase())
+            .positiveText(context.getString(R.string.done).toUpperCase())
+            .positiveColor(accentColor)
+            .negativeColor(accentColor)
+            .onPositive(
+                (dialog1, which) -> {
+                  Toast.makeText(
+                          context, context.getString(R.string.processing), Toast.LENGTH_SHORT)
+                      .show();
+                  mainActivity
+                      .getCurrentMainFragment()
+                      .getMainActivityViewModel()
+                      .restoreFromBin(positions);
+                })
+            .build();
 
     // Get views from custom layout to set text values.
     final AppCompatTextView categoryDirectories =
-            dialog.getCustomView().findViewById(R.id.category_directories);
+        dialog.getCustomView().findViewById(R.id.category_directories);
     final AppCompatTextView categoryFiles =
-            dialog.getCustomView().findViewById(R.id.category_files);
+        dialog.getCustomView().findViewById(R.id.category_files);
     final AppCompatTextView listDirectories =
-            dialog.getCustomView().findViewById(R.id.list_directories);
+        dialog.getCustomView().findViewById(R.id.list_directories);
     final AppCompatTextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
     final AppCompatTextView total = dialog.getCustomView().findViewById(R.id.total);
 
@@ -479,12 +492,12 @@ public class GeneralDialogCreation {
             long sizeDirectory = layoutElement.generateBaseFile().folderSize(context);
 
             directories
-                    .append(++counterDirectories)
-                    .append(". ")
-                    .append(layoutElement.title)
-                    .append(" (")
-                    .append(Formatter.formatFileSize(context, sizeDirectory))
-                    .append(")");
+                .append(++counterDirectories)
+                .append(". ")
+                .append(layoutElement.title)
+                .append(" (")
+                .append(Formatter.formatFileSize(context, sizeDirectory))
+                .append(")");
             sizeTotal += sizeDirectory;
             // Build list of files to delete.
           } else {
@@ -494,12 +507,12 @@ public class GeneralDialogCreation {
             }
 
             files
-                    .append(++counterFiles)
-                    .append(". ")
-                    .append(layoutElement.title)
-                    .append(" (")
-                    .append(layoutElement.size)
-                    .append(")");
+                .append(++counterFiles)
+                .append(". ")
+                .append(layoutElement.title)
+                .append(" (")
+                .append(layoutElement.size)
+                .append(")");
             sizeTotal += layoutElement.longSize;
           }
 
@@ -518,27 +531,24 @@ public class GeneralDialogCreation {
         StringBuilder tempDirectoriesStringBuilder = (StringBuilder) result[4];
 
         updateViews(
-                tempSizeTotal,
-                tempFilesStringBuilder,
-                tempDirectoriesStringBuilder,
-                tempCounterFiles,
-                tempCounterDirectories);
+            tempSizeTotal,
+            tempFilesStringBuilder,
+            tempDirectoriesStringBuilder,
+            tempCounterFiles,
+            tempCounterDirectories);
       }
 
       @Override
       protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        Toast.makeText(context, context.getString(R.string.restoring), Toast.LENGTH_SHORT).show();
-
-        mainActivity.mainActivityHelper.deleteFiles(itemsToDelete,
-                deletePermanentlyCheckbox.isChecked());
+        // do nothing
       }
 
       private void updateViews(
-              long tempSizeTotal,
-              StringBuilder filesStringBuilder,
-              StringBuilder directoriesStringBuilder,
-              int... values) {
+          long tempSizeTotal,
+          StringBuilder filesStringBuilder,
+          StringBuilder directoriesStringBuilder,
+          int... values) {
 
         int tempCounterFiles = values[0];
         int tempCounterDirectories = values[1];
@@ -577,10 +587,10 @@ public class GeneralDialogCreation {
         // Show total size with at least one directory or file and size is not zero.
         if (tempCounterFiles + tempCounterDirectories > 1 && tempSizeTotal > 0) {
           StringBuilder builderTotal =
-                  new StringBuilder()
-                          .append(context.getString(R.string.total))
-                          .append(" ")
-                          .append(Formatter.formatFileSize(context, tempSizeTotal));
+              new StringBuilder()
+                  .append(context.getString(R.string.total))
+                  .append(" ")
+                  .append(Formatter.formatFileSize(context, tempSizeTotal));
           total.setText(builderTotal);
           if (total.getVisibility() != View.VISIBLE) total.setVisibility(View.VISIBLE);
         } else {
@@ -594,11 +604,7 @@ public class GeneralDialogCreation {
       categoryDirectories.setTextColor(accentColor);
       categoryFiles.setTextColor(accentColor);
     }
-
-    if (needConfirmation) {
-      // Show dialog on screen.
-      dialog.show();
-    }
+    dialog.show();
   }
 
   public static void showPropertiesDialogWithPermissions(
