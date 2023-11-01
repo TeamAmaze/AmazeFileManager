@@ -23,25 +23,45 @@ package com.amaze.filemanager.ui.views.appbar;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
+import java.util.ArrayList;
+
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * SearchView, a simple view to search
@@ -50,49 +70,252 @@ import androidx.core.content.ContextCompat;
  */
 public class SearchView {
 
-  private MainActivity mainActivity;
-  private AppBar appbar;
+  private final MainActivity mainActivity;
+  private final AppBar appbar;
 
-  private RelativeLayout searchViewLayout;
-  private AppCompatEditText searchViewEditText;
-  private ImageView clearImageView;
-  private ImageView backImageView;
+  private final NestedScrollView searchViewLayout;
+  private final AppCompatEditText searchViewEditText;
+
+  private final AppCompatImageView clearImageView;
+  private final AppCompatImageView backImageView;
+
+  private final AppCompatTextView recentHintTV;
+  private final AppCompatTextView searchResultsHintTV;
+  private final AppCompatTextView deepSearchTV;
+
+  private final ChipGroup recentChipGroup;
+  private final RecyclerView recyclerView;
+
+  private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
+
+  // 0 -> Basic Search
+  // 1 -> Indexed Search
+  // 2 -> Deep Search
+  private int searchMode;
 
   private boolean enabled = false;
 
-  public SearchView(
-      final AppBar appbar, final MainActivity a, final SearchListener searchListener) {
-    mainActivity = a;
+  @SuppressWarnings("ConstantConditions")
+  @SuppressLint("NotifyDataSetChanged")
+  public SearchView(final AppBar appbar, MainActivity mainActivity, SearchListener searchListener) {
+
+    this.mainActivity = mainActivity;
     this.appbar = appbar;
 
-    searchViewLayout = a.findViewById(R.id.search_view);
-    searchViewEditText = a.findViewById(R.id.search_edit_text);
-    clearImageView = a.findViewById(R.id.search_close_btn);
-    backImageView = a.findViewById(R.id.img_view_back);
+    searchViewLayout = mainActivity.findViewById(R.id.search_view);
+    searchViewEditText = mainActivity.findViewById(R.id.search_edit_text);
+    clearImageView = mainActivity.findViewById(R.id.search_close_btn);
+    backImageView = mainActivity.findViewById(R.id.img_view_back);
+    recentChipGroup = mainActivity.findViewById(R.id.searchRecentItemsChipGroup);
+    recentHintTV = mainActivity.findViewById(R.id.searchRecentHintTV);
+    searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
+    deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
+    recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
 
-    clearImageView.setOnClickListener(v -> searchViewEditText.setText(""));
+    initRecentSearches(mainActivity);
+
+    searchRecyclerViewAdapter = new SearchRecyclerViewAdapter();
+    recyclerView.setAdapter(searchRecyclerViewAdapter);
+
+    clearImageView.setOnClickListener(
+        v -> {
+          searchViewEditText.setText("");
+          clearRecyclerView();
+        });
 
     backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
+
+    searchViewEditText.addTextChangedListener(
+        new TextWatcher() {
+          @Override
+          public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+          @Override
+          public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (count > 0) searchViewEditText.setError(null);
+
+            if (count >= 3) onSearch(false);
+          }
+
+          @Override
+          public void afterTextChanged(Editable s) {}
+        });
 
     searchViewEditText.setOnEditorActionListener(
         (v, actionId, event) -> {
           if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            searchListener.onSearch(searchViewEditText.getText().toString());
-            appbar.getSearchView().hideSearchView();
-            return true;
+
+            Utils.hideKeyboard(mainActivity);
+
+            return onSearch(true);
           }
+
           return false;
         });
 
-    initSearchViewColor(a);
-    // searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-    // searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
+    deepSearchTV.setOnClickListener(
+        v -> {
+          String s = searchViewEditText.getText().toString().trim();
+
+          if (searchMode == 1) {
+
+            saveRecentPreference(s);
+
+            mainActivity
+                .getCurrentMainFragment()
+                .getMainActivityViewModel()
+                .indexedSearch(mainActivity, s)
+                .observe(
+                    mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+                    hybridFileParcelables -> {
+                      searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+                      searchRecyclerViewAdapter.notifyDataSetChanged();
+                    });
+
+            searchMode = 2;
+
+            deepSearchTV.setText(
+                getSpannableText(
+                    mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+                    mainActivity.getString(R.string.try_deep_search)));
+
+          } else if (searchMode == 2) {
+
+            searchListener.onSearch(s);
+            appbar.getSearchView().hideSearchView();
+
+            deepSearchTV.setVisibility(View.GONE);
+          }
+        });
+
+    initSearchViewColor(mainActivity);
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  private boolean onSearch(boolean shouldSave) {
+
+    String s = searchViewEditText.getText().toString().trim();
+
+    if (s.isEmpty()) {
+      searchViewEditText.setError(mainActivity.getString(R.string.field_empty));
+      searchViewEditText.requestFocus();
+      return false;
+    }
+
+    basicSearch(s);
+
+    if (shouldSave) saveRecentPreference(s);
+
+    return true;
+  }
+
+  private void basicSearch(String s) {
+
+    clearRecyclerView();
+
+    searchResultsHintTV.setVisibility(View.VISIBLE);
+    deepSearchTV.setVisibility(View.VISIBLE);
+    searchMode = 1;
+    deepSearchTV.setText(
+        getSpannableText(
+            mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+            mainActivity.getString(R.string.try_indexed_search)));
+
+    mainActivity
+        .getCurrentMainFragment()
+        .getMainActivityViewModel()
+        .basicSearch(mainActivity, s)
+        .observe(
+            mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+            hybridFileParcelables -> {
+              searchRecyclerViewAdapter.submitList(hybridFileParcelables);
+              searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
+            });
+  }
+
+  private void saveRecentPreference(String s) {
+
+    String preferenceString =
+        PreferenceManager.getDefaultSharedPreferences(mainActivity)
+            .getString(PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, null);
+
+    ArrayList<String> recentSearches =
+        preferenceString != null
+            ? new Gson().fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType())
+            : new ArrayList<>();
+
+    if (s.isEmpty() || recentSearches.contains(s)) return;
+
+    recentSearches.add(s);
+
+    if (recentSearches.size() > 5) recentSearches.remove(0);
+
+    PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        .edit()
+        .putString(
+            PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, new Gson().toJson(recentSearches))
+        .apply();
+
+    initRecentSearches(mainActivity);
+  }
+
+  private void initRecentSearches(Context context) {
+
+    String preferenceString =
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .getString(PreferencesConstants.PREFERENCE_RECENT_SEARCH_ITEMS, null);
+
+    if (preferenceString == null) {
+      recentHintTV.setVisibility(View.GONE);
+      recentChipGroup.setVisibility(View.GONE);
+      return;
+    }
+
+    recentHintTV.setVisibility(View.VISIBLE);
+    recentChipGroup.setVisibility(View.VISIBLE);
+
+    recentChipGroup.removeAllViews();
+
+    ArrayList<String> recentSearches =
+        new Gson().fromJson(preferenceString, new TypeToken<ArrayList<String>>() {}.getType());
+
+    for (String string : recentSearches) {
+      Chip chip = new Chip(new ContextThemeWrapper(context, R.style.ChipStyle));
+
+      chip.setText(string);
+
+      recentChipGroup.addView(chip);
+
+      chip.setOnClickListener(
+          v -> {
+            String s = ((Chip) v).getText().toString();
+
+            searchViewEditText.setText(s);
+
+            Utils.hideKeyboard(mainActivity);
+
+            basicSearch(s);
+          });
+    }
+  }
+
+  private void resetSearchMode() {
+    searchMode = 0;
+    deepSearchTV.setText(
+        getSpannableText(
+            mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
+            mainActivity.getString(R.string.try_indexed_search)));
+    deepSearchTV.setVisibility(View.GONE);
   }
 
   /** show search view with a circular reveal animation */
   public void revealSearchView() {
     final int START_RADIUS = 16;
     int endRadius = Math.max(appbar.getToolbar().getWidth(), appbar.getToolbar().getHeight());
+
+    resetSearchMode();
+    clearRecyclerView();
 
     Animator animator;
     if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -168,6 +391,8 @@ public class SearchView {
       animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 1f, 0f);
     }
 
+    clearRecyclerView();
+
     // removing background fade view
     mainActivity.hideSmokeScreen();
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -231,6 +456,32 @@ public class SearchView {
       default:
         break;
     }
+  }
+
+  @SuppressLint("NotifyDataSetChanged")
+  private void clearRecyclerView() {
+    searchRecyclerViewAdapter.submitList(new ArrayList<>());
+    searchRecyclerViewAdapter.notifyDataSetChanged();
+
+    searchResultsHintTV.setVisibility(View.GONE);
+  }
+
+  private SpannableString getSpannableText(String s1, String s2) {
+
+    SpannableString spannableString = new SpannableString(s1 + " " + s2);
+
+    spannableString.setSpan(
+        new ForegroundColorSpan(mainActivity.getCurrentColorPreference().getAccent()),
+        s1.length() + 1,
+        spannableString.length(),
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    spannableString.setSpan(
+        new StyleSpan(Typeface.BOLD),
+        s1.length() + 1,
+        spannableString.length(),
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    return spannableString;
   }
 
   public interface SearchListener {

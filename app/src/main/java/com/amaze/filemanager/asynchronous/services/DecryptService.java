@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.amaze.filemanager.asynchronous.services.EncryptService.TAG_PASSWORD;
 
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.Task;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -46,7 +46,6 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -59,6 +58,7 @@ import android.widget.RemoteViews;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -73,7 +73,7 @@ public class DecryptService extends AbstractProgressiveService {
   public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
   private final Logger LOG = LoggerFactory.getLogger(DecryptService.class);
 
-  private NotificationManager notificationManager;
+  private NotificationManagerCompat notificationManager;
   private NotificationCompat.Builder notificationBuilder;
   private Context context;
   private final IBinder mBinder = new ObtainableServiceBinder<>(this);
@@ -112,14 +112,13 @@ public class DecryptService extends AbstractProgressiveService {
             .getCurrentUserColorPreferences(this, sharedPreferences)
             .getAccent();
 
-    OpenMode openMode =
-        OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
-    notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    notificationManager = NotificationManagerCompat.from(getApplicationContext());
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
-    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+    PendingIntent pendingIntent =
+        PendingIntent.getActivity(this, 0, notificationIntent, getPendingIntentFlag(0));
 
     customSmallContentViews =
         new RemoteViews(getPackageName(), R.layout.notification_service_small);
@@ -127,7 +126,8 @@ public class DecryptService extends AbstractProgressiveService {
 
     Intent stopIntent = new Intent(TAG_BROADCAST_CRYPT_CANCEL);
     PendingIntent stopPendingIntent =
-        PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getBroadcast(
+            context, 1234, stopIntent, getPendingIntentFlag(FLAG_UPDATE_CURRENT));
     NotificationCompat.Action action =
         new NotificationCompat.Action(
             R.drawable.ic_folder_lock_open_white_36dp,
@@ -161,7 +161,7 @@ public class DecryptService extends AbstractProgressiveService {
   }
 
   @Override
-  protected NotificationManager getNotificationManager() {
+  protected NotificationManagerCompat getNotificationManager() {
     return notificationManager;
   }
 
@@ -264,7 +264,7 @@ public class DecryptService extends AbstractProgressiveService {
           // and the cache directory in case we're here because of the viewer
           try {
             new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps, password);
-          } catch (AESCrypt.DecryptFailureException e) {
+          } catch (AESCrypt.DecryptFailureException ignored) {
 
           } catch (Exception e) {
             LOG.error("Error decrypting " + baseFile.getPath(), e);
@@ -292,7 +292,7 @@ public class DecryptService extends AbstractProgressiveService {
     this.unregisterReceiver(cancelReceiver);
   }
 
-  private BroadcastReceiver cancelReceiver =
+  private final BroadcastReceiver cancelReceiver =
       new BroadcastReceiver() {
 
         @Override

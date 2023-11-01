@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils
 
+import java.net.URLDecoder.decode
+import java.net.URLEncoder.encode
+import java.nio.charset.Charset
+
 /**
  * Allow null checks on more than one parameters at the same time.
  * Alternative of doing nested p1?.let p2?.let
@@ -84,6 +88,29 @@ fun ByteArray.toHex(separatorStr: String = ""): String =
         "%02x".format(eachByte)
     }
 
-interface Function<T, R> {
-    fun apply(t: T): R
+/**
+ * Test a [List] for given path. Assumed paths in the list are not ending with /, so check for
+ * both ended with or not ended with / with the given path parameter.
+ */
+fun List<*>.containsPath(path: String): Boolean {
+    return this.contains(path) ||
+        (path.endsWith('/') && this.contains(path.substringBeforeLast('/')))
+}
+
+/**
+ * Convenience method to return a string in URL encoded form, with specified [Charset].
+ *
+ * @param charset [Charset] to encode string. Default is UTF-8
+ */
+fun String.urlEncoded(charset: Charset = Charsets.UTF_8): String {
+    return encode(this, charset.name())
+}
+
+/**
+ * Convenience method to return a string in URL decoded form, with specified [Charset].
+ *
+ * @param charset [Charset] to decode string. Default is UTF-8
+ */
+fun String.urlDecoded(charset: Charset = Charsets.UTF_8): String {
+    return decode(this, charset.name())
 }

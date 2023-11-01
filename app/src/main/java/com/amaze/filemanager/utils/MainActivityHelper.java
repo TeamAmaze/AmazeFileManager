@@ -58,6 +58,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -65,8 +66,10 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.leinardi.android.speeddial.SpeedDialView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -78,13 +81,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -163,10 +166,16 @@ public class MainActivityHelper {
         R.string.newfolder,
         "",
         (dialog, which) -> {
-          EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText textfield =
+              dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          String parentPath = path;
+          if (OpenMode.DOCUMENT_FILE.equals(openMode)
+              && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            parentPath = FileProperties.remapPathForApi30OrAbove(path, false);
+          }
           mkDir(
-              new HybridFile(openMode, path),
-              new HybridFile(openMode, path, textfield.getText().toString().trim(), true),
+              new HybridFile(openMode, parentPath),
+              new HybridFile(openMode, parentPath, textfield.getText().toString().trim(), true),
               ma);
           dialog.dismiss();
         },
@@ -196,7 +205,8 @@ public class MainActivityHelper {
         R.string.newfile,
         AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT),
         (dialog, which) -> {
-          EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText textfield =
+              dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(
               new HybridFile(openMode, path),
               new HybridFile(openMode, path, textfield.getText().toString().trim(), false),
@@ -255,7 +265,7 @@ public class MainActivityHelper {
     dialog.show();
 
     // place cursor at the beginning
-    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
     textfield.post(
         () -> {
           textfield.setSelection(0);
@@ -304,12 +314,13 @@ public class MainActivityHelper {
     View view = layoutInflater.inflate(R.layout.lexadrawer, null);
     x.customView(view, true);
     // textView
-    TextView textView = view.findViewById(R.id.description);
+    AppCompatTextView textView = view.findViewById(R.id.description);
     textView.setText(
         mainActivity.getString(R.string.needs_access_summary)
             + path
             + mainActivity.getString(R.string.needs_access_summary1));
-    ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
+    ((AppCompatImageView) view.findViewById(R.id.icon))
+        .setImageResource(R.drawable.sd_operate_step);
     x.positiveText(R.string.open)
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)
@@ -322,9 +333,13 @@ public class MainActivityHelper {
     y.show();
   }
 
+  @SuppressLint("InlinedApi")
   private void triggerStorageAccessFramework(int requestCode) {
+
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-    mainActivity.startActivityForResult(intent, requestCode);
+
+    ExtensionsKt.runIfDocumentsUIExists(
+        intent, mainActivity, () -> mainActivity.startActivityForResult(intent, requestCode));
   }
 
   public void rename(
@@ -720,24 +735,16 @@ public class MainActivityHelper {
     switch (serviceType) {
       case DROPBOX:
         if (path.contains(CloudHandler.CLOUD_PREFIX_DROPBOX)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_DROPBOX
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_DROPBOX + path.substring(path.indexOf(":") + 1);
       case BOX:
         if (path.contains(CloudHandler.CLOUD_PREFIX_BOX)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_BOX
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_BOX + path.substring(path.indexOf(":") + 1);
       case GDRIVE:
         if (path.contains(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + path.substring(path.indexOf(":") + 1);
       case ONEDRIVE:
         if (path.contains(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_ONE_DRIVE
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_ONE_DRIVE + path.substring(path.indexOf(":") + 1);
       default:
         return path;
     }

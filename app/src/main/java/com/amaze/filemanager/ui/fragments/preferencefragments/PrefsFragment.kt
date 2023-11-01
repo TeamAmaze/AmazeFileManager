@@ -59,6 +59,12 @@ class PrefsFragment : BasePrefsFragment() {
                 true
             }
 
+        findPreference<Preference>("backup")?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(BackupPrefsFragment())
+                true
+            }
+
         findPreference<Preference>("about")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 startActivity(Intent(activity, AboutActivity::class.java))

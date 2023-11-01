@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 19
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -27,9 +27,13 @@ android {
         }
     }
 
+    sourceSets {
+        test.java.srcDirs += '../testShared/src/test/java'
+    }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     testOptions {
@@ -47,8 +51,12 @@ android {
     }
 
     kotlinOptions {
-        useIR = true
+        jvmTarget = '11'
     }
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 dependencies {

@@ -51,6 +51,8 @@ class SecretKeygenEspressoTest {
             assertEquals("aes", this.algorithm.lowercase())
         } ?: if (SDK_INT < ICE_CREAM_SANDWICH) {
             fail("Android version not supported")
+        } else {
+            // do nothing
         }
     }
 }

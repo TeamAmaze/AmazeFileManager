@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.root
 
 import android.content.SharedPreferences
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.preference.PreferenceManager
@@ -32,6 +32,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.topjohnwu.superuser.Shell
 import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert.assertEquals
@@ -53,7 +54,7 @@ import java.io.InputStreamReader
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class ListFilesCommandTest {
 
@@ -90,6 +91,13 @@ class ListFilesCommandTest {
         every {
             ListFilesCommand.executeRootCommand(anyString(), anyBoolean(), anyBoolean())
         } answers { callOriginal() }
+        every { ListFilesCommand.runShellCommand("pwd") }.answers {
+            object : Shell.Result() {
+                override fun getOut(): MutableList<String> = listOf("/").toMutableList()
+                override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
+                override fun getCode(): Int = 0
+            }
+        }
         every { ListFilesCommand.runShellCommandToList("ls -l \"/bin\"") } answers { lsLines }
         every { ListFilesCommand.runShellCommandToList("ls -l \"/\"") } answers { lsRootLines }
         every {

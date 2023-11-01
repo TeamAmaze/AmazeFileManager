@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.theme
 
 import android.content.Context
 import android.content.res.Configuration
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
@@ -37,7 +37,7 @@ import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [JELLY_BEAN, KITKAT, P],
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
     shadows = [ShadowMultiDex::class]
 )
 class AppThemeTest {

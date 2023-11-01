@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertFalse;
@@ -37,6 +36,7 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
+import android.os.Build;
 import android.os.Environment;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -45,7 +45,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class OperationsTest {
 
   private File storageRoot = Environment.getExternalStorageDirectory();

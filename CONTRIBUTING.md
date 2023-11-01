@@ -10,7 +10,7 @@ Please keep in mind the points below before considering contributing to Amaze:
 You won't be able to claim the license for changes made by you unless you do that. 
 If there's no license header in any file, please include one from [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) webpage.
 - Please follow [Android/JAVA code style](https://source.android.com/source/code-style.html) for writing any code, but do not use the Hungarian notation proposed - discussion [here](https://github.com/TeamAmaze/AmazeFileManager/issues/986). 
-Also, follow [Android Material Design guidelines](https://material.io/guidelines/material-design/introduction.html) in case you make changes to any UI element.
+Also, follow [Android Material Design guidelines](https://m3.material.io/get-started) in case you make changes to any UI element.
 - To file a bug report, it is recommended to include the steps to reproduce it; and even better, it helps us a lot if you can capture the error messages in logcat too 
 It is also recommended to enroll to our beta program from Play Store to test and verify any fix for the same.
 
@@ -23,9 +23,11 @@ We will then:
 
 To speed up the review process, please:
 
-- write your code cleanly. We also have our day time work, we are not able to correct the mistakes in your code
+- write your code cleanly. We also have our day time work, we are not able to correct the mistakes in your code.
+- before opening PR, run `./gradlew spotlessCheck` and `./gradlew spotlessApply` in your local to check / fix any formatting issues.
 - describe clearly what your pull request does
 - if you're fixing a particular bug in the issue list, please explicitly say "Fixes #<issue number>" in your description
+- once you've opened PR, look out for CI builds, if there is any code smell / bug - CI will complain, please work on it to keep the code clean.
 - while not required (because automated tests can't test everything), it's recommended you to include [Robolectric](http://robolectric.org/)/[Espresso](https://developer.android.com/training/testing/espresso/) tests in your pull request
 
 Finally:
@@ -35,4 +37,6 @@ Finally:
 - we can be harsh when reviewing your work but because we want to have good code in our codebase. Be patient and carefully read our comments
 - we can be wrong. Again, be patient when discuss with us - we accept reason, but we never accept hate speech
 
+If we feel your PR is a significant help to us, we'll award you a bounty with any of your preferred mode of payment.  
+Please provide the details for the same once asked.
 Ready to roll? Start forking ;)

@@ -43,6 +43,8 @@ import com.amaze.filemanager.database.models.utilities.Hidden
 import com.amaze.filemanager.database.models.utilities.History
 import com.amaze.filemanager.database.models.utilities.SftpEntry
 import com.amaze.filemanager.database.models.utilities.SmbEntry
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.utils.PasswordUtil.decryptPassword
 import com.amaze.filemanager.utils.PasswordUtil.encryptPassword
 import org.slf4j.LoggerFactory
@@ -125,7 +127,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
         const val COLUMN_PRIVATE_KEY = "ssh_key"
 
         @VisibleForTesting
-        var overrideDatabaseBuilder: ((Context) -> RoomDatabase.Builder<UtilitiesDatabase>)? = null
+        var overrideDatabaseBuilder: ((Context) -> Builder<UtilitiesDatabase>)? = null
 
         private const val TEMP_TABLE_PREFIX = "temp_"
         private const val queryHistory = (
@@ -424,42 +426,46 @@ abstract class UtilitiesDatabase : RoomDatabase() {
             while (cursor.moveToNext()) {
                 val name = cursor.getString(0)
                 val oldPath = cursor.getString(1)
-                val userCredentials =
-                    oldPath.substring(oldPath.indexOf("://") + 3, oldPath.lastIndexOf('@'))
-                if (userCredentials.contains(":")) {
-                    val password = userCredentials.substring(userCredentials.lastIndexOf(':') + 1)
-                    if (!TextUtils.isEmpty(password)) {
-                        try {
-                            val oldPassword = decryptPassword(
-                                AppConfig.getInstance(),
-                                password,
-                                Base64.DEFAULT
-                            )
-                            val newPassword = encryptPassword(
-                                AppConfig.getInstance(),
-                                oldPassword,
-                                Base64.URL_SAFE
-                            )
-                            val newPath = oldPath.replace(password, newPassword!!)
-                            updateSqls.add(
-                                "UPDATE " +
-                                    tableName +
-                                    " SET PATH = '" +
-                                    newPath +
-                                    "' WHERE " +
-                                    COLUMN_NAME +
-                                    "='" +
-                                    name +
-                                    "' AND " +
-                                    COLUMN_PATH +
-                                    "='" +
-                                    oldPath +
-                                    "'"
-                            )
-                        } catch (e: GeneralSecurityException) {
-                            logger.error("Error migrating database records")
-                        } catch (e: IOException) {
-                            logger.error("Error migrating database records")
+                if (oldPath.contains(AT)) {
+                    val userCredentials =
+                        oldPath.substring(oldPath.indexOf("://") + 3, oldPath.lastIndexOf(AT))
+                    if (userCredentials.contains(":")) {
+                        val password = userCredentials.substring(
+                            userCredentials.lastIndexOf(COLON) + 1
+                        )
+                        if (!TextUtils.isEmpty(password)) {
+                            try {
+                                val oldPassword = decryptPassword(
+                                    AppConfig.getInstance(),
+                                    password,
+                                    Base64.DEFAULT
+                                )
+                                val newPassword = encryptPassword(
+                                    AppConfig.getInstance(),
+                                    oldPassword,
+                                    Base64.URL_SAFE
+                                )
+                                val newPath = oldPath.replace(password, newPassword!!)
+                                updateSqls.add(
+                                    "UPDATE " +
+                                        tableName +
+                                        " SET PATH = '" +
+                                        newPath +
+                                        "' WHERE " +
+                                        COLUMN_NAME +
+                                        "='" +
+                                        name +
+                                        "' AND " +
+                                        COLUMN_PATH +
+                                        "='" +
+                                        oldPath +
+                                        "'"
+                                )
+                            } catch (e: GeneralSecurityException) {
+                                logger.error("Error migrating database records")
+                            } catch (e: IOException) {
+                                logger.error("Error migrating database records")
+                            }
                         }
                     }
                 }

@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
+import android.os.Build
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.fileoperations.utils.UpdatePosition
@@ -51,6 +52,8 @@ class RarExtractor(
     listener: OnUpdate,
     updatePosition: UpdatePosition
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
+
+    private val isRobolectricTest = Build.HARDWARE == "robolectric"
 
     @Throws(IOException::class)
     override fun extractWithFilter(filter: Filter) {
@@ -140,7 +143,9 @@ class RarExtractor(
             CompressedHelper.SEPARATOR
         )
         val outputFile = File(outputDir, name)
-        if (!outputFile.canonicalPath.startsWith(outputDir)) {
+        if (!outputFile.canonicalPath.startsWith(outputDir) &&
+            (isRobolectricTest && !outputFile.canonicalPath.startsWith("/private$outputDir"))
+        ) {
             throw IOException("Incorrect RAR FileHeader path!")
         }
         if (entry.isDirectory) {

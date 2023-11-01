@@ -20,7 +20,7 @@
             android:gravity="center_vertical"
             >
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:text="@string/cloud_connection_new"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/material_generic_title"

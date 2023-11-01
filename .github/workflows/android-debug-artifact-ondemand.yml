@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.event.comment.body == 'Build test apk' && (github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess' || github.actor == 'VishnuSanal')
     steps:
+      - name: Acknowledge the request with thumbs up reaction
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: '+1'
       - name: Github API Request
         id: request
         uses: octokit/request-action@v2.0.2
@@ -36,7 +41,7 @@ jobs:
           distribution: "temurin"
           java-version: 11
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: assembleDebug --stacktrace
       - name: Upload fdroid artifact
@@ -49,3 +54,9 @@ jobs:
         with:
           name: Amaze-Play-debug
           path: app/build/outputs/apk/play/debug/app-play-debug.apk
+      - name: Notify the user with a comment once the APK is uploaded # TODO: update this with the link to the artifacts
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            The requested APKs has been built. Please find them from the artifacts section of this PR.

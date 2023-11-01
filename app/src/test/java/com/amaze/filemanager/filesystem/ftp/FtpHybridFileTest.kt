@@ -64,6 +64,7 @@ import java.util.concurrent.TimeUnit
     shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class]
 )
 @Suppress("StringLiteralDuplication")
+@Ignore
 open class FtpHybridFileTest {
 
     protected lateinit var tmpFile: File

@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem.compressed.sevenz;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /** The unit of solid compression. */
@@ -42,9 +44,10 @@ class Folder {
   /// The CRC, if present.
   long crc;
   /// The number of unpack substreams, product of the number of
-  /// output streams and the nuber of non-empty files in this
+  /// output streams and the number of non-empty files in this
   /// folder.
   int numUnpackSubStreams;
+  static final Folder[] EMPTY_FOLDER_ARRAY = new Folder[0];
 
   /**
    * Sorts Coders using bind pairs.
@@ -52,10 +55,19 @@ class Folder {
    * <p>The first coder reads from the packed stream (we currently only support single input stream
    * decoders), the second reads from the output of the first and so on.
    */
-  Iterable<Coder> getOrderedCoders() {
+  Iterable<Coder> getOrderedCoders() throws IOException {
+    if (packedStreams == null
+        || coders == null
+        || packedStreams.length == 0
+        || coders.length == 0) {
+      return Collections.emptyList();
+    }
     final LinkedList<Coder> l = new LinkedList<>();
     int current = (int) packedStreams[0]; // more that 2^31 coders?
-    while (current != -1) {
+    while (current >= 0 && current < coders.length) {
+      if (l.contains(coders[current])) {
+        throw new IOException("folder uses the same coder more than once in coder chain");
+      }
       l.addLast(coders[current]);
       final int pair = findBindPairForOutStream(current);
       current = pair != -1 ? (int) bindPairs[pair].inIndex : -1;
@@ -64,18 +76,22 @@ class Folder {
   }
 
   int findBindPairForInStream(final int index) {
-    for (int i = 0; i < bindPairs.length; i++) {
-      if (bindPairs[i].inIndex == index) {
-        return i;
+    if (bindPairs != null) {
+      for (int i = 0; i < bindPairs.length; i++) {
+        if (bindPairs[i].inIndex == index) {
+          return i;
+        }
       }
     }
     return -1;
   }
 
   int findBindPairForOutStream(final int index) {
-    for (int i = 0; i < bindPairs.length; i++) {
-      if (bindPairs[i].outIndex == index) {
-        return i;
+    if (bindPairs != null) {
+      for (int i = 0; i < bindPairs.length; i++) {
+        if (bindPairs[i].outIndex == index) {
+          return i;
+        }
       }
     }
     return -1;

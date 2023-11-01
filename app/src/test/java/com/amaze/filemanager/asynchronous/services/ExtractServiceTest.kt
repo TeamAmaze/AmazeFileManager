@@ -20,19 +20,30 @@
 
 package com.amaze.filemanager.asynchronous.services
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.os.Build.VERSION_CODES.JELLY_BEAN
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
+import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
+import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.ShadowTabHandler
+import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.test.randomBytes
 import com.amaze.filemanager.test.supportedArchiveExtensions
+import com.amaze.filemanager.ui.activities.MainActivity
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -40,6 +51,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -59,7 +71,7 @@ import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class, ShadowTabHandler::class], sdk = [P])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class ExtractServiceTest {
@@ -85,6 +97,12 @@ class ExtractServiceTest {
     private val multiVolumeRarFileV5Part1: File
     private val multiVolumeRarFileV5Part2: File
     private val multiVolumeRarFileV5Part3: File
+
+    @Rule
+    @JvmField
+    @RequiresApi(VERSION_CODES.R)
+    val allFilesPermissionRule = GrantPermissionRule
+        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     init {
         Environment.getExternalStorageDirectory().run {
@@ -113,6 +131,7 @@ class ExtractServiceTest {
     }
 
     private lateinit var service: ExtractService
+    private lateinit var scenario: ActivityScenario<MainActivity>
 
     /**
      * Copy archives to storage.
@@ -159,6 +178,9 @@ class ExtractServiceTest {
         ShadowToast.reset()
 
         service = Robolectric.setupService(ExtractService::class.java)
+        if (SDK_INT >= N) TestUtils.initializeInternalStorage()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.moveToState(Lifecycle.State.STARTED)
     }
 
     /**
@@ -177,6 +199,7 @@ class ExtractServiceTest {
         }
         service.stopSelf()
         service.onDestroy()
+        scenario.close()
     }
 
     /**
@@ -228,9 +251,11 @@ class ExtractServiceTest {
      */
     @Test
     fun testExtractRar() {
-        performTest(rarfile)
-        assertNull(ShadowToast.getLatestToast())
-        assertNull(ShadowToast.getTextOfLatestToast())
+        if (BuildConfig.FLAVOR == "play") {
+            performTest(rarfile)
+            assertNull(ShadowToast.getLatestToast())
+            assertNull(ShadowToast.getTextOfLatestToast())
+        }
     }
 
     /**
@@ -335,9 +360,11 @@ class ExtractServiceTest {
      */
     @Test
     fun testExtractMultiVolumeRar() {
-        performTest(multiVolumeRarFilePart1)
-        assertNull(ShadowToast.getLatestToast())
-        assertNull(ShadowToast.getTextOfLatestToast())
+        if (BuildConfig.FLAVOR == "play") {
+            performTest(multiVolumeRarFilePart1)
+            assertNull(ShadowToast.getLatestToast())
+            assertNull(ShadowToast.getTextOfLatestToast())
+        }
     }
 
     /**
@@ -345,13 +372,15 @@ class ExtractServiceTest {
      */
     @Test
     fun testExtractMultiVolumeRarV5() {
-        performTest(multiVolumeRarFileV5Part1)
-        ShadowLooper.idleMainLooper()
-        await()
-            .atMost(10, TimeUnit.SECONDS)
-            .until {
-                ShadowToast.getLatestToast() != null
-            }
+        if (BuildConfig.FLAVOR == "play") {
+            performTest(multiVolumeRarFileV5Part1)
+            ShadowLooper.idleMainLooper()
+            await()
+                .atMost(10, TimeUnit.SECONDS)
+                .until {
+                    ShadowToast.getLatestToast() != null
+                }
+        }
     }
 
     /**
@@ -430,14 +459,18 @@ class ExtractServiceTest {
     }
 
     private fun performTest(archiveFile: File) {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), ExtractService::class.java)
-            .putExtra(ExtractService.KEY_PATH_ZIP, archiveFile.absolutePath)
-            .putExtra(ExtractService.KEY_ENTRIES_ZIP, arrayOfNulls<String>(0))
-            .putExtra(
-                ExtractService.KEY_PATH_EXTRACT,
-                File(Environment.getExternalStorageDirectory(), "test-archive")
-                    .absolutePath
-            )
-        service.onStartCommand(intent, 0, 0)
+        scenario.onActivity { activity ->
+            AppConfig.getInstance().setMainActivityContext(activity)
+            val intent =
+                Intent(ApplicationProvider.getApplicationContext(), ExtractService::class.java)
+                    .putExtra(ExtractService.KEY_PATH_ZIP, archiveFile.absolutePath)
+                    .putExtra(ExtractService.KEY_ENTRIES_ZIP, arrayOfNulls<String>(0))
+                    .putExtra(
+                        ExtractService.KEY_PATH_EXTRACT,
+                        File(Environment.getExternalStorageDirectory(), "test-archive")
+                            .absolutePath
+                    )
+            service.onStartCommand(intent, 0, 0)
+        }
     }
 }

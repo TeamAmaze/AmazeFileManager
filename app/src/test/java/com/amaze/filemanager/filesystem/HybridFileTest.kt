@@ -20,9 +20,10 @@
 
 package com.amaze.filemanager.filesystem
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
+import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
@@ -32,11 +33,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.io.File
 import java.net.URLDecoder
 import kotlin.random.Random
 
+/* ktlint-disable max-line-length */
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Suppress("StringLiteralDuplication")
 class HybridFileTest {
 
     /**
@@ -77,8 +81,116 @@ class HybridFileTest {
     fun testSshGetParentWithoutTrailingSlash() {
         val file = HybridFile(OpenMode.SFTP, "ssh://user@127.0.0.1/home/user/next/project")
         assertEquals(
-            "ssh://user@127.0.0.1/home/user/next",
+            "ssh://user@127.0.0.1/home/user/next/",
             file.getParent(ApplicationProvider.getApplicationContext())
+        )
+    }
+
+    /**
+     * Test [HybridFile.getParent] for Android/data path.
+     */
+    @Test
+    fun testDocumentFileAndroidDataGetParent1() {
+        var file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            "content://com.android.externalstorage.documents/tree/primary:Android/data/com.amaze.filemanager.debug/cache"
+        )
+        assertEquals(
+            "content://com.android.externalstorage.documents/tree/primary:Android/data/com.amaze.filemanager.debug/",
+            file.getParent(AppConfig.getInstance())
+        )
+        file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            file.getParent(AppConfig.getInstance())
+        )
+        assertEquals(
+            File(Environment.getExternalStorageDirectory(), "Android/data").absolutePath,
+            file.getParent(AppConfig.getInstance())
+        )
+    }
+
+    /**
+     * Test [HybridFile.getParent] for Android/data path (again).
+     */
+    @Test
+    fun testDocumentFileAndroidDataGetParent2() {
+        var file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            "content://com.android.externalstorage.documents/tree/primary:Android/data/com.amaze.filemanager.debug/files/external"
+        )
+        assertEquals(
+            "content://com.android.externalstorage.documents/tree/primary:Android/data/com.amaze.filemanager.debug/files/",
+            file.getParent(AppConfig.getInstance())
+        )
+        file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            file.getParent(AppConfig.getInstance())
+        )
+        assertEquals(
+            "content://com.android.externalstorage.documents/tree/primary:Android/data/com.amaze.filemanager.debug/",
+            file.getParent(AppConfig.getInstance())
+        )
+        file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            file.getParent(AppConfig.getInstance())
+        )
+        assertEquals(
+            File(Environment.getExternalStorageDirectory(), "Android/data").absolutePath,
+            file.getParent(AppConfig.getInstance())
+        )
+    }
+
+    /**
+     * Test [HybridFile.getParent] for Android/obb path.
+     */
+    @Test
+    fun testDocumentFileAndroidObbGetParent3() {
+        var file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            "content://com.android.externalstorage.documents/tree/primary:Android/obb/com.amaze.filemanager.debug/cache"
+        )
+        assertEquals(
+            "content://com.android.externalstorage.documents/tree/primary:Android/obb/com.amaze.filemanager.debug/",
+            file.getParent(AppConfig.getInstance())
+        )
+        file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            file.getParent(AppConfig.getInstance())
+        )
+        assertEquals(
+            File(Environment.getExternalStorageDirectory(), "Android/obb").absolutePath,
+            file.getParent(AppConfig.getInstance())
+        )
+    }
+
+    /**
+     * Test [HybridFile.getParent] for Android/obb path (again).
+     */
+    @Test
+    fun testDocumentFileAndroidObbGetParent2() {
+        var file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            "content://com.android.externalstorage.documents/tree/primary:Android/obb/com.amaze.filemanager.debug/files/external"
+        )
+        assertEquals(
+            "content://com.android.externalstorage.documents/tree/primary:Android/obb/com.amaze.filemanager.debug/files/",
+            file.getParent(AppConfig.getInstance())
+        )
+        file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            file.getParent(AppConfig.getInstance())
+        )
+        assertEquals(
+            "content://com.android.externalstorage.documents/tree/primary:Android/obb/com.amaze.filemanager.debug/",
+            file.getParent(AppConfig.getInstance())
+        )
+        file = HybridFile(
+            OpenMode.DOCUMENT_FILE,
+            file.getParent(AppConfig.getInstance())
+        )
+        assertEquals(
+            File(Environment.getExternalStorageDirectory(), "Android/obb").absolutePath,
+            file.getParent(AppConfig.getInstance())
         )
     }
 
@@ -114,4 +226,47 @@ class HybridFileTest {
         )
         assertEquals("down the pipe", file.getName(AppConfig.getInstance()))
     }
+
+    /**
+     * Test [HybridFile.sanitizePathAsNecessary].
+     */
+    @Test
+    fun testSanitizePathAsNecessary() {
+        assertEquals(
+            "ftp://user:password@127.0.0.1:22222/multiple/levels/down/the/pipe",
+            HybridFile(
+                OpenMode.FTP,
+                "ftp://user:password@127.0.0.1:22222//multiple///levels////down////the/pipe"
+            ).path
+        )
+        assertEquals(
+            "ssh://user@127.0.0.1/multiple/levels/down/the/pipe",
+            HybridFile(
+                OpenMode.SFTP,
+                "ssh://user@127.0.0.1//multiple///levels////down////the/pipe"
+            ).path
+        )
+        assertEquals(
+            "ssh://user@127.0.0.1/multiple/levels/down/the/pipe",
+            HybridFile(
+                OpenMode.SFTP,
+                "ssh://user@127.0.0.1/multiple/levels/down/the/pipe"
+            ).path
+        )
+        assertEquals(
+            "smb://127.0.0.1/legacy?disableIpcSigningCheck=true",
+            HybridFile(
+                OpenMode.SMB,
+                "smb://127.0.0.1/legacy?disableIpcSigningCheck=true"
+            ).path
+        )
+        assertEquals(
+            "smb://127.0.0.1/legacy/again/try/duplicate/folder?disableIpcSigningCheck=true",
+            HybridFile(
+                OpenMode.SMB,
+                "smb://127.0.0.1/legacy//again/try/duplicate/////folder?disableIpcSigningCheck=true"
+            ).path
+        )
+    }
 }
+/* ktlint-enable max-line-length */

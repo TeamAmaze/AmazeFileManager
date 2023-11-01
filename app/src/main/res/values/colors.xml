@@ -25,7 +25,6 @@
     <color name="divider_dark_card">#575757</color>
     <color name="divider_dark">#484848</color>
     <color name="divider_translucent">#50575757</color>
-    <color name="search_text_highlight">#FF9632</color>
     <!-- TODO: replace this hardcoded color with default list item selection color -->
     <color name="grid_background_light">#f2f2f2</color>
     <!--GRAY 700 used for icons instead of black-->
@@ -126,6 +125,7 @@
     <color name="preferenceUi">#f9a825</color>
     <color name="preferenceBehavior">#009688</color>
     <color name="preferenceSecurity">#da4336</color>
+    <color name="preferenceBackup">@color/accent_deep_orange</color>
     <color name="preferenceInfo">#757575</color>
 
     <color name="navy_blue_alt">#262a3e</color>

@@ -76,6 +76,12 @@ object MakeDirectoryOperation {
         } else false
     }
 
+    /**
+     * Creates the directories on given [file] path, including nonexistent parent directories.
+     * So use proper [HybridFile] constructor as per your need.
+     *
+     * @return true if successfully created directory, otherwise returns false.
+     */
     @JvmStatic
     fun mkdirs(context: Context, file: HybridFile): Boolean {
         var isSuccessful = true
@@ -93,6 +99,8 @@ object MakeDirectoryOperation {
                 isSuccessful = documentFile != null
             }
             OpenMode.FILE -> isSuccessful = mkdir(File(file.getPath()), context)
+            // With ANDROID_DATA will not accept create directory
+            OpenMode.ANDROID_DATA -> isSuccessful = false
             else -> isSuccessful = true
         }
         return isSuccessful

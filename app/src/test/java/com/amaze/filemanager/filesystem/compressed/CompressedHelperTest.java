@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.filesystem.compressed;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
@@ -58,6 +58,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecom
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.Context;
+import android.os.Build;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -65,7 +66,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class CompressedHelperTest {
 
   private Context context;
@@ -130,11 +131,13 @@ public class CompressedHelperTest {
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
     assertEquals(result.getClass(), TarGzExtractor.class);
-    file = new File("/test/test.rar"); // .rar used by RarExtractor
-    result =
-        CompressedHelper.getExtractorInstance(
-            context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), RarExtractor.class);
+    if (BuildConfig.FLAVOR == "play") {
+      file = new File("/test/test.rar"); // .rar used by RarExtractor
+      result =
+          CompressedHelper.getExtractorInstance(
+              context, file, "/test2", emptyUpdateListener, updatePosition);
+      assertEquals(result.getClass(), RarExtractor.class);
+    }
     file = new File("/test/test.tar.bz2"); // .rar used by RarExtractor
     result =
         CompressedHelper.getExtractorInstance(
@@ -186,9 +189,11 @@ public class CompressedHelperTest {
     file = new File("/test/test.tgz"); // .tar.gz used by GzipDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
     assertEquals(result.getClass(), TarGzDecompressor.class);
-    file = new File("/test/test.rar"); // .rar used by RarDecompressor
-    result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), RarDecompressor.class);
+    if (BuildConfig.FLAVOR == "play") {
+      file = new File("/test/test.rar"); // .rar used by RarDecompressor
+      result = CompressedHelper.getCompressorInstance(context, file);
+      assertEquals(result.getClass(), RarDecompressor.class);
+    }
     file = new File("/test/test.tar.bz2"); // .tar.bz2 used by TarBzip2Decompressor
     result = CompressedHelper.getCompressorInstance(context, file);
     assertEquals(result.getClass(), TarBzip2Decompressor.class);

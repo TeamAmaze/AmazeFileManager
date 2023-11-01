@@ -26,6 +26,7 @@ import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -51,11 +52,11 @@ import org.apache.commons.compress.utils.CountingOutputStream;
 public class SevenZOutputFile implements Closeable {
   private final RandomAccessFile channel;
   private final List<SevenZArchiveEntry> files = new ArrayList<>();
-  private int numNonEmptyStreams = 0;
+  private int numNonEmptyStreams;
   private final CRC32 crc32 = new CRC32();
   private final CRC32 compressedCrc32 = new CRC32();
-  private long fileBytesWritten = 0;
-  private boolean finished = false;
+  private long fileBytesWritten;
+  private boolean finished;
   private CountingOutputStream currentOutputStream;
   private CountingOutputStream[] additionalCountingStreams;
   private Iterable<? extends SevenZMethodConfiguration> contentMethods =
@@ -65,11 +66,11 @@ public class SevenZOutputFile implements Closeable {
   /**
    * Opens file to write a 7z archive to.
    *
-   * @param filename the file to write to
+   * @param fileName the file to write to
    * @throws IOException if opening the file fails
    */
-  public SevenZOutputFile(final File filename) throws IOException {
-    this(new RandomAccessFile(filename, ""));
+  public SevenZOutputFile(final File fileName) throws IOException {
+    this(new RandomAccessFile(fileName, "rwd"));
   }
 
   /**
@@ -138,10 +139,8 @@ public class SevenZOutputFile implements Closeable {
    * @param inputFile file to create an entry from
    * @param entryName the name to use
    * @return the ArchiveEntry set up with details from the file
-   * @throws IOException on error
    */
-  public SevenZArchiveEntry createArchiveEntry(final File inputFile, final String entryName)
-      throws IOException {
+  public SevenZArchiveEntry createArchiveEntry(final File inputFile, final String entryName) {
     final SevenZArchiveEntry entry = new SevenZArchiveEntry();
     entry.setDirectory(inputFile.isDirectory());
     entry.setName(entryName);
@@ -156,9 +155,8 @@ public class SevenZOutputFile implements Closeable {
    * to complete the process.
    *
    * @param archiveEntry describes the entry
-   * @throws IOException on error
    */
-  public void putArchiveEntry(final ArchiveEntry archiveEntry) throws IOException {
+  public void putArchiveEntry(final ArchiveEntry archiveEntry) {
     final SevenZArchiveEntry entry = (SevenZArchiveEntry) archiveEntry;
     files.add(entry);
   }
@@ -238,6 +236,21 @@ public class SevenZOutputFile implements Closeable {
   }
 
   /**
+   * Writes all of the given input stream to the current archive entry.
+   *
+   * @param inputStream the data source.
+   * @throws IOException if an I/O error occurs.
+   * @since 1.21
+   */
+  public void write(final InputStream inputStream) throws IOException {
+    final byte[] buffer = new byte[8024];
+    int n = 0;
+    while (-1 != (n = inputStream.read(buffer))) {
+      write(buffer, 0, n);
+    }
+  }
+
+  /**
    * Finishes the addition of entries to this archive, without closing it.
    *
    * @throws IOException if archive is already closed.
@@ -261,7 +274,7 @@ public class SevenZOutputFile implements Closeable {
     final CRC32 crc32 = new CRC32();
     crc32.update(headerBytes);
 
-    ByteBuffer bb =
+    final ByteBuffer bb =
         ByteBuffer.allocate(
                 SevenZFile.sevenZSignature.length
                     + 2 /* version */
@@ -307,7 +320,8 @@ public class SevenZOutputFile implements Closeable {
       throw new IllegalStateException("No current 7z entry");
     }
 
-    OutputStream out = new OutputStreamWrapper();
+    // doesn't need to be closed, just wraps the instance field channel
+    OutputStream out = new OutputStreamWrapper(); // NOSONAR
     final ArrayList<CountingOutputStream> moreStreams = new ArrayList<>();
     boolean first = true;
     for (final SevenZMethodConfiguration m : getContentMethods(files.get(files.size() - 1))) {
@@ -320,7 +334,7 @@ public class SevenZOutputFile implements Closeable {
       first = false;
     }
     if (!moreStreams.isEmpty()) {
-      additionalCountingStreams = moreStreams.toArray(new CountingOutputStream[moreStreams.size()]);
+      additionalCountingStreams = moreStreams.toArray(new CountingOutputStream[0]);
     }
     return new CountingOutputStream(out) {
       @Override

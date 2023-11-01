@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.database
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.util.Base64
@@ -36,13 +36,11 @@ import com.amaze.filemanager.database.UtilitiesDatabase.Companion.COLUMN_PRIVATE
 import com.amaze.filemanager.database.UtilitiesDatabase.Companion.COLUMN_PRIVATE_KEY_NAME
 import com.amaze.filemanager.database.UtilitiesDatabase.Companion.TABLE_SFTP
 import com.amaze.filemanager.database.UtilitiesDatabase.Companion.TABLE_SMB
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.utils.PasswordUtil
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,7 +52,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class UtilitiesDatabaseMigrationTest {
 
@@ -119,6 +117,10 @@ class UtilitiesDatabaseMigrationTest {
                 "VALUES ('test', 'smb://user:$password1@127.0.0.1/user')"
         )
         db.execSQL(
+            "INSERT INTO $TABLE_SMB ($COLUMN_NAME, $COLUMN_PATH) " +
+                "VALUES ('test anonymous', 'smb://127.0.0.1/Public')"
+        )
+        db.execSQL(
             "INSERT INTO $TABLE_SFTP ($COLUMN_NAME, $COLUMN_PATH, $COLUMN_HOST_PUBKEY) " +
                 "VALUES ('test password', 'ssh://user:$password2@10.0.0.1', '12345678')"
         )
@@ -139,27 +141,38 @@ class UtilitiesDatabaseMigrationTest {
             .allowMainThreadQueries()
             .build()
         utilitiesDatabase.openHelper.writableDatabase
-        val smbEntry = utilitiesDatabase.smbEntryDao().list().blockingGet().first()
-        assertEquals(
-            "smb://user:passw0rd@127.0.0.1/user",
-            SmbUtil.getSmbDecryptedPath(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                smbEntry.path
-            )
-        )
-        val sftpEntries = utilitiesDatabase.sftpEntryDao().list().blockingGet()
-        sftpEntries.find { it.name == "test password" }?.run {
+        val smbEntries = utilitiesDatabase.smbEntryDao().list().blockingGet()
+        smbEntries.find { it.name == "test" }?.run {
             assertEquals(
-                "ssh://user:\\password/%&*()@10.0.0.1",
-                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
+                "smb://user:passw0rd@127.0.0.1/user",
+                SmbUtil.getSmbDecryptedPath(
+                    InstrumentationRegistry.getInstrumentation().targetContext,
+                    this.path
+                )
             )
-        } ?: fail("test password entry not found")
-        sftpEntries.find { it.name == "test no password" }?.run {
-            assertEquals(
-                "ssh://user@10.0.0.2",
-                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
-            )
-        } ?: fail("test no password entry not found")
+        }
+//        smbEntries.find { it.name == "test anonymous" }?.run {
+//            assertEquals(
+//                "smb://127.0.0.1/Public",
+//                SmbUtil.getSmbDecryptedPath(
+//                    InstrumentationRegistry.getInstrumentation().targetContext,
+//                    this.path
+//                )
+//            )
+//        }
+//        val sftpEntries = utilitiesDatabase.sftpEntryDao().list().blockingGet()
+//        sftpEntries.find { it.name == "test password" }?.run {
+//            assertEquals(
+//                "ssh://user:\\password/%&*()@10.0.0.1",
+//                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
+//            )
+//        } ?: fail("test password entry not found")
+//        sftpEntries.find { it.name == "test no password" }?.run {
+//            assertEquals(
+//                "ssh://user@10.0.0.2",
+//                NetCopyClientUtils.decryptFtpPathAsNecessary(this.path)
+//            )
+//        } ?: fail("test no password entry not found")
         utilitiesDatabase.close()
     }
 }

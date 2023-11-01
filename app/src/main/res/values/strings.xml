@@ -618,6 +618,7 @@
     <string name="create_file_suggest_txt_extension">It\'s recommended to use \".txt\" as the file extension.</string>
     <string name="ssh_select_pem">Select private key for authentication</string>
     <string name="ssh_key_invalid_passphrase">Invalid key passphrase.</string>
+    <string name="ssh_key_no_decoder_decrypt">No valid decoder to decrypt PEM.</string>
     <string name="encryption_fail_copy">Failed to update encryption entry in database</string>
     <string name="extracted">Extracted</string>
     <string name="compressed">Compressed</string>
@@ -748,6 +749,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
     <string name="select_similar">Select similar</string>
+    <string name="select_fill">Select fill</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
         \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
@@ -759,6 +761,12 @@ You only need to do this once, until the next time you select a new location for
     <string name="ui_summary">Control what information to show, customize the sidebar, and toggle UI preferences</string>
     <string name="behavior_summary">Modify behaviors such as advanced search and whether to open files as a new task</string>
     <string name="security_summary">Set up password and encryption</string>
+    <string name="backup_summary">Export/Import Amaze settings</string>
+
+    <string name="pref_export">Export</string>
+    <string name="pref_export_summary">Export settings</string>
+    <string name="pref_import">Import</string>
+    <string name="pref_import_summary">Import settings</string>
 
     <string name="quick_desc">Files recently accessed through Amaze</string>
     <string name="recent_desc">Recently created or modified files</string>
@@ -766,16 +774,15 @@ You only need to do this once, until the next time you select a new location for
     <string name="error_cant_decompress_that_file">Cannot process the requested archive</string>
     <string name="analyse_storage">Analyse Storage</string>
     <string name="amaze_file_utilities" translatable="false">Amaze File Utilities</string>
-    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our offering that has inbuilt audio/video/image/document viewers, allows you to analyse storage files for blurry/dark images, duplicate files, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
+    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our open source app that has inbuilt audio/video/image/document viewers, allows you to analyse junk files to free up storage, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
     <string name="download">Download</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Thank you for installing Amaze File Utilities. You\'re being redirected to the app.</string>
     <string name="image_viewer">Amaze Image Viewer</string>
     <string name="video_player">Amaze Video Player</string>
     <string name="amaze_audio_player">Amaze Music Player</string>
-    <string name="pdf_viewer">Amaze Pdf Viewer</string>
-    <string name="epub_viewer">Amaze Epub Viewer</string>
-    <string name="docx_viewer">Amaze Doc Viewer</string>
+    <string name="pdf_viewer">Amaze Document Viewer</string>
+    <string name="docx_viewer">Amaze Document Viewer</string>
     <string name="share_logs">Share logs</string>
     <string name="share_logs_summary">Share captured logs via email / telegram</string>
     <string name="open_with_amaze">Open with Amaze</string>
@@ -789,5 +796,30 @@ You only need to do this once, until the next time you select a new location for
     <string name="protocol_ftp" translatable="false">FTP</string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Unavailable</string>
+
+    <string name="exporting_failed">Exporting failed: could not write the backup file</string>
+    <string name="importing_failed">Importing failed: could not read the backup file</string>
+    <string name="importing_completed">Importing completed</string>
+    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="import_failed_for">Import failed for:</string>
+    <string name="free_of">"%s\n%s free of %s</string>
+    <string name="cloud_error_fdroid">Amaze Cloud Plugin not supported with F-Droid version. Please use Play Store version of Amaze.</string>
+    <string name="disable_player_intent_filters">Disable player intent filters</string>
+    <string name="disable_player_intent_filters_summary">Disables Amaze inbuilt media players from file chooser</string>
+    <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
+    <string name="cloud_connection_credentials_cleared">Cloud Connection credentials cleared</string>
+    <string name="cloud_connection_credentials_cleared_msg">Unfortunately, we were unable to migrate your cloud connection credentials to the new database schema, and we had to remove them from the app. Please create the cloud connection again.</string>
+    <string name="not_finding_what_you_re_looking_for">Not finding what you\'re looking for?</string>
+    <string name="try_deep_search">Try Deep Search!</string>
+    <string name="try_indexed_search">Try Indexed Search!</string>
+    <string name="search_recent">Recent</string>
+    <string name="results">Results</string>
+    <string name="grant_notification_permission">Amaze needs notification permission to display file operation progress, as well as a handy panel to start/stop the FTP server.</string>
+    <string name="error_unsupported_or_null_uri">Invalid, unsupported, or no URI was provided</string>
+    <string name="complete_paste_warning">Please complete paste operation first</string>
+    <string name="same_dir_move_error">Destination and source folder shouldn\'t match to move.</string>
+    <string name="checking_conflicts">Checking for conflicts</string>
+    <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
+    <string name="not_found_enabled_webview">No available browser</string>
 </resources>
 

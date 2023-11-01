@@ -33,12 +33,18 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
-import android.view.*
-import android.widget.EditText
-import android.widget.TextView
+import android.view.ActionMode
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -83,7 +89,6 @@ import org.apache.commons.compress.PasswordRequiredException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
 
 @Suppress("TooManyFunctions")
 class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
@@ -282,7 +287,18 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 )?.run {
                     try {
                         if (moveToFirst()) {
-                            fileName = getString(0)
+                            fileName = getString(0).let {
+                                /*
+                                 * Strip any slashes to prevent possibility to access files outside
+                                 * cache dir if malicious ContentProvider gives malicious value
+                                 * of MediaStore.MediaColumns.DISPLAY_NAME when querying
+                                 */
+                                if (it.contains(File.pathSeparator)) {
+                                    it.substringAfterLast(File.pathSeparatorChar)
+                                } else {
+                                    it
+                                }
+                            }
                             compressedFile = File(requireContext().cacheDir, fileName)
                         } else {
                             // At this point, we know nothing the file the URI represents, we are doing everything
@@ -421,7 +437,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         // may be called multiple times if the mode is invalidated.
         override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
             compressedExplorerAdapter?.checkedItemPositions?.let { positions ->
-                (mode.customView.findViewById<View>(R.id.item_count) as TextView).text =
+                (mode.customView.findViewById<View>(R.id.item_count) as AppCompatTextView).text =
                     positions.size.toString()
                 menu.findItem(R.id.all)
                     .setTitle(
@@ -586,9 +602,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
     private fun dialogGetPasswordFromUser(filePath: String) {
         val positiveCallback =
-            SingleButtonCallback { dialog: MaterialDialog, action: DialogAction? ->
-                val editText = dialog.view.findViewById<EditText>(R.id.singleedittext_input)
-                val password: String = editText.getText().toString()
+            SingleButtonCallback { dialog: MaterialDialog, _: DialogAction? ->
+                val editText = dialog.view.findViewById<AppCompatEditText>(
+                    R.id.singleedittext_input
+                )
+                val password: String = editText.text.toString()
                 ArchivePasswordCache.getInstance()[filePath] = password
                 dialog.dismiss()
                 changePath(filePath)
@@ -657,7 +675,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 items,
                 this,
                 decompressor,
-                PreferenceManager.getDefaultSharedPreferences(activity)
+                PreferenceManager.getDefaultSharedPreferences(requireMainActivity())
             )
             listView?.adapter = compressedExplorerAdapter
         } else {

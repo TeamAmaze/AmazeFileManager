@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
@@ -100,6 +101,7 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -122,6 +124,7 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -131,6 +134,7 @@ import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -139,7 +143,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.FabWithLabelView;
@@ -202,6 +205,9 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.collections.ArraysKt;
+import kotlin.jvm.functions.Function1;
+import kotlin.text.Charsets;
 
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
@@ -241,7 +247,7 @@ public class MainActivity extends PermissionsActivity
   public ArrayList<String> oppatheList;
 
   // This holds the Uris to be written at initFabToSave()
-  private ArrayList<Uri> urisToBeSaved;
+  private List<Uri> urisToBeSaved;
 
   public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
@@ -318,7 +324,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
-  private MainActivityActionMode mainActivityActionMode;
+  public MainActivityActionMode mainActivityActionMode;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -358,8 +364,20 @@ public class MainActivity extends PermissionsActivity
     mainActivityActionMode = new MainActivityActionMode(new WeakReference<>(MainActivity.this));
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
-
-      LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      try {
+        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      } catch (Exception errorRaised) {
+        LOG.error("Error initializing cloud connections", errorRaised);
+        cloudHandler.clearAllCloudConnections();
+        AlertDialog.show(
+            this,
+            R.string.cloud_connection_credentials_cleared_msg,
+            R.string.cloud_connection_credentials_cleared,
+            android.R.string.ok,
+            null,
+            false);
+        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      }
     }
 
     path = intent.getStringExtra("path");
@@ -399,7 +417,9 @@ public class MainActivity extends PermissionsActivity
               ExtensionsKt.updateAUAlias(
                   this,
                   !PackageUtils.Companion.appInstalledOrNot(
-                      AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager()));
+                          AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager())
+                      && !getBoolean(
+                          PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -502,6 +522,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void onPermissionGranted() {
     drawer.refreshDrawer();
     TabFragment tabFragment = getTabFragment();
@@ -534,12 +555,16 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void checkForExternalPermission() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (SDK_INT >= Build.VERSION_CODES.M) {
       if (!checkStoragePermission()) {
-        requestStoragePermission(this, true);
+        if (SDK_INT >= Build.VERSION_CODES.R) {
+          requestAllFilesAccess(this);
+        } else {
+          requestStoragePermission(this, true);
+        }
       }
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        requestAllFilesAccess(this);
+      if (SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkNotificationPermission()) {
+        requestNotificationPermission(true);
       }
     }
   }
@@ -609,9 +634,15 @@ public class MainActivity extends PermissionsActivity
       } else {
         // save a single file to filesystem
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
-        initFabToSave(uris);
+        if (uri != null
+            && uri.getScheme() != null
+            && uri.getScheme().startsWith(ContentResolver.SCHEME_FILE)) {
+          ArrayList<Uri> uris = new ArrayList<>();
+          uris.add(uri);
+          initFabToSave(uris);
+        } else {
+          Toast.makeText(this, R.string.error_unsupported_or_null_uri, Toast.LENGTH_LONG).show();
+        }
       }
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
@@ -630,7 +661,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
-  private void initFabToSave(final ArrayList<Uri> uris) {
+  private void initFabToSave(final List<Uri> uris) {
     Utils.showThemedSnackbar(
         this,
         getString(R.string.select_save_location),
@@ -639,7 +670,7 @@ public class MainActivity extends PermissionsActivity
         () -> saveExternalIntent(uris));
   }
 
-  private void saveExternalIntent(final ArrayList<Uri> uris) {
+  private void saveExternalIntent(final List<Uri> uris) {
     executeWithMainFragment(
         mainFragment -> {
           if (uris != null && uris.size() > 0) {
@@ -1518,9 +1549,7 @@ public class MainActivity extends PermissionsActivity
 
   protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
     super.onActivityResult(requestCode, responseCode, intent);
-    if (requestCode == Drawer.image_selector_request_code) {
-      drawer.onActivityResult(requestCode, responseCode, intent);
-    } else if (requestCode == 3) {
+    if (requestCode == 3) {
       Uri treeUri;
       if (responseCode == Activity.RESULT_OK) {
         // Get Uri from Storage Access Framework.
@@ -1700,7 +1729,7 @@ public class MainActivity extends PermissionsActivity
           if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
-    drawer.setDrawerHeaderBackground();
+    //    drawer.setDrawerHeaderBackground();
   }
 
   /**
@@ -1766,7 +1795,34 @@ public class MainActivity extends PermissionsActivity
     FabWithLabelView newFolderFab =
         initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
-    floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
+    floatingActionButton.setOnActionSelectedListener(
+        actionItem -> {
+          MainFragment mainFragment = getCurrentMainFragment();
+
+          if (mainFragment == null) return false;
+
+          String path = mainFragment.getCurrentPath();
+
+          MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
+
+          if (mainFragmentViewModel == null) return false;
+
+          OpenMode openMode = mainFragmentViewModel.getOpenMode();
+
+          int id = actionItem.getId();
+
+          if (id == R.id.menu_new_folder)
+            mainActivity.mainActivityHelper.mkdir(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_file)
+            mainActivity.mainActivityHelper.mkfile(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_cloud)
+            new CloudSheetFragment()
+                .show(mainActivity.getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
+
+          floatingActionButton.close(true);
+          return true;
+        });
+
     floatingActionButton.setOnClickListener(
         view -> {
           fabButtonClick(cloudFab);
@@ -1955,11 +2011,11 @@ public class MainActivity extends PermissionsActivity
     }
     SmbConnectDialog smbConnectDialog = new SmbConnectDialog();
     Bundle bundle = new Bundle();
-    bundle.putString("name", name);
-    bundle.putString("path", path);
-    bundle.putBoolean("edit", edit);
+    bundle.putString(SmbConnectDialog.ARG_NAME, name);
+    bundle.putString(SmbConnectDialog.ARG_PATH, path);
+    bundle.putBoolean(SmbConnectDialog.ARG_EDIT, edit);
     smbConnectDialog.setArguments(bundle);
-    smbConnectDialog.show(getFragmentManager(), "smbdailog");
+    smbConnectDialog.show(getSupportFragmentManager(), SmbConnectDialog.TAG);
   }
 
   @SuppressLint("CheckResult")
@@ -1969,8 +2025,9 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+    sftpConnectDialog.setCancelable(false);
     String finalName = name;
-    Flowable.fromCallable(() -> new NetCopyClientConnectionPool.ConnectionInfo(path))
+    Flowable.fromCallable(() -> new NetCopyConnectionInfo(path))
         .flatMap(
             connectionInfo -> {
               Bundle retval = new Bundle();
@@ -1979,7 +2036,17 @@ public class MainActivity extends PermissionsActivity
               retval.putString(ARG_ADDRESS, connectionInfo.getHost());
               retval.putInt(ARG_PORT, connectionInfo.getPort());
               if (!TextUtils.isEmpty(connectionInfo.getDefaultPath())) {
-                retval.putString(ARG_DEFAULT_PATH, connectionInfo.getDefaultPath());
+                retval.putString(
+                    ARG_DEFAULT_PATH,
+                    ArraysKt.joinToString(
+                        connectionInfo.getDefaultPath().split("/"),
+                        "/",
+                        "",
+                        "",
+                        -1,
+                        "",
+                        (Function1<String, String>)
+                            s -> GenericExtKt.urlDecoded(s, Charsets.UTF_8)));
               }
               retval.putString(ARG_USERNAME, connectionInfo.getUsername());
 
@@ -2015,29 +2082,34 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void addConnection(
       boolean edit,
       @NonNull final String name,
-      @NonNull final String path,
-      @Nullable final String encryptedPath,
+      @NonNull final String encryptedPath,
       @Nullable final String oldname,
       @Nullable final String oldPath) {
-    String[] s = new String[] {name, path};
+    String[] s = new String[] {name, encryptedPath};
     if (!edit) {
-      if ((dataUtils.containsServer(path)) == -1) {
-        dataUtils.addServer(s);
-        drawer.refreshDrawer();
-
-        utilsHandler.saveToDatabase(
-            new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
-
-        // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-        executeWithMainFragment(
-            mainFragment -> {
-              mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
-              return null;
-            },
-            true);
+      if ((dataUtils.containsServer(encryptedPath)) == -1) {
+        Completable.fromRunnable(
+                () ->
+                    utilsHandler.saveToDatabase(
+                        new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                () -> {
+                  dataUtils.addServer(s);
+                  drawer.refreshDrawer();
+                  // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
+                  executeWithMainFragment(
+                      mainFragment -> {
+                        mainFragment.loadlist(encryptedPath, false, OpenMode.UNKNOWN, true);
+                        return null;
+                      },
+                      true);
+                });
       } else {
         Snackbar.make(
                 findViewById(R.id.navigation),
@@ -2049,12 +2121,13 @@ public class MainActivity extends PermissionsActivity
       int i = dataUtils.containsServer(new String[] {oldname, oldPath});
       if (i != -1) {
         dataUtils.removeServer(i);
-
-        AppConfig.getInstance()
-            .runInBackground(
+        Flowable.fromCallable(
                 () -> {
-                  utilsHandler.renameSMB(oldname, oldPath, name, path);
-                });
+                  utilsHandler.renameSMB(oldname, oldPath, name, encryptedPath);
+                  return true;
+                })
+            .subscribeOn(Schedulers.io())
+            .subscribe();
         // mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
       }
       dataUtils.addServer(s);
@@ -2065,42 +2138,48 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void deleteConnection(final String name, final String path) {
     int i = dataUtils.containsServer(new String[] {name, path});
     if (i != -1) {
       dataUtils.removeServer(i);
-      Flowable.fromCallable(
+      Completable.fromCallable(
               () -> {
                 utilsHandler.removeFromDatabase(
                     new OperationData(UtilsHandler.Operation.SMB, name, path));
                 return true;
               })
           .subscribeOn(Schedulers.io())
-          .subscribe(o -> drawer.refreshDrawer());
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(() -> drawer.refreshDrawer());
     }
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void delete(String title, String path) {
-    Flowable.fromCallable(
+    Completable.fromCallable(
             () -> {
               utilsHandler.removeFromDatabase(
                   new OperationData(UtilsHandler.Operation.BOOKMARKS, title, path));
               return true;
             })
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> drawer.refreshDrawer());
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> drawer.refreshDrawer());
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void modify(String oldpath, String oldname, String newPath, String newname) {
-    Flowable.fromCallable(
+    Completable.fromCallable(
             () -> {
               utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
               return true;
             })
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> drawer.refreshDrawer());
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> drawer.refreshDrawer());
   }
 
   @Override
@@ -2155,6 +2234,10 @@ public class MainActivity extends PermissionsActivity
         // cloud entry already exists
         Toast.makeText(
                 this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG)
+            .show();
+      } else if (BuildConfig.IS_VERSION_FDROID) {
+        Toast.makeText(
+                this, getResources().getString(R.string.cloud_error_fdroid), Toast.LENGTH_LONG)
             .show();
       } else {
         Toast.makeText(
@@ -2282,7 +2365,10 @@ public class MainActivity extends PermissionsActivity
      *
      * TODO: find a fix for repeated callbacks to onLoadFinished()
      */
-    if (cloudCursorData != null && cloudCursorData == data) return;
+    if (cloudCursorData == null
+        || cloudCursorData == data
+        || data.isClosed()
+        || cloudCursorData.isClosed()) return;
     cloudCursorData = data;
 
     if (cloudLoaderAsyncTask != null
@@ -2328,45 +2414,6 @@ public class MainActivity extends PermissionsActivity
     tabFragment.initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
   }
 
-  private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
-
-    MainActivity mainActivity;
-    SpeedDialView floatingActionButton;
-
-    FabActionListener(MainActivity mainActivity) {
-      this.mainActivity = mainActivity;
-      this.floatingActionButton = mainActivity.floatingActionButton;
-    }
-
-    @Override
-    public boolean onActionSelected(SpeedDialActionItem actionItem) {
-      final MainFragment ma =
-          (MainFragment)
-              ((TabFragment)
-                      mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame))
-                  .getCurrentTabFragment();
-      final String path = ma.getCurrentPath();
-
-      switch (actionItem.getId()) {
-        case R.id.menu_new_folder:
-          mainActivity.mainActivityHelper.mkdir(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_file:
-          mainActivity.mainActivityHelper.mkfile(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_cloud:
-          BottomSheetDialogFragment fragment = new CloudSheetFragment();
-          fragment.show(
-              ma.getActivity().getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
-          break;
-      }
-
-      floatingActionButton.close(true);
-      return true;
-    }
-  }
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *

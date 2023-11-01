@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:key="export_settings"
+        app:summary="@string/pref_export_summary"
+        app:title="@string/pref_export" />
+
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:key="import_settings"
+        app:summary="@string/pref_import_summary"
+        app:title="@string/pref_import" />
+
+</PreferenceScreen>

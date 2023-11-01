@@ -21,9 +21,9 @@
 package com.amaze.filemanager.ui.views.drawer;
 
 import android.view.MenuItem;
-import android.widget.ImageButton;
 
 import androidx.annotation.ColorInt;
+import androidx.appcompat.widget.AppCompatImageButton;
 
 /**
  * This manages to set the color of the selected ActionView and unset the ActionView that is not
@@ -31,7 +31,7 @@ import androidx.annotation.ColorInt;
  */
 public class ActionViewStateManager {
 
-  private ImageButton lastItemSelected = null;
+  private AppCompatImageButton lastItemSelected = null;
   private @ColorInt int idleIconColor;
   private @ColorInt int selectedIconColor;
 
@@ -52,7 +52,7 @@ public class ActionViewStateManager {
       lastItemSelected.setColorFilter(idleIconColor);
     }
     if (item.getActionView() != null) {
-      lastItemSelected = (ImageButton) item.getActionView();
+      lastItemSelected = (AppCompatImageButton) item.getActionView();
       lastItemSelected.setColorFilter(selectedIconColor);
     }
   }

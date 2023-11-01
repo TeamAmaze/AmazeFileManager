@@ -1,11 +1,11 @@
-Light and smooth file manager following the Material Design guidelines.
-
-Features:
-
-* Basic features like cut, copy, delete, compress, extract etc. easily accessible
-* Work on multiple tabs at same time
-* Multiple themes with cool icons
-* Navigation drawer for quick navigation
-* App Manager to open, backup, or directly uninstall any app
-* Quickly access history, access bookmarks or search for any file
-* Root explorer for advanced users
+- Basic features like cut, copy, delete, compress, extract
+- Multiple tabs for enhancing productivity
+- Support for multiple themes
+- Navigation drawer for quick navigation
+- App Manager to open, backup, or directly uninstall any app
+- Quickly access history, access bookmarks or search for any file
+- Root explorer for advanced users
+- AES Encryption and Decryption of files for security (Jellybean v4.3+)
+- Cloud services support namely SMB, SSH, FTP & SFTP (Jellybean v4.3+ / requires additional plug-in)
+- Inbuilt Database Reader, ZIP/RAR Reader, APK Reader and Text Editor
+- FTP client support

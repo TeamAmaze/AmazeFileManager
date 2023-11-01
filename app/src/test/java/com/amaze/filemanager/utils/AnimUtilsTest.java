@@ -38,13 +38,14 @@ import org.robolectric.shadows.ShadowLooper;
 
 import com.amaze.filemanager.ui.views.ThemedTextView;
 
+import android.os.Build;
 import android.view.animation.Interpolator;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P})
+@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class AnimUtilsTest {
 
   @Test

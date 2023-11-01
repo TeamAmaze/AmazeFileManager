@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:text="@string/disableIpcSignature" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:id="@+id/wanthelp"
         android:layout_height="wrap_content"

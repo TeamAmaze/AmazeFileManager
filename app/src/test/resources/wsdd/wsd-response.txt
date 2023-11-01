@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope
+	xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+	xmlns:wsd="http://schemas.xmlsoap.org/ws/2005/04/discovery"
+	xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex"
+	xmlns:wsdp="http://schemas.xmlsoap.org/ws/2006/02/devprof"
+	xmlns:pnpx="http://schemas.microsoft.com/windows/pnpx/2005/10"
+	xmlns:pub="http://schemas.microsoft.com/windows/pub/2005/07">
+	<soap:Header>
+		<wsa:To>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</wsa:To>
+		<wsa:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/GetResponse</wsa:Action>
+		<wsa:MessageID>urn:uuid:##THIS_MESSAGE_ID##</wsa:MessageID>
+		<wsa:RelatesTo>urn:uuid:##PREV_MESSAGE_ID##</wsa:RelatesTo>
+	</soap:Header>
+	<soap:Body>
+		<wsx:Metadata>
+			<wsx:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/ThisDevice">
+				<wsdp:ThisDevice>
+					<wsdp:FriendlyName>WSD Device ##DEVICE_NAME##</wsdp:FriendlyName>
+					<wsdp:FirmwareVersion>1.0</wsdp:FirmwareVersion>
+					<wsdp:SerialNumber>1</wsdp:SerialNumber>
+				</wsdp:ThisDevice>
+			</wsx:MetadataSection>
+			<wsx:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/ThisModel">
+				<wsdp:ThisModel>
+					<wsdp:Manufacturer>wsdd</wsdp:Manufacturer>
+					<wsdp:ModelName>wsdd</wsdp:ModelName>
+					<pnpx:DeviceCategory>Computers</pnpx:DeviceCategory>
+				</wsdp:ThisModel>
+			</wsx:MetadataSection>
+			<wsx:MetadataSection Dialect="http://schemas.xmlsoap.org/ws/2006/02/devprof/Relationship">
+				<wsdp:Relationship Type="http://schemas.xmlsoap.org/ws/2006/02/devprof/host">
+					<wsdp:Host>
+						<wsa:EndpointReference>
+							<wsa:Address>urn:uuid:##THIS_DEVICE_ID##</wsa:Address>
+						</wsa:EndpointReference>
+						<wsdp:Types>pub:Computer</wsdp:Types>
+						<wsdp:ServiceId>urn:uuid:##THIS_DEVICE_ID##</wsdp:ServiceId>
+						<pub:Computer>##DEVICE_NAME##/Workgroup:##WORKGROUP_NAME##</pub:Computer>
+					</wsdp:Host>
+				</wsdp:Relationship>
+			</wsx:MetadataSection>
+		</wsx:Metadata>
+	</soap:Body>
+</soap:Envelope>

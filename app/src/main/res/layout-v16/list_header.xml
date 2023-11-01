@@ -6,7 +6,7 @@
     android:layout_height="@dimen/list_header_height"
     android:layout_width="match_parent" >
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text"
         android:gravity="center_vertical"
         android:layout_height="wrap_content"
@@ -15,6 +15,6 @@
         android:paddingLeft="@dimen/icon_width"
         android:paddingRight="@dimen/icon_width"
         android:textSize="@dimen/list_header_textsize">
-    </TextView>
+    </androidx.appcompat.widget.AppCompatTextView>
 
 </RelativeLayout>

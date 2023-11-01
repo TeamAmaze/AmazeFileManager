@@ -654,5 +654,6 @@
     <string name="clear_open_file_summary">Efface les applications d\'ouverture de fichiers sélectionnées par défaut</string>
     <string name="legacy_listing_title">Utiliser l\'ancien affichage pour root</string>
     <string name="error_permission_denied">Permission refusée</string>
-    </resources>
+    <string name="not_found_enabled_webview">Aucun navigateur n\'a été trouvé disponible</string>
+</resources>
 

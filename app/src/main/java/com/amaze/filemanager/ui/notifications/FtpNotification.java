@@ -20,14 +20,17 @@
 
 package com.amaze.filemanager.ui.notifications;
 
+import static android.app.PendingIntent.FLAG_ONE_SHOT;
+import static com.amaze.filemanager.asynchronous.services.AbstractProgressiveService.getPendingIntentFlag;
+
 import java.net.InetAddress;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.utils.NetworkUtil;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +38,7 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -48,7 +52,8 @@ public class FtpNotification {
       Context context, @StringRes int contentTitleRes, String contentText, boolean noStopButton) {
     Intent notificationIntent = new Intent(context, MainActivity.class);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+    PendingIntent contentIntent =
+        PendingIntent.getActivity(context, 0, notificationIntent, getPendingIntentFlag(0));
 
     long when = System.currentTimeMillis();
 
@@ -69,7 +74,7 @@ public class FtpNotification {
       Intent stopIntent =
           new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
       PendingIntent stopPendingIntent =
-          PendingIntent.getBroadcast(context, 0, stopIntent, PendingIntent.FLAG_ONE_SHOT);
+          PendingIntent.getBroadcast(context, 0, stopIntent, getPendingIntentFlag(FLAG_ONE_SHOT));
 
       builder.addAction(stopIcon, stopText, stopPendingIntent);
     }
@@ -91,16 +96,14 @@ public class FtpNotification {
   }
 
   public static void updateNotification(Context context, boolean noStopButton) {
-    String notificationService = Context.NOTIFICATION_SERVICE;
-    NotificationManager notificationManager =
-        (NotificationManager) context.getSystemService(notificationService);
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     int port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
     boolean secureConnection =
         sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
 
-    InetAddress address = FtpService.getLocalInetAddress(context);
+    InetAddress address = NetworkUtil.getLocalInetAddress(context);
 
     String address_text = "Address not found";
 
@@ -124,8 +127,6 @@ public class FtpNotification {
   }
 
   private static void removeNotification(Context context) {
-    String ns = Context.NOTIFICATION_SERVICE;
-    NotificationManager nm = (NotificationManager) context.getSystemService(ns);
-    nm.cancelAll();
+    NotificationManagerCompat.from(context).cancelAll();
   }
 }

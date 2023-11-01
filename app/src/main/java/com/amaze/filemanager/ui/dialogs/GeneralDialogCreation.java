@@ -93,16 +93,16 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.text.TextUtilsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.preference.PreferenceManager;
@@ -153,7 +153,7 @@ public class GeneralDialogCreation {
     MaterialDialog.Builder builder = new MaterialDialog.Builder(m);
 
     View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
-    EditText textfield = dialogView.findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialogView.findViewById(R.id.singleedittext_input);
     textfield.setHint(hint);
     textfield.setText(prefill);
 
@@ -227,12 +227,14 @@ public class GeneralDialogCreation {
             .build();
 
     // Get views from custom layout to set text values.
-    final TextView categoryDirectories =
+    final AppCompatTextView categoryDirectories =
         dialog.getCustomView().findViewById(R.id.category_directories);
-    final TextView categoryFiles = dialog.getCustomView().findViewById(R.id.category_files);
-    final TextView listDirectories = dialog.getCustomView().findViewById(R.id.list_directories);
-    final TextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
-    final TextView total = dialog.getCustomView().findViewById(R.id.total);
+    final AppCompatTextView categoryFiles =
+        dialog.getCustomView().findViewById(R.id.category_files);
+    final AppCompatTextView listDirectories =
+        dialog.getCustomView().findViewById(R.id.list_directories);
+    final AppCompatTextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
+    final AppCompatTextView total = dialog.getCustomView().findViewById(R.id.total);
 
     new AsyncTask<Void, Object, Void>() {
 
@@ -446,33 +448,33 @@ public class GeneralDialogCreation {
     builder.theme(appTheme.getMaterialDialogTheme(c));
 
     View v = themedActivity.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-    TextView itemsText = v.findViewById(R.id.t7);
-    CheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
+    AppCompatTextView itemsText = v.findViewById(R.id.t7);
+    AppCompatCheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
 
     /*View setup*/
     {
-      TextView mNameTitle = v.findViewById(R.id.title_name);
+      AppCompatTextView mNameTitle = v.findViewById(R.id.title_name);
       mNameTitle.setTextColor(accentColor);
 
-      TextView mDateTitle = v.findViewById(R.id.title_date);
+      AppCompatTextView mDateTitle = v.findViewById(R.id.title_date);
       mDateTitle.setTextColor(accentColor);
 
-      TextView mSizeTitle = v.findViewById(R.id.title_size);
+      AppCompatTextView mSizeTitle = v.findViewById(R.id.title_size);
       mSizeTitle.setTextColor(accentColor);
 
-      TextView mLocationTitle = v.findViewById(R.id.title_location);
+      AppCompatTextView mLocationTitle = v.findViewById(R.id.title_location);
       mLocationTitle.setTextColor(accentColor);
 
-      TextView md5Title = v.findViewById(R.id.title_md5);
+      AppCompatTextView md5Title = v.findViewById(R.id.title_md5);
       md5Title.setTextColor(accentColor);
 
-      TextView sha256Title = v.findViewById(R.id.title_sha256);
+      AppCompatTextView sha256Title = v.findViewById(R.id.title_sha256);
       sha256Title.setTextColor(accentColor);
 
-      ((TextView) v.findViewById(R.id.t5)).setText(name);
-      ((TextView) v.findViewById(R.id.t6)).setText(parent);
+      ((AppCompatTextView) v.findViewById(R.id.t5)).setText(name);
+      ((AppCompatTextView) v.findViewById(R.id.t6)).setText(parent);
       itemsText.setText(items);
-      ((TextView) v.findViewById(R.id.t8)).setText(date);
+      ((AppCompatTextView) v.findViewById(R.id.t8)).setText(date);
 
       if (baseFile.isDirectory() && baseFile.isLocal()) {
         nomediaCheckBox.setVisibility(View.VISIBLE);
@@ -740,7 +742,7 @@ public class GeneralDialogCreation {
         R.string.crypt_decrypt,
         R.string.authenticate_password,
         ((dialog, which) -> {
-          EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
 
           if (editText.getText().toString().equals(password))
             decryptButtonCallbackInterface.confirm(intent);
@@ -765,7 +767,7 @@ public class GeneralDialogCreation {
     View dialogLayout = View.inflate(main, R.layout.dialog_singleedittext, null);
     WarnableTextInputLayout wilTextfield =
         dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
-    EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
     textfield.setHint(promptText);
     textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -869,6 +871,15 @@ public class GeneralDialogCreation {
 
   public static void showCompressDialog(
       @NonNull final MainActivity mainActivity,
+      final HybridFileParcelable baseFile,
+      final String current) {
+    ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+    baseFiles.add(baseFile);
+    showCompressDialog(mainActivity, baseFiles, current);
+  }
+
+  public static void showCompressDialog(
+      @NonNull final MainActivity mainActivity,
       final ArrayList<HybridFileParcelable> baseFiles,
       final String current) {
     int accentColor = mainActivity.getAccent();
@@ -876,7 +887,7 @@ public class GeneralDialogCreation {
 
     View dialogView =
         mainActivity.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
-    EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
+    AppCompatEditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
     etFilename.setText(".zip"); // TODO: Put the file/folder name here
     etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -1012,15 +1023,15 @@ public class GeneralDialogCreation {
       final String f,
       final Context context,
       final MainFragment mainFrag) {
-    final CheckBox readown = v.findViewById(R.id.creadown);
-    final CheckBox readgroup = v.findViewById(R.id.creadgroup);
-    final CheckBox readother = v.findViewById(R.id.creadother);
-    final CheckBox writeown = v.findViewById(R.id.cwriteown);
-    final CheckBox writegroup = v.findViewById(R.id.cwritegroup);
-    final CheckBox writeother = v.findViewById(R.id.cwriteother);
-    final CheckBox exeown = v.findViewById(R.id.cexeown);
-    final CheckBox exegroup = v.findViewById(R.id.cexegroup);
-    final CheckBox exeother = v.findViewById(R.id.cexeother);
+    final AppCompatCheckBox readown = v.findViewById(R.id.creadown);
+    final AppCompatCheckBox readgroup = v.findViewById(R.id.creadgroup);
+    final AppCompatCheckBox readother = v.findViewById(R.id.creadother);
+    final AppCompatCheckBox writeown = v.findViewById(R.id.cwriteown);
+    final AppCompatCheckBox writegroup = v.findViewById(R.id.cwritegroup);
+    final AppCompatCheckBox writeother = v.findViewById(R.id.cwriteother);
+    final AppCompatCheckBox exeown = v.findViewById(R.id.cexeown);
+    final AppCompatCheckBox exegroup = v.findViewById(R.id.cexegroup);
+    final AppCompatCheckBox exeother = v.findViewById(R.id.cexeother);
     String perm = f;
     if (perm.length() < 6) {
       v.setVisibility(View.GONE);

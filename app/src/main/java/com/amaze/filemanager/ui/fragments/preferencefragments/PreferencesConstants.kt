@@ -75,6 +75,7 @@ object PreferencesConstants {
     const val PREFERENCE_ZIP_EXTRACT_PATH = "extractpath"
     const val PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack"
     const val PREFERENCE_DELETE_CONFIRMATION = "delete_confirmation"
+    const val PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS = "disable_player_intent_filters"
 
     // security_prefs.xml
     const val PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint"
@@ -86,6 +87,13 @@ object PreferencesConstants {
     const val ENCRYPT_PASSWORD_FINGERPRINT = "fingerprint"
     const val ENCRYPT_PASSWORD_MASTER = "master"
     const val PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT = false
+
+    // backup_prefs.xml
+    const val PREFERENCE_EXPORT_SETTINGS = "export_settings"
+    const val PREFERENCE_IMPORT_SETTINGS = "import_settings"
+
+    // recent search items
+    const val PREFERENCE_RECENT_SEARCH_ITEMS = "recent_searches"
 
     // others
     const val PREFERENCE_CURRENT_TAB = ""

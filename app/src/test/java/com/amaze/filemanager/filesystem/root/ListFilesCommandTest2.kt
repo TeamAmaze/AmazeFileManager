@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.root
 
 import android.content.SharedPreferences
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.preference.PreferenceManager
@@ -34,6 +34,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.topjohnwu.superuser.Shell
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -58,7 +59,7 @@ import java.io.InputStreamReader
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class ListFilesCommandTest2 {
 
@@ -90,6 +91,13 @@ class ListFilesCommandTest2 {
                 anyBoolean()
             )
         ).thenCallRealMethod()
+        `when`(mockCommand.runShellCommand("pwd")).thenReturn(
+            object : Shell.Result() {
+                override fun getOut(): MutableList<String> = listOf("/").toMutableList()
+                override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
+                override fun getCode(): Int = 0
+            }
+        )
         `when`(mockCommand.runShellCommandToList("ls -l \"/bin\"")).thenReturn(lsLines)
         `when`(
             mockCommand.runShellCommandToList(
