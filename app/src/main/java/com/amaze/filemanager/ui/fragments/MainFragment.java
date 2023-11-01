@@ -34,7 +34,9 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +90,8 @@ import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -513,7 +517,8 @@ public class MainFragment extends Fragment
         } else {
           if (getMainActivity().mReturnIntent) {
             // are we here to return an intent to another app
-            returnIntentResults(layoutElementParcelable.generateBaseFile());
+            returnIntentResults(
+                new HybridFileParcelable[] {layoutElementParcelable.generateBaseFile()});
           } else {
             layoutElementParcelable.generateBaseFile().openFile(getMainActivity(), false);
             DataUtils.getInstance().addHistoryFile(layoutElementParcelable.desc);
@@ -533,29 +538,71 @@ public class MainFragment extends Fragment
    * Returns the intent with uri corresponding to specific {@link HybridFileParcelable} back to
    * external app
    */
-  public void returnIntentResults(HybridFileParcelable baseFile) {
-
+  public void returnIntentResults(HybridFileParcelable[] baseFiles) {
     requireMainActivity().mReturnIntent = false;
+    HashMap<HybridFileParcelable, Uri> resultUris = new HashMap<>();
+    ArrayList<String> failedPaths = new ArrayList<>();
 
-    @Nullable Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
-    if (mediaStoreUri != null) {
-      LOG.debug(
-          mediaStoreUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+    for (HybridFileParcelable baseFile : baseFiles) {
+      @Nullable Uri resultUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
+      if (resultUri != null) {
+        resultUris.put(baseFile, resultUri);
+        LOG.debug(
+            resultUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+      } else {
+        failedPaths.add(baseFile.getPath());
+      }
+    }
+
+    if (!resultUris.isEmpty()) {
       Intent intent = new Intent();
       intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      intent.setAction(Intent.ACTION_SEND);
+      if (resultUris.size() == 1) {
+        intent.setAction(Intent.ACTION_SEND);
+        Map.Entry<HybridFileParcelable, Uri> result = resultUris.entrySet().iterator().next();
+        Uri resultUri = result.getValue();
+        HybridFileParcelable resultBaseFile = result.getKey();
 
-      if (requireMainActivity().mRingtonePickerIntent) {
-        intent.setDataAndType(
-            mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
+        if (requireMainActivity().mRingtonePickerIntent) {
+          intent.setDataAndType(
+              resultUri,
+              MimeTypes.getMimeType(resultBaseFile.getPath(), resultBaseFile.isDirectory()));
+          intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, resultUri);
+        } else {
+          LOG.debug("pickup file");
+          intent.setDataAndType(resultUri, MimeTypes.getExtension(resultBaseFile.getPath()));
+        }
+
       } else {
-        LOG.debug("pickup file");
-        intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
+        LOG.debug("pickup multiple files");
+        // Build ClipData
+        ArrayList<ClipData.Item> uriDataClipItems = new ArrayList<>();
+        HashSet<String> mimeTypes = new HashSet<>();
+        for (Map.Entry<HybridFileParcelable, Uri> result : resultUris.entrySet()) {
+          HybridFileParcelable baseFile = result.getKey();
+          Uri uri = result.getValue();
+          mimeTypes.add(MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+          uriDataClipItems.add(new ClipData.Item(uri));
+        }
+        ClipData clipData =
+            new ClipData(
+                ClipDescription.MIMETYPE_TEXT_URILIST,
+                mimeTypes.toArray(new String[0]),
+                uriDataClipItems.remove(0));
+        for (ClipData.Item item : uriDataClipItems) {
+          clipData.addItem(item);
+        }
+
+        intent.setClipData(clipData);
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.putParcelableArrayListExtra(
+            Intent.EXTRA_STREAM, new ArrayList<>(resultUris.values()));
       }
+
       requireActivity().setResult(FragmentActivity.RESULT_OK, intent);
-    } else {
-      LOG.warn("Unable to get URI from baseFile [{}]", baseFile.getPath());
+    }
+    if (!failedPaths.isEmpty()) {
+      LOG.warn("Unable to get URIs from baseFiles {}", failedPaths);
     }
     requireActivity().finish();
   }

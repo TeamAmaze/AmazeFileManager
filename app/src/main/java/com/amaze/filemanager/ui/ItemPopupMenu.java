@@ -248,7 +248,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
         return true;
       case R.id.return_select:
-        mainFragment.returnIntentResults(rowItem.generateBaseFile());
+        mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
         return true;
     }
     return false;
