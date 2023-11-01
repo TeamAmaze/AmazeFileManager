@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -23,8 +23,8 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze</string>
-    <string name="drawer_open">Apri pannello di navigazione</string>
-    <string name="drawer_close">Chiudi pannello di navigazione</string>
+    <string name="drawer_open">Apri il pannello di navigazione</string>
+    <string name="drawer_close">Chiudi il pannello di navigazione</string>
     <string name="icon">icona</string>
     <string name="apps">Gestione app</string>
     <string name="ftp">Server FTP</string>
@@ -38,7 +38,7 @@
     <string name="properties">Proprietà</string>
     <string name="copyingapks">Copia di %d file APK su %s</string>
     <string name="delbook">Elimina Preferito</string>
-    <string name="add_to_bookmarks">Aggiungi a segnalibro</string>
+    <string name="add_to_bookmarks">Aggiungi ai segnalibri</string>
     <string name="enterpath">Inserisci percorso</string>
     <string name="cancel">ANNULLA</string>
     <string name="create">CREA</string>
@@ -389,7 +389,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cancelled">Annullato</string>
     <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
     <string name="written">Scritti</string>
-    <string name="out_of">fuori da</string>
+    <string name="out_of">di</string>
     <!-- reference to - 'Processing file # of #' in process viewer -->
     <string name="of">di</string>
     <string name="processing_file">Elaborazione file</string>
@@ -568,6 +568,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="create_file_suggest_txt_extension">Si consiglia di usare \".txt\" come estensione del file.</string>
     <string name="ssh_select_pem">Seleziona una chiave privata per l\'autenticazione</string>
     <string name="ssh_key_invalid_passphrase">key passphrase non valida.</string>
+    <string name="ssh_key_no_decoder_decrypt">Non ci sono decodificatori validi per decriptare PEM</string>
     <string name="encryption_fail_copy">Fallito il caricamento della voce criptata nel database</string>
     <string name="extracted">Estratto</string>
     <string name="compressed">Compresso</string>
@@ -683,7 +684,7 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="compressed_explorer_fragment_error_open_uri">Errore aprendo l\'URI \"%s\" per la lettura.</string>
     <string name="error_empty_archive">\"%s\" è un archivio vuoto.</string>
     <string name="error_bad_archive_without_info">\"%s\" è un archivio corrotto.</string>
-    <string name="error_bad_archive_with_info">\"%s\" è un archivio corrotto.\nMessaggio dall\'estrattore: \"%s\"</string>
+    <string name="error_bad_archive_with_info">"%s" è un archivio corrotto.\nMessaggio dall'estrattore: "%s"</string>
     <string name="security_error">Impossibile aprire il file usando quest\'app</string>
     <string name="cloud_drive_tooltip">Crea una connessione Google Drive™ per gestire i file da Amaze File Manager.</string>
     <string name="signin_with_google_title">Autenticati per usare Google Drive™</string>
@@ -693,6 +694,7 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="select_by_type">Selezione per tipo</string>
     <string name="select_by_date">Selezione per data</string>
     <string name="select_similar">Seleziona simili</string>
+    <string name="select_fill">Seleziona il riempimento</string>
     <string name="error_fetching_google_play_product_list">Errore durante la ricezione della lista prodotti da Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Da Android 11, Google necessita che i File Manager chiedano il permesso dell\'utente per gestire tutti i file del dispositivo. Dettagli <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">qui</a>.
         \n\nAnche Gestione File Amaze necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.
@@ -704,22 +706,27 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="ui_summary">Controlla quali informazioni mostrare, personalizza la barra laterale e modifica le preferenze dell\'interfaccia utente</string>
     <string name="behavior_summary">Modifica azioni come la ricerca avanzata e decidi se aprire i file come nuova attività</string>
     <string name="security_summary">Imposta password e crittografia</string>
+    <string name="backup_summary">Esporta/Importa impostazioni Amaze</string>
+
+    <string name="pref_export">Esporta</string>
+    <string name="pref_export_summary">Esporta impostazioni</string>
+    <string name="pref_import">Importa</string>
+    <string name="pref_import_summary">Importa impostazioni</string>
 
     <string name="quick_desc">File a cui si è acceduto di recente in Amaze</string>
     <string name="recent_desc">File creati o modificati di recente</string>
     <string name="error_cannot_find_way_open">Impossibile aprire il file</string>
     <string name="error_cant_decompress_that_file">Impossibile elaborare l\'archivio richiesto</string>
     <string name="analyse_storage">Analizza memoria</string>
-    <string name="download_amaze_utils_text">Stai per essere reindirizzato ad Amaze File Utilities. È la nostra offerta che ha visualizzatori incorporati per audio/video/immagini/documenti, permette di cercare sulle memorie di archiviazione le immagini sfocate/scure, file duplicati, trasferimento veloce tramite Wifi P2P e molto altro.</string>
+    <string name="download_amaze_utils_text">Stai per essere reindirizzato alle Utilities di Amaze File. È la nostra applicazione open source che ha visualizzatori audio/video/immagini/documenti incorporati, ti permette di analizzare file inutili così da liberare spazio, trasferimenti veloci con P2P wifi e molto altro. \nPerfavore aiutaci utilizzandoli.</string>
     <string name="download">Scarica</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Grazie per aver installato Amaze File Utilities. Stai per essere reindirizzato all\'app.</string>
     <string name="image_viewer">Amaze Image Viewer</string>
     <string name="video_player">Amaze Video Player</string>
     <string name="amaze_audio_player">Amaze Music Player</string>
-    <string name="pdf_viewer">Amaze Pdf Viewer</string>
-    <string name="epub_viewer">Amaze Epub Viewer</string>
-    <string name="docx_viewer">Amaze Doc Viewer</string>
+    <string name="pdf_viewer">Visualizzatore Documento Amaze</string>
+    <string name="docx_viewer">Visualizzatore Documento Amaze</string>
     <string name="share_logs">Condividi i log</string>
     <string name="share_logs_summary">Condividi i log acquisiti via email / telegram</string>
     <string name="open_with_amaze">Apri con Amaze</string>
@@ -731,10 +738,30 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="preference_delete_confirmation_summary">Chiede una conferma prima di cancellare file. La disabilitazione di questa funzione è altamente sconsigliata!</string>
     <string name="protocol_ftps">FTP sicuro</string>
     <string name="unavailable">Non disponibile</string>
+
+    <string name="exporting_failed">Esportazione fallita: non è stato possibile scrivere il file di backup</string>
+    <string name="importing_failed">Importazione fallita: non è stato possibile leggere il file di backup</string>
+    <string name="importing_completed">Importazione completata</string>
+    <string name="invalid_backup_file">File di backup non valido</string>
+    <string name="import_failed_for">Importazione fallita per:</string>
     <string name="free_of">\"%s\n%s liberi di %s</string>
     <string name="cloud_error_fdroid">Il plugin Amaze Cloud non è supportato dalla versione F-Droid. Si prega di usare la versione di Amaze disponibile sul Play Store.</string>
     <string name="disable_player_intent_filters">Disabilita filtri intent del player</string>
     <string name="disable_player_intent_filters_summary">Disabilita i filtri intent del player Amaze nel selettore dei file</string>
     <string name="no_app_found_intent">Nessuna app trovata per gestire questo intent. DocumentsUI è installato?</string>
+    <string name="cloud_connection_credentials_cleared">Credenziali per la connessione cloud cancellate</string>
+    <string name="cloud_connection_credentials_cleared_msg">Purtroppo non siamo riusciti a migrare le tue credenziali per la connessione cloud al nuovo database schema, e abbiamo dovuto rimuoverle dall\'applicazione. Per favore crea nuovamente la connessione cloud.</string>
+    <string name="not_finding_what_you_re_looking_for">Non hai trovato quello che cercavi?</string>
+    <string name="try_deep_search">Prova la ricerca avanzata!</string>
+    <string name="try_indexed_search">Prova la ricerca indicizzata!</string>
+    <string name="search_recent">Recente</string>
+    <string name="results">Risultati</string>
+    <string name="grant_notification_permission">Amaze ha bisogno dei permessi di notifica per mostrare il progresso delle operazioni sui file e un pannello per avviare/interrompere il server FTP.</string>
+    <string name="error_unsupported_or_null_uri">Non valido, non supportato, oppure nessun URI è stato fornito</string>
+    <string name="complete_paste_warning">Per favore, prima completa l\'operazione di copia</string>
+    <string name="same_dir_move_error">La cartella di destinazione e quella di origine non devono corrispondere per lo spostamento.</string>
+    <string name="checking_conflicts">Verifica dei conflitti</string>
+    <string name="same_dir_overwrite_error">La cartella di destinazione e quella di origine non devono corrispondere per la sovrascrittura.</string>
+    <string name="not_found_enabled_webview">Nessun browser disponibile</string>
 </resources>
 
