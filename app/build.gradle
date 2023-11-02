@@ -6,6 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
+    namespace "com.amaze.filemanager"
     compileSdk 33
     packagingOptions {
         resources {
@@ -138,7 +139,7 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
     testImplementation "androidx.test:core:$androidXTestVersion"
-    testImplementation "androidx.test:runner:$androidXTestVersion"
+    testImplementation "androidx.test:runner:$androidXTestRunnerVersion"
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     testImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
@@ -256,7 +257,7 @@ kotlin {
     jvmToolchain(11)
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") using module("commons-logging:commons-logging:1.1.1")
@@ -268,7 +269,7 @@ configurations.all {
     }
 }
 
-configurations.all { config ->
+configurations.configureEach { config ->
     // This workarounds logback's multiple bindings problem when running tests.
     if (config.name.toLowerCase().contains('test')) {
         config.resolutionStrategy.dependencySubstitution {
@@ -277,7 +278,7 @@ configurations.all { config ->
     }
 }
 
-task supportOldLangCodes
+tasks.register('supportOldLangCodes')
 
 [['id', 'in'], ['yi', 'ji'], ['he', 'iw']].forEach { sourceCode, destinationCode ->
     def copyTask = tasks.create('copyStrings' + sourceCode + 'Into' + destinationCode, Copy) {
@@ -305,7 +306,7 @@ jacocoAndroidUnitTestReport {
     xml.enabled true
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
 }
