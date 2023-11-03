@@ -473,7 +473,23 @@ public class MainFragment extends Fragment
         requireMainActivity().getActionModeHelper().setActionMode(null);
       } else {
         // the first {goback} item if back navigation is enabled
-        adapter.toggleChecked(position, imageView);
+        MainActivity mainActivity = requireMainActivity();
+        if (mainActivity.mReturnIntent
+            && !mainActivity.getIntent().getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)) {
+          // Only one item should be checked
+          ArrayList<Integer> checkedItemsIndex = adapter.getCheckedItemsIndex();
+          if (checkedItemsIndex.contains(position)) {
+            // The clicked item was the only item checked so it can be unchecked
+            adapter.toggleChecked(position, imageView);
+          } else {
+            // The clicked item was not checked so we have to uncheck all currently checked items
+            for (Integer index : checkedItemsIndex) {
+              adapter.toggleChecked(index, imageView);
+            }
+            // Now we check the clicked item
+            adapter.toggleChecked(position, imageView);
+          }
+        } else adapter.toggleChecked(position, imageView);
       }
     } else {
       if (isBackButton) {
