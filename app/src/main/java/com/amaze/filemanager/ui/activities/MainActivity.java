@@ -586,7 +586,11 @@ public class MainActivity extends PermissionsActivity
     if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
       // file picker intent
       mReturnIntent = true;
-      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+      String text =
+          intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+              ? getString(R.string.pick_files)
+              : getString(R.string.pick_a_file);
+      Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when picking file
