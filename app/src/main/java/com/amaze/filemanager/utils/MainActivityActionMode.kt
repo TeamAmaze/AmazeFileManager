@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.utils
 
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.view.Menu
@@ -123,13 +124,24 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             }
             val textView: AppCompatTextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
-            menu.findItem(R.id.all)
-                .setTitle(
-                    if (checkedItems.size
-                        == mainFragmentViewModel.folderCount +
-                        mainFragmentViewModel.fileCount
-                    ) R.string.deselect_all else R.string.select_all
+
+            if (mainActivity.mReturnIntent && !mainActivity.intent.getBooleanExtra(
+                    Intent.EXTRA_ALLOW_MULTIPLE,
+                    false
                 )
+            ) {
+                // Only one item can be returned, so there should not be a "Select all" button
+                hideOption(R.id.all, menu)
+            } else {
+                menu.findItem(R.id.all)
+                    .setTitle(
+                        if (checkedItems.size
+                            == mainFragmentViewModel.folderCount +
+                            mainFragmentViewModel.fileCount
+                        ) R.string.deselect_all else R.string.select_all
+                    )
+            }
+
             if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
                 .getIsCloudOpenMode()
             ) {
