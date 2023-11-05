@@ -71,6 +71,7 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
@@ -233,6 +234,8 @@ public class MainActivity extends PermissionsActivity
 
   private SpeedDialView floatingActionButton;
 
+  private SpeedDialView fabConfirmSelection;
+
   public MainActivityHelper mainActivityHelper;
 
   public int operation = -1;
@@ -392,6 +395,8 @@ public class MainActivity extends PermissionsActivity
     }
 
     checkForExternalIntent(intent);
+
+    initialiseFabConfirmSelection();
 
     drawer.setDrawerIndicatorEnabled();
 
@@ -1904,6 +1909,52 @@ public class MainActivity extends PermissionsActivity
     }
 
     return floatingActionButton.addActionItem(builder.create());
+  }
+
+  private void initialiseFabConfirmSelection() {
+    fabConfirmSelection = findViewById(R.id.fabs_confirm_selection);
+    fabConfirmSelection.hide();
+    if (mReturnIntent) {
+      int colorAccent = getAccent();
+      fabConfirmSelection.setMainFabClosedBackgroundColor(colorAccent);
+      fabConfirmSelection.setMainFabOpenedBackgroundColor(colorAccent);
+
+      fabConfirmSelection.setOnChangeListener(
+          new SpeedDialView.OnChangeListener() {
+            @Override
+            public boolean onMainActionSelected() {
+              if (getCurrentMainFragment() != null
+                  && getCurrentMainFragment().getMainFragmentViewModel() != null) {
+                ArrayList<LayoutElementParcelable> checkedItems =
+                    getCurrentMainFragment().getMainFragmentViewModel().getCheckedItems();
+                ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+                for (LayoutElementParcelable item : checkedItems) {
+                  baseFiles.add(item.generateBaseFile());
+                }
+                getCurrentMainFragment()
+                    .returnIntentResults(baseFiles.toArray(new HybridFileParcelable[0]));
+              }
+              return false;
+            }
+
+            @Override
+            public void onToggleChanged(boolean isOpen) {}
+          });
+    }
+  }
+
+  /**
+   * If a intent should be returned, shows the floating action button which confirms the selection
+   */
+  public void showFabConfirmSelection() {
+    if (mReturnIntent) {
+      fabConfirmSelection.show();
+    }
+  }
+
+  /** Hides the floating action button which confirms the selection */
+  public void hideFabConfirmSelection() {
+    fabConfirmSelection.hide();
   }
 
   public boolean copyToClipboard(Context context, String text) {
