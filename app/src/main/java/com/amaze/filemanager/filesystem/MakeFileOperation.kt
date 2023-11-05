@@ -51,6 +51,12 @@ object MakeFileOperation {
         return File(extDir, file.name)
     }
 
+    /**
+     * Make normal file
+     * @param file File
+     * @param context Context
+     * @return true for success and false for failed
+     */
     @JvmStatic
     fun mkfile(
         file: File?,
@@ -97,6 +103,13 @@ object MakeFileOperation {
         }
     }
 
+    /**
+     * Make text file
+     * @param data file data
+     * @param path path
+     * @param fileName file name
+     * @return true for success and false for failed
+     */
     @JvmStatic
     fun mktextfile(
         data: String?,

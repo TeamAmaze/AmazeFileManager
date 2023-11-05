@@ -31,6 +31,11 @@ class DrawerViewModel : ViewModel() {
         return requireNotNull(menuMetadataMap[item.toNonLeaking()])
     }
 
+    /**
+     * Put drawer meta data
+     * @param item menu item
+     * @param metadata menu meta data
+     */
     fun putDrawerMetadata(
         item: MenuItem,
         metadata: MenuMetadata,

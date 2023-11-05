@@ -247,6 +247,12 @@ object FileProperties {
         }
     }
 
+    /**
+     * Remap file path
+     * @param path file path
+     * @param openDocumentTree open document tree default false
+     * @return remapped file path
+     */
     @JvmStatic
     fun remapPathForApi30OrAbove(
         path: String,

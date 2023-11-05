@@ -107,7 +107,6 @@ class ZipService : AbstractProgressiveService() {
                 .utilsProvider
                 .colorPreference
                 .getCurrentUserColorPreferences(this, sharedPreferences).accent
-
         val notificationIntent =
             Intent(this, MainActivity::class.java)
                 .putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true)
@@ -118,10 +117,8 @@ class ZipService : AbstractProgressiveService() {
                 notificationIntent,
                 getPendingIntentFlag(0),
             )
-
         customSmallContentViews = RemoteViews(packageName, R.layout.notification_service_small)
         customBigContentViews = RemoteViews(packageName, R.layout.notification_service_big)
-
         val stopIntent = Intent(KEY_COMPRESS_BROADCAST_CANCEL)
         val stopPendingIntent =
             PendingIntent.getBroadcast(
@@ -147,7 +144,6 @@ class ZipService : AbstractProgressiveService() {
                 .addAction(action)
                 .setOngoing(true)
                 .setColor(accentColor)
-
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL)
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build())
         initNotificationViews()

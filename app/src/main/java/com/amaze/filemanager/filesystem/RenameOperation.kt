@@ -51,7 +51,6 @@ object RenameOperation {
         var outChannel: FileChannel? = null
         try {
             inStream = FileInputStream(source)
-
             // First try the normal way
             if (FileProperties.isWritable(target)) {
                 // standard way

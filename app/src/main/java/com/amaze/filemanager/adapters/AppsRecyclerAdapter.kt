@@ -189,10 +189,8 @@ class AppsRecyclerAdapter(
                     )
                 }
                 holder.txtTitle.text = rowItem.label
-
                 holder.packageName.text = rowItem.packageName
                 holder.packageName.isSelected = true // for marquee
-
                 val enableMarqueeFilename =
                     (fragment.requireActivity() as MainActivity)
                         .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
@@ -205,8 +203,6 @@ class AppsRecyclerAdapter(
                         }
                     marqueeAfterDelay(2000, holder.txtTitle)
                 }
-
-                // 	File f = new File(rowItem.getDesc());
                 if (!isBottomSheet) {
                     holder.txtDesc.text = rowItem.fileSize + " |"
                 }
@@ -311,11 +307,7 @@ class AppsRecyclerAdapter(
             ) {
                 context = ContextThemeWrapper(context, R.style.overflow_black)
             }
-            val popupMenu =
-                PopupMenu(
-                    context,
-                    view,
-                )
+            val popupMenu = PopupMenu(context, view)
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 val themedActivity: MainActivity = fragment.requireActivity() as MainActivity
                 val colorAccent = themedActivity.accent
@@ -349,10 +341,7 @@ class AppsRecyclerAdapter(
                             Intent(
                                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                 Uri.parse(
-                                    String.format(
-                                        "package:%s",
-                                        rowItem!!.packageName,
-                                    ),
+                                    String.format("package:%s", rowItem!!.packageName),
                                 ),
                             ),
                         )
