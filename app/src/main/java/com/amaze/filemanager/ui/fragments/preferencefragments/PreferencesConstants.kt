@@ -53,6 +53,7 @@ object PreferencesConstants {
     const val PREFERENCE_SHOW_LAST_MODIFIED = "showLastModified"
     const val PREFERENCE_DRAG_AND_DROP_PREFERENCE = "dragAndDropPreference"
     const val PREFERENCE_DRAG_AND_DROP_REMEMBERED = "dragOperationRemembered"
+    const val PREFERENCE_LANGUAGE = "language"
 
     // drag and drop
     const val PREFERENCE_DRAG_DEFAULT = 0

@@ -6,7 +6,8 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 33
+    namespace "com.amaze.filemanager"
+    compileSdk 33
     packagingOptions {
         resources {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
@@ -64,8 +65,7 @@ android {
         viewBinding true
     }
 
-
-    flavorDimensions 'static'
+    flavorDimensions = ['static']
 
     productFlavors {
         fdroid {
@@ -139,9 +139,10 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
     testImplementation "androidx.test:core:$androidXTestVersion"
-    testImplementation "androidx.test:runner:$androidXTestVersion"
+    testImplementation "androidx.test:runner:$androidXTestRunnerVersion"
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
+    testImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
@@ -158,7 +159,8 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
-    // androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
+    androidTestImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
     androidTestImplementation "commons-net:commons-net:$commonsNetVersion"
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
@@ -255,7 +257,7 @@ kotlin {
     jvmToolchain(11)
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") using module("commons-logging:commons-logging:1.1.1")
@@ -267,7 +269,7 @@ configurations.all {
     }
 }
 
-configurations.all { config ->
+configurations.configureEach { config ->
     // This workarounds logback's multiple bindings problem when running tests.
     if (config.name.toLowerCase().contains('test')) {
         config.resolutionStrategy.dependencySubstitution {
@@ -276,7 +278,7 @@ configurations.all { config ->
     }
 }
 
-task supportOldLangCodes
+tasks.register('supportOldLangCodes')
 
 [['id', 'in'], ['yi', 'ji'], ['he', 'iw']].forEach { sourceCode, destinationCode ->
     def copyTask = tasks.create('copyStrings' + sourceCode + 'Into' + destinationCode, Copy) {
@@ -304,7 +306,7 @@ jacocoAndroidUnitTestReport {
     xml.enabled true
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
 }

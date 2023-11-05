@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:key="language"
+        app:title="@string/preference_language_title" />
     <com.amaze.filemanager.ui.views.preference.CheckBox
         app:defaultValue="true"
         app:key="showThumbs"
@@ -38,7 +41,6 @@
             app:title="@string/show_quick_access_pref" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/advanced">
-
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
