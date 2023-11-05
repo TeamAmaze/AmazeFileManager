@@ -68,6 +68,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             mode.customView = actionModeView
             mainActivity.setPagingEnabled(false)
             mainActivity.hideFab()
+            if (mainActivity.mReturnIntent &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+            ) {
+                mainActivity.showFabConfirmSelection()
+            }
 
             // translates the drawable content down
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
@@ -375,6 +380,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             // translates the drawer content up
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(false);
             mainActivity.showFab()
+            mainActivity.hideFabConfirmSelection()
 
             mainActivity.setPagingEnabled(true)
             safeLet(
@@ -405,7 +411,10 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
      * Finishes the action mode
      */
     fun disableActionMode() {
-        mainActivityReference.get()?.listItemSelected = false
+        mainActivityReference.get()?.let {
+            it.listItemSelected = false
+            it.hideFabConfirmSelection()
+        }
         actionMode?.finish()
         actionMode = null
     }
