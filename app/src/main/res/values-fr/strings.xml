@@ -662,7 +662,7 @@
     <string name="error_snackbar_message">Désolé, quelque chose s\'est mal passé.</string>
     <string name="error_snackbar_action">Rapport</string>
     <string name="what_device_headline">Info:</string>
-    <string name="what_happened_headline">Qu\'est-il arrivé:</string>
+    <string name="what_happened_headline">Qu\'est-il arrivé :</string>
     <string name="info_labels">Quoi:\\nRequête:\\nGMT Heure:\\nPackage:\\nVersion:\\nOS version:\\nPériphérique:\\nModèle:\\nProduit:</string>
     <string name="your_comment">Votre commentaire (en anglais):</string>
     <string name="error_details_headline">Détails :</string>
