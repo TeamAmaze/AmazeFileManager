@@ -227,7 +227,7 @@
 
     <string name="color_title">Couleur</string>
     <string name="color_summary">Définir une couleur aux divers éléments de l\'UI</string>
-    <string name="primary_color_title">Couleur Primaire</string>
+    <string name="primary_color_title">Couleur Primaire (Onglet Gauche)</string>
     <string name="primary_color_summary">Définir la couleur de l\'interface utilisateur pour l\'onglet de gauche</string>
     <string name="accent_color_title">Couleur accentuée</string>
     <string name="accent_color_summary">Définir la couleur du FAB et d\'autres petits éléments de l\'UI</string>
