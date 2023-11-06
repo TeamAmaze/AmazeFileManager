@@ -626,7 +626,7 @@
     <string name="unknown">inconnue</string>
     <string name="multiple_invalid_archive_entries">Certains fichiers de l\'archive ne peuvent pas être extraits; l\'archive peut être endommagée ou provenir d\'une source malveillante.</string>
     <string name="saf_otg_explanation">Vous allez maintenant accéder au système de fichiers d\'Android pour des raisons de sécurité. Veuillez sélectionner le périphérique USB dans la liste de gauche.</string>
-    <string name="donation_thanks">Merci pour le don, cela nous motive! :D</string>
+    <string name="donation_thanks">Merci pour le don, cela nous motive ! :D</string>
     <string name="enable_marquee_filename">Activer l\'effet de sélection pour les noms de fichiers</string>
     <string name="archive_password_prompt">Veuillez saisir le mot de passe d\'archivage:</string>
     <string name="cannot_extract_archive">Impossible d\'extraire l\'archive \"%s\":%s</string>
