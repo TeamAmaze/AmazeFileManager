@@ -123,7 +123,7 @@ public class SearchView {
           clearRecyclerView();
         });
 
-    backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
+    backImageView.setOnClickListener(v -> appbar.searchView.hideSearchView());
 
     searchViewEditText.addTextChangedListener(
         new TextWatcher() {
@@ -183,7 +183,7 @@ public class SearchView {
           } else if (searchMode == 2) {
 
             searchListener.onSearch(s);
-            appbar.getSearchView().hideSearchView();
+            appbar.searchView.hideSearchView();
 
             deepSearchTV.setVisibility(View.GONE);
           }
@@ -312,7 +312,7 @@ public class SearchView {
   /** show search view with a circular reveal animation */
   public void revealSearchView() {
     final int START_RADIUS = 16;
-    int endRadius = Math.max(appbar.getToolbar().getWidth(), appbar.getToolbar().getHeight());
+    int endRadius = Math.max(appbar.toolbar.getWidth(), appbar.toolbar.getHeight());
 
     resetSearchMode();
     clearRecyclerView();
@@ -321,9 +321,7 @@ public class SearchView {
     if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
       int[] searchCoords = new int[2];
       View searchItem =
-          appbar
-              .getToolbar()
-              .findViewById(R.id.search); // It could change position, get it every time
+          appbar.toolbar.findViewById(R.id.search); // It could change position, get it every time
       searchViewEditText.setText("");
       searchItem.getLocationOnScreen(searchCoords);
       animator =
@@ -374,9 +372,7 @@ public class SearchView {
     if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
       int[] searchCoords = new int[2];
       View searchItem =
-          appbar
-              .getToolbar()
-              .findViewById(R.id.search); // It could change position, get it every time
+          appbar.toolbar.findViewById(R.id.search); // It could change position, get it every time
       searchViewEditText.setText("");
       searchItem.getLocationOnScreen(searchCoords);
       animator =

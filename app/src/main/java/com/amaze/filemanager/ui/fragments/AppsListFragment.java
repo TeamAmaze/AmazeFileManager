@@ -128,7 +128,7 @@ public class AppsListFragment extends Fragment
     fastScroller.setRecyclerView(getRecyclerView(), 1);
     mainActivity
         .getAppbar()
-        .getAppbarLayout()
+        .appbarLayout
         .addOnOffsetChangedListener(
             (appBarLayout, verticalOffset) -> {
               fastScroller.updateHandlePosition(verticalOffset, 112);
@@ -165,7 +165,7 @@ public class AppsListFragment extends Fragment
   private void updateViews(MainActivity mainActivity, UtilitiesProvider utilsProvider) {
     mainActivity.getAppbar().setTitle(R.string.apps);
     mainActivity.hideFab();
-    mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
+    mainActivity.getAppbar().bottomBar.setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
     if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
@@ -284,7 +284,7 @@ public class AppsListFragment extends Fragment
       int[] location = new int[2];
       viewHolder.rl.getLocationOnScreen(location);
       Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
-      if (location[1] < mainActivity.getAppbar().getAppbarLayout().getHeight()) {
+      if (location[1] < mainActivity.getAppbar().appbarLayout.getHeight()) {
         getRecyclerView().scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
       } else if (location[1] + viewHolder.rl.getHeight()
           >= getContext().getResources().getDisplayMetrics().heightPixels) {

@@ -18,78 +18,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.appbar;
+package com.amaze.filemanager.ui.views.appbar
 
-import static android.os.Build.VERSION.SDK_INT;
+import android.content.SharedPreferences
+import android.os.Build.VERSION
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
+import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.views.appbar.SearchView.SearchListener
+import com.google.android.material.appbar.AppBarLayout
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
-import com.google.android.material.appbar.AppBarLayout;
+class AppBar(
+    mainActivity: MainActivity,
+    sharedPref: SharedPreferences,
+    searchListener: SearchListener?
+) {
+    @JvmField
+    val toolbar: Toolbar?
 
-import android.content.SharedPreferences;
+    @JvmField
+    val searchView: SearchView
 
-import androidx.annotation.StringRes;
-import androidx.appcompat.widget.Toolbar;
+    @JvmField
+    val bottomBar: BottomBar
 
-/**
- * layout_appbar.xml contains the layout for AppBar and BottomBar
- *
- * <p>This is a class containing containing methods to each section of the AppBar, creating the
- * object loads the views.
- *
- * @author Emmanuel on 2/8/2017, at 23:27.
- */
-public class AppBar {
+    @JvmField
+    val appbarLayout: AppBarLayout
 
-  private int TOOLBAR_START_INSET;
+    init {
+        toolbar = mainActivity.findViewById(R.id.action_bar)
+        searchView = SearchView(this, mainActivity, searchListener)
+        bottomBar = BottomBar(this, mainActivity)
+        appbarLayout = mainActivity.findViewById(R.id.lin)
 
-  private Toolbar toolbar;
-  private SearchView searchView;
-  private BottomBar bottomBar;
+        if (VERSION.SDK_INT >= 21) toolbar.elevation = 0f
 
-  private AppBarLayout appbarLayout;
-
-  public AppBar(
-      MainActivity a, SharedPreferences sharedPref, SearchView.SearchListener searchListener) {
-    toolbar = a.findViewById(R.id.action_bar);
-    searchView = new SearchView(this, a, searchListener);
-    bottomBar = new BottomBar(this, a);
-
-    appbarLayout = a.findViewById(R.id.lin);
-
-    if (SDK_INT >= 21) toolbar.setElevation(0);
-    /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
-    TOOLBAR_START_INSET = toolbar.getContentInsetStart();
-
-    if (!sharedPref.getBoolean(PreferencesConstants.PREFERENCE_INTELLI_HIDE_TOOLBAR, true)) {
-      AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-      params.setScrollFlags(0);
-      appbarLayout.setExpanded(true, true);
+        if (!sharedPref.getBoolean(PreferencesConstants.PREFERENCE_INTELLI_HIDE_TOOLBAR, true)) {
+            (toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
+            appbarLayout.setExpanded(true, true)
+        }
     }
-  }
 
-  public Toolbar getToolbar() {
-    return toolbar;
-  }
+    fun setTitle(title: String?) {
+        if (toolbar != null) toolbar.title = title
+    }
 
-  public SearchView getSearchView() {
-    return searchView;
-  }
-
-  public BottomBar getBottomBar() {
-    return bottomBar;
-  }
-
-  public AppBarLayout getAppbarLayout() {
-    return appbarLayout;
-  }
-
-  public void setTitle(String title) {
-    if (toolbar != null) toolbar.setTitle(title);
-  }
-
-  public void setTitle(@StringRes int title) {
-    if (toolbar != null) toolbar.setTitle(title);
-  }
+    fun setTitle(@StringRes title: Int) {
+        toolbar?.setTitle(title)
+    }
 }

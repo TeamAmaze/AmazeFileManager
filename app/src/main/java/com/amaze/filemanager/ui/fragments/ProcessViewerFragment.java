@@ -132,7 +132,7 @@ public class ProcessViewerFragment extends Fragment {
 
     mainActivity.getAppbar().setTitle(R.string.process_viewer);
     mainActivity.hideFab();
-    mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
+    mainActivity.getAppbar().bottomBar.setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
     int skin_color = mainActivity.getCurrentColorPreference().getPrimaryFirstTab();

@@ -155,7 +155,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
           compressedExplorerFragment
               .requireMainActivity()
               .getAppbar()
-              .getToolbar()
+              .toolbar
               .startActionMode(compressedExplorerFragment.mActionModeCallback);
     }
     compressedExplorerFragment.mActionMode.invalidate();

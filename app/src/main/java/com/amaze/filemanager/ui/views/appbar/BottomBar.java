@@ -260,7 +260,7 @@ public class BottomBar implements View.OnTouchListener {
     View view = new View(mainActivity);
     LinearLayout.LayoutParams params1 =
         new LinearLayout.LayoutParams(
-            appbar.getToolbar().getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
+            appbar.toolbar.getContentInsetLeft(), LinearLayout.LayoutParams.WRAP_CONTENT);
     view.setLayoutParams(params1);
     buttons.addView(view);
 

@@ -529,7 +529,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               transaction2.replace(R.id.content_frame, new FtpServerFragment());
               mainActivity
                   .getAppbar()
-                  .getAppbarLayout()
+                  .appbarLayout
                   .animate()
                   .translationY(0)
                   .setInterpolator(new DecelerateInterpolator(2))
@@ -601,7 +601,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               transaction2.replace(R.id.content_frame, new AppsListFragment());
               mainActivity
                   .getAppbar()
-                  .getAppbarLayout()
+                  .appbarLayout
                   .animate()
                   .translationY(0)
                   .setInterpolator(new DecelerateInterpolator(2))
@@ -647,8 +647,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         (v, keyCode, event) -> {
           if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-              mainActivity.getAppbar().getAppbarLayout().requestFocus();
-              mainActivity.getAppbar().getToolbar().requestFocus();
+              mainActivity.getAppbar().appbarLayout.requestFocus();
+              mainActivity.getAppbar().toolbar.requestFocus();
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
               new Billing(mainActivity);
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {

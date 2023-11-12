@@ -282,7 +282,7 @@ public class TabFragment extends Fragment {
     public void onPageSelected(int p1) {
       requireMainActivity()
           .getAppbar()
-          .getAppbarLayout()
+          .appbarLayout
           .animate()
           .translationY(0)
           .setInterpolator(new DecelerateInterpolator(2))
@@ -432,7 +432,7 @@ public class TabFragment extends Fragment {
     }
     requireMainActivity()
         .getAppbar()
-        .getBottomBar()
+        .bottomBar
         .updatePath(
             mainFragment.getCurrentPath(),
             mainFragment.getMainFragmentViewModel().getResults(),

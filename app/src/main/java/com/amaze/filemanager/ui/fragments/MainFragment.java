@@ -222,7 +222,7 @@ public class MainFragment extends Fragment
     super.onViewCreated(view, savedInstanceState);
     mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
     listView = rootView.findViewById(R.id.listView);
-    mToolbarContainer = requireMainActivity().getAppbar().getAppbarLayout();
+    mToolbarContainer = requireMainActivity().getAppbar().appbarLayout;
     fastScroller = rootView.findViewById(R.id.fastscroll);
     fastScroller.setPressedHandleColor(mainFragmentViewModel.getAccentColor());
     View.OnTouchListener onTouchListener =
@@ -254,7 +254,7 @@ public class MainFragment extends Fragment
     initNoFileLayout();
     HybridFile f = new HybridFile(OpenMode.UNKNOWN, mainFragmentViewModel.getCurrentPath());
     f.generateMode(getActivity());
-    getMainActivity().getAppbar().getBottomBar().setClickListener();
+    getMainActivity().getAppbar().bottomBar.setClickListener();
 
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !mainFragmentViewModel.isList()) {
       listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
@@ -476,8 +476,8 @@ public class MainFragment extends Fragment
         goBackItemClick();
       } else {
         // hiding search view if visible
-        if (requireMainActivity().getAppbar().getSearchView().isEnabled()) {
-          requireMainActivity().getAppbar().getSearchView().hideSearchView();
+        if (requireMainActivity().getAppbar().searchView.isEnabled()) {
+          requireMainActivity().getAppbar().searchView.hideSearchView();
         }
 
         String path =
@@ -845,7 +845,7 @@ public class MainFragment extends Fragment
 
       requireMainActivity().updatePaths(mainFragmentViewModel.getNo());
       requireMainActivity().showFab();
-      requireMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
+      requireMainActivity().getAppbar().appbarLayout.setExpanded(true);
       listView.stopScroll();
       fastScroller.setRecyclerView(
           listView,
@@ -1445,10 +1445,10 @@ public class MainFragment extends Fragment
 
   // This method is used to implement the modification for the pre Searching
   public void onSearchPreExecute(String query) {
-    requireMainActivity().getAppbar().getBottomBar().setPathText("");
+    requireMainActivity().getAppbar().bottomBar.setPathText("");
     requireMainActivity()
         .getAppbar()
-        .getBottomBar()
+        .bottomBar
         .setFullPathText(getString(R.string.searching, query));
   }
 
@@ -1470,17 +1470,17 @@ public class MainFragment extends Fragment
     @Nullable LayoutElementParcelable layoutElementAdded = addTo(hybridFileParcelable);
     if (!requireMainActivity()
         .getAppbar()
-        .getBottomBar()
+        .bottomBar
         .getFullPathText()
         .contains(getString(R.string.searching))) {
       requireMainActivity()
           .getAppbar()
-          .getBottomBar()
+          .bottomBar
           .setFullPathText(getString(R.string.searching, query));
     }
     if (!mainFragmentViewModel.getResults()) {
       reloadListElements(false, true, !mainFragmentViewModel.isList());
-      requireMainActivity().getAppbar().getBottomBar().setPathText("");
+      requireMainActivity().getAppbar().bottomBar.setPathText("");
     } else if (layoutElementAdded != null) {
       adapter.addItem(layoutElementAdded);
     }
@@ -1652,7 +1652,7 @@ public class MainFragment extends Fragment
       int[] location = new int[2];
       viewHolder.baseItemView.getLocationOnScreen(location);
       LOG.info("Current x and y " + location[0] + " " + location[1]);
-      if (location[1] < requireMainActivity().getAppbar().getAppbarLayout().getHeight()) {
+      if (location[1] < requireMainActivity().getAppbar().appbarLayout.getHeight()) {
         listView.scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
       } else if (location[1] + viewHolder.baseItemView.getHeight()
           > requireContext().getResources().getDisplayMetrics().heightPixels) {

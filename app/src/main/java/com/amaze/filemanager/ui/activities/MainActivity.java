@@ -913,9 +913,9 @@ public class MainActivity extends PermissionsActivity
     }
 
     Fragment fragment = getFragmentAtFrame();
-    if (getAppbar().getSearchView().isShown()) {
+    if (getAppbar().searchView.isShown()) {
       // hide search view if visible, with an animation
-      getAppbar().getSearchView().hideSearchView();
+      getAppbar().searchView.hideSearchView();
     } else if (fragment instanceof TabFragment) {
       if (floatingActionButton.isOpen()) {
         floatingActionButton.close(true);
@@ -1069,23 +1069,21 @@ public class MainActivity extends PermissionsActivity
               } else {
                 s.setTitle(R.string.listview);
               }
-              appbar
-                  .getBottomBar()
-                  .updatePath(
-                      mainFragment.getCurrentPath(),
-                      mainFragment.getMainFragmentViewModel().getResults(),
-                      MainActivityHelper.SEARCH_TEXT,
-                      mainFragment.getMainFragmentViewModel().getOpenMode(),
-                      mainFragment.getMainFragmentViewModel().getFolderCount(),
-                      mainFragment.getMainFragmentViewModel().getFileCount(),
-                      mainFragment);
+              appbar.bottomBar.updatePath(
+                  mainFragment.getCurrentPath(),
+                  mainFragment.getMainFragmentViewModel().getResults(),
+                  MainActivityHelper.SEARCH_TEXT,
+                  mainFragment.getMainFragmentViewModel().getOpenMode(),
+                  mainFragment.getMainFragmentViewModel().getFolderCount(),
+                  mainFragment.getMainFragmentViewModel().getFileCount(),
+                  mainFragment);
               return null;
             });
       } catch (Exception e) {
         LOG.warn("failure while preparing options menu", e);
       }
 
-      appbar.getBottomBar().setClickListener();
+      appbar.bottomBar.setClickListener();
 
       search.setVisible(true);
       if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
@@ -1125,7 +1123,7 @@ public class MainActivity extends PermissionsActivity
       appbar.setTitle(R.string.appbar_name);
       menu.findItem(R.id.sethome).setVisible(false);
       if (indicator_layout != null) indicator_layout.setVisibility(View.GONE);
-      getAppbar().getBottomBar().resetClickListener();
+      getAppbar().bottomBar.resetClickListener();
       menu.findItem(R.id.search).setVisible(false);
       menu.findItem(R.id.home).setVisible(false);
       menu.findItem(R.id.history).setVisible(false);
@@ -1267,7 +1265,7 @@ public class MainActivity extends PermissionsActivity
               }
               break;
             case R.id.search:
-              getAppbar().getSearchView().revealSearchView();
+              getAppbar().searchView.revealSearchView();
               break;
           }
           return null;
@@ -1705,9 +1703,9 @@ public class MainActivity extends PermissionsActivity
                 mainActivityHelper.search(getPrefs(), queue);
               }
             });
-    appBarLayout = getAppbar().getAppbarLayout();
+    appBarLayout = getAppbar().appbarLayout;
 
-    setSupportActionBar(getAppbar().getToolbar());
+    setSupportActionBar(getAppbar().toolbar);
     drawer = new Drawer(this);
 
     indicator_layout = findViewById(R.id.indicator_layout);
@@ -1726,7 +1724,7 @@ public class MainActivity extends PermissionsActivity
 
     fabBgView.setOnClickListener(
         view -> {
-          if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
+          if (getAppbar().searchView.isEnabled()) getAppbar().searchView.hideSearchView();
         });
 
     //    drawer.setDrawerHeaderBackground();
@@ -1739,7 +1737,7 @@ public class MainActivity extends PermissionsActivity
    */
   public void updateViews(ColorDrawable colorDrawable) {
     // appbar view color
-    appbar.getBottomBar().setBackgroundColor(colorDrawable.getColor());
+    appbar.bottomBar.setBackgroundColor(colorDrawable.getColor());
     // action bar color
     mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
 
