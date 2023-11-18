@@ -134,7 +134,7 @@ public class ThemedActivity extends PreferenceActivity {
       uiModeNight = newUiModeNight;
 
       if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
-        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
+        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(4));
         // Recreate activity, handling saved state
         //
         // Not smooth, but will only be called if the user changes the system theme, not

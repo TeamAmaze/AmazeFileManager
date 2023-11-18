@@ -39,7 +39,7 @@ public class AppThemeManager {
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
     this.followBatterySaver =
         preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
-    appTheme = AppTheme.getTheme(context, Integer.parseInt(themeId)).getSimpleTheme(context);
+    appTheme = AppTheme.getTheme(Integer.parseInt(themeId)).getSimpleTheme(context);
   }
 
   /**

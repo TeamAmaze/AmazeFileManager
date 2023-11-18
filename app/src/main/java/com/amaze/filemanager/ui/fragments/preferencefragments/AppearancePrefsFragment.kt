@@ -54,8 +54,7 @@ class AppearancePrefsFragment : BasePrefsFragment() {
                 editor.putString(PreferencesConstants.FRAGMENT_THEME, which.toString())
                 editor.apply()
 
-                activity.utilsProvider.themeManager.appTheme =
-                    AppTheme.getTheme(activity, which)
+                activity.utilsProvider.themeManager.appTheme = AppTheme.getTheme(which)
                 activity.recreate()
 
                 dialog.dismiss()
@@ -115,16 +114,15 @@ class AppearancePrefsFragment : BasePrefsFragment() {
             .getString(PreferencesConstants.FRAGMENT_THEME, "4")!!
             .toInt()
 
-        val batterySaverPref = findPreference<Preference>(
-            PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER
-        )
-        batterySaverPref?.isVisible = (
-            currentTheme == AppTheme.LIGHT_INDEX ||
-                currentTheme == AppTheme.SYSTEM_INDEX ||
-                currentTheme == AppTheme.TIME_INDEX
-            )
         themePref?.summary = themes[currentTheme]
         themePref?.onPreferenceClickListener = onClickTheme
+
+        val batterySaverPref = findPreference<Preference>(
+                PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER
+        )
+
+        val currentThemeEnum = AppTheme.getTheme(currentTheme)
+        batterySaverPref?.isVisible = currentThemeEnum.canBeLight()
 
         findPreference<Preference>(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
             ?.let {

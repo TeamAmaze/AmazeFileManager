@@ -48,13 +48,15 @@ class AppThemeTest {
     @Test
     fun testGetTheme() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        Assert.assertEquals(AppTheme.LIGHT, AppTheme.getTheme(context, AppTheme.LIGHT_INDEX))
+        Assert.assertEquals(AppTheme.LIGHT, AppTheme.getTheme(AppTheme.LIGHT_INDEX))
 
-        Assert.assertEquals(AppTheme.DARK, AppTheme.getTheme(context, AppTheme.DARK_INDEX))
+        Assert.assertEquals(AppTheme.DARK, AppTheme.getTheme(AppTheme.DARK_INDEX))
 
-        Assert.assertEquals(AppTheme.TIMED, AppTheme.getTheme(context, AppTheme.TIME_INDEX))
+        Assert.assertEquals(AppTheme.TIMED, AppTheme.getTheme(AppTheme.TIME_INDEX))
 
-        Assert.assertEquals(AppTheme.BLACK, AppTheme.getTheme(context, AppTheme.BLACK_INDEX))
+        Assert.assertEquals(AppTheme.BLACK, AppTheme.getTheme(AppTheme.BLACK_INDEX))
+
+        Assert.assertEquals(AppTheme.SYSTEM, AppTheme.getTheme(AppTheme.SYSTEM_INDEX))
     }
 
     /**
@@ -65,7 +67,7 @@ class AppThemeTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
         val getMaterialDialogTheme = { apptheme: Int ->
-            AppTheme.getTheme(context, apptheme).getMaterialDialogTheme(context)
+            AppTheme.getTheme(apptheme).getMaterialDialogTheme(context)
         }
 
         Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.LIGHT_INDEX))
@@ -88,33 +90,31 @@ class AppThemeTest {
     @Test
     fun testSimpleTheme() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val mask = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isNightMode = mask == Configuration.UI_MODE_NIGHT_YES
 
         Assert.assertEquals(
             AppTheme.LIGHT,
-            AppTheme.getTheme(context, AppTheme.LIGHT_INDEX).getSimpleTheme(isNightMode)
+            AppTheme.getTheme(AppTheme.LIGHT_INDEX).getSimpleTheme(context)
         )
 
         Assert.assertEquals(
             AppTheme.DARK,
-            AppTheme.getTheme(context, AppTheme.DARK_INDEX).getSimpleTheme(isNightMode)
+            AppTheme.getTheme(AppTheme.DARK_INDEX).getSimpleTheme(context)
         )
 
         val hour = Calendar.getInstance()[Calendar.HOUR_OF_DAY]
         if (hour <= 6 || hour >= 18) {
             Assert.assertEquals(
                 AppTheme.DARK,
-                AppTheme.getTheme(context, AppTheme.TIME_INDEX).getSimpleTheme(isNightMode)
+                AppTheme.getTheme(AppTheme.TIME_INDEX).getSimpleTheme(context)
             )
         } else Assert.assertEquals(
             AppTheme.LIGHT,
-            AppTheme.getTheme(context, AppTheme.TIME_INDEX).getSimpleTheme(isNightMode)
+            AppTheme.getTheme(AppTheme.TIME_INDEX).getSimpleTheme(context)
         )
 
         Assert.assertEquals(
             AppTheme.BLACK,
-            AppTheme.getTheme(context, AppTheme.BLACK_INDEX).getSimpleTheme(isNightMode)
+            AppTheme.getTheme(AppTheme.BLACK_INDEX).getSimpleTheme(context)
         )
     }
 }

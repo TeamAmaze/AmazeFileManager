@@ -61,11 +61,7 @@ public enum AppTheme {
    * @param index The theme index
    * @return The AppTheme for the given index
    */
-  public static AppTheme getTheme(Context context, int index) {
-    return getTheme(isNightMode(context), index);
-  }
-
-  public static AppTheme getTheme(boolean isNightMode, int index) {
+  public static AppTheme getTheme(int index) {
     switch (index) {
       default:
       case LIGHT_INDEX:
@@ -77,7 +73,7 @@ public enum AppTheme {
       case BLACK_INDEX:
         return BLACK;
       case SYSTEM_INDEX:
-        return isNightMode ? DARK : LIGHT;
+        return SYSTEM;
     }
   }
 
