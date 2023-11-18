@@ -26,7 +26,6 @@ import com.amaze.filemanager.ui.theme.AppThemeManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 
 import androidx.preference.PreferenceManager;
 
@@ -40,11 +39,7 @@ public class UtilitiesProvider {
 
     colorPreference = new ColorPreferenceHelper();
     colorPreference.getCurrentUserColorPreferences(context, sharedPreferences);
-    appThemeManager =
-        new AppThemeManager(
-            sharedPreferences,
-            (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                == Configuration.UI_MODE_NIGHT_YES);
+    appThemeManager = new AppThemeManager(sharedPreferences, context);
   }
 
   public ColorPreferenceHelper getColorPreference() {

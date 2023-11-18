@@ -22,27 +22,31 @@ package com.amaze.filemanager.ui.theme;
 
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 /** Saves and restores the AppTheme */
 public class AppThemeManager {
   private SharedPreferences preferences;
   private AppTheme appTheme;
-  private final boolean isNightMode;
+  private final Context context;
 
-  public AppThemeManager(SharedPreferences preferences, boolean isNightMode) {
+  private final boolean followBatterySaver;
+
+  public AppThemeManager(SharedPreferences preferences, Context context) {
     this.preferences = preferences;
-    this.isNightMode = isNightMode;
+    this.context = context;
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
-    appTheme =
-        AppTheme.getTheme(isNightMode, Integer.parseInt(themeId)).getSimpleTheme(isNightMode);
+    this.followBatterySaver =
+        preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
+    appTheme = AppTheme.getTheme(context, Integer.parseInt(themeId)).getSimpleTheme(context);
   }
 
   /**
    * @return The current Application theme
    */
   public AppTheme getAppTheme() {
-    return appTheme.getSimpleTheme(isNightMode);
+    return appTheme.getSimpleTheme(context);
   }
 
   /**
