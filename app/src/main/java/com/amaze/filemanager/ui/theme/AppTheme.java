@@ -35,11 +35,11 @@ import androidx.preference.PreferenceManager;
 
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
-  LIGHT(0),
-  DARK(1),
-  TIMED(2),
-  BLACK(3),
-  SYSTEM(4);
+  LIGHT(0, true),
+  DARK(1, false),
+  TIMED(2, true),
+  BLACK(3, false),
+  SYSTEM(4, true);
 
   public static final int LIGHT_INDEX = 0;
   public static final int DARK_INDEX = 1;
@@ -48,9 +48,11 @@ public enum AppTheme {
   public static final int SYSTEM_INDEX = 4;
 
   private int id;
+  private final boolean canBeLight;
 
-  AppTheme(int id) {
+  AppTheme(int id, boolean canBeLight) {
     this.id = id;
+    this.canBeLight = canBeLight;
   }
 
   /**
@@ -137,16 +139,19 @@ public enum AppTheme {
         break;
     }
 
-    if (theme == LIGHT && isBatterySaver) {
+    if (this.canBeLight && isBatterySaver) {
       return DARK;
-    }
-    else {
+    } else {
       return theme;
     }
   }
 
   public int getId() {
     return id;
+  }
+
+  public boolean canBeLight() {
+    return this.canBeLight;
   }
 
   private static boolean isNightMode(Context context) {
