@@ -96,7 +96,7 @@ class AppThemeTest {
 
         Assert.assertEquals(
             AppTheme.LIGHT,
-                getSimpleTheme(AppTheme.LIGHT_INDEX, context)
+            getSimpleTheme(AppTheme.LIGHT_INDEX, context)
         )
 
         Assert.assertEquals(
@@ -160,13 +160,13 @@ class AppThemeTest {
         }
 
         Assert.assertEquals(
-                AppTheme.DARK,
-                getSimpleTheme(AppTheme.DARK_INDEX, context)
+            AppTheme.DARK,
+            getSimpleTheme(AppTheme.DARK_INDEX, context)
         )
 
         Assert.assertEquals(
-                AppTheme.BLACK,
-                getSimpleTheme(AppTheme.BLACK_INDEX, context)
+            AppTheme.BLACK,
+            getSimpleTheme(AppTheme.BLACK_INDEX, context)
         )
     }
 
@@ -184,7 +184,8 @@ class AppThemeTest {
         testSimpleTheme()
     }
 
-    private fun getSimpleTheme(index: Int, context: Context) = AppTheme.getTheme(index).getSimpleTheme(context)
+    private fun getSimpleTheme(index: Int, context: Context) =
+        AppTheme.getTheme(index).getSimpleTheme(context)
 
     private fun setUpForFollowBatterySaverMode(context: Context, batterySaverOn: Boolean) {
         // Set Battery saver mode to given state `batterySaverOn`
@@ -194,6 +195,9 @@ class AppThemeTest {
 
         // Set follow battery saver preference to true
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        preferences.edit().putBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, true).apply()
+        preferences
+            .edit()
+            .putBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, true)
+            .apply()
     }
 }
