@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.theme
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
