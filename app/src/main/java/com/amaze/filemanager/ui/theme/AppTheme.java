@@ -23,11 +23,15 @@ package com.amaze.filemanager.ui.theme;
 import java.util.Calendar;
 
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.PowerManager;
+
+import androidx.preference.PreferenceManager;
 
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
@@ -101,27 +105,43 @@ public enum AppTheme {
    * @return The AppTheme for the given index
    */
   public AppTheme getSimpleTheme(Context context) {
-    return getSimpleTheme(isNightMode(context));
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    boolean followBatterySaver =
+        preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
+    return getSimpleTheme(isNightMode(context), followBatterySaver && isBatterySaverMode(context));
   }
 
-  public AppTheme getSimpleTheme(boolean isNightMode) {
+  public AppTheme getSimpleTheme(boolean isNightMode, boolean isBatterySaver) {
+    AppTheme theme;
     switch (id) {
       default:
       case LIGHT_INDEX:
-        return LIGHT;
+        theme = LIGHT;
+        break;
       case DARK_INDEX:
-        return DARK;
+        theme = DARK;
+        break;
       case TIME_INDEX:
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (hour <= 6 || hour >= 18) {
-          return DARK;
+          theme = DARK;
         } else {
-          return LIGHT;
+          theme = LIGHT;
         }
+        break;
       case BLACK_INDEX:
-        return BLACK;
+        theme = BLACK;
+        break;
       case SYSTEM_INDEX:
-        return isNightMode ? DARK : LIGHT;
+        theme = isNightMode ? DARK : LIGHT;
+        break;
+    }
+
+    if (theme == LIGHT && isBatterySaver) {
+      return DARK;
+    }
+    else {
+      return theme;
     }
   }
 
