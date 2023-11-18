@@ -26,6 +26,8 @@ import com.afollestad.materialdialogs.Theme;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
+import android.os.PowerManager;
 
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
@@ -130,5 +132,14 @@ public enum AppTheme {
   private static boolean isNightMode(Context context) {
     return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
         == Configuration.UI_MODE_NIGHT_YES;
+  }
+
+  private static boolean isBatterySaverMode(Context context) {
+    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      return powerManager.isPowerSaveMode();
+    } else {
+      return false;
+    }
   }
 }
