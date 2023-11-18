@@ -104,6 +104,11 @@ class AppearancePrefsFragment : BasePrefsFragment() {
         true
     }
 
+    private val onClickFollowBatterySaver = Preference.OnPreferenceClickListener {
+        activity.recreate()
+        true
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.appearance_prefs, rootKey)
 
@@ -118,11 +123,12 @@ class AppearancePrefsFragment : BasePrefsFragment() {
         themePref?.onPreferenceClickListener = onClickTheme
 
         val batterySaverPref = findPreference<Preference>(
-                PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER
+            PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER
         )
 
         val currentThemeEnum = AppTheme.getTheme(currentTheme)
         batterySaverPref?.isVisible = currentThemeEnum.canBeLight()
+        batterySaverPref?.onPreferenceClickListener = onClickFollowBatterySaver
 
         findPreference<Preference>(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
             ?.let {
