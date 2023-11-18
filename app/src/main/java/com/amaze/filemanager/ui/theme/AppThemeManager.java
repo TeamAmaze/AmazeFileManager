@@ -31,14 +31,10 @@ public class AppThemeManager {
   private AppTheme appTheme;
   private final Context context;
 
-  private final boolean followBatterySaver;
-
   public AppThemeManager(SharedPreferences preferences, Context context) {
     this.preferences = preferences;
     this.context = context;
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
-    this.followBatterySaver =
-        preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
     appTheme = AppTheme.getTheme(Integer.parseInt(themeId)).getSimpleTheme(context);
   }
 
