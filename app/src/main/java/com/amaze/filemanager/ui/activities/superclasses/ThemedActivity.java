@@ -39,6 +39,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -55,6 +56,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
@@ -63,7 +65,18 @@ public class ThemedActivity extends PreferenceActivity {
       new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent i) {
-          recreate();
+          SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+          boolean followBatterySaver =
+              preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
+
+          AppTheme theme =
+              AppTheme.getTheme(
+                  Integer.parseInt(
+                      preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4")));
+
+          if (followBatterySaver && theme.canBeLight()) {
+            recreate();
+          }
         }
       };
 
