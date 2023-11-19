@@ -107,35 +107,27 @@ public enum AppTheme {
   }
 
   public AppTheme getSimpleTheme(boolean isNightMode, boolean isBatterySaver) {
-    AppTheme theme;
+    if (this.canBeLight() && isBatterySaver) {
+      return DARK;
+    }
+
     switch (id) {
       default:
       case LIGHT_INDEX:
-        theme = LIGHT;
-        break;
+        return LIGHT;
       case DARK_INDEX:
-        theme = DARK;
-        break;
+        return DARK;
       case TIME_INDEX:
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (hour <= 6 || hour >= 18) {
-          theme = DARK;
+          return DARK;
         } else {
-          theme = LIGHT;
+          return LIGHT;
         }
-        break;
       case BLACK_INDEX:
-        theme = BLACK;
-        break;
+        return BLACK;
       case SYSTEM_INDEX:
-        theme = isNightMode ? DARK : LIGHT;
-        break;
-    }
-
-    if (this.canBeLight && isBatterySaver) {
-      return DARK;
-    } else {
-      return theme;
+        return isNightMode ? DARK : LIGHT;
     }
   }
 
