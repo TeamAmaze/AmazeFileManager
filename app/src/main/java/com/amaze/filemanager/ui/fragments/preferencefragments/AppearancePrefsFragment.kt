@@ -104,8 +104,8 @@ class AppearancePrefsFragment : BasePrefsFragment() {
         true
     }
 
-    /** OnPreferenceClickListener for "FollowBatterySaver" option to update the activity */
     private val onClickFollowBatterySaver = Preference.OnPreferenceClickListener {
+        // recreate the activity since the theme could have changed with this preference change
         activity.recreate()
         true
     }
