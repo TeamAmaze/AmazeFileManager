@@ -61,6 +61,10 @@ import androidx.preference.PreferenceManager;
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
   private int uiModeNight = -1;
+
+  /**
+   * BroadcastReceiver responsible for updating the theme if battery saver mode is turned on or off
+   */
   private final BroadcastReceiver powerModeReceiver =
       new BroadcastReceiver() {
         @Override
@@ -345,6 +349,10 @@ public class ThemedActivity extends PreferenceActivity {
     unregisterPowerModeReceiver();
   }
 
+  /**
+   * Registers the BroadcastReceiver \`powerModeReceiver\` to listen to broadcasts that the battery
+   * save mode has been changed
+   */
   private void registerPowerModeReceiver() {
     if (SDK_INT >= LOLLIPOP) {
       registerReceiver(
@@ -352,6 +360,7 @@ public class ThemedActivity extends PreferenceActivity {
     }
   }
 
+  /** Unregisters the BroadcastReceiver \`powerModeReceiver\` */
   private void unregisterPowerModeReceiver() {
     if (SDK_INT >= LOLLIPOP) {
       unregisterReceiver(powerModeReceiver);

@@ -48,6 +48,11 @@ public enum AppTheme {
   public static final int SYSTEM_INDEX = 4;
 
   private int id;
+
+  /**
+   * Specifies if the theme can be light in some situations. Used for the "Follow battery saver"
+   * option.
+   */
   private final boolean canBeLight;
 
   AppTheme(int id, boolean canBeLight) {
@@ -138,6 +143,7 @@ public enum AppTheme {
     return id;
   }
 
+  /** Returns if the theme can be light in some situations */
   public boolean canBeLight() {
     return this.canBeLight;
   }
@@ -147,6 +153,12 @@ public enum AppTheme {
         == Configuration.UI_MODE_NIGHT_YES;
   }
 
+  /**
+   * Checks if battery saver mode is on
+   *
+   * @param context The context in which the battery saver mode should be checked
+   * @return Whether battery saver mode is on or off
+   */
   private static boolean isBatterySaverMode(Context context) {
     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

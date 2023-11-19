@@ -192,6 +192,9 @@ class AppThemeTest {
         testSimpleTheme()
     }
 
+    /**
+     * Tests the material dialog theme with "Follow Battery Saver" option selected when battery saver is on
+     */
     @Test
     @Config(
         shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
@@ -224,6 +227,9 @@ class AppThemeTest {
         )
     }
 
+    /**
+     * Tests the material dialog theme with "Follow Battery Saver" option selected when battery saver is off
+     */
     @Test
     @Config(
         shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
@@ -239,12 +245,15 @@ class AppThemeTest {
         testMaterialDialogTheme()
     }
 
+    /** Shortcut to get the material dialog theme from the theme index */
     private fun getMaterialDialogTheme(apptheme: Int, context: Context): Theme =
         AppTheme.getTheme(apptheme).getMaterialDialogTheme(context)
 
+    /** Shortcut to get the simple theme from the theme index */
     private fun getSimpleTheme(index: Int, context: Context): AppTheme =
         AppTheme.getTheme(index).getSimpleTheme(context)
 
+    /** Sets the battery saver mode to [batterySaverOn] and the "Follow battery saver" option to true */
     private fun setUpForFollowBatterySaverMode(context: Context, batterySaverOn: Boolean) {
         // Set Battery saver mode to given state `batterySaverOn`
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
