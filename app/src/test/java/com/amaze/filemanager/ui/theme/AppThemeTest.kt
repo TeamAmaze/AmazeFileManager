@@ -194,9 +194,9 @@ class AppThemeTest {
 
     @Test
     @Config(
-            shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
-            qualifiers = "notnight",
-            minSdk = Build.VERSION_CODES.LOLLIPOP
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
     )
     fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOn() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -214,21 +214,21 @@ class AppThemeTest {
         }
 
         Assert.assertEquals(
-                Theme.DARK,
-                getMaterialDialogTheme(AppTheme.DARK_INDEX, context)
+            Theme.DARK,
+            getMaterialDialogTheme(AppTheme.DARK_INDEX, context)
         )
 
         Assert.assertEquals(
-                Theme.DARK,
-                getMaterialDialogTheme(AppTheme.BLACK_INDEX, context)
+            Theme.DARK,
+            getMaterialDialogTheme(AppTheme.BLACK_INDEX, context)
         )
     }
 
     @Test
     @Config(
-            shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
-            qualifiers = "notnight",
-            minSdk = Build.VERSION_CODES.LOLLIPOP
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
     )
     fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOff() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -239,10 +239,10 @@ class AppThemeTest {
         testMaterialDialogTheme()
     }
 
-    private fun getMaterialDialogTheme(apptheme: Int, context: Context) : Theme =
+    private fun getMaterialDialogTheme(apptheme: Int, context: Context): Theme =
         AppTheme.getTheme(apptheme).getMaterialDialogTheme(context)
 
-    private fun getSimpleTheme(index: Int, context: Context) : AppTheme =
+    private fun getSimpleTheme(index: Int, context: Context): AppTheme =
         AppTheme.getTheme(index).getSimpleTheme(context)
 
     private fun setUpForFollowBatterySaverMode(context: Context, batterySaverOn: Boolean) {
