@@ -78,22 +78,14 @@ public enum AppTheme {
   }
 
   public Theme getMaterialDialogTheme(Context context) {
-    switch (id) {
+    AppTheme simpleTheme = getSimpleTheme(context);
+    switch (simpleTheme.id) {
       default:
       case LIGHT_INDEX:
         return Theme.LIGHT;
       case DARK_INDEX:
       case BLACK_INDEX:
         return Theme.DARK;
-      case TIME_INDEX:
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour <= 6 || hour >= 18) {
-          return Theme.DARK;
-        } else {
-          return Theme.LIGHT;
-        }
-      case SYSTEM_INDEX:
-        return isNightMode(context) ? Theme.DARK : Theme.LIGHT;
     }
   }
 
