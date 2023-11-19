@@ -35,7 +35,7 @@ public class AppThemeManager {
     this.preferences = preferences;
     this.context = context;
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
-    appTheme = AppTheme.getTheme(Integer.parseInt(themeId)).getSimpleTheme(context);
+    appTheme = AppTheme.getTheme(Integer.parseInt(themeId));
   }
 
   /**
