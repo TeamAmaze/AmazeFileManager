@@ -69,22 +69,18 @@ class AppThemeTest {
     fun testMaterialDialogTheme() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        val getMaterialDialogTheme = { apptheme: Int ->
-            AppTheme.getTheme(apptheme).getMaterialDialogTheme(context)
-        }
+        Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.LIGHT_INDEX, context))
 
-        Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.LIGHT_INDEX))
-
-        Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.DARK_INDEX))
+        Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.DARK_INDEX, context))
 
         val hour = Calendar.getInstance()[Calendar.HOUR_OF_DAY]
         if (hour <= 6 || hour >= 18) {
-            Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.TIME_INDEX))
+            Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.TIME_INDEX, context))
         } else {
-            Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.TIME_INDEX))
+            Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.TIME_INDEX, context))
         }
 
-        Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.BLACK_INDEX))
+        Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.BLACK_INDEX, context))
     }
 
     /**
@@ -196,7 +192,57 @@ class AppThemeTest {
         testSimpleTheme()
     }
 
-    private fun getSimpleTheme(index: Int, context: Context) =
+    @Test
+    @Config(
+            shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+            qualifiers = "notnight",
+            minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOn() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        setUpForFollowBatterySaverMode(context, true)
+
+        val canBeLightThemes = AppTheme.values().filter { it.canBeLight() }
+
+        for (lightTheme in canBeLightThemes) {
+            Assert.assertEquals(
+                "For $lightTheme: ",
+                Theme.DARK,
+                getMaterialDialogTheme(lightTheme.id, context)
+            )
+        }
+
+        Assert.assertEquals(
+                Theme.DARK,
+                getMaterialDialogTheme(AppTheme.DARK_INDEX, context)
+        )
+
+        Assert.assertEquals(
+                Theme.DARK,
+                getMaterialDialogTheme(AppTheme.BLACK_INDEX, context)
+        )
+    }
+
+    @Test
+    @Config(
+            shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+            qualifiers = "notnight",
+            minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOff() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        setUpForFollowBatterySaverMode(context, false)
+
+        // Should have the same behavior
+        testMaterialDialogTheme()
+    }
+
+    private fun getMaterialDialogTheme(apptheme: Int, context: Context) : Theme =
+        AppTheme.getTheme(apptheme).getMaterialDialogTheme(context)
+
+    private fun getSimpleTheme(index: Int, context: Context) : AppTheme =
         AppTheme.getTheme(index).getSimpleTheme(context)
 
     private fun setUpForFollowBatterySaverMode(context: Context, batterySaverOn: Boolean) {
