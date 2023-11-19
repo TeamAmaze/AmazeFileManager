@@ -122,7 +122,7 @@ class AppThemeTest {
     }
 
     /**
-     * Tests the System theme when night mode is on
+     * Tests the "System" theme when night mode is on
      */
     @Test
     @Config(qualifiers = "night")
@@ -133,7 +133,7 @@ class AppThemeTest {
     }
 
     /**
-     * Tests the System theme when night mode is off
+     * Tests the "System" theme when night mode is off
      */
     @Test
     @Config(qualifiers = "notnight")
@@ -144,11 +144,15 @@ class AppThemeTest {
     }
 
     /**
-     * Tests the the themes with "Follow Battery Saver" option selected when battery saver is on
+     * Tests the themes with "Follow Battery Saver" option selected when battery saver is on
      */
     @Test
-    @Config(shadows = [ShadowPowerManager::class], qualifiers = "notnight")
-    fun testSimpleSystemThemeFollowBatterySaverAndBatterySaverOn() {
+    @Config(
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testSimpleAppThemeWithFollowBatterySaverAndBatterySaverOn() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
         setUpForFollowBatterySaverMode(context, true)
@@ -156,7 +160,11 @@ class AppThemeTest {
         val canBeLightThemes = AppTheme.values().filter { it.canBeLight() }
 
         for (lightTheme in canBeLightThemes) {
-            Assert.assertEquals(AppTheme.DARK, getSimpleTheme(lightTheme.id, context))
+            Assert.assertEquals(
+                "For $lightTheme: ",
+                AppTheme.DARK,
+                getSimpleTheme(lightTheme.id, context)
+            )
         }
 
         Assert.assertEquals(
@@ -171,11 +179,15 @@ class AppThemeTest {
     }
 
     /**
-     * Tests the the themes with "Follow Battery Saver" option selected when battery saver is off
+     * Tests the themes with "Follow Battery Saver" option selected when battery saver is off
      */
     @Test
-    @Config(shadows = [ShadowPowerManager::class], qualifiers = "notnight")
-    fun testSimpleSystemThemeFollowBatterySaverAndBatterySaverOff() {
+    @Config(
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testSimpleAppThemeWithFollowBatterySaverAndBatterySaverOff() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
         setUpForFollowBatterySaverMode(context, false)
