@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -21,6 +21,7 @@
 package com.amaze.filemanager.database
 
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.database.daos.EncryptedEntryDao
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.Logger
@@ -30,45 +31,48 @@ import org.slf4j.LoggerFactory
 object CryptHandler {
 
     private val log: Logger = LoggerFactory.getLogger(CryptHandler::class.java)
-    private val database: ExplorerDatabase = AppConfig.getInstance().explorerDatabase
+
+    private val encryptedEntryDao: EncryptedEntryDao by lazy {
+        AppConfig.getInstance().explorerDatabase.encryptedEntryDao()
+    }
 
     /**
      * Add [EncryptedEntry] to database.
      */
+    @JvmStatic
     fun addEntry(encryptedEntry: EncryptedEntry) {
-        database.encryptedEntryDao().insert(encryptedEntry).subscribeOn(Schedulers.io()).subscribe()
+        encryptedEntryDao.insert(encryptedEntry).subscribeOn(Schedulers.io()).subscribe()
     }
 
     /**
      * Remove [EncryptedEntry] of specified path.
      */
+    @JvmStatic
     fun clear(path: String) {
-        database.encryptedEntryDao().delete(path).subscribeOn(Schedulers.io()).subscribe()
+        encryptedEntryDao.delete(path).subscribeOn(Schedulers.io()).subscribe()
     }
 
     /**
      * Update specified new [EncryptedEntry] in database.
      */
-    fun updateEntry(oldEncryptedEntry: EncryptedEntry, newEncryptedEntry: EncryptedEntry) {
-        database.encryptedEntryDao().update(newEncryptedEntry).subscribeOn(Schedulers.io())
-            .subscribe()
+    @JvmStatic
+    fun updateEntry(newEncryptedEntry: EncryptedEntry) {
+        encryptedEntryDao.update(newEncryptedEntry).subscribeOn(Schedulers.io()).subscribe()
     }
 
     /**
      * Find [EncryptedEntry] of specified path. Returns null if not exist.
      */
+    @JvmStatic
     fun findEntry(path: String): EncryptedEntry? {
         return runCatching {
-            database.encryptedEntryDao().select(path).subscribeOn(Schedulers.io()).blockingGet()
+            encryptedEntryDao.select(path).subscribeOn(Schedulers.io()).blockingGet()
         }.onFailure {
             log.error(it.message!!)
         }.getOrNull()
     }
 
+    @JvmStatic
     val allEntries: Array<EncryptedEntry>
-        get() {
-            val encryptedEntryList =
-                database.encryptedEntryDao().list().subscribeOn(Schedulers.io()).blockingGet()
-            return encryptedEntryList.toTypedArray()
-        }
+        get() = encryptedEntryDao.list().subscribeOn(Schedulers.io()).blockingGet().toTypedArray()
 }

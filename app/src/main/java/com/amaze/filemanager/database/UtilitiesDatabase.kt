@@ -498,7 +498,6 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                     DATABASE_NAME
                 )
             return builder
-                .allowMainThreadQueries()
                 .addMigrations(
                     MIGRATION_1_2,
                     MIGRATION_2_3,

@@ -277,7 +277,6 @@ public class MainActivity extends PermissionsActivity
 
   private SpeedDialOverlayLayout fabBgView;
   private UtilsHandler utilsHandler;
-  private CloudHandler cloudHandler;
   private CloudLoaderAsyncTask cloudLoaderAsyncTask;
   /**
    * This is for a hack.
@@ -360,7 +359,6 @@ public class MainActivity extends PermissionsActivity
 
     initialiseViews();
     utilsHandler = AppConfig.getInstance().getUtilsHandler();
-    cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase());
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
@@ -371,7 +369,7 @@ public class MainActivity extends PermissionsActivity
         LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
       } catch (Exception errorRaised) {
         LOG.error("Error initializing cloud connections", errorRaised);
-        cloudHandler.clearAllCloudConnections();
+        CloudHandler.clearAllCloudConnections();
         AlertDialog.show(
             this,
             R.string.cloud_connection_credentials_cleared_msg,
@@ -534,17 +532,15 @@ public class MainActivity extends PermissionsActivity
     boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
     // reset home and current paths according to new storages
     if (b) {
-      TabHandler tabHandler = TabHandler.getInstance();
-      tabHandler
-          .clear()
+      TabHandler.clear()
           .subscribe(
               () -> {
                 if (tabFragment != null) {
                   tabFragment.refactorDrawerStorages(false);
                   Fragment main = tabFragment.getFragmentAtIndex(0);
-                  if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                  if (main != null) ((MainFragment) main).updateTabWithDb(TabHandler.findTab(1));
                   Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                  if (main1 != null) ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                  if (main1 != null) ((MainFragment) main1).updateTabWithDb(TabHandler.findTab(2));
                 }
                 getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
               });
@@ -2285,7 +2281,7 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void addConnection(OpenMode service) {
     try {
-      if (cloudHandler.findEntry(service) != null) {
+      if (CloudHandler.findEntry(this, service) != null) {
         // cloud entry already exists
         Toast.makeText(
                 this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG)
@@ -2322,7 +2318,7 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void deleteConnection(OpenMode service) {
-    cloudHandler.clear(service);
+    CloudHandler.clear(service);
     dataUtils.removeAccount(service);
 
     runOnUiThread(drawer::refreshDrawer);
@@ -2364,7 +2360,7 @@ public class MainActivity extends PermissionsActivity
         // we need a list of all secret keys
 
         try {
-          List<CloudEntry> cloudEntries = cloudHandler.getAllEntries();
+          List<CloudEntry> cloudEntries = CloudHandler.getAllEntries(this);
 
           // we want keys for services saved in database, and the cloudrail app key which
           // is at index 1
@@ -2430,7 +2426,7 @@ public class MainActivity extends PermissionsActivity
         && cloudLoaderAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
       return;
     }
-    cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudHandler, cloudCursorData);
+    cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudCursorData);
     cloudLoaderAsyncTask.execute();
   }
 

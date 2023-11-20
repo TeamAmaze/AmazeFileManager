@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.lang.ref.WeakReference;
 
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.database.Cursor;
@@ -34,7 +33,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
   private final WeakReference<MainActivity> mainActivity;
 
-  public CloudLoaderAsyncTask(MainActivity mainActivity, CloudHandler unused1, Cursor unused2) {
+  public CloudLoaderAsyncTask(MainActivity mainActivity, Cursor unused2) {
     this.mainActivity = new WeakReference<>(mainActivity);
   }
 

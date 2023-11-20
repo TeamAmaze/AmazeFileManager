@@ -122,7 +122,7 @@ class MoveFilesTask(
                                 newEntry.id = oldEntry.id
                                 newEntry.password = oldEntry.password
                                 newEntry.path = paths[i] + "/" + file.getName(applicationContext)
-                                CryptHandler.updateEntry(oldEntry, newEntry)
+                                CryptHandler.updateEntry(newEntry)
                             }
                         }
                     }
