@@ -106,7 +106,7 @@
     <!-- Theme -->
     <string name="light">Hell</string>
     <string name="dark">Dunkel</string>
-    <string name="daytime">Tageslicht</string>
+    <string name="daytime">Gemäß Tageszeit</string>
     <string name="black">Schwarz (für OLED)</string>
     <string name="system">System (folgt dem System)</string>
     <!--Skin-->
@@ -729,6 +729,10 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="preference_delete_confirmation_summary">Sicherheitsabfrage vor dem Löschen von Dateien. Dies sollte möglichst nicht deaktiviert werden. </string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Nicht verfügbar</string>
+    <string name="free_of">\"%s\n%s von %s frei</string>
     <string name="cloud_error_fdroid">Das Amaze Cloud-Plug-In wird von der F-Droid-Version nicht unterstützt. Bitte verwenden Sie die Play Store-Version von Amaze.</string>
+    <string name="disable_player_intent_filters">Aktionsfilter für Player deaktivieren</string>
+    <string name="disable_player_intent_filters_summary">In Amaze integrierten Mediaplayer für Dateiauswahl deaktivieren</string>
+    <string name="no_app_found_intent">Keine App für diese Aktion gefunden. Haben Sie DocumentsUI installiert?</string>
 </resources>
 

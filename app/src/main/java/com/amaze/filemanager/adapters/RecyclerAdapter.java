@@ -798,7 +798,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
                     && getItemsDigested().get(holder.getAdapterPosition()).getChecked()
                         != ListItem.CHECKED)) {
-              toggleChecked(holder.getAdapterPosition(), holder.checkImageView);
+              mainFragment.registerListItemChecked(
+                  holder.getAdapterPosition(), holder.checkImageView);
             }
             initDragListener(position, p1, holder);
           }
@@ -1012,7 +1013,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
                     && getItemsDigested().get(holder.getAdapterPosition()).getChecked()
                         != ListItem.CHECKED)) {
-              toggleChecked(holder.getAdapterPosition(), holder.checkImageViewGrid);
+              mainFragment.registerListItemChecked(
+                  holder.getAdapterPosition(), holder.checkImageViewGrid);
             }
             initDragListener(position, p1, holder);
           }

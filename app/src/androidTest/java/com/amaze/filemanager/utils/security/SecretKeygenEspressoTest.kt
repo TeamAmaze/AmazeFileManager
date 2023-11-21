@@ -52,7 +52,7 @@ class SecretKeygenEspressoTest {
         } ?: if (SDK_INT < ICE_CREAM_SANDWICH) {
             fail("Android version not supported")
         } else {
-            // do nothing
+            // Do nothing but let it pass
         }
     }
 }

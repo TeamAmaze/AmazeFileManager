@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -244,6 +244,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="needs_access_summary">Seleziona la cartella root di \t</string>
     <string name="needs_access_summary1">\tper permettere la scrittura</string>
     <string name="smb_connection">Connessione SMB</string>
+    <string name="smb_server">Indirizzo IP server</string>
     <string name="server_address">Indirizzo IP server</string>
     <string name="username">Nome utente</string>
     <string name="password">Password</string>
@@ -533,6 +534,8 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
 
     <string name="update">AGGIORNAMENTO</string>
 	<string name="scp_connection">Connessione SCP/SFTP</string>
+    <string name="ftp_connection">Connessione FTP</string>
+    <string name="ftps_connection">Connessione FTP su SSL</string>
     <string name="scp_port">Porta</string>
     <string name="ssh_host_key_verification_prompt">Impossibile stabilire l\'autenticità dell\'host \'%1$s\'.\n\nIl fingerprint della chiave %2$s è %3$s.\n\nPremi \"Si\" per confermare questa identità; altrimenti, premi \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verificare l\'host</string>
@@ -722,5 +725,16 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="open_with_amaze">Apri con Amaze</string>
     <string name="confirmation">Conferma</string>
     <string name="open_file_confirmation">Sei sicuro di voler aprire il seguente file?\n\nNome:\n%s\n\nPercorso:\n%s\n\nDimensioni:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="error_google_play_cannot_update_myself">Secondo la policy di Google Play, alle app non è permesso aggiornarsi automaticamente. Per favore aggiorna l\'app tramite Google Play.</string>
+    <string name="error_cannot_get_package_info">Impossibile ottenere le info dal file \"%s\". Il file specificato non è un APK, o il package è corrotto.</string>
+    <string name="preference_delete_confirmation">Conferma eliminazione</string>
+    <string name="preference_delete_confirmation_summary">Chiede una conferma prima di cancellare file. La disabilitazione di questa funzione è altamente sconsigliata!</string>
+    <string name="protocol_ftps">FTP sicuro</string>
+    <string name="unavailable">Non disponibile</string>
+    <string name="free_of">\"%s\n%s liberi di %s</string>
+    <string name="cloud_error_fdroid">Il plugin Amaze Cloud non è supportato dalla versione F-Droid. Si prega di usare la versione di Amaze disponibile sul Play Store.</string>
+    <string name="disable_player_intent_filters">Disabilita filtri intent del player</string>
+    <string name="disable_player_intent_filters_summary">Disabilita i filtri intent del player Amaze nel selettore dei file</string>
+    <string name="no_app_found_intent">Nessuna app trovata per gestire questo intent. DocumentsUI è installato?</string>
 </resources>
 

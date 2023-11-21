@@ -124,6 +124,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>
+    <string name="pick_files">Pick one or more files</string>
     <string name="process_viewer">Process Viewer</string>
     <string name="in_safe">Insufficient space</string>
     <string name="no_file_overwrite">No File Overwritten</string>
@@ -823,6 +824,9 @@ You only need to do this once, until the next time you select a new location for
     <string name="checking_conflicts">Checking for conflicts</string>
     <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
     <string name="not_found_enabled_webview">No available browser</string>
+    <string name="preference_language_title">App Language</string>
+    <string name="preference_language_dialog_title">Select Language</string>
+    <string name="preference_language_system_default">System Default</string>
     <string name="trash_bin">Trash Bin</string>
     <string name="delete_permanently_checkbox">Delete Permanently</string>
     <string name="restore">Restore</string>
