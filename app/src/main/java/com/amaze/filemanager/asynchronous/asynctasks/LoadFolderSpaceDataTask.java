@@ -137,7 +137,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
   }
 
   private void updateChart(String totalSpace, List<PieEntry> entries) {
-    boolean isDarkTheme = appTheme.getMaterialDialogTheme(context) == Theme.DARK;
+    boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
 
     PieDataSet set = new PieDataSet(entries, null);
     set.setColors(COLORS);

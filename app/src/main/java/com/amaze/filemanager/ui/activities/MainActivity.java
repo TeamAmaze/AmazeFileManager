@@ -1201,7 +1201,7 @@ public class MainActivity extends PermissionsActivity
             case R.id.dsort:
               String[] sort = getResources().getStringArray(R.array.directorysortmode);
               MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(getAppTheme().getMaterialDialogTheme(this));
+              builder.theme(getAppTheme().getMaterialDialogTheme());
               builder.title(R.string.directorysort);
               int current =
                   Integer.parseInt(
@@ -1730,7 +1730,7 @@ public class MainActivity extends PermissionsActivity
     getSupportActionBar().setDisplayShowTitleEnabled(false);
     fabBgView = findViewById(R.id.fabs_overlay_layout);
 
-    switch (getAppTheme().getSimpleTheme(this)) {
+    switch (getAppTheme()) {
       case DARK:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         break;
@@ -1900,7 +1900,7 @@ public class MainActivity extends PermissionsActivity
             .setLabel(fabTitle)
             .setFabBackgroundColor(iconSkin);
 
-    switch (getAppTheme().getSimpleTheme(this)) {
+    switch (getAppTheme()) {
       case LIGHT:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
         break;

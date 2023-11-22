@@ -38,7 +38,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.isDigitsOnly
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -154,7 +153,7 @@ class SftpConnectDialog : DialogFragment() {
             .title(R.string.scp_connection)
             .autoDismiss(false)
             .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.getMaterialDialogTheme(context))
+            .theme(utilsProvider.appTheme.getMaterialDialogTheme())
             .negativeText(R.string.cancel)
             .positiveText(if (edit) R.string.update else R.string.create)
             .positiveColor(accentColor)

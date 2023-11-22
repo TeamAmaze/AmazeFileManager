@@ -83,8 +83,7 @@ public class RenameBookmark extends DialogFragment {
       builder.positiveText(R.string.save);
       builder.neutralText(R.string.cancel);
       builder.negativeText(R.string.delete);
-      builder.theme(
-          ((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme(getContext()));
+      builder.theme(((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme());
       builder.autoDismiss(false);
       View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
       builder.customView(v2, true);

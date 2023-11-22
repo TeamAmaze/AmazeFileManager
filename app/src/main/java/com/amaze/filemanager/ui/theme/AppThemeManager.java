@@ -28,31 +28,31 @@ import android.content.SharedPreferences;
 /** Saves and restores the AppTheme */
 public class AppThemeManager {
   private SharedPreferences preferences;
-  private AppTheme appTheme;
+  private AppThemePreference appThemePreference;
   private final Context context;
 
   public AppThemeManager(SharedPreferences preferences, Context context) {
     this.preferences = preferences;
     this.context = context;
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
-    appTheme = AppTheme.getTheme(Integer.parseInt(themeId));
+    appThemePreference = AppThemePreference.getTheme(Integer.parseInt(themeId));
   }
 
   /**
    * @return The current Application theme
    */
   public AppTheme getAppTheme() {
-    return appTheme.getSimpleTheme(context);
+    return appThemePreference.getSimpleTheme(context);
   }
 
   /**
    * Change the current theme of the application. The change is saved.
    *
-   * @param appTheme The new theme
+   * @param appThemePreference The new theme
    * @return The theme manager.
    */
-  public AppThemeManager setAppTheme(AppTheme appTheme) {
-    this.appTheme = appTheme;
+  public AppThemeManager setAppThemePreference(AppThemePreference appThemePreference) {
+    this.appThemePreference = appThemePreference;
     return this;
   }
 }

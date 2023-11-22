@@ -117,7 +117,7 @@ public class MainActivityHelper {
       ArrayList<HybridFileParcelable> failedOps, Context context) {
     MaterialDialog.Builder mat = new MaterialDialog.Builder(context);
     mat.title(context.getString(R.string.operation_unsuccesful));
-    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme(context));
+    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     mat.positiveColor(accentColor);
     mat.positiveText(R.string.cancel);
     String content = context.getString(R.string.operation_fail_following);
@@ -306,8 +306,7 @@ public class MainActivityHelper {
 
   public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
-    x.theme(
-        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     x.title(R.string.needs_access);
     LayoutInflater layoutInflater =
         (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

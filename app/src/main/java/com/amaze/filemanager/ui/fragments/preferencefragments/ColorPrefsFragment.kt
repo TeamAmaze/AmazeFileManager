@@ -148,7 +148,7 @@ class ColorPrefsFragment : BasePrefsFragment() {
         dialog = MaterialDialog.Builder(activity)
             .positiveText(com.amaze.filemanager.R.string.cancel)
             .title(com.amaze.filemanager.R.string.choose_color)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .autoDismiss(true)
             .positiveColor(fabSkin)
             .neutralColor(fabSkin)

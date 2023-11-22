@@ -26,6 +26,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.theme.AppThemePreference;
 import com.amaze.filemanager.ui.views.CircularColorsView;
 import com.amaze.filemanager.utils.Utils;
 
@@ -117,7 +118,7 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
     final Bundle b = new Bundle(2);
     b.putString(ARG_KEY, key);
     b.putParcelable(ARG_COLOR_PREF, color);
-    b.putInt(ARG_APP_THEME, theme.ordinal());
+    b.putString(ARG_APP_THEME, theme.toString());
     retval.setArguments(b);
     return retval;
   }
@@ -171,8 +172,9 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
       ((AppCompatTextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
       CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
       colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
-      AppTheme appTheme = AppTheme.getTheme(requireArguments().getInt(ARG_APP_THEME));
-      if (appTheme.getMaterialDialogTheme(requireContext()) == Theme.LIGHT)
+
+      AppTheme appTheme = AppTheme.valueOf(requireArguments().getString(ARG_APP_THEME));
+      if (appTheme.getMaterialDialogTheme() == Theme.LIGHT)
         colorsView.setDividerColor(Color.WHITE);
       else colorsView.setDividerColor(Color.BLACK);
       container.addView(child);

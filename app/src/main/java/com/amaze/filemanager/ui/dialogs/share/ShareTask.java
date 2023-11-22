@@ -123,7 +123,7 @@ public class ShareTask extends AsyncTask<String, String, Void> {
     if (!targetShareIntents.isEmpty()) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
       builder.title(R.string.share);
-      builder.theme(appTheme.getMaterialDialogTheme(contextc));
+      builder.theme(appTheme.getMaterialDialogTheme());
       ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, labels, drawables);
       builder.adapter(shareAdapter, null);
       builder.negativeText(R.string.cancel);

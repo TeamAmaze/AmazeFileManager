@@ -54,7 +54,7 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
                     )
                 )
             }
-            AppTheme.LIGHT, AppTheme.TIMED, AppTheme.SYSTEM -> {
+            AppTheme.LIGHT -> {
                 rootView
                     .setBackgroundDrawable(
                         context?.resources?.getDrawable(
