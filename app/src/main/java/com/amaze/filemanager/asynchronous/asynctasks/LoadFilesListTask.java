@@ -594,6 +594,7 @@ public class LoadFilesListTask
         element.longSize = trashBinFile.getSizeBytes();
         element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
         element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
+        element.isDirectory = trashBinFile.isDirectory();
         deletedFiles.add(element);
       }
     }

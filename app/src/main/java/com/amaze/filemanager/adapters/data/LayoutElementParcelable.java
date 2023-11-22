@@ -48,7 +48,7 @@ public class LayoutElementParcelable implements Parcelable {
   public final String permissions;
   public final String symlink;
   public String size;
-  public final boolean isDirectory;
+  public boolean isDirectory;
   public long date, longSize;
   public String dateModification;
   public final boolean header;

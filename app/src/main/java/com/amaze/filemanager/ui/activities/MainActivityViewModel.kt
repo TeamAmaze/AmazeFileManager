@@ -28,6 +28,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
@@ -238,6 +239,16 @@ class MainActivityViewModel(val applicationContext: Application) :
                     override fun invoke(source: String, dest: String): Boolean {
                         val sourceFile = File(source)
                         val destFile = File(dest)
+                        if (destFile.exists()) {
+                            AppConfig.toast(
+                                applicationContext,
+                                applicationContext.getString(R.string.fileexist)
+                            )
+                            return false
+                        }
+                        if (destFile.parentFile != null && !destFile.parentFile!!.exists()) {
+                            destFile.parentFile?.mkdirs()
+                        }
                         if (!sourceFile.renameTo(destFile)) {
                             return false
                         }

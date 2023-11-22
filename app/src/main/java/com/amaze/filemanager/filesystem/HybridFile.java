@@ -1644,7 +1644,7 @@ public class HybridFile {
                   0,
                   true,
                   file.lastModified() + "",
-                  false,
+                  file.isDirectory(),
                   showThumbs,
                   mode);
         } else {
