@@ -44,6 +44,9 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
     BLACK(3, false),
     SYSTEM(4, true);
 
+    /**
+     * Returns the correct [Theme] associated with this [AppThemePreference] based on [context].
+     */
     fun getMaterialDialogTheme(context: Context): Theme {
         return getSimpleTheme(context).getMaterialDialogTheme()
     }
@@ -65,6 +68,9 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
         )
     }
 
+    /**
+     * Returns the correct [AppTheme] based on [isNightMode] and [isBatterySaver].
+     */
     fun getSimpleTheme(isNightMode: Boolean, isBatterySaver: Boolean): AppTheme {
         return if (canBeLight && isBatterySaver) {
             AppTheme.DARK
