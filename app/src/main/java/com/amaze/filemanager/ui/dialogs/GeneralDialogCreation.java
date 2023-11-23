@@ -416,6 +416,14 @@ public class GeneralDialogCreation {
     }
   }
 
+  /**
+   * Displays a dialog prompting user to restore files in trash bin.
+   *
+   * @param context
+   * @param mainActivity
+   * @param positions
+   * @param appTheme
+   */
   @SuppressWarnings("ConstantConditions")
   public static void restoreFilesDialog(
       @NonNull final Context context,

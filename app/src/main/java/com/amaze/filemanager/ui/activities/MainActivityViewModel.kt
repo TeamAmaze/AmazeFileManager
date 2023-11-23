@@ -185,6 +185,9 @@ class MainActivityViewModel(val applicationContext: Application) :
         return mutableLiveData
     }
 
+    /**
+     * TODO: Documentation
+     */
     fun moveToBinLightWeight(mediaFileInfoList: List<LayoutElementParcelable>) {
         viewModelScope.launch(Dispatchers.IO) {
             val trashBinFilesList = mediaFileInfoList.map {
@@ -221,6 +224,9 @@ class MainActivityViewModel(val applicationContext: Application) :
         }
     }
 
+    /**
+     * Restore files from trash bin
+     */
     fun restoreFromBin(mediaFileInfoList: List<LayoutElementParcelable>) {
         viewModelScope.launch(Dispatchers.IO) {
             LOG.info("Restoring media files from bin $mediaFileInfoList")
@@ -269,6 +275,9 @@ class MainActivityViewModel(val applicationContext: Application) :
         }
     }
 
+    /**
+     * TODO: Documentation
+     */
     fun progressTrashBinFilesLiveData(): MutableLiveData<MutableList<LayoutElementParcelable>?> {
         if (trashBinFilesLiveData == null) {
             trashBinFilesLiveData = MutableLiveData()
