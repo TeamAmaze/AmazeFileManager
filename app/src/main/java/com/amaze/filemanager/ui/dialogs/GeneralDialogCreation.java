@@ -424,7 +424,7 @@ public class GeneralDialogCreation {
    * @param positions
    * @param appTheme
    */
-  @SuppressWarnings("ConstantConditions")
+  @SuppressWarnings({"ConstantConditions", "PMD.NPathComplexity"})
   public static void restoreFilesDialog(
       @NonNull final Context context,
       @NonNull final MainActivity mainActivity,
