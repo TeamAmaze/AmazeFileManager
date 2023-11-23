@@ -184,7 +184,12 @@ public class DeleteTask
         }
       default:
         try {
-          if (!doDeletePermanently) {
+          /* SMB and SFTP (or any remote files that may support in the future) should not be
+           * supported by recycle bin. - TranceLove
+           */
+          if (!doDeletePermanently
+              && !OpenMode.SMB.equals(file.getMode())
+              && !OpenMode.SFTP.equals(file.getMode())) {
             return file.moveToBin(applicationContext);
           }
           return file.delete(applicationContext, rootMode);
