@@ -75,10 +75,10 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
         return if (canBeLight && isBatterySaver) {
             AppTheme.DARK
         } else {
-            when (id) {
-                LIGHT_INDEX -> AppTheme.LIGHT
-                DARK_INDEX -> AppTheme.DARK
-                TIME_INDEX -> {
+            when (this) {
+                LIGHT -> AppTheme.LIGHT
+                DARK -> AppTheme.DARK
+                TIMED -> {
                     val hour = Calendar.getInstance()[Calendar.HOUR_OF_DAY]
                     if (hour <= 6 || hour >= 18) {
                         AppTheme.DARK
@@ -87,9 +87,8 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
                     }
                 }
 
-                BLACK_INDEX -> AppTheme.BLACK
-                SYSTEM_INDEX -> if (isNightMode) AppTheme.DARK else AppTheme.LIGHT
-                else -> AppTheme.LIGHT
+                BLACK -> AppTheme.BLACK
+                SYSTEM -> if (isNightMode) AppTheme.DARK else AppTheme.LIGHT
             }
         }
     }
