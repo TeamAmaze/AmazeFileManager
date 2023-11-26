@@ -1531,21 +1531,27 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    getFAB().setVisibility(View.VISIBLE);
-    getFAB().show();
-    CoordinatorLayout.LayoutParams params =
-        (CoordinatorLayout.LayoutParams) getFAB().getLayoutParams();
+    showFab(getFAB());
+  }
+
+  private void showFab(SpeedDialView fab) {
+    fab.setVisibility(View.VISIBLE);
+    fab.show();
+    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
     params.setBehavior(new SpeedDialView.ScrollingViewSnackbarBehavior());
-    getFAB().requestLayout();
+    fab.requestLayout();
   }
 
   public void hideFab() {
-    getFAB().setVisibility(View.GONE);
-    getFAB().hide();
-    CoordinatorLayout.LayoutParams params =
-        (CoordinatorLayout.LayoutParams) getFAB().getLayoutParams();
+    hideFab(getFAB());
+  }
+
+  private void hideFab(SpeedDialView fab) {
+    fab.setVisibility(View.GONE);
+    fab.hide();
+    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
     params.setBehavior(new SpeedDialView.NoBehavior());
-    getFAB().requestLayout();
+    fab.requestLayout();
   }
 
   public AppBar getAppbar() {
@@ -1917,7 +1923,7 @@ public class MainActivity extends PermissionsActivity
 
   private void initialiseFabConfirmSelection() {
     fabConfirmSelection = findViewById(R.id.fabs_confirm_selection);
-    fabConfirmSelection.hide();
+    hideFabConfirmSelection();
     if (mReturnIntent) {
       int colorAccent = getAccent();
       fabConfirmSelection.setMainFabClosedBackgroundColor(colorAccent);
@@ -1952,13 +1958,13 @@ public class MainActivity extends PermissionsActivity
    */
   public void showFabConfirmSelection() {
     if (mReturnIntent) {
-      fabConfirmSelection.show();
+      showFab(fabConfirmSelection);
     }
   }
 
   /** Hides the floating action button which confirms the selection */
   public void hideFabConfirmSelection() {
-    fabConfirmSelection.hide();
+    hideFab(fabConfirmSelection);
   }
 
   public boolean copyToClipboard(Context context, String text) {
