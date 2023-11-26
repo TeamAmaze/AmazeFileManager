@@ -20,22 +20,24 @@
 
 package com.amaze.filemanager.filesystem.files
 
-import androidx.annotation.IntDef
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy
+import com.amaze.filemanager.filesystem.files.sort.SortBy
+import com.amaze.filemanager.filesystem.files.sort.SortType
+import java.lang.Long
 import java.util.Locale
 
 /**
  * [Comparator] implementation to sort [LayoutElementParcelable]s.
  */
 class FileListSorter(
-    @DirSortMode dirArg: Int,
-    @SortBy sortArg: Int,
-    @SortOrder ascArg: Int
+    dirArg: DirSortBy,
+    sortType: SortType
 ) : Comparator<ComparableParcelable> {
     private var dirsOnTop = dirArg
-    private val asc = ascArg
-    private val sort = sortArg
+    private val asc: Int = sortType.sortOrder.sortFactor
+    private val sort: SortBy = sortType.sortBy
 
     private fun isDirectory(path: ComparableParcelable): Boolean {
         return path.isDirectory()
@@ -67,13 +69,13 @@ class FileListSorter(
     } else {
         f2=new File(file1.getSymlink());
     }*/
-        if (dirsOnTop == SORT_DIR_ON_TOP) {
+        if (dirsOnTop == DirSortBy.DIR_ON_TOP) {
             if (isDirectory(file1) && !isDirectory(file2)) {
                 return -1
             } else if (isDirectory(file2) && !isDirectory(file1)) {
                 return 1
             }
-        } else if (dirsOnTop == SORT_FILE_ON_TOP) {
+        } else if (dirsOnTop == DirSortBy.FILE_ON_TOP) {
             if (isDirectory(file1) && !isDirectory(file2)) {
                 return 1
             } else if (isDirectory(file2) && !isDirectory(file1)) {
@@ -82,23 +84,23 @@ class FileListSorter(
         }
 
         when (sort) {
-            SORT_BY_NAME -> {
+            SortBy.NAME -> {
                 // sort by name
                 return asc * compareName(file1, file2)
             }
-            SORT_BY_LAST_MODIFIED -> {
+            SortBy.LAST_MODIFIED -> {
                 // sort by last modified
-                return asc * java.lang.Long.valueOf(file1.getDate()).compareTo(file2.getDate())
+                return asc * Long.valueOf(file1.getDate()).compareTo(file2.getDate())
             }
-            SORT_BY_SIZE -> {
+            SortBy.SIZE -> {
                 // sort by size
                 return if (!isDirectory(file1) && !isDirectory(file2)) {
-                    asc * java.lang.Long.valueOf(file1.getSize()).compareTo(file2.getSize())
+                    asc * Long.valueOf(file1.getSize()).compareTo(file2.getSize())
                 } else {
                     compareName(file1, file2)
                 }
             }
-            SORT_BY_TYPE -> {
+            SortBy.TYPE -> {
                 // sort by type
                 return if (!isDirectory(file1) && !isDirectory(file2)) {
                     val ext_a = getExtension(file1.getParcelableName())
@@ -113,35 +115,11 @@ class FileListSorter(
                     compareName(file1, file2)
                 }
             }
-            else -> return 0
+            SortBy.RELEVANCE -> TODO()
         }
     }
 
     companion object {
-
-        const val SORT_BY_NAME = 0
-        const val SORT_BY_LAST_MODIFIED = 1
-        const val SORT_BY_SIZE = 2
-        const val SORT_BY_TYPE = 3
-
-        const val SORT_DIR_ON_TOP = 0
-        const val SORT_FILE_ON_TOP = 1
-        const val SORT_NONE_ON_TOP = 2
-
-        const val SORT_ASC = 1
-        const val SORT_DSC = -1
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(SORT_BY_NAME, SORT_BY_LAST_MODIFIED, SORT_BY_SIZE, SORT_BY_TYPE)
-        annotation class SortBy
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(SORT_DIR_ON_TOP, SORT_FILE_ON_TOP, SORT_NONE_ON_TOP)
-        annotation class DirSortMode
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(SORT_ASC, SORT_DSC)
-        annotation class SortOrder
 
         /**
          * Convenience method to get the file extension in given path.

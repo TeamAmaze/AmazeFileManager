@@ -25,6 +25,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy
+import com.amaze.filemanager.filesystem.files.sort.SortBy
+import com.amaze.filemanager.filesystem.files.sort.SortOrder
+import com.amaze.filemanager.filesystem.files.sort.SortType
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.hamcrest.Matchers
 import org.junit.Assert
@@ -44,13 +48,19 @@ import org.robolectric.annotation.Config
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod", "LargeClass")
 class FileListSorterTest {
     /**
-     * Purpose: when dirsOnTop is 0, if file1 is directory && file2 is not directory, result is -1
-     * Input: FileListSorter(0,0,1) dir(=dirsOnTop) is 0 / compare(file1,file2) file1 is dir, file2 is
-     * not dir Expected: return -1
+     * Purpose: when dirsOnTop is [DirSortBy.DIR_ON_TOP], if file1 is directory && file2 is not directory, result is -1
+     *
+     * Input: FileListSorter with [DirSortBy.DIR_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 is dir, file2 is not dir
+     *
+     * Expected: return -1
      */
     @Test
     fun testDir0File1DirAndFile2NoDir() {
-        val fileListSorter = FileListSorter(0, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.DIR_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1",
@@ -88,13 +98,19 @@ class FileListSorterTest {
                                 String date, boolean isDirectory, boolean useThumbs, OpenMode openMode)
   */
     /**
-     * Purpose: when dirsOnTop is 0, if file1 is not directory && file2 is directory, result is 1
-     * Input: FileListSorter(0,0,1) dir(=dirsOnTop) is 0 / compare(file1,file2) file1 is not dir,
-     * file2 is dir Expected: return 1
+     * Purpose: when dirsOnTop is [DirSortBy.DIR_ON_TOP], if file1 is not directory && file2 is directory, result is 1
+     *
+     * Input: FileListSorter with [DirSortBy.DIR_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 is not dir, file2 is dir
+     *
+     * Expected: return 1
      */
     @Test
     fun testDir0File1NoDirAndFile2Dir() {
-        val fileListSorter = FileListSorter(0, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.DIR_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1.txt",
@@ -127,13 +143,19 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when dirsOnTop is 1, if file1 is directory && file2 is not directory, result is 1
-     * Input: FileListSorter(1,0,1) dir(=dirsOnTop) is 1 / compare(file1,file2) file1 is dir, file2 is
-     * not dir Expected: return 1
+     * Purpose: when dirsOnTop is [DirSortBy.FILE_ON_TOP], if file1 is directory && file2 is not directory, result is 1
+     *
+     * Input: FileListSorter with [DirSortBy.FILE_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 is dir, file2 is not dir
+     *
+     * Expected: return 1
      */
     @Test
     fun testDir1File1DirAndFile2NoDir() {
-        val fileListSorter = FileListSorter(1, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.FILE_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1",
@@ -166,13 +188,19 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when dirsOnTop is 1, if file1 is not directory && file2 is directory, result is -1
-     * Input: FileListSorter(1,0,1) dir(=dirsOnTop) is 1 / compare(file1,file2) file1 is not dir,
-     * file2 is dir Expected: return -1
+     * Purpose: when dirsOnTop is [DirSortBy.FILE_ON_TOP], if file1 is not directory && file2 is directory, result is -1
+     *
+     * Input: FileListSorter with [DirSortBy.FILE_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 is not dir, file2 is dir
+     *
+     * Expected: return -1
      */
     @Test
     fun testDir1File1NoDirAndFile2Dir() {
-        val fileListSorter = FileListSorter(1, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.FILE_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1.txt",
@@ -204,15 +232,22 @@ class FileListSorterTest {
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), -1)
     }
 
-    // From here, use dir is not 0 or 1. -> Select dir is -1
+    // From here, use dir is not DIR_ON_TOP or FILE_ON_TOP. -> Select dir is NONE_ON_TOP
     /**
-     * Purpose: when sort is 0, if file1 title's length bigger than file2 title's length, result is
-     * positive Input: FileListSorter(-1,0,1) sort is 0 / compare(file1,file2) file1 title's length >
-     * file2 title's length Expected: return positive integer
+     * Purpose: when sort is [SortBy.NAME], if file1 title's length bigger than file2 title's length, result is
+     * positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length > file2 title's length
+     *
+     * Expected: return positive integer
      */
     @Test
     fun testSort0File1TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1.txt",
@@ -245,13 +280,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 0, if file1 title's length smaller than file2 title's length, result is
-     * negative Input: FileListSorter(-1,0,1) sort is 0 / compare(file1,file2) file1 title's length <
-     * file2 title's length Expected: return negative integer
+     * Purpose: when sort is [SortBy.NAME], if file1 title's length smaller than file2 title's length, result is
+     * negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length < file2 title's length
+     *
+     * Expected: return negative integer
      */
     @Test
     fun testSort0File2TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -284,13 +326,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 0, if file1 title's length and file2 title's length are same, result is
-     * zero Input: FileListSorter(-1,0,1) sort is 0 / compare(file1,file2) file1 title's length =
-     * file2 title's length Expected: return zero
+     * Purpose: when sort is [SortBy.NAME], if file1 title's length and file2 title's length are same, result is
+     * zero
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.NAME] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length = file2 title's length
+     *
+     * Expected: return zero
      */
     @Test
     fun testSort0TitleSame() {
-        val fileListSorter = FileListSorter(-1, 0, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.NAME, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -323,13 +372,19 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 1, if file1 date more recent than file2 date, result is positive Input:
-     * FileListSorter(-1,1,1) sort is 1 / compare(file1,file2) file1 date > file2 date Expected:
-     * return positive integer
+     * Purpose: when sort is [SortBy.LAST_MODIFIED], if file1 date more recent than file2 date, result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.LAST_MODIFIED] and [SortOrder.ASC]
+     * compare(file1,file2) file1 date > file2 date
+     *
+     * Expected: return positive integer
      */
     @Test
-    fun testSort1File1DateLastest() {
-        val fileListSorter = FileListSorter(-1, 1, 1)
+    fun testSort1File1DateLatest() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -362,13 +417,19 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 1, if file2 date more recent than file1 date, result is negative Input:
-     * FileListSorter(-1,1,1) sort is 1 / compare(file1,file2) file1 date < file2 date Expected:
-     * return negative integer
+     * Purpose: when sort is [SortBy.LAST_MODIFIED], if file2 date more recent than file1 date, result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.LAST_MODIFIED] and [SortOrder.ASC]
+     * compare(file1,file2) file1 date < file2 date
+     *
+     * Expected: return negative integer
      */
     @Test
-    fun testSort1File2DateLastest() {
-        val fileListSorter = FileListSorter(-1, 1, 1)
+    fun testSort1File2DateLatest() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -401,13 +462,19 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 1, if file1 date and file2 date are same, result is zero Input:
-     * FileListSorter(-1,1,1) sort is 1 / compare(file1,file2) file1 date = file2 date Expected:
-     * return zero
+     * Purpose: when sort is [SortBy.LAST_MODIFIED], if file1 date and file2 date are same, result is zero
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.LAST_MODIFIED] and [SortOrder.ASC]
+     * compare(file1,file2) file1 date = file2 date
+     *
+     * Expected: return zero
      */
     @Test
     fun testSort1FileDateSame() {
-        val fileListSorter = FileListSorter(-1, 1, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -440,13 +507,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if two file are not directory && file1 size bigger than file2 size,
-     * result is positive Input: FileListSorter(-1,2,1) sort is 2 / compare(file1,file2) file1 size >
-     * file2 size Expected: return positive integer
+     * Purpose: when sort is [SortBy.SIZE], if two file are not directory && file1 size bigger than file2 size,
+     * result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 size > file2 size
+     *
+     * Expected: return positive integer
      */
     @Test
     fun testSort2NoDirAndFile1SizeBigger() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -479,13 +553,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if two file are not directory && file1 size smaller than file2 size,
-     * result is negative Input: FileListSorter(-1,2,1) sort is 2 / compare(file1,file2) file1 size <
-     * file2 size Expected: return negative integer
+     * Purpose: when sort is [SortBy.SIZE], if two file are not directory && file1 size smaller than file2 size,
+     * result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 size < file2 size
+     *
+     * Expected: return negative integer
      */
     @Test
     fun testSort2NoDirAndFile2SizeBigger() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -518,13 +599,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if two file are not directory && file1 size and file2 size are same,
-     * result is zero Input: FileListSorter(-1,2,1) sort is 2 / compare(file1,file2) file1 size =
-     * file2 size Expected: return zero
+     * Purpose: when sort is [SortBy.SIZE], if two file are not directory && file1 size and file2 size are same,
+     * result is zero
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 size = file2 size
+     *
+     * Expected: return zero
      */
     @Test
     fun testSort2NoDirAndFileSizeSame() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -557,14 +645,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if file1 is directory && file1 title's length bigger than file2
-     * title's length, result is positive Input: FileListSorter(-1,2,1) sort is 2 /
-     * compare(file1,file2) file1 title's length > file2 title's length Expected: return positive
-     * integer
+     * Purpose: when sort is [SortBy.SIZE], if file1 is directory && file1 title's length bigger than file2
+     * title's length, result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length > file2 title's length
+     *
+     * Expected: return positive integer
      */
     @Test
     fun testSort2File1DirAndFile1TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1",
@@ -597,14 +691,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if file1 is directory && file1 title's length smaller than file2
-     * title's length, result is negative Input: FileListSorter(-1,2,1) sort is 2 /
-     * compare(file1,file2) file1 title's length < file2 title's length Expected: return negative
-     * integer
+     * Purpose: when sort is [SortBy.SIZE], if file1 is directory && file1 title's length smaller than file2
+     * title's length, result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length < file2 title's length
+     *
+     * Expected: return negative integer
      */
     @Test
     fun testSort2File1DirAndFile2TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc",
@@ -637,14 +737,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if file2 is directory && file1 title's length bigger than file2
-     * title's length, result is positive Input: FileListSorter(-1,2,1) sort is 2 /
-     * compare(file1,file2) file1 title's length > file2 title's length Expected: return positive
-     * integer
+     * Purpose: when sort is [SortBy.SIZE], if file2 is directory && file1 title's length bigger than file2
+     * title's length, result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length > file2 title's length
+     *
+     * Expected: return positive integer
      */
     @Test
     fun testSort2File2DirAndFile1TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1.txt",
@@ -677,14 +783,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if file2 is directory && file1 title's length smaller than file2
-     * title's length, result is negative Input: FileListSorter(-1,2,1) sort is 2 /
-     * compare(file1,file2) file1 title's length < file2 title's length Expected: return negative
-     * integer
+     * Purpose: when sort is [SortBy.SIZE], if file2 is directory && file1 title's length smaller than file2
+     * title's length, result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length < file2 title's length
+     *
+     * Expected: return negative integer
      */
     @Test
     fun testSort2File2DirAndFile2TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -717,13 +829,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 2, if file2 is directory && file1 title's length and file2 title's length
-     * are same, result is zero Input: FileListSorter(-1,2,1) sort is 2 / compare(file1,file2) file1
-     * title's length = file2 title's length Expected: return zero
+     * Purpose: when sort is [SortBy.SIZE], if file2 is directory && file1 title's length and file2 title's length
+     * are same, result is zero
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.SIZE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 title's length = file2 title's length
+     *
+     * Expected: return zero
      */
     @Test
     fun testSort2File2DirAndFileTitleSame() {
-        val fileListSorter = FileListSorter(-1, 2, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.SIZE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc",
@@ -756,15 +875,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 3, if file1 extension's length and file2 extension's length are same &&
-     * file1 title's length bigger than file2 title's length, result is positive Input:
-     * FileListSorter(-1,3,1) sort is 3 / compare(file1,file2) file1 extension's length = file2
-     * extension's length && file1 title's length > file2 title's length Expected: return positive
-     * integer
+     * Purpose: when sort is [SortBy.TYPE], if file1 extension's length and file2 extension's length are same &&
+     * file1 title's length bigger than file2 title's length, result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.TYPE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 extension's length = file2 extension's length && file1 title's length > file2 title's length
+     *
+     * Expected: return positive integer
      */
     @Test
     fun testSort3FileExtensionSameAndFile1TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 3, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.TYPE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc1.txt",
@@ -797,15 +921,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 3, if file1 extension's length and file2 extension's length are same &&
-     * file1 title's length smaller than file2 title's length, result is negative Input:
-     * FileListSorter(-1,3,1) sort is 3 / compare(file1,file2) file1 extension's length = file2
-     * extension's length && file1 title's length < file2 title's length Expected: return negative
-     * integer
+     * Purpose: when sort is [SortBy.TYPE], if file1 extension's length and file2 extension's length are same &&
+     * file1 title's length smaller than file2 title's length, result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.TYPE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 extension's length = file2 extension's length && file1 title's length < file2 title's length
+     *
+     * Expected: return negative integer
      */
     @Test
     fun testSort3FileExtensionSameAndFile2TitleBigger() {
-        val fileListSorter = FileListSorter(-1, 3, 1)
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.TYPE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",
@@ -838,52 +967,20 @@ class FileListSorterTest {
     }
 
     /**
-     * Purpose: when sort is 3, if file1 extension's length and file2 extension's length are same &&
-     * file1 title's length and file2 title's length are same, result is zero Input:
-     * FileListSorter(-1,3,1) sort is 3 / compare(file1,file2) file1 extension's length = file2
-     * extension's length && file1 title's length = file2 title's length Expected: return zero
-     */
-    @Test
-    fun testSort3FileExtensionSameAndFileTitleSame() {
-        val fileListSorter = FileListSorter(-1, 3, 1)
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "ABC.txt",
-            "C:\\AmazeFileManager\\ABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
-    }
-
-    /**
-     * Purpose: when sort is not 0,1,2,3, result is zero Input: FileListSorter(-1,4,1) sort is 4
+     * Purpose: when sort is [SortBy.TYPE], if file1 extension's length and file2 extension's length are same &&
+     * file1 title's length and file2 title's length are same, result is zero
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.TYPE] and [SortOrder.ASC]
+     * compare(file1,file2) file1 extension's length = file2 extension's length && file1 title's length = file2 title's length
+     *
      * Expected: return zero
      */
     @Test
-    fun testSortAnotherNumber() {
-        val fileListSorter = FileListSorter(-1, 4, 1)
+    fun testSort3FileExtensionSameAndFileTitleSame() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.TYPE, SortOrder.ASC)
+        )
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.txt",

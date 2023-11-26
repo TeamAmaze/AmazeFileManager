@@ -31,9 +31,10 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.filesystem.files.FileListSorter.Companion.DirSortMode
-import com.amaze.filemanager.filesystem.files.FileListSorter.Companion.SortBy
-import com.amaze.filemanager.filesystem.files.FileListSorter.Companion.SortOrder
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy
+import com.amaze.filemanager.filesystem.files.sort.SortBy
+import com.amaze.filemanager.filesystem.files.sort.SortOrder
+import com.amaze.filemanager.filesystem.files.sort.SortType
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
@@ -59,14 +60,9 @@ class MainFragmentViewModel : ViewModel() {
     var searchHelper = ArrayList<HybridFileParcelable>()
     var no = 0
 
-    @SortBy
-    var sortby = 0
+    var sortType: SortType = SortType(SortBy.NAME, SortOrder.ASC)
 
-    @DirSortMode
-    var dsort = 0
-
-    @SortOrder
-    var asc = 0
+    var dsort: DirSortBy = DirSortBy.DIR_ON_TOP
 
     var home: String? = null
 
@@ -174,19 +170,13 @@ class MainFragmentViewModel : ViewModel() {
      *
      * Final value of [.sortby] varies from 0 to 3
      */
-    fun initSortModes(sortType: Int, sharedPref: SharedPreferences) {
-        if (sortType <= 3) {
-            sortby = sortType
-            asc = 1
-        } else {
-            asc = -1
-            sortby = sortType - 4
-        }
+    fun initSortModes(sortType: SortType, sharedPref: SharedPreferences) {
+        this.sortType = sortType
         sharedPref.getString(
             PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE,
             "0"
         )?.run {
-            dsort = Integer.parseInt(this)
+            dsort = DirSortBy.getDirSortBy(Integer.parseInt(this))
         }
     }
 

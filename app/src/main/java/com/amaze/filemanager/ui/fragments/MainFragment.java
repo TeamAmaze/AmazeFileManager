@@ -1564,9 +1564,7 @@ public class MainFragment extends Fragment
         new SortSearchResultTask(
             elements,
             new FileListSorter(
-                mainFragmentViewModel.getDsort(),
-                mainFragmentViewModel.getSortby(),
-                mainFragmentViewModel.getAsc()),
+                mainFragmentViewModel.getDsort(), mainFragmentViewModel.getSortType()),
             this,
             query));
   }
