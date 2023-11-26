@@ -48,6 +48,32 @@
         app:key="extractpath"
         app:summary="@string/archive_summary"
         app:title="@string/archive_extract_folder"></Preference>
+    <PreferenceCategory android:title="@string/trash_bin">
+        <Preference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="retention_num_of_files"
+            app:summary="@string/trash_bin_retention_num_of_files_summary"
+            app:title="@string/trash_bin_retention_num_of_files_title"></Preference>
+        <Preference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="retention_days"
+            app:summary="@string/trash_bin_retention_days_summary"
+            app:title="@string/trash_bin_retention_days_title"></Preference>
+        <Preference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="retention_bytes"
+            app:summary="@string/trash_bin_retention_bytes_summary"
+            app:title="@string/trash_bin_retention_bytes_title"></Preference>
+        <Preference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="cleanup_interval"
+            app:summary="@string/trash_bin_cleanup_interval_summary"
+            app:title="@string/trash_bin_cleanup_interval_title"></Preference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/advanced_search">
 
         <com.amaze.filemanager.ui.views.preference.CheckBox

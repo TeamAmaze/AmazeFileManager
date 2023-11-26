@@ -68,10 +68,13 @@ public class DeleteTask
   private final Context applicationContext;
   private final boolean rootMode;
   private CompressedExplorerFragment compressedExplorerFragment;
+
+  private boolean doDeletePermanently;
   private final DataUtils dataUtils = DataUtils.getInstance();
 
-  public DeleteTask(@NonNull Context applicationContext) {
+  public DeleteTask(@NonNull Context applicationContext, @NonNull boolean doDeletePermanently) {
     this.applicationContext = applicationContext.getApplicationContext();
+    this.doDeletePermanently = doDeletePermanently;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
@@ -80,6 +83,7 @@ public class DeleteTask
   public DeleteTask(
       @NonNull Context applicationContext, CompressedExplorerFragment compressedExplorerFragment) {
     this.applicationContext = applicationContext.getApplicationContext();
+    this.doDeletePermanently = false;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
@@ -109,7 +113,7 @@ public class DeleteTask
       }
 
       // delete file from media database
-      if (!file.isSmb())
+      if (!file.isSmb() && !file.isSftp())
         MediaConnectionUtils.scanFile(
             applicationContext, files.toArray(new HybridFile[files.size()]));
 
@@ -180,7 +184,15 @@ public class DeleteTask
         }
       default:
         try {
-          return (file.delete(applicationContext, rootMode));
+          /* SMB and SFTP (or any remote files that may support in the future) should not be
+           * supported by recycle bin. - TranceLove
+           */
+          if (!doDeletePermanently
+              && !OpenMode.SMB.equals(file.getMode())
+              && !OpenMode.SFTP.equals(file.getMode())) {
+            return file.moveToBin(applicationContext);
+          }
+          return file.delete(applicationContext, rootMode);
         } catch (ShellNotRunningException | SmbException e) {
           LOG.warn("failed to delete files", e);
           throw e;

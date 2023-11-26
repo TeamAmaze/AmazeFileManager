@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.application;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 
@@ -39,13 +40,21 @@ import com.amaze.filemanager.crashreport.ErrorActivity;
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.ScreenUtils;
+import com.amaze.trashbin.TrashBin;
+import com.amaze.trashbin.TrashBinConfig;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.widget.Toast;
 
@@ -53,11 +62,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.Config;
+import jcifs.smb.SmbException;
 
 @AcraCore(
     buildConfigClass = BuildConfig.class,
@@ -77,6 +88,11 @@ public class AppConfig extends GlideApplication {
   private UtilitiesDatabase utilitiesDatabase;
 
   private ExplorerDatabase explorerDatabase;
+
+  private TrashBinConfig trashBinConfig;
+  private TrashBin trashBin;
+  private static final String TRASH_BIN_BASE_PATH =
+      Environment.getExternalStorageDirectory().getPath() + File.separator + ".AmazeData";
 
   public UtilitiesProvider getUtilsProvider() {
     return utilsProvider;
@@ -252,5 +268,56 @@ public class AppConfig extends GlideApplication {
               "Could not initialize ACRA crash report",
               R.string.app_ui_crash));
     }
+  }
+
+  public TrashBin getTrashBinInstance() {
+    if (trashBin == null) {
+      trashBin =
+          new TrashBin(
+              getApplicationContext(),
+              true,
+              getTrashBinConfig(),
+              s -> {
+                runInBackground(
+                    () -> {
+                      HybridFile file = new HybridFile(OpenMode.TRASH_BIN, s);
+                      try {
+                        file.delete(getMainActivityContext(), false);
+                      } catch (ShellNotRunningException | SmbException e) {
+                        log.warn("failed to delete file in trash bin cleanup", e);
+                      }
+                    });
+                return true;
+              },
+              null);
+    }
+    return trashBin;
+  }
+
+  private TrashBinConfig getTrashBinConfig() {
+    if (trashBinConfig == null) {
+      SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+      int days =
+          sharedPrefs.getInt(
+              PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
+              TrashBinConfig.RETENTION_DAYS_INFINITE);
+      long bytes =
+          sharedPrefs.getLong(
+              PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
+              TrashBinConfig.RETENTION_BYTES_INFINITE);
+      int numOfFiles =
+          sharedPrefs.getInt(
+              PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
+              TrashBinConfig.RETENTION_NUM_OF_FILES);
+      int intervalHours =
+          sharedPrefs.getInt(
+              PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
+              TrashBinConfig.INTERVAL_CLEANUP_HOURS);
+      trashBinConfig =
+          new TrashBinConfig(
+              TRASH_BIN_BASE_PATH, days, bytes, numOfFiles, intervalHours, false, true);
+    }
+    return trashBinConfig;
   }
 }

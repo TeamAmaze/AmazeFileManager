@@ -1596,7 +1596,7 @@ public class MainActivity extends PermissionsActivity
           mainFragment -> {
             switch (operation) {
               case DELETE: // deletion
-                new DeleteTask(mainActivity).execute((oparrayList));
+                new DeleteTask(mainActivity, true).execute((oparrayList));
                 break;
               case COPY: // copying
                 // legacy compatibility

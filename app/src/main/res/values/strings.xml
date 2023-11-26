@@ -77,6 +77,8 @@
     <string name="dialog_delete_category_directories">Directories</string>
     <string name="dialog_delete_category_files">Files</string>
     <string name="dialog_delete_disclaimer">Deleting the items below will permanently remove them from your device and they cannot be recovered.</string>
+    <string name="dialog_delete_temporarily_disclaimer">Are you sure you want to delete following items?</string>
+    <string name="dialog_restore_disclaimer">Are you sure you want to restore following items?</string>
     <string name="dialog_delete_title">Delete items permanently?</string>
     <string name="deleting">Deleting</string>
     <string name="question_set_path_as_home">Do you want to set current path as home for this tab?</string>
@@ -827,5 +829,18 @@ You only need to do this once, until the next time you select a new location for
     <string name="preference_language_title">App Language</string>
     <string name="preference_language_dialog_title">Select Language</string>
     <string name="preference_language_system_default">System Default</string>
+    <string name="trash_bin">Trash Bin</string>
+    <string name="delete_permanently_checkbox">Delete Permanently</string>
+    <string name="restore">Restore</string>
+    <string name="restore_files">Restore Files</string>
+    <string name="restoring">Restoring…</string>
+    <string name="trash_bin_retention_num_of_files_title">Retention by number of files</string>
+    <string name="trash_bin_retention_num_of_files_summary">Maximum files trash bin can store</string>
+    <string name="trash_bin_retention_days_title">Retention by days</string>
+    <string name="trash_bin_retention_days_summary">Maximum days for which trash bin can store a file</string>
+    <string name="trash_bin_retention_bytes_title">Retention by data size</string>
+    <string name="trash_bin_retention_bytes_summary">Maximum data (in MBs) trash bin can store</string>
+    <string name="trash_bin_cleanup_interval_title">Cleanup interval</string>
+    <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
 </resources>
 

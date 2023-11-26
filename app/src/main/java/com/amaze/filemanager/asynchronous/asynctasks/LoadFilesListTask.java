@@ -61,6 +61,9 @@ import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
+import com.amaze.filemanager.utils.Utils;
+import com.amaze.trashbin.TrashBin;
+import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
@@ -135,7 +138,9 @@ public class LoadFilesListTask
     MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
     MainActivityViewModel mainActivityViewModel = mainFragment.getMainActivityViewModel();
 
-    if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
+    if (OpenMode.UNKNOWN.equals(openmode)
+        || OpenMode.CUSTOM.equals(openmode)
+        || OpenMode.TRASH_BIN.equals(openmode)) {
       hFile = new HybridFile(openmode, path);
       hFile.generateMode(mainFragment.getActivity());
       openmode = hFile.getMode();
@@ -159,6 +164,7 @@ public class LoadFilesListTask
         list = listSftp(mainActivityViewModel);
         break;
       case CUSTOM:
+      case TRASH_BIN:
         list = getCachedMediaList(mainActivityViewModel);
         break;
       case OTG:
@@ -191,7 +197,8 @@ public class LoadFilesListTask
     }
 
     if (list != null
-        && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6")))) {
+        && !(openmode == OpenMode.CUSTOM
+            && (("5").equals(path) || ("6").equals(path) || ("7").equals(path)))) {
       postListCustomPathProcess(list, mainFragment);
     }
 
@@ -214,6 +221,7 @@ public class LoadFilesListTask
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
+        || 7 == mediaType
         || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null
         || forceReload) {
       switch (Integer.parseInt(path)) {
@@ -238,10 +246,13 @@ public class LoadFilesListTask
         case 6:
           list = listRecentFiles();
           break;
+        case 7:
+          list = listTrashBinFiles();
+          break;
         default:
           throw new IllegalStateException();
       }
-      if (5 != mediaType && 6 != mediaType) {
+      if (5 != mediaType && 6 != mediaType && 7 != mediaType) {
         // not saving recent files in cache
         mainActivityViewModel.getMediaCacheHash().set(mediaType, list);
       }
@@ -554,6 +565,40 @@ public class LoadFilesListTask
     }
     cursor.close();
     return recentFiles;
+  }
+
+  private @Nullable List<LayoutElementParcelable> listTrashBinFiles() {
+    final Context context = this.context.get();
+
+    if (context == null) {
+      cancel(true);
+      return null;
+    }
+
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    List<LayoutElementParcelable> deletedFiles = new ArrayList<>();
+    if (trashBin != null) {
+      for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
+        HybridFile hybridFile =
+            new HybridFile(
+                OpenMode.TRASH_BIN,
+                trashBinFile.getDeletedPath(
+                    AppConfig.getInstance().getTrashBinInstance().getConfig()),
+                trashBinFile.getFileName(),
+                trashBinFile.isDirectory());
+        if (trashBinFile.getDeleteTime() != null) {
+          hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
+        }
+        LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
+        element.date = trashBinFile.getDeleteTime();
+        element.longSize = trashBinFile.getSizeBytes();
+        element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
+        element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
+        element.isDirectory = trashBinFile.isDirectory();
+        deletedFiles.add(element);
+      }
+    }
+    return deletedFiles;
   }
 
   private @NonNull List<LayoutElementParcelable> listAppDataDirectories(@NonNull String basePath) {
