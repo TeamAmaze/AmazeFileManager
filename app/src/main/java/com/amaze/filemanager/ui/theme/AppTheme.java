@@ -23,17 +23,23 @@ package com.amaze.filemanager.ui.theme;
 import java.util.Calendar;
 
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
+import android.os.PowerManager;
+
+import androidx.preference.PreferenceManager;
 
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
-  LIGHT(0),
-  DARK(1),
-  TIMED(2),
-  BLACK(3),
-  SYSTEM(4);
+  LIGHT(0, true),
+  DARK(1, false),
+  TIMED(2, true),
+  BLACK(3, false),
+  SYSTEM(4, true);
 
   public static final int LIGHT_INDEX = 0;
   public static final int DARK_INDEX = 1;
@@ -43,8 +49,15 @@ public enum AppTheme {
 
   private int id;
 
-  AppTheme(int id) {
+  /**
+   * Specifies if the theme can be light in some situations. Used for the "Follow battery saver"
+   * option.
+   */
+  private final boolean canBeLight;
+
+  AppTheme(int id, boolean canBeLight) {
     this.id = id;
+    this.canBeLight = canBeLight;
   }
 
   /**
@@ -53,11 +66,7 @@ public enum AppTheme {
    * @param index The theme index
    * @return The AppTheme for the given index
    */
-  public static AppTheme getTheme(Context context, int index) {
-    return getTheme(isNightMode(context), index);
-  }
-
-  public static AppTheme getTheme(boolean isNightMode, int index) {
+  public static AppTheme getTheme(int index) {
     switch (index) {
       default:
       case LIGHT_INDEX:
@@ -69,27 +78,19 @@ public enum AppTheme {
       case BLACK_INDEX:
         return BLACK;
       case SYSTEM_INDEX:
-        return isNightMode ? DARK : LIGHT;
+        return SYSTEM;
     }
   }
 
   public Theme getMaterialDialogTheme(Context context) {
-    switch (id) {
+    AppTheme simpleTheme = getSimpleTheme(context);
+    switch (simpleTheme.id) {
       default:
       case LIGHT_INDEX:
         return Theme.LIGHT;
       case DARK_INDEX:
       case BLACK_INDEX:
         return Theme.DARK;
-      case TIME_INDEX:
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour <= 6 || hour >= 18) {
-          return Theme.DARK;
-        } else {
-          return Theme.LIGHT;
-        }
-      case SYSTEM_INDEX:
-        return isNightMode(context) ? Theme.DARK : Theme.LIGHT;
     }
   }
 
@@ -99,10 +100,17 @@ public enum AppTheme {
    * @return The AppTheme for the given index
    */
   public AppTheme getSimpleTheme(Context context) {
-    return getSimpleTheme(isNightMode(context));
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    boolean followBatterySaver =
+        preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
+    return getSimpleTheme(isNightMode(context), followBatterySaver && isBatterySaverMode(context));
   }
 
-  public AppTheme getSimpleTheme(boolean isNightMode) {
+  public AppTheme getSimpleTheme(boolean isNightMode, boolean isBatterySaver) {
+    if (this.canBeLight() && isBatterySaver) {
+      return DARK;
+    }
+
     switch (id) {
       default:
       case LIGHT_INDEX:
@@ -127,8 +135,28 @@ public enum AppTheme {
     return id;
   }
 
+  /** Returns if the theme can be light in some situations */
+  public boolean canBeLight() {
+    return this.canBeLight;
+  }
+
   private static boolean isNightMode(Context context) {
     return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
         == Configuration.UI_MODE_NIGHT_YES;
+  }
+
+  /**
+   * Checks if battery saver mode is on
+   *
+   * @param context The context in which the battery saver mode should be checked
+   * @return Whether battery saver mode is on or off
+   */
+  private static boolean isBatterySaverMode(Context context) {
+    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      return powerManager.isPowerSaveMode();
+    } else {
+      return false;
+    }
   }
 }

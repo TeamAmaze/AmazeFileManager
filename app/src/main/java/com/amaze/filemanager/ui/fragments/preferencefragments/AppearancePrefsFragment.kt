@@ -54,8 +54,7 @@ class AppearancePrefsFragment : BasePrefsFragment() {
                 editor.putString(PreferencesConstants.FRAGMENT_THEME, which.toString())
                 editor.apply()
 
-                activity.utilsProvider.themeManager.appTheme =
-                    AppTheme.getTheme(activity, which)
+                activity.utilsProvider.themeManager.appTheme = AppTheme.getTheme(which)
                 activity.recreate()
 
                 dialog.dismiss()
@@ -105,6 +104,12 @@ class AppearancePrefsFragment : BasePrefsFragment() {
         true
     }
 
+    private val onClickFollowBatterySaver = Preference.OnPreferenceClickListener {
+        // recreate the activity since the theme could have changed with this preference change
+        activity.recreate()
+        true
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.appearance_prefs, rootKey)
 
@@ -114,8 +119,17 @@ class AppearancePrefsFragment : BasePrefsFragment() {
             .prefs
             .getString(PreferencesConstants.FRAGMENT_THEME, "4")!!
             .toInt()
+
         themePref?.summary = themes[currentTheme]
         themePref?.onPreferenceClickListener = onClickTheme
+
+        val batterySaverPref = findPreference<Preference>(
+            PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER
+        )
+
+        val currentThemeEnum = AppTheme.getTheme(currentTheme)
+        batterySaverPref?.isVisible = currentThemeEnum.canBeLight()
+        batterySaverPref?.onPreferenceClickListener = onClickFollowBatterySaver
 
         findPreference<Preference>(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
             ?.let {
