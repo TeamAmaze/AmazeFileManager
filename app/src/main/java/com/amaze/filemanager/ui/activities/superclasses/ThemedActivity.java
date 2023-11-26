@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.activities.superclasses;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 import com.amaze.filemanager.R;
@@ -34,10 +35,16 @@ import com.amaze.filemanager.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -49,14 +56,39 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
   private int uiModeNight = -1;
 
+  /**
+   * BroadcastReceiver responsible for updating the theme if battery saver mode is turned on or off
+   */
+  private final BroadcastReceiver powerModeReceiver =
+      new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent i) {
+          SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+          boolean followBatterySaver =
+              preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
+
+          AppTheme theme =
+              AppTheme.getTheme(
+                  Integer.parseInt(
+                      preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4")));
+
+          if (followBatterySaver && theme.canBeLight()) {
+            recreate();
+          }
+        }
+      };
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    registerPowerModeReceiver();
 
     // setting window background color instead of each item, in order to reduce pixel overdraw
     if (getAppTheme().equals(AppTheme.LIGHT)) {
@@ -134,7 +166,7 @@ public class ThemedActivity extends PreferenceActivity {
       uiModeNight = newUiModeNight;
 
       if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
-        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
+        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(4));
         // Recreate activity, handling saved state
         //
         // Not smooth, but will only be called if the user changes the system theme, not
@@ -308,5 +340,30 @@ public class ThemedActivity extends PreferenceActivity {
 
     uiModeNight = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     setTheme();
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+
+    unregisterPowerModeReceiver();
+  }
+
+  /**
+   * Registers the BroadcastReceiver \`powerModeReceiver\` to listen to broadcasts that the battery
+   * save mode has been changed
+   */
+  private void registerPowerModeReceiver() {
+    if (SDK_INT >= LOLLIPOP) {
+      registerReceiver(
+          powerModeReceiver, new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED));
+    }
+  }
+
+  /** Unregisters the BroadcastReceiver \`powerModeReceiver\` */
+  private void unregisterPowerModeReceiver() {
+    if (SDK_INT >= LOLLIPOP) {
+      unregisterReceiver(powerModeReceiver);
+    }
   }
 }

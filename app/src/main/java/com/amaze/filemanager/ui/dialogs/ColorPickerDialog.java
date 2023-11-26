@@ -171,8 +171,7 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
       ((AppCompatTextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
       CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
       colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
-      AppTheme appTheme =
-          AppTheme.getTheme(requireContext(), requireArguments().getInt(ARG_APP_THEME));
+      AppTheme appTheme = AppTheme.getTheme(requireArguments().getInt(ARG_APP_THEME));
       if (appTheme.getMaterialDialogTheme(requireContext()) == Theme.LIGHT)
         colorsView.setDividerColor(Color.WHITE);
       else colorsView.setDividerColor(Color.BLACK);
