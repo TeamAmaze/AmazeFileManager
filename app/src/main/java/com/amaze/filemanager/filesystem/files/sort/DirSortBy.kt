@@ -20,18 +20,22 @@
 
 package com.amaze.filemanager.filesystem.files.sort
 
-/** Used by [FileListSorter] to get the needed information from a `Parcelable` */
-interface ComparableParcelable {
+/** Represents the way in which directories and files should be sorted */
+enum class DirSortBy {
+    DIR_ON_TOP,
+    FILE_ON_TOP,
+    NONE_ON_TOP;
 
-    /** Returns if the parcelable represents a directory */
-    fun isDirectory(): Boolean
-
-    /** Returns the name of the item represented by the parcelable */
-    fun getParcelableName(): String
-
-    /** Returns the date of the item represented by the parcelable as a Long */
-    fun getDate(): Long
-
-    /** Returns the size of the item represented by the parcelable */
-    fun getSize(): Long
+    companion object {
+        /** Returns the corresponding [DirSortBy] to [index] */
+        @JvmStatic
+        fun getDirSortBy(index: Int): DirSortBy {
+            return when (index) {
+                0 -> DIR_ON_TOP
+                1 -> FILE_ON_TOP
+                2 -> NONE_ON_TOP
+                else -> NONE_ON_TOP
+            }
+        }
+    }
 }
