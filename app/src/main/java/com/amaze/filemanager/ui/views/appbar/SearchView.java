@@ -55,6 +55,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -88,6 +89,12 @@ public class SearchView {
 
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
+  /** Text to describe {@link SearchView#searchResultsSortButton} */
+  private final AppCompatTextView searchResultsSortHintTV;
+
+  /** The button to select how the results should be sorted */
+  private final AppCompatButton searchResultsSortButton;
+
   // 0 -> Basic Search
   // 1 -> Indexed Search
   // 2 -> Deep Search
@@ -111,6 +118,8 @@ public class SearchView {
     searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
     deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
     recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
+    searchResultsSortHintTV = mainActivity.findViewById(R.id.searchResultsSortHintTV);
+    searchResultsSortButton = mainActivity.findViewById(R.id.searchResultsSortButton);
 
     initRecentSearches(mainActivity);
 
@@ -215,6 +224,8 @@ public class SearchView {
     clearRecyclerView();
 
     searchResultsHintTV.setVisibility(View.VISIBLE);
+    searchResultsSortButton.setVisibility(View.VISIBLE);
+    searchResultsSortHintTV.setVisibility(View.VISIBLE);
     deepSearchTV.setVisibility(View.VISIBLE);
     searchMode = 1;
     deepSearchTV.setText(
@@ -464,6 +475,8 @@ public class SearchView {
     searchRecyclerViewAdapter.notifyDataSetChanged();
 
     searchResultsHintTV.setVisibility(View.GONE);
+    searchResultsSortHintTV.setVisibility(View.GONE);
+    searchResultsSortButton.setVisibility(View.GONE);
   }
 
   private SpannableString getSpannableText(String s1, String s2) {

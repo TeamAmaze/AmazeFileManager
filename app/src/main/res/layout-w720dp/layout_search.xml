@@ -22,11 +22,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
             android:layout_marginRight="@dimen/search_view_back_margin_left_right"
-            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
             app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
             app:layout_constraintEnd_toStartOf="@id/search_edit_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+            app:layout_constraintTop_toTopOf="@id/search_edit_text"
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/search_edit_text"
@@ -50,11 +50,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
             android:layout_marginRight="@dimen/search_view_info_margin_left_right"
-            app:srcCompat="@drawable/ic_close_black_24dp"
             app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/search_edit_text"
-            app:layout_constraintTop_toTopOf="@id/search_edit_text" />
+            app:layout_constraintTop_toTopOf="@id/search_edit_text"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
 
         <TextView
             android:id="@+id/searchRecentHintTV"
@@ -118,21 +118,55 @@
 
         <TextView
             android:id="@+id/searchResultsHintTV"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
             android:text="@string/results"
             android:textColor="@color/accent_material_light"
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/searchRecyclerView"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/searchResultsSortHintTV"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV" />
+
+        <TextView
+            android:id="@+id/searchResultsSortHintTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/sort_by_colon"
+            android:textColor="@color/accent_material_light"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/searchRecyclerView"
+            app:layout_constraintEnd_toStartOf="@+id/searchResultsSortButton"
+            app:layout_constraintStart_toEndOf="@+id/searchResultsHintTV"
+            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV"
+            app:layout_constraintHorizontal_bias="1" />
+
+        <Button
+            android:id="@+id/searchResultsSortButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/accent_material_light"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/searchRecyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/searchResultsSortHintTV"
+            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV"
+            app:layout_constraintHorizontal_bias="1"
+            style="@style/SearchSortButton" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchRecyclerView"
             android:layout_width="@dimen/zero_dp"
