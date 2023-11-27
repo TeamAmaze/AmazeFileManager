@@ -684,7 +684,7 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="compressed_explorer_fragment_error_open_uri">Errore aprendo l\'URI \"%s\" per la lettura.</string>
     <string name="error_empty_archive">\"%s\" è un archivio vuoto.</string>
     <string name="error_bad_archive_without_info">\"%s\" è un archivio corrotto.</string>
-    <string name="error_bad_archive_with_info">"%s" è un archivio corrotto.\nMessaggio dall'estrattore: "%s"</string>
+    <string name="error_bad_archive_with_info">"%s" è un archivio corrotto.\nMessaggio dall\'estrattore: "%s"</string>
     <string name="security_error">Impossibile aprire il file usando quest\'app</string>
     <string name="cloud_drive_tooltip">Crea una connessione Google Drive™ per gestire i file da Amaze File Manager.</string>
     <string name="signin_with_google_title">Autenticati per usare Google Drive™</string>

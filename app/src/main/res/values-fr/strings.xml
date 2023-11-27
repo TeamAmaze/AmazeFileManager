@@ -607,10 +607,10 @@
     <string name="encrypt_file_save_as">Enregistrer le fichier crypté sous&#8230;</string>
     <string name="encrypt_folder_save_as">Enregistrer le dossier crypté sous&#8230;</string>
     <string name="encrypt_option_use_aze">Utiliser le format de chiffrement Amaze</string>
-    <string name="encrypt_option_use_aescrypt_desc">< ![CDATA[
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
 <p>AESCrypt est un format de chiffrement de fichiers open source basé sur le chiffrement AES. Il est également portable et peut être déchiffré avec des programmes AESCrypt sur d\'autres plateformes.</p>
 <p><a href=\"https://www.aescrypt.com\" target=\"_blank>Site web d\'AESCrypt</a></p>]]></string>
-    <string name="encrypt_option_use_azecrypt_desc">< ![CDATA[
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
 <p>Le format de chiffrement d\'Amaze est également basé sur le chiffrement AES ; mais contrairement au format AESCrypt, il ne peut être déchiffré que par cet appareil ; vous ne devez pas non plus désinstaller Amaze File Manager de cet appareil ni modifier la façon dont vous verrouillez l\'écran, sinon vous n\'aurez aucun moyen de récupérer le fichier chiffré.</p>
 ]]></string>
     <string name="encrypt_file_must_end_with_aze">Les fichiers cryptés doivent utiliser \".aze\" comme extension de fichier.</string>
