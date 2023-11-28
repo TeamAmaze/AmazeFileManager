@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -103,6 +104,7 @@ import androidx.arch.core.util.Function;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -779,13 +781,15 @@ public class HybridFile {
     long size = 0L;
     switch (mode) {
       case SMB:
-        try {
-          SmbFile smbFile = getSmbFile();
-          size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
-        } catch (SmbException e) {
-          size = 0L;
-          LOG.warn("failed to get usage space for smb file", e);
-        }
+        size = Single.fromCallable((Callable<Long>) () -> {
+          try {
+            SmbFile smbFile = getSmbFile();
+            return smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
+          } catch (SmbException e) {
+            LOG.warn("failed to get usage space for smb file", e);
+            return 0L;
+          }
+        }).subscribeOn(Schedulers.io()).blockingGet();
         break;
       case FILE:
       case ROOT:
