@@ -104,7 +104,6 @@ import androidx.arch.core.util.Function;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -781,15 +780,20 @@ public class HybridFile {
     long size = 0L;
     switch (mode) {
       case SMB:
-        size = Single.fromCallable((Callable<Long>) () -> {
-          try {
-            SmbFile smbFile = getSmbFile();
-            return smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
-          } catch (SmbException e) {
-            LOG.warn("failed to get usage space for smb file", e);
-            return 0L;
-          }
-        }).subscribeOn(Schedulers.io()).blockingGet();
+        size =
+            Single.fromCallable(
+                    (Callable<Long>)
+                        () -> {
+                          try {
+                            SmbFile smbFile = getSmbFile();
+                            return smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
+                          } catch (SmbException e) {
+                            LOG.warn("failed to get usage space for smb file", e);
+                            return 0L;
+                          }
+                        })
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
         break;
       case FILE:
       case ROOT:
