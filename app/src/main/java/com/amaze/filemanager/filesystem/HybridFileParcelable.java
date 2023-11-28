@@ -147,6 +147,11 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     return isDirectory;
   }
 
+  @Override
+  public boolean isDirectory(Context context) {
+    return isDirectory;
+  }
+
   public boolean isHidden() {
     return name.startsWith(".");
   }
