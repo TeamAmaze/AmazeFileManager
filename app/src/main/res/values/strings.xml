@@ -120,6 +120,7 @@
     <string name="sort_name">Name</string>
     <string name="lastModified">Last Modified</string>
     <string name="sort_size">Size</string>
+    <string name="sort_relevance">Relevance</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>
