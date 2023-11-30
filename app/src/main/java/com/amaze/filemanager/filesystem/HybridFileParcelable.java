@@ -149,7 +149,8 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   @Override
   public boolean isDirectory(Context context) {
-    return isDirectory;
+    if (isSmb() || isSftp()) return isDirectory;
+    else return super.isDirectory(context);
   }
 
   public boolean isHidden() {

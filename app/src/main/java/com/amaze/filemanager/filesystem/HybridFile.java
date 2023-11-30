@@ -592,16 +592,8 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
       case FTP:
-        return isDirectory(AppConfig.getInstance());
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        try {
-          isDirectory = smbFile != null && smbFile.isDirectory();
-        } catch (SmbException e) {
-          LOG.warn("failed to get isDirectory for smb file", e);
-          isDirectory = false;
-        }
-        break;
+        return isDirectory(AppConfig.getInstance());
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
