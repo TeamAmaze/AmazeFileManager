@@ -1401,8 +1401,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
     if (hasPendingPasteOperation()) return;
     Context currentContext = this.context;
-    if (mainFragment.getMainActivity().getAppTheme().getSimpleTheme(mainFragment.requireContext())
-        == AppTheme.BLACK) {
+    if (mainFragment.getMainActivity().getAppTheme() == AppTheme.BLACK) {
       currentContext = new ContextThemeWrapper(context, R.style.overflow_black);
     }
     PopupMenu popupMenu =

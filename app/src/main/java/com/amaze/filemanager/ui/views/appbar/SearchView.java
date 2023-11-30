@@ -430,7 +430,7 @@ public class SearchView {
   }
 
   private void initSearchViewColor(MainActivity a) {
-    AppTheme theme = a.getAppTheme().getSimpleTheme(a);
+    AppTheme theme = a.getAppTheme();
     switch (theme) {
       case LIGHT:
         searchViewLayout.setBackgroundResource(R.drawable.search_view_shape);

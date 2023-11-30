@@ -30,6 +30,7 @@ import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.theme.AppThemePreference;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -73,12 +74,12 @@ public class ThemedActivity extends PreferenceActivity {
           boolean followBatterySaver =
               preferences.getBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, false);
 
-          AppTheme theme =
-              AppTheme.getTheme(
+          AppThemePreference theme =
+              AppThemePreference.getTheme(
                   Integer.parseInt(
                       preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4")));
 
-          if (followBatterySaver && theme.canBeLight()) {
+          if (followBatterySaver && theme.getCanBeLight()) {
             recreate();
           }
         }
@@ -166,7 +167,7 @@ public class ThemedActivity extends PreferenceActivity {
       uiModeNight = newUiModeNight;
 
       if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
-        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(4));
+        getUtilsProvider().getThemeManager().setAppThemePreference(AppThemePreference.getTheme(4));
         // Recreate activity, handling saved state
         //
         // Not smooth, but will only be called if the user changes the system theme, not
@@ -209,7 +210,7 @@ public class ThemedActivity extends PreferenceActivity {
   }
 
   void setTheme() {
-    AppTheme theme = getAppTheme().getSimpleTheme(this);
+    AppTheme theme = getAppTheme();
     if (Build.VERSION.SDK_INT >= 21) {
 
       String stringRepresentation = String.format("#%06X", (0xFFFFFF & getAccent()));

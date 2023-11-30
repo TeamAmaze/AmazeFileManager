@@ -56,7 +56,7 @@ object HistoryDialog {
             builder.onNegative { _: MaterialDialog?, _: DialogAction? ->
                 DataUtils.getInstance().clearHistory()
             }
-            builder.theme(appTheme.getMaterialDialogTheme(mainFragment.requireContext()))
+            builder.theme(appTheme.getMaterialDialogTheme())
             builder.adapter(adapter, null)
         }.build()
         adapter.materialDialog = materialDialog
