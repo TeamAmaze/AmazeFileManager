@@ -825,5 +825,8 @@ You only need to do this once, until the next time you select a new location for
     <string name="preference_language_title">App Language</string>
     <string name="preference_language_dialog_title">Select Language</string>
     <string name="preference_language_system_default">System Default</string>
+    <string name="error.listfile.smb.title">Unable to load SMB file list</string>
+    <string name="error.listfile.smb">Error listing files at %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Error listing files at %s - probably the SMB server does not allow anonymous access to the IPC$ share. You may try specifying the share name directly in connection settings.</string>
 </resources>
 

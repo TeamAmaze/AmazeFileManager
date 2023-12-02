@@ -346,7 +346,8 @@ public class SmbConnectDialog extends DialogFragment {
           }
           SmbFile smbFile;
           String domaind = domain.getText().toString();
-          if (chkSmbAnonymous.isChecked())
+          if (chkSmbAnonymous.isChecked()
+              || (TextUtils.isEmpty(user.getText()) && TextUtils.isEmpty(pass.getText())))
             smbFile = createSMBPath(new String[] {ipa, "", "", domaind, sShare}, true, false);
           else {
             String useraw = user.getText().toString();

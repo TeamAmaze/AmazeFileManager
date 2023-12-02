@@ -6,7 +6,7 @@ buildscript {
         robolectricVersion = '4.9'
         glideVersion = '4.11.0'
         sshjVersion = '0.35.0'
-        jcifsVersion = '2.1.6'
+        jcifsVersion = '2.1.9'
         fabSpeedDialVersion = '3.1.1'
         roomVersion = '2.5.0'
         bouncyCastleVersion = '1.70'
