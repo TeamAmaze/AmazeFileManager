@@ -24,10 +24,15 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortOrder;
 import com.amaze.filemanager.filesystem.files.sort.SortType;
@@ -195,7 +200,7 @@ public class SearchView {
 
     deepSearchTV.setOnClickListener(
         v -> {
-          String s = searchViewEditText.getText().toString().trim();
+          String s = getSearchTerm();
 
           if (searchMode == 1) {
 
@@ -207,10 +212,7 @@ public class SearchView {
                 .indexedSearch(mainActivity, s)
                 .observe(
                     mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
-                    hybridFileParcelables -> {
-                      searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-                      searchRecyclerViewAdapter.notifyDataSetChanged();
-                    });
+                    hybridFileParcelables -> updateResultList(hybridFileParcelables, s));
 
             searchMode = 2;
 
@@ -234,7 +236,7 @@ public class SearchView {
   @SuppressWarnings("ConstantConditions")
   private boolean onSearch(boolean shouldSave) {
 
-    String s = searchViewEditText.getText().toString().trim();
+    String s = getSearchTerm();
 
     if (s.isEmpty()) {
       searchViewEditText.setError(mainActivity.getString(R.string.field_empty));
@@ -269,10 +271,7 @@ public class SearchView {
         .basicSearch(mainActivity, s)
         .observe(
             mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
-            hybridFileParcelables -> {
-              searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-              searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
-            });
+            hybridFileParcelables -> updateResultList(hybridFileParcelables, s));
   }
 
   private void saveRecentPreference(String s) {
@@ -348,6 +347,20 @@ public class SearchView {
             mainActivity.getString(R.string.not_finding_what_you_re_looking_for),
             mainActivity.getString(R.string.try_indexed_search)));
     deepSearchTV.setVisibility(View.GONE);
+  }
+
+  /**
+   * Updates the list of results displayed in {@link SearchView#searchRecyclerViewAdapter} sorted
+   * according to the current {@link SearchView#sortType}
+   *
+   * @param newResults The list of results that should be displayed
+   * @param searchTerm The search term that resulted in the search results
+   */
+  private void updateResultList(List<HybridFileParcelable> newResults, String searchTerm) {
+    ArrayList<HybridFileParcelable> items = new ArrayList<>(newResults);
+    Collections.sort(items, new FileListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+    searchRecyclerViewAdapter.submitList(items);
+    searchRecyclerViewAdapter.notifyDataSetChanged();
   }
 
   /** show search view with a circular reveal animation */
@@ -443,6 +456,7 @@ public class SearchView {
     this.sortType = new SortType(SortBy.getSortBy(index), sortOrder);
     dialog.dismiss();
     updateSearchResultsSortButtonDisplay();
+    updateResultList(searchRecyclerViewAdapter.getCurrentList(), getSearchTerm());
   }
 
   private void resetSearchResultsSortButton() {
@@ -598,6 +612,15 @@ public class SearchView {
         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     return spannableString;
+  }
+
+  /**
+   * Returns the current text in {@link SearchView#searchViewEditText}
+   *
+   * @return The current search text
+   */
+  private String getSearchTerm() {
+    return searchViewEditText.getText().toString().trim();
   }
 
   public interface SearchListener {
