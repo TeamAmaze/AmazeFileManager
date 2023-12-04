@@ -1011,4 +1011,533 @@ class FileListSorterTest {
         )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
     }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term more than file2, result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" more than file2 title
+     *
+     * Expected: return positive integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile1MoreMatchThanFile2() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.txt",
+            "C:\\AmazeFileManager\\abc",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABCDE.txt",
+            "C:\\AmazeFileManager\\ABCDE",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term less than file2, result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" less than file2 title
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile1LessMatchThanFile2() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abcdefg.txt",
+            "C:\\AmazeFileManager\\abcdefg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC.txt",
+            "C:\\AmazeFileManager\\ABC",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2
+     * and file1 starts with search term, result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title and file1 starts with "abc"
+     *
+     * Expected: return positive integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile1StartsWithSearchTerm() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.txt",
+            "C:\\AmazeFileManager\\abc",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "XYZ_ABC",
+            "C:\\AmazeFileManager\\XYZ_ABC",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2
+     * and file2 starts with search term, result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title and file2 starts with "abc"
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile2StartWithSearchTerm() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "txt-abc",
+            "C:\\AmazeFileManager\\txt-abc",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC.txt",
+            "C:\\AmazeFileManager\\ABC",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term and file1 contains the search term as a word (surrounded by
+     * separators), result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
+     * and file1 contains "abc" as word (separated by "-")
+     *
+     * Expected: return positive integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile1HasSearchTermAsWord() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc-efg.txt",
+            "C:\\AmazeFileManager\\abc-efg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABCD-FG.txt",
+            "C:\\AmazeFileManager\\ABCD-FG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term and file2 contains the search term as a word (surrounded by
+     * separators), result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
+     * and file2 contains "abc" as word (separated by "_")
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile2HasSearchTermAsWord() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abcdefg",
+            "C:\\AmazeFileManager\\abcdefg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC_EFG",
+            "C:\\AmazeFileManager\\ABC_EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term and file2 contains the search term as a word (surrounded by
+     * separators), result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
+     * and file2 contains "abc" as word (separated by " ")
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWithSpaceWordSeparator() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abcdefg",
+            "C:\\AmazeFileManager\\abcdefg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC EFG",
+            "C:\\AmazeFileManager\\ABC EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term and file2 contains the search term as a word (surrounded by
+     * separators), result is negative
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
+     * and file2 contains "abc" as word (separated by ".")
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWithDotWordSeparator() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abcdefg",
+            "C:\\AmazeFileManager\\abcdefg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC.EFG",
+            "C:\\AmazeFileManager\\ABC.EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term, both contain the search term as a word and file1 date is more recent,
+     * result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
+     * both contain "abc" as word and file1 date is more recent
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile1MoreRecent() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.efg",
+            "C:\\AmazeFileManager\\abc.efg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC_EFG",
+            "C:\\AmazeFileManager\\ABC_EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1235",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term, both contain the search term as a word and file2 date is more recent,
+     * result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
+     * both contain "abc" as word and file2 date is more recent
+     *
+     * Expected: return positive integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile2MoreRecent() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.efg",
+            "C:\\AmazeFileManager\\abc.efg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1235",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC_EFG",
+            "C:\\AmazeFileManager\\ABC_EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term, both contain the search term as a word and file2 date is more recent,
+     * result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
+     * both contain "abc" as word and the date of both is the same
+     *
+     * Expected: return positive integer
+     */
+    @Test
+    fun testSortByRelevanceWithSameRelevance() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.efg",
+            "C:\\AmazeFileManager\\abc.efg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC_EFG",
+            "C:\\AmazeFileManager\\ABC_EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            "1234",
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(0, fileListSorter.compare(file1, file2).toLong())
+    }
 }
