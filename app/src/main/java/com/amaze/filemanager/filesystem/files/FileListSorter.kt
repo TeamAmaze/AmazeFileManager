@@ -33,16 +33,50 @@ import java.util.Locale
  */
 class FileListSorter(
     dirArg: DirSortBy,
-    sortType: SortType
+    sortType: SortType,
+    searchTerm: String?
 ) : Comparator<ComparableParcelable> {
     private var dirsOnTop = dirArg
     private val asc: Int = sortType.sortOrder.sortFactor
     private val sort: SortBy = sortType.sortBy
 
+    private val relevanceComparator: Comparator<ComparableParcelable> by lazy {
+        if (searchTerm == null) {
+            // no search term given, so every result is equally relevant
+            Comparator { _, _ ->
+                0
+            }
+        } else {
+            compareBy<ComparableParcelable> {
+                // first we compare by the match percentage of the name
+                searchTerm.length.toDouble() / it.getParcelableName().length.toDouble()
+            }.thenBy {
+                // if match percentage is the same, we compare if the name starts with the match
+                it.getParcelableName().startsWith(searchTerm, ignoreCase = true)
+            }.thenBy { file ->
+                // if the match in the name could a word because it is surrounded by separators, it could be more relevant
+                // e.g. "my-cat" more relevant than "mysterious"
+                file.getParcelableName().split('-', '_', '.', ' ').any {
+                    it.contentEquals(
+                        searchTerm,
+                        ignoreCase = true
+                    )
+                }
+            }.thenBy { file ->
+                // sort by modification date as last resort
+                file.getDate()
+            }
+        }
+    }
+
+    /** Constructor for convenience if there is no searchTerm */
+    constructor(dirArg: DirSortBy, sortType: SortType) : this(dirArg, sortType, null)
+
     private fun isDirectory(path: ComparableParcelable): Boolean {
         return path.isDirectory()
     }
 
+    /** Compares the names of [file1] and [file2] */
     private fun compareName(file1: ComparableParcelable, file2: ComparableParcelable): Int {
         return file1.getParcelableName().compareTo(file2.getParcelableName(), ignoreCase = true)
     }
@@ -115,7 +149,10 @@ class FileListSorter(
                     compareName(file1, file2)
                 }
             }
-            SortBy.RELEVANCE -> TODO()
+            SortBy.RELEVANCE -> {
+                // sort by relevance to the search query
+                return asc * relevanceComparator.compare(file1, file2)
+            }
         }
     }
 
