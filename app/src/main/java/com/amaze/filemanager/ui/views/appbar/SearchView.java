@@ -120,7 +120,7 @@ public class SearchView {
 
   private boolean enabled = false;
 
-  private final SortType defaultSortType = new SortType(SortBy.RELEVANCE, SortOrder.DESC);
+  private final SortType defaultSortType = new SortType(SortBy.RELEVANCE, SortOrder.ASC);
 
   /** The selected sort type for the search results */
   private SortType sortType = defaultSortType;

@@ -1018,7 +1018,7 @@ class FileListSorterTest {
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" more than file2 title
      *
-     * Expected: return positive integer
+     * Expected: return negative integer
      */
     @Test
     fun testSortByRelevanceWithFile1MoreMatchThanFile2() {
@@ -1055,16 +1055,16 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
-     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term less than file2, result is negative
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term less than file2, result is positive
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" less than file2 title
      *
-     * Expected: return negative integer
+     * Expected: return positive integer
      */
     @Test
     fun testSortByRelevanceWithFile1LessMatchThanFile2() {
@@ -1101,17 +1101,17 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2
-     * and file1 starts with search term, result is positive
+     * and file1 starts with search term, result is negative
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title and file1 starts with "abc"
      *
-     * Expected: return positive integer
+     * Expected: return negative integer
      */
     @Test
     fun testSortByRelevanceWithFile1StartsWithSearchTerm() {
@@ -1148,17 +1148,17 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2
-     * and file2 starts with search term, result is negative
+     * and file2 starts with search term, result is positive
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title and file2 starts with "abc"
      *
-     * Expected: return negative integer
+     * Expected: return positive integer
      */
     @Test
     fun testSortByRelevanceWithFile2StartWithSearchTerm() {
@@ -1195,19 +1195,19 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term and file1 contains the search term as a word (surrounded by
-     * separators), result is positive
+     * separators), result is negative
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
      * and file1 contains "abc" as word (separated by "-")
      *
-     * Expected: return positive integer
+     * Expected: return negative integer
      */
     @Test
     fun testSortByRelevanceWithFile1HasSearchTermAsWord() {
@@ -1244,19 +1244,19 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term and file2 contains the search term as a word (surrounded by
-     * separators), result is negative
+     * separators), result is positive
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
      * and file2 contains "abc" as word (separated by "_")
      *
-     * Expected: return negative integer
+     * Expected: return positive integer
      */
     @Test
     fun testSortByRelevanceWithFile2HasSearchTermAsWord() {
@@ -1293,19 +1293,19 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term and file2 contains the search term as a word (surrounded by
-     * separators), result is negative
+     * separators), result is positive
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
      * and file2 contains "abc" as word (separated by " ")
      *
-     * Expected: return negative integer
+     * Expected: return positive integer
      */
     @Test
     fun testSortByRelevanceWithSpaceWordSeparator() {
@@ -1342,19 +1342,19 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term and file2 contains the search term as a word (surrounded by
-     * separators), result is negative
+     * separators), result is positive
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc"
      * and file2 contains "abc" as word (separated by ".")
      *
-     * Expected: return negative integer
+     * Expected: return positive integer
      */
     @Test
     fun testSortByRelevanceWithDotWordSeparator() {
@@ -1391,7 +1391,7 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
@@ -1403,7 +1403,7 @@ class FileListSorterTest {
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
      * both contain "abc" as word and file1 date is more recent
      *
-     * Expected: return negative integer
+     * Expected: return positive integer
      */
     @Test
     fun testSortByRelevanceWithFile1MoreRecent() {
@@ -1440,19 +1440,19 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term, both contain the search term as a word and file2 date is more recent,
-     * result is positive
+     * result is negative
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
      * both contain "abc" as word and file2 date is more recent
      *
-     * Expected: return positive integer
+     * Expected: return negative integer
      */
     @Test
     fun testSortByRelevanceWithFile2MoreRecent() {
@@ -1489,19 +1489,19 @@ class FileListSorterTest {
             false,
             OpenMode.UNKNOWN
         )
-        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
     }
 
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term, both contain the search term as a word and file2 date is more recent,
-     * result is positive
+     * result is zero
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
      * both contain "abc" as word and the date of both is the same
      *
-     * Expected: return positive integer
+     * Expected: return zero
      */
     @Test
     fun testSortByRelevanceWithSameRelevance() {

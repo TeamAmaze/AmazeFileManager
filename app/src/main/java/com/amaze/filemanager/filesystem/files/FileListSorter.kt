@@ -47,24 +47,29 @@ class FileListSorter(
                 0
             }
         } else {
-            compareBy<ComparableParcelable> {
-                // first we compare by the match percentage of the name
-                searchTerm.length.toDouble() / it.getParcelableName().length.toDouble()
-            }.thenBy {
-                // if match percentage is the same, we compare if the name starts with the match
-                it.getParcelableName().startsWith(searchTerm, ignoreCase = true)
-            }.thenBy { file ->
-                // if the match in the name could a word because it is surrounded by separators, it could be more relevant
-                // e.g. "my-cat" more relevant than "mysterious"
-                file.getParcelableName().split('-', '_', '.', ' ').any {
-                    it.contentEquals(
-                        searchTerm,
-                        ignoreCase = true
-                    )
+            Comparator { o1, o2 ->
+                // Sorts in a way that least relevant is first
+                val comparator = compareBy<ComparableParcelable> {
+                    // first we compare by the match percentage of the name
+                    searchTerm.length.toDouble() / it.getParcelableName().length.toDouble()
+                }.thenBy {
+                    // if match percentage is the same, we compare if the name starts with the match
+                    it.getParcelableName().startsWith(searchTerm, ignoreCase = true)
+                }.thenBy { file ->
+                    // if the match in the name could a word because it is surrounded by separators, it could be more relevant
+                    // e.g. "my-cat" more relevant than "mysterious"
+                    file.getParcelableName().split('-', '_', '.', ' ').any {
+                        it.contentEquals(
+                            searchTerm,
+                            ignoreCase = true
+                        )
+                    }
+                }.thenBy { file ->
+                    // sort by modification date as last resort
+                    file.getDate()
                 }
-            }.thenBy { file ->
-                // sort by modification date as last resort
-                file.getDate()
+                // Reverts the sorting to make most relevant first
+                comparator.compare(o1, o2) * -1
             }
         }
     }
