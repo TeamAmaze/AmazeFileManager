@@ -125,7 +125,7 @@ class DecryptServiceTest {
             putExtra(
                 TAG_SOURCE,
                 HybridFileParcelable(targetFile.absolutePath).also {
-                    it.size = targetFile.length()
+                    it.setSize(targetFile.length())
                 }
             )
             putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)
@@ -183,7 +183,7 @@ class DecryptServiceTest {
                 putExtra(
                     TAG_SOURCE,
                     HybridFileParcelable(sourceFile.absolutePath).also {
-                        it.size = sourceFile.length()
+                        it.setSize(sourceFile.length())
                     }
                 )
                 putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)
