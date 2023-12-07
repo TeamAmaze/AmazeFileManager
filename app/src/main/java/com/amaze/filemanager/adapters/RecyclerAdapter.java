@@ -21,7 +21,6 @@
 package com.amaze.filemanager.adapters;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
-import static com.amaze.filemanager.filesystem.files.FileListSorter.SORT_NONE_ON_TOP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -52,6 +51,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
@@ -626,7 +626,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   public void createHeaders(boolean invalidate, List<IconDataParcelable> uris) {
     if ((mainFragment.getMainFragmentViewModel() != null
-            && mainFragment.getMainFragmentViewModel().getDsort() == SORT_NONE_ON_TOP)
+            && mainFragment.getMainFragmentViewModel().getDsort() == DirSortBy.NONE_ON_TOP)
         || getItemsDigested() == null
         || getItemsDigested().isEmpty()) {
       return;

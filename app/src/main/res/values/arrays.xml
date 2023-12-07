@@ -52,6 +52,14 @@
         <item>@string/type</item>
     </string-array>
 
+    <string-array name="sortbySearch">
+        <item>@string/sort_name</item>
+        <item>@string/lastModified</item>
+        <item>@string/sort_size</item>
+        <item>@string/type</item>
+        <item>@string/sort_relevance</item>
+    </string-array>
+
     <string-array name="sortbyApps">
         <item>@string/sort_name</item>
         <item>@string/lastModified</item>

@@ -60,6 +60,9 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.sort.SortBy;
+import com.amaze.filemanager.filesystem.files.sort.SortOrder;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -949,12 +952,12 @@ public class GeneralDialogCreation {
     final String path = m.getCurrentPath();
     int accentColor = m.getMainActivity().getAccent();
     String[] sort = m.getResources().getStringArray(R.array.sortby);
-    int current = SortHandler.getSortType(m.getContext(), path);
+    SortType current = SortHandler.getSortType(m.getContext(), path);
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
     a.theme(appTheme.getMaterialDialogTheme());
     a.items(sort)
         .itemsCallbackSingleChoice(
-            current > 3 ? current - 4 : current, (dialog, view, which, text) -> true);
+            current.getSortBy().getIndex(), (dialog, view, which, text) -> true);
     final Set<String> sortbyOnlyThis =
         sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, Collections.emptySet());
     final Set<String> onlyThisFloders = new HashSet<>(sortbyOnlyThis);
@@ -977,11 +980,11 @@ public class GeneralDialogCreation {
     a.positiveText(R.string.descending).negativeColor(accentColor);
     a.onNegative(
         (dialog, which) -> {
-          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, false);
+          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, SortOrder.ASC);
         });
     a.onPositive(
         (dialog, which) -> {
-          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, true);
+          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, SortOrder.DESC);
         });
     a.title(R.string.sort_by);
     a.build().show();
@@ -992,20 +995,20 @@ public class GeneralDialogCreation {
       SharedPreferences sharedPref,
       Set<String> onlyThisFloders,
       MaterialDialog dialog,
-      boolean desc) {
-    final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
+      SortOrder sortOrder) {
+    final SortType sortType =
+        new SortType(SortBy.getDirectorySortBy(dialog.getSelectedIndex()), sortOrder);
     SortHandler sortHandler = SortHandler.getInstance();
     if (onlyThisFloders.contains(m.getCurrentPath())) {
       Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
-      Sort newSort = new Sort(m.getCurrentPath(), sortType);
       if (oldSort == null) {
-        sortHandler.addEntry(newSort);
+        sortHandler.addEntry(m.getCurrentPath(), sortType);
       } else {
-        sortHandler.updateEntry(oldSort, newSort);
+        sortHandler.updateEntry(oldSort, m.getCurrentPath(), sortType);
       }
     } else {
       sortHandler.clear(m.getCurrentPath());
-      sharedPref.edit().putString("sortby", String.valueOf(sortType)).apply();
+      sharedPref.edit().putString("sortby", String.valueOf(sortType.toDirectorySortInt())).apply();
     }
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
     m.updateList(false);

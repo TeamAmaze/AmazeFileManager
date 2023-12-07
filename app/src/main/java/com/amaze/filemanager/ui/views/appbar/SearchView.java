@@ -24,9 +24,18 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
+import com.amaze.filemanager.filesystem.files.sort.SortBy;
+import com.amaze.filemanager.filesystem.files.sort.SortOrder;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -41,7 +50,9 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -55,10 +66,12 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,12 +101,29 @@ public class SearchView {
 
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
+  /** Text to describe {@link SearchView#searchResultsSortButton} */
+  private final AppCompatTextView searchResultsSortHintTV;
+
+  /** The button to select how the results should be sorted */
+  private final AppCompatButton searchResultsSortButton;
+
+  /** The drawable used to indicate that the search results are sorted ascending */
+  private final Drawable searchResultsSortAscDrawable;
+
+  /** The drawable used to indicate that the search results are sorted descending */
+  private final Drawable searchResultsSortDescDrawable;
+
   // 0 -> Basic Search
   // 1 -> Indexed Search
   // 2 -> Deep Search
   private int searchMode;
 
   private boolean enabled = false;
+
+  private final SortType defaultSortType = new SortType(SortBy.RELEVANCE, SortOrder.ASC);
+
+  /** The selected sort type for the search results */
+  private SortType sortType = defaultSortType;
 
   @SuppressWarnings("ConstantConditions")
   @SuppressLint("NotifyDataSetChanged")
@@ -111,6 +141,20 @@ public class SearchView {
     searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
     deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
     recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
+    searchResultsSortHintTV = mainActivity.findViewById(R.id.searchResultsSortHintTV);
+    searchResultsSortButton = mainActivity.findViewById(R.id.searchResultsSortButton);
+    searchResultsSortAscDrawable =
+        ResourcesCompat.getDrawable(
+            mainActivity.getResources(),
+            R.drawable.baseline_sort_24_asc_white,
+            mainActivity.getTheme());
+    searchResultsSortDescDrawable =
+        ResourcesCompat.getDrawable(
+            mainActivity.getResources(),
+            R.drawable.baseline_sort_24_desc_white,
+            mainActivity.getTheme());
+
+    setUpSearchResultsSortButton();
 
     initRecentSearches(mainActivity);
 
@@ -156,7 +200,7 @@ public class SearchView {
 
     deepSearchTV.setOnClickListener(
         v -> {
-          String s = searchViewEditText.getText().toString().trim();
+          String s = getSearchTerm();
 
           if (searchMode == 1) {
 
@@ -168,10 +212,7 @@ public class SearchView {
                 .indexedSearch(mainActivity, s)
                 .observe(
                     mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
-                    hybridFileParcelables -> {
-                      searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-                      searchRecyclerViewAdapter.notifyDataSetChanged();
-                    });
+                    hybridFileParcelables -> updateResultList(hybridFileParcelables, s));
 
             searchMode = 2;
 
@@ -195,7 +236,7 @@ public class SearchView {
   @SuppressWarnings("ConstantConditions")
   private boolean onSearch(boolean shouldSave) {
 
-    String s = searchViewEditText.getText().toString().trim();
+    String s = getSearchTerm();
 
     if (s.isEmpty()) {
       searchViewEditText.setError(mainActivity.getString(R.string.field_empty));
@@ -215,6 +256,8 @@ public class SearchView {
     clearRecyclerView();
 
     searchResultsHintTV.setVisibility(View.VISIBLE);
+    searchResultsSortButton.setVisibility(View.VISIBLE);
+    searchResultsSortHintTV.setVisibility(View.VISIBLE);
     deepSearchTV.setVisibility(View.VISIBLE);
     searchMode = 1;
     deepSearchTV.setText(
@@ -228,10 +271,7 @@ public class SearchView {
         .basicSearch(mainActivity, s)
         .observe(
             mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
-            hybridFileParcelables -> {
-              searchRecyclerViewAdapter.submitList(hybridFileParcelables);
-              searchRecyclerViewAdapter.notifyItemInserted(hybridFileParcelables.size() + 1);
-            });
+            hybridFileParcelables -> updateResultList(hybridFileParcelables, s));
   }
 
   private void saveRecentPreference(String s) {
@@ -309,12 +349,27 @@ public class SearchView {
     deepSearchTV.setVisibility(View.GONE);
   }
 
+  /**
+   * Updates the list of results displayed in {@link SearchView#searchRecyclerViewAdapter} sorted
+   * according to the current {@link SearchView#sortType}
+   *
+   * @param newResults The list of results that should be displayed
+   * @param searchTerm The search term that resulted in the search results
+   */
+  private void updateResultList(List<HybridFileParcelable> newResults, String searchTerm) {
+    ArrayList<HybridFileParcelable> items = new ArrayList<>(newResults);
+    Collections.sort(items, new FileListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+    searchRecyclerViewAdapter.submitList(items);
+    searchRecyclerViewAdapter.notifyDataSetChanged();
+  }
+
   /** show search view with a circular reveal animation */
   public void revealSearchView() {
     final int START_RADIUS = 16;
     int endRadius = Math.max(appbar.getToolbar().getWidth(), appbar.getToolbar().getHeight());
 
     resetSearchMode();
+    resetSearchResultsSortButton();
     clearRecyclerView();
 
     Animator animator;
@@ -364,6 +419,79 @@ public class SearchView {
           @Override
           public void onAnimationRepeat(Animator animation) {}
         });
+  }
+
+  /**
+   * Sets up the {@link SearchView#searchResultsSortButton} to show a dialog when it is clicked. The
+   * text and icon of {@link SearchView#searchResultsSortButton} is also set to the current {@link
+   * SearchView#sortType}
+   */
+  private void setUpSearchResultsSortButton() {
+    searchResultsSortButton.setOnClickListener(v -> showSearchResultsSortDialog());
+    updateSearchResultsSortButtonDisplay();
+  }
+
+  /** Builds and shows a dialog for selection which sort should be applied for the search results */
+  private void showSearchResultsSortDialog() {
+    int accentColor = mainActivity.getAccent();
+    new MaterialDialog.Builder(mainActivity)
+        .items(R.array.sortbySearch)
+        .itemsCallbackSingleChoice(
+            sortType.getSortBy().getIndex(), (dialog, itemView, which, text) -> true)
+        .negativeText(R.string.ascending)
+        .positiveColor(accentColor)
+        .onNegative(
+            (dialog, which) -> onSortTypeSelected(dialog, dialog.getSelectedIndex(), SortOrder.ASC))
+        .positiveText(R.string.descending)
+        .negativeColor(accentColor)
+        .onPositive(
+            (dialog, which) ->
+                onSortTypeSelected(dialog, dialog.getSelectedIndex(), SortOrder.DESC))
+        .title(R.string.sort_by)
+        .build()
+        .show();
+  }
+
+  private void onSortTypeSelected(MaterialDialog dialog, int index, SortOrder sortOrder) {
+    this.sortType = new SortType(SortBy.getSortBy(index), sortOrder);
+    dialog.dismiss();
+    updateSearchResultsSortButtonDisplay();
+    updateResultList(searchRecyclerViewAdapter.getCurrentList(), getSearchTerm());
+  }
+
+  private void resetSearchResultsSortButton() {
+    sortType = defaultSortType;
+    updateSearchResultsSortButtonDisplay();
+  }
+
+  /** Updates the text and icon of {@link SearchView#searchResultsSortButton} */
+  private void updateSearchResultsSortButtonDisplay() {
+    searchResultsSortButton.setText(sortType.getSortBy().toResourceString(mainActivity));
+    setSearchResultSortOrderIcon();
+  }
+
+  /**
+   * Updates the icon of {@link SearchView#searchResultsSortButton} and colors it to fit the text
+   * color
+   */
+  private void setSearchResultSortOrderIcon() {
+    Drawable orderDrawable;
+    switch (sortType.getSortOrder()) {
+      default:
+      case ASC:
+        orderDrawable = searchResultsSortAscDrawable;
+        break;
+      case DESC:
+        orderDrawable = searchResultsSortDescDrawable;
+        break;
+    }
+
+    orderDrawable.setColorFilter(
+        new PorterDuffColorFilter(
+            mainActivity.getResources().getColor(R.color.accent_material_light),
+            PorterDuff.Mode.SRC_ATOP));
+    searchResultsSortButton.setCompoundDrawablesWithIntrinsicBounds(
+        null, null, orderDrawable, null);
   }
 
   /** hide search view with a circular reveal animation */
@@ -464,6 +592,8 @@ public class SearchView {
     searchRecyclerViewAdapter.notifyDataSetChanged();
 
     searchResultsHintTV.setVisibility(View.GONE);
+    searchResultsSortHintTV.setVisibility(View.GONE);
+    searchResultsSortButton.setVisibility(View.GONE);
   }
 
   private SpannableString getSpannableText(String s1, String s2) {
@@ -482,6 +612,15 @@ public class SearchView {
         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
     return spannableString;
+  }
+
+  /**
+   * Returns the current text in {@link SearchView#searchViewEditText}
+   *
+   * @return The current search text
+   */
+  private String getSearchTerm() {
+    return searchViewEditText.getText().toString().trim();
   }
 
   public interface SearchListener {

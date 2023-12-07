@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.utils.Utils;
 
@@ -44,7 +45,7 @@ import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 
-public class HybridFileParcelable extends HybridFile implements Parcelable {
+public class HybridFileParcelable extends HybridFile implements Parcelable, ComparableParcelable {
   private final Logger LOG = LoggerFactory.getLogger(HybridFileParcelable.class);
 
   private long date, size;
@@ -254,5 +255,11 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     result = 37 * result + (int) (size ^ size >>> 32);
     result = 37 * result + (int) (date ^ date >>> 32);
     return result;
+  }
+
+  @NonNull
+  @Override
+  public String getParcelableName() {
+    return getName();
   }
 }

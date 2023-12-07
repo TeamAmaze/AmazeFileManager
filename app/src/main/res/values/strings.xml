@@ -82,6 +82,7 @@
     <string name="question_set_path_as_home">Do you want to set current path as home for this tab?</string>
     <string name="directorysort">Directory Sort Mode</string>
     <string name="sort_by">Sort By</string>
+    <string name="sort_by_colon">Sort By:</string>
     <string name="sort_only_this">Only this folder</string>
     <string name="theme">Theme</string>
     <string name="random">Random Skin</string>
@@ -119,6 +120,7 @@
     <string name="sort_name">Name</string>
     <string name="lastModified">Last Modified</string>
     <string name="sort_size">Size</string>
+    <string name="sort_relevance">Relevance</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>

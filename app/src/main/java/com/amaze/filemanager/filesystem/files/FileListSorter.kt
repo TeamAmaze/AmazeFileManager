@@ -20,31 +20,77 @@
 
 package com.amaze.filemanager.filesystem.files
 
-import androidx.annotation.IntDef
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
+import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy
+import com.amaze.filemanager.filesystem.files.sort.SortBy
+import com.amaze.filemanager.filesystem.files.sort.SortType
+import java.lang.Long
 import java.util.Locale
 
 /**
  * [Comparator] implementation to sort [LayoutElementParcelable]s.
  */
 class FileListSorter(
-    @DirSortMode dirArg: Int,
-    @SortBy sortArg: Int,
-    @SortOrder ascArg: Int
-) : Comparator<LayoutElementParcelable> {
+    dirArg: DirSortBy,
+    sortType: SortType,
+    searchTerm: String?
+) : Comparator<ComparableParcelable> {
     private var dirsOnTop = dirArg
-    private val asc = ascArg
-    private val sort = sortArg
+    private val asc: Int = sortType.sortOrder.sortFactor
+    private val sort: SortBy = sortType.sortBy
 
-    private fun isDirectory(path: LayoutElementParcelable): Boolean {
-        return path.isDirectory
+    private val relevanceComparator: Comparator<ComparableParcelable> by lazy {
+        if (searchTerm == null) {
+            // no search term given, so every result is equally relevant
+            Comparator { _, _ ->
+                0
+            }
+        } else {
+            Comparator { o1, o2 ->
+                // Sorts in a way that least relevant is first
+                val comparator = compareBy<ComparableParcelable> {
+                    // first we compare by the match percentage of the name
+                    searchTerm.length.toDouble() / it.getParcelableName().length.toDouble()
+                }.thenBy {
+                    // if match percentage is the same, we compare if the name starts with the match
+                    it.getParcelableName().startsWith(searchTerm, ignoreCase = true)
+                }.thenBy { file ->
+                    // if the match in the name could a word because it is surrounded by separators, it could be more relevant
+                    // e.g. "my-cat" more relevant than "mysterious"
+                    file.getParcelableName().split('-', '_', '.', ' ').any {
+                        it.contentEquals(
+                            searchTerm,
+                            ignoreCase = true
+                        )
+                    }
+                }.thenBy { file ->
+                    // sort by modification date as last resort
+                    file.getDate()
+                }
+                // Reverts the sorting to make most relevant first
+                comparator.compare(o1, o2) * -1
+            }
+        }
+    }
+
+    /** Constructor for convenience if there is no searchTerm */
+    constructor(dirArg: DirSortBy, sortType: SortType) : this(dirArg, sortType, null)
+
+    private fun isDirectory(path: ComparableParcelable): Boolean {
+        return path.isDirectory()
+    }
+
+    /** Compares the names of [file1] and [file2] */
+    private fun compareName(file1: ComparableParcelable, file2: ComparableParcelable): Int {
+        return file1.getParcelableName().compareTo(file2.getParcelableName(), ignoreCase = true)
     }
 
     /**
      * Compares two elements and return negative, zero and positive integer if first argument is less
      * than, equal to or greater than second
      */
-    override fun compare(file1: LayoutElementParcelable, file2: LayoutElementParcelable): Int {
+    override fun compare(file1: ComparableParcelable, file2: ComparableParcelable): Int {
         /*File f1;
 
     if(!file1.hasSymlink()) {
@@ -62,13 +108,13 @@ class FileListSorter(
     } else {
         f2=new File(file1.getSymlink());
     }*/
-        if (dirsOnTop == SORT_DIR_ON_TOP) {
+        if (dirsOnTop == DirSortBy.DIR_ON_TOP) {
             if (isDirectory(file1) && !isDirectory(file2)) {
                 return -1
             } else if (isDirectory(file2) && !isDirectory(file1)) {
                 return 1
             }
-        } else if (dirsOnTop == SORT_FILE_ON_TOP) {
+        } else if (dirsOnTop == DirSortBy.FILE_ON_TOP) {
             if (isDirectory(file1) && !isDirectory(file2)) {
                 return 1
             } else if (isDirectory(file2) && !isDirectory(file1)) {
@@ -77,66 +123,45 @@ class FileListSorter(
         }
 
         when (sort) {
-            SORT_BY_NAME -> {
+            SortBy.NAME -> {
                 // sort by name
-                return asc * file1.title.compareTo(file2.title, ignoreCase = true)
+                return asc * compareName(file1, file2)
             }
-            SORT_BY_LAST_MODIFIED -> {
+            SortBy.LAST_MODIFIED -> {
                 // sort by last modified
-                return asc * java.lang.Long.valueOf(file1.date).compareTo(file2.date)
+                return asc * Long.valueOf(file1.getDate()).compareTo(file2.getDate())
             }
-            SORT_BY_SIZE -> {
+            SortBy.SIZE -> {
                 // sort by size
-                return if (!file1.isDirectory && !file2.isDirectory) {
-                    asc * java.lang.Long.valueOf(file1.longSize).compareTo(file2.longSize)
+                return if (!isDirectory(file1) && !isDirectory(file2)) {
+                    asc * Long.valueOf(file1.getSize()).compareTo(file2.getSize())
                 } else {
-                    file1.title.compareTo(file2.title, ignoreCase = true)
+                    compareName(file1, file2)
                 }
             }
-            SORT_BY_TYPE -> {
+            SortBy.TYPE -> {
                 // sort by type
-                return if (!file1.isDirectory && !file2.isDirectory) {
-                    val ext_a = getExtension(file1.title)
-                    val ext_b = getExtension(file2.title)
+                return if (!isDirectory(file1) && !isDirectory(file2)) {
+                    val ext_a = getExtension(file1.getParcelableName())
+                    val ext_b = getExtension(file2.getParcelableName())
                     val res = asc * ext_a.compareTo(ext_b)
                     if (res == 0) {
-                        asc * file1.title.compareTo(file2.title, ignoreCase = true)
+                        asc * compareName(file1, file2)
                     } else {
                         res
                     }
                 } else {
-                    file1.title.compareTo(file2.title, ignoreCase = true)
+                    compareName(file1, file2)
                 }
             }
-            else -> return 0
+            SortBy.RELEVANCE -> {
+                // sort by relevance to the search query
+                return asc * relevanceComparator.compare(file1, file2)
+            }
         }
     }
 
     companion object {
-
-        const val SORT_BY_NAME = 0
-        const val SORT_BY_LAST_MODIFIED = 1
-        const val SORT_BY_SIZE = 2
-        const val SORT_BY_TYPE = 3
-
-        const val SORT_DIR_ON_TOP = 0
-        const val SORT_FILE_ON_TOP = 1
-        const val SORT_NONE_ON_TOP = 2
-
-        const val SORT_ASC = 1
-        const val SORT_DSC = -1
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(SORT_BY_NAME, SORT_BY_LAST_MODIFIED, SORT_BY_SIZE, SORT_BY_TYPE)
-        annotation class SortBy
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(SORT_DIR_ON_TOP, SORT_FILE_ON_TOP, SORT_NONE_ON_TOP)
-        annotation class DirSortMode
-
-        @Retention(AnnotationRetention.SOURCE)
-        @IntDef(SORT_ASC, SORT_DSC)
-        annotation class SortOrder
 
         /**
          * Convenience method to get the file extension in given path.

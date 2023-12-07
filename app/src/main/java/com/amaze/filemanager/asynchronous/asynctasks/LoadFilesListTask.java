@@ -22,8 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.Q;
-import static com.amaze.filemanager.filesystem.files.FileListSorter.SORT_ASC;
-import static com.amaze.filemanager.filesystem.files.FileListSorter.SORT_DSC;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -51,6 +49,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
@@ -254,17 +253,7 @@ public class LoadFilesListTask
   private void postListCustomPathProcess(
       @NonNull List<LayoutElementParcelable> list, @NonNull MainFragment mainFragment) {
 
-    int sortType = SortHandler.getSortType(context.get(), path);
-    int sortBy;
-    int isAscending;
-
-    if (sortType <= 3) {
-      sortBy = sortType;
-      isAscending = SORT_ASC;
-    } else {
-      isAscending = SORT_DSC;
-      sortBy = sortType - 4;
-    }
+    SortType sortType = SortHandler.getSortType(context.get(), path);
 
     MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
 
@@ -289,7 +278,7 @@ public class LoadFilesListTask
       }
     }
 
-    Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortBy, isAscending));
+    Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortType));
   }
 
   private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
