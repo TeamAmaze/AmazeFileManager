@@ -67,13 +67,14 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private AppBarLayout mAppBarLayout;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
   private AppCompatTextView mTitleTextView;
-  private View mAuthorsDivider, mDeveloper1Divider;
+  private View mAuthorsDivider, mDeveloper1Divider, mDeveloper2Divider;
   private Billing billing;
 
   private static final String URL_AUTHOR1_GITHUB = "https://github.com/arpitkh96";
   private static final String URL_AUTHOR2_GITHUB = "https://github.com/VishalNehra";
   private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
   private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
+  private static final String URL_DEVELOPER3_GITHUB = "https://github.com/VishnuSanal";
   private static final String URL_REPO_CHANGELOG =
       "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
   private static final String URL_REPO = "https://github.com/TeamAmaze/AmazeFileManager";
@@ -108,6 +109,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     mTitleTextView = findViewById(R.id.text_view_title);
     mAuthorsDivider = findViewById(R.id.view_divider_authors);
     mDeveloper1Divider = findViewById(R.id.view_divider_developers_1);
+    mDeveloper2Divider = findViewById(R.id.view_divider_developers_2);
 
     mAppBarLayout.setLayoutParams(calculateHeaderViewParams());
 
@@ -200,6 +202,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
       // dark theme
       mAuthorsDivider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card));
       mDeveloper1Divider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card));
+      mDeveloper2Divider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card));
     }
   }
 
@@ -278,6 +281,10 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
       case R.id.text_view_developer_2_github:
         openURL(URL_DEVELOPER2_GITHUB, this);
+        break;
+
+      case R.id.text_view_developer_3_github:
+        openURL(URL_DEVELOPER3_GITHUB, this);
         break;
 
       case R.id.relative_layout_translate:
