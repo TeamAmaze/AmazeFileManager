@@ -62,7 +62,7 @@ class CompressedHelperForBadArchiveTest {
 
     private fun doTestBadArchive(data: ByteArray) {
         for (
-        archiveType in supportedArchiveExtensions().subtract(excludedArchiveTypes)
+            archiveType in supportedArchiveExtensions().subtract(excludedArchiveTypes)
         ) {
             val badArchive = File(
                 Environment.getExternalStorageDirectory(),

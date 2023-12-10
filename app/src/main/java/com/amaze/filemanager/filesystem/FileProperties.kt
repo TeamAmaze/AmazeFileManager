@@ -240,8 +240,8 @@ object FileProperties {
         return if (ANDROID_DEVICE_DATA_DIRS.containsPath(path)) {
             path
         } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && ANDROID_DEVICE_DATA_DIRS.any {
-                path.startsWith(it) && path != it
-            }
+            path.startsWith(it) && path != it
+        }
         ) {
             val suffix =
                 path.substringAfter(Environment.getExternalStorageDirectory().absolutePath)

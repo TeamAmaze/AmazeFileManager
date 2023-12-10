@@ -143,7 +143,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             }
 
             if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
-                    .getIsCloudOpenMode()
+                .getIsCloudOpenMode()
             ) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)

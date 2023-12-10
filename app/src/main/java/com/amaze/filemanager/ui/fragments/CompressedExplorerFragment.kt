@@ -419,7 +419,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             if (SDK_INT >= LOLLIPOP) {
                 val window = requireActivity().window
                 if (requireMainActivity()
-                        .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
+                    .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
                 ) {
                     window.navigationBarColor =
                         Utils.getColor(context, android.R.color.black)
@@ -508,7 +508,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             if (SDK_INT >= LOLLIPOP) {
                 val window = requireActivity().window
                 if (requireMainActivity()
-                        .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
+                    .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
                 ) {
                     window.navigationBarColor =
                         requireMainActivity().skinStatusBar

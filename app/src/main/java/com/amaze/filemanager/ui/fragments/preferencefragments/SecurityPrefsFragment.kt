@@ -187,9 +187,9 @@ class SecurityPrefsFragment : BasePrefsFragment() {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ||
             activity.prefs.getBoolean(
-                PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
-                false
-            )
+                    PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
+                    false
+                )
         ) {
             // encryption feature not available
             masterPasswordPreference?.isEnabled = false
