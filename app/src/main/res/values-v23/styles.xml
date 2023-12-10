@@ -245,4 +245,8 @@
     <style name="pref_accent_black_super_su" parent="appCompatBlack">
         <item name="colorAccent">@color/accent_super_su</item>
     </style>
+    <style name="SearchSortButton" parent="Widget.AppCompat.Spinner">
+        <item name="android:gravity">right|end|center_vertical</item>
+        <item name="android:paddingEnd">35dp</item>
+    </style>
 </resources>

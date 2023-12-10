@@ -34,7 +34,9 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
@@ -87,6 +90,8 @@ import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -105,9 +110,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -115,6 +117,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -438,7 +443,7 @@ public class MainFragment extends Fragment
       boolean isBackButton,
       int position,
       LayoutElementParcelable layoutElementParcelable,
-      ImageView imageView) {
+      AppCompatImageView imageView) {
     if (mainFragmentViewModel.getResults()) {
       // check to initialize search results
       // if search task is been running, cancel it
@@ -468,7 +473,7 @@ public class MainFragment extends Fragment
         requireMainActivity().getActionModeHelper().setActionMode(null);
       } else {
         // the first {goback} item if back navigation is enabled
-        adapter.toggleChecked(position, imageView);
+        registerListItemChecked(position, imageView);
       }
     } else {
       if (isBackButton) {
@@ -512,7 +517,8 @@ public class MainFragment extends Fragment
         } else {
           if (getMainActivity().mReturnIntent) {
             // are we here to return an intent to another app
-            returnIntentResults(layoutElementParcelable.generateBaseFile());
+            returnIntentResults(
+                new HybridFileParcelable[] {layoutElementParcelable.generateBaseFile()});
           } else {
             layoutElementParcelable.generateBaseFile().openFile(getMainActivity(), false);
             DataUtils.getInstance().addHistoryFile(layoutElementParcelable.desc);
@@ -520,6 +526,26 @@ public class MainFragment extends Fragment
         }
       }
     }
+  }
+
+  public void registerListItemChecked(int position, AppCompatImageView imageView) {
+    MainActivity mainActivity = requireMainActivity();
+    if (mainActivity.mReturnIntent
+        && !mainActivity.getIntent().getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)) {
+      // Only one item should be checked
+      ArrayList<Integer> checkedItemsIndex = adapter.getCheckedItemsIndex();
+      if (checkedItemsIndex.contains(position)) {
+        // The clicked item was the only item checked so it can be unchecked
+        adapter.toggleChecked(position, imageView);
+      } else {
+        // The clicked item was not checked so we have to uncheck all currently checked items
+        for (Integer index : checkedItemsIndex) {
+          adapter.toggleChecked(index, imageView);
+        }
+        // Now we check the clicked item
+        adapter.toggleChecked(position, imageView);
+      }
+    } else adapter.toggleChecked(position, imageView);
   }
 
   public void updateTabWithDb(Tab tab) {
@@ -532,29 +558,73 @@ public class MainFragment extends Fragment
    * Returns the intent with uri corresponding to specific {@link HybridFileParcelable} back to
    * external app
    */
-  public void returnIntentResults(HybridFileParcelable baseFile) {
-
+  public void returnIntentResults(HybridFileParcelable[] baseFiles) {
     requireMainActivity().mReturnIntent = false;
+    HashMap<HybridFileParcelable, Uri> resultUris = new HashMap<>();
+    ArrayList<String> failedPaths = new ArrayList<>();
 
-    Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
-    LOG.debug(
-        mediaStoreUri.toString()
-            + "\t"
-            + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-    Intent intent = new Intent();
-    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    intent.setAction(Intent.ACTION_SEND);
-
-    if (requireMainActivity().mRingtonePickerIntent) {
-      intent.setDataAndType(
-          mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-      intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
-    } else {
-      LOG.debug("pickup file");
-      intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
+    for (HybridFileParcelable baseFile : baseFiles) {
+      @Nullable Uri resultUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
+      if (resultUri != null) {
+        resultUris.put(baseFile, resultUri);
+        LOG.debug(
+            resultUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+      } else {
+        failedPaths.add(baseFile.getPath());
+      }
     }
-    getActivity().setResult(FragmentActivity.RESULT_OK, intent);
-    getActivity().finish();
+
+    if (!resultUris.isEmpty()) {
+      Intent intent = new Intent();
+      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      if (resultUris.size() == 1) {
+        intent.setAction(Intent.ACTION_SEND);
+        Map.Entry<HybridFileParcelable, Uri> result = resultUris.entrySet().iterator().next();
+        Uri resultUri = result.getValue();
+        HybridFileParcelable resultBaseFile = result.getKey();
+
+        if (requireMainActivity().mRingtonePickerIntent) {
+          intent.setDataAndType(
+              resultUri,
+              MimeTypes.getMimeType(resultBaseFile.getPath(), resultBaseFile.isDirectory()));
+          intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, resultUri);
+        } else {
+          LOG.debug("pickup file");
+          intent.setDataAndType(resultUri, MimeTypes.getExtension(resultBaseFile.getPath()));
+        }
+
+      } else {
+        LOG.debug("pickup multiple files");
+        // Build ClipData
+        ArrayList<ClipData.Item> uriDataClipItems = new ArrayList<>();
+        HashSet<String> mimeTypes = new HashSet<>();
+        for (Map.Entry<HybridFileParcelable, Uri> result : resultUris.entrySet()) {
+          HybridFileParcelable baseFile = result.getKey();
+          Uri uri = result.getValue();
+          mimeTypes.add(MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+          uriDataClipItems.add(new ClipData.Item(uri));
+        }
+        ClipData clipData =
+            new ClipData(
+                ClipDescription.MIMETYPE_TEXT_URILIST,
+                mimeTypes.toArray(new String[0]),
+                uriDataClipItems.remove(0));
+        for (ClipData.Item item : uriDataClipItems) {
+          clipData.addItem(item);
+        }
+
+        intent.setClipData(clipData);
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.putParcelableArrayListExtra(
+            Intent.EXTRA_STREAM, new ArrayList<>(resultUris.values()));
+      }
+
+      requireActivity().setResult(FragmentActivity.RESULT_OK, intent);
+    }
+    if (!failedPaths.isEmpty()) {
+      LOG.warn("Unable to get URIs from baseFiles {}", failedPaths);
+    }
+    requireActivity().finish();
   }
 
   LoadFilesListTask loadFilesListTask;
@@ -714,14 +784,14 @@ public class MainFragment extends Fragment
               return true;
             });
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-      ((ImageView) nofilesview.findViewById(R.id.image))
+      ((AppCompatImageView) nofilesview.findViewById(R.id.image))
           .setColorFilter(Color.parseColor("#666666"));
     } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
       nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-      ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+      ((AppCompatTextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     } else {
       nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-      ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
+      ((AppCompatTextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     }
   }
 
@@ -967,7 +1037,8 @@ public class MainFragment extends Fragment
             null,
             getResources().getString(R.string.cancel),
             (dialog, which) -> {
-              EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+              AppCompatEditText textfield =
+                  dialog.getCustomView().findViewById(R.id.singleedittext_input);
               String name1 = textfield.getText().toString().trim();
 
               getMainActivity()
@@ -998,7 +1069,8 @@ public class MainFragment extends Fragment
     // place cursor at the starting of edit text by posting a runnable to edit text
     // this is done because in case android has not populated the edit text layouts yet, it'll
     // reset calls to selection if not posted in message queue
-    EditText textfield = renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield =
+        renameDialog.getCustomView().findViewById(R.id.singleedittext_input);
     textfield.post(
         () -> {
           if (!f.isDirectory()) {
@@ -1401,7 +1473,7 @@ public class MainFragment extends Fragment
           LOG.warn("failure when hiding file", e);
         }
       }
-      FileUtils.scanFile(
+      MediaConnectionUtils.scanFile(
           requireMainActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});
     }
   }
@@ -1492,9 +1564,7 @@ public class MainFragment extends Fragment
         new SortSearchResultTask(
             elements,
             new FileListSorter(
-                mainFragmentViewModel.getDsort(),
-                mainFragmentViewModel.getSortby(),
-                mainFragmentViewModel.getAsc()),
+                mainFragmentViewModel.getDsort(), mainFragmentViewModel.getSortType()),
             this,
             query));
   }

@@ -41,12 +41,14 @@ import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
 import com.amaze.filemanager.filesystem.root.MakeFileCommand;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -67,7 +69,7 @@ import net.schmizz.sshj.sftp.SFTPClient;
 
 public class Operations {
 
-  private static Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
+  private static final Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
 
   private static final Logger LOG = LoggerFactory.getLogger(Operations.class);
 
@@ -579,14 +581,14 @@ public class Operations {
           }
           return null;
         } else if (oldFile.isSftp()) {
-          NetCopyClientUtils.INSTANCE.execute(
-              new SFtpClientTemplate<Void>(oldFile.getPath(), false) {
+          SshClientUtils.execute(
+              new SFtpClientTemplate<Void>(oldFile.getPath(), true) {
                 @Override
                 public Void execute(@NonNull SFTPClient client) {
                   try {
                     client.rename(
-                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(oldFile.getPath()),
-                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(newFile.getPath()));
+                        NetCopyClientUtils.extractRemotePathFrom(oldFile.getPath()),
+                        NetCopyClientUtils.extractRemotePathFrom(newFile.getPath()));
                     errorCallBack.done(newFile, true);
                   } catch (IOException e) {
                     String errmsg =
@@ -620,8 +622,8 @@ public class Operations {
                     throws IOException {
                   boolean result =
                       ftpClient.rename(
-                          NetCopyClientUtils.INSTANCE.extractRemotePathFrom(oldFile.getPath()),
-                          NetCopyClientUtils.INSTANCE.extractRemotePathFrom(newFile.getPath()));
+                          NetCopyClientUtils.extractRemotePathFrom(oldFile.getPath()),
+                          NetCopyClientUtils.extractRemotePathFrom(newFile.getPath()));
                   errorCallBack.done(newFile, result);
                   return result;
                 }
@@ -715,7 +717,7 @@ public class Operations {
         super.onPostExecute(aVoid);
         if (newFile != null && oldFile != null) {
           HybridFile[] hybridFiles = {newFile, oldFile};
-          FileUtils.scanFile(context, hybridFiles);
+          MediaConnectionUtils.scanFile(context, hybridFiles);
         }
       }
     }.executeOnExecutor(executor);

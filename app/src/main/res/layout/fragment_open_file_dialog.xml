@@ -9,7 +9,7 @@
     android:background="@drawable/shape_dialog_bottomsheet_white"
     android:elevation="@dimen/material_generic_card_elevation"
     >
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/last_app_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -19,7 +19,7 @@
         android:layout_marginStart="@dimen/material_generic"
         android:layout_marginTop="@dimen/material_generic_medium"
         />
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/last_app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/material_generic_medium"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         />
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/open_as_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -41,7 +41,7 @@
         android:focusable="true"
         android:layout_margin="@dimen/material_generic"
         />
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/always_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         android:layout_marginEnd="@dimen/material_generic"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         />
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/just_once_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
         android:layout_marginTop="@dimen/material_generic"
         />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/choose_different_app_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -28,7 +28,7 @@
             android:descendantFocusability="afterDescendants"
             >
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/errorSorryView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/messageWhatHappenedView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,14 +45,14 @@
                 android:text="@string/what_happened_headline"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/errorMessageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/info_labels"
                 android:textColor="?attr/colorAccent" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/errorDeviceHeadlineView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/errorInfoLabelsView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="16dp">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/errorInfosView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -87,7 +87,7 @@
 
             </LinearLayout>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/errorYourComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -95,13 +95,13 @@
                 android:text="@string/your_comment"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/errorCommentBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/errorDetailView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/errorView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -123,26 +123,26 @@
                     android:typeface="monospace" />
             </HorizontalScrollView>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/errorReportCopyButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:text="@string/copy_for_github" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/errorReportTelegramButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_report_button_telegram" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/errorReportEmailButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_report_button_text" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -150,7 +150,7 @@
                 android:text="@string/error_report_open_github_notice"
                 android:textStyle="bold" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/errorReportGitHubButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

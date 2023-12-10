@@ -71,6 +71,7 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
@@ -124,6 +125,7 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -142,7 +144,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.FabWithLabelView;
@@ -233,6 +234,8 @@ public class MainActivity extends PermissionsActivity
 
   private SpeedDialView floatingActionButton;
 
+  private SpeedDialView fabConfirmSelection;
+
   public MainActivityHelper mainActivityHelper;
 
   public int operation = -1;
@@ -247,7 +250,7 @@ public class MainActivity extends PermissionsActivity
   public ArrayList<String> oppatheList;
 
   // This holds the Uris to be written at initFabToSave()
-  private ArrayList<Uri> urisToBeSaved;
+  private List<Uri> urisToBeSaved;
 
   public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
@@ -276,7 +279,6 @@ public class MainActivity extends PermissionsActivity
   private UtilsHandler utilsHandler;
   private CloudHandler cloudHandler;
   private CloudLoaderAsyncTask cloudLoaderAsyncTask;
-
   /**
    * This is for a hack.
    *
@@ -325,7 +327,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
-  private MainActivityActionMode mainActivityActionMode;
+  public MainActivityActionMode mainActivityActionMode;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -393,6 +395,8 @@ public class MainActivity extends PermissionsActivity
     }
 
     checkForExternalIntent(intent);
+
+    initialiseFabConfirmSelection();
 
     drawer.setDrawerIndicatorEnabled();
 
@@ -556,12 +560,16 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void checkForExternalPermission() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (SDK_INT >= Build.VERSION_CODES.M) {
       if (!checkStoragePermission()) {
-        requestStoragePermission(this, true);
+        if (SDK_INT >= Build.VERSION_CODES.R) {
+          requestAllFilesAccess(this);
+        } else {
+          requestStoragePermission(this, true);
+        }
       }
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        requestAllFilesAccess(this);
+      if (SDK_INT >= Build.VERSION_CODES.TIRAMISU && !checkNotificationPermission()) {
+        requestNotificationPermission(true);
       }
     }
   }
@@ -578,7 +586,11 @@ public class MainActivity extends PermissionsActivity
     if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
       // file picker intent
       mReturnIntent = true;
-      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+      String text =
+          intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+              ? getString(R.string.pick_files)
+              : getString(R.string.pick_a_file);
+      Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when picking file
@@ -631,9 +643,15 @@ public class MainActivity extends PermissionsActivity
       } else {
         // save a single file to filesystem
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
-        initFabToSave(uris);
+        if (uri != null
+            && uri.getScheme() != null
+            && uri.getScheme().startsWith(ContentResolver.SCHEME_FILE)) {
+          ArrayList<Uri> uris = new ArrayList<>();
+          uris.add(uri);
+          initFabToSave(uris);
+        } else {
+          Toast.makeText(this, R.string.error_unsupported_or_null_uri, Toast.LENGTH_LONG).show();
+        }
       }
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
@@ -652,7 +670,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
-  private void initFabToSave(final ArrayList<Uri> uris) {
+  private void initFabToSave(final List<Uri> uris) {
     Utils.showThemedSnackbar(
         this,
         getString(R.string.select_save_location),
@@ -661,7 +679,7 @@ public class MainActivity extends PermissionsActivity
         () -> saveExternalIntent(uris));
   }
 
-  private void saveExternalIntent(final ArrayList<Uri> uris) {
+  private void saveExternalIntent(final List<Uri> uris) {
     executeWithMainFragment(
         mainFragment -> {
           if (uris != null && uris.size() > 0) {
@@ -1183,7 +1201,7 @@ public class MainActivity extends PermissionsActivity
             case R.id.dsort:
               String[] sort = getResources().getStringArray(R.array.directorysortmode);
               MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(getAppTheme().getMaterialDialogTheme(this));
+              builder.theme(getAppTheme().getMaterialDialogTheme());
               builder.title(R.string.directorysort);
               int current =
                   Integer.parseInt(
@@ -1513,21 +1531,27 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    getFAB().setVisibility(View.VISIBLE);
-    getFAB().show();
-    CoordinatorLayout.LayoutParams params =
-        (CoordinatorLayout.LayoutParams) getFAB().getLayoutParams();
+    showFab(getFAB());
+  }
+
+  private void showFab(SpeedDialView fab) {
+    fab.setVisibility(View.VISIBLE);
+    fab.show();
+    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
     params.setBehavior(new SpeedDialView.ScrollingViewSnackbarBehavior());
-    getFAB().requestLayout();
+    fab.requestLayout();
   }
 
   public void hideFab() {
-    getFAB().setVisibility(View.GONE);
-    getFAB().hide();
-    CoordinatorLayout.LayoutParams params =
-        (CoordinatorLayout.LayoutParams) getFAB().getLayoutParams();
+    hideFab(getFAB());
+  }
+
+  private void hideFab(SpeedDialView fab) {
+    fab.setVisibility(View.GONE);
+    fab.hide();
+    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
     params.setBehavior(new SpeedDialView.NoBehavior());
-    getFAB().requestLayout();
+    fab.requestLayout();
   }
 
   public AppBar getAppbar() {
@@ -1540,9 +1564,7 @@ public class MainActivity extends PermissionsActivity
 
   protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
     super.onActivityResult(requestCode, responseCode, intent);
-    if (requestCode == Drawer.image_selector_request_code) {
-      drawer.onActivityResult(requestCode, responseCode, intent);
-    } else if (requestCode == 3) {
+    if (requestCode == 3) {
       Uri treeUri;
       if (responseCode == Activity.RESULT_OK) {
         // Get Uri from Storage Access Framework.
@@ -1708,7 +1730,7 @@ public class MainActivity extends PermissionsActivity
     getSupportActionBar().setDisplayShowTitleEnabled(false);
     fabBgView = findViewById(R.id.fabs_overlay_layout);
 
-    switch (getAppTheme().getSimpleTheme(this)) {
+    switch (getAppTheme()) {
       case DARK:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         break;
@@ -1722,7 +1744,7 @@ public class MainActivity extends PermissionsActivity
           if (getAppbar().getSearchView().isEnabled()) getAppbar().getSearchView().hideSearchView();
         });
 
-    drawer.setDrawerHeaderBackground();
+    //    drawer.setDrawerHeaderBackground();
   }
 
   /**
@@ -1788,7 +1810,34 @@ public class MainActivity extends PermissionsActivity
     FabWithLabelView newFolderFab =
         initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
-    floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
+    floatingActionButton.setOnActionSelectedListener(
+        actionItem -> {
+          MainFragment mainFragment = getCurrentMainFragment();
+
+          if (mainFragment == null) return false;
+
+          String path = mainFragment.getCurrentPath();
+
+          MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
+
+          if (mainFragmentViewModel == null) return false;
+
+          OpenMode openMode = mainFragmentViewModel.getOpenMode();
+
+          int id = actionItem.getId();
+
+          if (id == R.id.menu_new_folder)
+            mainActivity.mainActivityHelper.mkdir(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_file)
+            mainActivity.mainActivityHelper.mkfile(openMode, path, mainFragment);
+          else if (id == R.id.menu_new_cloud)
+            new CloudSheetFragment()
+                .show(mainActivity.getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
+
+          floatingActionButton.close(true);
+          return true;
+        });
+
     floatingActionButton.setOnClickListener(
         view -> {
           fabButtonClick(cloudFab);
@@ -1851,7 +1900,7 @@ public class MainActivity extends PermissionsActivity
             .setLabel(fabTitle)
             .setFabBackgroundColor(iconSkin);
 
-    switch (getAppTheme().getSimpleTheme(this)) {
+    switch (getAppTheme()) {
       case LIGHT:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
         break;
@@ -1870,6 +1919,52 @@ public class MainActivity extends PermissionsActivity
     }
 
     return floatingActionButton.addActionItem(builder.create());
+  }
+
+  private void initialiseFabConfirmSelection() {
+    fabConfirmSelection = findViewById(R.id.fabs_confirm_selection);
+    hideFabConfirmSelection();
+    if (mReturnIntent) {
+      int colorAccent = getAccent();
+      fabConfirmSelection.setMainFabClosedBackgroundColor(colorAccent);
+      fabConfirmSelection.setMainFabOpenedBackgroundColor(colorAccent);
+
+      fabConfirmSelection.setOnChangeListener(
+          new SpeedDialView.OnChangeListener() {
+            @Override
+            public boolean onMainActionSelected() {
+              if (getCurrentMainFragment() != null
+                  && getCurrentMainFragment().getMainFragmentViewModel() != null) {
+                ArrayList<LayoutElementParcelable> checkedItems =
+                    getCurrentMainFragment().getMainFragmentViewModel().getCheckedItems();
+                ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+                for (LayoutElementParcelable item : checkedItems) {
+                  baseFiles.add(item.generateBaseFile());
+                }
+                getCurrentMainFragment()
+                    .returnIntentResults(baseFiles.toArray(new HybridFileParcelable[0]));
+              }
+              return false;
+            }
+
+            @Override
+            public void onToggleChanged(boolean isOpen) {}
+          });
+    }
+  }
+
+  /**
+   * If a intent should be returned, shows the floating action button which confirms the selection
+   */
+  public void showFabConfirmSelection() {
+    if (mReturnIntent) {
+      showFab(fabConfirmSelection);
+    }
+  }
+
+  /** Hides the floating action button which confirms the selection */
+  public void hideFabConfirmSelection() {
+    hideFab(fabConfirmSelection);
   }
 
   public boolean copyToClipboard(Context context, String text) {
@@ -1991,6 +2086,7 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+    sftpConnectDialog.setCancelable(false);
     String finalName = name;
     Flowable.fromCallable(() -> new NetCopyConnectionInfo(path))
         .flatMap(
@@ -2377,46 +2473,6 @@ public class MainActivity extends PermissionsActivity
   private void initLeftRightAndTopDragListeners(boolean destroy, boolean shouldInvokeLeftAndRight) {
     TabFragment tabFragment = getTabFragment();
     tabFragment.initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
-  }
-
-  private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
-
-    MainActivity mainActivity;
-    SpeedDialView floatingActionButton;
-
-    FabActionListener(MainActivity mainActivity) {
-      this.mainActivity = mainActivity;
-      this.floatingActionButton = mainActivity.floatingActionButton;
-    }
-
-    @Override
-    public boolean onActionSelected(SpeedDialActionItem actionItem) {
-      final MainFragment ma =
-          (MainFragment)
-              ((TabFragment)
-                      mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame))
-                  .getCurrentTabFragment();
-      final String path = ma.getCurrentPath();
-
-      switch (actionItem.getId()) {
-        case R.id.menu_new_folder:
-          mainActivity.mainActivityHelper.mkdir(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_file:
-          mainActivity.mainActivityHelper.mkfile(
-              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
-          break;
-        case R.id.menu_new_cloud:
-          BottomSheetDialogFragment fragment = new CloudSheetFragment();
-          fragment.show(
-              ma.getActivity().getSupportFragmentManager(), CloudSheetFragment.TAG_FRAGMENT);
-          break;
-      }
-
-      floatingActionButton.close(true);
-      return true;
-    }
   }
 
   /**

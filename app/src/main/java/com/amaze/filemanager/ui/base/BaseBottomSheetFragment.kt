@@ -39,7 +39,7 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
      * Initializes bottom sheet ui resources based on current theme
      */
     fun initDialogResources(rootView: View) {
-        when ((activity as ThemedActivity?)!!.appTheme!!) {
+        when ((requireActivity() as ThemedActivity).appTheme!!) {
             AppTheme.DARK -> {
                 rootView.setBackgroundDrawable(
                     context?.resources?.getDrawable(
@@ -54,7 +54,7 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
                     )
                 )
             }
-            AppTheme.LIGHT, AppTheme.TIMED -> {
+            AppTheme.LIGHT -> {
                 rootView
                     .setBackgroundDrawable(
                         context?.resources?.getDrawable(

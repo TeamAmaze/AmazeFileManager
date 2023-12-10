@@ -122,7 +122,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
             true
         ) { _, _ -> }
         masterPasswordDialogBuilder.theme(
-            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+            activity.utilsProvider.appTheme.getMaterialDialogTheme()
         )
         masterPasswordDialogBuilder.positiveText(resources.getString(R.string.ok))
         masterPasswordDialogBuilder.negativeText(resources.getString(R.string.cancel))

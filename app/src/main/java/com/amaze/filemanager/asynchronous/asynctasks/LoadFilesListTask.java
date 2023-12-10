@@ -49,6 +49,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
@@ -251,39 +252,33 @@ public class LoadFilesListTask
 
   private void postListCustomPathProcess(
       @NonNull List<LayoutElementParcelable> list, @NonNull MainFragment mainFragment) {
-    int t = SortHandler.getSortType(context.get(), path);
-    int sortby;
-    int asc;
-    if (t <= 3) {
-      sortby = t;
-      asc = 1;
-    } else {
-      asc = -1;
-      sortby = t - 4;
-    }
+
+    SortType sortType = SortHandler.getSortType(context.get(), path);
 
     MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
+
+    if (viewModel == null) {
+      LOG.error("MainFragmentViewModel is null, this is a bug");
+      return;
+    }
 
     for (int i = 0; i < list.size(); i++) {
       LayoutElementParcelable layoutElementParcelable = list.get(i);
 
       if (layoutElementParcelable == null) {
+        //noinspection SuspiciousListRemoveInLoop
         list.remove(i);
         continue;
       }
 
       if (layoutElementParcelable.isDirectory) {
-        viewModel.setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
+        viewModel.incrementFolderCount();
       } else {
-        viewModel.setFileCount(mainFragment.getMainFragmentViewModel().getFileCount() + 1);
+        viewModel.incrementFileCount();
       }
     }
 
-    if (viewModel != null) {
-      Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortby, asc));
-    } else {
-      LOG.error("MainFragmentViewModel is null, this is a bug");
-    }
+    Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortType));
   }
 
   private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {

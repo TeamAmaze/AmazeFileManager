@@ -1,6 +1,7 @@
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
+[![Amaze File Manager Downloads](https://www.appbrain.com/shield/com.amaze.filemanager.svg)](https://www.appbrain.com/app/amaze-file-manager/com.amaze.filemanager)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.amaze.filemanager)](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)  
 [![Chat on Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/AmazeFileManager)
@@ -43,13 +44,21 @@ Downloads
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
 [<img alt="Get it on AFH" height="50px" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
 
+Contribute
+---
+You can contribute via one of the following ways:
+- Help us with the translations of either [Amaze File Manager](https://www.transifex.com/amaze/amaze-file-manager/) or [Amaze Utilities](https://crowdin.com/project/amaze-file-utilities)
+- [Contribute](https://github.com/TeamAmaze/AmazeFileManager/blob/release/4.0/CONTRIBUTING.md) directly to the code, help us in fixing the bugs / implement new features.
+
+_If we feel your contribution is a significant help to us, we'll award you a bounty with any of your preferred mode of payment._
+
 Support
 ---
 <a href="https://opencollective.com/TeamAmaze"><img width="20%" alt="OpenCollective" src="opencollective.svg" ></a>
 <a href="https://www.paypal.me/vishalnehra"><img width="20%" src="paypal.svg" alt="PayPal"></a>
 <a href="https://liberapay.com/Team-Amaze/donate"><img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Liberapay_logo_v2_white-on-yellow.svg" alt="Liberapay" width="80px" ></a>  
 Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive™, Dropbox, OneDrive and Box accounts.  
-Try our app - [Amaze File Utilities](https://play.google.com/store/apps/details?id=com.amaze.fileutilities)
+Try our app - [Amaze File Utilities](https://play.google.com/store/apps/details?id=com.amaze.fileutilities) ([Fdroid](https://f-droid.org/en/packages/com.amaze.fileutilities/))
 1. List videos / images / music documents in your device in a interactive UI where you're able to group / sort and quickly jump to any headers.
 2. Open videos / images / music / documents (pdf / docx / epub) with inbuilt player.
 3. Share / delete / cast on your tv
@@ -66,12 +75,6 @@ Basic r/w operations might not work on external memory on Kitkat devices. Don't 
 ***Under the license we are not responsible for damages.***
 
 See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Privacy-Policy)
-
-Translators
-----
-Want to help translate Amaze to your language?  
-
-See [Transifex translation](https://www.transifex.com/amaze/amaze-file-manager/).
 
 Vendors/Developers
 ----

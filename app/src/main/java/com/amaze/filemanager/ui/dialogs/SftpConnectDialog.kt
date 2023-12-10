@@ -29,6 +29,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -104,6 +105,20 @@ class SftpConnectDialog : DialogFragment() {
         const val ARG_KEYPAIR_NAME = "keypairName"
 
         private val VALID_PORT_RANGE = IntRange(1, 65535)
+
+        // Loosely referenced from https://dwheeler.com/essays/fixing-unix-linux-filenames.html
+        private const val pathBlockedChars = "*?<>|\\"
+
+        private val defaultPathCharFilter =
+            InputFilter { source, _, _, _, _, _ ->
+                if (source.isNotEmpty() && source.isNotBlank() &&
+                    pathBlockedChars.contains(source)
+                ) {
+                    ""
+                } else {
+                    null
+                }
+            }
     }
 
     lateinit var ctx: WeakReference<Context>
@@ -138,7 +153,7 @@ class SftpConnectDialog : DialogFragment() {
             .title(R.string.scp_connection)
             .autoDismiss(false)
             .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.getMaterialDialogTheme(context))
+            .theme(utilsProvider.appTheme.getMaterialDialogTheme())
             .negativeText(R.string.cancel)
             .positiveText(if (edit) R.string.update else R.string.create)
             .positiveColor(accentColor)
@@ -190,7 +205,7 @@ class SftpConnectDialog : DialogFragment() {
                 passwordET.setText("")
             }
         }
-
+        defaultPathET.filters = arrayOf(defaultPathCharFilter)
         // If it's new connection setup, set some default values
         // Otherwise, use given Bundle instance for filling in the blanks
         if (!edit) {

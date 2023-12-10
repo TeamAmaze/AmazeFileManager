@@ -25,15 +25,17 @@ import java.util.ArrayList;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 /** Created by Arpit on 01-07-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
@@ -75,8 +77,8 @@ class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> {
   class ViewHolder extends RecyclerView.ViewHolder {
     private View rootView;
 
-    private TextView textView;
-    private ImageView imageView;
+    private AppCompatTextView textView;
+    private AppCompatImageView imageView;
 
     ViewHolder(View view) {
       super(view);
@@ -94,7 +96,11 @@ class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> {
       rootView.setOnClickListener(
           v -> {
             if (dialog != null && dialog.isShowing()) dialog.dismiss();
-            context.startActivity(items.get(position));
+            try {
+              context.startActivity(items.get(position));
+            } catch (ActivityNotFoundException e) {
+              Toast.makeText(context, R.string.no_app_found, Toast.LENGTH_SHORT).show();
+            }
           });
     }
   }

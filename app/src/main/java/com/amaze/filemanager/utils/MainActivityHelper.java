@@ -66,6 +66,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import android.annotation.SuppressLint;
@@ -80,13 +81,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -116,7 +117,7 @@ public class MainActivityHelper {
       ArrayList<HybridFileParcelable> failedOps, Context context) {
     MaterialDialog.Builder mat = new MaterialDialog.Builder(context);
     mat.title(context.getString(R.string.operation_unsuccesful));
-    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme(context));
+    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     mat.positiveColor(accentColor);
     mat.positiveText(R.string.cancel);
     String content = context.getString(R.string.operation_fail_following);
@@ -165,7 +166,8 @@ public class MainActivityHelper {
         R.string.newfolder,
         "",
         (dialog, which) -> {
-          EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText textfield =
+              dialog.getCustomView().findViewById(R.id.singleedittext_input);
           String parentPath = path;
           if (OpenMode.DOCUMENT_FILE.equals(openMode)
               && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -203,7 +205,8 @@ public class MainActivityHelper {
         R.string.newfile,
         AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT),
         (dialog, which) -> {
-          EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText textfield =
+              dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(
               new HybridFile(openMode, path),
               new HybridFile(openMode, path, textfield.getText().toString().trim(), false),
@@ -262,7 +265,7 @@ public class MainActivityHelper {
     dialog.show();
 
     // place cursor at the beginning
-    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
     textfield.post(
         () -> {
           textfield.setSelection(0);
@@ -303,20 +306,20 @@ public class MainActivityHelper {
 
   public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
-    x.theme(
-        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     x.title(R.string.needs_access);
     LayoutInflater layoutInflater =
         (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View view = layoutInflater.inflate(R.layout.lexadrawer, null);
     x.customView(view, true);
     // textView
-    TextView textView = view.findViewById(R.id.description);
+    AppCompatTextView textView = view.findViewById(R.id.description);
     textView.setText(
         mainActivity.getString(R.string.needs_access_summary)
             + path
             + mainActivity.getString(R.string.needs_access_summary1));
-    ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
+    ((AppCompatImageView) view.findViewById(R.id.icon))
+        .setImageResource(R.drawable.sd_operate_step);
     x.positiveText(R.string.open)
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)

@@ -36,10 +36,10 @@ import com.bumptech.glide.RequestBuilder;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -85,7 +85,7 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
     }
   }
 
-  public void loadApkImage(String item, ImageView v) {
+  public void loadApkImage(String item, AppCompatImageView v) {
     if (isBottomSheet) {
       request.load(getApplicationIconFromPackageName(item)).into(v);
     } else {

@@ -114,7 +114,3 @@ fun String.urlEncoded(charset: Charset = Charsets.UTF_8): String {
 fun String.urlDecoded(charset: Charset = Charsets.UTF_8): String {
     return decode(this, charset.name())
 }
-
-interface Function<T, R> {
-    fun apply(t: T): R
-}

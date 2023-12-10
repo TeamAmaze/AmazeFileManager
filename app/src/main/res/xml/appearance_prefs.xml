@@ -4,7 +4,12 @@
     <Preference
         app:key="theme"
         app:title="@string/theme" />
-
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="false"
+        app:key="follow_battery_saver"
+        app:summary="@string/follow_battery_saver_desc"
+        app:title="@string/follow_battery_saver_title"
+        app:isPreferenceVisible="false" />
     <com.amaze.filemanager.ui.views.preference.CheckBox
         app:defaultValue="true"
         app:key="circularimages"

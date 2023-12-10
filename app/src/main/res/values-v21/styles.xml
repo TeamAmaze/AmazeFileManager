@@ -97,4 +97,8 @@
     <style name="DrawerItemDriveSizeTextStyle">
         <item name="android:letterSpacing">0.05</item>
     </style>
+    <style name="SearchSortButton" parent="Widget.AppCompat.Spinner">
+        <item name="android:gravity">right|end|center_vertical</item>
+        <item name="android:paddingEnd">35dp</item>
+    </style>
 </resources>

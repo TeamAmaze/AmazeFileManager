@@ -82,6 +82,7 @@
     <string name="question_set_path_as_home">Do you want to set current path as home for this tab?</string>
     <string name="directorysort">Directory Sort Mode</string>
     <string name="sort_by">Sort By</string>
+    <string name="sort_by_colon">Sort By:</string>
     <string name="sort_only_this">Only this folder</string>
     <string name="theme">Theme</string>
     <string name="random">Random Skin</string>
@@ -119,9 +120,11 @@
     <string name="sort_name">Name</string>
     <string name="lastModified">Last Modified</string>
     <string name="sort_size">Size</string>
+    <string name="sort_relevance">Relevance</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>
+    <string name="pick_files">Pick one or more files</string>
     <string name="process_viewer">Process Viewer</string>
     <string name="in_safe">Insufficient space</string>
     <string name="no_file_overwrite">No File Overwritten</string>
@@ -182,6 +185,8 @@
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
     <string name="circular_images">Use circular icons for images and videos</string>
     <string name="circular_icons">Use circular icons</string>
+    <string name="follow_battery_saver_title">Follow battery saver</string>
+    <string name="follow_battery_saver_desc">If selected and the battery saver mode is turned on, the theme changes to dark theme</string>
     <string name="back_title">Back navigation</string>
     <string name="back_summary">Enables custom back navigation at top of the list</string>
     <string name="details">Details</string>
@@ -749,6 +754,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
     <string name="select_similar">Select similar</string>
+    <string name="select_fill">Select fill</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
         \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
@@ -773,16 +779,15 @@ You only need to do this once, until the next time you select a new location for
     <string name="error_cant_decompress_that_file">Cannot process the requested archive</string>
     <string name="analyse_storage">Analyse Storage</string>
     <string name="amaze_file_utilities" translatable="false">Amaze File Utilities</string>
-    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our offering that has inbuilt audio/video/image/document viewers, allows you to analyse storage files for blurry/dark images, duplicate files, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
+    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our open source app that has inbuilt audio/video/image/document viewers, allows you to analyse junk files to free up storage, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
     <string name="download">Download</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Thank you for installing Amaze File Utilities. You\'re being redirected to the app.</string>
     <string name="image_viewer">Amaze Image Viewer</string>
     <string name="video_player">Amaze Video Player</string>
     <string name="amaze_audio_player">Amaze Music Player</string>
-    <string name="pdf_viewer">Amaze Pdf Viewer</string>
-    <string name="epub_viewer">Amaze Epub Viewer</string>
-    <string name="docx_viewer">Amaze Doc Viewer</string>
+    <string name="pdf_viewer">Amaze Document Viewer</string>
+    <string name="docx_viewer">Amaze Document Viewer</string>
     <string name="share_logs">Share logs</string>
     <string name="share_logs_summary">Share captured logs via email / telegram</string>
     <string name="open_with_amaze">Open with Amaze</string>
@@ -809,5 +814,17 @@ You only need to do this once, until the next time you select a new location for
     <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
     <string name="cloud_connection_credentials_cleared">Cloud Connection credentials cleared</string>
     <string name="cloud_connection_credentials_cleared_msg">Unfortunately, we were unable to migrate your cloud connection credentials to the new database schema, and we had to remove them from the app. Please create the cloud connection again.</string>
+    <string name="not_finding_what_you_re_looking_for">Not finding what you\'re looking for?</string>
+    <string name="try_deep_search">Try Deep Search!</string>
+    <string name="try_indexed_search">Try Indexed Search!</string>
+    <string name="search_recent">Recent</string>
+    <string name="results">Results</string>
+    <string name="grant_notification_permission">Amaze needs notification permission to display file operation progress, as well as a handy panel to start/stop the FTP server.</string>
+    <string name="error_unsupported_or_null_uri">Invalid, unsupported, or no URI was provided</string>
+    <string name="complete_paste_warning">Please complete paste operation first</string>
+    <string name="same_dir_move_error">Destination and source folder shouldn\'t match to move.</string>
+    <string name="checking_conflicts">Checking for conflicts</string>
+    <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
+    <string name="not_found_enabled_webview">No available browser</string>
 </resources>
 

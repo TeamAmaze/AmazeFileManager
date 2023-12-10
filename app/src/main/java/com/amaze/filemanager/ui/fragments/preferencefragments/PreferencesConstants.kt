@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.fragments.preferencefragments
 object PreferencesConstants {
     // appearance_prefs.xml
     const val FRAGMENT_THEME = "theme"
+    const val FRAGMENT_FOLLOW_BATTERY_SAVER = "follow_battery_saver"
     const val PREFERENCE_USE_CIRCULAR_IMAGES = "circularimages"
     const val PREFERENCE_SHOW_DIVIDERS = "showDividers"
     const val PREFERENCE_SHOW_HEADERS = "showHeaders"
@@ -91,6 +92,9 @@ object PreferencesConstants {
     // backup_prefs.xml
     const val PREFERENCE_EXPORT_SETTINGS = "export_settings"
     const val PREFERENCE_IMPORT_SETTINGS = "import_settings"
+
+    // recent search items
+    const val PREFERENCE_RECENT_SEARCH_ITEMS = "recent_searches"
 
     // others
     const val PREFERENCE_CURRENT_TAB = ""

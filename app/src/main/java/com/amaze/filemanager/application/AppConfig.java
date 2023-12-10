@@ -41,11 +41,7 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.ScreenUtils;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 
 import android.app.Activity;
 import android.app.Application;
@@ -71,8 +67,6 @@ public class AppConfig extends GlideApplication {
   private Logger log = null;
 
   private UtilitiesProvider utilsProvider;
-  private RequestQueue requestQueue;
-  private ImageLoader imageLoader;
   private UtilsHandler utilsHandler;
 
   private WeakReference<Context> mainActivityContext;
@@ -199,17 +193,6 @@ public class AppConfig extends GlideApplication {
 
   public static synchronized AppConfig getInstance() {
     return instance;
-  }
-
-  public ImageLoader getImageLoader() {
-    if (requestQueue == null) {
-      requestQueue = Volley.newRequestQueue(getApplicationContext());
-    }
-
-    if (imageLoader == null) {
-      this.imageLoader = new ImageLoader(requestQueue, new LruBitmapCache());
-    }
-    return imageLoader;
   }
 
   public UtilsHandler getUtilsHandler() {

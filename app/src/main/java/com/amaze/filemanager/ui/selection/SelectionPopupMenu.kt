@@ -24,13 +24,12 @@ import android.content.Context
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.TextView
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.AppCompatTextView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.theme.AppTheme
-import java.util.*
 
 class SelectionPopupMenu(
     private val recyclerAdapter: RecyclerAdapter,
@@ -53,7 +52,7 @@ class SelectionPopupMenu(
         ) {
             mainActivity?.also {
                 var currentContext: Context = mainActivity.applicationContext
-                if (mainActivity.appTheme.getSimpleTheme(currentContext) == AppTheme.BLACK) {
+                if (mainActivity.appTheme == AppTheme.BLACK) {
                     currentContext = ContextThemeWrapper(
                         mainActivity.applicationContext,
                         R.style.overflow_black
@@ -71,6 +70,9 @@ class SelectionPopupMenu(
                     if (itemsDigested.size > SIMILARITY_THRESHOLD) {
                         popupMenu.menu.findItem(R.id.select_similar).isVisible = false
                     }
+                }
+                if (recyclerAdapter.checkedItems.size < 2) {
+                    popupMenu.menu.findItem(R.id.select_fill).isVisible = false
                 }
                 popupMenu.setOnMenuItemClickListener(popupMenu)
                 popupMenu.show()
@@ -100,9 +102,12 @@ class SelectionPopupMenu(
             R.id.select_similar -> {
                 recyclerAdapter.toggleSimilarNames()
             }
+            R.id.select_fill -> {
+                recyclerAdapter.toggleFill()
+            }
         }
         actionModeView.invalidate()
-        actionModeView.findViewById<TextView>(R.id.item_count).text = recyclerAdapter
+        actionModeView.findViewById<AppCompatTextView>(R.id.item_count).text = recyclerAdapter
             .checkedItems.size.toString()
         return true
     }

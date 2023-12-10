@@ -243,10 +243,10 @@ public class GenericCopyUtil {
 
       doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
-      LOG.debug("I/O Error!", e);
-      throw new IOException();
+      LOG.error("I/O Error copy {} to {}: {}", mSourceFile, mTargetFile, e);
+      throw new IOException(e);
     } catch (OutOfMemoryError e) {
-      LOG.warn("low memory while copying file", e);
+      LOG.warn("low memory while copying {} to {}: {}", mSourceFile, mTargetFile, e);
 
       onLowMemory.onLowMemory();
 
@@ -271,7 +271,7 @@ public class GenericCopyUtil {
       // If target file is copied onto the device and copy was successful, trigger media store
       // rescan
       if (mTargetFile != null) {
-        FileUtils.scanFile(mContext, new HybridFile[] {mTargetFile});
+        MediaConnectionUtils.scanFile(mContext, new HybridFile[] {mTargetFile});
       }
     }
   }

@@ -22,16 +22,14 @@ package com.amaze.filemanager.utils
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Build
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentActivity
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
@@ -43,13 +41,13 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 
 class MainActivityActionMode(private val mainActivityReference: WeakReference<MainActivity>) :
     ActionMode.Callback {
 
     var actionModeView: View? = null
     var actionMode: ActionMode? = null
+    var pasteHelper: PasteHelper? = null
 
     private fun hideOption(id: Int, menu: Menu) {
         val item = menu.findItem(id)
@@ -71,6 +69,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             mode.customView = actionModeView
             mainActivity.setPagingEnabled(false)
             mainActivity.hideFab()
+            if (mainActivity.mReturnIntent &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+            ) {
+                mainActivity.showFabConfirmSelection()
+            }
 
             // translates the drawable content down
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
@@ -80,7 +83,6 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             hideOption(R.id.addshortcut, menu)
             hideOption(R.id.share, menu)
             hideOption(R.id.openwith, menu)
-            if (mainActivity.mReturnIntent) showOption(R.id.openmulti, menu)
             // hideOption(R.id.setringtone,menu);
             mode.title = mainActivity.resources.getString(R.string.select)
             mainActivity
@@ -120,27 +122,32 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     mainActivity
                 )
             }
-            val textView: TextView = actionModeView!!.findViewById(R.id.item_count)
+            val textView: AppCompatTextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
-            hideOption(R.id.openmulti, menu)
-            menu.findItem(R.id.all)
-                .setTitle(
-                    if (checkedItems.size
-                        == mainFragmentViewModel.folderCount +
-                        mainFragmentViewModel.fileCount
-                    ) R.string.deselect_all else R.string.select_all
+
+            if (mainActivity.mReturnIntent && !mainActivity.intent.getBooleanExtra(
+                    Intent.EXTRA_ALLOW_MULTIPLE,
+                    false
                 )
+            ) {
+                // Only one item can be returned, so there should not be a "Select all" button
+                hideOption(R.id.all, menu)
+            } else {
+                menu.findItem(R.id.all)
+                    .setTitle(
+                        if (checkedItems.size
+                            == mainFragmentViewModel.folderCount +
+                            mainFragmentViewModel.fileCount
+                        ) R.string.deselect_all else R.string.select_all
+                    )
+            }
+
             if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
                     .getIsCloudOpenMode()
             ) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)
                 return true
-            }
-            if (mainActivity.mReturnIntent &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-            ) {
-                showOption(R.id.openmulti, menu)
             }
             // tv.setText(checkedItems.size());
             if (!mainFragmentViewModel.results) {
@@ -152,26 +159,12 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
                         hideOption(R.id.openwith, menu)
                         hideOption(R.id.share, menu)
-                        hideOption(R.id.openmulti, menu)
-                    }
-                    if (mainActivity.mReturnIntent) {
-                        if (Build.VERSION.SDK_INT >= 16) showOption(
-                            R.id.openmulti,
-                            menu
-                        )
                     }
                 } else {
                     showOption(R.id.share, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                        showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
                     for (e in mainFragmentViewModel.getCheckedItems()) {
                         if (e.isDirectory) {
                             hideOption(R.id.share, menu)
-                            hideOption(R.id.openmulti, menu)
                             break
                         }
                     }
@@ -187,26 +180,13 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
                         hideOption(R.id.openwith, menu)
                         hideOption(R.id.share, menu)
-                        hideOption(R.id.openmulti, menu)
-                    }
-                    if (mainActivity.mReturnIntent &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                    ) {
-                        showOption(R.id.openmulti, menu)
                     }
                 } else {
                     hideOption(R.id.openparent, menu)
                     hideOption(R.id.addshortcut, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                        showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
                     for (e in mainFragmentViewModel.getCheckedItems()) {
                         if (e.isDirectory) {
                             hideOption(R.id.share, menu)
-                            hideOption(R.id.openmulti, menu)
                             break
                         }
                     }
@@ -233,26 +213,6 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
         ) {
                 mainActivity, checkedItems ->
             return when (item.itemId) {
-                R.id.openmulti -> {
-                    val intent_result = Intent(Intent.ACTION_SEND_MULTIPLE)
-                    val resulturis = ArrayList<Uri>()
-                    for (element in checkedItems) {
-                        val baseFile = element.generateBaseFile()
-                        val resultUri = Utils.getUriForBaseFile(mainActivity, baseFile)
-                        if (resultUri != null) {
-                            resulturis.add(resultUri)
-                        }
-                    }
-                    intent_result.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    mainActivity.setResult(FragmentActivity.RESULT_OK, intent_result)
-                    intent_result.putParcelableArrayListExtra(
-                        Intent.EXTRA_STREAM,
-                        resulturis
-                    )
-                    mainActivity.finish()
-                    // mode.finish();
-                    true
-                }
                 R.id.about -> {
                     val x = checkedItems[0]
                     mainActivity.currentMainFragment?.also {
@@ -378,7 +338,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     // Making sure we don't cause an IllegalArgumentException
                     // when passing copies to PasteHelper
                     if (copies.isNotEmpty()) {
-                        val pasteHelper = PasteHelper(mainActivity, op, copies)
+                        pasteHelper = PasteHelper(mainActivity, op, copies)
                         mainActivity.paste = pasteHelper
                     }
                     mode.finish()
@@ -432,6 +392,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             // translates the drawer content up
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(false);
             mainActivity.showFab()
+            mainActivity.hideFabConfirmSelection()
 
             mainActivity.setPagingEnabled(true)
             safeLet(
@@ -462,7 +423,10 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
      * Finishes the action mode
      */
     fun disableActionMode() {
-        mainActivityReference.get()?.listItemSelected = false
+        mainActivityReference.get()?.let {
+            it.listItemSelected = false
+            it.hideFabConfirmSelection()
+        }
         actionMode?.finish()
         actionMode = null
     }

@@ -49,41 +49,37 @@ import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
 
-  public EditText mainTextView;
-  public EditText searchEditText;
+  public AppCompatEditText mainTextView;
+  public AppCompatEditText searchEditText;
   private Typeface inputTypefaceDefault;
   private Typeface inputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
@@ -95,12 +91,13 @@ public class TextEditorActivity extends ThemedActivity
   private static final String KEY_ORIGINAL_TEXT = "original";
   private static final String KEY_MONOFONT = "monofont";
 
-  private RelativeLayout searchViewLayout;
-  public ImageButton upButton;
-  public ImageButton downButton;
-  public ImageButton closeButton;
+  private ConstraintLayout searchViewLayout;
+  public AppCompatImageButton upButton;
+  public AppCompatImageButton downButton;
 
   private Snackbar loadingSnackbar;
+
+  private TextEditorActivityViewModel viewModel;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -109,16 +106,15 @@ public class TextEditorActivity extends ThemedActivity
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    final TextEditorActivityViewModel viewModel =
-        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    searchViewLayout = findViewById(R.id.searchview);
+    searchViewLayout = findViewById(R.id.textEditorSearchBar);
+
     searchViewLayout.setBackgroundColor(getPrimary());
 
-    searchEditText = searchViewLayout.findViewById(R.id.search_box);
-    upButton = searchViewLayout.findViewById(R.id.prev);
-    downButton = searchViewLayout.findViewById(R.id.next);
-    closeButton = searchViewLayout.findViewById(R.id.close);
+    searchEditText = searchViewLayout.findViewById(R.id.textEditorSearchBox);
+    upButton = searchViewLayout.findViewById(R.id.textEditorSearchPrevButton);
+    downButton = searchViewLayout.findViewById(R.id.textEditorSearchNextButton);
 
     searchEditText.addTextChangedListener(this);
 
@@ -126,14 +122,13 @@ public class TextEditorActivity extends ThemedActivity
     // upButton.setEnabled(false);
     downButton.setOnClickListener(this);
     // downButton.setEnabled(false);
-    closeButton.setOnClickListener(this);
 
-    boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
-
-    getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
-
-    mainTextView = findViewById(R.id.fname);
-    scrollView = findViewById(R.id.editscroll);
+    if (getSupportActionBar() != null) {
+      boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
+      getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
+    }
+    mainTextView = findViewById(R.id.textEditorMainEditText);
+    scrollView = findViewById(R.id.textEditorScrollView);
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
@@ -144,14 +139,23 @@ public class TextEditorActivity extends ThemedActivity
       return;
     }
 
-    getSupportActionBar().setTitle(viewModel.getFile().name);
+    ActionBar actionBar = getSupportActionBar();
+
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(!getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK));
+      actionBar.setTitle(viewModel.getFile().name);
+    }
 
     mainTextView.addTextChangedListener(this);
 
     if (getAppTheme().equals(AppTheme.DARK)) {
-      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_action_mode));
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_white));
     } else if (getAppTheme().equals(AppTheme.BLACK)) {
       mainTextView.setBackgroundColor(Utils.getColor(this, android.R.color.black));
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_white));
+    } else {
+      mainTextView.setTextColor(Utils.getColor(this, R.color.primary_grey_900));
     }
 
     if (mainTextView.getTypeface() == null) {
@@ -172,16 +176,17 @@ public class TextEditorActivity extends ThemedActivity
     } else {
       load(this);
     }
-    initStatusBarResources(findViewById(R.id.texteditor));
+    initStatusBarResources(findViewById(R.id.textEditorRootView));
   }
 
   @Override
-  protected void onSaveInstanceState(Bundle outState) {
+  protected void onSaveInstanceState(@NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    outState.putString(KEY_MODIFIED_TEXT, mainTextView.getText().toString());
+    outState.putString(
+        KEY_MODIFIED_TEXT, mainTextView.getText() != null ? mainTextView.getText().toString() : "");
     outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
     outState.putBoolean(KEY_MONOFONT, inputTypefaceMono.equals(mainTextView.getTypeface()));
@@ -193,6 +198,7 @@ public class TextEditorActivity extends ThemedActivity
 
     if (viewModel.getOriginal() != null
         && mainTextView.isShown()
+        && mainTextView.getText() != null
         && !viewModel.getOriginal().equals(mainTextView.getText().toString())) {
       new MaterialDialog.Builder(this)
           .title(R.string.unsaved_changes)
@@ -293,10 +299,13 @@ public class TextEditorActivity extends ThemedActivity
         break;
       case R.id.save:
         // Make sure EditText is visible before saving!
-        saveFile(this, mainTextView.getText().toString());
+        if (mainTextView.getText() != null) {
+          saveFile(this, mainTextView.getText().toString());
+        }
         break;
       case R.id.details:
         if (editableFileAbstraction.scheme.equals(FILE)
+            && editableFileAbstraction.hybridFileParcelable.getFile() != null
             && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
           GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
               editableFileAbstraction.hybridFileParcelable, this, getAppTheme());
@@ -316,7 +325,7 @@ public class TextEditorActivity extends ThemedActivity
       case R.id.openwith:
         if (editableFileAbstraction.scheme.equals(FILE)) {
           File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
-          if (currentFile.exists()) {
+          if (currentFile != null && currentFile.exists()) {
             boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
             FileUtils.openWith(currentFile, this, useNewStack);
           } else {
@@ -355,7 +364,8 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
     // condition to check if callback is called in search editText
-    if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
+    if (searchEditText.getText() != null
+        && charSequence.hashCode() == searchEditText.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
@@ -371,7 +381,8 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-    if (charSequence.hashCode() == mainTextView.getText().hashCode()) {
+    if (mainTextView.getText() != null
+        && charSequence.hashCode() == mainTextView.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
       final Timer oldTimer = viewModel.getTimer();
@@ -400,11 +411,12 @@ public class TextEditorActivity extends ThemedActivity
                   new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
 
               modified =
-                  !textEditorActivity
-                      .mainTextView
-                      .getText()
-                      .toString()
-                      .equals(viewModel.getOriginal());
+                  textEditorActivity.mainTextView.getText() != null
+                      && !textEditorActivity
+                          .mainTextView
+                          .getText()
+                          .toString()
+                          .equals(viewModel.getOriginal());
               if (viewModel.getModified() != modified) {
                 viewModel.setModified(modified);
                 invalidateOptionsMenu();
@@ -420,7 +432,8 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void afterTextChanged(Editable editable) {
     // searchBox callback block
-    if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
+    if (searchEditText.getText() != null
+        && editable.hashCode() == searchEditText.getText().hashCode()) {
       final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
 
       final OnProgressUpdate<SearchResultIndex> onProgressUpdate =
@@ -429,7 +442,7 @@ public class TextEditorActivity extends ThemedActivity
             if (textEditorActivity == null) {
               return;
             }
-            textEditorActivity.unhighlightSearchResult(index);
+            textEditorActivity.colorSearchResult(index, getPrimary());
           };
 
       final OnAsyncTaskFinished<List<SearchResultIndex>> onAsyncTaskFinished =
@@ -445,7 +458,7 @@ public class TextEditorActivity extends ThemedActivity
             viewModel.setSearchResultIndices(data);
 
             for (SearchResultIndex searchResultIndex : data) {
-              textEditorActivity.unhighlightSearchResult(searchResultIndex);
+              textEditorActivity.colorSearchResult(searchResultIndex, getPrimary());
             }
 
             if (data.size() != 0) {
@@ -460,87 +473,72 @@ public class TextEditorActivity extends ThemedActivity
             }
           };
 
-      searchTextTask =
-          new SearchTextTask(
-              mainTextView.getText().toString(),
-              editable.toString(),
-              onProgressUpdate,
-              onAsyncTaskFinished);
-      searchTextTask.execute();
+      if (mainTextView.getText() != null) {
+        searchTextTask =
+            new SearchTextTask(
+                mainTextView.getText().toString(),
+                editable.toString(),
+                onProgressUpdate,
+                onAsyncTaskFinished);
+        searchTextTask.execute();
+      }
     }
   }
 
-  /** show search view with a circular reveal animation */
   private void revealSearchView() {
-    int startRadius = 4;
-    int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-    DisplayMetrics metrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-    // hardcoded and completely random
-    int cx = metrics.widthPixels - 160;
-    int cy = toolbar.getBottom();
-    Animator animator;
-
-    // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-      animator =
-          ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy, startRadius, endRadius);
-    else animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-
-    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(600);
     searchViewLayout.setVisibility(View.VISIBLE);
-    searchEditText.setText("");
-    animator.start();
-    animator.addListener(
-        new AnimatorListenerAdapter() {
+
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_top);
+
+    animation.setAnimationListener(
+        new Animation.AnimationListener() {
           @Override
-          public void onAnimationEnd(Animator animation) {
+          public void onAnimationStart(Animation animation) {}
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+
             searchEditText.requestFocus();
-            InputMethodManager imm =
-                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
           }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {}
         });
+
+    searchViewLayout.startAnimation(animation);
   }
 
-  /** hide search view with a circular reveal animation */
   private void hideSearchView() {
-    int endRadius = 4;
-    int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
-    DisplayMetrics metrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_out_top);
 
-    // hardcoded and completely random
-    int cx = metrics.widthPixels - 160;
-    int cy = toolbar.getBottom();
-
-    Animator animator;
-    // FIXME: 2016/11/18   ViewAnimationUtils Compatibility
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      animator =
-          ViewAnimationUtils.createCircularReveal(searchViewLayout, cx, cy, startRadius, endRadius);
-    } else {
-      animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
-    }
-
-    animator.setInterpolator(new AccelerateDecelerateInterpolator());
-    animator.setDuration(600);
-    animator.start();
-    animator.addListener(
-        new AnimatorListenerAdapter() {
+    animation.setAnimationListener(
+        new Animation.AnimationListener() {
           @Override
-          public void onAnimationEnd(Animator animation) {
+          public void onAnimationStart(Animation animation) {}
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+
             searchViewLayout.setVisibility(View.GONE);
-            InputMethodManager inputMethodManager =
-                (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(
-                searchEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            cleanSpans(viewModel);
+            searchEditText.setText("");
+
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(
+                    searchEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
           }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {}
         });
+
+    searchViewLayout.startAnimation(animation);
   }
 
   @Override
@@ -549,7 +547,7 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     switch (v.getId()) {
-      case R.id.prev:
+      case R.id.textEditorSearchPrevButton:
         // upButton
         if (viewModel.getCurrent() > 0) {
           unhighlightCurrentSearchResult(viewModel);
@@ -560,7 +558,7 @@ public class TextEditorActivity extends ThemedActivity
           highlightCurrentSearchResult(viewModel);
         }
         break;
-      case R.id.next:
+      case R.id.textEditorSearchNextButton:
         // downButton
         if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
           unhighlightCurrentSearchResult(viewModel);
@@ -569,11 +567,6 @@ public class TextEditorActivity extends ThemedActivity
 
           highlightCurrentSearchResult(viewModel);
         }
-        break;
-      case R.id.close:
-        // closeButton
-        findViewById(R.id.searchview).setVisibility(View.GONE);
-        cleanSpans(viewModel);
         break;
       default:
         throw new IllegalStateException();
@@ -586,41 +579,34 @@ public class TextEditorActivity extends ThemedActivity
     }
 
     SearchResultIndex resultIndex = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
-    unhighlightSearchResult(resultIndex);
+    colorSearchResult(resultIndex, getPrimary());
   }
 
   private void highlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
     SearchResultIndex keyValueNew = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
-    colorSearchResult(keyValueNew, Utils.getColor(this, R.color.search_text_highlight));
+    colorSearchResult(keyValueNew, getAccent());
 
     // scrolling to the highlighted element
-    scrollView.scrollTo(
-        0,
-        (Integer) keyValueNew.getLineNumber()
-            + mainTextView.getLineHeight()
-            + Math.round(mainTextView.getLineSpacingExtra())
-            - getSupportActionBar().getHeight());
-  }
-
-  private void unhighlightSearchResult(SearchResultIndex resultIndex) {
-    @ColorInt int color;
-    if (getAppTheme().equals(AppTheme.LIGHT)) {
-      color = Color.YELLOW;
-    } else {
-      color = Color.LTGRAY;
+    if (getSupportActionBar() != null) {
+      scrollView.scrollTo(
+          0,
+          (Integer) keyValueNew.getLineNumber()
+              + mainTextView.getLineHeight()
+              + Math.round(mainTextView.getLineSpacingExtra())
+              - getSupportActionBar().getHeight());
     }
-
-    colorSearchResult(resultIndex, color);
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
-    mainTextView
-        .getText()
-        .setSpan(
-            new BackgroundColorSpan(color),
-            (Integer) resultIndex.getStartCharNumber(),
-            (Integer) resultIndex.getEndCharNumber(),
-            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    if (mainTextView.getText() != null) {
+      mainTextView
+          .getText()
+          .setSpan(
+              new BackgroundColorSpan(color),
+              (Integer) resultIndex.getStartCharNumber(),
+              (Integer) resultIndex.getEndCharNumber(),
+              Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    }
   }
 
   private void cleanSpans(TextEditorActivityViewModel viewModel) {
@@ -630,10 +616,12 @@ public class TextEditorActivity extends ThemedActivity
     viewModel.setLine(0);
 
     // clearing textView spans
-    BackgroundColorSpan[] colorSpans =
-        mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
-    for (BackgroundColorSpan colorSpan : colorSpans) {
-      mainTextView.getText().removeSpan(colorSpan);
+    if (mainTextView.getText() != null) {
+      BackgroundColorSpan[] colorSpans =
+          mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
+      for (BackgroundColorSpan colorSpan : colorSpans) {
+        mainTextView.getText().removeSpan(colorSpan);
+      }
     }
   }
 }

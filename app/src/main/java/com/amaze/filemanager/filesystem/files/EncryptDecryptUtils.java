@@ -50,10 +50,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Base64;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -115,7 +115,7 @@ public class EncryptDecryptUtils {
           R.string.crypt_decrypt,
           R.string.authenticate_password,
           (dialog, which) -> {
-            EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+            AppCompatEditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
             decryptIntent.putExtra(EncryptService.TAG_PASSWORD, editText.getText().toString());
             ServiceWatcherUtil.runService(main.getContext(), decryptIntent);
             dialog.dismiss();

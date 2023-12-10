@@ -23,7 +23,7 @@ package com.amaze.filemanager.ui.fragments.preferencefragments
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import com.afollestad.materialdialogs.DialogAction
@@ -37,7 +37,6 @@ import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference
 import com.amaze.filemanager.utils.DataUtils
 import com.amaze.filemanager.utils.SimpleTextWatcher
-import java.util.HashMap
 
 class BookmarksPrefsFragment : BasePrefsFragment() {
     override val title = R.string.show_bookmarks_pref
@@ -99,7 +98,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
         val dialog = MaterialDialog.Builder(requireActivity())
             .title(R.string.create_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .positiveColor(fabSkin)
             .positiveText(R.string.create)
             .negativeColor(fabSkin)
@@ -148,7 +147,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
         val dialog = MaterialDialog.Builder(activity)
             .title(R.string.edit_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .positiveColor(fabSkin)
             .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
             .negativeColor(fabSkin)
@@ -192,7 +191,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
         val dialog = MaterialDialog.Builder(activity)
             .title(R.string.question_delete_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .positiveColor(fabSkin)
             .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
             .negativeColor(fabSkin)
@@ -215,7 +214,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         dialog.show()
     }
 
-    private fun disableButtonIfNotPath(path: EditText, dialog: MaterialDialog) {
+    private fun disableButtonIfNotPath(path: AppCompatEditText, dialog: MaterialDialog) {
         path.addTextChangedListener(
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
@@ -226,7 +225,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         )
     }
 
-    private fun disableButtonIfTitleEmpty(title: EditText, dialog: MaterialDialog) {
+    private fun disableButtonIfTitleEmpty(title: AppCompatEditText, dialog: MaterialDialog) {
         title.addTextChangedListener(
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {

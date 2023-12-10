@@ -18,6 +18,7 @@
     -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/second"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,8 +29,7 @@
     android:paddingStart="@dimen/minimal_material_padding"
     android:paddingRight="@dimen/minimal_material_padding"
     android:paddingEnd="@dimen/minimal_material_padding"
-    android:nextFocusRight="@id/properties"
-    >
+    android:nextFocusRight="@id/properties">
     <RelativeLayout
         android:id="@+id/icon_frame_grid"
         android:layout_width="@dimen/minimal_icon_parent_width"
@@ -44,28 +44,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/icon_margin_top"
             >
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/minimal_icon_size"
                 android:layout_height="@dimen/minimal_icon_size"
                 android:visibility="gone"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:id="@+id/apk_icon"/>
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/picture_icon"
                 android:layout_width="@dimen/minimal_icon_size"
                 android:layout_height="@dimen/minimal_icon_size"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/icon" />
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="8dp"
                 android:background="@drawable/circle_shape"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/generic_icon"/>
-
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="@dimen/minimal_icon_size"
                 android:layout_height="@dimen/minimal_icon_size"
                 android:textSize="12dp"
@@ -78,12 +77,12 @@
                 />
         </FrameLayout>
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/check_icon"
             android:layout_width="@dimen/tick_icon_size"
             android:layout_height="@dimen/tick_icon_size"
             android:padding="@dimen/check_icon_padding"
-            android:src="@drawable/ic_checkmark_selected"
+            app:srcCompat="@drawable/ic_checkmark_selected"
             android:layout_marginBottom="@dimen/check_icon_margin_bottom_right"
             android:layout_marginRight="@dimen/check_icon_margin_bottom_right"
             android:layout_marginEnd="@dimen/check_icon_margin_bottom_right"
@@ -93,7 +92,7 @@
             android:visibility="invisible" />
     </RelativeLayout>
 
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/properties"
@@ -105,9 +104,10 @@
         android:layout_marginStart="16dp"
         android:padding="8dp"
         android:clickable="true"
-        android:src="@drawable/ic_more_vert_black_48dp"
+        app:srcCompat="@drawable/ic_more_vert_black_48dp"
         android:nextFocusLeft="@id/second"
         android:focusable="true"
+        android:contentDescription="@string/properties"
         />
 
     <RelativeLayout
@@ -140,7 +140,7 @@
             android:layout_below="@id/firstline"
             android:layout_marginTop="5dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -151,7 +151,21 @@
                 android:layout_marginEnd="10dip"
                 android:textColor="?android:attr/textColorTertiary"
                 />
-            <TextView
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:id="@+id/appManagerPackageName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/date"
+                android:layout_alignBottom="@id/date"
+                android:layout_toEndOf="@id/date"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/secondLine"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -161,7 +175,7 @@
                 android:textColor="?android:attr/textColorTertiary"
                 />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/permis"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

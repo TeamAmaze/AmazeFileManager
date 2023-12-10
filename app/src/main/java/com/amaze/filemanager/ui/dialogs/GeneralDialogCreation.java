@@ -60,6 +60,9 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.sort.SortBy;
+import com.amaze.filemanager.filesystem.files.sort.SortOrder;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -93,16 +96,16 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.text.TextUtilsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.preference.PreferenceManager;
@@ -127,10 +130,7 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(themedActivity)
             .content(content)
             .widgetColor(accentColor)
-            .theme(
-                themedActivity
-                    .getAppTheme()
-                    .getMaterialDialogTheme(themedActivity.getApplicationContext()))
+            .theme(themedActivity.getAppTheme().getMaterialDialogTheme())
             .title(title)
             .positiveText(postiveText)
             .positiveColor(accentColor)
@@ -153,7 +153,7 @@ public class GeneralDialogCreation {
     MaterialDialog.Builder builder = new MaterialDialog.Builder(m);
 
     View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
-    EditText textfield = dialogView.findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialogView.findViewById(R.id.singleedittext_input);
     textfield.setHint(hint);
     textfield.setText(prefill);
 
@@ -165,7 +165,7 @@ public class GeneralDialogCreation {
     builder
         .customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .theme(m.getAppTheme().getMaterialDialogTheme())
         .title(title)
         .positiveText(positiveButtonText)
         .onPositive(positiveButtonAction);
@@ -213,7 +213,7 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(context)
             .title(context.getString(R.string.dialog_delete_title))
             .customView(R.layout.dialog_delete, true)
-            .theme(appTheme.getMaterialDialogTheme(context))
+            .theme(appTheme.getMaterialDialogTheme())
             .negativeText(context.getString(R.string.cancel).toUpperCase())
             .positiveText(context.getString(R.string.delete).toUpperCase())
             .positiveColor(accentColor)
@@ -227,12 +227,14 @@ public class GeneralDialogCreation {
             .build();
 
     // Get views from custom layout to set text values.
-    final TextView categoryDirectories =
+    final AppCompatTextView categoryDirectories =
         dialog.getCustomView().findViewById(R.id.category_directories);
-    final TextView categoryFiles = dialog.getCustomView().findViewById(R.id.category_files);
-    final TextView listDirectories = dialog.getCustomView().findViewById(R.id.list_directories);
-    final TextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
-    final TextView total = dialog.getCustomView().findViewById(R.id.total);
+    final AppCompatTextView categoryFiles =
+        dialog.getCustomView().findViewById(R.id.category_files);
+    final AppCompatTextView listDirectories =
+        dialog.getCustomView().findViewById(R.id.list_directories);
+    final AppCompatTextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
+    final AppCompatTextView total = dialog.getCustomView().findViewById(R.id.total);
 
     new AsyncTask<Void, Object, Void>() {
 
@@ -443,36 +445,36 @@ public class GeneralDialogCreation {
 
     MaterialDialog.Builder builder = new MaterialDialog.Builder(themedActivity);
     builder.title(c.getString(R.string.properties));
-    builder.theme(appTheme.getMaterialDialogTheme(c));
+    builder.theme(appTheme.getMaterialDialogTheme());
 
     View v = themedActivity.getLayoutInflater().inflate(R.layout.properties_dialog, null);
-    TextView itemsText = v.findViewById(R.id.t7);
-    CheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
+    AppCompatTextView itemsText = v.findViewById(R.id.t7);
+    AppCompatCheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
 
     /*View setup*/
     {
-      TextView mNameTitle = v.findViewById(R.id.title_name);
+      AppCompatTextView mNameTitle = v.findViewById(R.id.title_name);
       mNameTitle.setTextColor(accentColor);
 
-      TextView mDateTitle = v.findViewById(R.id.title_date);
+      AppCompatTextView mDateTitle = v.findViewById(R.id.title_date);
       mDateTitle.setTextColor(accentColor);
 
-      TextView mSizeTitle = v.findViewById(R.id.title_size);
+      AppCompatTextView mSizeTitle = v.findViewById(R.id.title_size);
       mSizeTitle.setTextColor(accentColor);
 
-      TextView mLocationTitle = v.findViewById(R.id.title_location);
+      AppCompatTextView mLocationTitle = v.findViewById(R.id.title_location);
       mLocationTitle.setTextColor(accentColor);
 
-      TextView md5Title = v.findViewById(R.id.title_md5);
+      AppCompatTextView md5Title = v.findViewById(R.id.title_md5);
       md5Title.setTextColor(accentColor);
 
-      TextView sha256Title = v.findViewById(R.id.title_sha256);
+      AppCompatTextView sha256Title = v.findViewById(R.id.title_sha256);
       sha256Title.setTextColor(accentColor);
 
-      ((TextView) v.findViewById(R.id.t5)).setText(name);
-      ((TextView) v.findViewById(R.id.t6)).setText(parent);
+      ((AppCompatTextView) v.findViewById(R.id.t5)).setText(name);
+      ((AppCompatTextView) v.findViewById(R.id.t6)).setText(parent);
       itemsText.setText(items);
-      ((TextView) v.findViewById(R.id.t8)).setText(date);
+      ((AppCompatTextView) v.findViewById(R.id.t8)).setText(date);
 
       if (baseFile.isDirectory() && baseFile.isLocal()) {
         nomediaCheckBox.setVisibility(View.VISIBLE);
@@ -547,7 +549,7 @@ public class GeneralDialogCreation {
     {
       int layoutDirection = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault());
       boolean isRightToLeft = layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL;
-      boolean isDarkTheme = appTheme.getMaterialDialogTheme(c) == Theme.DARK;
+      boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
       PieChart chart = v.findViewById(R.id.chart);
 
       chart.setTouchEnabled(false);
@@ -710,7 +712,7 @@ public class GeneralDialogCreation {
         break;
     }
 
-    builder.theme(appTheme.getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    builder.theme(appTheme.getMaterialDialogTheme());
     builder.content(mainActivity.getString(R.string.cloud_remove));
 
     builder.positiveText(mainActivity.getString(R.string.yes));
@@ -740,7 +742,7 @@ public class GeneralDialogCreation {
         R.string.crypt_decrypt,
         R.string.authenticate_password,
         ((dialog, which) -> {
-          EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
 
           if (editText.getText().toString().equals(password))
             decryptButtonCallbackInterface.confirm(intent);
@@ -765,7 +767,7 @@ public class GeneralDialogCreation {
     View dialogLayout = View.inflate(main, R.layout.dialog_singleedittext, null);
     WarnableTextInputLayout wilTextfield =
         dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
-    EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
     textfield.setHint(promptText);
     textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -773,7 +775,7 @@ public class GeneralDialogCreation {
 
     builder
         .customView(dialogLayout, false)
-        .theme(appTheme.getMaterialDialogTheme(c))
+        .theme(appTheme.getMaterialDialogTheme())
         .autoDismiss(false)
         .canceledOnTouchOutside(false)
         .title(titleText)
@@ -823,7 +825,7 @@ public class GeneralDialogCreation {
         .neutralColor(accentColor)
         .onPositive((dialog, which) -> FileUtils.installApk(f, m))
         .onNegative((dialog, which) -> m.openCompressed(f.getPath()))
-        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .theme(m.getAppTheme().getMaterialDialogTheme())
         .build()
         .show();
   }
@@ -840,7 +842,7 @@ public class GeneralDialogCreation {
         .negativeColor(accentColor)
         .onPositive((dialog, which) -> openCallback.run())
         .onNegative((dialog, which) -> dialog.dismiss())
-        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .theme(m.getAppTheme().getMaterialDialogTheme())
         .build();
   }
 
@@ -869,6 +871,15 @@ public class GeneralDialogCreation {
 
   public static void showCompressDialog(
       @NonNull final MainActivity mainActivity,
+      final HybridFileParcelable baseFile,
+      final String current) {
+    ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
+    baseFiles.add(baseFile);
+    showCompressDialog(mainActivity, baseFiles, current);
+  }
+
+  public static void showCompressDialog(
+      @NonNull final MainActivity mainActivity,
       final ArrayList<HybridFileParcelable> baseFiles,
       final String current) {
     int accentColor = mainActivity.getAccent();
@@ -876,7 +887,7 @@ public class GeneralDialogCreation {
 
     View dialogView =
         mainActivity.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
-    EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
+    AppCompatEditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
     etFilename.setText(".zip"); // TODO: Put the file/folder name here
     etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -889,8 +900,7 @@ public class GeneralDialogCreation {
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(
-            mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()))
+        .theme(mainActivity.getAppTheme().getMaterialDialogTheme())
         .title(mainActivity.getResources().getString(R.string.enterzipname))
         .positiveText(R.string.create)
         .positiveColor(accentColor)
@@ -942,12 +952,12 @@ public class GeneralDialogCreation {
     final String path = m.getCurrentPath();
     int accentColor = m.getMainActivity().getAccent();
     String[] sort = m.getResources().getStringArray(R.array.sortby);
-    int current = SortHandler.getSortType(m.getContext(), path);
+    SortType current = SortHandler.getSortType(m.getContext(), path);
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme(m.requireContext()));
+    a.theme(appTheme.getMaterialDialogTheme());
     a.items(sort)
         .itemsCallbackSingleChoice(
-            current > 3 ? current - 4 : current, (dialog, view, which, text) -> true);
+            current.getSortBy().getIndex(), (dialog, view, which, text) -> true);
     final Set<String> sortbyOnlyThis =
         sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, Collections.emptySet());
     final Set<String> onlyThisFloders = new HashSet<>(sortbyOnlyThis);
@@ -970,11 +980,11 @@ public class GeneralDialogCreation {
     a.positiveText(R.string.descending).negativeColor(accentColor);
     a.onNegative(
         (dialog, which) -> {
-          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, false);
+          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, SortOrder.ASC);
         });
     a.onPositive(
         (dialog, which) -> {
-          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, true);
+          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, SortOrder.DESC);
         });
     a.title(R.string.sort_by);
     a.build().show();
@@ -985,20 +995,20 @@ public class GeneralDialogCreation {
       SharedPreferences sharedPref,
       Set<String> onlyThisFloders,
       MaterialDialog dialog,
-      boolean desc) {
-    final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
+      SortOrder sortOrder) {
+    final SortType sortType =
+        new SortType(SortBy.getDirectorySortBy(dialog.getSelectedIndex()), sortOrder);
     SortHandler sortHandler = SortHandler.getInstance();
     if (onlyThisFloders.contains(m.getCurrentPath())) {
       Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
-      Sort newSort = new Sort(m.getCurrentPath(), sortType);
       if (oldSort == null) {
-        sortHandler.addEntry(newSort);
+        sortHandler.addEntry(m.getCurrentPath(), sortType);
       } else {
-        sortHandler.updateEntry(oldSort, newSort);
+        sortHandler.updateEntry(oldSort, m.getCurrentPath(), sortType);
       }
     } else {
       sortHandler.clear(m.getCurrentPath());
-      sharedPref.edit().putString("sortby", String.valueOf(sortType)).apply();
+      sharedPref.edit().putString("sortby", String.valueOf(sortType.toDirectorySortInt())).apply();
     }
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
     m.updateList(false);
@@ -1012,15 +1022,15 @@ public class GeneralDialogCreation {
       final String f,
       final Context context,
       final MainFragment mainFrag) {
-    final CheckBox readown = v.findViewById(R.id.creadown);
-    final CheckBox readgroup = v.findViewById(R.id.creadgroup);
-    final CheckBox readother = v.findViewById(R.id.creadother);
-    final CheckBox writeown = v.findViewById(R.id.cwriteown);
-    final CheckBox writegroup = v.findViewById(R.id.cwritegroup);
-    final CheckBox writeother = v.findViewById(R.id.cwriteother);
-    final CheckBox exeown = v.findViewById(R.id.cexeown);
-    final CheckBox exegroup = v.findViewById(R.id.cexegroup);
-    final CheckBox exeother = v.findViewById(R.id.cexeother);
+    final AppCompatCheckBox readown = v.findViewById(R.id.creadown);
+    final AppCompatCheckBox readgroup = v.findViewById(R.id.creadgroup);
+    final AppCompatCheckBox readother = v.findViewById(R.id.creadother);
+    final AppCompatCheckBox writeown = v.findViewById(R.id.cwriteown);
+    final AppCompatCheckBox writegroup = v.findViewById(R.id.cwritegroup);
+    final AppCompatCheckBox writeother = v.findViewById(R.id.cwriteother);
+    final AppCompatCheckBox exeown = v.findViewById(R.id.cexeown);
+    final AppCompatCheckBox exegroup = v.findViewById(R.id.cexegroup);
+    final AppCompatCheckBox exeother = v.findViewById(R.id.cexeother);
     String perm = f;
     if (perm.length() < 6) {
       v.setVisibility(View.GONE);
@@ -1101,8 +1111,7 @@ public class GeneralDialogCreation {
 
     a.widgetColor(accentColor);
 
-    a.theme(
-        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    a.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     a.title(R.string.enterpath);
 
     a.positiveText(R.string.go);

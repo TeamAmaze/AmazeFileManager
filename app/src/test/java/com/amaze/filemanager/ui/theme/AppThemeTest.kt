@@ -21,18 +21,22 @@
 package com.amaze.filemanager.ui.theme
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
+import android.os.PowerManager
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowPowerManager
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
@@ -43,18 +47,34 @@ import java.util.*
 class AppThemeTest {
 
     /**
-     * Test that the theme coincides with the index for [AppTheme.getTheme]
+     * Test that the theme coincides with the index for [AppThemePreference.getTheme]
      */
     @Test
     fun testGetTheme() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        Assert.assertEquals(AppTheme.LIGHT, AppTheme.getTheme(context, AppTheme.LIGHT_INDEX))
+        Assert.assertEquals(
+            AppThemePreference.LIGHT,
+            AppThemePreference.getTheme(AppThemePreference.LIGHT_INDEX)
+        )
 
-        Assert.assertEquals(AppTheme.DARK, AppTheme.getTheme(context, AppTheme.DARK_INDEX))
+        Assert.assertEquals(
+            AppThemePreference.DARK,
+            AppThemePreference.getTheme(AppThemePreference.DARK_INDEX)
+        )
 
-        Assert.assertEquals(AppTheme.TIMED, AppTheme.getTheme(context, AppTheme.TIME_INDEX))
+        Assert.assertEquals(
+            AppThemePreference.TIMED,
+            AppThemePreference.getTheme(AppThemePreference.TIME_INDEX)
+        )
 
-        Assert.assertEquals(AppTheme.BLACK, AppTheme.getTheme(context, AppTheme.BLACK_INDEX))
+        Assert.assertEquals(
+            AppThemePreference.BLACK,
+            AppThemePreference.getTheme(AppThemePreference.BLACK_INDEX)
+        )
+
+        Assert.assertEquals(
+            AppThemePreference.SYSTEM,
+            AppThemePreference.getTheme(AppThemePreference.SYSTEM_INDEX)
+        )
     }
 
     /**
@@ -64,22 +84,33 @@ class AppThemeTest {
     fun testMaterialDialogTheme() {
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        val getMaterialDialogTheme = { apptheme: Int ->
-            AppTheme.getTheme(context, apptheme).getMaterialDialogTheme(context)
-        }
+        Assert.assertEquals(
+            Theme.LIGHT,
+            getMaterialDialogTheme(AppThemePreference.LIGHT_INDEX, context)
+        )
 
-        Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.LIGHT_INDEX))
-
-        Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.DARK_INDEX))
+        Assert.assertEquals(
+            Theme.DARK,
+            getMaterialDialogTheme(AppThemePreference.DARK_INDEX, context)
+        )
 
         val hour = Calendar.getInstance()[Calendar.HOUR_OF_DAY]
         if (hour <= 6 || hour >= 18) {
-            Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.TIME_INDEX))
+            Assert.assertEquals(
+                Theme.DARK,
+                getMaterialDialogTheme(AppThemePreference.TIME_INDEX, context)
+            )
         } else {
-            Assert.assertEquals(Theme.LIGHT, getMaterialDialogTheme(AppTheme.TIME_INDEX))
+            Assert.assertEquals(
+                Theme.LIGHT,
+                getMaterialDialogTheme(AppThemePreference.TIME_INDEX, context)
+            )
         }
 
-        Assert.assertEquals(Theme.DARK, getMaterialDialogTheme(AppTheme.BLACK_INDEX))
+        Assert.assertEquals(
+            Theme.DARK,
+            getMaterialDialogTheme(AppThemePreference.BLACK_INDEX, context)
+        )
     }
 
     /**
@@ -88,33 +119,185 @@ class AppThemeTest {
     @Test
     fun testSimpleTheme() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val mask = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isNightMode = mask == Configuration.UI_MODE_NIGHT_YES
 
         Assert.assertEquals(
             AppTheme.LIGHT,
-            AppTheme.getTheme(context, AppTheme.LIGHT_INDEX).getSimpleTheme(isNightMode)
+            getSimpleTheme(AppThemePreference.LIGHT_INDEX, context)
         )
 
         Assert.assertEquals(
             AppTheme.DARK,
-            AppTheme.getTheme(context, AppTheme.DARK_INDEX).getSimpleTheme(isNightMode)
+            getSimpleTheme(AppThemePreference.DARK_INDEX, context)
         )
 
         val hour = Calendar.getInstance()[Calendar.HOUR_OF_DAY]
         if (hour <= 6 || hour >= 18) {
             Assert.assertEquals(
                 AppTheme.DARK,
-                AppTheme.getTheme(context, AppTheme.TIME_INDEX).getSimpleTheme(isNightMode)
+                getSimpleTheme(AppThemePreference.TIME_INDEX, context)
             )
         } else Assert.assertEquals(
             AppTheme.LIGHT,
-            AppTheme.getTheme(context, AppTheme.TIME_INDEX).getSimpleTheme(isNightMode)
+            getSimpleTheme(AppThemePreference.TIME_INDEX, context)
         )
 
         Assert.assertEquals(
             AppTheme.BLACK,
-            AppTheme.getTheme(context, AppTheme.BLACK_INDEX).getSimpleTheme(isNightMode)
+            getSimpleTheme(AppThemePreference.BLACK_INDEX, context)
         )
+    }
+
+    /**
+     * Tests the "System" theme when night mode is on
+     */
+    @Test
+    @Config(qualifiers = "night")
+    fun testSimpleSystemThemeNightModeOn() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        Assert.assertEquals(AppTheme.DARK, getSimpleTheme(AppThemePreference.SYSTEM_INDEX, context))
+    }
+
+    /**
+     * Tests the "System" theme when night mode is off
+     */
+    @Test
+    @Config(qualifiers = "notnight")
+    fun testSimpleSystemThemeNightModeOff() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        Assert.assertEquals(
+            AppTheme.LIGHT,
+            getSimpleTheme(AppThemePreference.SYSTEM_INDEX, context)
+        )
+    }
+
+    /**
+     * Tests the themes with "Follow Battery Saver" option selected when battery saver is on
+     */
+    @Test
+    @Config(
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testSimpleAppThemeWithFollowBatterySaverAndBatterySaverOn() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        setUpForFollowBatterySaverMode(context, true)
+
+        val canBeLightThemes = AppThemePreference.values().filter { it.canBeLight }
+
+        for (lightTheme in canBeLightThemes) {
+            Assert.assertEquals(
+                "For $lightTheme: ",
+                AppTheme.DARK,
+                getSimpleTheme(lightTheme.id, context)
+            )
+        }
+
+        Assert.assertEquals(
+            AppTheme.DARK,
+            getSimpleTheme(AppThemePreference.DARK_INDEX, context)
+        )
+
+        Assert.assertEquals(
+            AppTheme.BLACK,
+            getSimpleTheme(AppThemePreference.BLACK_INDEX, context)
+        )
+    }
+
+    /**
+     * Tests the themes with "Follow Battery Saver" option selected when battery saver is off
+     */
+    @Test
+    @Config(
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testSimpleAppThemeWithFollowBatterySaverAndBatterySaverOff() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        setUpForFollowBatterySaverMode(context, false)
+
+        // Behavior should be like in testSimpleTheme
+        testSimpleTheme()
+    }
+
+    /**
+     * Tests the material dialog theme with "Follow Battery Saver" option selected when battery saver is on
+     */
+    @Test
+    @Config(
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOn() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        setUpForFollowBatterySaverMode(context, true)
+
+        val canBeLightThemes = AppThemePreference.values().filter { it.canBeLight }
+
+        for (lightTheme in canBeLightThemes) {
+            Assert.assertEquals(
+                "For $lightTheme: ",
+                Theme.DARK,
+                getMaterialDialogTheme(lightTheme.id, context)
+            )
+        }
+
+        Assert.assertEquals(
+            Theme.DARK,
+            getMaterialDialogTheme(AppThemePreference.DARK_INDEX, context)
+        )
+
+        Assert.assertEquals(
+            Theme.DARK,
+            getMaterialDialogTheme(AppThemePreference.BLACK_INDEX, context)
+        )
+    }
+
+    /**
+     * Tests the material dialog theme with "Follow Battery Saver" option selected when battery saver is off
+     */
+    @Test
+    @Config(
+        shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
+        qualifiers = "notnight",
+        minSdk = Build.VERSION_CODES.LOLLIPOP
+    )
+    fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOff() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        setUpForFollowBatterySaverMode(context, false)
+
+        // Should have the same behavior
+        testMaterialDialogTheme()
+    }
+
+    /** Shortcut to get the material dialog theme from the theme index */
+    private fun getMaterialDialogTheme(apptheme: Int, context: Context): Theme =
+        AppThemePreference.getTheme(apptheme).getMaterialDialogTheme(context)
+
+    /** Shortcut to get the simple theme from the theme index */
+    private fun getSimpleTheme(index: Int, context: Context): AppTheme =
+        AppThemePreference.getTheme(index).getSimpleTheme(context)
+
+    /** Sets the battery saver mode to [batterySaverOn] and the "Follow battery saver" option to true */
+    private fun setUpForFollowBatterySaverMode(context: Context, batterySaverOn: Boolean) {
+        // Set Battery saver mode to given state `batterySaverOn`
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val shadowPowerManager = Shadows.shadowOf(powerManager)
+        shadowPowerManager.setIsPowerSaveMode(batterySaverOn)
+
+        // Set follow battery saver preference to true
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        preferences
+            .edit()
+            .putBoolean(PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER, true)
+            .apply()
     }
 }

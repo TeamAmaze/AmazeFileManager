@@ -25,7 +25,7 @@ import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.AT;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.COLON;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.SLASH;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
-import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
+import static com.amaze.filemanager.utils.smb.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
 import static java.net.URLDecoder.decode;
 import static java.net.URLEncoder.encode;
 
@@ -49,8 +49,8 @@ import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.PasswordUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
-import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
 import android.app.Dialog;
@@ -60,7 +60,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -68,6 +67,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.DialogFragment;
 
 import jcifs.smb.SmbFile;
@@ -225,17 +225,17 @@ public class SmbConnectDialog extends DialogFragment {
     final AppCompatEditText pass = binding.passwordET;
     final AppCompatCheckBox chkSmbAnonymous = binding.chkSmbAnonymous;
     final AppCompatCheckBox chkSmbDisableIpcSignature = binding.chkSmbDisableIpcSignature;
-    TextView help = binding.wanthelp;
+    AppCompatTextView help = binding.wanthelp;
 
-    EditTextColorStateUtil.setTint(context, conName, accentColor);
-    EditTextColorStateUtil.setTint(context, user, accentColor);
-    EditTextColorStateUtil.setTint(context, pass, accentColor);
+    EditTextColorStateUtil.setTint(getActivity(), conName, accentColor);
+    EditTextColorStateUtil.setTint(getActivity(), user, accentColor);
+    EditTextColorStateUtil.setTint(getActivity(), pass, accentColor);
 
-    Utils.setTint(context, chkSmbAnonymous, accentColor);
+    Utils.setTint(getActivity(), chkSmbAnonymous, accentColor);
     help.setOnClickListener(
         v -> {
           int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
-          GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
+          GeneralDialogCreation.showSMBHelpDialog(getActivity(), accentColor1);
         });
 
     chkSmbAnonymous.setOnClickListener(
@@ -265,15 +265,18 @@ public class SmbConnectDialog extends DialogFragment {
           int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
           domainp = inf.substring(0, domainDelim);
           if (domainp != null && domainp.length() > 0) inf = inf.substring(domainDelim + 1);
-          userp = inf.substring(0, inf.indexOf(":"));
-          try {
-            passp =
-                PasswordUtil.INSTANCE.decryptPassword(
-                    context, inf.substring(inf.indexOf(COLON) + 1), URL_SAFE);
-            passp = decode(passp, Charsets.UTF_8.name());
-          } catch (GeneralSecurityException | IOException e) {
-            LOG.warn("Error decrypting password", e);
-            passp = "";
+          if (!inf.contains(":")) userp = inf;
+          else {
+            userp = inf.substring(0, inf.indexOf(COLON));
+            try {
+              passp =
+                  PasswordUtil.INSTANCE.decryptPassword(
+                      context, inf.substring(inf.indexOf(COLON) + 1), URL_SAFE);
+              passp = decode(passp, Charsets.UTF_8.name());
+            } catch (GeneralSecurityException | IOException e) {
+              LOG.warn("Error decrypting password", e);
+              passp = "";
+            }
           }
           domain.setText(domainp);
           user.setText(userp);
@@ -307,7 +310,7 @@ public class SmbConnectDialog extends DialogFragment {
     }
 
     ba3.customView(binding.getRoot(), true);
-    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme(context));
+    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
     ba3.neutralText(android.R.string.cancel);
     ba3.positiveText(edit ? R.string.update : R.string.create);
     if (edit) ba3.negativeText(R.string.delete);

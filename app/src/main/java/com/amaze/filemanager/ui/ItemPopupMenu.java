@@ -163,17 +163,24 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
       case R.id.open_with:
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+
         if (OpenMode.DOCUMENT_FILE.equals(rowItem.getMode())) {
+
           @Nullable Uri fullUri = rowItem.generateBaseFile().getFullUri();
+
           if (fullUri != null) {
-            FileUtils.openWith(
-                DocumentFile.fromSingleUri(context, fullUri), mainActivity, useNewStack);
-          } else {
-            FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+
+            DocumentFile documentFile = DocumentFile.fromSingleUri(context, fullUri);
+
+            if (documentFile != null) {
+              FileUtils.openWith(documentFile, mainActivity, useNewStack);
+              return true;
+            }
           }
-        } else {
-          FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
         }
+
+        FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+
         return true;
       case R.id.encrypt:
         final Intent encryptIntent = new Intent(context, EncryptService.class);
@@ -234,8 +241,14 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             utilitiesProvider,
             false);
         return true;
+      case R.id.compress:
+        GeneralDialogCreation.showCompressDialog(
+            mainActivity,
+            rowItem.generateBaseFile(),
+            mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
+        return true;
       case R.id.return_select:
-        mainFragment.returnIntentResults(rowItem.generateBaseFile());
+        mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
         return true;
     }
     return false;

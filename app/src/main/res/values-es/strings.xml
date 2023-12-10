@@ -684,5 +684,6 @@
 Solo necesita hacer esto una vez, hasta la siguiente vez que seleccione una nueva ubicación para compartir.</string>
     <string name="quick_desc">Archivos accedidos recientemente usando Amaze</string>
     <string name="recent_desc">Archivos creados o modificados recientemente</string>
+    <string name="not_found_enabled_webview">No se encontró un navegador disponible</string>
 </resources>
 

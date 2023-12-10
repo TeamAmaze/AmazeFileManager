@@ -57,14 +57,14 @@
             android:id="@+id/indicator_layout"
             android:layout_height="2dp">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/tab_indicator1"
                 android:layout_width="wrap_content"
                 android:minWidth="50dp"
                 android:layout_marginRight="2dp"
                 android:layout_height="match_parent" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/tab_indicator2"
                 android:layout_width="wrap_content"
                 android:minWidth="50dp"
@@ -87,6 +87,16 @@
                 app:sdMainFabOpenedSrc="@drawable/ic_close_white_24dp"
                 app:sdOverlayLayout="@id/fabs_overlay_layout"
                 app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior" />
+        <com.leinardi.android.speeddial.SpeedDialView
+            android:id="@+id/fabs_confirm_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="2dp"
+            android:focusable="true"
+            app:sdMainFabClosedSrc="@drawable/ic_check_white_24dp"
+            app:sdMainFabOpenedSrc="@drawable/ic_check_white_24dp"
+            app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior"/>
         <View
             android:id="@+id/placeholder_drag_bottom"
             android:layout_width="match_parent"
