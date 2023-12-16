@@ -53,7 +53,7 @@ class ColorPickerDialogTest {
         val dialog = ColorPickerDialog.newInstance(
             PreferencesConstants.PRESELECTED_CONFIGS,
             ColorPreferenceHelper.randomize(AppConfig.getInstance()),
-            AppTheme.SYSTEM
+            AppTheme.LIGHT
         )
         assertNotNull(dialog)
     }

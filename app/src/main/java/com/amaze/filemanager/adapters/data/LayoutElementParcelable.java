@@ -25,6 +25,7 @@ import java.util.Calendar;
 
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.utils.Utils;
 
@@ -35,7 +36,7 @@ import android.os.Parcelable;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
-public class LayoutElementParcelable implements Parcelable {
+public class LayoutElementParcelable implements Parcelable, ComparableParcelable {
 
   private static final String CURRENT_YEAR =
       String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
@@ -275,4 +276,25 @@ public class LayoutElementParcelable implements Parcelable {
           return new LayoutElementParcelable[size];
         }
       };
+
+  @Override
+  public boolean isDirectory() {
+    return isDirectory;
+  }
+
+  @NonNull
+  @Override
+  public String getParcelableName() {
+    return title;
+  }
+
+  @Override
+  public long getDate() {
+    return date;
+  }
+
+  @Override
+  public long getSize() {
+    return longSize;
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,24 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.theme;
+package com.amaze.filemanager.filesystem.files.sort
 
-import com.afollestad.materialdialogs.Theme;
-
-/** This enum represents the theme of the app (LIGHT or DARK) */
-public enum AppTheme {
-  LIGHT,
-  DARK,
-  BLACK;
-
-  public Theme getMaterialDialogTheme() {
-    switch (this) {
-      default:
-      case LIGHT:
-        return Theme.LIGHT;
-      case DARK:
-      case BLACK:
-        return Theme.DARK;
-    }
-  }
+/**
+ * Represents the direction the sort should be ordered
+ *
+ * [sortFactor] is the factor that should be multiplied to the result of `compareTo()` to achieve the correct sort direction
+ */
+enum class SortOrder(val sortFactor: Int) {
+    ASC(1),
+    DESC(-1)
 }

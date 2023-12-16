@@ -246,7 +246,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
                 .withAboutSpecial1Description(getString(R.string.amaze_license))
                 .withLicenseShown(true);
 
-        switch (getAppTheme().getSimpleTheme(this)) {
+        switch (getAppTheme()) {
           case LIGHT:
             libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
             break;

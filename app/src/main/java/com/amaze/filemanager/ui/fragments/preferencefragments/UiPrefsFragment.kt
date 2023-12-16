@@ -103,7 +103,7 @@ class UiPrefsFragment : BasePrefsFragment() {
         dragAndDropPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val dragDialogBuilder = MaterialDialog.Builder(activity)
             dragDialogBuilder.theme(
-                activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+                activity.utilsProvider.appTheme.getMaterialDialogTheme()
             )
             dragDialogBuilder.title(R.string.drag_and_drop_preference)
             val currentDragPreference: Int = activity.prefs.getInt(

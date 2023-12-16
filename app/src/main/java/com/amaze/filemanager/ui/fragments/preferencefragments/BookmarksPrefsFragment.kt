@@ -98,7 +98,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
         val dialog = MaterialDialog.Builder(requireActivity())
             .title(R.string.create_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .positiveColor(fabSkin)
             .positiveText(R.string.create)
             .negativeColor(fabSkin)
@@ -147,7 +147,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
         val dialog = MaterialDialog.Builder(activity)
             .title(R.string.edit_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .positiveColor(fabSkin)
             .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
             .negativeColor(fabSkin)
@@ -191,7 +191,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
         val dialog = MaterialDialog.Builder(activity)
             .title(R.string.question_delete_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .theme(activity.appTheme.getMaterialDialogTheme())
             .positiveColor(fabSkin)
             .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
             .negativeColor(fabSkin)

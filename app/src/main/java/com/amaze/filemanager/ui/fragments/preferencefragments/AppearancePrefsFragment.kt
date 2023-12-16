@@ -26,7 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
-import com.amaze.filemanager.ui.theme.AppTheme
+import com.amaze.filemanager.ui.theme.AppThemePreference
 import java.util.*
 
 class AppearancePrefsFragment : BasePrefsFragment() {
@@ -54,7 +54,9 @@ class AppearancePrefsFragment : BasePrefsFragment() {
                 editor.putString(PreferencesConstants.FRAGMENT_THEME, which.toString())
                 editor.apply()
 
-                activity.utilsProvider.themeManager.appTheme = AppTheme.getTheme(which)
+                activity.utilsProvider.themeManager.setAppThemePreference(
+                    AppThemePreference.getTheme(which)
+                )
                 activity.recreate()
 
                 dialog.dismiss()
@@ -69,7 +71,7 @@ class AppearancePrefsFragment : BasePrefsFragment() {
 
     private val onClickGridColumn = Preference.OnPreferenceClickListener {
         val dialog = MaterialDialog.Builder(activity).also { builder ->
-            builder.theme(activity.utilsProvider.appTheme.getMaterialDialogTheme(activity))
+            builder.theme(activity.utilsProvider.appTheme.getMaterialDialogTheme())
             builder.title(R.string.gridcolumnno)
             val columnsPreference = activity
                 .prefs
@@ -127,8 +129,8 @@ class AppearancePrefsFragment : BasePrefsFragment() {
             PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER
         )
 
-        val currentThemeEnum = AppTheme.getTheme(currentTheme)
-        batterySaverPref?.isVisible = currentThemeEnum.canBeLight()
+        val currentThemeEnum = AppThemePreference.getTheme(currentTheme)
+        batterySaverPref?.isVisible = currentThemeEnum.canBeLight
         batterySaverPref?.onPreferenceClickListener = onClickFollowBatterySaver
 
         findPreference<Preference>(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)

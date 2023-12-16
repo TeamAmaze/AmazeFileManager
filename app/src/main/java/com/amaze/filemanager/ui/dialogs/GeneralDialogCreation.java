@@ -60,6 +60,9 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.sort.SortBy;
+import com.amaze.filemanager.filesystem.files.sort.SortOrder;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -128,10 +131,7 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(themedActivity)
             .content(content)
             .widgetColor(accentColor)
-            .theme(
-                themedActivity
-                    .getAppTheme()
-                    .getMaterialDialogTheme(themedActivity.getApplicationContext()))
+            .theme(themedActivity.getAppTheme().getMaterialDialogTheme())
             .title(title)
             .positiveText(postiveText)
             .positiveColor(accentColor)
@@ -166,7 +166,7 @@ public class GeneralDialogCreation {
     builder
         .customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .theme(m.getAppTheme().getMaterialDialogTheme())
         .title(title)
         .positiveText(positiveButtonText)
         .onPositive(positiveButtonAction);
@@ -225,7 +225,7 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(context)
             .title(context.getString(R.string.dialog_delete_title))
             .customView(dialogView, true)
-            .theme(appTheme.getMaterialDialogTheme(context))
+            .theme(appTheme.getMaterialDialogTheme())
             .negativeText(context.getString(R.string.cancel).toUpperCase())
             .positiveText(context.getString(R.string.delete).toUpperCase())
             .positiveColor(accentColor)
@@ -662,7 +662,7 @@ public class GeneralDialogCreation {
 
     MaterialDialog.Builder builder = new MaterialDialog.Builder(themedActivity);
     builder.title(c.getString(R.string.properties));
-    builder.theme(appTheme.getMaterialDialogTheme(c));
+    builder.theme(appTheme.getMaterialDialogTheme());
 
     View v = themedActivity.getLayoutInflater().inflate(R.layout.properties_dialog, null);
     AppCompatTextView itemsText = v.findViewById(R.id.t7);
@@ -766,7 +766,7 @@ public class GeneralDialogCreation {
     {
       int layoutDirection = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault());
       boolean isRightToLeft = layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL;
-      boolean isDarkTheme = appTheme.getMaterialDialogTheme(c) == Theme.DARK;
+      boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
       PieChart chart = v.findViewById(R.id.chart);
 
       chart.setTouchEnabled(false);
@@ -929,7 +929,7 @@ public class GeneralDialogCreation {
         break;
     }
 
-    builder.theme(appTheme.getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    builder.theme(appTheme.getMaterialDialogTheme());
     builder.content(mainActivity.getString(R.string.cloud_remove));
 
     builder.positiveText(mainActivity.getString(R.string.yes));
@@ -992,7 +992,7 @@ public class GeneralDialogCreation {
 
     builder
         .customView(dialogLayout, false)
-        .theme(appTheme.getMaterialDialogTheme(c))
+        .theme(appTheme.getMaterialDialogTheme())
         .autoDismiss(false)
         .canceledOnTouchOutside(false)
         .title(titleText)
@@ -1042,7 +1042,7 @@ public class GeneralDialogCreation {
         .neutralColor(accentColor)
         .onPositive((dialog, which) -> FileUtils.installApk(f, m))
         .onNegative((dialog, which) -> m.openCompressed(f.getPath()))
-        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .theme(m.getAppTheme().getMaterialDialogTheme())
         .build()
         .show();
   }
@@ -1059,7 +1059,7 @@ public class GeneralDialogCreation {
         .negativeColor(accentColor)
         .onPositive((dialog, which) -> openCallback.run())
         .onNegative((dialog, which) -> dialog.dismiss())
-        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .theme(m.getAppTheme().getMaterialDialogTheme())
         .build();
   }
 
@@ -1117,8 +1117,7 @@ public class GeneralDialogCreation {
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(
-            mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()))
+        .theme(mainActivity.getAppTheme().getMaterialDialogTheme())
         .title(mainActivity.getResources().getString(R.string.enterzipname))
         .positiveText(R.string.create)
         .positiveColor(accentColor)
@@ -1170,12 +1169,12 @@ public class GeneralDialogCreation {
     final String path = m.getCurrentPath();
     int accentColor = m.getMainActivity().getAccent();
     String[] sort = m.getResources().getStringArray(R.array.sortby);
-    int current = SortHandler.getSortType(m.getContext(), path);
+    SortType current = SortHandler.getSortType(m.getContext(), path);
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme(m.requireContext()));
+    a.theme(appTheme.getMaterialDialogTheme());
     a.items(sort)
         .itemsCallbackSingleChoice(
-            current > 3 ? current - 4 : current, (dialog, view, which, text) -> true);
+            current.getSortBy().getIndex(), (dialog, view, which, text) -> true);
     final Set<String> sortbyOnlyThis =
         sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, Collections.emptySet());
     final Set<String> onlyThisFloders = new HashSet<>(sortbyOnlyThis);
@@ -1198,11 +1197,11 @@ public class GeneralDialogCreation {
     a.positiveText(R.string.descending).negativeColor(accentColor);
     a.onNegative(
         (dialog, which) -> {
-          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, false);
+          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, SortOrder.ASC);
         });
     a.onPositive(
         (dialog, which) -> {
-          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, true);
+          onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, SortOrder.DESC);
         });
     a.title(R.string.sort_by);
     a.build().show();
@@ -1213,20 +1212,20 @@ public class GeneralDialogCreation {
       SharedPreferences sharedPref,
       Set<String> onlyThisFloders,
       MaterialDialog dialog,
-      boolean desc) {
-    final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
+      SortOrder sortOrder) {
+    final SortType sortType =
+        new SortType(SortBy.getDirectorySortBy(dialog.getSelectedIndex()), sortOrder);
     SortHandler sortHandler = SortHandler.getInstance();
     if (onlyThisFloders.contains(m.getCurrentPath())) {
       Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
-      Sort newSort = new Sort(m.getCurrentPath(), sortType);
       if (oldSort == null) {
-        sortHandler.addEntry(newSort);
+        sortHandler.addEntry(m.getCurrentPath(), sortType);
       } else {
-        sortHandler.updateEntry(oldSort, newSort);
+        sortHandler.updateEntry(oldSort, m.getCurrentPath(), sortType);
       }
     } else {
       sortHandler.clear(m.getCurrentPath());
-      sharedPref.edit().putString("sortby", String.valueOf(sortType)).apply();
+      sharedPref.edit().putString("sortby", String.valueOf(sortType.toDirectorySortInt())).apply();
     }
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
     m.updateList(false);
@@ -1329,8 +1328,7 @@ public class GeneralDialogCreation {
 
     a.widgetColor(accentColor);
 
-    a.theme(
-        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    a.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     a.title(R.string.enterpath);
 
     a.positiveText(R.string.go);

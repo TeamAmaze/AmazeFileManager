@@ -68,7 +68,7 @@ object DecryptFingerprintDialog {
         cancelButton.setTextColor(accentColor)
         builder.customView(rootView, true)
         builder.canceledOnTouchOutside(false)
-        builder.theme(appTheme.getMaterialDialogTheme(c))
+        builder.theme(appTheme.getMaterialDialogTheme())
         val dialog = builder.show()
         cancelButton.setOnClickListener { v: View? -> dialog.cancel() }
         val manager = c.getSystemService(FingerprintManager::class.java)
