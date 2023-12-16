@@ -77,9 +77,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Pair;
 
 import jcifs.smb.SmbAuthException;
@@ -88,7 +90,7 @@ import jcifs.smb.SmbFile;
 import kotlin.collections.CollectionsKt;
 
 public class LoadFilesListTask
-    extends AsyncTask<Void, Void, Pair<OpenMode, List<LayoutElementParcelable>>> {
+    extends AsyncTask<Void, Throwable, Pair<OpenMode, List<LayoutElementParcelable>>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
 
@@ -208,6 +210,41 @@ public class LoadFilesListTask
   @Override
   protected void onCancelled() {
     listener.onAsyncTaskFinished(null);
+  }
+
+  @Override
+  protected void onProgressUpdate(Throwable... values) {
+    for (Throwable exception : values) {
+      if (exception instanceof SmbException) {
+        if ("/".equals(Uri.parse(path).getPath())) {
+          new AlertDialog.Builder(context.get())
+              .setTitle(R.string.error_listfile_smb_title)
+              .setMessage(
+                  context
+                      .get()
+                      .getString(
+                          R.string.error_listfile_smb_noipcshare,
+                          HybridFile.parseAndFormatUriForDisplay(path)))
+              .setPositiveButton(
+                  android.R.string.ok,
+                  (dialog, which) -> {
+                    dialog.dismiss();
+                  })
+              .show();
+        } else {
+          Toast.makeText(
+                  context.get(),
+                  context
+                      .get()
+                      .getString(
+                          R.string.error_listfile_smb,
+                          HybridFile.parseAndFormatUriForDisplay(path),
+                          exception.getMessage()),
+                  Toast.LENGTH_LONG)
+              .show();
+        }
+      }
+    }
   }
 
   @Override
@@ -660,7 +697,8 @@ public class LoadFilesListTask
         if (!e.getMessage().toLowerCase().contains("denied")) {
           mainFragment.reauthenticateSmb();
         }
-        LOG.warn("failed to load smb list, authentication issue", e);
+        LOG.warn("failed to load smb list, authentication issue: ", e);
+        publishProgress(e);
         return null;
       } catch (SmbException | NullPointerException e) {
         LOG.warn("Failed to load smb files for path: " + path, e);

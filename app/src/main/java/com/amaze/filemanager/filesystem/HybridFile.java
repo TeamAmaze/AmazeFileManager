@@ -47,6 +47,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -611,16 +612,8 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
       case FTP:
-        return isDirectory(AppConfig.getInstance());
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        try {
-          isDirectory = smbFile != null && smbFile.isDirectory();
-        } catch (SmbException e) {
-          LOG.warn("failed to get isDirectory for smb file", e);
-          isDirectory = false;
-        }
-        break;
+        return isDirectory(AppConfig.getInstance());
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
@@ -802,13 +795,20 @@ public class HybridFile {
     long size = 0L;
     switch (mode) {
       case SMB:
-        try {
-          SmbFile smbFile = getSmbFile();
-          size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
-        } catch (SmbException e) {
-          size = 0L;
-          LOG.warn("failed to get usage space for smb file", e);
-        }
+        size =
+            Single.fromCallable(
+                    (Callable<Long>)
+                        () -> {
+                          try {
+                            SmbFile smbFile = getSmbFile();
+                            return smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
+                          } catch (SmbException e) {
+                            LOG.warn("failed to get usage space for smb file", e);
+                            return 0L;
+                          }
+                        })
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
         break;
       case FILE:
       case ROOT:
