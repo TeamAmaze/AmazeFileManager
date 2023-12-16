@@ -71,7 +71,7 @@ class UiPrefsFragment : BasePrefsFragment() {
             }
             onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 MaterialDialog.Builder(activity).apply {
-                    theme(activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext()))
+                    theme(activity.utilsProvider.appTheme.materialDialogTheme)
                     title(R.string.preference_language_dialog_title)
                     items(
                         arrayOf(getString(R.string.preference_language_system_default))

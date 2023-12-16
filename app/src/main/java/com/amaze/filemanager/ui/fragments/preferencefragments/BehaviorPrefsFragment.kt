@@ -113,7 +113,7 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             true
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+            activity.utilsProvider.appTheme.materialDialogTheme
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -155,7 +155,7 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             true
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+            activity.utilsProvider.appTheme.materialDialogTheme
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -197,7 +197,7 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             true
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+            activity.utilsProvider.appTheme.materialDialogTheme
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -239,7 +239,7 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             true
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+            activity.utilsProvider.appTheme.materialDialogTheme
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
