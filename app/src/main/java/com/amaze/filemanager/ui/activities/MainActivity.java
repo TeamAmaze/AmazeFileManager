@@ -1711,15 +1711,7 @@ public class MainActivity extends PermissionsActivity
 
   void initialiseViews() {
 
-    appbar =
-        new AppBar(
-            this,
-            getPrefs(),
-            queue -> {
-              if (!queue.isEmpty()) {
-                mainActivityHelper.search(getPrefs(), queue);
-              }
-            });
+    appbar = new AppBar(this, getPrefs());
     appBarLayout = getAppbar().getAppbarLayout();
 
     setSupportActionBar(getAppbar().getToolbar());

@@ -127,7 +127,7 @@ public class SearchView {
 
   @SuppressWarnings("ConstantConditions")
   @SuppressLint("NotifyDataSetChanged")
-  public SearchView(final AppBar appbar, MainActivity mainActivity, SearchListener searchListener) {
+  public SearchView(final AppBar appbar, MainActivity mainActivity) {
 
     this.mainActivity = mainActivity;
     this.appbar = appbar;
@@ -626,9 +626,5 @@ public class SearchView {
    */
   private String getSearchTerm() {
     return searchViewEditText.getText().toString().trim();
-  }
-
-  public interface SearchListener {
-    void onSearch(String queue);
   }
 }
