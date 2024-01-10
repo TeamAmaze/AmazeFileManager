@@ -214,8 +214,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             mainActivity.isRootExplorer,
             isRegexEnabled,
             isMatchesEnabled,
-            showHiddenFiles,
-            Dispatchers.IO
+            showHiddenFiles
         )
 
         viewModelScope.launch(Dispatchers.IO) {

@@ -25,12 +25,11 @@ import androidx.lifecycle.MutableLiveData
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.util.Locale
 import java.util.regex.Pattern
+import kotlin.coroutines.coroutineContext
 
 class DeepSearch(
     context: Context,
@@ -40,8 +39,7 @@ class DeepSearch(
     private val rootMode: Boolean,
     private val isRegexEnabled: Boolean,
     private val isMatchesEnabled: Boolean,
-    private val showHiddenFiles: Boolean,
-    private val ioDispatcher: CoroutineDispatcher
+    private val showHiddenFiles: Boolean
 ) {
     private val LOG = LoggerFactory.getLogger(DeepSearch::class.java)
 
@@ -50,7 +48,6 @@ class DeepSearch(
         hybridFileParcelables
     )
 
-    /** This necessarily leaks the context */
     private val applicationContext: Context
 
     init {
@@ -92,19 +89,17 @@ class DeepSearch(
     private suspend fun search(directory: HybridFile, filter: SearchFilter) {
         if (directory.isDirectory(applicationContext)) {
             // you have permission to read this directory
-            withContext(ioDispatcher) {
-                val worklist = ArrayDeque<HybridFile>()
-                worklist.add(directory)
-                while (isActive && worklist.isNotEmpty()) {
-                    val nextFile = worklist.removeFirst()
-                    nextFile.forEachChildrenFile(applicationContext, rootMode) { file ->
-                        if (!file.isHidden || showHiddenFiles) {
-                            if (filter.searchFilter(file.getName(applicationContext))) {
-                                publishProgress(file)
-                            }
-                            if (file.isDirectory(applicationContext)) {
-                                worklist.add(file)
-                            }
+            val worklist = ArrayDeque<HybridFile>()
+            worklist.add(directory)
+            while (coroutineContext.isActive && worklist.isNotEmpty()) {
+                val nextFile = worklist.removeFirst()
+                nextFile.forEachChildrenFile(applicationContext, rootMode) { file ->
+                    if (!file.isHidden || showHiddenFiles) {
+                        if (filter.searchFilter(file.getName(applicationContext))) {
+                            publishProgress(file)
+                        }
+                        if (file.isDirectory(applicationContext)) {
+                            worklist.add(file)
                         }
                     }
                 }
@@ -174,6 +169,7 @@ class DeepSearch(
     }
 
     fun interface SearchFilter {
+        /** Returns if the file with [fileName] as name should fulfills some predicate */
         fun searchFilter(fileName: String): Boolean
     }
 }
