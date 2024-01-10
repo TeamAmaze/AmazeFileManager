@@ -31,12 +31,15 @@ import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.DeepSearch
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils.scanFile
 import com.amaze.filemanager.filesystem.root.ListFilesCommand.listFiles
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_REGEX
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_REGEX_MATCHES
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
 import com.amaze.trashbin.MoveFilesCallback
 import com.amaze.trashbin.TrashBinFile
@@ -183,6 +186,43 @@ class MainActivityViewModel(val applicationContext: Application) :
         }
 
         return mutableLiveData
+    }
+
+    /**
+     * Perform deep search: recursively search for
+     */
+    fun deepSearch(
+        mainActivity: MainActivity,
+        query: String
+    ): MutableLiveData<ArrayList<HybridFileParcelable>> {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        val showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
+        val isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false)
+        val isMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false)
+
+        val path = mainActivity.currentMainFragment?.currentPath ?: ""
+        val openMode =
+            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode ?: OpenMode.FILE
+
+        val context = this.applicationContext
+
+        val deepSearch = DeepSearch(
+            context,
+            query,
+            path,
+            openMode,
+            mainActivity.isRootExplorer,
+            isRegexEnabled,
+            isMatchesEnabled,
+            showHiddenFiles,
+            Dispatchers.IO
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            deepSearch.search()
+        }
+
+        return deepSearch.mutableLiveData
     }
 
     /**

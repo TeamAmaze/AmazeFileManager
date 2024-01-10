@@ -82,6 +82,8 @@ object PreferencesConstants {
     const val PREFERENCE_TRASH_BIN_RETENTION_DAYS = "retention_days"
     const val PREFERENCE_TRASH_BIN_RETENTION_BYTES = "retention_bytes"
     const val PREFERENCE_TRASH_BIN_CLEANUP_INTERVAL = "cleanup_interval"
+    const val PREFERENCE_REGEX = "regex"
+    const val PREFERENCE_REGEX_MATCHES = "matches"
 
     // security_prefs.xml
     const val PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint"
