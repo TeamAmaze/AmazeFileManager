@@ -223,8 +223,13 @@ public class SearchView {
 
           } else if (searchMode == 2) {
 
-            searchListener.onSearch(s);
-            appbar.getSearchView().hideSearchView();
+            mainActivity
+                .getCurrentMainFragment()
+                .getMainActivityViewModel()
+                .deepSearch(mainActivity, s)
+                .observe(
+                    mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+                    hybridFileParcelables -> updateResultList(hybridFileParcelables, s));
 
             deepSearchTV.setVisibility(View.GONE);
           }
