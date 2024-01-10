@@ -434,7 +434,6 @@ public class TabFragment extends Fragment {
         .getBottomBar()
         .updatePath(
             mainFragment.getCurrentPath(),
-            mainFragment.getMainFragmentViewModel().getResults(),
             mainFragment.getMainFragmentViewModel().getOpenMode(),
             mainFragment.getMainFragmentViewModel().getFolderCount(),
             mainFragment.getMainFragmentViewModel().getFileCount(),

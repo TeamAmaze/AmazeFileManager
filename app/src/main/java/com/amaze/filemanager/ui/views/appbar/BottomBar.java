@@ -199,8 +199,7 @@ public class BottomBar implements View.OnTouchListener {
                 final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
                 Objects.requireNonNull(mainFragment);
                 if (mainActivity.getBoolean(PREFERENCE_CHANGEPATHS)
-                    && ((mainFragment.getMainFragmentViewModel() != null
-                            && !mainFragment.getMainFragmentViewModel().getResults())
+                    && (mainFragment.getMainFragmentViewModel() != null
                         || buttons.getVisibility() == View.VISIBLE)) {
                   GeneralDialogCreation.showChangePathsDialog(
                       mainActivity, mainActivity.getPrefs());
@@ -363,7 +362,6 @@ public class BottomBar implements View.OnTouchListener {
 
   public void updatePath(
       @NonNull final String news,
-      boolean results,
       OpenMode openmode,
       int folderCount,
       int fileCount,

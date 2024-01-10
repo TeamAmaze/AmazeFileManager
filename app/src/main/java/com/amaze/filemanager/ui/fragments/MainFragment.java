@@ -371,21 +371,19 @@ public class MainFragment extends Fragment
         DataUtils.getInstance()
                 .getListOrGridForPath(mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
             == DataUtils.GRID;
-    reloadListElements(false, mainFragmentViewModel.getResults(), isPathLayoutGrid);
+    reloadListElements(false, isPathLayoutGrid);
   }
 
   private void loadViews() {
     if (mainFragmentViewModel.getCurrentPath() != null) {
-      if (mainFragmentViewModel.getListElements().size() == 0
-          && !mainFragmentViewModel.getResults()) {
+      if (mainFragmentViewModel.getListElements().size() == 0) {
         loadlist(
             mainFragmentViewModel.getCurrentPath(),
             true,
             mainFragmentViewModel.getOpenMode(),
             false);
       } else {
-        reloadListElements(
-            true, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
+        reloadListElements(true, !mainFragmentViewModel.isList());
       }
     } else {
       loadlist(mainFragmentViewModel.getHome(), true, mainFragmentViewModel.getOpenMode(), false);
@@ -670,8 +668,7 @@ public class MainFragment extends Fragment
                 boolean isPathLayoutGrid =
                     DataUtils.getInstance().getListOrGridForPath(providedPath, DataUtils.LIST)
                         == DataUtils.GRID;
-                setListElements(
-                    data.second, back, providedPath, data.first, false, isPathLayoutGrid);
+                setListElements(data.second, back, providedPath, data.first, isPathLayoutGrid);
               } else {
                 LOG.warn("Load list operation cancelled");
               }
@@ -792,13 +789,12 @@ public class MainFragment extends Fragment
       boolean back,
       String path,
       final OpenMode openMode,
-      boolean results,
       boolean grid) {
     if (bitmap != null) {
       mainFragmentViewModel.setListElements(bitmap);
       mainFragmentViewModel.setCurrentPath(path);
       mainFragmentViewModel.setOpenMode(openMode);
-      reloadListElements(back, results, grid);
+      reloadListElements(back, grid);
     } else {
       // list loading cancelled
       // TODO: Add support for cancelling list loading
@@ -806,9 +802,8 @@ public class MainFragment extends Fragment
     }
   }
 
-  public void reloadListElements(boolean back, boolean results, boolean grid) {
+  public void reloadListElements(boolean back, boolean grid) {
     if (isAdded()) {
-      mainFragmentViewModel.setResults(results);
       boolean isOtg = (OTGUtil.PREFIX_OTG + "/").equals(mainFragmentViewModel.getCurrentPath());
 
       if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
@@ -823,12 +818,11 @@ public class MainFragment extends Fragment
                   .getListElements()
                   .get(0)
                   .size
-                  .equals(getString(R.string.goback)))
-          && !results) {
+                  .equals(getString(R.string.goback)))) {
         mainFragmentViewModel.getListElements().add(0, getBackElement());
       }
 
-      if (mainFragmentViewModel.getListElements().size() == 0 && !results) {
+      if (mainFragmentViewModel.getListElements().size() == 0) {
         nofilesview.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setEnabled(false);
@@ -1084,92 +1078,73 @@ public class MainFragment extends Fragment
 
     HybridFile currentFile =
         new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
-    if (!mainFragmentViewModel.getResults()) {
-      if (requireMainActivity().getListItemSelected()) {
-        adapter.toggleChecked(false);
-      } else {
-        if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
-          if (mainFragmentViewModel.getSmbPath() != null
-              && !mainFragmentViewModel
-                  .getSmbPath()
-                  .equals(mainFragmentViewModel.getCurrentPath())) {
-            StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-            if (mainFragmentViewModel.getCurrentPath() != null
-                && mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
-              path.append(
-                  mainFragmentViewModel
-                      .getCurrentPath()
-                      .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
-            loadlist(
-                path.toString().replace("%3D", "="),
-                true,
-                mainFragmentViewModel.getOpenMode(),
-                false);
-          } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
-        } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
-          if (currentFile.getParent(requireContext()) == null) {
-            loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
-          } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
-            loadlist(currentFile.getParent(getContext()), true, currentFile.getMode(), false);
-          } else {
+    if (requireMainActivity().getListItemSelected()) {
+      adapter.toggleChecked(false);
+    } else {
+      if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
+        if (mainFragmentViewModel.getSmbPath() != null
+            && !mainFragmentViewModel.getSmbPath().equals(mainFragmentViewModel.getCurrentPath())) {
+          StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+          if (mainFragmentViewModel.getCurrentPath() != null
+              && mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
+            path.append(
+                mainFragmentViewModel
+                    .getCurrentPath()
+                    .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
+          loadlist(
+              path.toString().replace("%3D", "="),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+      } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
+        if (currentFile.getParent(requireContext()) == null) {
+          loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+        } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
+          loadlist(currentFile.getParent(getContext()), true, currentFile.getMode(), false);
+        } else {
 
-            String parent = currentFile.getParent(getContext());
+          String parent = currentFile.getParent(getContext());
 
-            if (parent == null)
-              parent =
-                  mainFragmentViewModel.getHome(); // fall back by traversing back to home folder
+          if (parent == null)
+            parent = mainFragmentViewModel.getHome(); // fall back by traversing back to home folder
 
+          loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
+        }
+      } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
+        if (mainFragmentViewModel.getCurrentPath() != null) {
+          String parent = currentFile.getParent(getContext());
+          // Hack.
+          if (parent != null && parent.contains("://")) {
             loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
-          }
-        } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
-          if (mainFragmentViewModel.getCurrentPath() != null) {
-            String parent = currentFile.getParent(getContext());
-            // Hack.
-            if (parent != null && parent.contains("://")) {
-              loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
-            } else {
-              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
-            }
           } else {
             loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
           }
-        } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
-            || (mainFragmentViewModel.getHome() != null
-                && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
-            || mainFragmentViewModel.getIsOnCloudRoot()) {
-          getMainActivity().exit();
-        } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())
-            && !currentFile.getPath().startsWith("content://")) {
-          if (CollectionsKt.contains(
-              ANDROID_DEVICE_DATA_DIRS, currentFile.getParent(getContext()))) {
-            loadlist(currentFile.getParent(getContext()), false, OpenMode.ANDROID_DATA, false);
-          } else {
-            loadlist(
-                currentFile.getParent(getContext()),
-                true,
-                mainFragmentViewModel.getOpenMode(),
-                false);
-          }
-        } else if (FileUtils.canGoBack(getContext(), currentFile)) {
+        } else {
+          loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+        }
+      } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
+          || (mainFragmentViewModel.getHome() != null
+              && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
+          || mainFragmentViewModel.getIsOnCloudRoot()) {
+        getMainActivity().exit();
+      } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())
+          && !currentFile.getPath().startsWith("content://")) {
+        if (CollectionsKt.contains(ANDROID_DEVICE_DATA_DIRS, currentFile.getParent(getContext()))) {
+          loadlist(currentFile.getParent(getContext()), false, OpenMode.ANDROID_DATA, false);
+        } else {
           loadlist(
               currentFile.getParent(getContext()),
               true,
               mainFragmentViewModel.getOpenMode(),
               false);
-        } else {
-          requireMainActivity().exit();
         }
-      }
-    } else {
-      // to go back after search list have been popped
-      if (mainFragmentViewModel.getCurrentPath() != null) {
+      } else if (FileUtils.canGoBack(getContext(), currentFile)) {
         loadlist(
-            new File(mainFragmentViewModel.getCurrentPath()).getPath(),
-            true,
-            OpenMode.UNKNOWN,
-            false);
+            currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+      } else {
+        requireMainActivity().exit();
       }
-      mainFragmentViewModel.setResults(false);
     }
   }
 
@@ -1206,36 +1181,27 @@ public class MainFragment extends Fragment
     }
     HybridFile currentFile =
         new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
-    if (!mainFragmentViewModel.getResults()) {
-      if (requireMainActivity().getListItemSelected()) {
-        adapter.toggleChecked(false);
-      } else {
-        if (mainFragmentViewModel.getOpenMode() == OpenMode.SMB) {
-          if (mainFragmentViewModel.getCurrentPath() != null
-              && !mainFragmentViewModel
-                  .getCurrentPath()
-                  .equals(mainFragmentViewModel.getSmbPath())) {
-            StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-            if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
-              path.append(
-                  mainFragmentViewModel
-                      .getCurrentPath()
-                      .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
-            loadlist(path.toString(), true, OpenMode.SMB, false);
-          } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
-        } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
-            || mainFragmentViewModel.getIsOnCloudRoot()) {
-          requireMainActivity().exit();
-        } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-          loadlist(
-              currentFile.getParent(getContext()),
-              true,
-              mainFragmentViewModel.getOpenMode(),
-              false);
-        } else requireMainActivity().exit();
-      }
+    if (requireMainActivity().getListItemSelected()) {
+      adapter.toggleChecked(false);
     } else {
-      loadlist(currentFile.getPath(), true, mainFragmentViewModel.getOpenMode(), false);
+      if (mainFragmentViewModel.getOpenMode() == OpenMode.SMB) {
+        if (mainFragmentViewModel.getCurrentPath() != null
+            && !mainFragmentViewModel.getCurrentPath().equals(mainFragmentViewModel.getSmbPath())) {
+          StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+          if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
+            path.append(
+                mainFragmentViewModel
+                    .getCurrentPath()
+                    .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
+          loadlist(path.toString(), true, OpenMode.SMB, false);
+        } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+      } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
+          || mainFragmentViewModel.getIsOnCloudRoot()) {
+        requireMainActivity().exit();
+      } else if (FileUtils.canGoBack(getContext(), currentFile)) {
+        loadlist(
+            currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+      } else requireMainActivity().exit();
     }
   }
 

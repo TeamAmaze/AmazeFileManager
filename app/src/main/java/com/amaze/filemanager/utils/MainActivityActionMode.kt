@@ -151,48 +151,26 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 return true
             }
             // tv.setText(checkedItems.size());
-            if (!mainFragmentViewModel.results) {
-                hideOption(R.id.openparent, menu)
-                if (checkedItems.size == 1) {
-                    showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openwith, menu)
-                    showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
-                        hideOption(R.id.openwith, menu)
-                        hideOption(R.id.share, menu)
-                    }
-                } else {
-                    showOption(R.id.share, menu)
-                    for (e in mainFragmentViewModel.getCheckedItems()) {
-                        if (e.isDirectory) {
-                            hideOption(R.id.share, menu)
-                            break
-                        }
-                    }
+
+            hideOption(R.id.openparent, menu)
+            if (checkedItems.size == 1) {
+                showOption(R.id.addshortcut, menu)
+                showOption(R.id.openwith, menu)
+                showOption(R.id.share, menu)
+                if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
                     hideOption(R.id.openwith, menu)
-                    hideOption(R.id.addshortcut, menu)
+                    hideOption(R.id.share, menu)
                 }
             } else {
-                if (checkedItems.size == 1) {
-                    showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openparent, menu)
-                    showOption(R.id.openwith, menu)
-                    showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
-                        hideOption(R.id.openwith, menu)
+                showOption(R.id.share, menu)
+                for (e in mainFragmentViewModel.getCheckedItems()) {
+                    if (e.isDirectory) {
                         hideOption(R.id.share, menu)
+                        break
                     }
-                } else {
-                    hideOption(R.id.openparent, menu)
-                    hideOption(R.id.addshortcut, menu)
-                    for (e in mainFragmentViewModel.getCheckedItems()) {
-                        if (e.isDirectory) {
-                            hideOption(R.id.share, menu)
-                            break
-                        }
-                    }
-                    hideOption(R.id.openwith, menu)
                 }
+                hideOption(R.id.openwith, menu)
+                hideOption(R.id.addshortcut, menu)
             }
             if (mainFragmentViewModel.openMode != OpenMode.FILE) {
                 hideOption(R.id.openwith, menu)
@@ -420,9 +398,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 mainActivity.currentMainFragment?.adapter
             ) {
                     mainFragmentViewModel, adapter ->
-                if (!mainFragmentViewModel.results) {
-                    adapter.toggleChecked(false, mainFragmentViewModel.currentPath)
-                } else adapter.toggleChecked(false)
+                adapter.toggleChecked(false, mainFragmentViewModel.currentPath)
                 mainActivity
                     .updateViews(
                         ColorDrawable(

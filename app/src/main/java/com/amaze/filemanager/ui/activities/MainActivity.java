@@ -1080,7 +1080,6 @@ public class MainActivity extends PermissionsActivity
                   .getBottomBar()
                   .updatePath(
                       mainFragment.getCurrentPath(),
-                      mainFragment.getMainFragmentViewModel().getResults(),
                       mainFragment.getMainFragmentViewModel().getOpenMode(),
                       mainFragment.getMainFragmentViewModel().getFolderCount(),
                       mainFragment.getMainFragmentViewModel().getFileCount(),

@@ -66,8 +66,6 @@ class MainFragmentViewModel : ViewModel() {
 
     var home: String? = null
 
-    var results: Boolean = false
-
     lateinit var openMode: OpenMode
 
     // defines the current visible tab, default either 0 or 1
