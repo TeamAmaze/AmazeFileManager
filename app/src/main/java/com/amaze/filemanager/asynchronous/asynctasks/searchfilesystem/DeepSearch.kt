@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -21,65 +21,59 @@
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
 import android.content.Context
-import android.os.AsyncTask
-import androidx.preference.PreferenceManager
-import com.amaze.filemanager.asynchronous.asynctasks.StatefulAsyncTask
+import androidx.lifecycle.MutableLiveData
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.ui.fragments.SearchWorkerFragment.HelperCallbacks
-import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
-import com.amaze.filemanager.utils.OnFileFound
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.util.Locale
 import java.util.regex.Pattern
 
-class SearchAsyncTask(
+class DeepSearch(
     context: Context,
-    private val input: String,
-    openMode: OpenMode?,
+    private val query: String,
+    private val path: String,
+    private val openMode: OpenMode,
     private val rootMode: Boolean,
     private val isRegexEnabled: Boolean,
     private val isMatchesEnabled: Boolean,
-    path: String?
-) : AsyncTask<Void?, HybridFileParcelable?, Void?>(), StatefulAsyncTask<HelperCallbacks?> {
-    private val LOG = LoggerFactory.getLogger(SearchAsyncTask::class.java)
+    private val showHiddenFiles: Boolean,
+    private val ioDispatcher: CoroutineDispatcher
+) {
+    private val LOG = LoggerFactory.getLogger(DeepSearch::class.java)
 
-    /** This necessarily leaks the context  */
+    private val hybridFileParcelables: ArrayList<HybridFileParcelable> = ArrayList()
+    val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(
+        hybridFileParcelables
+    )
+
+    /** This necessarily leaks the context */
     private val applicationContext: Context
-    private var callbacks: HelperCallbacks? = null
-    private val file: HybridFile
 
     init {
         applicationContext = context.applicationContext
-        file = HybridFile(openMode, path)
     }
 
-    override fun onPreExecute() {
-        /*
-     * Note that we need to check if the callbacks are null in each
-     * method in case they are invoked after the Activity's and
-     * Fragment's onDestroy() method have been called.
+    /**
+     * Search for files, whose names match [query], starting from [path] and add them to
+     * [mutableLiveData].
      */
-        if (callbacks != null) {
-            callbacks!!.onPreExecute(input)
-        }
-    }
-
-    // callbacks not checked for null because of possibility of
-    // race conditions b/w worker thread main thread
-    protected override fun doInBackground(vararg params: Void?): Void? {
-        if (file.isSmb) return null
+    suspend fun search() {
+        val file = HybridFile(openMode, path)
+        if (file.isSmb) return
 
         // level 1
         // if regex or not
         if (!isRegexEnabled) {
-            search(file, input)
+            search(file, query)
         } else {
             // compile the regular expression in the input
             val pattern = Pattern.compile(
                 bashRegexToJava(
-                    input
+                    query
                 )
             )
             // level 2
@@ -88,61 +82,41 @@ class SearchAsyncTask(
                 pattern
             )
         }
-        return null
-    }
-
-    public override fun onPostExecute(c: Void?) {
-        if (callbacks != null) {
-            callbacks!!.onPostExecute(input)
-        }
-    }
-
-    override fun onCancelled() {
-        if (callbacks != null) callbacks!!.onCancelled()
-    }
-
-    override fun onProgressUpdate(vararg values: HybridFileParcelable?) {
-        if (!isCancelled && callbacks != null) {
-            values[0]?.let { callbacks!!.onProgressUpdate(it, input) }
-        }
-    }
-
-    override fun setCallback(helperCallbacks: HelperCallbacks?) {
-        callbacks = helperCallbacks
     }
 
     /**
-     * Recursively search for occurrences of a given text in file names and publish the result
+     * Search for occurrences of a given text in file names and publish the result
      *
      * @param directory the current path
      */
-    private fun search(directory: HybridFile, filter: SearchFilter) {
-        if (directory.isDirectory(
-                applicationContext
-            )
-        ) { // do you have permission to read this directory?
-            directory.forEachChildrenFile(
-                applicationContext,
-                rootMode,
-                object : OnFileFound {
-                    override fun onFileFound(file: HybridFileParcelable) {
-                        val showHiddenFiles =
-                            PreferenceManager.getDefaultSharedPreferences(applicationContext)
-                                .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
-                        if (!isCancelled && (showHiddenFiles || !file.isHidden)) {
+    private suspend fun search(directory: HybridFile, filter: SearchFilter) {
+        if (directory.isDirectory(applicationContext)) {
+            // you have permission to read this directory
+            withContext(ioDispatcher) {
+                val worklist = ArrayDeque<HybridFile>()
+                worklist.add(directory)
+                while (isActive && worklist.isNotEmpty()) {
+                    val nextFile = worklist.removeFirst()
+                    nextFile.forEachChildrenFile(applicationContext, rootMode) { file ->
+                        if (!file.isHidden || showHiddenFiles) {
                             if (filter.searchFilter(file.getName(applicationContext))) {
                                 publishProgress(file)
                             }
-                            if (file.isDirectory && !isCancelled) {
-                                search(file, filter)
+                            if (file.isDirectory(applicationContext)) {
+                                worklist.add(file)
                             }
                         }
                     }
                 }
-            )
+            }
         } else {
             LOG.warn("Cannot search " + directory.path + ": Permission Denied")
         }
+    }
+
+    private fun publishProgress(file: HybridFileParcelable) {
+        hybridFileParcelables.add(file)
+        mutableLiveData.postValue(hybridFileParcelables)
     }
 
     /**
@@ -151,7 +125,7 @@ class SearchAsyncTask(
      * @param file the current path
      * @param query the searched text
      */
-    private fun search(file: HybridFile, query: String) {
+    private suspend fun search(file: HybridFile, query: String) {
         search(file) { fileName: String ->
             fileName.lowercase(Locale.getDefault()).contains(
                 query.lowercase(
@@ -167,8 +141,8 @@ class SearchAsyncTask(
      * @param file the current file
      * @param pattern the compiled java regex
      */
-    private fun searchRegExFind(file: HybridFile, pattern: Pattern) {
-        search(file) { fileName: String? -> pattern.matcher(fileName).find() }
+    private suspend fun searchRegExFind(file: HybridFile, pattern: Pattern) {
+        search(file) { fileName: String -> pattern.matcher(fileName).find() }
     }
 
     /**
@@ -178,8 +152,8 @@ class SearchAsyncTask(
      * @param file the current file
      * @param pattern the compiled java regex
      */
-    private fun searchRegExMatch(file: HybridFile, pattern: Pattern) {
-        search(file) { fileName: String? -> pattern.matcher(fileName).matches() }
+    private suspend fun searchRegExMatch(file: HybridFile, pattern: Pattern) {
+        search(file) { fileName: String -> pattern.matcher(fileName).matches() }
     }
 
     /**

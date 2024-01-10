@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
-import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchAsyncTask;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.DeepSearch;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
@@ -46,7 +46,7 @@ public class SearchWorkerFragment extends Fragment {
   public static final String KEY_REGEX = "regex";
   public static final String KEY_REGEX_MATCHES = "matches";
 
-  public SearchAsyncTask searchAsyncTask;
+  public DeepSearch searchAsyncTask;
 
   private HelperCallbacks callbacks;
 
@@ -82,7 +82,7 @@ public class SearchWorkerFragment extends Fragment {
     boolean isMatchesEnabled = getArguments().getBoolean(KEY_REGEX_MATCHES);
 
     searchAsyncTask =
-        new SearchAsyncTask(
+        new DeepSearch(
             requireContext(), input, openMode, rootMode, isRegexEnabled, isMatchesEnabled, path);
     searchAsyncTask.setCallback(callbacks);
     searchAsyncTask.execute();
