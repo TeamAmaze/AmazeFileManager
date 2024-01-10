@@ -663,7 +663,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             requireMainActivity()
                 .getAppbar()
                 .bottomBar
-                .updatePath(path, false, null, OpenMode.FILE, folder, file, this)
+                .updatePath(path, false, OpenMode.FILE, folder, file, this)
         }
     }
 

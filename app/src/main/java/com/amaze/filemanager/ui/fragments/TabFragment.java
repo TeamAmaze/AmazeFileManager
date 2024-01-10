@@ -46,7 +46,6 @@ import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.Utils;
 
 import android.animation.ArgbEvaluator;
@@ -436,7 +435,6 @@ public class TabFragment extends Fragment {
         .updatePath(
             mainFragment.getCurrentPath(),
             mainFragment.getMainFragmentViewModel().getResults(),
-            MainActivityHelper.SEARCH_TEXT,
             mainFragment.getMainFragmentViewModel().getOpenMode(),
             mainFragment.getMainFragmentViewModel().getFolderCount(),
             mainFragment.getMainFragmentViewModel().getFileCount(),

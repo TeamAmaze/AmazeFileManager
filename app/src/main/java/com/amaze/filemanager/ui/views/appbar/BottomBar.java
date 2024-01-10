@@ -364,7 +364,6 @@ public class BottomBar implements View.OnTouchListener {
   public void updatePath(
       @NonNull final String news,
       boolean results,
-      String query,
       OpenMode openmode,
       int folderCount,
       int fileCount,
@@ -397,13 +396,7 @@ public class BottomBar implements View.OnTouchListener {
         newPath = news;
     }
 
-    if (!results) {
-      pathText.setText(mainActivity.getString(R.string.folderfilecount, folderCount, fileCount));
-    } else {
-      fullPathText.setText(mainActivity.getString(R.string.search_results, query));
-      pathText.setText("");
-      return;
-    }
+    pathText.setText(mainActivity.getString(R.string.folderfilecount, folderCount, fileCount));
 
     final String oldPath = fullPathText.getText().toString();
 
