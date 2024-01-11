@@ -35,7 +35,7 @@ buildscript {
         commonsCompressVersion = "1.22"
         libsuVersion = "3.2.1"
         mockkVersion = "1.12.2"
-        logbackAndroidVersion = "2.0.0"
+        logbackAndroidVersion = "3.0.0"
         commonsNetVersion = "3.8.0"
         ftpserverVersion = "1.1.1"
         jsoupVersion = "1.13.1"
