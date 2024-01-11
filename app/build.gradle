@@ -246,8 +246,9 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidXCoreVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
-    runtimeOnly 'org.slf4j:slf4j-api:1.7.36'
-    runtimeOnly "com.github.tony19:logback-android:$logbackAndroidVersion"
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation "com.github.tony19:logback-android:$logbackAndroidVersion"
+    testImplementation 'ch.qos.logback:logback-classic:1.2.11'
 
     implementation 'com.google.code.gson:gson:2.9.1'
     implementation 'com.github.TeamAmaze:AmazeTrashBin:1.0.10'
@@ -269,13 +270,8 @@ configurations.configureEach {
     }
 }
 
-configurations.configureEach { config ->
-    // This workarounds logback's multiple bindings problem when running tests.
-    if (config.name.toLowerCase().contains('test')) {
-        config.resolutionStrategy.dependencySubstitution {
-            substitute module("com.github.tony19:logback-android:$logbackAndroidVersion") with module("ch.qos.logback:logback-classic:1.2.9")
-        }
-    }
+configurations.testImplementation {
+    exclude module: 'logback-android'
 }
 
 tasks.register('supportOldLangCodes')

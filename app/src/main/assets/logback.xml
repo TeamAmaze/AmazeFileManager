@@ -1,4 +1,8 @@
-<configuration>
+<configuration
+    xmlns="https://tony19.github.io/logback-android/xml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://tony19.github.io/logback-android/xml https://cdn.jsdelivr.net/gh/tony19/logback-android/logback.xsd"
+>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <!-- lazy initialization: don't create the file until 1st write -->
         <!--<lazy>true</lazy>-->
