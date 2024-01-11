@@ -441,7 +441,7 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(context)
             .title(context.getString(R.string.restore_files))
             .customView(dialogView, true)
-            .theme(appTheme.getMaterialDialogTheme(context))
+            .theme(appTheme.getMaterialDialogTheme())
             .negativeText(context.getString(R.string.cancel).toUpperCase())
             .positiveText(context.getString(R.string.done).toUpperCase())
             .positiveColor(accentColor)
