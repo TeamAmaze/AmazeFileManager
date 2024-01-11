@@ -35,6 +35,8 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.util.Date
+import java.util.concurrent.TimeUnit
 
 /**
  * because of test based on mock-up, extension testing isn't tested so, assume all extension is
@@ -1397,13 +1399,13 @@ class FileListSorterTest {
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term, both contain the search term as a word and file1 date is more recent,
-     * result is positive
+     * result is negative
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
      * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
      * both contain "abc" as word and file1 date is more recent
      *
-     * Expected: return positive integer
+     * Expected: return negative integer
      */
     @Test
     fun testSortByRelevanceWithFile1MoreRecent() {
@@ -1412,6 +1414,7 @@ class FileListSorterTest {
             SortType(SortBy.RELEVANCE, SortOrder.ASC),
             "abc"
         )
+        val currentTime = Date().time
         val file1 = LayoutElementParcelable(
             ApplicationProvider.getApplicationContext(),
             "abc.efg",
@@ -1421,7 +1424,7 @@ class FileListSorterTest {
             "100",
             123L,
             true,
-            "1234",
+            (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
             false,
             false,
             OpenMode.UNKNOWN
@@ -1435,56 +1438,7 @@ class FileListSorterTest {
             "101",
             124L,
             true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
-    }
-
-    /**
-     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
-     * both start with search term, both contain the search term as a word and file2 date is more recent,
-     * result is negative
-     *
-     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
-     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
-     * both contain "abc" as word and file2 date is more recent
-     *
-     * Expected: return negative integer
-     */
-    @Test
-    fun testSortByRelevanceWithFile2MoreRecent() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            "abc"
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.efg",
-            "C:\\AmazeFileManager\\abc.efg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "ABC_EFG",
-            "C:\\AmazeFileManager\\ABC_EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
+            (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
             false,
             false,
             OpenMode.UNKNOWN
@@ -1495,6 +1449,56 @@ class FileListSorterTest {
     /**
      * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
      * both start with search term, both contain the search term as a word and file2 date is more recent,
+     * result is positive
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file1 title matches "abc" as much as file2 title, both start with "abc",
+     * both contain "abc" as word and file2 date is more recent
+     *
+     * Expected: return positive integer
+     */
+    @Test
+    fun testSortByRelevanceWithFile2MoreRecent() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val currentTime = Date().time
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.efg",
+            "C:\\AmazeFileManager\\abc.efg",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "ABC_EFG",
+            "C:\\AmazeFileManager\\ABC_EFG",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(1, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file1 matches the search term as much as file2,
+     * both start with search term, both contain the search term as a word and date is same,
      * result is zero
      *
      * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
@@ -1539,5 +1543,64 @@ class FileListSorterTest {
             OpenMode.UNKNOWN
         )
         Assert.assertEquals(0, fileListSorter.compare(file1, file2).toLong())
+    }
+
+    /**
+     * Purpose: when sort is [SortBy.RELEVANCE], if file2 matches the search term more than file1
+     * and file2 date is more recent, but file1 starts with search term and contains the
+     * search term as a word, the result is negative.
+     *
+     * Input: FileListSorter with [DirSortBy.NONE_ON_TOP], [SortBy.RELEVANCE], [SortOrder.ASC] and search term "abc"
+     * compare(file1,file2) file2 title matches "abc" more than file1 title and is more recent both start with "abc",
+     * both contain "abc" as word and the date of both is the same
+     *
+     * Expected: return negative integer
+     */
+    @Test
+    fun testSortByRelevanceWhole() {
+        val fileListSorter = FileListSorter(
+            DirSortBy.NONE_ON_TOP,
+            SortType(SortBy.RELEVANCE, SortOrder.ASC),
+            "abc"
+        )
+        val currentTime = Date().time
+
+        // matches 3/10
+        // starts with search term
+        // contains search as whole word
+        // modification time is less recent
+        val file1 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "abc.efghij",
+            "C:\\AmazeFileManager\\abc.efghij",
+            "user",
+            "symlink",
+            "100",
+            123L,
+            true,
+            (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        // matches 3/6
+        // doesn't start with search term
+        // doesn't contain as whole word
+        // modification time is more recent
+        val file2 = LayoutElementParcelable(
+            ApplicationProvider.getApplicationContext(),
+            "EFGABC",
+            "C:\\AmazeFileManager\\EFGABC",
+            "user",
+            "symlink",
+            "101",
+            124L,
+            true,
+            (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
+            false,
+            false,
+            OpenMode.UNKNOWN
+        )
+        Assert.assertEquals(-1, fileListSorter.compare(file1, file2).toLong())
     }
 }
