@@ -84,7 +84,7 @@ class FileListSorter(
                         0.0
                     }
 
-                    return@compareBy 1.2 * matchPercentageScore +
+                    1.2 * matchPercentageScore +
                         0.7 * startScore +
                         0.7 * wordScore +
                         0.6 * timeScore
