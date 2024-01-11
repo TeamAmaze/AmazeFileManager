@@ -216,15 +216,12 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
       case R.id.relative_layout_share_logs:
         try {
-          File logFile = new File("/data/data/" +
-                  getApplicationContext().getPackageName()
-                  + "/cache/logs.txt");
+          File logFile =
+              new File(
+                  "/data/data/" + getApplicationContext().getPackageName() + "/cache/logs.txt");
           Uri logUri =
               FileProvider.getUriForFile(
-                  getApplicationContext(),
-                  getApplicationContext().getPackageName(),
-                      logFile
-                  );
+                  getApplicationContext(), getApplicationContext().getPackageName(), logFile);
           ArrayList<Uri> logUriList = new ArrayList<>();
           logUriList.add(logUri);
           new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
