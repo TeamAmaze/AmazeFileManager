@@ -29,6 +29,12 @@
         android:title="@string/delete"
         android:icon="@drawable/ic_delete_white_36dp"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/restore"
+        android:title="@string/restore"
+        android:icon="@drawable/round_restore_from_trash_24"
+        android:visible="false"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/openparent"

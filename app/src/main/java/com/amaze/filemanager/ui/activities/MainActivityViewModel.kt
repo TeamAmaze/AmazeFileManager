@@ -21,20 +21,28 @@
 package com.amaze.filemanager.ui.activities
 
 import android.app.Application
+import android.content.Intent
 import android.provider.MediaStore
 import androidx.collection.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils.scanFile
 import com.amaze.filemanager.filesystem.root.ListFilesCommand.listFiles
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
+import com.amaze.trashbin.MoveFilesCallback
+import com.amaze.trashbin.TrashBinFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.Locale
 
@@ -43,12 +51,14 @@ class MainActivityViewModel(val applicationContext: Application) :
 
     var mediaCacheHash: List<List<LayoutElementParcelable>?> = List(5) { null }
     var listCache: LruCache<String, List<LayoutElementParcelable>> = LruCache(50)
+    var trashBinFilesLiveData: MutableLiveData<MutableList<LayoutElementParcelable>?>? = null
 
     companion object {
         /**
          * size of list to be cached for local files
          */
         val CACHE_LOCAL_LIST_THRESHOLD: Int = 100
+        private val LOG = LoggerFactory.getLogger(MainActivityViewModel::class.java)
     }
 
     /**
@@ -173,5 +183,120 @@ class MainActivityViewModel(val applicationContext: Application) :
         }
 
         return mutableLiveData
+    }
+
+    /**
+     * TODO: Documentation
+     */
+    fun moveToBinLightWeight(mediaFileInfoList: List<LayoutElementParcelable>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val trashBinFilesList = mediaFileInfoList.map {
+                it.generateBaseFile()
+                    .toTrashBinFile(applicationContext)
+            }
+            AppConfig.getInstance().trashBinInstance.moveToBin(
+                trashBinFilesList,
+                true,
+                object : MoveFilesCallback {
+                    override fun invoke(
+                        originalFilePath: String,
+                        trashBinDestination: String
+                    ): Boolean {
+                        val source = File(originalFilePath)
+                        val dest = File(trashBinDestination)
+                        if (!source.renameTo(dest)) {
+                            return false
+                        }
+                        val hybridFile = HybridFile(
+                            OpenMode.TRASH_BIN,
+                            originalFilePath
+                        )
+                        scanFile(applicationContext, arrayOf(hybridFile))
+                        val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
+                        hybridFile.getParent(applicationContext)?.let {
+                            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, it)
+                            applicationContext.sendBroadcast(intent)
+                        }
+                        return true
+                    }
+                }
+            )
+        }
+    }
+
+    /**
+     * Restore files from trash bin
+     */
+    fun restoreFromBin(mediaFileInfoList: List<LayoutElementParcelable>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            LOG.info("Restoring media files from bin $mediaFileInfoList")
+            val filesToRestore = mutableListOf<TrashBinFile>()
+            for (element in mediaFileInfoList) {
+                val restoreFile = element.generateBaseFile()
+                    .toTrashBinRestoreFile(applicationContext)
+                if (restoreFile != null) {
+                    filesToRestore.add(restoreFile)
+                }
+            }
+            AppConfig.getInstance().trashBinInstance.restore(
+                filesToRestore,
+                true,
+                object : MoveFilesCallback {
+                    override fun invoke(source: String, dest: String): Boolean {
+                        val sourceFile = File(source)
+                        val destFile = File(dest)
+                        if (destFile.exists()) {
+                            AppConfig.toast(
+                                applicationContext,
+                                applicationContext.getString(R.string.fileexist)
+                            )
+                            return false
+                        }
+                        if (destFile.parentFile != null && !destFile.parentFile!!.exists()) {
+                            destFile.parentFile?.mkdirs()
+                        }
+                        if (!sourceFile.renameTo(destFile)) {
+                            return false
+                        }
+                        val hybridFile = HybridFile(
+                            OpenMode.TRASH_BIN,
+                            source
+                        )
+                        scanFile(applicationContext, arrayOf(hybridFile))
+                        val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
+                        hybridFile.getParent(applicationContext)?.let {
+                            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, it)
+                            applicationContext.sendBroadcast(intent)
+                        }
+                        return true
+                    }
+                }
+            )
+        }
+    }
+
+    /**
+     * TODO: Documentation
+     */
+    fun progressTrashBinFilesLiveData(): MutableLiveData<MutableList<LayoutElementParcelable>?> {
+        if (trashBinFilesLiveData == null) {
+            trashBinFilesLiveData = MutableLiveData()
+            trashBinFilesLiveData?.value = null
+            viewModelScope.launch(Dispatchers.IO) {
+                trashBinFilesLiveData?.postValue(
+                    ArrayList(
+                        AppConfig.getInstance().trashBinInstance.listFilesInBin()
+                            .map {
+                                HybridFile(OpenMode.FILE, it.path, it.fileName, it.isDirectory)
+                                    .generateLayoutElement(
+                                        applicationContext,
+                                        false
+                                    )
+                            }
+                    )
+                )
+            }
+        }
+        return trashBinFilesLiveData!!
     }
 }

@@ -22,7 +22,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Amaze</string>
+    <string name="app_name">Gerenciador de Arquivos</string>
     <string name="drawer_open">Abrir menu de navegação</string>
     <string name="drawer_close">Fechar menu de navegação</string>
     <string name="icon">ícone</string>
@@ -36,6 +36,7 @@
     <string name="uninstall">Desinstalar</string>
     <string name="play">Play Store</string>
     <string name="properties">Propriedades</string>
+    <string name="copyingapks">Copiando %d arquivos APK para %s</string>
     <string name="delbook">Excluir favorito</string>
     <string name="add_to_bookmarks">Adicionar aos Favoritos</string>
     <string name="enterpath">Insira o caminho</string>
@@ -83,7 +84,7 @@
     <string name="sort_only_this">Apenas esta pasta</string>
     <string name="theme">Tema</string>
     <string name="random">Visual aleatório</string>
-    <string name="random_summary">Define a cor aleatória ao iniciar</string>
+    <string name="random_summary">Define cor primária aleatória ao iniciar</string>
     <string name="colorize">Colorir ícones</string>
     <string name="colorize_summary">Define a cor estática do ícone. Não altera a definição da cor de ícone da pasta.</string>
     <string name="home">Pasta Inicial</string>
@@ -96,6 +97,8 @@
     <string name="select_all">Selecionar tudo</string>
     <string name="delete">Excluir</string>
     <string name="set_as_home">Definir como pasta inicial</string>
+    <string name="operation_not_supported">Operação não suportada</string>
+
     <!-- New -->
     <!-- Array -->
 
@@ -105,11 +108,12 @@
     <string name="dark">Material Escuro</string>
     <string name="daytime">Hora do Dia</string>
     <string name="black">Preto (para OLED)</string>
+    <string name="system">Sistema (seguir tema do sistema)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
-    <string name="foldersOnTop">Pastas no início</string>
-    <string name="filesOnTop">Arquivos no início</string>
-    <string name="none_on_top">Nada no início</string>
+    <string name="foldersOnTop">Pastas primeiro</string>
+    <string name="filesOnTop">Arquivos primeiro</string>
+    <string name="none_on_top">Nada no topo</string>
     <!--SortBy-->
     <string name="sort_name">Nome</string>
     <string name="lastModified">Última modificação</string>
@@ -149,7 +153,7 @@
     <string name="thumb_summary">Mostra as miniaturas dos aplicativos e imagens</string>
     <string name="thumb">Mostrar miniaturas</string>
     <string name="hidden">Mostrar arquivos e pastas ocultos</string>
-    <string name="lastModifiedSummary">Mostra a data e hora da última modificação do arquivo</string>
+    <string name="lastModifiedSummary">Mostrar data e hora da última modificação</string>
     <string name="lastModifiedPref">Mostrar última modificação</string>
     <string name="size_pref_summary">Mostra o tamanho dos arquivos e o número de itens das pastas</string>
     <string name="size_pref">Mostrar tamanho</string>
@@ -238,6 +242,7 @@
     <string name="needs_access_summary">Escolha a pasta raíz do \t</string>
     <string name="needs_access_summary1">\tpara conceder acesso de gravação para operar </string>
     <string name="smb_connection">Conexão SMB</string>
+    <string name="smb_server">Endereço IP do servidor</string>
     <string name="server_address">Endereço IP do servidor</string>
     <string name="username">Usuário</string>
     <string name="password">Senha</string>
@@ -292,6 +297,7 @@
     <string name="ftp_status_not_running">Parado</string>
     <string name="ftp_no_wifi">Confirme se está conectado com Wi-Fi</string>
     <string name="domain">Domínio</string>
+    <string name="smb_share">Compartilhar caminho</string>
     <string name="invalid">Inválido %s</string>
     <string name="ftp_notif_starting">O servidor FTP está iniciando</string>
     <string name="ftp_notif_starting_title">Servidor FTP</string>
@@ -424,6 +430,7 @@
     <string name="smb_launch_error">Você precisará copiar este arquivo para armazenamento para abri-lo</string>
     <string name="error_file_not_found">Erro: Arquivo não encontrado</string>
     <string name="error_io">Erro E/S</string>
+    <string name="error_file_too_large">Erro: Arquivo muito grande</string>
     <string name="medium_text">Texto médio</string>
     <string name="permission_read">Ler</string>
     <string name="permission_write">Gravar</string>
@@ -438,6 +445,7 @@
     <string name="cloud_connection">Conexão em nuvem</string>
     <string name="cloud_connection_new">Nova conexão em nuvem</string>
     <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Obter plugin para nuvem</string>
@@ -503,7 +511,13 @@
     <string name="show_quick_access_pref">Acessos rápidos</string>
     <string name="directory">Pasta</string>
 
+    <string name="sidebar_bookmarks_title">Favoritos da barra lateral</string>
+    <string name="show_bookmarks_pref_title">Mostrar favoritos</string>
     <string name="show_bookmarks_pref">Favoritos</string>
+    <string name="create_bookmark">Adicionar favorito</string>
+    <string name="edit_bookmark">Editar favorito</string>
+    <string name="question_delete_bookmark">Excluir favorito?</string>
+
     <string name="cloud_error_plugin">O plugin Amaze Cloud não foi encontrado. Faça download a partir da Play Store.</string>
     <string name="cloud_error_failed_restart">Falha ao carregar a conexão. Por favor, abra o Amaze Cloud uma vez.</string>
     <string name="cloud_remove">Deseja remover a conexão com a nuvem?</string>
@@ -552,6 +566,8 @@
 
     <string name="update">ATUALIZAR</string>
 	<string name="scp_connection">Conexão SCP/SFTP</string>
+    <string name="ftp_connection">Conexão FTP</string>
+    <string name="ftps_connection">FTP usando conexão SSL</string>
     <string name="scp_port">Porta</string>
     <string name="ssh_host_key_verification_prompt">Não é possível determinar a autenticidade do servidor \'%1$s\'.\n\n%2$s chave da impressão digital é %3$s.\n\nToque em \"Sim\" para confirmar a identidade, caso contrário, toque em \"Não\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verificar servidor</string>
@@ -595,11 +611,22 @@
     <string name="no_obtainable_info">Não há informações sobre este arquivo</string>
     <string name="reopen_from_source">Não foi possível, reabra a partir do último aplicativo</string>
     <string name="no_file_error">Algo deu errado, não há nada para abrir</string>
+    <string name="file_too_long">O arquivo é muito longo então não pode ser editado, mas você pode ler os primeiros %d caracteres</string>
     <string name="file_read_only">O arquivo aberto é apenas para leitura.</string>
     <string name="got_it">Entendi!</string>
     <string name="encrypt_file_save_as">Salvar arquivo criptografado como&#8230;</string>
     <string name="encrypt_folder_save_as">Salvar pasta criptografada como&#8230;</string>
+    <string name="encrypt_option_use_aze">Usar formato de criptografia Amaze</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+<p>AESCrypt é um formato de criptografia de arquivo de código aberto baseado na criptografia AES. Também é portátil, pode ser descriptografado com programas AESCrypt em outras plataformas.</p>
+<p><a href=\"https://www.aescrypt.com\" target=\"_blank>Site AESCrypt</a></p>]]>
+</string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+ <p>O formato de criptografia do Amaze também é baseado em criptografia AES; mas diferente do formato AESCrypt, ele só pode ser descriptografado por este dispositivo; Além disso, você não deve desinstalar o Amaze File Manager deste dispositivo nem alterar a maneira de bloquear a tela, caso contrário não terá como recuperar o arquivo criptografado.</p>
+ ]]></string>
     <string name="encrypt_file_must_end_with_aze">Os arquivos criptografados devem usar \".aze\" como extensão.</string>
+    <string name="encrypt_file_must_end_with_aes">Arquivos criptografados devem usar \".aes\" como extensão de arquivo.</string>
+    <string name="error_aescrypt_decrypt_failed">Não é possível descriptografar \'%s\': \'%s\'</string>
     <string name="cannot_overwrite">Não foi possível sobrescrever o arquivo.</string>
     <string name="saved_single_file">Arquivo salvo como \'%s\'.</string>
     <string name="saved_multi_files">%d arquivos salvos.</string>
@@ -663,10 +690,84 @@
     <string name="choose_different_app">Escolha uma aplicação diferente</string>
     <string name="clear_open_file">Limpar cache</string>
     <string name="clear_open_file_summary">Limpa os apps de abertura padrão selecionados</string>
+    <string name="ftp_readonly">Apenas leitura</string>
     <string name="legacy_listing_title">Usar listagem legada para root</string>
+    <string name="legacy_listing_summary">Se habilitado, usa método legado para listar arquivos</string>
+    <string name="error_unsupported_v5_rar">Arquivo RAR \"%s\" é um arquivo RAR v5 não suportado.</string>
+    <string name="ftp_prompt_restart_server">Você precisa reiniciar o servidor FTP para aplicar as mudanças.</string>
     <string name="error_permission_denied">Permissão negada</string>
-    <string name="quick_desc">Arquivos recentemente acessados pelo Amaze</string>
+    <string name="error_archive_password_incorrect">Senha incorreta do arquivo.</string>
+    <string name="error_archive_cannot_extract">Não é possível extrair \"%s\" para \"%s\".</string>
+    <string name="drag_and_drop_preference">Selecionar a preferência de arrastar e soltar (Experimental)</string>
+    <string name="drag_to_move_copy">Pressionar e arrastar para mover ou copiar arquivos</string>
+    <string name="drag_to_select">Pressionar e arrastar para selecionar arquivos</string>
+    <string name="disable">Desabilitar</string>
+    <string name="choose_operation">Escolha a operação para realizar</string>
+    <string name="remember">Lembrar para a próxima vez</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">Permitir acesso SAF para o servidor FTP</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Já que essa é sua primeira vez rodando o servidor FTP, e você está usando o armazenamento interno como pasta compartilhada, por favor permita que o Amaze acesse o armazenamento por SAF.\n\n
+
+Você só precisa fazer isso uma vez, até a próxima vez que você selecionar um novo local para compartilhamento.</string>
+    <string name="android_data_prompt_saf_access">Desde o Android 10, o Android impôs restrições em certos diretórios, e eles precisam de acesso com o Storage Access Framework.\n\nPor favor permita que Amaze acesse o diretório de dentro do gerenciador de arquivos do sistema pressionando \"Permitir Acesso\".</string>
+    <string name="android_data_prompt_saf_access_title">Permitir acesso SAF</string>
+    <string name="ftp_preference_saf_filesystem_title">Usar sistema de arquivos legado</string>
+    <string name="ftp_preference_saf_filesystem">Habilite isso para suportar o uso de armazenamento externo de dispositivo em versões Android mais recentes</string>
+    <string name="ftp_server_fallback_path_reset_prompt">O local compartilhado do servidor FTP foi redefinido para armazenamento interno, pois você está voltando para a implementação do sistema de arquivos legado. Por favor, selecione um novo local usando o menu no canto superior direito conforme necessário.</string>
+    <string name="ftp_server_reset_notify">O local compartilhado do servidor FTP foi redefinido para armazenamento interno</string>
+    <string name="ftp_server_root_unavailable">Você está escolhendo um local que requer acesso usuario root. Por favor habilitar o explorador root nas configurações se o seu dispositivo está rooteado.</string>
+    <string name="ftp_server_root_filesystem_warning">Você está escolhendo um local que requer acesso usuario root, que habilita ler/escrever em todo o sistema de arquivos de seu dispositivo, o que é perigoso - acidentes podem \"brickar\" ou inutilizar o seu dispositivo.\n\nTem certeza?</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Erro abrindo URI \"%s\" para leitura.</string>
+    <string name="error_empty_archive">\"%s\" está vazio.</string>
+    <string name="error_bad_archive_without_info">\"%s\" está corrompido.</string>
+    <string name="error_bad_archive_with_info">\"%s\" está corrompido.\nMensagem do extrator de arquivos:\"%s\"</string>
+    <string name="security_error">Arquivo não pôde ser aberto por esse aplicativo</string>
+    <string name="cloud_drive_tooltip">Criar uma nova conexão Google Drive™ para gerenciar arquivos de dentro do gerenciador de arquivos Amaze</string>
+    <string name="signin_with_google_title">Autenticar para usar o Google Drive™</string>
+    <string name="show_system_apps">Mostrar aplicativos do sistema</string>
+    <string name="system_apps">Aplicativos do sistema</string>
+    <string name="select_inverse">Inverter seleção</string>
+    <string name="select_by_type">Selecionar por tipo</string>
+    <string name="select_by_date">Selecionar por data</string>
+    <string name="select_similar">Selecionar similares</string>
+    <string name="error_fetching_google_play_product_list">Erro ao adquirir lista de produtos pelo Google Play.</string>
+    <string name="grant_all_files_permission"><html><body>Desde o Android 11, o Google requer que Gerenciadores de Arquivos peçam permissão para administrar todos arquivos no dispositivo. Mais detalhes <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">aqui</a>.
+ \n\nO Gerenciador de Arquivos Amaze precisa dessa permissão também. Depois de apertar &quot;Grant&quot; aqui, por favor selecione <b>Permitir acesso para acessar todos arquivos</b>na próxima tela.
+\n\n<font color='#ff6347'><i>Cancelar esse diálogo irá fechar o aplicativo.</i></font></body></html></string>
+    <string name="user_apps">Aplicativos de usuários</string>
+    <string name="appearance">Aparência</string>
+    <string name="behavior">Comportamento</string>
+    <string name="appearance_summary">Personalizar tema, cores e aparência do gerenciador de arquivos</string>
+    <string name="ui_summary">Controlar quais informações mostrar, personalizar a barra lateral e alterar preferência da interface.</string>
+    <string name="behavior_summary">Modificar comportamentos como pesquisa avançada e abrir arquivos como uma nova tarefa</string>
+    <string name="security_summary">Configurar senha e criptografia</string>
+
+    <string name="quick_desc">Arquivos acessados através do Amaze recentemente</string>
     <string name="recent_desc">Arquivos criados ou modificados recentemente</string>
+    <string name="error_cannot_find_way_open">Não foi encontrada forma de abrir arquivo</string>
+    <string name="error_cant_decompress_that_file">Não foi possível processar o arquivo</string>
+    <string name="analyse_storage">Analizar Armazenamento</string>
+    <string name="download_amaze_utils_text">Você está sendo redirecionado para Amaze File Utilities. É a nossa oferta que tem visualizador audio/vídeo/documentos, que permite analizar armazenamento por imagens escuras/borradas, arquivos duplicados, e transferência por Wifi P2P e mais.\nNos apoie ao experimentar.</string>
+    <string name="download">Baixar</string>
+    <string name="wifip2p">Wi-Fi P2P</string>
+    <string name="amaze_utils_installed_alias">Obrigado por instalar Amaze File Utilities. Você está sendo redirecionado para o app.</string>
+    <string name="image_viewer">Visualizador de Imagens Amaze</string>
+    <string name="video_player">Leitor de Vídeo Amaze</string>
+    <string name="amaze_audio_player">Leitor de Música Amaze</string>
+    <string name="pdf_viewer">Visualizador de Pdf Amaze</string>
+    <string name="epub_viewer">Visualizador de Epub Amaze</string>
+    <string name="docx_viewer">Visualizador de Doc Amaze</string>
+    <string name="share_logs">Compartilhar logs</string>
+    <string name="share_logs_summary">Compartilhar logs capturados via email / telegram</string>
+    <string name="open_with_amaze">Abrir com Amaze</string>
+    <string name="confirmation">Confirmação</string>
+    <string name="open_file_confirmation">Tem certeza de que deseja abrir o seguinte arquivo?\n\nNome:\n%s\n\nLocal:\n%s\n\nTamanho:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="error_google_play_cannot_update_myself">Pelos requerimentos da política de privacidade do Google Play, apps não são permitidos atualizarem a si mesmos. Por favor atualize o aplicativo através da Google Play.</string>
+    <string name="error_cannot_get_package_info">Não foi possível abrir informações do pacote do arquivo \"%s\". Ou o arquivo especificado não é um APK, ou o arquivo está corrompido.</string>
+    <string name="preference_delete_confirmation">Excluir confirmação</string>
+    <string name="preference_delete_confirmation_summary">Pedir confirmação antes de apagar arquivos. Desabilitar essa opção é perigoso!</string>
+    <string name="protocol_ftps">FTP com segurança</string>
+    <string name="unavailable">Não disponível</string>
+    <string name="cloud_error_fdroid">Amaze Cloud Plugin não é compatível com a versão F-Droid. Por favor, use a versão da Play Store do Amaze.</string>
     <string name="not_found_enabled_webview">Nenhum navegador encontrado</string>
 </resources>
 

@@ -490,8 +490,13 @@ public class MainFragment extends Fragment
                 : layoutElementParcelable.symlink;
 
         if (layoutElementParcelable.isDirectory) {
-          computeScroll();
-          loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
+          if (layoutElementParcelable.getMode() == OpenMode.TRASH_BIN) {
+            // don't open file hierarchy for trash bin
+            adapter.toggleChecked(position, imageView);
+          } else {
+            computeScroll();
+            loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
+          }
         } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)
             || layoutElementParcelable.desc.endsWith(CryptUtil.AESCRYPT_EXTENSION)) {
           // decrypt the file
@@ -881,7 +886,8 @@ public class MainFragment extends Fragment
 
       mainFragmentViewModel.setStopAnims(true);
 
-      if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM) {
+      if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM
+          && mainFragmentViewModel.getOpenMode() != OpenMode.TRASH_BIN) {
         DataUtils.getInstance().addHistoryFile(mainFragmentViewModel.getCurrentPath());
       }
 
@@ -983,7 +989,8 @@ public class MainFragment extends Fragment
       if (!mainFragmentViewModel.isEncryptOpen()
           && !Utils.isNullOrEmpty(mainFragmentViewModel.getEncryptBaseFiles())) {
         // we've opened the file and are ready to delete it
-        new DeleteTask(requireMainActivity()).execute(mainFragmentViewModel.getEncryptBaseFiles());
+        new DeleteTask(requireMainActivity(), true)
+            .execute(mainFragmentViewModel.getEncryptBaseFiles());
         mainFragmentViewModel.setEncryptBaseFiles(new ArrayList<>());
       }
     }
@@ -1092,7 +1099,8 @@ public class MainFragment extends Fragment
   }
 
   public void goBack() {
-    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
+    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM
+        || mainFragmentViewModel.getOpenMode() == OpenMode.TRASH_BIN) {
       loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
       return;
     }
@@ -1256,7 +1264,8 @@ public class MainFragment extends Fragment
   }
 
   public void goBackItemClick() {
-    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
+    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM
+        || mainFragmentViewModel.getOpenMode() == OpenMode.TRASH_BIN) {
       loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
       return;
     }

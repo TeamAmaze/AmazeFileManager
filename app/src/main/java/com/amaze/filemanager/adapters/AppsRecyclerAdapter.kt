@@ -521,7 +521,7 @@ class AppsRecyclerAdapter(
                 } else {
                     files.add(f1)
                 }
-                DeleteTask(fragment.requireContext()).execute(files)
+                DeleteTask(fragment.requireContext(), false).execute(files)
             }
             .build()
             .show()

@@ -40,7 +40,7 @@ class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
     }
 
     /**
-     * Test case to verify delete SSH file failure scenario.
+     * Test case to verify delete SMB file failure scenario.
      *
      * @see AbstractDeleteTaskTestBase.doTestDeleteFileAccessDenied
      */

@@ -23,8 +23,8 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze</string>
-    <string name="drawer_open">Apri il pannello di navigazione</string>
-    <string name="drawer_close">Chiudi il pannello di navigazione</string>
+    <string name="drawer_open">Apri pannello di navigazione</string>
+    <string name="drawer_close">Chiudi pannello di navigazione</string>
     <string name="icon">icona</string>
     <string name="apps">Gestione app</string>
     <string name="ftp">Server FTP</string>
@@ -38,7 +38,7 @@
     <string name="properties">Proprietà</string>
     <string name="copyingapks">Copia di %d file APK su %s</string>
     <string name="delbook">Elimina Preferito</string>
-    <string name="add_to_bookmarks">Aggiungi ai segnalibri</string>
+    <string name="add_to_bookmarks">Aggiungi a segnalibro</string>
     <string name="enterpath">Inserisci percorso</string>
     <string name="cancel">ANNULLA</string>
     <string name="create">CREA</string>
@@ -389,7 +389,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cancelled">Annullato</string>
     <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
     <string name="written">Scritti</string>
-    <string name="out_of">di</string>
+    <string name="out_of">fuori da</string>
     <!-- reference to - 'Processing file # of #' in process viewer -->
     <string name="of">di</string>
     <string name="processing_file">Elaborazione file</string>
@@ -583,11 +583,11 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="encrypt_folder_save_as">Salva la cartella criptata come&#8230;</string>
     <string name="encrypt_option_use_aze">Usa il Formato Crittografico di Amaze</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
-        <p>AESCrypt è un formato crittografico open source basato su crittografia AES. Inoltre è portabile, può essere decriptato da software AESCrypt su altre piattaforme.</p>
+        <p>AESCrypt è un formato crittografico open source basato su crittografia AES. Inoltre è portabile, può essere decrittato da software AESCrypt su altre piattaforme.</p>
         <p><a href=\"https://www.aescrypt.com\" target=\"_blank>Sito web AESCrypt</a></p>]]>
     </string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
-        <p>Anche il formato crittografico di Amaze è basato sulla crittografia AES; ma diversamente da AESCrypt, può essere decriptato solo da questo dispositivo; inoltre non devi disinstallare Gestione File Amaze da questo dispositivo né cambiare il blocco schermo, altrimenti il file crittografato non sarà più recuperabile.</p>
+        <p>Anche il formato crittografico di Amaze è basato sulla crittografia AES; ma diversamente da AESCrypt, può essere decrittato solo da questo dispositivo; inoltre non bisogna disinstallare Amaze File Manager da questo dispositivo né cambiare il blocco schermo, altrimenti il file crittografato non sarà più recuperabile.</p>
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">I file criptati devono usare l\'estensione \".aze\".</string>
     <string name="encrypt_file_must_end_with_aes">I file criptati devono usare \".aes\" come estensione del file.</string>
@@ -679,12 +679,12 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="ftp_preference_saf_filesystem">Abilita questa opzione per usare la memoria esterna del dispositivo sulle versioni più recenti di Android</string>
     <string name="ftp_server_fallback_path_reset_prompt">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna poiché stai tornando all\'implementazione del filesystem legacy. Seleziona un nuovo percorso usando il menù in alto a destra.</string>
     <string name="ftp_server_reset_notify">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna</string>
-    <string name="ftp_server_root_unavailable">Stai scegliendo un percorso che richiede l\'accesso root. Abilita l\'esplorazione root nelle impostazioni se il tuo dispositivo è abilitato.</string>
+    <string name="ftp_server_root_unavailable">Stai scegliendo un percorso che richiede l\'accesso root. Abilita root explorer nelle impostazioni se il tuo dispositivo è abilitato.</string>
     <string name="ftp_server_root_filesystem_warning">Stai scegliendo un percorso che richiede l\'accesso come root, che permette operazioni di lettura/scrittura sull\'intero filesystem del tuo dispositivo, ed è pericoloso - operazioni incaute potrebbero bloccare il tuo dispositivo!</string>
     <string name="compressed_explorer_fragment_error_open_uri">Errore aprendo l\'URI \"%s\" per la lettura.</string>
     <string name="error_empty_archive">\"%s\" è un archivio vuoto.</string>
     <string name="error_bad_archive_without_info">\"%s\" è un archivio corrotto.</string>
-    <string name="error_bad_archive_with_info">"%s" è un archivio corrotto.\nMessaggio dall\'estrattore: "%s"</string>
+    <string name="error_bad_archive_with_info">%s\" è un archivio corrotto.\nMessaggio dall\'estrattore: \"%s</string>
     <string name="security_error">Impossibile aprire il file usando quest\'app</string>
     <string name="cloud_drive_tooltip">Crea una connessione Google Drive™ per gestire i file da Amaze File Manager.</string>
     <string name="signin_with_google_title">Autenticati per usare Google Drive™</string>
@@ -697,14 +697,14 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="select_fill">Seleziona il riempimento</string>
     <string name="error_fetching_google_play_product_list">Errore durante la ricezione della lista prodotti da Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Da Android 11, Google necessita che i File Manager chiedano il permesso dell\'utente per gestire tutti i file del dispositivo. Dettagli <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">qui</a>.
-        \n\nAnche Gestione File Amaze necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.
+        \n\nAnche Amaze File Manager necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.
         \n\n<font color='#ff6347'><i>Annullando questa richiesta, l\'app terminerà.</i></font></body></html></string>
     <string name="user_apps">App utente</string>
     <string name="appearance">Aspetto</string>
-    <string name="behavior">Azioni</string>
+    <string name="behavior">Comportamento</string>
     <string name="appearance_summary">Personalizza il tema, i colori e l\'aspetto del file manager</string>
     <string name="ui_summary">Controlla quali informazioni mostrare, personalizza la barra laterale e modifica le preferenze dell\'interfaccia utente</string>
-    <string name="behavior_summary">Modifica azioni come la ricerca avanzata e decidi se aprire i file come nuova attività</string>
+    <string name="behavior_summary">Modifica comportamenti come la ricerca avanzata e decidi se aprire i file come nuova attività</string>
     <string name="security_summary">Imposta password e crittografia</string>
     <string name="backup_summary">Esporta/Importa impostazioni Amaze</string>
 
@@ -739,20 +739,20 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="protocol_ftps">FTP sicuro</string>
     <string name="unavailable">Non disponibile</string>
 
-    <string name="exporting_failed">Esportazione fallita: non è stato possibile scrivere il file di backup</string>
+    <string name="exporting_failed">Esportazione fallita: non è possibile scrivere il file di backup</string>
     <string name="importing_failed">Importazione fallita: non è stato possibile leggere il file di backup</string>
     <string name="importing_completed">Importazione completata</string>
     <string name="invalid_backup_file">File di backup non valido</string>
     <string name="import_failed_for">Importazione fallita per:</string>
     <string name="free_of">\"%s\n%s liberi di %s</string>
     <string name="cloud_error_fdroid">Il plugin Amaze Cloud non è supportato dalla versione F-Droid. Si prega di usare la versione di Amaze disponibile sul Play Store.</string>
-    <string name="disable_player_intent_filters">Disabilita filtri intent del player</string>
+    <string name="disable_player_intent_filters">Disabilita i filtri intent del player</string>
     <string name="disable_player_intent_filters_summary">Disabilita i filtri intent del player Amaze nel selettore dei file</string>
     <string name="no_app_found_intent">Nessuna app trovata per gestire questo intent. DocumentsUI è installato?</string>
     <string name="cloud_connection_credentials_cleared">Credenziali per la connessione cloud cancellate</string>
-    <string name="cloud_connection_credentials_cleared_msg">Purtroppo non siamo riusciti a migrare le tue credenziali per la connessione cloud al nuovo database schema, e abbiamo dovuto rimuoverle dall\'applicazione. Per favore crea nuovamente la connessione cloud.</string>
+    <string name="cloud_connection_credentials_cleared_msg">Purtroppo non siamo riusciti a migrare le tue credenziali per la connessione cloud al nuovo database schema, e abbiamo dovuto rimuoverle dall\'applicazione. Per favore crea nuovamente la connessione cloud</string>
     <string name="not_finding_what_you_re_looking_for">Non hai trovato quello che cercavi?</string>
-    <string name="try_deep_search">Prova la ricerca avanzata!</string>
+    <string name="try_deep_search">Prova Deep Search!</string>
     <string name="try_indexed_search">Prova la ricerca indicizzata!</string>
     <string name="search_recent">Recente</string>
     <string name="results">Risultati</string>

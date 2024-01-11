@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -23,14 +23,14 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze Dateimanager</string>
-    <string name="drawer_open">Öffne Navigationsleiste</string>
-    <string name="drawer_close">Schließe Navigationsleiste</string>
+    <string name="drawer_open">Navigationsleiste öffnen</string>
+    <string name="drawer_close">Navigationsleiste schließen</string>
     <string name="icon">Symbol</string>
     <string name="apps">App Manager</string>
-    <string name="ftp">FTP Server</string>
+    <string name="ftp">FTP-Server</string>
     <string name="setting">Einstellungen</string>
     <string name="select">Auswählen</string>
-    <string name="press_again">Drücke erneut zum Schließen</string>
+    <string name="press_again">Zum Schließen erneut drücken</string>
     <string name="open">Öffnen</string>
     <string name="backup">Sicherung</string>
     <string name="uninstall">Deinstallieren</string>
@@ -50,7 +50,7 @@
     <string name="save">Speichern</string>
     <string name="bookmarks_added">Lesezeichen hinzugefügt</string>
     <string name="fileexist">Datei existiert bereits</string>
-    <string name="name">Name</string>
+    <string name="name">Name: </string>
     <string name="date">Datum</string>
     <string name="location">Standort</string>
     <string name="size_capitalized">Größe</string>
@@ -65,8 +65,8 @@
     <string name="entername">Namen eingeben</string>
     <string name="extracting">Extrahieren</string>
     <string name="stopping">Stoppen</string>
-    <string name="open_parent">Öffne übergeordnetes Verzeichnis</string>
-    <string name="open_with">Öffne mit</string>
+    <string name="open_parent">Übergeordnetes Verzeichnis öffnen</string>
+    <string name="open_with">Öffnen mit</string>
     <string name="share">Teilen</string>
     <string name="about">Über</string>
     <string name="extract">Extrahieren</string>
@@ -92,7 +92,7 @@
     <string name="history">Verlauf</string>
     <string name="copy">Kopieren</string>
     <string name="root_mode">Root Explorer</string>
-    <string name="root_mode_summary">Nur für gerootete Geräte. Nur aktivieren wenn Sie ganz sicher sind.</string>
+    <string name="root_mode_summary">Nur für gerootete Geräte. Nur aktivieren, wenn Sie ganz sicher sind.</string>
     <string name="root_failure">Root-Zugriff nicht gewährt</string>
     <string name="select_all">Alles auswählen</string>
     <string name="delete">Löschen</string>
@@ -106,7 +106,7 @@
     <!-- Theme -->
     <string name="light">Hell</string>
     <string name="dark">Dunkel</string>
-    <string name="daytime">Tageslicht</string>
+    <string name="daytime">Gemäß Tageszeit</string>
     <string name="black">Schwarz (für OLED)</string>
     <string name="system">System (folgt dem System)</string>
     <!--Skin-->
@@ -150,15 +150,15 @@
     <string name="ok">OK</string>
     <string name="ui">Benutzeroberfläche</string>
     <string name="general">Allgemein</string>
-    <string name="thumb_summary">Zeige Miniaturansicht von Apps und Bildern</string>
+    <string name="thumb_summary">Miniaturansichten von Apps und Bildern anzeigen</string>
     <string name="thumb">Thumbnails anzeigen</string>
-    <string name="hidden">Zeige versteckte Dateien und Ordner an</string>
+    <string name="hidden">Versteckte Dateien und Ordner anzeigen</string>
     <string name="lastModifiedSummary">Datum und Uhrzeit der letzten Änderung anzeigen</string>
     <string name="lastModifiedPref">Änderungsdatum anzeigen</string>
-    <string name="size_pref_summary">Zeige bei Dateien die Größe an, bei Ordnern die Anzahl der enthaltenen Elemente</string>
+    <string name="size_pref_summary">Dateigrößen und Anzahl der Elemente in Ordnern anzeigen</string>
     <string name="size_pref">Größe anzeigen</string>
     <string name="miscellaneous">Verschiedenes</string>
-    <string name="root_pref_summary">Zeige die Berechtigungen der Dateien und Ordner an</string>
+    <string name="root_pref_summary">Berechtigungen der Dateien und Ordner anzeigen</string>
     <string name="root_pref">Dateiberechtigungen anzeigen</string>
     <string name="about_amaze_file_manager_label">Über Amaze File Manager</string>
     <string name="version">Version</string>
@@ -169,7 +169,7 @@
     <string name="root_directory">Stammverzeichnis</string>
     <string name="add_shortcut">Schnellwahl</string>
     <string name="unsaved_changes">Ungespeicherte Änderungen</string>
-    <string name="unsaved_changes_description">Du hast ungespeicherte Änderungen! Möchtest du diese vor dem Beenden speichern?</string>
+    <string name="unsaved_changes_description">Sie haben ungespeicherte Änderungen! Möchten Sie diese vor dem Beenden speichern?</string>
     <string name="saving">Speichere</string>
     <string name="package_installer">Paket-Installer</string>
     <string name="view">Ansicht</string>
@@ -215,7 +215,7 @@
     <string name="text">Text</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
-    <string name="other">Anderer</string>
+    <string name="other">Sonstige</string>
     <string name="image">Bild</string>
     <string name="contributors">Mitwirkende</string>
     <string name="save_paths">Pfade merken</string>
@@ -223,7 +223,7 @@
     <string name="select_intent">Auswählen</string>
     <string name="database">Datenbank</string>
     <string name="colored_navigation">Farbige Navigationsleiste</string>
-    <string name="colored_navigvation_sum">Ob die Navigationsleiste mit der Farbe des Skins angezeigt wird oder nicht.</string>
+    <string name="colored_navigvation_sum">Legt fest, ob die Navigationsleiste mit der Farbe des Skins angezeigt wird oder nicht.</string>
 
     <string name="color_title">Farbe</string>
     <string name="color_summary">Farbe für diverse Elemente setzen</string>
@@ -233,11 +233,11 @@
     <string name="accent_color_summary">Setze Farbe des FAB und anderer kleiner UI Elemente</string>
     <string name="icon_color_title">Farbe der Icons</string>
     <string name="icon_color_summary">Icon-Farbe setzen</string>
-    <string name="choose_color">Wähle eine Farbe</string>
-    <string name="files">Dateien</string>
+    <string name="choose_color">Farbe auswählen</string>
+    <string name="files">DATEIEN</string>
     <string name="textreader">Text-Reader</string>
     <string name="databasereader">Datenbank-Leser</string>
-    <string name="show_dividers">Zeige Trenner</string>
+    <string name="show_dividers">Trenner anzeigen</string>
     <string name="needs_access">Schreibrechte benötigt</string>
     <string name="needs_access_summary">Bitte Stammverzeichnis von \t wählen</string>
     <string name="needs_access_summary1">\tto Schreibrechte eingeräumt</string>
@@ -309,21 +309,63 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_port_change_success">FTP-Port erfolgreich geändert</string>
     <string name="ftp_port_change_error_invalid">Gewählte Portnummer ist ungültig</string>
     <string name="primary_two_title">Primärfarbe (rechter Tab)</string>
-    <string name="primary_two_summary">Setze Farbe für große UI Elemente im rechten Tab</string>
-    <string name="support_development">Unterstütze die Entwicklung</string>
-    <string name="report_bugs_title">Melde Fehler</string>
+    <string name="primary_two_summary">Farbe für große UI-Elemente im rechten Tab festlegen</string>
+    <string name="support_development">Entwicklung fördern</string>
+    <string name="report_bugs_title">Fehler melden</string>
     <string name="source_title">Quelltext</string>
     <string name="source_summary">Quelltext auf Github anzeigen</string>
-    <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
+    <string name="report_bugs_summary">Fehler melden oder neue Funktionen vorschlagen</string>
     <string name="translate_title">Übersetzen</string>
-    <string name="translate_summary">Übersetze Amaze in deine Sprache</string>
+    <string name="translate_summary">Amaze in Ihre Sprache übersetzen</string>
     <string name="paypal_copy_message">PayPal-ID in die Zwischenablage kopiert</string>
     <string name="searching_devices">Suche nach Geräten</string>
-    <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
+    <string name="use_custom_ip">Benutzerdefinierte IP verwenden</string>
     <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
 
     <string name="smb_instructions">
-         <html><body> <h1>Wie freigegebenen Windows-Ordner Zugriff auf Android (Smb)</h1>\n\n <ul><li><b>File-Sharing aktivieren</b> \n</li> <p style="margin-left: 40px"> Öffnen Sie die Systemsteuerung, klicken Sie auf Wählen Sie Heimnetzgruppe und Freigabeoptionen unter Netzwerk und Internet, und klicken Sie auf erweiterte Freigabeeinstellungen ändern. Aktivieren Sie die Datei- und Druckerfreigabe feature.\n\n</p> <li><b>zusätzliche File-Sharing-Einstellungen</b> \n</li> <p style="margin-left: 40px"> kann auch die andere erweiterte Freigabe Einstellungen hier. \n z. B. konfigurieren möchten, könnten Sie Zugriff auf Ihre Dateien ohne Passwort aktivieren, vertraust du alle Geräte in Ihrem lokalen Netzwerk. Wenn Datei- und Druckerfreigabe aktiviert ist, können Sie Datei-Explorer oder Windows Explorer zu öffnen, rechtsklicken Sie einen Ordner, den Sie freigeben möchten, und wählen Sie Eigenschaften. \n Klicken Sie auf die Share-Taste und machen den Ordner finden Sie auf der network.\n\n</p> <li><b>stellen sicher, dass beide Geräte sind auf dem gleichen Wifi</b> \n</li> <p style="margin-left: 40px"> dieses Feature macht Dateien im lokalen Netzwerk verfügbar, so dass Ihr PC und mobilen Geräten im gleichen lokalen Netzwerk sein. Sie können \' t Zugriff auf einen freigegebenen Windows-Ordner über das Internet oder wenn Ihr Smartphone mit seiner mobilen Daten verbunden ist – es hat mit Wi-Fi.\n\n verbunden sein</p> <li><b>IP-Adresse suchen</b> \n</li> <p style="margin-left: 40px"> offenen Eingabeaufforderung. Geben Sie \"Ipconfig\" und drücken Sie die Eingabetaste. Suchen Sie nach Standard-Gateway unter Netzwerkadapter für die IP-Adresse Ihres Routers. Suchen Sie nach \"IPv4 Address\" unter den gleichen Adapter Abschnitt Ihres Computers IP-address.\n\n zu finden</p> <b>Enter Details im Dialogfeld Smb</b> \n</ul></body></html>    </string>
+        <html>
+            <body>
+                <h1>Wie man in Android auf freigegebene Windows-Ordner zugreift (SMB)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Dateifreigabe in Windows aktivieren</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Öffnen Sie die Systemsteuerung, wählen Sie unter »Netzwerk und Internet« das »Netzwerk- und Freigabecenter«, 
+                      klicken Sie dort auf »Erweiterte Freigabeeinstellungen ändern« und aktivieren die Datei- und Druckerfreigabe.\n\n
+                    </p>
+
+                    <li>
+                        <b>Zusätzliche Dateifreigabe-Einstellungen</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Wenn Sie möchten, können Sie hier noch andere erweiterte Freigabe-Einstellungen konfigurieren. \n
+                       Beispielsweise könnten Sie den Zugriff auf Ihre Dateien ohne ein Passwort aktivieren, wenn Sie allen Geräten in Ihrem lokalen Netzwerk vertrauen. Sobald die Datei- und Druckerfreigabe aktiviert ist, können Sie Datei-Explorer oder Windows Explorer öffnen, auf einen Ordner, den Sie freigeben möchten, rechtsklicken und »Eigenschaften« wählen. \n
+                        Klicken Sie auf die Freigabe-Taste auf dem Tab »Freigabe« und machen Sie den Ordner im Netzwerk zugänglich.\n\n
+                        </p>
+
+                    <li>
+                        <b>Sicherstellen, dass beide Geräte im selben WLAN sind</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Diese Funktion macht Dateien im lokalen Netzwerk zugänglich, somit müssen sich Ihr PC und mobile Geräte
+                        im selben lokalen Netzwerk befinden. Sie können auf einen freigegebenen Windows-Ordner nicht über das Internet zugreifen oder wenn Ihr Smartphone über mobile Daten verbunden ist – es muss mit dem WLAN verbunden sein.\n\n
+                    </p>
+
+                    <li>
+                        <b>IP-Adresse finden</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Öffnen Sie die Eingabeaufforderung. Geben Sie »ipconfig« ein und drücken Sie die Eingabetaste. Suchen Sie bei Standardgateway unter Netzwerkadapter nach der IP-Adresse Ihres Routers. Suchen Sie unter 
+                        \\"IPv4-Adresse\\" im selben Abschnitt nach der IP-Adresse Ihres Computers.
+\n\n
+                    </p>
+
+                    <b>Tragen Sie die Werte ins SMB-Dialogfeld ein</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
     <string name="share_limit">Es können nicht mehr als 100 Dateien geteilt werden</string>
     <string name="otg_access">Stammverzeichnis des OTG-Geräts wählen</string>
     <string name="information">Informationen</string>
@@ -566,6 +608,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="create_file_suggest_txt_extension">Es wird empfohlen \".txt\" als Dateierweiterung zu verwenden.</string>
     <string name="ssh_select_pem">Privaten Schlüssel für die Authentifizierung auswählen</string>
     <string name="ssh_key_invalid_passphrase">Schlüsselpassphrase ungültig.</string>
+    <string name="ssh_key_no_decoder_decrypt">Kein gültiger Decoder zum Entschlüsseln von PEM.</string>
     <string name="encryption_fail_copy">Fehler beim Aktualisieren des Verschlüsselungseintrags in der Datenbank</string>
     <string name="extracted">Extrahiert</string>
     <string name="compressed">Komprimiert</string>
@@ -603,7 +646,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="enable_marquee_filename">Lauftext für lange Dateinamen aktivieren</string>
     <string name="archive_password_prompt">Bitte geben Sie das Archivpasswort ein:</string>
     <string name="cannot_extract_archive">Kann Archiv \"%s\":%s nicht extrahieren</string>
-    <string name="archive_unsupported_or_corrupt">Das ARchiv \"%s\" kann nicht geöffnet werden. Entweder können wir das Archiv nicht öffnen oder das Archiv wurde beschädigt.</string>
+    <string name="archive_unsupported_or_corrupt">Das Archiv \"%s\" kann nicht geöffnet werden. Entweder können wir das Archiv nicht öffnen oder das Archiv wurde beschädigt.</string>
     <string name="close">Schließen</string>
     <string name="bookmark_exists">Lesezeichen existiert</string>
     <string name="hide_media">Vor Media-Browser verstecken</string>
@@ -670,7 +713,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).\n\n
 
 Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für die Datenfreigabe verwenden.</string>
-    <string name="android_data_prompt_saf_access">Seit Android 10 gibt es bestimmte Einschränkungen auf Verzeichnisse. Für den Zugriff ist das Storage Access Framework (SAF) erforderlich.\n\nBitte erlauben Sie Amaze den Zugriff auf das Verzeichnis vom systemweiten Dateimanager aus, durch Drücken auf \"Zugriff erlauben\".</string>
+    <string name="android_data_prompt_saf_access">Seit Android 10 gibt es bestimmte Einschränkungen auf Verzeichnisse. Für den Zugriff ist das Storage Access Framework (SAF) erforderlich.\n\nBitte erlauben Sie Amaze den Zugriff auf das Verzeichnis vom systemweiten Dateimanager aus, indem Sie auf \"Zugriff erlauben\" tippen.</string>
     <string name="android_data_prompt_saf_access_title">Zugriff auf SAF erlauben</string>
     <string name="ftp_preference_saf_filesystem_title">Älteres Dateisystem verwenden</string>
     <string name="ftp_preference_saf_filesystem">Auf neuen Android-Versionen aktivieren, für die Unterstützung zur Verwendung externer Speichergeräte</string>
@@ -681,7 +724,7 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="compressed_explorer_fragment_error_open_uri">Fehler beim Öffnen der URI \"%s\", um diese zu lesen.</string>
     <string name="error_empty_archive">\"%s\" ist ein leeres Archiv.</string>
     <string name="error_bad_archive_without_info">\"%s\" ist ein defektes Archiv.</string>
-    <string name="error_bad_archive_with_info">\"%s\" ist ein defektes Archiv.\nMeldung des Extrators: \"%s\"</string>
+    <string name="error_bad_archive_with_info">"%s" ist ein defektes Archiv.\nMeldung des Extrators: "%s"</string>
     <string name="security_error">Datei konnte mit dieser App nicht geöffnet werden </string>
     <string name="cloud_drive_tooltip">Eine Verbindung mit Google Drive™ erstellen, um Dateien innerhalb Amaze File Manager zu verwalten.</string>
     <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
@@ -691,9 +734,10 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="select_by_type">Nach Typ auswählen</string>
     <string name="select_by_date">Nach Datum auswählen</string>
     <string name="select_similar">Ähnliche auswählen</string>
+    <string name="select_fill">Füllung auswählen</string>
     <string name="error_fetching_google_play_product_list">Fehler beim Abruf der Produktliste von Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Seit Android 11 wird seitens Google verlangt, dass Dateiverwalter Berechtigungen zum Verwalten aller Dateien auf dem Gerät anfordern. Mehr Details dazu <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">hier</a>.
-        \n\nAmaze File Manager benötigt diese Berechtigung ebenfalls. Nach drücken auf &quot;Zulassen&quot; bitte die Option <b>Zugriff zum Verwalten aller Dateien zulassen</b> auf der nächsten Seite auswählen.
+        \n\nAmaze File Manager benötigt diese Berechtigung ebenfalls. Nach drücken auf &quot;Gewähren&quot; bitte die Option <b>Zugriff zum Verwalten aller Dateien zulassen</b> auf der nächsten Seite auswählen.
         \n\n<font color='#ff6347'><i>Das Abbrechen dieser Abfrage wird die App beenden.</i></font></body></html></string>
     <string name="user_apps">Benutzer-Apps</string>
     <string name="appearance">Aussehen</string>
@@ -702,22 +746,27 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="ui_summary">Steuert, welche Informationen angezeigt werden, erlaubt das Anpassen von Seitenleiste und Oberfläche</string>
     <string name="behavior_summary">Ändern Sie Verhaltensweisen wie die erweiterte Suche und ob Dateien als neuer Task geöffnet werden sollen</string>
     <string name="security_summary">Passwort und Verschlüsselung festlegen</string>
+    <string name="backup_summary">Amaze-Einstellungen exportieren/importieren</string>
+
+    <string name="pref_export">Exportieren</string>
+    <string name="pref_export_summary">Einstellungen exportieren</string>
+    <string name="pref_import">Importieren</string>
+    <string name="pref_import_summary">Einstellungen importieren</string>
 
     <string name="quick_desc">Dateien, auf die über Amaze kürzlich zugegriffen wurde</string>
     <string name="recent_desc">Kürzlich erstellte oder geänderte Dateien</string>
     <string name="error_cannot_find_way_open">Keine Möglichkeit gefunden, die Datei zu öffnen</string>
     <string name="error_cant_decompress_that_file">Angefragtes Archiv kann nicht bearbeitet werden</string>
     <string name="analyse_storage">Speicher analysieren</string>
-    <string name="download_amaze_utils_text">Sie werden zur den Amaze File Utilities weitergeleitet.Es ist unser Angebot, das über integrierte Audio-/Video-/Bild-/Dokumentenbetrachter verfügt, mit denen Sie gespeicherte Dateien auf verschwommene/dunkle Bilder und doppelte Dateien analysieren können, sowie schnelle Übertragung mit Wifi P2P und vieles mehr.\nBitte unterstützen Sie uns, indem Sie es ausprobieren. </string>
+    <string name="download_amaze_utils_text">Sie werden zu Amaze File Utilities weitergeleitet. Es handelt sich um unsere Open-Source-App, die über integrierte Audio-/Video-/Bild-/Dokumentbetrachter verfügt, die Analyse von Junk-Dateien ermöglicht, um Speicherplatz freizugeben, eine schnelle Übertragung per WLAN-P2P und vieles mehr.\nBitte unterstützen Sie uns, indem Sie es ausprobieren.</string>
     <string name="download">Download</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Danke für die Installation der Amaze File Utilities. Sie werden zur App weitergeleitet.</string>
     <string name="image_viewer">Amaze-Bildbetrachter</string>
     <string name="video_player">Amaze-Videoplayer</string>
     <string name="amaze_audio_player">Amaze-Musikplayer</string>
-    <string name="pdf_viewer">Amaze-PDF-Betrachter</string>
-    <string name="epub_viewer">Amaze-Epub-Betrachter</string>
-    <string name="docx_viewer">Amaze-Doc-Betrachter</string>
+    <string name="pdf_viewer">Amaze Document Viewer</string>
+    <string name="docx_viewer">Amaze Document Viewer</string>
     <string name="share_logs">Protokolle teilen</string>
     <string name="share_logs_summary">Erstellte Protokolle per E-Mail / Telegram teilen</string>
     <string name="open_with_amaze">Mit Amaze öffnen</string>
@@ -729,6 +778,30 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="preference_delete_confirmation_summary">Sicherheitsabfrage vor dem Löschen von Dateien. Dies sollte möglichst nicht deaktiviert werden. </string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Nicht verfügbar</string>
+
+    <string name="exporting_failed">Exportieren fehlgeschlagen: die Sicherungsdatei konnte nicht geschrieben werden</string>
+    <string name="importing_failed">Importieren fehlgeschlagen: die Sicherungsdatei konnte nicht gelesen werden</string>
+    <string name="importing_completed">Importieren abgeschlossen</string>
+    <string name="invalid_backup_file">Ungültige Sicherungsdatei</string>
+    <string name="import_failed_for">Importieren fehlgeschlagen, für:</string>
+    <string name="free_of">\"%s\n%s von %s frei</string>
     <string name="cloud_error_fdroid">Das Amaze Cloud-Plug-In wird von der F-Droid-Version nicht unterstützt. Bitte verwenden Sie die Play Store-Version von Amaze.</string>
+    <string name="disable_player_intent_filters">Aktionsfilter für Player deaktivieren</string>
+    <string name="disable_player_intent_filters_summary">In Amaze integrierten Mediaplayer für Dateiauswahl deaktivieren</string>
+    <string name="no_app_found_intent">Keine App für diese Aktion gefunden. Haben Sie DocumentsUI installiert?</string>
+    <string name="cloud_connection_credentials_cleared">Anmeldeinformationen für Cloud-Verbindung gelöscht</string>
+    <string name="cloud_connection_credentials_cleared_msg">Leider konnten wir Ihre Anmeldeinformationen für die Cloud-Verbindung nicht auf das neue Datenbankschema migrieren und mussten sie aus der App entfernen. Bitte erstellen Sie die Cloud-Verbindung erneut.</string>
+    <string name="not_finding_what_you_re_looking_for">Sie finden nicht was Sie suchen?</string>
+    <string name="try_deep_search">Tiefe Suche ausprobieren!</string>
+    <string name="try_indexed_search">Indizierte Suche ausprobieren!</string>
+    <string name="search_recent">Letzte</string>
+    <string name="results">Ergebnisse</string>
+    <string name="grant_notification_permission">Amaze benötigt eine Benachrichtigungsberechtigung, um den Fortschritt des Dateivorgangs anzuzeigen, sowie ein praktisches Bedienfeld zum Starten/Stoppen des FTP-Servers.</string>
+    <string name="error_unsupported_or_null_uri">Ungültig, nicht unterstützt oder es wurde kein URI angegeben</string>
+    <string name="complete_paste_warning">Bitte zuerst den Einfügevorgang abschließen</string>
+    <string name="same_dir_move_error">Ziel- und Quellordner sollten zum Verschieben nicht übereinstimmen.</string>
+    <string name="checking_conflicts">Auf Konflikte prüfen</string>
+    <string name="same_dir_overwrite_error">Ziel- und Quellordner sollten zum Überschreiben nicht übereinstimmen.</string>
+    <string name="not_found_enabled_webview">Kein verfügbarer Browser</string>
 </resources>
 

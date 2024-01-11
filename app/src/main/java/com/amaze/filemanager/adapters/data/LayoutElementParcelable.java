@@ -48,10 +48,10 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
   public final String desc;
   public final String permissions;
   public final String symlink;
-  public final String size;
-  public final boolean isDirectory;
-  public final long date, longSize;
-  public final String dateModification;
+  public String size;
+  public boolean isDirectory;
+  public long date, longSize;
+  public String dateModification;
   public final boolean header;
 
   // same as hfile.modes but different than openmode in Main.java

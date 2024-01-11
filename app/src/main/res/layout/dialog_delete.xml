@@ -8,9 +8,10 @@
     android:orientation="vertical" >
 
     <TextView
+        android:id="@+id/dialog_delete_disclaimer"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/dialog_delete_disclaimer"
+        android:text="@string/dialog_delete_temporarily_disclaimer"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="@dimen/dialog_list" >
     </TextView>
@@ -69,4 +70,14 @@
         tools:text="Total: 6.00 MB" >
     </TextView>
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/delete_permanently_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_generic"
+        android:text="@string/delete_permanently_checkbox"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/dialog_list"
+        android:visibility="gone"
+        />
 </LinearLayout>

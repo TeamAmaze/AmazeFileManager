@@ -441,7 +441,7 @@ public class CopyService extends AbstractProgressiveService {
           for (HybridFileParcelable a : sourceFiles) {
             if (!failedFOps.contains(a)) toDelete.add(a);
           }
-          new DeleteTask(c).execute((toDelete));
+          new DeleteTask(c, true).execute((toDelete));
         }
       }
 

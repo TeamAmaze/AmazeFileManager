@@ -99,7 +99,7 @@ abstract class AbstractDeleteTaskTestBase {
     }
 
     protected fun doTestDeleteFileOk(file: HybridFileParcelable) {
-        val task = DeleteTask(ctx!!)
+        val task = DeleteTask(ctx!!, false)
         val result = task.doInBackground(ArrayList(listOf(file)))
         assertTrue(result.result)
         assertNull(result.exception)
@@ -117,7 +117,7 @@ abstract class AbstractDeleteTaskTestBase {
             shadowOf(Looper.getMainLooper()).idle()
         }.moveToState(Lifecycle.State.STARTED).onActivity { activity ->
 
-            val task = DeleteTask(ctx!!)
+            val task = DeleteTask(ctx!!, false)
             val result = task.doInBackground(ArrayList(listOf(file)))
             if (result.result != null) {
                 assertFalse(result.result)
