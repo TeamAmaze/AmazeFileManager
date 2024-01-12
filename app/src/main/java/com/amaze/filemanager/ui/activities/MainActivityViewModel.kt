@@ -32,6 +32,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.DeepSearch
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.searchParametersFromBoolean
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -199,6 +200,13 @@ class MainActivityViewModel(val applicationContext: Application) :
         val showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
         val isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false)
         val isMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false)
+        val isRoot = mainActivity.isRootExplorer
+        val searchParameters = searchParametersFromBoolean(
+            showHiddenFiles,
+            isRegexEnabled,
+            isMatchesEnabled,
+            isRoot
+        )
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
         val openMode =
@@ -211,10 +219,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             query,
             path,
             openMode,
-            mainActivity.isRootExplorer,
-            isRegexEnabled,
-            isMatchesEnabled,
-            showHiddenFiles
+            searchParameters
         )
 
         viewModelScope.launch(Dispatchers.IO) {

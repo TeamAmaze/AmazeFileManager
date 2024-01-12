@@ -36,10 +36,7 @@ class DeepSearch(
     private val query: String,
     private val path: String,
     private val openMode: OpenMode,
-    private val rootMode: Boolean,
-    private val isRegexEnabled: Boolean,
-    private val isMatchesEnabled: Boolean,
-    private val showHiddenFiles: Boolean
+    private val searchParameters: SearchParameters
 ) {
     private val LOG = LoggerFactory.getLogger(DeepSearch::class.java)
 
@@ -64,7 +61,7 @@ class DeepSearch(
 
         // level 1
         // if regex or not
-        if (!isRegexEnabled) {
+        if (SearchParameter.REGEX !in searchParameters) {
             search(file, query)
         } else {
             // compile the regular expression in the input
@@ -73,7 +70,7 @@ class DeepSearch(
                 Pattern.CASE_INSENSITIVE
             )
             // level 2
-            if (!isMatchesEnabled) {
+            if (SearchParameter.REGEX_MATCHES !in searchParameters) {
                 searchRegExFind(file, pattern)
             } else {
                 searchRegExMatch(file, pattern)
@@ -93,8 +90,11 @@ class DeepSearch(
             worklist.add(directory)
             while (coroutineContext.isActive && worklist.isNotEmpty()) {
                 val nextFile = worklist.removeFirst()
-                nextFile.forEachChildrenFile(applicationContext, rootMode) { file ->
-                    if (!file.isHidden || showHiddenFiles) {
+                nextFile.forEachChildrenFile(
+                    applicationContext,
+                    SearchParameter.ROOT in searchParameters
+                ) { file ->
+                    if (!file.isHidden || SearchParameter.SHOW_HIDDEN_FILES in searchParameters) {
                         if (filter.searchFilter(file.getName(applicationContext))) {
                             publishProgress(file)
                         }
