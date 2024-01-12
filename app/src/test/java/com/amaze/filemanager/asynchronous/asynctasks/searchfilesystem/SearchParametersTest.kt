@@ -26,13 +26,15 @@ import java.util.EnumSet
 
 class SearchParametersTest {
 
+    /** Tests [SearchParameters.and] */
     @Test
-    fun testAdd() {
+    fun testAnd() {
         val expected = EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES, SearchParameter.ROOT)
         val actual = SearchParameter.SHOW_HIDDEN_FILES and SearchParameter.ROOT
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [SearchParameters.plus] */
     @Test
     fun testPlus() {
         val expected = EnumSet.of(SearchParameter.REGEX, SearchParameter.ROOT)
@@ -40,6 +42,7 @@ class SearchParametersTest {
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [searchParametersFromBoolean] with no flag turned on */
     @Test
     fun testSearchParametersFromBooleanWithNone() {
         val expected = EnumSet.noneOf(SearchParameter::class.java)
@@ -47,6 +50,7 @@ class SearchParametersTest {
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [searchParametersFromBoolean] with one flag turned on */
     @Test
     fun testSearchParametersFromBooleanWithOne() {
         val expected = EnumSet.of(SearchParameter.ROOT)
@@ -54,6 +58,7 @@ class SearchParametersTest {
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [searchParametersFromBoolean] with two flags turned on */
     @Test
     fun testSearchParametersFromBooleanWithTwo() {
         val expected = EnumSet.of(SearchParameter.ROOT, SearchParameter.SHOW_HIDDEN_FILES)
@@ -61,6 +66,7 @@ class SearchParametersTest {
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [searchParametersFromBoolean] with three flags turned on */
     @Test
     fun testSearchParametersFromBooleanWithThree() {
         val expected = EnumSet.of(
@@ -76,6 +82,7 @@ class SearchParametersTest {
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [searchParametersFromBoolean] with four flags turned on */
     @Test
     fun testSearchParametersFromBooleanWithFour() {
         val expected = EnumSet.of(

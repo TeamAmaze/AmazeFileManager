@@ -23,12 +23,23 @@ package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 import java.util.EnumSet
 
 typealias SearchParameters = EnumSet<SearchParameter>
+
+/**
+ * Returns [SearchParameters] extended by [other]
+ */
 infix fun SearchParameters.and(other: SearchParameter): SearchParameters = SearchParameters.of(
     other,
     *this.toTypedArray()
 )
+
+/**
+ * Returns [SearchParameters] extended by [other]
+ */
 operator fun SearchParameters.plus(other: SearchParameter): SearchParameters = this and other
 
+/**
+ * Returns [SearchParameters] that reflect the given Booleans
+ */
 fun searchParametersFromBoolean(
     showHiddenFiles: Boolean = false,
     isRegexEnabled: Boolean = false,

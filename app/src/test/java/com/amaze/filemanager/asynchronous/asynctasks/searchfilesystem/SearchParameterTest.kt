@@ -25,6 +25,8 @@ import org.junit.Test
 import java.util.EnumSet
 
 class SearchParameterTest {
+
+    /** Tests [SearchParameter.and] */
     @Test
     fun testAnd() {
         val expected = EnumSet.of(SearchParameter.ROOT, SearchParameter.REGEX_MATCHES)
@@ -32,6 +34,7 @@ class SearchParameterTest {
         Assert.assertEquals(expected, actual)
     }
 
+    /** Tests [SearchParameter.plus] */
     @Test
     fun testPlus() {
         val expected = EnumSet.of(SearchParameter.ROOT, SearchParameter.REGEX_MATCHES)
