@@ -197,15 +197,11 @@ class MainActivityViewModel(val applicationContext: Application) :
         query: String
     ): MutableLiveData<ArrayList<HybridFileParcelable>> {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-        val showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
-        val isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false)
-        val isMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false)
-        val isRoot = mainActivity.isRootExplorer
         val searchParameters = searchParametersFromBoolean(
-            showHiddenFiles,
-            isRegexEnabled,
-            isMatchesEnabled,
-            isRoot
+            showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false),
+            isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false),
+            isRegexMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false),
+            isRoot = mainActivity.isRootExplorer
         )
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""

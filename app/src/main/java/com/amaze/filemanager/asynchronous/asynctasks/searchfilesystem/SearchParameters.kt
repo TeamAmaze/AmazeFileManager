@@ -23,7 +23,6 @@ package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 import java.util.EnumSet
 
 typealias SearchParameters = EnumSet<SearchParameter>
-infix fun SearchParameters.allOf(other: SearchParameters) = this.containsAll(other)
 infix fun SearchParameters.and(other: SearchParameter): SearchParameters = SearchParameters.of(
     other,
     *this.toTypedArray()
@@ -31,10 +30,10 @@ infix fun SearchParameters.and(other: SearchParameter): SearchParameters = Searc
 operator fun SearchParameters.plus(other: SearchParameter): SearchParameters = this and other
 
 fun searchParametersFromBoolean(
-    showHiddenFiles: Boolean,
-    isRegexEnabled: Boolean,
-    isRegexMatchesEnabled: Boolean,
-    isRoot: Boolean
+    showHiddenFiles: Boolean = false,
+    isRegexEnabled: Boolean = false,
+    isRegexMatchesEnabled: Boolean = false,
+    isRoot: Boolean = false
 ): SearchParameters {
     val searchParameterList = mutableListOf<SearchParameter>()
 
@@ -43,5 +42,9 @@ fun searchParametersFromBoolean(
     if (isRegexMatchesEnabled) searchParameterList.add(SearchParameter.REGEX_MATCHES)
     if (isRoot) searchParameterList.add(SearchParameter.ROOT)
 
-    return SearchParameters.copyOf(searchParameterList)
+    return if (searchParameterList.isEmpty()) {
+        SearchParameters.noneOf(SearchParameter::class.java)
+    } else {
+        SearchParameters.copyOf(searchParameterList)
+    }
 }
