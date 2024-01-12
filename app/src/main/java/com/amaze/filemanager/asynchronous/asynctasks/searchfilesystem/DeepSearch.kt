@@ -74,10 +74,11 @@ class DeepSearch(
                 )
             )
             // level 2
-            if (!isMatchesEnabled) searchRegExFind(file, pattern) else searchRegExMatch(
-                file,
-                pattern
-            )
+            if (!isMatchesEnabled) {
+                searchRegExFind(file, pattern)
+            } else {
+                searchRegExMatch(file, pattern)
+            }
         }
     }
 
@@ -169,7 +170,7 @@ class DeepSearch(
     }
 
     fun interface SearchFilter {
-        /** Returns if the file with [fileName] as name should fulfills some predicate */
+        /** Returns if the file with the given [fileName] fulfills some predicate */
         fun searchFilter(fileName: String): Boolean
     }
 }

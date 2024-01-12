@@ -189,7 +189,7 @@ class MainActivityViewModel(val applicationContext: Application) :
     }
 
     /**
-     * Perform deep search: recursively search for
+     * Perform deep search: search recursively for files matching [query] in the current path
      */
     fun deepSearch(
         mainActivity: MainActivity,
