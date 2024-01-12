@@ -69,9 +69,8 @@ class DeepSearch(
         } else {
             // compile the regular expression in the input
             val pattern = Pattern.compile(
-                bashRegexToJava(
-                    query
-                )
+                bashRegexToJava(query),
+                Pattern.CASE_INSENSITIVE
             )
             // level 2
             if (!isMatchesEnabled) {
