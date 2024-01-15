@@ -65,10 +65,10 @@ sealed class FileSearch {
      */
     protected fun publishProgress(
         file: HybridFileParcelable,
-        match: Match
+        matchRange: MatchRange
     ) {
         val files = mutableFoundFilesLiveData.value.orEmpty().toMutableList()
-        files.add(SearchResult(file, match))
+        files.add(SearchResult(file, matchRange))
         mutableFoundFilesLiveData.postValue(files)
     }
 
@@ -138,6 +138,6 @@ sealed class FileSearch {
 
     fun interface SearchFilter {
         /** If the file with the given [fileName] fulfills some predicate, return the part that fulfills the predicate */
-        fun searchFilter(fileName: String): Match?
+        fun searchFilter(fileName: String): MatchRange?
     }
 }
