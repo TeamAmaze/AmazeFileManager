@@ -122,53 +122,24 @@ class MainActivityViewModel(val applicationContext: Application) :
     fun indexedSearch(
         mainActivity: MainActivity,
         query: String
-    ): MutableLiveData<ArrayList<HybridFileParcelable>> {
-        val list = ArrayList<HybridFileParcelable>()
+    ): LiveData<List<HybridFileParcelable>> {
+        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val cursor = mainActivity
+            .contentResolver
+            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
+            ?: return MutableLiveData()
 
-        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(
-            list
-        )
+        val searchParameters = createSearchParameters(mainActivity)
 
-        val showHiddenFiles =
-            PreferenceManager.getDefaultSharedPreferences(mainActivity)
-                .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
+        val path = mainActivity.currentMainFragment?.currentPath ?: ""
+
+        val indexedSearch = IndexedSearch(cursor)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
-
-            val cursor = mainActivity
-                .contentResolver
-                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
-                ?: return@launch
-
-            if (cursor.count > 0 && cursor.moveToFirst()) {
-                do {
-                    val path =
-                        cursor.getString(
-                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
-                        )
-
-                    if (path != null &&
-                        path.contains(mainActivity.currentMainFragment?.currentPath!!) &&
-                        File(path).name.lowercase(Locale.getDefault()).contains(
-                                query.lowercase(Locale.getDefault())
-                            )
-                    ) {
-                        val hybridFileParcelable =
-                            RootHelper.generateBaseFile(File(path), showHiddenFiles)
-
-                        if (hybridFileParcelable != null) {
-                            list.add(hybridFileParcelable)
-                            mutableLiveData.postValue(list)
-                        }
-                    }
-                } while (cursor.moveToNext())
-            }
-
-            cursor.close()
+            indexedSearch.search(query, path, searchParameters)
         }
 
-        return mutableLiveData
+        return indexedSearch.foundFilesLiveData
     }
 
     /**
