@@ -20,9 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
-import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable
+import com.amaze.filemanager.filesystem.HybridFileParcelable
 
-data class SearchResult(val file: ComparableParcelable, val matchRange: MatchRange)
+data class SearchResult(val file: HybridFileParcelable, val matchRange: MatchRange)
 
 typealias MatchRange = IntProgression
 
