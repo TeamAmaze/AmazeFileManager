@@ -195,14 +195,8 @@ class MainActivityViewModel(val applicationContext: Application) :
     fun deepSearch(
         mainActivity: MainActivity,
         query: String
-    ): MutableLiveData<ArrayList<HybridFileParcelable>> {
-        val sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-        val searchParameters = searchParametersFromBoolean(
-            showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false),
-            isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false),
-            isRegexMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false),
-            isRoot = mainActivity.isRootExplorer
-        )
+    ): LiveData<List<HybridFileParcelable>> {
+        val searchParameters = createSearchParameters(mainActivity)
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
         val openMode =
@@ -212,17 +206,24 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val deepSearch = DeepSearch(
             context,
-            query,
-            path,
-            openMode,
-            searchParameters
+            openMode
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            deepSearch.search()
+            deepSearch.search(query, path, searchParameters)
         }
 
-        return deepSearch.mutableLiveData
+        return deepSearch.foundFilesLiveData
+    }
+
+    private fun createSearchParameters(mainActivity: MainActivity): SearchParameters {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        return searchParametersFromBoolean(
+            showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false),
+            isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false),
+            isRegexMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false),
+            isRoot = mainActivity.isRootExplorer
+        )
     }
 
     /**
