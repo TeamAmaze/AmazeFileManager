@@ -30,6 +30,7 @@ sealed class FileSearch {
     private val mutableFoundFilesLiveData: MutableLiveData<List<SearchResult>> =
         MutableLiveData()
     val foundFilesLiveData: LiveData<List<SearchResult>> = mutableFoundFilesLiveData
+    private val foundFilesList: MutableList<SearchResult> = mutableListOf()
 
     /**
      * Search for files, whose names match [query], starting from [path] and add them to
@@ -67,9 +68,8 @@ sealed class FileSearch {
         file: HybridFileParcelable,
         matchRange: MatchRange
     ) {
-        val files = mutableFoundFilesLiveData.value.orEmpty().toMutableList()
-        files.add(SearchResult(file, matchRange))
-        mutableFoundFilesLiveData.postValue(files)
+        foundFilesList.add(SearchResult(file, matchRange))
+        mutableFoundFilesLiveData.postValue(foundFilesList)
     }
 
     private fun simpleFilter(query: String): SearchFilter =
@@ -137,7 +137,10 @@ sealed class FileSearch {
     }
 
     fun interface SearchFilter {
-        /** If the file with the given [fileName] fulfills some predicate, return the part that fulfills the predicate */
+        /**
+         * If the file with the given [fileName] fulfills some predicate, returns the part that fulfills the predicate.
+         * Otherwise returns null.
+         */
         fun searchFilter(fileName: String): MatchRange?
     }
 }
