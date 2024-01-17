@@ -38,13 +38,14 @@ class BasicSearch(context: Context) : FileSearch() {
             SearchParameter.SHOW_HIDDEN_FILES in searchParameters,
             { }
         ) { hybridFileParcelable: HybridFileParcelable ->
-            if (filter.searchFilter(hybridFileParcelable.getName(applicationContext)) &&
-                (
-                    SearchParameter.SHOW_HIDDEN_FILES in searchParameters ||
-                        !hybridFileParcelable.isHidden
-                    )
+            if (SearchParameter.SHOW_HIDDEN_FILES in searchParameters ||
+                !hybridFileParcelable.isHidden
             ) {
-                publishProgress(hybridFileParcelable)
+                val resultRange =
+                    filter.searchFilter(hybridFileParcelable.getName(applicationContext))
+                if (resultRange != null) {
+                    publishProgress(hybridFileParcelable, resultRange)
+                }
             }
         }
     }

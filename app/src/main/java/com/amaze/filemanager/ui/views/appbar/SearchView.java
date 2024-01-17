@@ -30,6 +30,7 @@ import java.util.List;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.sort.DirSortBy;

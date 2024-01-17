@@ -63,8 +63,9 @@ class DeepSearch(
                     SearchParameter.ROOT in searchParameters
                 ) { file ->
                     if (!file.isHidden || SearchParameter.SHOW_HIDDEN_FILES in searchParameters) {
-                        if (filter.searchFilter(file.getName(applicationContext))) {
-                            publishProgress(file)
+                        val resultRange = filter.searchFilter(file.getName(applicationContext))
+                        if (resultRange != null) {
+                            publishProgress(file, resultRange)
                         }
                         if (file.isDirectory(applicationContext)) {
                             worklist.add(file)

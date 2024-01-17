@@ -36,10 +36,10 @@ import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.BasicSearc
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.DeepSearch
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.IndexedSearch
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchParameters
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.searchParametersFromBoolean
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
-import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils.scanFile
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_REGEX
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_REGEX_MATCHES
@@ -102,7 +102,7 @@ class MainActivityViewModel(val applicationContext: Application) :
      * Perform basic search: searches on the current directory
      */
     fun basicSearch(mainActivity: MainActivity, query: String):
-        LiveData<List<HybridFileParcelable>> {
+        LiveData<List<SearchResult>> {
         val searchParameters = createSearchParameters(mainActivity)
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
@@ -122,8 +122,12 @@ class MainActivityViewModel(val applicationContext: Application) :
     fun indexedSearch(
         mainActivity: MainActivity,
         query: String
-    ): LiveData<List<HybridFileParcelable>> {
-        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+    ): LiveData<List<SearchResult>> {
+        val projection = arrayOf(
+            MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.DISPLAY_NAME
+        )
+        MediaStore.VOLUME_EXTERNAL_PRIMARY
         val cursor = mainActivity
             .contentResolver
             .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
@@ -148,7 +152,7 @@ class MainActivityViewModel(val applicationContext: Application) :
     fun deepSearch(
         mainActivity: MainActivity,
         query: String
-    ): LiveData<List<HybridFileParcelable>> {
+    ): LiveData<List<SearchResult>> {
         val searchParameters = createSearchParameters(mainActivity)
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""

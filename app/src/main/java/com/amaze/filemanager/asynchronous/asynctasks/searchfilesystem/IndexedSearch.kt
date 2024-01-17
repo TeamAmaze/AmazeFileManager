@@ -37,19 +37,21 @@ class IndexedSearch(private val cursor: Cursor) : FileSearch() {
                     cursor.getString(
                         cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
                     )
-
-                if (nextPath != null &&
-                    nextPath.contains(path) &&
-                    filter.searchFilter(path)
-                ) {
-                    val hybridFileParcelable =
-                        RootHelper.generateBaseFile(
-                            File(nextPath),
-                            SearchParameter.SHOW_HIDDEN_FILES in searchParameters
-                        )
-
-                    if (hybridFileParcelable != null) {
-                        publishProgress(hybridFileParcelable)
+                val displayName =
+                    cursor.getString(
+                        cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                    )
+                if (nextPath != null && displayName != null && nextPath.contains(path)) {
+                    val resultRange = filter.searchFilter(displayName)
+                    if (resultRange != null) {
+                        val hybridFileParcelable =
+                            RootHelper.generateBaseFile(
+                                File(nextPath),
+                                SearchParameter.SHOW_HIDDEN_FILES in searchParameters
+                            )
+                        if (hybridFileParcelable != null) {
+                            publishProgress(hybridFileParcelable, resultRange)
+                        }
                     }
                 }
             } while (cursor.moveToNext())
