@@ -165,6 +165,9 @@ public class SearchView {
 
     clearImageView.setOnClickListener(
         v -> {
+          // observers of last search are removed to stop updating the results
+          removeObserversOfLastSearch();
+
           searchViewEditText.setText("");
           clearRecyclerView();
         });
@@ -203,6 +206,9 @@ public class SearchView {
     deepSearchTV.setOnClickListener(
         v -> {
           String s = getSearchTerm();
+
+          // Remove observers of last search since its results should not be displayed anymore
+          removeObserversOfLastSearch();
 
           if (searchMode == 1) {
 
@@ -605,6 +611,8 @@ public class SearchView {
     searchRecyclerViewAdapter.submitList(new ArrayList<>());
     searchRecyclerViewAdapter.notifyDataSetChanged();
 
+    deepSearchTV.setVisibility(View.GONE);
+
     searchResultsHintTV.setVisibility(View.GONE);
     searchResultsSortHintTV.setVisibility(View.GONE);
     searchResultsSortButton.setVisibility(View.GONE);
@@ -635,5 +643,13 @@ public class SearchView {
    */
   private String getSearchTerm() {
     return searchViewEditText.getText().toString().trim();
+  }
+
+  private void removeObserversOfLastSearch() {
+    mainActivity
+        .getCurrentMainFragment()
+        .getMainActivityViewModel()
+        .getLastSearchLiveData()
+        .removeObservers(mainActivity.getCurrentMainFragment().getViewLifecycleOwner());
   }
 }
