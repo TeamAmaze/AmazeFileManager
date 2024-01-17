@@ -47,6 +47,7 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.trashbin.MoveFilesCallback
 import com.amaze.trashbin.TrashBinFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -60,6 +61,10 @@ class MainActivityViewModel(val applicationContext: Application) :
 
     /** The [LiveData] of the last triggered search */
     var lastSearchLiveData: LiveData<List<SearchResult>> = MutableLiveData(listOf())
+        private set
+
+    /** The [Job] of the last triggered search */
+    var lastSearchJob: Job? = null
         private set
 
     companion object {
@@ -113,7 +118,7 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val basicSearch = BasicSearch(this.applicationContext)
 
-        viewModelScope.launch(Dispatchers.IO) {
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
             basicSearch.search(query, path, searchParameters)
         }
 
@@ -144,7 +149,7 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val indexedSearch = IndexedSearch(cursor)
 
-        viewModelScope.launch(Dispatchers.IO) {
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
             indexedSearch.search(query, path, searchParameters)
         }
 
@@ -172,7 +177,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             openMode
         )
 
-        viewModelScope.launch(Dispatchers.IO) {
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
             deepSearch.search(query, path, searchParameters)
         }
 

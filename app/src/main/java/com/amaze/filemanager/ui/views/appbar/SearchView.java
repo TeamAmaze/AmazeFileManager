@@ -26,6 +26,7 @@ import static android.os.Build.VERSION.SDK_INT;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -38,6 +39,7 @@ import com.amaze.filemanager.filesystem.files.sort.SortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortOrder;
 import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
@@ -77,6 +79,8 @@ import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.LiveData;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import kotlinx.coroutines.Job;
 
 /**
  * SearchView, a simple view to search
@@ -166,7 +170,7 @@ public class SearchView {
     clearImageView.setOnClickListener(
         v -> {
           // observers of last search are removed to stop updating the results
-          removeObserversOfLastSearch();
+          cancelLastSearch();
 
           searchViewEditText.setText("");
           clearRecyclerView();
@@ -207,8 +211,7 @@ public class SearchView {
         v -> {
           String s = getSearchTerm();
 
-          // Remove observers of last search since its results should not be displayed anymore
-          removeObserversOfLastSearch();
+          cancelLastSearch();
 
           if (searchMode == 1) {
 
@@ -645,11 +648,19 @@ public class SearchView {
     return searchViewEditText.getText().toString().trim();
   }
 
-  private void removeObserversOfLastSearch() {
-    mainActivity
-        .getCurrentMainFragment()
-        .getMainActivityViewModel()
+  private void cancelLastSearch() {
+    MainActivityViewModel viewModel =
+        mainActivity.getCurrentMainFragment().getMainActivityViewModel();
+
+    // remove all observers
+    viewModel
         .getLastSearchLiveData()
         .removeObservers(mainActivity.getCurrentMainFragment().getViewLifecycleOwner());
+
+    // stop the job
+    Job lastJob = viewModel.getLastSearchJob();
+    if (lastJob != null) {
+      lastJob.cancel(new CancellationException("Search outdated"));
+    }
   }
 }
