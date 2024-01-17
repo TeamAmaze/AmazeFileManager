@@ -81,7 +81,7 @@ abstract class FileSearch {
                 )
             )
             if (start >= 0) {
-                start..(start + query.length)
+                start until start + query.length
             } else {
                 null
             }
@@ -93,7 +93,7 @@ abstract class FileSearch {
             // check case-insensitively if the pattern compiled from query can be found in fileName
             val matcher = pattern.matcher(fileName)
             if (matcher.find()) {
-                matcher.start()..matcher.end()
+                matcher.start() until matcher.end()
             } else {
                 null
             }
