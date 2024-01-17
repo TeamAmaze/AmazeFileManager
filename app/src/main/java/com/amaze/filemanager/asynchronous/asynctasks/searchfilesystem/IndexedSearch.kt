@@ -23,7 +23,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 import android.database.Cursor
 import android.provider.MediaStore
 import com.amaze.filemanager.filesystem.RootHelper
+import kotlinx.coroutines.isActive
 import java.io.File
+import kotlin.coroutines.coroutineContext
 
 class IndexedSearch(private val cursor: Cursor) : FileSearch() {
     override suspend fun search(
@@ -54,7 +56,7 @@ class IndexedSearch(private val cursor: Cursor) : FileSearch() {
                         }
                     }
                 }
-            } while (cursor.moveToNext())
+            } while (cursor.moveToNext() && coroutineContext.isActive)
         }
 
         cursor.close()
