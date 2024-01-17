@@ -74,6 +74,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.LiveData;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -467,7 +468,9 @@ public class SearchView {
     this.sortType = new SortType(SortBy.getSortBy(index), sortOrder);
     dialog.dismiss();
     updateSearchResultsSortButtonDisplay();
-    updateResultList(searchRecyclerViewAdapter.getCurrentList(), getSearchTerm());
+    LiveData<List<SearchResult>> lastSearchLiveData =
+        mainActivity.getCurrentMainFragment().getMainActivityViewModel().getLastSearchLiveData();
+    updateResultList(lastSearchLiveData.getValue(), getSearchTerm());
   }
 
   private void resetSearchResultsSortButton() {

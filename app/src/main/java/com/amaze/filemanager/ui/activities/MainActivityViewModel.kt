@@ -58,6 +58,10 @@ class MainActivityViewModel(val applicationContext: Application) :
     var listCache: LruCache<String, List<LayoutElementParcelable>> = LruCache(50)
     var trashBinFilesLiveData: MutableLiveData<MutableList<LayoutElementParcelable>?>? = null
 
+    /** The [LiveData] of the last triggered search */
+    var lastSearchLiveData: LiveData<List<SearchResult>> = MutableLiveData(listOf())
+        private set
+
     companion object {
         /**
          * size of list to be cached for local files
@@ -113,6 +117,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             basicSearch.search(query, path, searchParameters)
         }
 
+        lastSearchLiveData = basicSearch.foundFilesLiveData
         return basicSearch.foundFilesLiveData
     }
 
@@ -143,6 +148,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             indexedSearch.search(query, path, searchParameters)
         }
 
+        lastSearchLiveData = indexedSearch.foundFilesLiveData
         return indexedSearch.foundFilesLiveData
     }
 
@@ -170,6 +176,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             deepSearch.search(query, path, searchParameters)
         }
 
+        lastSearchLiveData = deepSearch.foundFilesLiveData
         return deepSearch.foundFilesLiveData
     }
 
