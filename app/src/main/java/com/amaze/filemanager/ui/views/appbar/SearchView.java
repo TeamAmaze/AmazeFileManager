@@ -31,8 +31,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResultListSorter;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortOrder;
@@ -362,10 +362,15 @@ public class SearchView {
    * @param newResults The list of results that should be displayed
    * @param searchTerm The search term that resulted in the search results
    */
-  private void updateResultList(List<HybridFileParcelable> newResults, String searchTerm) {
-    ArrayList<HybridFileParcelable> items = new ArrayList<>(newResults);
-    Collections.sort(items, new FileListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
-    searchRecyclerViewAdapter.submitList(items);
+  private void updateResultList(List<SearchResult> newResults, String searchTerm) {
+    ArrayList<SearchResult> items = new ArrayList<>(newResults);
+    Collections.sort(
+        items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+    ArrayList<HybridFileParcelable> files = new ArrayList<>();
+    for (SearchResult searchResult : items) {
+      files.add(searchResult.getFile());
+    }
+    searchRecyclerViewAdapter.submitList(files);
     searchRecyclerViewAdapter.notifyDataSetChanged();
   }
 
