@@ -26,4 +26,5 @@ data class SearchResult(val file: HybridFileParcelable, val matchRange: MatchRan
 
 typealias MatchRange = IntProgression
 
+/** Returns the size of the [MatchRange] which means how many characters were matched */
 fun MatchRange.size(): Int = this.last - this.first
