@@ -26,7 +26,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable
 import java.util.Locale
 import java.util.regex.Pattern
 
-sealed class FileSearch {
+abstract class FileSearch {
     private val mutableFoundFilesLiveData: MutableLiveData<List<SearchResult>> =
         MutableLiveData()
     val foundFilesLiveData: LiveData<List<SearchResult>> = mutableFoundFilesLiveData
