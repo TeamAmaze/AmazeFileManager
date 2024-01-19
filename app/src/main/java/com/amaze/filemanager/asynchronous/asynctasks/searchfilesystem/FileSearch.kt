@@ -26,7 +26,11 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable
 import java.util.Locale
 import java.util.regex.Pattern
 
-abstract class FileSearch {
+abstract class FileSearch(
+    protected val query: String,
+    protected val path: String,
+    protected val searchParameters: SearchParameters
+) {
     private val mutableFoundFilesLiveData: MutableLiveData<List<SearchResult>> =
         MutableLiveData()
     val foundFilesLiveData: LiveData<List<SearchResult>> = mutableFoundFilesLiveData
@@ -36,17 +40,17 @@ abstract class FileSearch {
      * Search for files, whose names match [query], starting from [path] and add them to
      * [foundFilesLiveData]
      */
-    suspend fun search(query: String, path: String, searchParameters: SearchParameters) {
+    suspend fun search() {
         if (SearchParameter.REGEX !in searchParameters) {
             // regex not turned on so we use simpleFilter
-            search(path, simpleFilter(query), searchParameters)
+            this.search(simpleFilter(query))
         } else {
             if (SearchParameter.REGEX_MATCHES !in searchParameters) {
                 // only regex turned on so we use regexFilter
-                search(path, regexFilter(query), searchParameters)
+                this.search(regexFilter(query))
             } else {
                 // regex turned on and names must match pattern so use regexMatchFilter
-                search(path, regexMatchFilter(query), searchParameters)
+                this.search(regexMatchFilter(query))
             }
         }
     }
@@ -55,11 +59,7 @@ abstract class FileSearch {
      * Search for files, whose names fulfill [filter], starting from [path] and add them to
      * [foundFilesLiveData].
      */
-    protected abstract suspend fun search(
-        path: String,
-        filter: SearchFilter,
-        searchParameters: SearchParameters
-    )
+    protected abstract suspend fun search(filter: SearchFilter)
 
     /**
      * Add [file] to list of found files and post it to [foundFilesLiveData]

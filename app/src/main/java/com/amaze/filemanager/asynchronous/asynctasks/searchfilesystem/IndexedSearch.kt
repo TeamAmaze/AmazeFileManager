@@ -27,12 +27,13 @@ import kotlinx.coroutines.isActive
 import java.io.File
 import kotlin.coroutines.coroutineContext
 
-class IndexedSearch(private val cursor: Cursor) : FileSearch() {
-    override suspend fun search(
-        path: String,
-        filter: SearchFilter,
-        searchParameters: SearchParameters
-    ) {
+class IndexedSearch(
+    query: String,
+    path: String,
+    searchParameters: SearchParameters,
+    private val cursor: Cursor
+) : FileSearch(query, path, searchParameters) {
+    override suspend fun search(filter: SearchFilter) {
         if (cursor.count > 0 && cursor.moveToFirst()) {
             do {
                 val nextPath =

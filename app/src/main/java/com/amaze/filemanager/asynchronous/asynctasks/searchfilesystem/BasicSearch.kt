@@ -24,14 +24,15 @@ import android.content.Context
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.root.ListFilesCommand.listFiles
 
-class BasicSearch(context: Context) : FileSearch() {
+class BasicSearch(
+    query: String,
+    path: String,
+    searchParameters: SearchParameters,
+    context: Context
+) : FileSearch(query, path, searchParameters) {
     private val applicationContext = context.applicationContext
 
-    override suspend fun search(
-        path: String,
-        filter: SearchFilter,
-        searchParameters: SearchParameters
-    ) {
+    override suspend fun search(filter: SearchFilter) {
         listFiles(
             path,
             SearchParameter.ROOT in searchParameters,

@@ -26,12 +26,13 @@ import org.junit.Test
 import java.util.EnumSet
 
 class FileSearchTest {
-
-    private val fileSearchMatch = object : FileSearch() {
+    private fun getFileSearchMatch(
+        query: String,
+        path: String,
+        searchParameters: SearchParameters
+    ): FileSearch = object : FileSearch(query, path, searchParameters) {
         override suspend fun search(
-            path: String,
-            filter: SearchFilter,
-            searchParameters: SearchParameters
+            filter: SearchFilter
         ) {
             val matchRange = filter.searchFilter(path)
             Assert.assertNotNull("Expected $path to match filter", matchRange)
@@ -49,22 +50,25 @@ class FileSearchTest {
         }
     }
 
-    private val fileSearchNotMatch = object : FileSearch() {
-        override suspend fun search(
-            path: String,
-            filter: SearchFilter,
-            searchParameters: SearchParameters
-        ) {
-            val matchRange = filter.searchFilter(path)
-            Assert.assertNull("Expected $path to not match filter", matchRange)
+    private fun getFileSearchNotMatch(
+        query: String,
+        path: String,
+        searchParameters: SearchParameters
+    ): FileSearch =
+        object : FileSearch(query, path, searchParameters) {
+            override suspend fun search(filter: SearchFilter) {
+                val matchRange = filter.searchFilter(path)
+                Assert.assertNull("Expected $path to not match filter", matchRange)
+            }
         }
-    }
 
-    private val fileSearchRegexMatches = object : FileSearch() {
+    private fun getFileSearchRegexMatches(
+        query: String,
+        path: String,
+        searchParameters: SearchParameters
+    ): FileSearch = object : FileSearch(query, path, searchParameters) {
         override suspend fun search(
-            path: String,
-            filter: SearchFilter,
-            searchParameters: SearchParameters
+            filter: SearchFilter
         ) {
             val matchRange = filter.searchFilter(path)
             Assert.assertNotNull("Expected $path to match filter", matchRange)
@@ -84,82 +88,86 @@ class FileSearchTest {
 
     @Test
     fun simpleFilterMatchTest() = runTest {
-        fileSearchMatch.search(
+        getFileSearchMatch(
             "abcde",
             "01234ABcDe012",
             EnumSet.noneOf(SearchParameter::class.java)
-        )
+        ).search()
     }
 
     @Test
     fun simpleFilterNotMatchTest() = runTest {
         // There is no "e"
-        fileSearchNotMatch.search(
+        getFileSearchNotMatch(
             "abcde",
             "01234abcd9012",
             EnumSet.noneOf(SearchParameter::class.java)
-        )
+        ).search()
     }
 
     @Test
     fun regexFilterStarMatchTest() = runTest {
-        fileSearchMatch.search("a*e", "01234ABcDe012", SearchParameters.of(SearchParameter.REGEX))
+        getFileSearchMatch(
+            "a*e",
+            "01234ABcDe012",
+            SearchParameters.of(SearchParameter.REGEX)
+        ).search()
     }
 
     @Test
     fun regexFilterStarNotMatchTest() = runTest {
         // There is no "e"
-        fileSearchNotMatch.search(
+        getFileSearchNotMatch(
             "a*e",
             "01234aBcD9012",
             SearchParameters.of(SearchParameter.REGEX)
-        )
+        ).search()
     }
 
     @Test
     fun regexFilterQuestionMarkMatchTest() = runTest {
-        fileSearchMatch.search(
+        getFileSearchMatch(
             "a???e",
             "01234ABcDe0123",
             SearchParameters.of(SearchParameter.REGEX)
-        )
+        ).search()
     }
 
     @Test
     fun regexFilterQuestionMarkNotMatchTest() = runTest {
         // There is one character missing between "a" and "e"
-        fileSearchNotMatch.search(
+        getFileSearchNotMatch(
             "a???e",
             "01234ABce9012",
             SearchParameters.of(SearchParameter.REGEX)
-        )
+        ).search()
     }
 
     @Test
     fun regexFilterNotMatchNonWordCharacterTest() = runTest {
-        fileSearchNotMatch.search(
+        getFileSearchNotMatch(
             "a?c*e",
             "0A-corn search",
             SearchParameters.of(SearchParameter.REGEX)
-        )
+        ).search()
     }
 
     @Test
     fun regexMatchFilterMatchTest() = runTest {
-        fileSearchRegexMatches.search(
+        getFileSearchRegexMatches(
             "a*e",
             "A1234ABcDe0123e",
             SearchParameter.REGEX + SearchParameter.REGEX_MATCHES
-        )
+        ).search()
     }
 
     @Test
     fun regexMatchFilterNotMatchTest() = runTest {
         // Pattern does not match whole name
-        fileSearchNotMatch.search(
+        getFileSearchNotMatch(
             "a*e",
             "01234ABcDe0123",
             SearchParameter.REGEX + SearchParameter.REGEX_MATCHES
-        )
+        ).search()
     }
 }

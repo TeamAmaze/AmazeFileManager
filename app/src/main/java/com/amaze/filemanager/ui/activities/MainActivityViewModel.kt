@@ -116,10 +116,10 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
 
-        val basicSearch = BasicSearch(this.applicationContext)
+        val basicSearch = BasicSearch(query, path, searchParameters, this.applicationContext)
 
         lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
-            basicSearch.search(query, path, searchParameters)
+            basicSearch.search()
         }
 
         lastSearchLiveData = basicSearch.foundFilesLiveData
@@ -137,7 +137,6 @@ class MainActivityViewModel(val applicationContext: Application) :
             MediaStore.Files.FileColumns.DATA,
             MediaStore.Files.FileColumns.DISPLAY_NAME
         )
-        MediaStore.VOLUME_EXTERNAL_PRIMARY
         val cursor = mainActivity
             .contentResolver
             .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
@@ -147,10 +146,10 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
 
-        val indexedSearch = IndexedSearch(cursor)
+        val indexedSearch = IndexedSearch(query, path, searchParameters, cursor)
 
         lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
-            indexedSearch.search(query, path, searchParameters)
+            indexedSearch.search()
         }
 
         lastSearchLiveData = indexedSearch.foundFilesLiveData
@@ -173,12 +172,15 @@ class MainActivityViewModel(val applicationContext: Application) :
         val context = this.applicationContext
 
         val deepSearch = DeepSearch(
+            query,
+            path,
+            searchParameters,
             context,
             openMode
         )
 
         lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
-            deepSearch.search(query, path, searchParameters)
+            deepSearch.search()
         }
 
         lastSearchLiveData = deepSearch.foundFilesLiveData

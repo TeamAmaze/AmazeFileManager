@@ -28,9 +28,12 @@ import org.slf4j.LoggerFactory
 import kotlin.coroutines.coroutineContext
 
 class DeepSearch(
+    query: String,
+    path: String,
+    searchParameters: SearchParameters,
     context: Context,
     private val openMode: OpenMode
-) : FileSearch() {
+) : FileSearch(query, path, searchParameters) {
     private val LOG = LoggerFactory.getLogger(DeepSearch::class.java)
 
     private val applicationContext: Context
@@ -44,11 +47,7 @@ class DeepSearch(
      *
      * @param directory the current path
      */
-    override suspend fun search(
-        path: String,
-        filter: SearchFilter,
-        searchParameters: SearchParameters
-    ) {
+    override suspend fun search(filter: SearchFilter) {
         val directory = HybridFile(openMode, path)
         if (directory.isSmb) return
 
