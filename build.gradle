@@ -20,6 +20,8 @@ buildscript {
         androidXTestVersion = "1.5.0"
         androidXTestRunnerVersion = "1.5.2"
         androidXTestExtVersion = "1.1.5"
+        androidXArchCoreTestVersion = "2.2.0"
+        kotlinxCoroutineTestVersion = "1.7.3"
         uiAutomatorVersion = "2.2.0"
         junitVersion = "4.13.2"
         slf4jVersion = "1.7.25"
