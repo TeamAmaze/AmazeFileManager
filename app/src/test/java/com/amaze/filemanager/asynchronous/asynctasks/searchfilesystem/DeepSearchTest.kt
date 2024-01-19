@@ -65,7 +65,7 @@ class DeepSearchTest {
         }
 
         every { foundFileMock.isDirectory(any()) } returns false
-        every { foundFileMock.isHidden } returns false
+        every { foundFileMock.isHidden } returns true
     }
 
     @After
@@ -88,7 +88,7 @@ class DeepSearchTest {
         val deepSearch = DeepSearch(
             "ab",
             filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
+            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
             context,
             OpenMode.FILE
         )
@@ -121,7 +121,7 @@ class DeepSearchTest {
         val deepSearch = DeepSearch(
             "ba",
             filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
+            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
             context,
             OpenMode.FILE
         )
@@ -154,7 +154,7 @@ class DeepSearchTest {
         val deepSearch = DeepSearch(
             "test",
             filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
+            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
             context,
             OpenMode.FILE
         )
@@ -169,6 +169,39 @@ class DeepSearchTest {
 
         runTest {
             deepSearch.search()
+        }
+    }
+
+    /**
+     * If a file is hidden and hidden files should not be shown, it should not be added to
+     * [FileSearch.foundFilesLiveData]
+     */
+    @Test
+    fun testMatchHiddenFile() {
+        val filePath = "/test/abc.txt"
+        val fileName = "abc.txt"
+
+        every { foundFileMock.path } returns filePath
+        every { foundFileMock.getName(any()) } returns fileName
+
+        val basicSearch = DeepSearch(
+            "ab",
+            filePath,
+            EnumSet.noneOf(SearchParameter::class.java),
+            context,
+            OpenMode.FILE
+        )
+
+        basicSearch.foundFilesLiveData.observeForever { actualResults ->
+            Assert.assertNotNull(actualResults)
+            Assert.assertTrue(
+                "List was not empty as expected but had ${actualResults.size} elements",
+                actualResults.isEmpty()
+            )
+        }
+
+        runTest {
+            basicSearch.search()
         }
     }
 }

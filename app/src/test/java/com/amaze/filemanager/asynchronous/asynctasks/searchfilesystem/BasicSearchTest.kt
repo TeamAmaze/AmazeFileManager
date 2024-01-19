@@ -64,7 +64,7 @@ class BasicSearchTest {
         }
 
         every { foundFileMock.isDirectory(any()) } returns false
-        every { foundFileMock.isHidden } returns false
+        every { foundFileMock.isHidden } returns true
     }
 
     @After
@@ -84,23 +84,23 @@ class BasicSearchTest {
         every { foundFileMock.path } returns filePath
         every { foundFileMock.getName(any()) } returns fileName
 
-        val deepSearch = BasicSearch(
+        val basicSearch = BasicSearch(
             "ab",
             filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
+            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
             context
         )
 
         val expectedMatchRanges = listOf(0..1)
 
-        deepSearch.foundFilesLiveData.observeForever { actualResults ->
+        basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertEquals(listOf(foundFileMock), actualResults.map { it.file })
             Assert.assertEquals(expectedMatchRanges, actualResults.map { it.matchRange })
         }
 
         runTest {
-            deepSearch.search()
+            basicSearch.search()
         }
     }
 
@@ -116,14 +116,14 @@ class BasicSearchTest {
         every { foundFileMock.path } returns filePath
         every { foundFileMock.getName(any()) } returns fileName
 
-        val deepSearch = BasicSearch(
+        val basicSearch = BasicSearch(
             "ba",
             filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
+            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
             context
         )
 
-        deepSearch.foundFilesLiveData.observeForever { actualResults ->
+        basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 "List was not empty as expected but had ${actualResults.size} elements",
@@ -132,7 +132,7 @@ class BasicSearchTest {
         }
 
         runTest {
-            deepSearch.search()
+            basicSearch.search()
         }
     }
 
@@ -148,14 +148,14 @@ class BasicSearchTest {
         every { foundFileMock.path } returns filePath
         every { foundFileMock.getName(any()) } returns fileName
 
-        val deepSearch = BasicSearch(
+        val basicSearch = BasicSearch(
             "test",
             filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
+            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
             context
         )
 
-        deepSearch.foundFilesLiveData.observeForever { actualResults ->
+        basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 "List was not empty as expected but had ${actualResults.size} elements",
@@ -164,7 +164,39 @@ class BasicSearchTest {
         }
 
         runTest {
-            deepSearch.search()
+            basicSearch.search()
+        }
+    }
+
+    /**
+     * If a file is hidden and hidden files should not be shown, it should not be added to 
+     * [FileSearch.foundFilesLiveData]
+     */
+    @Test
+    fun testMatchHiddenFile() {
+        val filePath = "/test/abc.txt"
+        val fileName = "abc.txt"
+
+        every { foundFileMock.path } returns filePath
+        every { foundFileMock.getName(any()) } returns fileName
+
+        val basicSearch = BasicSearch(
+            "ab",
+            filePath,
+            EnumSet.noneOf(SearchParameter::class.java),
+            context
+        )
+
+        basicSearch.foundFilesLiveData.observeForever { actualResults ->
+            Assert.assertNotNull(actualResults)
+            Assert.assertTrue(
+                "List was not empty as expected but had ${actualResults.size} elements",
+                actualResults.isEmpty()
+            )
+        }
+
+        runTest {
+            basicSearch.search()
         }
     }
 }
