@@ -50,6 +50,10 @@ class DeepSearchTest {
     @MockK(relaxed = true, relaxUnitFun = true)
     lateinit var foundFileMock: HybridFileParcelable
 
+    val filePath = "/test/abc.txt"
+    val fileName = "abc.txt"
+
+    /** Set up all mocks */
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
@@ -66,8 +70,11 @@ class DeepSearchTest {
 
         every { foundFileMock.isDirectory(any()) } returns false
         every { foundFileMock.isHidden } returns true
+        every { foundFileMock.path } returns filePath
+        every { foundFileMock.getName(any()) } returns fileName
     }
 
+    /** Clean up all mocks */
     @After
     fun cleanup() {
         unmockkAll()
@@ -79,12 +86,6 @@ class DeepSearchTest {
      */
     @Test
     fun testSimpleSearchMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val deepSearch = DeepSearch(
             "ab",
             filePath,
@@ -112,12 +113,6 @@ class DeepSearchTest {
      */
     @Test
     fun testSimpleSearchNotMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val deepSearch = DeepSearch(
             "ba",
             filePath,
@@ -129,7 +124,7 @@ class DeepSearchTest {
         deepSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -145,12 +140,6 @@ class DeepSearchTest {
      */
     @Test
     fun testSearchWithPathMatchButNameNotMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val deepSearch = DeepSearch(
             "test",
             filePath,
@@ -162,7 +151,7 @@ class DeepSearchTest {
         deepSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -178,12 +167,6 @@ class DeepSearchTest {
      */
     @Test
     fun testMatchHiddenFile() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val basicSearch = DeepSearch(
             "ab",
             filePath,
@@ -195,7 +178,7 @@ class DeepSearchTest {
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -204,4 +187,7 @@ class DeepSearchTest {
             basicSearch.search()
         }
     }
+
+    private fun listNotEmptyError(size: Int) =
+        "List was not empty as expected but had $size elements"
 }

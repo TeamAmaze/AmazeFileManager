@@ -86,6 +86,7 @@ class FileSearchTest {
         }
     }
 
+    /** Test the simple filter with a path that matches the query */
     @Test
     fun simpleFilterMatchTest() = runTest {
         getFileSearchMatch(
@@ -95,6 +96,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the simple filter with a path that does not match the query */
     @Test
     fun simpleFilterNotMatchTest() = runTest {
         // There is no "e"
@@ -105,6 +107,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the regex filter with a path that matches the query. The query contains `*`. */
     @Test
     fun regexFilterStarMatchTest() = runTest {
         getFileSearchMatch(
@@ -114,6 +117,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the regex filter with a path that does not match the query. The query contains `*`. */
     @Test
     fun regexFilterStarNotMatchTest() = runTest {
         // There is no "e"
@@ -124,6 +128,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the regex filter with a path that matches the query. The query contains `?`. */
     @Test
     fun regexFilterQuestionMarkMatchTest() = runTest {
         getFileSearchMatch(
@@ -133,6 +138,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the regex filter with a path that does not match the query. The query contains `?`. */
     @Test
     fun regexFilterQuestionMarkNotMatchTest() = runTest {
         // There is one character missing between "a" and "e"
@@ -143,6 +149,10 @@ class FileSearchTest {
         ).search()
     }
 
+    /**
+     * Test the regex filter with a path that does not match the query
+     * because `-` is not recognized by `?` or `*`.
+     */
     @Test
     fun regexFilterNotMatchNonWordCharacterTest() = runTest {
         getFileSearchNotMatch(
@@ -152,6 +162,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the regex match filter with a path that completely matches the query */
     @Test
     fun regexMatchFilterMatchTest() = runTest {
         getFileSearchRegexMatches(
@@ -161,6 +172,7 @@ class FileSearchTest {
         ).search()
     }
 
+    /** Test the regex match filter with a path that does not completely match the query */
     @Test
     fun regexMatchFilterNotMatchTest() = runTest {
         // Pattern does not match whole name

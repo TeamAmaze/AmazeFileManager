@@ -45,6 +45,10 @@ class IndexedSearchTest {
     @RelaxedMockK
     lateinit var mockCursor: Cursor
 
+    val filePath = "/test/abc.txt"
+    val fileName = "abc.txt"
+
+    /** Set up all mocks */
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -57,8 +61,12 @@ class IndexedSearchTest {
         every {
             mockCursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME)
         } returns displayNameColumn
+
+        every { mockCursor.getString(dataColumn) } returns filePath
+        every { mockCursor.getString(displayNameColumn) } returns fileName
     }
 
+    /** Clean up all mocks */
     @After
     fun cleanup() {
         unmockkAll()
@@ -70,11 +78,6 @@ class IndexedSearchTest {
      */
     @Test
     fun testSimpleSearchMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-        every { mockCursor.getString(dataColumn) } returns filePath
-        every { mockCursor.getString(displayNameColumn) } returns fileName
-
         val expectedNames = listOf(fileName)
         val expectedPaths = listOf(filePath)
         val expectedRanges = listOf<MatchRange>(0..1)
@@ -102,11 +105,6 @@ class IndexedSearchTest {
      */
     @Test
     fun testSimpleSearchNotMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-        every { mockCursor.getString(dataColumn) } returns filePath
-        every { mockCursor.getString(displayNameColumn) } returns fileName
-
         val indexedSearch = IndexedSearch(
             "ba",
             "/",
@@ -116,7 +114,7 @@ class IndexedSearchTest {
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -131,11 +129,6 @@ class IndexedSearchTest {
      */
     @Test
     fun testSearchWithPathMatchButNameNotMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-        every { mockCursor.getString(dataColumn) } returns filePath
-        every { mockCursor.getString(displayNameColumn) } returns fileName
-
         val indexedSearch = IndexedSearch(
             "te",
             "/",
@@ -145,7 +138,7 @@ class IndexedSearchTest {
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -153,4 +146,7 @@ class IndexedSearchTest {
             indexedSearch.search()
         }
     }
+
+    private fun listNotEmptyError(size: Int) =
+        "List was not empty as expected but had $size elements"
 }

@@ -49,6 +49,10 @@ class BasicSearchTest {
     @MockK(relaxed = true, relaxUnitFun = true)
     lateinit var foundFileMock: HybridFileParcelable
 
+    val filePath = "/test/abc.txt"
+    val fileName = "abc.txt"
+
+    /** Set up all mocks */
     @Before
     fun setup() {
         MockKAnnotations.init(this, relaxUnitFun = true)
@@ -65,8 +69,11 @@ class BasicSearchTest {
 
         every { foundFileMock.isDirectory(any()) } returns false
         every { foundFileMock.isHidden } returns true
+        every { foundFileMock.path } returns filePath
+        every { foundFileMock.getName(any()) } returns fileName
     }
 
+    /** Clean up all mocks */
     @After
     fun cleanup() {
         unmockkAll()
@@ -78,12 +85,6 @@ class BasicSearchTest {
      */
     @Test
     fun testSimpleSearchMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val basicSearch = BasicSearch(
             "ab",
             filePath,
@@ -110,12 +111,6 @@ class BasicSearchTest {
      */
     @Test
     fun testSimpleSearchNotMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val basicSearch = BasicSearch(
             "ba",
             filePath,
@@ -126,7 +121,7 @@ class BasicSearchTest {
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -142,12 +137,6 @@ class BasicSearchTest {
      */
     @Test
     fun testSearchWithPathMatchButNameNotMatch() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val basicSearch = BasicSearch(
             "test",
             filePath,
@@ -158,7 +147,7 @@ class BasicSearchTest {
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -169,17 +158,11 @@ class BasicSearchTest {
     }
 
     /**
-     * If a file is hidden and hidden files should not be shown, it should not be added to 
+     * If a file is hidden and hidden files should not be shown, it should not be added to
      * [FileSearch.foundFilesLiveData]
      */
     @Test
     fun testMatchHiddenFile() {
-        val filePath = "/test/abc.txt"
-        val fileName = "abc.txt"
-
-        every { foundFileMock.path } returns filePath
-        every { foundFileMock.getName(any()) } returns fileName
-
         val basicSearch = BasicSearch(
             "ab",
             filePath,
@@ -190,7 +173,7 @@ class BasicSearchTest {
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
-                "List was not empty as expected but had ${actualResults.size} elements",
+                listNotEmptyError(actualResults.size),
                 actualResults.isEmpty()
             )
         }
@@ -199,4 +182,7 @@ class BasicSearchTest {
             basicSearch.search()
         }
     }
+
+    private fun listNotEmptyError(size: Int) =
+        "List was not empty as expected but had $size elements"
 }
