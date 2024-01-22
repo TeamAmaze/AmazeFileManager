@@ -33,7 +33,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult;
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResultListSorter;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortOrder;
@@ -376,11 +375,7 @@ public class SearchView {
     ArrayList<SearchResult> items = new ArrayList<>(newResults);
     Collections.sort(
         items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
-    ArrayList<HybridFileParcelable> files = new ArrayList<>();
-    for (SearchResult searchResult : items) {
-      files.add(searchResult.getFile());
-    }
-    searchRecyclerViewAdapter.submitList(files);
+    searchRecyclerViewAdapter.submitList(items);
     searchRecyclerViewAdapter.notifyDataSetChanged();
   }
 
