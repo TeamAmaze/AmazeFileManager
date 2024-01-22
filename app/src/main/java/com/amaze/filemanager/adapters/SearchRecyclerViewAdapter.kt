@@ -21,6 +21,9 @@
 package com.amaze.filemanager.adapters
 
 import android.content.Context
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,13 +70,21 @@ class SearchRecyclerViewAdapter :
     override fun onBindViewHolder(holder: SearchRecyclerViewAdapter.ViewHolder, position: Int) {
         val (file, matchResult) = getItem(position)
 
-        holder.fileNameTV.text = file.name
+        val colorPreference =
+            (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
+
+        val fileName = SpannableString(file.name)
+        fileName.setSpan(
+            ForegroundColorSpan(colorPreference.accent),
+            matchResult.first,
+            matchResult.last + 1,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        holder.fileNameTV.text = fileName
         holder.filePathTV.text = file.path.substring(0, file.path.lastIndexOf("/"))
 
         holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
-
-        val colorPreference =
-            (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
 
         if (file.isDirectory) {
             holder.colorView.setBackgroundColor(colorPreference.primaryFirstTab)
