@@ -123,7 +123,6 @@ import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
@@ -213,7 +212,6 @@ import kotlin.text.Charsets;
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
         BookmarkCallback,
-        SearchWorkerFragment.HelperCallbacks,
         CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>,
         FolderChooserDialog.FolderCallback,
@@ -1082,8 +1080,6 @@ public class MainActivity extends PermissionsActivity
                   .getBottomBar()
                   .updatePath(
                       mainFragment.getCurrentPath(),
-                      mainFragment.getMainFragmentViewModel().getResults(),
-                      MainActivityHelper.SEARCH_TEXT,
                       mainFragment.getMainFragmentViewModel().getOpenMode(),
                       mainFragment.getMainFragmentViewModel().getFolderCount(),
                       mainFragment.getMainFragmentViewModel().getFileCount(),
@@ -1711,15 +1707,7 @@ public class MainActivity extends PermissionsActivity
 
   void initialiseViews() {
 
-    appbar =
-        new AppBar(
-            this,
-            getPrefs(),
-            queue -> {
-              if (!queue.isEmpty()) {
-                mainActivityHelper.search(getPrefs(), queue);
-              }
-            });
+    appbar = new AppBar(this, getPrefs());
     appBarLayout = getAppbar().getAppbarLayout();
 
     setSupportActionBar(getAppbar().getToolbar());
@@ -2241,51 +2229,6 @@ public class MainActivity extends PermissionsActivity
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(() -> drawer.refreshDrawer());
-  }
-
-  @Override
-  public void onPreExecute(String query) {
-    executeWithMainFragment(
-        mainFragment -> {
-          mainFragment.mSwipeRefreshLayout.setRefreshing(true);
-          mainFragment.onSearchPreExecute(query);
-          return null;
-        });
-  }
-
-  @Override
-  public void onPostExecute(String query) {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment == null) {
-      // TODO cancel search
-      return;
-    }
-
-    mainFragment.onSearchCompleted(query);
-    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
-  }
-
-  @Override
-  public void onProgressUpdate(@NonNull HybridFileParcelable hybridFileParcelable, String query) {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment == null) {
-      // TODO cancel search
-      return;
-    }
-
-    mainFragment.addSearchResult(hybridFileParcelable, query);
-  }
-
-  @Override
-  public void onCancelled() {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment == null) {
-      return;
-    }
-
-    mainFragment.reloadListElements(
-        false, false, !mainFragment.getMainFragmentViewModel().isList());
-    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
   }
 
   @Override

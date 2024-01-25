@@ -66,8 +66,6 @@ class MainFragmentViewModel : ViewModel() {
 
     var home: String? = null
 
-    var results: Boolean = false
-
     lateinit var openMode: OpenMode
 
     // defines the current visible tab, default either 0 or 1
@@ -87,10 +85,6 @@ class MainFragmentViewModel : ViewModel() {
 
     // defines the current visible tab, default either 0 or 1
     // private int mCurrentTab;
-
-    /*boolean identifying if the search task should be re-run on back press after pressing on
-    any of the search result*/
-    var retainSearchTask = false
 
     /** boolean to identify if the view is a list or grid  */
     var isList = true

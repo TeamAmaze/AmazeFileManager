@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,16 +20,25 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable
-import com.amaze.filemanager.filesystem.files.FileListSorter
-import java.util.*
-import java.util.concurrent.Callable
+import org.junit.Assert
+import org.junit.Test
+import java.util.EnumSet
 
-class SortSearchResultCallable(
-    val elements: MutableList<LayoutElementParcelable>,
-    val sorter: FileListSorter
-) : Callable<Unit> {
-    override fun call() {
-        Collections.sort(elements, sorter)
+class SearchParameterTest {
+
+    /** Tests [SearchParameter.and] */
+    @Test
+    fun testAnd() {
+        val expected = EnumSet.of(SearchParameter.ROOT, SearchParameter.REGEX_MATCHES)
+        val actual = SearchParameter.ROOT and SearchParameter.REGEX_MATCHES
+        Assert.assertEquals(expected, actual)
+    }
+
+    /** Tests [SearchParameter.plus] */
+    @Test
+    fun testPlus() {
+        val expected = EnumSet.of(SearchParameter.ROOT, SearchParameter.REGEX_MATCHES)
+        val actual = SearchParameter.ROOT + SearchParameter.REGEX_MATCHES
+        Assert.assertEquals(expected, actual)
     }
 }
