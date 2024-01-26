@@ -64,7 +64,7 @@ class DeepSearchTest {
 
         mockkObject(ListFilesCommand)
         every { ListFilesCommand.listFiles(any(), any(), any(), any(), any()) } answers {
-            val onFileFoundCallback = it.invocation.args.last() as (HybridFileParcelable) -> Unit
+            val onFileFoundCallback = lastArg<(HybridFileParcelable) -> Unit>()
             onFileFoundCallback(foundFileMock)
         }
 
