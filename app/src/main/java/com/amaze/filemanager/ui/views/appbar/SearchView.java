@@ -391,6 +391,9 @@ public class SearchView {
     } else {
       // TODO:ViewAnimationUtils.createCircularReveal
       animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
+
+      searchViewLayout.bringToFront(); // since android:elevation won't work
+      searchViewEditText.requestFocus(); // for keyboard auto-popup
     }
 
     mainActivity.showSmokeScreen();
