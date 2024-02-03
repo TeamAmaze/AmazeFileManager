@@ -84,18 +84,14 @@ fun fromUri(uri: Uri, context: Context): String? {
             return uri.lastPathSegment
         }
         val path = getDataColumn(context, uri, null, null)
-        val uriPath = uri.path
         if (path != null) {
             return path
         } else if (fileExists(uri.path)) {
             // Check if the full path is the uri path
             return uri.path
-        } else if (uriPath != null && uriPath.contains("/storage")) {
-            // As last resort, check if the full path is somehow contained in the uri
-            val pathInUri = uriPath.substring(uriPath.indexOf("/storage"))
-            if (fileExists(pathInUri)) {
-                return pathInUri
-            }
+        } else {
+            // Check if the full path is contained in the uri path
+            return getPathInUri(uri)
         }
     }
     if ("file".equals(uri.scheme, ignoreCase = true)) {
@@ -227,6 +223,25 @@ private fun getDataColumn(
                 cursor.getString(index)
             } else {
                 null
+            }
+        }
+    }
+    return null
+}
+
+private fun getPathInUri(uri: Uri): String? {
+    // As last resort, check if the full path is somehow contained in the uri path
+    val uriPath = uri.path ?: return null
+    // Some common path prefixes
+    val pathPrefixes = listOf("/storage", "/external_files")
+    for (prefix in pathPrefixes) {
+        if (uriPath.contains(prefix)) {
+            // make sure path starts with storage
+            val pathInUri = "/storage${uriPath.substring(
+                uriPath.indexOf(prefix) + prefix.length
+            )}"
+            if (fileExists(pathInUri)) {
+                return pathInUri
             }
         }
     }
