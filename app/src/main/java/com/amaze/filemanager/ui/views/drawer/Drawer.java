@@ -128,7 +128,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       0; // number of storage available (internal/external/otg etc)
   private boolean isDrawerLocked = false;
   private FragmentTransaction pending_fragmentTransaction;
-  private String pendingPath;
+  private PendingPath pendingPath;
   private String firstPath = null, secondPath = null;
 
   private DrawerLayout mDrawerLayout;
@@ -778,20 +778,20 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
 
     if (pendingPath != null) {
-      HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath);
+      HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath.getPath());
       hFile.generateMode(mainActivity);
       if (hFile.isSimpleFile()) {
-        FileUtils.openFile(new File(pendingPath), mainActivity, mainActivity.getPrefs());
+        FileUtils.openFile(new File(pendingPath.getPath()), mainActivity, mainActivity.getPrefs());
         resetPendingPath();
         return;
       }
 
       MainFragment mainFragment = mainActivity.getCurrentMainFragment();
       if (mainFragment != null) {
-        mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN, false);
+        mainFragment.loadlist(pendingPath.getPath(), false, OpenMode.UNKNOWN, false);
         resetPendingPath();
       } else {
-        mainActivity.goToMain(pendingPath);
+        mainActivity.goToMain(pendingPath.getPath(), pendingPath.getHideFabInMainFragment());
         resetPendingPath();
         return;
       }
@@ -845,7 +845,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                   });
           dialog.show();
         } else {
-          pendingPath = meta.path;
+          pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
           closeIfNotLocked();
           if (isLocked()) {
             onDrawerClosed();
