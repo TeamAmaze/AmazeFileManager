@@ -321,6 +321,8 @@ public class MainActivity extends PermissionsActivity
 
   private String scrollToFileName = null;
 
+  private boolean hideFabInMainFragment = false;
+
   public static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
@@ -948,7 +950,7 @@ public class MainActivity extends PermissionsActivity
           fragmentTransaction.remove(compressedExplorerFragment);
           fragmentTransaction.commit();
           supportInvalidateOptionsMenu();
-          floatingActionButton.show();
+          showFab();
         }
       } else {
         compressedExplorerFragment.mActionMode.finish();
@@ -999,6 +1001,10 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void goToMain(String path) {
+    goToMain(path, false);
+  }
+
+  public void goToMain(String path, boolean hideFab) {
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
     TabFragment tabFragment = new TabFragment();
@@ -1019,7 +1025,8 @@ public class MainActivity extends PermissionsActivity
     transaction.addToBackStack("tabt" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
-    floatingActionButton.show();
+    this.hideFabInMainFragment = hideFab;
+
     if (isCompressedOpen && pathInCompressedArchive != null) {
       openCompressed(pathInCompressedArchive);
       pathInCompressedArchive = null;
@@ -1527,7 +1534,11 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    showFab(getFAB());
+    if (hideFabInMainFragment) {
+      hideFab();
+    } else {
+      showFab(getFAB());
+    }
   }
 
   private void showFab(SpeedDialView fab) {
@@ -2541,5 +2552,9 @@ public class MainActivity extends PermissionsActivity
         AppConfig.toast(this, R.string.operation_unsuccesful);
       }
     }
+  }
+
+  public void setHideFabInMainFragment(boolean hideFabInMainFragment) {
+    this.hideFabInMainFragment = hideFabInMainFragment;
   }
 }

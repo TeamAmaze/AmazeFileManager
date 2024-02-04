@@ -1073,6 +1073,7 @@ public class MainFragment extends Fragment
     if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM
         || mainFragmentViewModel.getOpenMode() == OpenMode.TRASH_BIN) {
       loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+      requireMainActivity().setHideFabInMainFragment(false);
       return;
     }
 
@@ -1081,6 +1082,7 @@ public class MainFragment extends Fragment
     if (requireMainActivity().getListItemSelected()) {
       adapter.toggleChecked(false);
     } else {
+      requireMainActivity().setHideFabInMainFragment(false);
       if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
         if (mainFragmentViewModel.getSmbPath() != null
             && !mainFragmentViewModel.getSmbPath().equals(mainFragmentViewModel.getCurrentPath())) {
