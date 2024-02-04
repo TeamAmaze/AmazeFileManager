@@ -415,6 +415,7 @@ public class SearchView {
     }
 
     mainActivity.showSmokeScreen();
+    mainActivity.hideFab();
 
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
     animator.setDuration(600);
@@ -546,6 +547,7 @@ public class SearchView {
 
     // removing background fade view
     mainActivity.hideSmokeScreen();
+    mainActivity.showFab();
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
     animator.setDuration(600);
     animator.start();
