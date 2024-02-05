@@ -321,8 +321,6 @@ public class MainActivity extends PermissionsActivity
 
   private String scrollToFileName = null;
 
-  private boolean hideFabInMainFragment = false;
-
   public static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
@@ -540,7 +538,7 @@ public class MainActivity extends PermissionsActivity
           .subscribe(
               () -> {
                 if (tabFragment != null) {
-                  tabFragment.refactorDrawerStorages(false);
+                  tabFragment.refactorDrawerStorages(false, false);
                   Fragment main = tabFragment.getFragmentAtIndex(0);
                   if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
                   Fragment main1 = tabFragment.getFragmentAtIndex(1);
@@ -1015,17 +1013,17 @@ public class MainActivity extends PermissionsActivity
         path = "6";
       }
     }
+    Bundle b = new Bundle();
     if (path != null && path.length() > 0) {
-      Bundle b = new Bundle();
       b.putString("path", path);
-      tabFragment.setArguments(b);
     }
+    b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFab);
+    tabFragment.setArguments(b);
     transaction.replace(R.id.content_frame, tabFragment);
     // Commit the transaction
     transaction.addToBackStack("tabt" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
-    this.hideFabInMainFragment = hideFab;
 
     if (isCompressedOpen && pathInCompressedArchive != null) {
       openCompressed(pathInCompressedArchive);
@@ -1534,7 +1532,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    if (hideFabInMainFragment) {
+    if (getCurrentMainFragment() != null && getCurrentMainFragment().getHideFab()) {
       hideFab();
     } else {
       showFab(getFAB());
@@ -2552,9 +2550,5 @@ public class MainActivity extends PermissionsActivity
         AppConfig.toast(this, R.string.operation_unsuccesful);
       }
     }
-  }
-
-  public void setHideFabInMainFragment(boolean hideFabInMainFragment) {
-    this.hideFabInMainFragment = hideFabInMainFragment;
   }
 }

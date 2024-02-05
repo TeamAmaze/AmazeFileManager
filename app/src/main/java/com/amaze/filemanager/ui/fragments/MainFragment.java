@@ -143,6 +143,8 @@ public class MainFragment extends Fragment
   private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
   private static final String KEY_FRAGMENT_MAIN = "main";
 
+  public static final String BUNDLE_HIDE_FAB = "hideFab";
+
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -167,6 +169,8 @@ public class MainFragment extends Fragment
 
   private MainFragmentViewModel mainFragmentViewModel;
   private MainActivityViewModel mainActivityViewModel;
+
+  private boolean hideFab;
 
   private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
@@ -207,6 +211,9 @@ public class MainFragment extends Fragment
         requireMainActivity().getCurrentColorPreference().getPrimaryFirstTab());
     mainFragmentViewModel.setPrimaryTwoColor(
         requireMainActivity().getCurrentColorPreference().getPrimarySecondTab());
+    if (getArguments() != null) {
+      hideFab = getArguments().getBoolean(BUNDLE_HIDE_FAB, false);
+    }
   }
 
   @Override
@@ -1073,7 +1080,7 @@ public class MainFragment extends Fragment
     if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM
         || mainFragmentViewModel.getOpenMode() == OpenMode.TRASH_BIN) {
       loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
-      requireMainActivity().setHideFabInMainFragment(false);
+      setHideFab(false);
       return;
     }
 
@@ -1082,7 +1089,7 @@ public class MainFragment extends Fragment
     if (requireMainActivity().getListItemSelected()) {
       adapter.toggleChecked(false);
     } else {
-      requireMainActivity().setHideFabInMainFragment(false);
+      setHideFab(false);
       if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
         if (mainFragmentViewModel.getSmbPath() != null
             && !mainFragmentViewModel.getSmbPath().equals(mainFragmentViewModel.getCurrentPath())) {
@@ -1528,5 +1535,13 @@ public class MainFragment extends Fragment
     } catch (IndexOutOfBoundsException e) {
       LOG.warn("Failed to adjust scrollview for tv", e);
     }
+  }
+
+  public boolean getHideFab() {
+    return this.hideFab;
+  }
+
+  public void setHideFab(boolean hideFab) {
+    this.hideFab = hideFab;
   }
 }

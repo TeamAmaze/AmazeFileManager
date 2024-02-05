@@ -126,8 +126,10 @@ public class TabFragment extends Fragment {
 
     viewPager = rootView.findViewById(R.id.pager);
 
+    boolean hideFab = false;
     if (getArguments() != null) {
       path = getArguments().getString(KEY_PATH);
+      hideFab = getArguments().getBoolean(MainFragment.BUNDLE_HIDE_FAB);
     }
 
     requireMainActivity().supportInvalidateOptionsMenu();
@@ -138,7 +140,7 @@ public class TabFragment extends Fragment {
       int lastOpenTab = sharedPrefs.getInt(PREFERENCE_CURRENT_TAB, DEFAULT_CURRENT_TAB);
       MainActivity.currentTab = lastOpenTab;
 
-      refactorDrawerStorages(true);
+      refactorDrawerStorages(true, hideFab);
 
       viewPager.setAdapter(sectionsPagerAdapter);
 
@@ -331,7 +333,7 @@ public class TabFragment extends Fragment {
   }
 
   private void addNewTab(int num, String path) {
-    addTab(new Tab(num, path, path), "");
+    addTab(new Tab(num, path, path), "", false);
   }
 
   /**
@@ -340,7 +342,7 @@ public class TabFragment extends Fragment {
    *
    * @param addTab whether new tabs should be added to ui or just change values in database
    */
-  public void refactorDrawerStorages(boolean addTab) {
+  public void refactorDrawerStorages(boolean addTab, boolean hideFabInCurrentTab) {
     TabHandler tabHandler = TabHandler.getInstance();
     Tab tab1 = tabHandler.findTab(1);
     Tab tab2 = tabHandler.findTab(2);
@@ -366,22 +368,23 @@ public class TabFragment extends Fragment {
     } else {
       if (path != null && path.length() != 0) {
         if (MainActivity.currentTab == 0) {
-          addTab(tab1, path);
-          addTab(tab2, "");
+          addTab(tab1, path, hideFabInCurrentTab);
+          addTab(tab2, "", false);
         }
 
         if (MainActivity.currentTab == 1) {
-          addTab(tab1, "");
-          addTab(tab2, path);
+          addTab(tab1, "", false);
+          addTab(tab2, path, hideFabInCurrentTab);
         }
       } else {
-        addTab(tab1, "");
-        addTab(tab2, "");
+        addTab(tab1, "", false);
+        addTab(tab2, "", false);
       }
     }
   }
 
-  private void addTab(@NonNull Tab tab, String path) {
+  // TODO
+  private void addTab(@NonNull Tab tab, String path, boolean hideFabInTab) {
     MainFragment main = new MainFragment();
     Bundle b = new Bundle();
 
@@ -394,6 +397,7 @@ public class TabFragment extends Fragment {
 
     b.putString("home", tab.home);
     b.putInt("no", tab.tabNumber);
+    b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFabInTab);
     main.setArguments(b);
     fragments.add(main);
     sectionsPagerAdapter.notifyDataSetChanged();
