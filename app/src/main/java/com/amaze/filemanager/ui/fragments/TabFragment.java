@@ -301,6 +301,9 @@ public class TabFragment extends Fragment {
         if (ma.getCurrentPath() != null) {
           requireMainActivity().getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
           updateBottomBar(ma);
+          // FAB might be hidden in the previous tab
+          // so we check if it should be shown for the new tab
+          requireMainActivity().showFab();
         }
       }
 
