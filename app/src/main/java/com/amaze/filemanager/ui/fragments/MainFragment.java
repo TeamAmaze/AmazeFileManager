@@ -143,6 +143,7 @@ public class MainFragment extends Fragment
   private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
   private static final String KEY_FRAGMENT_MAIN = "main";
 
+  /** Key for boolean in arguments whether to hide the FAB if this {@link MainFragment} is shown */
   public static final String BUNDLE_HIDE_FAB = "hideFab";
 
   public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -170,7 +171,7 @@ public class MainFragment extends Fragment
   private MainFragmentViewModel mainFragmentViewModel;
   private MainActivityViewModel mainActivityViewModel;
 
-  private boolean hideFab;
+  private boolean hideFab = false;
 
   private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
@@ -1537,10 +1538,12 @@ public class MainFragment extends Fragment
     }
   }
 
+  /** Whether the FAB should be hidden when this MainFragment is shown */
   public boolean getHideFab() {
     return this.hideFab;
   }
 
+  /** Set whether the FAB should be hidden when this MainFragment is shown */
   public void setHideFab(boolean hideFab) {
     this.hideFab = hideFab;
   }

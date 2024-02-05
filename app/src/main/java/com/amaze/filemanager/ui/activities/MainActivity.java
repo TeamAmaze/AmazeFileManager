@@ -1002,6 +1002,12 @@ public class MainActivity extends PermissionsActivity
     goToMain(path, false);
   }
 
+  /**
+   * Sets up the main view with the {@link MainFragment}
+   *
+   * @param path The path to which to go in the {@link MainFragment}
+   * @param hideFab Whether the FAB should be hidden in the new created {@link MainFragment} or not
+   */
   public void goToMain(String path, boolean hideFab) {
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
@@ -1017,6 +1023,7 @@ public class MainActivity extends PermissionsActivity
     if (path != null && path.length() > 0) {
       b.putString("path", path);
     }
+    // This boolean will be given to the newly created MainFragment
     b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFab);
     tabFragment.setArguments(b);
     transaction.replace(R.id.content_frame, tabFragment);

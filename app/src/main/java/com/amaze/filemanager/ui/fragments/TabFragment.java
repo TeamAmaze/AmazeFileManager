@@ -344,8 +344,10 @@ public class TabFragment extends Fragment {
    * change paths in database. Calls should implement updating each tab's list for new paths.
    *
    * @param addTab whether new tabs should be added to ui or just change values in database
+   * @param hideFabInCurrentMainFragment whether the FAB should be hidden in the current {@link
+   *     MainFragment}
    */
-  public void refactorDrawerStorages(boolean addTab, boolean hideFabInCurrentTab) {
+  public void refactorDrawerStorages(boolean addTab, boolean hideFabInCurrentMainFragment) {
     TabHandler tabHandler = TabHandler.getInstance();
     Tab tab1 = tabHandler.findTab(1);
     Tab tab2 = tabHandler.findTab(2);
@@ -371,13 +373,13 @@ public class TabFragment extends Fragment {
     } else {
       if (path != null && path.length() != 0) {
         if (MainActivity.currentTab == 0) {
-          addTab(tab1, path, hideFabInCurrentTab);
+          addTab(tab1, path, hideFabInCurrentMainFragment);
           addTab(tab2, "", false);
         }
 
         if (MainActivity.currentTab == 1) {
           addTab(tab1, "", false);
-          addTab(tab2, path, hideFabInCurrentTab);
+          addTab(tab2, path, hideFabInCurrentMainFragment);
         }
       } else {
         addTab(tab1, "", false);
@@ -386,7 +388,6 @@ public class TabFragment extends Fragment {
     }
   }
 
-  // TODO
   private void addTab(@NonNull Tab tab, String path, boolean hideFabInTab) {
     MainFragment main = new MainFragment();
     Bundle b = new Bundle();
@@ -400,6 +401,7 @@ public class TabFragment extends Fragment {
 
     b.putString("home", tab.home);
     b.putInt("no", tab.tabNumber);
+    // specifies if the constructed MainFragment hides the FAB when it is shown
     b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFabInTab);
     main.setArguments(b);
     fragments.add(main);

@@ -789,6 +789,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MainFragment mainFragment = mainActivity.getCurrentMainFragment();
       if (mainFragment != null) {
         mainFragment.loadlist(pendingPath.getPath(), false, OpenMode.UNKNOWN, false);
+        // Set if the FAB should be hidden when displaying the pendingPath
         mainFragment.setHideFab(pendingPath.getHideFabInMainFragment());
         resetPendingPath();
       } else {
