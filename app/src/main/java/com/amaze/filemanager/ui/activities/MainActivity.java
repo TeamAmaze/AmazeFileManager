@@ -1003,7 +1003,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /**
-   * Sets up the main view with the {@link MainFragment}
+   * Sets up the main view with a {@link MainFragment}
    *
    * @param path The path to which to go in the {@link MainFragment}
    * @param hideFab Whether the FAB should be hidden in the new created {@link MainFragment} or not
