@@ -89,7 +89,6 @@ class FileHandler(
                 // no item left in list, recreate views
                 main.reloadListElements(
                     true,
-                    mainFragmentViewModel.results,
                     !mainFragmentViewModel.isList
                 )
             } else {

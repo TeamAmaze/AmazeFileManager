@@ -26,17 +26,19 @@ import static android.os.Build.VERSION.SDK_INT;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResultListSorter;
 import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortOrder;
 import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
@@ -73,8 +75,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.LiveData;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import kotlinx.coroutines.Job;
 
 /**
  * SearchView, a simple view to search
@@ -127,7 +132,7 @@ public class SearchView {
 
   @SuppressWarnings("ConstantConditions")
   @SuppressLint("NotifyDataSetChanged")
-  public SearchView(final AppBar appbar, MainActivity mainActivity, SearchListener searchListener) {
+  public SearchView(final AppBar appbar, MainActivity mainActivity) {
 
     this.mainActivity = mainActivity;
     this.appbar = appbar;
@@ -163,6 +168,9 @@ public class SearchView {
 
     clearImageView.setOnClickListener(
         v -> {
+          // observers of last search are removed to stop updating the results
+          cancelLastSearch();
+
           searchViewEditText.setText("");
           clearRecyclerView();
         });
@@ -202,6 +210,8 @@ public class SearchView {
         v -> {
           String s = getSearchTerm();
 
+          cancelLastSearch();
+
           if (searchMode == 1) {
 
             saveRecentPreference(s);
@@ -223,8 +233,13 @@ public class SearchView {
 
           } else if (searchMode == 2) {
 
-            searchListener.onSearch(s);
-            appbar.getSearchView().hideSearchView();
+            mainActivity
+                .getCurrentMainFragment()
+                .getMainActivityViewModel()
+                .deepSearch(mainActivity, s)
+                .observe(
+                    mainActivity.getCurrentMainFragment().getViewLifecycleOwner(),
+                    hybridFileParcelables -> updateResultList(hybridFileParcelables, s));
 
             deepSearchTV.setVisibility(View.GONE);
           }
@@ -356,9 +371,10 @@ public class SearchView {
    * @param newResults The list of results that should be displayed
    * @param searchTerm The search term that resulted in the search results
    */
-  private void updateResultList(List<HybridFileParcelable> newResults, String searchTerm) {
-    ArrayList<HybridFileParcelable> items = new ArrayList<>(newResults);
-    Collections.sort(items, new FileListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+  private void updateResultList(List<SearchResult> newResults, String searchTerm) {
+    ArrayList<SearchResult> items = new ArrayList<>(newResults);
+    Collections.sort(
+        items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
     searchRecyclerViewAdapter.submitList(items);
     searchRecyclerViewAdapter.notifyDataSetChanged();
   }
@@ -397,6 +413,7 @@ public class SearchView {
     }
 
     mainActivity.showSmokeScreen();
+    mainActivity.hideFab();
 
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
     animator.setDuration(600);
@@ -459,7 +476,9 @@ public class SearchView {
     this.sortType = new SortType(SortBy.getSortBy(index), sortOrder);
     dialog.dismiss();
     updateSearchResultsSortButtonDisplay();
-    updateResultList(searchRecyclerViewAdapter.getCurrentList(), getSearchTerm());
+    LiveData<List<SearchResult>> lastSearchLiveData =
+        mainActivity.getCurrentMainFragment().getMainActivityViewModel().getLastSearchLiveData();
+    updateResultList(lastSearchLiveData.getValue(), getSearchTerm());
   }
 
   private void resetSearchResultsSortButton() {
@@ -526,6 +545,7 @@ public class SearchView {
 
     // removing background fade view
     mainActivity.hideSmokeScreen();
+    mainActivity.showFab();
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
     animator.setDuration(600);
     animator.start();
@@ -594,6 +614,8 @@ public class SearchView {
     searchRecyclerViewAdapter.submitList(new ArrayList<>());
     searchRecyclerViewAdapter.notifyDataSetChanged();
 
+    deepSearchTV.setVisibility(View.GONE);
+
     searchResultsHintTV.setVisibility(View.GONE);
     searchResultsSortHintTV.setVisibility(View.GONE);
     searchResultsSortButton.setVisibility(View.GONE);
@@ -626,7 +648,19 @@ public class SearchView {
     return searchViewEditText.getText().toString().trim();
   }
 
-  public interface SearchListener {
-    void onSearch(String queue);
+  private void cancelLastSearch() {
+    MainActivityViewModel viewModel =
+        mainActivity.getCurrentMainFragment().getMainActivityViewModel();
+
+    // remove all observers
+    viewModel
+        .getLastSearchLiveData()
+        .removeObservers(mainActivity.getCurrentMainFragment().getViewLifecycleOwner());
+
+    // stop the job
+    Job lastJob = viewModel.getLastSearchJob();
+    if (lastJob != null) {
+      lastJob.cancel(new CancellationException("Search outdated"));
+    }
   }
 }

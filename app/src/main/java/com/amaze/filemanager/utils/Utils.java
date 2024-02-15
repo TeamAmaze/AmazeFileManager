@@ -89,6 +89,7 @@ public class Utils {
   private static final String DATE_TIME_FORMAT = "%s | %s";
   private static final String EMAIL_EMMANUEL = "emmanuelbendavid@gmail.com";
   private static final String EMAIL_RAYMOND = "airwave209gt@gmail.com";
+  private static final String EMAIL_VISHNU = "t.v.s10123@gmail.com";
   private static final String EMAIL_VISHAL = "vishalmeham2@gmail.com";
   private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
   private static final String URL_INSTGRAM = "https://www.instagram.com/teamamaze.xyz/";
@@ -426,7 +427,7 @@ public class Utils {
   public static Intent buildEmailIntent(Context context, String text, String supportMail) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
     String[] aEmailList = {supportMail};
-    String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
+    String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND, EMAIL_VISHNU};
     emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
     emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
     emailIntent.putExtra(

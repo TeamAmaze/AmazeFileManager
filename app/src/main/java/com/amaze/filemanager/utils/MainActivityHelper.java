@@ -62,8 +62,6 @@ import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.smb.SmbUtil;
@@ -75,10 +73,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
@@ -89,8 +84,6 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 public class MainActivityHelper {
@@ -101,12 +94,6 @@ public class MainActivityHelper {
   private DataUtils dataUtils = DataUtils.getInstance();
   private int accentColor;
   private SpeedDialView.OnActionSelectedListener fabActionListener;
-
-  /*
-   * A static string which saves the last searched query. Used to retain search task after
-   * user presses back button from pressing on any list item of search results
-   */
-  public static String SEARCH_TEXT;
 
   public MainActivityHelper(MainActivity mainActivity) {
     this.mainActivity = mainActivity;
@@ -750,82 +737,5 @@ public class MainActivityHelper {
       default:
         return path;
     }
-  }
-
-  /**
-   * Creates a fragment which will handle the search AsyncTask {@link SearchWorkerFragment}
-   *
-   * @param query the text query entered the by user
-   */
-  public void search(SharedPreferences sharedPrefs, String query) {
-    TabFragment tabFragment = mainActivity.getTabFragment();
-    if (tabFragment == null) {
-      Log.w(getClass().getSimpleName(), "Failed to search: tab fragment not available");
-      return;
-    }
-    final MainFragment ma = (MainFragment) tabFragment.getCurrentTabFragment();
-    if (ma == null || ma.getMainFragmentViewModel() == null) {
-      Log.w(getClass().getSimpleName(), "Failed to search: main fragment not available");
-      return;
-    }
-    final String fpath = ma.getCurrentPath();
-
-    /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
-    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
-    // ma.searchTask = task;
-    SEARCH_TEXT = query;
-    FragmentManager fm = mainActivity.getSupportFragmentManager();
-    SearchWorkerFragment fragment =
-        (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
-
-    if (fragment != null) {
-      if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-        fragment.searchAsyncTask.cancel(true);
-      }
-      fm.beginTransaction().remove(fragment).commit();
-    }
-
-    addSearchFragment(
-        fm,
-        new SearchWorkerFragment(),
-        fpath,
-        query,
-        ma.getMainFragmentViewModel().getOpenMode(),
-        mainActivity.isRootExplorer(),
-        sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-        sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
-  }
-
-  /**
-   * Adds a search fragment that can persist it's state on config change
-   *
-   * @param fragmentManager fragmentManager
-   * @param fragment current fragment
-   * @param path current path
-   * @param input query typed by user
-   * @param openMode defines the file type
-   * @param rootMode is root enabled
-   * @param regex is regular expression search enabled
-   * @param matches is matches enabled for patter matching
-   */
-  public static void addSearchFragment(
-      @NonNull FragmentManager fragmentManager,
-      @NonNull Fragment fragment,
-      @NonNull String path,
-      @NonNull String input,
-      @NonNull OpenMode openMode,
-      boolean rootMode,
-      boolean regex,
-      boolean matches) {
-    Bundle args = new Bundle();
-    args.putString(SearchWorkerFragment.KEY_INPUT, input);
-    args.putString(SearchWorkerFragment.KEY_PATH, path);
-    args.putInt(SearchWorkerFragment.KEY_OPEN_MODE, openMode.ordinal());
-    args.putBoolean(SearchWorkerFragment.KEY_ROOT_MODE, rootMode);
-    args.putBoolean(SearchWorkerFragment.KEY_REGEX, regex);
-    args.putBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, matches);
-
-    fragment.setArguments(args);
-    fragmentManager.beginTransaction().add(fragment, MainActivity.TAG_ASYNC_HELPER).commit();
   }
 }

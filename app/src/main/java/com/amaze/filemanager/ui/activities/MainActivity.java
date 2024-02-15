@@ -123,7 +123,6 @@ import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
@@ -213,7 +212,6 @@ import kotlin.text.Charsets;
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
         BookmarkCallback,
-        SearchWorkerFragment.HelperCallbacks,
         CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>,
         FolderChooserDialog.FolderCallback,
@@ -540,7 +538,7 @@ public class MainActivity extends PermissionsActivity
           .subscribe(
               () -> {
                 if (tabFragment != null) {
-                  tabFragment.refactorDrawerStorages(false);
+                  tabFragment.refactorDrawerStorages(false, false);
                   Fragment main = tabFragment.getFragmentAtIndex(0);
                   if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
                   Fragment main1 = tabFragment.getFragmentAtIndex(1);
@@ -950,7 +948,7 @@ public class MainActivity extends PermissionsActivity
           fragmentTransaction.remove(compressedExplorerFragment);
           fragmentTransaction.commit();
           supportInvalidateOptionsMenu();
-          floatingActionButton.show();
+          showFab();
         }
       } else {
         compressedExplorerFragment.mActionMode.finish();
@@ -1001,6 +999,16 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void goToMain(String path) {
+    goToMain(path, false);
+  }
+
+  /**
+   * Sets up the main view with a {@link MainFragment}
+   *
+   * @param path The path to which to go in the {@link MainFragment}
+   * @param hideFab Whether the FAB should be hidden in the new created {@link MainFragment} or not
+   */
+  public void goToMain(String path, boolean hideFab) {
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
     TabFragment tabFragment = new TabFragment();
@@ -1011,17 +1019,19 @@ public class MainActivity extends PermissionsActivity
         path = "6";
       }
     }
+    Bundle b = new Bundle();
     if (path != null && path.length() > 0) {
-      Bundle b = new Bundle();
       b.putString("path", path);
-      tabFragment.setArguments(b);
     }
+    // This boolean will be given to the newly created MainFragment
+    b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFab);
+    tabFragment.setArguments(b);
     transaction.replace(R.id.content_frame, tabFragment);
     // Commit the transaction
     transaction.addToBackStack("tabt" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
-    floatingActionButton.show();
+
     if (isCompressedOpen && pathInCompressedArchive != null) {
       openCompressed(pathInCompressedArchive);
       pathInCompressedArchive = null;
@@ -1082,8 +1092,6 @@ public class MainActivity extends PermissionsActivity
                   .getBottomBar()
                   .updatePath(
                       mainFragment.getCurrentPath(),
-                      mainFragment.getMainFragmentViewModel().getResults(),
-                      MainActivityHelper.SEARCH_TEXT,
                       mainFragment.getMainFragmentViewModel().getOpenMode(),
                       mainFragment.getMainFragmentViewModel().getFolderCount(),
                       mainFragment.getMainFragmentViewModel().getFileCount(),
@@ -1531,7 +1539,11 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    showFab(getFAB());
+    if (getCurrentMainFragment() != null && getCurrentMainFragment().getHideFab()) {
+      hideFab();
+    } else {
+      showFab(getFAB());
+    }
   }
 
   private void showFab(SpeedDialView fab) {
@@ -1711,15 +1723,7 @@ public class MainActivity extends PermissionsActivity
 
   void initialiseViews() {
 
-    appbar =
-        new AppBar(
-            this,
-            getPrefs(),
-            queue -> {
-              if (!queue.isEmpty()) {
-                mainActivityHelper.search(getPrefs(), queue);
-              }
-            });
+    appbar = new AppBar(this, getPrefs());
     appBarLayout = getAppbar().getAppbarLayout();
 
     setSupportActionBar(getAppbar().getToolbar());
@@ -2241,51 +2245,6 @@ public class MainActivity extends PermissionsActivity
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(() -> drawer.refreshDrawer());
-  }
-
-  @Override
-  public void onPreExecute(String query) {
-    executeWithMainFragment(
-        mainFragment -> {
-          mainFragment.mSwipeRefreshLayout.setRefreshing(true);
-          mainFragment.onSearchPreExecute(query);
-          return null;
-        });
-  }
-
-  @Override
-  public void onPostExecute(String query) {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment == null) {
-      // TODO cancel search
-      return;
-    }
-
-    mainFragment.onSearchCompleted(query);
-    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
-  }
-
-  @Override
-  public void onProgressUpdate(@NonNull HybridFileParcelable hybridFileParcelable, String query) {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment == null) {
-      // TODO cancel search
-      return;
-    }
-
-    mainFragment.addSearchResult(hybridFileParcelable, query);
-  }
-
-  @Override
-  public void onCancelled() {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment == null) {
-      return;
-    }
-
-    mainFragment.reloadListElements(
-        false, false, !mainFragment.getMainFragmentViewModel().isList());
-    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
   }
 
   @Override

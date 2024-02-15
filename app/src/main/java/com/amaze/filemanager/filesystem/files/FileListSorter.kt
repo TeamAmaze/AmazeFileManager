@@ -26,79 +26,18 @@ import com.amaze.filemanager.filesystem.files.sort.DirSortBy
 import com.amaze.filemanager.filesystem.files.sort.SortBy
 import com.amaze.filemanager.filesystem.files.sort.SortType
 import java.lang.Long
-import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 /**
  * [Comparator] implementation to sort [LayoutElementParcelable]s.
  */
 class FileListSorter(
     dirArg: DirSortBy,
-    sortType: SortType,
-    searchTerm: String?
+    sortType: SortType
 ) : Comparator<ComparableParcelable> {
     private var dirsOnTop = dirArg
     private val asc: Int = sortType.sortOrder.sortFactor
     private val sort: SortBy = sortType.sortBy
-
-    private val relevanceComparator: Comparator<ComparableParcelable> by lazy {
-        if (searchTerm == null) {
-            // no search term given, so every result is equally relevant
-            Comparator { _, _ ->
-                0
-            }
-        } else {
-            Comparator { o1, o2 ->
-                val currentTime = Date().time
-                val comparator = compareBy<ComparableParcelable> { item ->
-                    // the match percentage of the search term in the name
-                    val matchPercentageScore =
-                        searchTerm.length.toDouble() / item.getParcelableName().length.toDouble()
-
-                    // if the name starts with the search term
-                    val startScore =
-                        item.getParcelableName().startsWith(searchTerm, ignoreCase = true).toInt()
-
-                    // if the search term is surrounded by separators
-                    // e.g. "my-cat" more relevant than "mysterious" for search term "my"
-                    val wordScore = item.getParcelableName().split('-', '_', '.', ' ').any {
-                        it.contentEquals(
-                            searchTerm,
-                            ignoreCase = true
-                        )
-                    }.toInt()
-
-                    val modificationDate = item.getDate()
-                    // the time difference as minutes
-                    val timeDiff =
-                        TimeUnit.MILLISECONDS.toMinutes(currentTime - modificationDate)
-                    // 30 days as minutes
-                    val relevantModificationPeriod = TimeUnit.DAYS.toMinutes(30)
-                    val timeScore = if (timeDiff < relevantModificationPeriod) {
-                        // if the file was modified within the last 30 days, the recency is normalized
-                        (relevantModificationPeriod - timeDiff) /
-                            relevantModificationPeriod.toDouble()
-                    } else {
-                        // for all older modification time, the recency doesn't change the relevancy
-                        0.0
-                    }
-
-                    return@compareBy 1.2 * matchPercentageScore +
-                        0.7 * startScore +
-                        0.7 * wordScore +
-                        0.6 * timeScore
-                }
-                // Reverts the sorting to make most relevant first
-                comparator.compare(o1, o2) * -1
-            }
-        }
-    }
-
-    /** Constructor for convenience if there is no searchTerm */
-    constructor(dirArg: DirSortBy, sortType: SortType) : this(dirArg, sortType, null)
-
-    private fun Boolean.toInt() = if (this) 1 else 0
 
     private fun isDirectory(path: ComparableParcelable): Boolean {
         return path.isDirectory()
@@ -178,8 +117,8 @@ class FileListSorter(
                 }
             }
             SortBy.RELEVANCE -> {
-                // sort by relevance to the search query
-                return asc * relevanceComparator.compare(file1, file2)
+                // This case should not be called because it is not defined
+                return 0
             }
         }
     }

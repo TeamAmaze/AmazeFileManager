@@ -25,26 +25,32 @@ import android.content.Intent
 import android.provider.MediaStore
 import androidx.collection.LruCache
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.BasicSearch
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.DeepSearch
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.IndexedSearch
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchParameters
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.searchParametersFromBoolean
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
-import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils.scanFile
-import com.amaze.filemanager.filesystem.root.ListFilesCommand.listFiles
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_REGEX
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_REGEX_MATCHES
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
 import com.amaze.trashbin.MoveFilesCallback
 import com.amaze.trashbin.TrashBinFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.Locale
 
 class MainActivityViewModel(val applicationContext: Application) :
     AndroidViewModel(applicationContext) {
@@ -52,6 +58,14 @@ class MainActivityViewModel(val applicationContext: Application) :
     var mediaCacheHash: List<List<LayoutElementParcelable>?> = List(5) { null }
     var listCache: LruCache<String, List<LayoutElementParcelable>> = LruCache(50)
     var trashBinFilesLiveData: MutableLiveData<MutableList<LayoutElementParcelable>?>? = null
+
+    /** The [LiveData] of the last triggered search */
+    var lastSearchLiveData: LiveData<List<SearchResult>> = MutableLiveData(listOf())
+        private set
+
+    /** The [Job] of the last triggered search */
+    var lastSearchJob: Job? = null
+        private set
 
     companion object {
         /**
@@ -97,37 +111,19 @@ class MainActivityViewModel(val applicationContext: Application) :
      * Perform basic search: searches on the current directory
      */
     fun basicSearch(mainActivity: MainActivity, query: String):
-        MutableLiveData<ArrayList<HybridFileParcelable>> {
-        val hybridFileParcelables = ArrayList<HybridFileParcelable>()
+        LiveData<List<SearchResult>> {
+        val searchParameters = createSearchParameters(mainActivity)
 
-        val mutableLiveData:
-            MutableLiveData<ArrayList<HybridFileParcelable>> =
-            MutableLiveData(hybridFileParcelables)
+        val path = mainActivity.currentMainFragment?.currentPath ?: ""
 
-        val showHiddenFiles = PreferenceManager
-            .getDefaultSharedPreferences(mainActivity)
-            .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
+        val basicSearch = BasicSearch(query, path, searchParameters, this.applicationContext)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            listFiles(
-                mainActivity.currentMainFragment!!.currentPath!!,
-                mainActivity.isRootExplorer,
-                showHiddenFiles,
-                { _: OpenMode? -> null }
-            ) { hybridFileParcelable: HybridFileParcelable ->
-                if (hybridFileParcelable.getName(mainActivity)
-                    .lowercase(Locale.getDefault())
-                    .contains(query.lowercase(Locale.getDefault())) &&
-                    (showHiddenFiles || !hybridFileParcelable.isHidden)
-                ) {
-                    hybridFileParcelables.add(hybridFileParcelable)
-
-                    mutableLiveData.postValue(hybridFileParcelables)
-                }
-            }
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
+            basicSearch.search()
         }
 
-        return mutableLiveData
+        lastSearchLiveData = basicSearch.foundFilesLiveData
+        return basicSearch.foundFilesLiveData
     }
 
     /**
@@ -136,53 +132,69 @@ class MainActivityViewModel(val applicationContext: Application) :
     fun indexedSearch(
         mainActivity: MainActivity,
         query: String
-    ): MutableLiveData<ArrayList<HybridFileParcelable>> {
-        val list = ArrayList<HybridFileParcelable>()
-
-        val mutableLiveData: MutableLiveData<ArrayList<HybridFileParcelable>> = MutableLiveData(
-            list
+    ): LiveData<List<SearchResult>> {
+        val projection = arrayOf(
+            MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.DISPLAY_NAME
         )
+        val cursor = mainActivity
+            .contentResolver
+            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
+            ?: return MutableLiveData()
 
-        val showHiddenFiles =
-            PreferenceManager.getDefaultSharedPreferences(mainActivity)
-                .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false)
+        val searchParameters = createSearchParameters(mainActivity)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val path = mainActivity.currentMainFragment?.currentPath ?: ""
 
-            val cursor = mainActivity
-                .contentResolver
-                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
-                ?: return@launch
+        val indexedSearch = IndexedSearch(query, path, searchParameters, cursor)
 
-            if (cursor.count > 0 && cursor.moveToFirst()) {
-                do {
-                    val path =
-                        cursor.getString(
-                            cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
-                        )
-
-                    if (path != null &&
-                        path.contains(mainActivity.currentMainFragment?.currentPath!!) &&
-                        File(path).name.lowercase(Locale.getDefault()).contains(
-                                query.lowercase(Locale.getDefault())
-                            )
-                    ) {
-                        val hybridFileParcelable =
-                            RootHelper.generateBaseFile(File(path), showHiddenFiles)
-
-                        if (hybridFileParcelable != null) {
-                            list.add(hybridFileParcelable)
-                            mutableLiveData.postValue(list)
-                        }
-                    }
-                } while (cursor.moveToNext())
-            }
-
-            cursor.close()
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
+            indexedSearch.search()
         }
 
-        return mutableLiveData
+        lastSearchLiveData = indexedSearch.foundFilesLiveData
+        return indexedSearch.foundFilesLiveData
+    }
+
+    /**
+     * Perform deep search: search recursively for files matching [query] in the current path
+     */
+    fun deepSearch(
+        mainActivity: MainActivity,
+        query: String
+    ): LiveData<List<SearchResult>> {
+        val searchParameters = createSearchParameters(mainActivity)
+
+        val path = mainActivity.currentMainFragment?.currentPath ?: ""
+        val openMode =
+            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode ?: OpenMode.FILE
+
+        val context = this.applicationContext
+
+        val deepSearch = DeepSearch(
+            query,
+            path,
+            searchParameters,
+            context,
+            openMode
+        )
+
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
+            deepSearch.search()
+        }
+
+        lastSearchLiveData = deepSearch.foundFilesLiveData
+        return deepSearch.foundFilesLiveData
+    }
+
+    private fun createSearchParameters(mainActivity: MainActivity): SearchParameters {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(mainActivity)
+        return searchParametersFromBoolean(
+            showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false),
+            isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false),
+            isRegexMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false),
+            isRoot = mainActivity.isRootExplorer
+        )
     }
 
     /**
