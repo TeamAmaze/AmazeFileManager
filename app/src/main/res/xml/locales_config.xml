@@ -10,6 +10,7 @@
     <locale android:name="bg" />
     <locale android:name="bn" />
     <locale android:name="bn-BD" />
+    <locale android:name="bqi-LU" />
     <locale android:name="br-FR" />
     <locale android:name="bs-BA" />
     <locale android:name="ca" />
@@ -42,12 +43,12 @@
     <locale android:name="gd-GB" />
     <locale android:name="gl-ES" />
     <locale android:name="gu-IN" />
-<!--    <locale android:name="he" />-->
+    <locale android:name="he" />
     <locale android:name="hi" />
     <locale android:name="hr" />
     <locale android:name="hu" />
     <locale android:name="hy-AM" />
-<!--    <locale android:name="id" />-->
+    <locale android:name="id" />
     <locale android:name="in" />
     <locale android:name="is" />
     <locale android:name="it" />
@@ -69,7 +70,7 @@
     <locale android:name="mn-MN" />
     <locale android:name="mr-IN" />
     <locale android:name="ms-MY" />
-    <locale android:name="my-MM" />
+    <locale android:name="my" />
     <locale android:name="nb" />
     <locale android:name="ne-NP" />
     <locale android:name="nl" />
@@ -103,6 +104,7 @@
     <locale android:name="vi" />
     <locale android:name="zh-CN" />
     <locale android:name="zh-HK" />
+    <locale android:name="zh-HN" />
     <locale android:name="zh-TW" />
     <locale android:name="zu" />
 </locale-config>
