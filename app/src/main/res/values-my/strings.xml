@@ -322,57 +322,6 @@
     <string name="use_custom_ip">Use custom IP</string>
     <string name="bookmark_lost">Bookmark not found, recreating&#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-                <h1>How to access shared Windows folder on Android (SMB)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>Enable File Sharing on Windows</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Open the Control Panel, click Choose HomeGroup and Sharing options under Network
-                        and Internet, and click "Change Advanced Sharing Settings," enable the "File and
-                        Printer Sharing" feature.\n\n
-                    </p>
-
-                    <li>
-                        <b>Additional File Sharing settings</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        You may also want to configure the other advanced sharing settings here. \n
-                        For example, you could enable access to your files without a password if you trust all
-                        the devices on your local network. Once file and printer sharing is enabled, you can
-                        open File Explorer or Windows Explorer, right-click a folder you want to share, and
-                        select Properties. \n
-                        Click the Share button and make the folder available on the network.\n\n
-                        </p>
-
-                    <li>
-                        <b>Make sure both devices are on same Wifi</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        This feature makes files available on the local network, so your PC and mobile devices
-                        have to be on the same local network. You can\’t access a shared Windows folder
-                        over the Internet or when your smartphone is connected to its mobile data — it
-                        has to be connected to Wi-Fi.\n\n
-                    </p>
-
-                    <li>
-                        <b>Find IP Address</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Open Command Prompt. Type 'ipconfig' and press Enter. Look for Default Gateway
-                        under your network adapter for your router's IP address. Look for
-                        \"IPv4 Address\" under the same adapter section to find your computer's IP
-                        address.\n\n
-                    </p>
-
-                    <b>Enter details in SMB dialog box</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
     <string name="share_limit">Can\'t share more than 100 files</string>
     <string name="otg_access">Select the root of OTG device</string>
     <string name="information">Information</string>

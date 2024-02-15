@@ -321,53 +321,6 @@
     <string name="use_custom_ip">Özel IP kullan</string>
     <string name="bookmark_lost">Yer imi bulunamadı, oluşturuluyor&#8230;</string>
 
-    <string name="smb_instructions">
-<html>
-            <body>
-                <h1>Android'de paylaşılan Windows klasörüne nasıl erişilir (smb)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>Dosya Paylaşımını Etkinleştirme</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Denetim Masasını açın, Ağ ve İnternet'in altındaki ev grubu ve paylaşım seçeneklerini belirle'yi tıklayın
-                        ve Gelişmiş paylaşım ayarlarını değiştir'i tıklayın. Dosyayı ve
-                        yazıcı paylaşma özelliğini etkinleştirin.\n\n
-                    </p>
-
-                    <li>
-                        <b>Ek Dosya Paylaşımı ayarları</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Diğer gelişmiş paylaşım ayarlarını burada da yapılandırmak isteyebilirsiniz.\n
-                        Örneğin, yerel ağınızdaki tüm aygıtlara güveniyorsanız, dosyalarınıza şifre olmadan erişimi etkinleştirebilirsiniz.
-                        Dosya ve yazıcı paylaşımı etkinleştirildiğinde, Dosya Gezgini'ni veya Windows Gezgini'ni açın, paylaşmak istediğiniz klasörü sağ tıklayın Ve Özellikler'i seçin.\n
-                        Paylaş düğmesini tıklayın ve klasörü ağ üzerinde kullanılabilir yapın.\n\n
-                        </p>
-
-                    <li>
-                        <b>Her iki cihazın aynı kablosuz ağa bağlı olduğundan emin olun</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Bu özellik, dosyaları yerel ağda kullanılabilir hale getirir, bu nedenle bilgisayarınız ve mobil cihazlarınızın aynı yerel ağ üzerinde olması gerekir.
-                        Telefonunuzda mobil veri ile internete bağlı iseniz Internet üzerinden paylaşılan bir Windows klasörüne erişemezsiniz. Wi-Fi ile bağlanmış olmanız gerekmektedir.\n\n
-                    </p>
-
-                    <li>
-                        <b> IP Adresi Bulma</b>\n
-                    </li>
-                    <p style="margin-left: 40px">
-                        Komut İstemi'ni açın. 
-                        'Ipconfig' yazıp Enter tuşuna basın. 
-                        Yönelticinizin IP adresi için Ağ Bağdaştırıcınızın Altındaki Varsayılan Ağ Geçidi'ne bakın. 
-                        Bilgisayarınızın IP adresini bulmak için aynı bağdaştırıcı bölümünde \\ "IPv4 Adresi \" bölümüne bakın.\n\n
-                    </p>
-
-                    <b>Smb iletişim kutusundaki ayrıntıları girin</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
     <string name="share_limit">100 dosyadan fazlası paylaşılamaz</string>
     <string name="otg_access">OTG aygıt kökünü seçin</string>
     <string name="information">Bilgi</string>
