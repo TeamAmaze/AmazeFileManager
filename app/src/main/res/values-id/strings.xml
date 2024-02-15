@@ -327,56 +327,6 @@
     <string name="use_custom_ip">Gunakan IP khusus</string>
     <string name="bookmark_lost">Markah tidak ditemukan, membuat ulang&#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-                <h1>Bagaimana cara mengakses folder berbagi Windows di android (SMB)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>Aktifkan Berbagi Berkas</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Buka Panel Kontrol, klik Pilih grup rumah dan opsi berbagi di bawah Jaringan
-                        dan Internet, and klik Ubah pengaturan berbagi lanjutan. Aktifkan fitur berbagi
-                        berkas dan printer.\n\n
-                    </p>
-
-                    <li>
-                        <b>Pengaturan Berbagi Berkas Tambahan</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Anda mungkin juga ingin mengubah pengaturan berbagi lanjutan di sini. \n
-                        Contohnya, Anda bisa mengaktifkan akses ke berkas Anda tanpa sandi jika Anda mempercayai
-                        semua perangkat di jaringan lokal Anda. Setelah opsi berbagi berkas dan printer diaktifkan,
-                        Anda bisa membuka File Explorer atau Windows Explorer, klik kanan folder yang ingin Anda
-                        bagikan, dan pilih Properti. \n
-                        Pilih tab Berbagi lalu klik tombol Berbagi dan buat folder tersedia di Jaringan.\n\n
-                        </p>
-
-                    <li>
-                        <b>Pastikan kedua perangkat Anda berada di jaringan Wi-Fi yang sama</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Fitur ini membuat berkas tersedia pada jaringan local, jadi perangkat PC dan seluler Anda
-                        harus berada di jaringan lokal yang sama. Anda tidak bisa mengakses folder berbagi Windows
-                        dari Internet atau ketika telepon seluler Anda tersambung ke jaringan 3G/4G — perangkat
-                        harus tersambung ke jaringan Wi-Fi yang sama.\n\n
-                    </p>
-
-                    <li>
-                        <b>Temukan Alamat IP</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Buka Command Prompt. Ketik 'ipconfig' dan tekan Enter. Cari Default Gateway
-                        di bawah adapter jaringan untuk router Anda. Cari \\"IPv4 Address\\"
-                        di bagian yang sama untuk menemukan alamat IP komputer Anda.\n\n
-                    </p>
-
-                    <b>Masukkan detailnya di kotak dialog SMB</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
     <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas</string>
     <string name="otg_access">Pilih root dari perangkat OTG</string>
     <string name="information">Informasi</string>
