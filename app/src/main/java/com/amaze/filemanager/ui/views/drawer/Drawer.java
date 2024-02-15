@@ -128,7 +128,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       0; // number of storage available (internal/external/otg etc)
   private boolean isDrawerLocked = false;
   private FragmentTransaction pending_fragmentTransaction;
-  private String pendingPath;
+  private PendingPath pendingPath;
   private String firstPath = null, secondPath = null;
 
   private DrawerLayout mDrawerLayout;
@@ -308,7 +308,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             STORAGES_GROUP,
             order++,
             "OTG",
-            new MenuMetadata(file),
+            new MenuMetadata(file, false),
             R.drawable.ic_usb_white_24dp,
             R.drawable.ic_show_chart_black_24dp,
             Formatter.formatFileSize(mainActivity, freeSpace),
@@ -322,7 +322,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             STORAGES_GROUP,
             order++,
             name,
-            new MenuMetadata(file),
+            new MenuMetadata(file, false),
             icon,
             R.drawable.ic_show_chart_black_24dp,
             Formatter.formatFileSize(mainActivity, freeSpace),
@@ -344,7 +344,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               SERVERS_GROUP,
               order++,
               file[0],
-              new MenuMetadata(file[1]),
+              new MenuMetadata(file[1], false),
               R.drawable.ic_settings_remote_white_24dp,
               R.drawable.ic_edit_24dp);
         }
@@ -363,7 +363,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               CLOUDS_GROUP,
               order++,
               CloudHandler.CLOUD_NAME_DROPBOX,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/"),
+              new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/", false),
               R.drawable.ic_dropbox_white_24dp,
               deleteIcon);
 
@@ -377,7 +377,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               CLOUDS_GROUP,
               order++,
               CloudHandler.CLOUD_NAME_BOX,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/"),
+              new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/", false),
               R.drawable.ic_box_white_24dp,
               deleteIcon);
 
@@ -391,7 +391,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               CLOUDS_GROUP,
               order++,
               CloudHandler.CLOUD_NAME_ONE_DRIVE,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/"),
+              new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/", false),
               R.drawable.ic_onedrive_white_24dp,
               deleteIcon);
 
@@ -405,7 +405,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               CLOUDS_GROUP,
               order++,
               CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/"),
+              new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/", false),
               R.drawable.ic_google_drive_white_24dp,
               deleteIcon);
 
@@ -430,7 +430,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 FOLDERS_GROUP,
                 order++,
                 file[0],
-                new MenuMetadata(file[1]),
+                new MenuMetadata(file[1], false),
                 R.drawable.ic_folder_white_24dp,
                 R.drawable.ic_edit_24dp);
           }
@@ -451,7 +451,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.quick,
-            new MenuMetadata("5"),
+            new MenuMetadata("5", true),
             R.drawable.ic_star_white_24dp,
             null);
       }
@@ -461,7 +461,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.recent,
-            new MenuMetadata("6"),
+            new MenuMetadata("6", true),
             R.drawable.ic_history_white_24dp,
             null);
       }
@@ -471,7 +471,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.images,
-            new MenuMetadata("0"),
+            new MenuMetadata("0", true),
             R.drawable.ic_photo_library_white_24dp,
             null);
       }
@@ -481,7 +481,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.videos,
-            new MenuMetadata("1"),
+            new MenuMetadata("1", true),
             R.drawable.ic_video_library_white_24dp,
             null);
       }
@@ -491,7 +491,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.audio,
-            new MenuMetadata("2"),
+            new MenuMetadata("2", true),
             R.drawable.ic_library_music_white_24dp,
             null);
       }
@@ -501,7 +501,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.documents,
-            new MenuMetadata("3"),
+            new MenuMetadata("3", true),
             R.drawable.ic_library_books_white_24dp,
             null);
       }
@@ -511,7 +511,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             QUICKACCESSES_GROUP,
             order++,
             R.string.apks,
-            new MenuMetadata("4"),
+            new MenuMetadata("4", true),
             R.drawable.ic_apk_library_white_24dp,
             null);
       }
@@ -596,7 +596,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         LASTGROUP,
         order++,
         R.string.trash_bin,
-        new MenuMetadata("7"),
+        new MenuMetadata("7", true),
         R.drawable.round_delete_outline_24,
         null);
 
@@ -778,20 +778,22 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
 
     if (pendingPath != null) {
-      HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath);
+      HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, pendingPath.getPath());
       hFile.generateMode(mainActivity);
       if (hFile.isSimpleFile()) {
-        FileUtils.openFile(new File(pendingPath), mainActivity, mainActivity.getPrefs());
+        FileUtils.openFile(new File(pendingPath.getPath()), mainActivity, mainActivity.getPrefs());
         resetPendingPath();
         return;
       }
 
       MainFragment mainFragment = mainActivity.getCurrentMainFragment();
       if (mainFragment != null) {
-        mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN, false);
+        mainFragment.loadlist(pendingPath.getPath(), false, OpenMode.UNKNOWN, false);
+        // Set if the FAB should be hidden when displaying the pendingPath
+        mainFragment.setHideFab(pendingPath.getHideFabInMainFragment());
         resetPendingPath();
       } else {
-        mainActivity.goToMain(pendingPath);
+        mainActivity.goToMain(pendingPath.getPath(), pendingPath.getHideFabInMainFragment());
         resetPendingPath();
         return;
       }
@@ -845,7 +847,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                   });
           dialog.show();
         } else {
-          pendingPath = meta.path;
+          pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
           closeIfNotLocked();
           if (isLocked()) {
             onDrawerClosed();

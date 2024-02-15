@@ -538,7 +538,7 @@ public class MainActivity extends PermissionsActivity
           .subscribe(
               () -> {
                 if (tabFragment != null) {
-                  tabFragment.refactorDrawerStorages(false);
+                  tabFragment.refactorDrawerStorages(false, false);
                   Fragment main = tabFragment.getFragmentAtIndex(0);
                   if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
                   Fragment main1 = tabFragment.getFragmentAtIndex(1);
@@ -948,7 +948,7 @@ public class MainActivity extends PermissionsActivity
           fragmentTransaction.remove(compressedExplorerFragment);
           fragmentTransaction.commit();
           supportInvalidateOptionsMenu();
-          floatingActionButton.show();
+          showFab();
         }
       } else {
         compressedExplorerFragment.mActionMode.finish();
@@ -999,6 +999,16 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void goToMain(String path) {
+    goToMain(path, false);
+  }
+
+  /**
+   * Sets up the main view with a {@link MainFragment}
+   *
+   * @param path The path to which to go in the {@link MainFragment}
+   * @param hideFab Whether the FAB should be hidden in the new created {@link MainFragment} or not
+   */
+  public void goToMain(String path, boolean hideFab) {
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
     TabFragment tabFragment = new TabFragment();
@@ -1009,17 +1019,19 @@ public class MainActivity extends PermissionsActivity
         path = "6";
       }
     }
+    Bundle b = new Bundle();
     if (path != null && path.length() > 0) {
-      Bundle b = new Bundle();
       b.putString("path", path);
-      tabFragment.setArguments(b);
     }
+    // This boolean will be given to the newly created MainFragment
+    b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFab);
+    tabFragment.setArguments(b);
     transaction.replace(R.id.content_frame, tabFragment);
     // Commit the transaction
     transaction.addToBackStack("tabt" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
-    floatingActionButton.show();
+
     if (isCompressedOpen && pathInCompressedArchive != null) {
       openCompressed(pathInCompressedArchive);
       pathInCompressedArchive = null;
@@ -1527,7 +1539,11 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    showFab(getFAB());
+    if (getCurrentMainFragment() != null && getCurrentMainFragment().getHideFab()) {
+      hideFab();
+    } else {
+      showFab(getFAB());
+    }
   }
 
   private void showFab(SpeedDialView fab) {
