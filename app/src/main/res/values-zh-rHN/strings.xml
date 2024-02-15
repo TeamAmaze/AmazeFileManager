@@ -1,0 +1,787 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Amaze 檔案管理員</string>
+    <string name="drawer_open">打开抽屉式导航栏 hhbhbh</string>
+    <string name="drawer_close">关闭抽屉式导航栏</string>
+    <string name="icon">圖示</string>
+    <string name="apps">應用程式管理</string>
+    <string name="ftp">FTP 伺服器</string>
+    <string name="setting">设置</string>
+    <string name="select">選擇項目</string>
+    <string name="press_again">㩒多一次「返回鍵」退出</string>
+    <string name="open">開啟</string>
+    <string name="backup">備份</string>
+    <string name="uninstall">卸載</string>
+    <string name="play">入 Google Play睇</string>
+    <string name="properties">屬性</string>
+    <string name="copyingapks">正复制%d个 APK 文件至%s</string>
+    <string name="delbook">刪除書籤</string>
+    <string name="add_to_bookmarks">添加到書籤</string>
+    <string name="enterpath">请输入路径</string>
+    <string name="cancel">取消</string>
+    <string name="create">新增</string>
+    <string name="loading">正在加载&#8230;</string>
+    <string name="file_empty">個檔案空㗎</string>
+    <string name="error">錯誤</string>
+    <string name="search_results">%s 的搜尋結果</string>
+    <string name="rename">改名</string>
+    <string name="save">儲存</string>
+    <string name="bookmarks_added">書籤已添加</string>
+    <string name="fileexist">已存在同名文件</string>
+    <string name="name">名稱</string>
+    <string name="date">時間戳：</string>
+    <string name="location">路径</string>
+    <string name="size_capitalized">大小</string>
+    <string name="size">文件夹大小</string>
+    <string name="enterzipname">请输入 Zip 文件名</string>
+    <string name="no_app_found">无法找到可以打开此文件的应用</string>
+    <string name="copying">正在複製</string>
+    <string name="moving">正在移動</string>
+    <string name="file">檔案</string>
+    <string name="folder">資料夾</string>
+    <string name="newfolder">新資料夾</string>
+    <string name="entername">請輸入名稱</string>
+    <string name="extracting">解壓中</string>
+    <string name="stopping">停止中</string>
+    <string name="open_parent">打開上一層目錄</string>
+    <string name="open_with">打开方式</string>
+    <string name="share">分享</string>
+    <string name="about">關於</string>
+    <string name="extract">解壓縮</string>
+    <string name="compress">壓縮</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="dialog_delete_category_directories">目录</string>
+    <string name="dialog_delete_category_files">近期檔案</string>
+    <string name="dialog_delete_disclaimer">您确定要永久删除这些文件吗？删除后将无法恢复。</string>
+    <string name="dialog_delete_title">永久删除？</string>
+    <string name="deleting">正在刪除</string>
+    <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的首页吗？</string>
+    <string name="directorysort">目錄排序方式</string>
+    <string name="sort_by">排序方式</string>
+    <string name="sort_only_this">只限呢個檔案夾</string>
+    <string name="theme">主題</string>
+    <string name="random">隨機色彩</string>
+    <string name="random_summary">每次啟動都使用隨機主題</string>
+    <string name="colorize">多彩圖示</string>
+    <string name="colorize_summary">设置静态图标的颜色，不会覆盖目录图标设置</string>
+    <string name="home">首页</string>
+    <string name="paste">貼上</string>
+    <string name="history">歷史記錄</string>
+    <string name="copy">複製</string>
+    <string name="root_mode">Root 檔案總管</string>
+    <string name="root_mode_summary">僅供已獲取 Root 許可權嘅設備使用。你知你做緊乜先好開呀。</string>
+    <string name="root_failure">未獲取 Root 訪問許可權</string>
+    <string name="select_all">全选</string>
+    <string name="delete">刪除</string>
+    <string name="set_as_home">设为首页</string>
+    <string name="operation_not_supported">不支持此操作</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <!-- Theme -->
+    <string name="light">Material 浅色</string>
+    <string name="dark">Material 深色</string>
+    <string name="daytime">随昼夜变化</string>
+    <string name="black">OLED 黑</string>
+    <string name="system">系统 (跟随系统主题)</string>
+    <!--Skin-->
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">資料夾排先</string>
+    <string name="filesOnTop">檔案排先</string>
+    <string name="none_on_top">檔案同檔案夾混合顯示</string>
+    <!--SortBy-->
+    <string name="sort_name">名稱</string>
+    <string name="lastModified">最后修改时间</string>
+    <string name="sort_size">大小</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">揀個檔案</string>
+    <string name="process_viewer">處理程序管理員</string>
+    <string name="in_safe">空間不足</string>
+    <string name="no_file_overwrite">未覆蓋任何檔案</string>
+    <string name="skip">略過</string>
+    <string name="overwrite">覆蓋</string>
+    <string name="not_allowed">此操作不被允许</string>
+    <string name="searching">搜尋中：%s</string>
+    <string name="done">完成</string>
+    <string name="set">应用</string>
+    <string name="enablerootmde">啟用 Root 模式</string>
+    <string name="goback">返回上一層</string>
+    <string name="newfile">新增檔案</string>
+    <string name="no_files">無檔案</string>
+    <string name="used">已用空间</string>
+    <string name="used_by_others">已被其他人使用</string>
+    <string name="free">剩余空间</string>
+    <string name="listview">列表视图</string>
+    <string name="gridview">网格视图</string>
+    <string name="permission">權限</string>
+    <string name="hide">手动隐藏</string>
+    <string name="exit">退出</string>
+    <string name="doforall">對所有項目執行操作</string>
+    <string name="gridcolumnno">网格列数</string>
+    <string name="set_random">更改将在重启应用后生效</string>
+    <string name="authors">開發人員</string>
+    <string name="changelog">更新日誌</string>
+    <string name="ok">確定</string>
+    <string name="ui">介面</string>
+    <string name="general">一般</string>
+    <string name="thumb_summary">顯示應用程式同圖片嘅縮圖</string>
+    <string name="thumb">顯示縮圖</string>
+    <string name="hidden">显示隐藏文件和文件夹</string>
+    <string name="lastModifiedSummary">显示文件的最后修改时间</string>
+    <string name="lastModifiedPref">显示修改时间</string>
+    <string name="size_pref_summary">顯示檔案大小及資料夾內檔案數量</string>
+    <string name="size_pref">顯示大小</string>
+    <string name="miscellaneous">其他</string>
+    <string name="root_pref_summary">顯示檔案及資料夾的權限</string>
+    <string name="root_pref">顯示許可權</string>
+    <string name="about_amaze_file_manager_label">關於</string>
+    <string name="version">版本</string>
+    <string name="rate">為本應用程式評分</string>
+    <string name="feedback">反馈意见</string>
+    <string name="hiddenfiles">已隐藏文件</string>
+    <string name="type">類型</string>
+    <string name="root_directory">根目錄</string>
+    <string name="add_shortcut">創建快捷方式</string>
+    <string name="unsaved_changes">更改未被儲存</string>
+    <string name="unsaved_changes_description">您已经修改了此文件，是否要在退出前保存您所作的修改？</string>
+    <string name="saving">儲存</string>
+    <string name="package_installer">應用包安裝程式</string>
+    <string name="view">檢視</string>
+    <string name="install">安裝</string>
+    <string name="archive">壓縮檔</string>
+    <string name="archive_text">呢個係一個壓縮檔，你想點做？</string>
+    <string name="package_installer_text">呢個係一個應用程式 apk，你想點做？</string>
+    <string name="xda_title">XDA 鏈接</string>
+    <string name="xda_summary">寻求帮助或分享心得</string>
+    <string name="circular_images">對圖片和影片使用圓形圖示</string>
+    <string name="circular_icons">使用圓形圖示</string>
+    <string name="back_title">顯示返回導覽</string>
+    <string name="back_summary">在清單的頂部顯示返回導覽</string>
+    <string name="details">详细信息</string>
+    <string name="translators">翻譯人員</string>
+    <string name="german_translation_title">德文</string>
+    <string name="italian_translation_title">意大利文</string>
+    <string name="french_translation_title">法文</string>
+    <string name="russian_translation_title">俄文</string>
+    <string name="spanish_translation_title">西班牙文</string>
+    <string name="basque_translation_title">巴斯克語</string>
+    <string name="chinese_translation_title">簡體中文</string>
+    <string name="serbian_translation_title">塞爾維亞語</string>
+    <string name="turkish_translation_title">土耳其語</string>
+    <string name="ukrainian_translation_title">烏克蘭語</string>
+    <string name="portuguese_translation_title">葡萄牙語</string>
+    <string name="polish_translation_title">波蘭語</string>
+    <string name="korean_translation_title">韓文</string>
+    <string name="greek_translation_title">希臘語</string>
+    <string name="dutch_translation_title">荷蘭語</string>
+    <string name="romanian_translation_title">罗马尼亚语</string>
+    <string name="vietnamese_translation_title">越南語</string>
+    <string name="japanese_translation_title">日文</string>
+    <string name="tamil_translation_title">泰米爾語</string>
+
+    <string name="zip_viewer">ZIP 壓縮檔檢視器</string>
+    <string name="unin_system_apk">这是一个系统应用，删除它可能导致系统不稳定。\n请问您是否继续？</string>
+    <string name="warning">警告</string>
+    <string name="donate">捐贈</string>
+    <string name="archive_extract_folder">壓縮檔解壓縮資料夾</string>
+    <string name="archive_summary">压缩包内的文件会被解压到此目录，默认解压到压缩包所在目录。</string>
+    <string name="open_as">打开方式</string>
+    <string name="text">文字</string>
+    <string name="audio">音乐</string>
+    <string name="video">影片</string>
+    <string name="other">其他</string>
+    <string name="image">图片</string>
+    <string name="contributors">贡献者</string>
+    <string name="save_paths">记住路径</string>
+    <string name="save_path_summary">當你開啟 Amaze 檔案管理器時，每個分頁將顯示你上次訪問的目錄</string>
+    <string name="select_intent">選擇</string>
+    <string name="database">資料庫</string>
+    <string name="colored_navigation">導覽列變色</string>
+    <string name="colored_navigvation_sum">設定導覽列是否跟隨色彩樣式變色</string>
+
+    <string name="color_title">顏色</string>
+    <string name="color_summary">为各种界面组件设置颜色</string>
+    <string name="primary_color_title">主色调（左侧面板）</string>
+    <string name="primary_color_summary">设置左侧面板大部分控件的颜色</string>
+    <string name="accent_color_title">强调色</string>
+    <string name="accent_color_summary">为浮动操作按钮以及其他控件设置颜色</string>
+    <string name="icon_color_title">图标颜色</string>
+    <string name="icon_color_summary">为图标设置颜色</string>
+    <string name="choose_color">選擇顏色</string>
+    <string name="files">近期檔案</string>
+    <string name="textreader">文本阅读器</string>
+    <string name="databasereader">数据库读取器</string>
+    <string name="show_dividers">显示分割线</string>
+    <string name="needs_access">需要寫入的權限</string>
+    <string name="needs_access_summary">请选择根目录下的 \t</string>
+    <string name="needs_access_summary1">\t 以授予寫入的權限</string>
+    <string name="smb_connection">SMB 連線</string>
+    <string name="smb_server">伺服器 IP 位址</string>
+    <string name="server_address">伺服器 IP 位址</string>
+    <string name="username">用户名</string>
+    <string name="password">密碼</string>
+    <string name="anonymous">匿名用户</string>
+    <string name="bluetooth">藍牙裝置</string>
+    <string name="folders">資料夾</string>
+    <string name="folderfilecount">%1$d 個檔案夾， %2$d 個檔案</string>
+    <string name="videos">影片</string>
+    <string name="apks">安裝包</string>
+    <string name="documents">文件</string>
+    <string name="images">圖像</string>
+    <string name="clear">清空</string>
+    <string name="md5">MD5</string>
+    <string name="total">总计：</string>
+    <string name="calculating">正在计算</string>
+    <string name="sort">排序</string>
+    <string name="ascending">遞增</string>
+    <string name="descending">遞減</string>
+    <string name="default_string">默认</string>
+    <string name="doit">确定</string>
+    <string name="want_help"><u>需要幫助嗎？</u></string>
+    <string name="quick">快速访问</string>
+    <string name="recent">最近访问文件</string>
+    <string name="edit">編輯</string>
+    <string name="find">尋找頁面</string>
+    <string name="grant">授予</string>
+    <string name="grantper">授予權限</string>
+    <string name="grantfailed">未授予權限</string>
+    <string name="grant_storage_permission">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
+    <string name="operation_unsuccesful">操作失败</string>
+    <string name="creatingfile">建立檔案中</string>
+    <string name="creatingfolder">正在创建文件夹</string>
+    <string name="renaming">正在重命名</string>
+    <string name="cant_be_empty">%s 不能為空</string>
+    <string name="ip">位址</string>
+    <string name="connection_name">连接名称</string>
+    <string name="no_device_found">找不到裝置</string>
+    <string name="path">路徑</string>
+    <string name="rename_bookmark">修改书签</string>
+    <string name="cut">剪下</string>
+    <string name="search">搜尋</string>
+    <string name="invalid_name">无效的名称</string>
+    <string name="search_hint">请输入要搜索的内容&#8230;</string>
+    <string name="advanced_search">進階搜尋</string>
+    <string name="regular_expression">正規運算式</string>
+    <string name="regular_expression_summary">使用基于 BASH 的正则表达式进行搜索</string>
+    <string name="match_content">符合的內容</string>
+    <string name="match_content_summary">启用此选项后，正则表达式将匹配整个文件名，否则将进行一般查找。</string>
+    <string name="start_ftp">開始</string>
+    <string name="stop_ftp">停止</string>
+    <string name="ftp_status_running">正在运行</string>
+    <string name="ftp_status_not_running">没有运行</string>
+    <string name="ftp_no_wifi">请确保您已连接上可用的无线局域网</string>
+    <string name="domain">網域名稱</string>
+    <string name="smb_share">分享路径</string>
+    <string name="invalid">无效的 %s</string>
+    <string name="ftp_notif_starting">FTP 服务器正在启动中</string>
+    <string name="ftp_notif_starting_title">FTP 伺服器</string>
+    <string name="ftp_notif_title">Amaze FTP 服务器已启动</string>
+    <string name="ftp_notif_text">在 %s</string>
+    <string name="ftp_notif_stop_server">停止</string>
+    <string name="ftp_port_edit_menu_title">选择 FTP 端口</string>
+    <string name="ftp_port_change_success">FTP 端口更改成功</string>
+    <string name="ftp_port_change_error_invalid">选定的端口号无效</string>
+    <string name="primary_two_title">主色调（右侧面板）</string>
+    <string name="primary_two_summary">设置右侧面板大部分控件的颜色</string>
+    <string name="support_development">协助开发</string>
+    <string name="report_bugs_title">反馈问题</string>
+    <string name="source_title">源代码</string>
+    <string name="source_summary">在 GitHub 上查看源代码</string>
+    <string name="report_bugs_summary">反馈问题或提交新功能需求</string>
+    <string name="translate_title">贡献翻译</string>
+    <string name="translate_summary">前往 Amaze 本地化系统进行语言翻译</string>
+    <string name="paypal_copy_message">Paypal ID 已複製到剪貼簿</string>
+    <string name="searching_devices">正在搜尋裝置</string>
+    <string name="use_custom_ip">使用自定义 IP</string>
+    <string name="bookmark_lost">无法找到书签，正在重新创建&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>如何在安卓上访问视窗操作系统的共享文件夹？(服务器通讯包协议) </h1>
+                <ul>
+                    <li>
+                        <b>启用文件共享功能</b>
+                    </li>
+                    <p style='margin-left: 40px'>
+                        在视窗操作系统中打开控制面板，点击“网络和 Internet——选择家庭组和共享选项——更改高级共享设置——启用文件和打印机共享功能”。
+                    </p>
+                    
+                    <li>
+                        <b>其他文件共享设置</b>
+                    </li>
+                    <p style='margin-left: 40px'>
+                        您还可以设置一些其他高级选项。
+                        如：如果您信任本地网络上的所有设备，则可以无需密码访问文件。具体做法是在视窗操作系统中启用文件和打印机共享功能后，
+                        打开资源管理器，右键点击您想要共享的文件夹并选择“属性——共享”。
+                        </p>
+                        
+                    <li>
+                        <b>确保设备处于同一的局域网</b>
+                    </li>
+                    <p style='margin-left: 40px'>
+                        此功能使文件在本地网络上可用，因此您的 PC 和移动设备必须处于同一个本地网络上。
+                        当您的设备使用移动数据时，您无法通过 Internet 访问共享的视窗操作系统文件夹——您必须链接同一局域网。
+                    </p>
+                    
+                    <li>
+                        <b>查找 IP 地址</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        在视窗操作系统中打开命令提示符，输入 ipconfig 后按回车键。
+                        网络适配器下的“默认网关”即是您路由器的 IP 地址。“IPv4 地址”即是您计算机的IP地址。
+                    </p>
+                    
+                    <b>在 SMB 对话框中输入详细信息。</b>
+                </ul>
+            </body>
+        </html>
+    </string>
+    <string name="share_limit">最多只能分享 100 个文件</string>
+    <string name="otg_access">选择根目录下的 OTG 设备</string>
+    <string name="information">資訊</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">访问时间</string>
+    <!-- reference to file modified date -->
+    <string name="modified">修改日期</string>
+
+    <string name="title">標題</string>
+    <string name="artist">演出者</string>
+    <string name="album">專輯</string>
+    <string name="year">年份</string>
+    <string name="duration">时长</string>
+    <string name="comment">备注</string>
+    <!-- reference to audio/video file -->
+    <string name="container">容器格式文件</string>
+    <string name="codec">編解碼器</string>
+    <string name="channels">声道</string>
+    <string name="sample_rate">取樣率</string>
+    <string name="bitrate">位元速率</string>
+    <string name="dimensions">规格</string>
+    <string name="frame_rate">幀速</string>
+    <string name="image_type">圖片類型</string>
+    <string name="width">寬度</string>
+    <string name="height">高度</string>
+    <string name="date_modified">修改时间</string>
+    <string name="software">軟體</string>
+    <string name="creator">创建者</string>
+    <string name="camera_brand">相機牌子</string>
+    <string name="camera_model">相機型號</string>
+    <string name="date_taken">拍攝日期</string>
+    <string name="exposure_time">曝光時間</string>
+    <string name="aperture_value">光圈值</string>
+    <string name="image_iso">ISO 速度</string>
+    <string name="flash_fired">闪光灯</string>
+    <string name="focal_length">焦距</string>
+    <string name="subject">标题</string>
+    <string name="author">作者</string>
+    <string name="keywords">关键字</string>
+    <string name="producer">生产商</string>
+    <string name="created">创建时间</string>
+    <string name="format">格式</string>
+    <string name="pages">页数</string>
+    <!-- reference to a document file -->
+    <string name="optimized">优化</string>
+    <string name="security">安全性</string>
+    <string name="paper_size">纸张大小</string>
+
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">有些文件操作未成功 %s</string>
+    <string name="copied">已复制</string>
+    <string name="moved">已移动</string>
+    <string name="copy_complete">複製完成</string>
+    <string name="waiting_title">正在等待</string>
+    <string name="waiting_content">正在等待操作结束</string>
+    <string name="extract_complete">解压完成</string>
+    <string name="compression_complete">壓縮完成</string>
+    <string name="compressing">正在压缩</string>
+    <string name="cancelled">已取消</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">已写入</string>
+    <string name="out_of">不超过</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">中的</string>
+    <string name="processing_file">正在處理檔案</string>
+    <string name="current_speed">当前频率</string>
+    <string name="smb_launch_error">您需要将此文件复制到存储空间中才能打开它</string>
+    <string name="error_file_not_found">错误：无法找到文件</string>
+    <string name="error_io">I/O 錯誤</string>
+    <string name="error_file_too_large">错误：文件太大</string>
+    <string name="medium_text">中号字体</string>
+    <string name="permission_read">读取</string>
+    <string name="permission_write">写入</string>
+    <string name="permission_execute">執行</string>
+    <string name="permission_owner">擁有者</string>
+    <string name="permission_group">群組</string>
+    <string name="permission_other">其他</string>
+    <string name="clipboard_path_copy">路径已复制到剪切板</string>
+    <string name="service_timer">用时</string>
+    <string name="please_wait">请稍候</string>
+
+    <string name="cloud_connection">网盘</string>
+    <string name="cloud_connection_new">添加网盘</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google雲端硬碟&#8482;</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">获取网盘插件</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">没有应用程序</string>
+    <string name="ftp_path">共享路径</string>
+    <string name="ftp_path_hint">共享目录的根路径</string>
+    <string name="change">更改</string>
+    <string name="unknown_error">出错了！</string>
+
+    <string name="ftp_path_change_success">FTP 路径更改成功</string>
+    <string name="ftp_path_change_error_invalid">路径无效</string>
+    <string name="ftp_status_no_connection">无连接</string>
+    <string name="ftp_status_secure_connection">安全连接</string>
+    <string name="ftp_status_title">状态</string>
+    <string name="ftp_port">端口号</string>
+    <string name="ftp_login">登录</string>
+    <string name="field_empty">字段不能为空</string>
+    <string name="ftp_timeout">超时设置</string>
+    <string name="ftp_seconds">秒</string>
+    <string name="intellihide_toolbar_title">自动隐藏工具栏</string>
+    <string name="intellihide_toolbar_summary">页面滚动时自动隐藏工具栏</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">已复制到剪切板</string>
+    <string name="contributors_1_summary">语言翻译</string>
+    <string name="contributors_2_summary">图标和横幅</string>
+    <string name="contributors_3_summary">主题引擎</string>
+    <string name="contributors_4_summary">浮动操作按钮阴影</string>
+    <string name="contributors_5_summary">在选项卡间滑动时的颜色过渡</string>
+    <string name="contributors_6_summary">FTP 伺服器</string>
+    <string name="contributors_7_summary">启动交互式 Shell</string>
+    <string name="connection_exists">连接已存在</string>
+
+    <string name="crypt_encrypting">正在加密</string>
+    <string name="crypt_decrypting">正在解密</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">已加密</string>
+    <string name="crypt_decrypted">已解密</string>
+    <string name="crypt_encrypt">加密</string>
+    <string name="crypt_decrypt">解密</string>
+    <string name="operation_fail_following">以下文件操作失败</string>
+    <string name="crypt_pref_master_password_title">主密码</string>
+    <string name="crypt_pref_master_password_summary">为加密操作设置主密码。如果您想要移除密码，请留空。</string>
+    <string name="crypt_pref_fingerprint_title">指纹</string>
+    <string name="crypt_pref_fingerprint_summary">使用指纹进行加密验证</string>
+    <string name="crypt_fingerprint_no_permission">缺少指纹权限</string>
+    <string name="crypt_fingerprint_not_enrolled">没有可用的指纹录入</string>
+    <string name="crypt_fingerprint_no_security">未设置锁屏安全</string>
+    <string name="crypt_warning_key">注意，当您在系统设置中改变安全模式时，您将无法解密此内容。</string>
+    <string name="warning_never_show">不再通知</string>
+    <string name="warning_confirm">知道了!</string>
+    <string name="crypt_encryption_fail">加密失败</string>
+    <string name="crypt_decryption_fail">解密失败</string>
+    <string name="crypt_decryption_fail_password">密码错误！</string>
+    <string name="crypt_fingerprint_authenticate">请触摸传感器以继续</string>
+    <string name="authenticate_password">输入密码</string>
+
+    <string name="sidebar_preferences">側欄</string>
+    <string name="sidebar_quick_access_title">侧边栏快速访问</string>
+    <string name="show_quick_access_pref_title">顯示快速存取</string>
+    <string name="show_quick_access_pref">快速存取</string>
+    <string name="directory">目录</string>
+
+    <string name="sidebar_bookmarks_title">側欄書籤</string>
+    <string name="show_bookmarks_pref_title">顯示書籤</string>
+    <string name="show_bookmarks_pref">书签</string>
+    <string name="create_bookmark">建立書籤</string>
+    <string name="edit_bookmark">編輯書籤</string>
+    <string name="question_delete_bookmark">刪除書籤？</string>
+
+    <string name="cloud_error_plugin">无法找到 Amaze Cloud 插件，请从应用商店下载。</string>
+    <string name="cloud_error_failed_restart">无法加载此连接，请再次打开 Amaze Cloud。</string>
+    <string name="cloud_remove">您想要移除此网盘吗？</string>
+    <string name="cloud_fail_authenticate">身份验证失败</string>
+    <string name="cloud_share_copied">分享用連結已複製到剪貼簿</string>
+    <string name="copy_low_memory">运行内存不足，请清除一些后台程序</string>
+    <string name="cloud_token_lost">登录信息过期，请重新登录</string>
+    <string name="monofont">等宽字体</string>
+    <string name="showHeaders">显示页眉</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">无项目</string>
+	<string name="item">项目</string>
+	<string name="items">個項目</string>
+	
+	<string name="byte_singular">字节</string>
+	<string name="bytes">字节</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">文件名不能为空</string>
+    <string name="add_item">添加项目</string>
+    <string name="failed_smb_decrypt_path">无法加载 SMB 连接</string>
+    <string name="failed_cloud_new_connection">新增雲端連線失敗</string>
+    <string name="failed_cloud_api_key">認證雲端連線套件失敗</string>
+
+    <string name="local_inet_addr_error">攞唔到你部機嘅 IP地址</string>
+    <string name="intent_save_as">儲存為&#8230;</string>
+    <string name="go">去</string>
+    <string name="advanced">進階</string>
+    <string name="typeable_paths_title">自定义路径</string>
+    <string name="typeable_paths_summary">长按路径栏，以输入自定义路径</string>
+    <string name="send_email_to">寫個電郵去</string>
+
+    <string name="text_editor">文字編輯器設定</string>
+    <string name="preference_newstack_title">以新工作開啟檔案</string>
+    <string name="preference_newstack_summary">可以新工作開啟檔案，它會出現在系統的總覽畫面。</string>
+    <string name="developers">開發者</string>
+    <string name="no_bitcoin_app">裝番個 Bitcoin銀包 app先啦</string>
+    <string name="channel_name_normal">Amaze通知</string>
+    <string name="channel_description_normal">來自 Amaze檔案管理器嘅通知</string>
+    <string name="channel_name_ftp">Amaze FTP伺服器</string>
+    <string name="channel_description_ftp">Amaze 文件管理器 文件传输协议服务器的通知</string>
+
+    <string name="processing">處理中&#8230;</string>
+    <string name="failed_no_connection">無法載入檔案。請檢查網絡連線。</string>
+
+    <string name="update">更新</string>
+	<string name="scp_connection">SCP/SFTP 連線</string>
+    <string name="ftp_connection">FTP 连接</string>
+    <string name="ftps_connection">FTPS 连接</string>
+    <string name="scp_port">端口号</string>
+    <string name="ssh_host_key_verification_prompt">主机“%1$s”的真实性无法确认。
+%2$s密钥指纹为%3$s。
+请点击“是”来确认身份；否则，请点击“否”。</string>
+    <string name="ssh_host_key_verification_prompt_title">伺服器確認</string>
+    <string name="ssh_select_pem_button">SSH私鑰</string>
+    <string name="ssh_pem_key_parse_error">讀唔到你揀嘅 PEM：%s</string>
+    <string name="password_unchanged">（無變）</string>
+    <string name="ssh_authentication_failure_password">登入失敗：無法使用你俾嘅用戶名稱同密碼登入。</string>
+    <string name="ssh_authentication_failure_key">登入失敗：無法使用你俾嘅用戶名稱同私鑰登入。</string>
+    <string name="ssh_connect_failed">駁唔到去 %1$s:%2$d：%3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">注意：伺服器身份變咗！</string>
+    <string name="ssh_connect_failed_host_key_changed_message">可能有人有不軌企圖！\n\n伺服器派出嚟公鑰嘅指紋同 Amaze記住嘅唔同。可能有人勾緊線（中間人攻擊）！不過都可能咁啱伺服器換咗條 key啫。\n\n請通知你嘅系統管理員，或者起過個新嘅連線設定駁去伺服器。</string>
+    <string name="ssh_key_prompt_passphrase">請輸入私鑰密碼。</string>
+    <string name="add_shortcut_not_supported_by_launcher">你個 launcher唔支援建立捷徑。</string>
+    
+    <string name="select_color_config">選擇配色</string>
+    <string name="customize">自訂</string>
+    <string name="custom">自訂</string>
+    <string name="preselected_configs_title">預設設定</string>
+    <string name="orange">橘黄色</string>
+    <string name="blue">蓝色</string>
+    <string name="green">綠色</string>
+    <string name="password_no_match">密碼不符</string>
+    <string name="deselect_all">取消全選</string>
+    <string name="filename">檔案名稱</string>
+    <string name="compress_file_suggest_zip_extension">请使用“.zip”作为文件后缀名</string>
+    <string name="about_amaze">基於 Material Design設計，Android用嘅檔案管理程式</string>
+    <string name="license">開源許可</string>
+    <string name="libraries">程式庫</string>
+    <string name="password_repeat">再入多次個密碼</string>
+    <string name="create_file_suggest_txt_extension">请使用“.txt”作为文件后缀名</string>
+    <string name="ssh_select_pem">選擇登入認證用嘅私鑰</string>
+    <string name="ssh_key_invalid_passphrase">私鑰嘅密碼唔啱。</string>
+    <string name="encryption_fail_copy">更新唔到資料庫入面加密檔案嘅資料</string>
+    <string name="extracted">已解壓</string>
+    <string name="compressed">已壓縮</string>
+    <string name="processed">已處理</string>
+    <string name="no_obtainable_info">無呢個檔案嘅資料</string>
+    <string name="reopen_from_source">无法打开，请使用之前用过的应用重新打开此文件</string>
+    <string name="no_file_error">有啲唔妥。無嘢開嘅!?</string>
+    <string name="file_too_long">该文件太长而不能编辑，您仍可以查看前%d个字符</string>
+    <string name="file_read_only">檔案以唯讀模式開啟。</string>
+    <string name="got_it">知道了!</string>
+    <string name="encrypt_file_save_as">將加密檔案儲存為&#8230;</string>
+    <string name="encrypt_folder_save_as">將加密檔案夾儲存為&#8230;</string>
+    <string name="encrypt_option_use_aze">使用Amaze加密格式</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+ <p>AESCrypt是一种开源的文件加密格式，并且它基于高级加密标准。它也是可移植的，可以使用其他平台上的AESCrypt程序进行解密</p>
+ <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt网站</a></p>]]>
+</string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>Amaze使用的加密格式也采用了高级加密标准。但是，与AES Crypt格式不同的是，它只能在此设备上解密；除此之外，您不能卸载此设备上的Amaze文件管理器，也不能更改锁屏方式，否则您将无法恢复加密文件。</p>
+    ]]></string>
+    <string name="encrypt_file_must_end_with_aze">加密文件必须以“.aze”作为文件后缀名</string>
+    <string name="encrypt_file_must_end_with_aes">加密文件必须以 aes 作为文件后缀名</string>
+    <string name="error_aescrypt_decrypt_failed">无法解密 \'%s\': \'%s\'</string>
+    <string name="cannot_overwrite">覆寫唔到個檔案。</string>
+    <string name="saved_single_file">檔案儲存為 \'%s\'.</string>
+    <string name="saved_multi_files">儲存咗%d 個檔案。</string>
+    <string name="create_hidden_file_warn">建立咗嘅檔案唔會喺檔案列表度睇到。</string>
+    <string name="grant_apkinstall_permission">程式需要安裝程式的權限以繼續。</string>
+    <string name="time_remaining">剩餘時間</string>
+    <string name="transfer_rate">傳送速度</string>
+    <string name="unknown">未知</string>
+    <string name="multiple_invalid_archive_entries">壓縮檔入面有啲檔案攞唔到出嚟。可能個壓縮檔壞咗，或者個壓縮檔本身有古怪。</string>
+    <string name="saf_otg_explanation">出于安全原因，您现在将进入安卓的文件系统。请从左侧的列表中选择 USB 设备。</string>
+    <string name="donation_thanks">多謝支持。我哋定當繼續努力 (:</string>
+    <string name="enable_marquee_filename">用走馬燈方式顯示檔案名稱</string>
+    <string name="archive_password_prompt">請輸入壓縮檔密碼：</string>
+    <string name="cannot_extract_archive">不能解压文件“%s”： %s</string>
+    <string name="archive_unsupported_or_corrupt">无法打开压缩文件 “%s”。我们无法打开压缩文件，或是压缩文件已损坏。</string>
+    <string name="close">關閉</string>
+    <string name="bookmark_exists">條書籤已經喺度啦喎</string>
+    <string name="hide_media">從媒體瀏覽器中隱藏</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">可能有人有不軌企圖！\n\n伺服器派出嚟公鑰嘅指紋同 Amaze記住嘅唔同。可能有人勾緊線（中間人攻擊）！不過都可能咁啱伺服器換咗條 key啫。\n\n你可以選擇更新伺服器公鑰嘅指紋，或者取消更新 SSH連線設定。</string>
+    <string name="update_host_key">更新热键</string>
+    <string name="cancel_recommended">取消（建議）</string>
+    <string name="failed_install_apk">隻 app裝唔到</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">内部存储</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">外置存储卡</string>
+    <string name="choose_folder">选择此文件夹</string>
+    <string name="some_files_failed_invalid_operation">  jjhbhbknjhbhubuhbhjn</string>
+    <string name="ftp_server_prompt_connect_to_network">駁番上網，或者開咗你個 hotspot先啦。</string>
+    <string name="ftp_server_open_settings">打开设置</string>
+    <string name="move">移动</string>
+    <string name="select_save_location">选择保存位置</string>
+    <string name="scp_default_path">默认路径（可选）</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Sor，唔應該出啲咁嘅事。</string>
+    <string name="error_report_button_text">发邮件报告此错误</string>
+    <string name="error_report_button_telegram">喺 Telegram上報告呢個問題</string>
+    <string name="copy_for_github">複製已格式化嘅報告</string>
+    <string name="error_report_open_issue_button_text">報上 GitHub</string>
+    <string name="error_report_open_github_notice">請先睇下有無其他人開咗 issue講緊你嘅問題。</string>
+    <string name="error_snackbar_message">唔好意思，出咗啲問題。</string>
+    <string name="error_snackbar_action">報告</string>
+    <string name="what_device_headline">資料：</string>
+    <string name="what_happened_headline">发生了：</string>
+    <string name="info_labels">乜事：\\n做緊乜：\\nGMT 時間\\nApp ID：\\n版本\\nOS 版本\\n乜機：\\n型號：\\n代號：</string>
+    <string name="your_comment">有乜想講（英文吖唔該）：</string>
+    <string name="error_details_headline">详情：</string>
+    <string name="app_ui_crash">App/UI 死咗</string>
+    <string name="error_report_title">事故報告</string>
+    <string name="crash_report_copied">死 app報告已經複製到剪貼簿</string>
+    <string name="disableIpcSignature">關閉 IPC簽名檢查（對應舊式嘅 SMBv1伺服器 - 唔安全㗎！）</string>
+    <string name="cannot_delete_file">无法删除文件</string>
+    <string name="cannot_delete_file_with_reason">无法删除文件 - %s</string>
+    <string name="cannot_rename_file">无法重命名文件%s-%s</string>
+    <string name="cannot_read_directory">无法读取文件夹%s-%s</string>
+    <string name="just_once">仅本次</string>
+    <string name="always">总是</string>
+    <string name="choose_different_app">揀過第二個 app</string>
+    <string name="clear_open_file">清除缓存</string>
+    <string name="clear_open_file_summary">清除預設要使用嘅程式選擇</string>
+    <string name="ftp_readonly">唯讀模式</string>
+    <string name="legacy_listing_title">喺 Root模式使用舊有方式列出文件</string>
+    <string name="legacy_listing_summary">開啟呢個設定嘅話，Amaze會用番原有嘅方法列出文件</string>
+    <string name="error_unsupported_v5_rar">RAR 压缩文件\"%s\"是尚未支持的RAR v5 文件。</string>
+    <string name="ftp_prompt_restart_server">要使設定生效，請重新啟動 FTP伺服器</string>
+    <string name="error_permission_denied">权限不足</string>
+    <string name="error_archive_password_incorrect">解压密码有误</string>
+    <string name="error_archive_cannot_extract">无法将压缩文件中的目标\"%s\"提取到\"%s\"。</string>
+    <string name="drag_and_drop_preference">拖拉動作設定（實驗中）</string>
+    <string name="drag_to_move_copy">拖拉動作代表移動/複製檔案</string>
+    <string name="drag_to_select">拖拉動作代表選擇檔案</string>
+    <string name="disable">停用</string>
+    <string name="choose_operation">選擇要進行嘅動作</string>
+    <string name="remember">記住下次都係咁</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">俾 FTP伺服器用 SAF存取檔案系統</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">由于这是你第一次运行文件传输协议服务器，并且你把设备的内部存储作为共享文件夹，所以请允许Amaze通过存储访问框架来访问存储。
+你只需允许一次，直到下一次你选择新路径作为共享文件夹时，才需要再次允许。</string>
+    <string name="android_data_prompt_saf_access">从安卓10开始，系统限制了某些目录的访问，需要使用存储访问框架才能访问这些目录。
+
+请您点击“允许”，才能让Amaze通过系统文件管理器访问该目录。</string>
+    <string name="android_data_prompt_saf_access_title">获取“存储访问框架”权限</string>
+    <string name="ftp_preference_saf_filesystem_title">使用傳統檔案系統</string>
+    <string name="ftp_preference_saf_filesystem">启用此功能，进而可以在新版本的安卓系统上使用外部存储</string>
+    <string name="ftp_server_fallback_path_reset_prompt">由于您正在切换回旧版的文件系统的实现方式，文件传输协议服务器的共享路径已经被重新设定为内部存储。请您根据自身需求，通过右上角的菜单选择新路径。</string>
+    <string name="ftp_server_reset_notify">FTP服务器的共享路径已被重置为内部存储</string>
+    <string name="ftp_server_root_unavailable">访问当前路径需要根权限。如果您的设备已获取根权限，请在设置中启用根权限浏览器功能</string>
+    <string name="ftp_server_root_filesystem_warning">您当前所选路径需要根权限。授权后，Amaze能够读取和写入您设备上的所有文件。这很危险——粗心大意可以使您的设备变砖！
+您确定要继续吗？</string>
+    <string name="compressed_explorer_fragment_error_open_uri">读取 URI \"%s\" 时发生错误。</string>
+    <string name="error_empty_archive">\"%s\" 是空的压缩文件。</string>
+    <string name="error_bad_archive_without_info">压缩文件 \"%s\" 已损坏。</string>
+    <string name="error_bad_archive_with_info">“%s”是一个已损坏的压缩文件。
+本通知来自于解压缩程序。“%s”</string>
+    <string name="security_error">檔案不能以此 app開啟</string>
+    <string name="cloud_drive_tooltip">建立到 Google雲端硬碟™的連線，以便在 Amaze檔案管理員內管理在雲端硬碟上的檔案。</string>
+    <string name="signin_with_google_title">登入以使用 Google雲端硬碟&#8482;</string>
+    <string name="show_system_apps">顯示系統應用程式</string>
+    <string name="system_apps">系統應用程式</string>
+    <string name="select_inverse">反选</string>
+    <string name="select_by_type">选择同类型</string>
+    <string name="select_by_date">选择同日期</string>
+    <string name="select_similar">选择相似项</string>
+    <string name="error_fetching_google_play_product_list">在谷歌应用商店获取产品列表时出现错误</string>
+    <string name="grant_all_files_permission"><html><body>依照谷歌要求，从安卓11开始，文件管理器应当先经过用户授权，才能管理该设备所有文件。详情<a href=\"https://developer.android.com/training/data-storage/manage-all-files\" target=\"_blank\">请点击此处</a>。
+Amaze文件管理器也需要该权限才能管理设备的所有文件。在此处按“授权”后，请在下一个界面上选择<b>“允许访问以管理所有文件”选项。
+<font color=\'#ff6347\'><i>取消此对话框将退出应用程序。</i></font></body></html></string>
+    <string name="user_apps">用户应用</string>
+    <string name="appearance">外观</string>
+    <string name="behavior">行为</string>
+    <string name="appearance_summary">定制文件管理器的主题、颜色和外观</string>
+    <string name="ui_summary">控制信息展示，定制侧边栏，以及个性化界面</string>
+    <string name="behavior_summary">修改诸如高级搜索或是否以新任务打开文件等行为</string>
+    <string name="security_summary">设置口令与加密</string>
+    <string name="quick_desc">最近通过 Amaze 访问的文件</string>
+    <string name="recent_desc">最近创建或修改的文件</string>
+    <string name="error_cannot_find_way_open">找不到打开文件的方式</string>
+    <string name="error_cant_decompress_that_file">您请求的压缩文件，无法处理</string>
+    <string name="analyse_storage">存储分析</string>
+    <string name="download">下载</string>
+    <string name="wifip2p">点对点式无线局域网</string>
+    <string name="amaze_utils_installed_alias">感谢您安装Amaze系列文件工具。正将您重定向到指定应用。</string>
+    <string name="image_viewer">Amaze图像查看器</string>
+    <string name="video_player">Amaze视频播放器</string>
+    <string name="amaze_audio_player">Amaze音乐播放器</string>
+    <string name="share_logs">分享日志</string>
+    <string name="share_logs_summary">使用邮件或电报来分享已抓取的日志</string>
+    <string name="open_with_amaze">使用Amaze打开</string>
+    <string name="confirmation">确认</string>
+    <string name="open_file_confirmation">您确定要打开以下文件吗？
+名称：
+%s
+位置：
+%s
+大小：
+%s
+第5版信息提炼算法：
+%s
+256位哈希安全算法：
+%s
+</string>
+    <string name="error_google_play_cannot_update_myself">根据谷歌应用市场的强制要求，应用不可自行更新。请您从谷歌应用市场更新应用。</string>
+    <string name="error_cannot_get_package_info">无法从文件“%s”中获取安装包信息。该文件可能不是安卓应用安装包，或者该文件已损坏。</string>
+    <string name="preference_delete_confirmation">确认删除</string>
+    <string name="preference_delete_confirmation_summary">确认删除请求，强烈建议您不要关闭该功能</string>
+    <string name="protocol_ftps">安全型文件传输协议</string>
+    <string name="unavailable">不可用</string>
+
+    <string name="free_of">\"%s
+没有%s的%s</string>
+    <string name="cloud_error_fdroid">在F-Droid版本的Amaze文件管理器上，不支持云插件功能。请使用谷歌应用商店版本的Amaze文件管理器</string>
+    <string name="disable_player_intent_filters">禁止应用来响应与播放器关联的打开方式</string>
+    <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
+    <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
+    </resources>
+
