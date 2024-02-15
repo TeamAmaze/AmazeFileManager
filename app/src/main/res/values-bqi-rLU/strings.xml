@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">dîvowdâri fāyl ameyz</string>
+    <string name="drawer_open">gušiďên nomga kêšâri</string>
+    <string name="drawer_close">bastên nomga kêšâri</string>
+    <string name="icon">āykon</string>
+    <string name="apps">dîvowdâri barnoma</string>
+    <string name="ftp">sêrvêr FTP / jā goro kerdên fāyl</string>
+    <string name="setting">sāmovā</string>
+    <string name="select">mowred nê pêsand koň</string>
+    <string name="press_again">si bê dar zêyďên,do kêrat bêza ri doymê vorgaštên</string>
+    <string name="open">gušiďên</string>
+    <string name="backup">lādêrâri gêrîďên</string>
+    <string name="uninstall">laqve purniďên</string>
+    <string name="play">furušgā gugêl pêlêy</string>
+    <string name="properties">dowêsmandiyā</string>
+    <string name="copyingapks">lefgiri %d fāyl APK vê %s</string>
+    <string name="delbook">pāk kerdên nêšovak</string>
+    <string name="add_to_bookmarks">avordên vê nêšovakā</string>
+    <string name="enterpath">ra\'tê diyâri ko</string>
+    <string name="cancel">raď kerdên</string>
+    <string name="create">vorkêl bu</string>
+    <string name="loading">honêy bār vani êbu&#8230;</string>
+    <string name="file_empty">fāyl pati hêď</string>
+    <string name="error">xatā</string>
+    <string name="search_results">nêtijêyal pitiniďên si %s</string>
+    <string name="rename">ālêštê nom</string>
+    <string name="save">zaft kerdên</string>
+    <string name="bookmarks_added">nêšovakā avorde vâbin</string>
+    <string name="fileexist">ya fāyl vā him nom zê pîš tar biďês</string>
+    <string name="name">nom</string>
+    <string name="date">virgār</string>
+    <string name="location">jāga</string>
+    <string name="size_capitalized">hêndā</string>
+    <string name="size">hêndā dobalga</string>
+    <string name="enterzipname">nomê zipê nê bêza</string>
+    <string name="no_app_found">hič barnome i si gušiďên i fāyl najurês</string>
+    <string name="copying">hon lefgiri êbu</string>
+    <string name="moving">hon jāgoro êbu</string>
+    <string name="file">fāyl</string>
+    <string name="folder">dobalga</string>
+    <string name="newfolder">dobalga nu</string>
+    <string name="entername">nomê nê bêza</string>
+    <string name="extracting">honêy êdêrārês</string>
+    <string name="stopping">honêy vāďārnês</string>
+    <string name="open_parent">dobalga ro\'yi nê bogoš</string>
+    <string name="open_with">gušiďên vā</string>
+    <string name="share">yak rasuvi</string>
+    <string name="about">zêbār</string>
+    <string name="extract">dêravordên</string>
+    <string name="compress">tapniďên</string>
+    <string name="yes">harêy</string>
+    <string name="no">na</string>
+    <string name="dialog_delete_category_directories">dobalgêyal</string>
+    <string name="dialog_delete_category_files">fāylā</string>
+    <string name="dialog_delete_disclaimer">vā pāk kerden mowredā lami, honow si hamiša zê dasgā isā pāk êbun vo di natari vorganisow</string>
+    <string name="dialog_delete_title">êxuy yonow si hamiša pāk bun?</string>
+    <string name="deleting">honêy pāk êbu</string>
+    <string name="question_set_path_as_home">êxuy tore him al</string>
+    <string name="directorysort">hālate keten kerd</string>
+    <string name="sort_by">ketên vê ri</string>
+    <string name="sort_only_this">têynā i dobalga</string>
+    <string name="theme">têm</string>
+    <string name="random">puste tasāďofi</string>
+    <string name="random_summary">range avaliya tasâďufi nê, mênê vā ro avoďên sāmov koň</string>
+    <string name="colorize">rang kerdên āykonā</string>
+    <string name="colorize_summary">range āykone nê sāmov êde, range pêsand biďe, āykon dobalge nê ālêšt nîďe.</string>
+    <string name="home">hova</string>
+    <string name="paste">jā vandên</string>
+    <string name="history">virgār</string>
+    <string name="copy">lefgiri</string>
+    <string name="root_mode">pitinigêr rut</string>
+    <string name="root_mode_summary">têynā si dasgā rut biďa, ar zês etminov dâri, emtehoves koň.</string>
+    <string name="root_failure">dasrasi rut nê naďāre</string>
+    <string name="select_all">pêsandê poy</string>
+    <string name="delete">pāk kerdên</string>
+    <string name="set_as_home">sāmov vê onvān hova</string>
+    <string name="operation_not_supported">zê i kār lādêrâri nîbu</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <!-- Theme -->
+    <string name="light">matêriyāl rušên</string>
+    <string name="dark">matêriyāl târik</string>
+    <string name="daytime">zamow ru</string>
+    <string name="black">ša\' (si OLED)</string>
+    <string name="system">pîšfarz sistom (guš gêrê sistom bu)</string>
+    <!--Skin-->
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">dobalgêyal vā ro\' bun</string>
+    <string name="filesOnTop">fāylā vā ro\' bun</string>
+    <string name="none_on_top">hiškoyêksow vā ro\' nabu</string>
+    <!--SortBy-->
+    <string name="sort_name">nom</string>
+    <string name="lastModified">ālêštê dindâyi</string>
+    <string name="sort_size">hêndā</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">ya fāylê nê pêsand ko</string>
+    <string name="in_safe">jāga kam</string>
+    <string name="no_file_overwrite">hič fāyli jā navaste</string>
+    <string name="skip">raď kerdên</string>
+    <string name="overwrite">jā vandên</string>
+    <string name="not_allowed">mojāz nî</string>
+    <string name="searching">pitiniďên %s</string>
+    <string name="done">anjom vâbi</string>
+    <string name="set">sāmov</string>
+    <string name="enablerootmde">faāl kerdên hālate rut</string>
+    <string name="goback">vorgart</string>
+    <string name="newfile">fāylê nu</string>
+    <string name="no_files">fāylî nî</string>
+    <string name="used">jāga vê kār gêrîďe biďa</string>
+    <string name="used_by_others">vê daste diyarow vê kār gêrîďe vâbiďe</string>
+    <string name="free">jāga pati</string>
+    <string name="listview">nemā nomga</string>
+    <string name="gridview">nemā šabakai</string>
+    <string name="permission">javāzā</string>
+    <string name="hide">bîďār bu</string>
+    <string name="exit">vê dar ra\'ďên</string>
+    <string name="doforall">si poy mowredā anjom bu</string>
+    <string name="gridcolumnno">tê\'dāď sutunā mênê nemā šabaka</string>
+    <string name="set_random">barnome nê bovand vo zê nu bogoš, tā ālêštkâriyā anjom bun</string>
+    <string name="authors">hîl konow</string>
+    <string name="changelog">gozāreš ālêštkâriyā</string>
+    <string name="ok">xā</string>
+    <string name="ui">rābet</string>
+    <string name="general">poy volâti</string>
+    <string name="thumb_summary">nêšow dāďên šîvātā kučir vo barnomêyal vo šîvātā</string>
+    <string name="thumb">nêšow dāďên šîvātā kučir</string>
+    <string name="hidden">nêšow dāďên fāylā vo dobalgêyale bîďâri</string>
+    <string name="lastModifiedPref">nêšow dāďên ālêštkâri dindâyi</string>
+    <string name="size_pref_summary">hêndā fāylā vo tê\'dāďe mowredā mênê dobalgêyale nêšow beďe</string>
+    <string name="size_pref">nêšow dāďên hêndāyal</string>
+    <string name="miscellaneous">motafarêqa</string>
+    <string name="root_pref_summary">nêšow dāďên mojavezā fāylā vo dobalgêyal</string>
+    <string name="root_pref">sêyl kerdên javāzā</string>
+    <string name="about_amaze_file_manager_label">zêbāre dîvowdâri fāyl ameyz</string>
+    <string name="version">nosxa</string>
+    <string name="rate">emtiyāz dāďên vê barnoma</string>
+    <string name="feedback">fêšnāďên mênêšď</string>
+    <string name="hiddenfiles">fāylā bîďâri</string>
+    <string name="type">no\'</string>
+    <string name="root_directory">rut</string>
+    <string name="add_shortcut">avordên ra\' nêhêng</string>
+    <string name="unsaved_changes">ālêštkâriyā zaft navâbin</string>
+    <string name="saving">hon zaft êbu</string>
+    <string name="view">niyaštên</string>
+    <string name="install">purniďên</string>
+    <string name="archive">bāyêguvi</string>
+    <string name="xda_title">XDA</string>
+    <string name="xda_summary">hayâri vo ra\'fe eškāl</string>
+    <string name="circular_icons">zê āykonā dâyrêyi vê kār beger</string>
+    <string name="back_title">vorgart</string>
+    <string name="details">juziyāt</string>
+    <string name="translators">vêlêrnikārow</string>
+    <string name="german_translation_title">ālmāni</string>
+    <string name="italian_translation_title">itâliyâyi</string>
+    <string name="french_translation_title">farânsavi</string>
+    <string name="russian_translation_title">rusi</string>
+    <string name="spanish_translation_title">êspâniyâyi</string>
+    <string name="basque_translation_title">bāskâyi</string>
+    <string name="chinese_translation_title">čini</string>
+    <string name="serbian_translation_title">serbi</string>
+    <string name="turkish_translation_title">turki</string>
+    <string name="ukrainian_translation_title">okrâyni</string>
+    <string name="portuguese_translation_title">portêqâli</string>
+    <string name="polish_translation_title">lahêstuvi</string>
+    <string name="korean_translation_title">korêyi</string>
+    <string name="greek_translation_title">yunâni</string>
+    <string name="dutch_translation_title">holandi</string>
+    <string name="romanian_translation_title">romāniyâyi</string>
+    <string name="vietnamese_translation_title">viêtnâmi</string>
+    <string name="japanese_translation_title">žāpuni</string>
+    <string name="tamil_translation_title">tāmili</string>
+
+    <string name="warning">bêpā</string>
+    <string name="donate">lādêrâri mâli</string>
+    <string name="archive_extract_folder">dobalge dêravordên bāyêguvi</string>
+    <string name="open_as">gušiďên vā</string>
+    <string name="text">hîl</string>
+    <string name="audio">dong</string>
+    <string name="video">film</string>
+    <string name="other">diyar</string>
+    <string name="image">šîvāt</string>
+    <string name="contributors">mošārêkat kerdêyal</string>
+    <string name="save_paths">vir vani toral</string>
+    <string name="select_intent">pêsand</string>
+    <string name="database">deytābeys</string>
+    <string name="colored_navigation">navār peymāyeš rangi</string>
+    <string name="color_title">rang</string>
+    <string name="primary_color_title">range avaliya</string>
+    <string name="primary_color_summary">sāmov dāďên rang vê rābete mentori gap</string>
+    <string name="accent_color_title">ta\'kiďe rang</string>
+    <string name="accent_color_summary">sāmov dāďên rang vê doyme šever vo rābetā mentori kučir diyari</string>
+    <string name="icon_color_title">range āykon</string>
+    <string name="icon_color_summary">sāmove rang si āykonā</string>
+    <string name="choose_color">pêsandê rang</string>
+    <string name="files">fāylā</string>
+    <string name="textreader">hîl xowň</string>
+    <string name="show_dividers">nêšow dāďên derāyver</string>
+    <string name="needs_access">niyāzmande dasrasi vê hîl kerdên</string>
+    <string name="needs_access_summary">dobalge rute nê pêsand koň \t</string>
+    <string name="smb_connection">mênpiz SMB</string>
+    <string name="smb_server">ādres IP server</string>
+    <string name="server_address">ādres IP server</string>
+    <string name="username">nom mêntori</string>
+    <string name="password">razm</string>
+    <string name="anonymous">nāšênās</string>
+    <string name="bluetooth">bulutus</string>
+    <string name="folders">dobalgêyal</string>
+    <string name="folderfilecount">%1$d dobalgêyal vo %2$d fāylā</string>
+    <string name="videos">filmā</string>
+    <string name="apks">barnomêyal</string>
+    <string name="documents">sanadā</string>
+    <string name="images">šîvātā</string>
+    <string name="clear">roftên</string>
+    <string name="md5">MD5</string>
+    <string name="total">jamê poy:</string>
+    <string name="calculating">honêy baravord êkone</string>
+    <string name="sort">keten kerdên</string>
+    <string name="default_string">pîš farz</string>
+    <string name="doit">anjom dāďên</string>
+    <string name="want_help"><u>lange hayâri heďi?</u></string>
+    <string name="quick">dasrasi zêl</string>
+    <string name="recent">fāylā him damuvi</string>
+    <string name="edit">ālêšt</string>
+    <string name="find">jostên mênê balga</string>
+    <string name="grantper">hêštêne mojavez</string>
+    <string name="grantfailed">mojavez naďāď</string>
+    <string name="creatingfile">hon fāyl vorkêl êbu</string>
+    <string name="creatingfolder">hon dobalga vorkêl êbu</string>
+    <string name="renaming">nom honêy ālêšt êbu</string>
+    <string name="cant_be_empty">%s natare pati bu</string>
+    <string name="ip">ādrês</string>
+    <string name="connection_name">nomê mênpiz</string>
+    <string name="no_device_found">dasgāhi najost</string>
+    <string name="path">jāga</string>
+    <string name="rename_bookmark">ālêšte nešovak</string>
+    <string name="cut">jā goro</string>
+    <string name="search">pitiniďên</string>
+    <string name="invalid_name">nom zê bāl nî</string>
+    <string name="search_hint">si pitiniďên hîl koň &#8230;</string>
+    <string name="advanced_search">pitiniďên pîš ra\'ďa</string>
+    <string name="regular_expression">šarh ma\'muli</string>
+    <string name="match_content">hamohang kerdên mo\'tavā</string>
+    <string name="stop_ftp">vāďāštên</string>
+    <string name="ftp_status_running">hon ra\' ufte</string>
+    <string name="ftp_status_not_running">mênê ra\' vani nî</string>
+    <string name="ftp_no_wifi">motmaên bu ke, vê vāy fāy menpiz hêď</string>
+    <string name="domain">dāmana</string>
+    <string name="smb_share">yakrasuvi tor</string>
+    <string name="invalid">%s ta\'iď navâbiďe</string>
+    <string name="ftp_notif_starting_title">sêrvêr FTP / jā goro kerdên fāyl</string>
+    <string name="ftp_notif_text">mên %s</string>
+    <string name="ftp_notif_stop_server">vāďāštên</string>
+    <string name="ftp_port_edit_menu_title">porte FTP</string>
+    <string name="report_bugs_title">gozāreš moškelā</string>
+    <string name="source_title">koďe bončak</string>
+    <string name="translate_title">vêlêrniďên</string>
+    <string name="translate_summary">dîvowdâri fāyl amaze nê, be zowê xot vêlêrn</string>
+    <string name="paypal_copy_message">âydi pey pāl, mênê virgār zaft vâbi</string>
+    <string name="searching_devices">pitiniďên si dasgāyal</string>
+    <string name="use_custom_ip">IP sêfârêši nê vê kār bêgêr</string>
+    <string name="share_limit">nîbu ke bištar zê 100 fāyl nê yakrasuvi kerd</string>
+    <string name="information">dovêsmandiyā</string>
+    <string name="title">onvān</string>
+    <string name="artist">honarmand</string>
+    <string name="album">ālbom</string>
+    <string name="year">sāl</string>
+    <string name="duration">moďat</string>
+    <string name="comment">mênêšď</string>
+    <!-- reference to audio/video file -->
+    <string name="container">zarf</string>
+    <string name="codec">kodêk</string>
+    <string name="channels">torgayal</string>
+    <string name="sample_rate">nerxe nemova</string>
+    <string name="bitrate">bit reyt</string>
+    <string name="frame_rate">bit reyt</string>
+    <string name="image_type">no\'e šîvāt</string>
+    <string name="width">pa\'nā</string>
+    <string name="height">der</string>
+    <string name="software">barnoma</string>
+    <string name="creator">vorkêl ko</string>
+    <string name="camera_brand">nome tejâri šîvātger</string>
+    <string name="camera_model">model šîvātger</string>
+    <string name="date_taken">virgāre gêrîďên</string>
+    <string name="exposure_time">zamove nur dāďên</string>
+    <string name="aperture_value">hêndā diyāfrāgm</string>
+    <string name="focal_length">fāsele kānuvi</string>
+    <string name="subject">sartāl</string>
+    <string name="author">hîlkoň</string>
+    <string name="keywords">kilit vāžêyal</string>
+    <string name="created">vorkêl vâbi</string>
+    <string name="format">format</string>
+    <string name="pages">nomre balgêyal</string>
+    <string name="security">amniyat</string>
+    <string name="paper_size">hêndā balga</string>
+
+    <string name="copied">lefgiri vâbi</string>
+    <string name="moved">jā goro vâbi</string>
+    <string name="copy_complete">lefgiri kāmel vâbi</string>
+    <string name="waiting_title">mandir hêď</string>
+    <string name="waiting_content">mandir si anjom vâbiďên amaliyāt</string>
+    <string name="extract_complete">dêravordên kāmel vâbi</string>
+    <string name="compression_complete">tapniďên kāmel vâbi</string>
+    <string name="compressing">honêy tapnês</string>
+    <string name="cancelled">raď vâbi</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">hîl vâbiďa</string>
+    <string name="out_of">dar zê</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">zê</string>
+    <string name="current_speed">têrāte him sako</string>
+    <string name="error_file_not_found">xatā: fāyle nê najost</string>
+    <string name="medium_text">hîle motavaset</string>
+    <string name="permission_read">xondên</string>
+    <string name="permission_write">hîl kerdên</string>
+    <string name="permission_owner">sāhāv</string>
+    <string name="permission_group">jarga</string>
+    <string name="permission_other">diyar</string>
+    <string name="clipboard_path_copy">tor m</string>
+    <string name="please_wait">mandir bu</string>
+
+    <string name="cloud_connection">mênpizê awri</string>
+    <string name="cloud_connection_new">mênpizê awri nu</string>
+    <string name="cloud_dropbox">derāp bāks</string>
+    <string name="cloud_onedrive">vān derāyv</string>
+    <string name="cloud_box">ja\'va</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">hič barnomei nî</string>
+    <string name="ftp_path">tore yakrasuvi biďa</string>
+    <string name="change">ālêšt</string>
+    <string name="unknown_error">vuy, moškeli pîš avoď!</string>
+
+    <string name="ftp_status_no_connection">bî mênpiz</string>
+    <string name="ftp_status_secure_connection">mênpizê amn</string>
+    <string name="ftp_status_title">vaziyat</string>
+    <string name="ftp_port">darga</string>
+    <string name="ftp_seconds">sâniyêyal</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">mênê virgār lefgiri vâbi</string>
+    <string name="contributors_1_summary">vêlêrniďên</string>
+    <string name="contributors_2_summary">āykon vo banerā</string>
+    <string name="contributors_6_summary">sêrvêr FTP / jā goro kerdên fāyl</string>
+    <string name="crypt_encrypting">honêy razm êne ris</string>
+    <string name="crypt_decrypting">honêy razmêse êgoše</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">razm nāďe ris</string>
+    <string name="crypt_decrypted">razm gušiďe biďa</string>
+    <string name="crypt_encrypt">razm nāďên</string>
+    <string name="crypt_decrypt">gušiďêne razm</string>
+    <string name="crypt_pref_master_password_title">razme asli</string>
+    <string name="crypt_pref_fingerprint_title">jā kelek</string>
+    <string name="warning_never_show">zê nu vā virom mavan</string>
+    <string name="warning_confirm">fa\'mim</string>
+    <string name="crypt_decryption_fail_password">razm êštêvā hêď</string>
+    <string name="authenticate_password">razmête bêzaň</string>
+
+    <string name="show_quick_access_pref">dasrasiyā zêl</string>
+    <string name="show_bookmarks_pref">nêšovakā</string>
+    <string name="create_bookmark">vorkele nêšovak</string>
+    <string name="edit_bookmark">ālêšte nêšovak</string>
+    <string name="question_delete_bookmark">n</string>
+
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <string name="no_items">hič mowredi nî</string>
+    <string name="item">mowred</string>
+    <string name="items">mowredā</string>
+
+    <string name="byte_singular">bāyt</string>
+    <string name="bytes">bāytā</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">fāyl vā ya nom dâšte bu</string>
+    <string name="add_item">êzāf kerdên mowred</string>
+    <string name="go">raw</string>
+    <string name="advanced">pîš ra\'ďa</string>
+    <string name="typeable_paths_title">pačā sêfârêši</string>
+    <string name="send_email_to">fêšnāďên ya imeyl vê</string>
+
+    <string name="text_editor">sāmovā ālêštgari hîl</string>
+    <string name="developers">barnome hîl konoň</string>
+    <string name="channel_name_normal">vārasuviyā ameyz</string>
+    <string name="channel_description_normal">vārasuviyā dîvowdâri fāyl ameyz</string>
+    <string name="update">vê ru kerdên</string>
+    <string name="ftp_connection">menpiz FTP</string>
+    <string name="scp_port">darga</string>
+    <string name="ssh_connect_failed">natare vê %1$s:%2$d: %3$s menpiz bu</string>
+    <string name="customize">sêfârêši kerdên</string>
+    <string name="custom">sêfârêši</string>
+    <string name="preselected_configs_title">sāmovā zê pîš pêsand biďa</string>
+    <string name="orange">nâranji</string>
+    <string name="green">sawz</string>
+    <string name="password_no_match">razm ya jur nî</string>
+    <string name="filename">nome fāyl</string>
+    <string name="license">mojavez</string>
+    <string name="libraries">kêtāv hovêyal</string>
+    <string name="extracted">dêravorde vâbi</string>
+    <string name="compressed">tapniďe vâbi</string>
+    <string name="got_it">fa\'mim</string>
+    <string name="time_remaining">zamove bâqi manda</string>
+    <string name="unknown">našnāxta</string>
+    <string name="close">bastên</string>
+    <string name="failed_install_apk">purniďên anjom navâbi</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">virga mêni</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">virga dari</string>
+    <string name="choose_folder">i dobalge nê pêsand koň</string>
+    <string name="ftp_server_open_settings">sāmovā nê bogoš</string>
+    <string name="move">jā goro</string>
+    <string name="select_save_location">ya jāga si zaft kerdên pêsand koň</string>
+    <!-- error activity -->
+    <string name="sorry_string">vābašxi, i tafāq navāst vufte.</string>
+    <string name="error_report_button_text">i xatā nê vā imeyl gozāreš beďe.</string>
+    <string name="error_report_button_telegram">i xatā nê vā têlêgrām gozāreš beďe.</string>
+    <string name="error_report_open_issue_button_text">mênê githāb gozāreš beďe</string>
+    <string name="error_snackbar_action">gozāreš</string>
+    <string name="what_device_headline">dowêsmandiyā</string>
+    <string name="what_happened_headline">če tafāqi vast:</string>
+    <string name="your_comment">mênêšď isā (vê zowê ingilisi):</string>
+    <string name="error_details_headline">juziyāt:</string>
+    <string name="app_ui_crash">barnoma / rābete mentori xarāv êbu</string>
+    <string name="error_report_title">gozāreš xatā</string>
+    <string name="crash_report_copied">gozāreše xarâvi mênê virga lêfgiri vâbi</string>
+    <string name="cannot_delete_file">pāk kerdên fāyl momken nî</string>
+    <string name="cannot_delete_file_with_reason">pāk kerdên fāyl momken nî - %s</string>
+    <string name="cannot_rename_file">ālêšte nome fāyl momken nî %s - %s</string>
+    <string name="cannot_read_directory">xondêne tor momken nî %s - %s </string>
+    <string name="just_once">têynā si ya kêrat</string>
+    <string name="always">hamiša</string>
+    <string name="choose_different_app">pêsande ya barnome pîšfarz di</string>
+    <string name="clear_open_file">roftêne kaš</string>
+    <string name="ftp_readonly">dasrasi têynā xundêni</string>
+    <string name="legacy_listing_title">si rut, zê nomga qaďimi êstêfāďe koň</string>
+    <string name="error_permission_denied">mojavez raď vâbi</string>
+    <string name="disable">qeyre faāl kerdên</string>
+    <string name="choose_operation">amaliyāte nê si anjom dāďên pêsand koň</string>
+    <string name="remember">si ya kêrat di virêt bu</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">dāďên dasrasi SAF si servere FTP</string>
+    <string name="android_data_prompt_saf_access_title">dāďên dasrasi SAF</string>
+    <string name="ftp_preference_saf_filesystem_title">zê fāyl sistom qaďimi estêfāďe koň</string>
+    <string name="show_system_apps">nêšow dāďên barnomêyale sistom</string>
+    <string name="system_apps">barnomêyal sistomi</string>
+    <string name="select_inverse">pêsande čavāsa</string>
+    <string name="select_by_type">pêsand vê ri no\'</string>
+    <string name="select_by_date">pêsand vê ri virgār</string>
+    <string name="download">dānlod</string>
+    <string name="share_logs">yakrasuvi gozārešā</string>
+    <string name="open_with_amaze">gušiďên vā ameyz</string>
+    <string name="confirmation">taidiya</string>
+    <string name="unavailable">mên dasras nî</string>
+
+    <string name="free_of">\"%s\n%s āzāď zê %s</string>
+    <string name="results">Results</string>
+</resources>

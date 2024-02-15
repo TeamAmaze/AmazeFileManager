@@ -23,8 +23,8 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze</string>
-    <string name="drawer_open">Apri pannello di navigazione</string>
-    <string name="drawer_close">Chiudi pannello di navigazione</string>
+    <string name="drawer_open">Apri il pannello di navigazione</string>
+    <string name="drawer_close">Chiudi il pannello di navigazione</string>
     <string name="icon">icona</string>
     <string name="apps">Gestione app</string>
     <string name="ftp">Server FTP</string>
@@ -38,7 +38,7 @@
     <string name="properties">Proprietà</string>
     <string name="copyingapks">Copia di %d file APK su %s</string>
     <string name="delbook">Elimina Preferito</string>
-    <string name="add_to_bookmarks">Aggiungi a segnalibro</string>
+    <string name="add_to_bookmarks">Aggiungi ai segnalibri</string>
     <string name="enterpath">Inserisci percorso</string>
     <string name="cancel">ANNULLA</string>
     <string name="create">CREA</string>
@@ -81,6 +81,7 @@
     <string name="question_set_path_as_home">Vuoi impostare il percorso corrente come home per questa scheda?</string>
     <string name="directorysort">Modalità ordinamento cartelle</string>
     <string name="sort_by">Ordina per</string>
+    <string name="sort_by_colon">Ordina per</string>
     <string name="sort_only_this">Solo questa directory</string>
     <string name="theme">Tema</string>
     <string name="random">Skin casuale</string>
@@ -118,9 +119,11 @@
     <string name="sort_name">Nome</string>
     <string name="lastModified">Ultima modifica</string>
     <string name="sort_size">Dimensioni</string>
+    <string name="sort_relevance">Rilevanza</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Seleziona un file</string>
+    <string name="pick_files">Scegli uno o più file</string>
     <string name="process_viewer">Visualizza processi</string>
     <string name="in_safe">Spazio insufficiente</string>
     <string name="no_file_overwrite">Nessuna sovrascrittura</string>
@@ -183,6 +186,8 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="xda_summary">Q&amp;A, aiuto e risoluzione problemi</string>
     <string name="circular_images">Usa icone circolari per immagini e video</string>
     <string name="circular_icons">Usa icone circolari</string>
+    <string name="follow_battery_saver_title">Segui il risparmio batteria</string>
+    <string name="follow_battery_saver_desc">Se è selezionato e la modalità risparmio batteria è attiva, l\'app userà il tema scuro.</string>
     <string name="back_title">Naviga indietro</string>
     <string name="back_summary">Abilita navigazione personalizzata in cima alle liste</string>
     <string name="details">Dettagli</string>
@@ -389,7 +394,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cancelled">Annullato</string>
     <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
     <string name="written">Scritti</string>
-    <string name="out_of">fuori da</string>
+    <string name="out_of">di</string>
     <!-- reference to - 'Processing file # of #' in process viewer -->
     <string name="of">di</string>
     <string name="processing_file">Elaborazione file</string>
@@ -738,7 +743,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="preference_delete_confirmation_summary">Chiede una conferma prima di cancellare file. La disabilitazione di questa funzione è altamente sconsigliata!</string>
     <string name="protocol_ftps">FTP sicuro</string>
     <string name="unavailable">Non disponibile</string>
-
     <string name="exporting_failed">Esportazione fallita: non è possibile scrivere il file di backup</string>
     <string name="importing_failed">Importazione fallita: non è stato possibile leggere il file di backup</string>
     <string name="importing_completed">Importazione completata</string>

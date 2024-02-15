@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -81,6 +81,7 @@
     <string name="question_set_path_as_home">להגדיר נתיב זה כנתיב הבית ללשונית זו?</string>
     <string name="directorysort">מצב מיון תיקייה</string>
     <string name="sort_by">מיון לפי</string>
+    <string name="sort_by_colon">סידור לפי:</string>
     <string name="sort_only_this">רק תיקייה זו</string>
     <string name="theme">ערכת עיצוב</string>
     <string name="random">ערכת עיצוב אקראית</string>
@@ -118,9 +119,11 @@
     <string name="sort_name">שם</string>
     <string name="lastModified">שינוי אחרון</string>
     <string name="sort_size">גודל</string>
+    <string name="sort_relevance">קשר:</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">בחירת קובץ</string>
+    <string name="pick_files">יש לבחור קובץ או יותר</string>
     <string name="process_viewer">מציג התהליכים</string>
     <string name="in_safe">אין מספיק שטח פנוי</string>
     <string name="no_file_overwrite">לא הוחלף אף קובץ</string>
@@ -181,6 +184,7 @@
     <string name="xda_summary">קבלת תשובות לשאלות ועזרה בפתרון בעיות</string>
     <string name="circular_images">להשתמש בסמלים עגולים עבור תמונות וסרטונים</string>
     <string name="circular_icons">להשתמש בסמלים עגולים</string>
+    <string name="follow_battery_saver_title">לאפשר חיסכון בסוללה</string>
     <string name="back_title">ניווט אחורה</string>
     <string name="back_summary">מפעיל קיצור לחזרה אחורה בראש כל תיקייה</string>
     <string name="details">פרטים</string>
@@ -364,7 +368,7 @@
                     <p style='margin-left: 40px'>
                         יש לפתוח את מסוף הפקודות. להקליד ‚ipconfig’ ואז Enter. להסתכל על שער בררת המחדל
                         תחת מתאם הרשת של כתובת ה־IP של הנתב שלך. יש לחפש כתובת
-                        \\\"IPv4\\\" תחת הסעיף של אותו המתאם כדי למצוא את כתובת ה־IP של המחשב
+                        \\"IPv4\\" תחת הסעיף של אותו המתאם כדי למצוא את כתובת ה־IP של המחשב
                         שלך.\n\n
                     </p>
 
@@ -751,22 +755,24 @@
     <string name="ui_summary">שליטה במידע שיוצג, התאמת סרגל הצד ושינוי העדפות במנשק המשתמש</string>
     <string name="behavior_summary">שינוי התנהגויות כגון חיפוש מתקדם והאם לפתוח קבצים כמשימה חדשה</string>
     <string name="security_summary">הגדרת סיסמה והצפנה</string>
+    <string name="backup_summary">ייצוא/ייבוא הגדרות</string>
+
+    <string name="pref_export">ייצוא</string>
+    <string name="pref_export_summary">הגדרות ייצוא</string>
+    <string name="pref_import">ייבוא</string>
+    <string name="pref_import_summary">ייבוא הגדרות</string>
 
     <string name="quick_desc">קבצים אליהם ניגשת לאחרונה דרך Amaze</string>
     <string name="recent_desc">קבצים שנוצרו או נערכו לאחרונה</string>
     <string name="error_cannot_find_way_open">לא נמצאה דרך לפתוח את הקובץ</string>
     <string name="error_cant_decompress_that_file">לא ניתן לעבד את הארכיון המבוקש</string>
     <string name="analyse_storage">ניתוח האחסון</string>
-    <string name="download_amaze_utils_text">כעת תתבצע הפניה לכלי עזר לקבצים של Amaze. זה פיתוח שלנו עם אפשרות לפתוח שמע/וידאו/תמונות/מסמכים, מאפשר לך לנתח קובצי אחסון לאיתור תמונות מטושטשות/כהות, קבצים כפולים, העברה מהירה עם Wi-Fi נק׳ לנק׳ ועוד.\n אפשר לתמוך בנו על ידי התנסות בהם.</string>
     <string name="download">הורדה</string>
     <string name="wifip2p">נקודה לנקודה אלחוטית</string>
     <string name="amaze_utils_installed_alias">תודה שהתקנת את כלי הקבצים של Amaze. מיד תתבצע העברה ליישומון.</string>
     <string name="image_viewer">מציג התמונות של Amaze</string>
     <string name="video_player">נגן הווידאו של Amaze</string>
     <string name="amaze_audio_player">נגן המוזיקה של Amaze</string>
-    <string name="pdf_viewer">מציג ה־PDF של Amaze</string>
-    <string name="epub_viewer">מציג ה־Epub של Amaze</string>
-    <string name="docx_viewer">מציג ה־Doc של Amaze</string>
     <string name="share_logs">שיתוף יומנים</string>
     <string name="share_logs_summary">שיתוף היומנים שנאספו דרך דוא״ל / טלגרם</string>
     <string name="open_with_amaze">פתיחה עם Amaze</string>
@@ -779,10 +785,11 @@
     <string name="preference_delete_confirmation_summary">לבקש אישור בטרם מחיקת קבצים. השבתת האפשרות לא מומלצת כלל!</string>
     <string name="protocol_ftps">FTP מאובטח</string>
     <string name="unavailable">לא זמין</string>
+
     <string name="free_of">\"%s\n%s פנויים מתוך %s</string>
     <string name="cloud_error_fdroid">אין תמיכה בתוסף Amaze Cloud בגרסת ה־F-Droid. נא להשתמש בגרסת חנות ה־Play של Amaze.</string>
     <string name="disable_player_intent_filters">השבתת מסנני Intent של הנגן</string>
     <string name="disable_player_intent_filters_summary">משבית את נגני המדיה המובנים של Amaze בבוחר הקבצים</string>
     <string name="no_app_found_intent">לא נמצא יישומון לטיפול ב־Intent הזה. האם מותקן אצלך DocumentsUI?</string>
-</resources>
+    </resources>
 
