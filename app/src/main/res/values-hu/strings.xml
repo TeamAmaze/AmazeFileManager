@@ -36,6 +36,7 @@
     <string name="uninstall">Eltávolítás</string>
     <string name="play">Play áruház</string>
     <string name="properties">Tulajdonságok</string>
+    <string name="copyingapks">%d APK fájl másolása ide: %s</string>
     <string name="delbook">Könyvjelző törlése</string>
     <string name="add_to_bookmarks">Hozzáadás a könyvjelzőkhöz</string>
     <string name="enterpath">Adja meg az elérési útvonalat</string>
@@ -107,6 +108,7 @@
     <string name="dark">Sötét</string>
     <string name="daytime">Nappal</string>
     <string name="black">Fekete (OLED kijelzőre)</string>
+    <string name="system">Rendszer (kövesse a rendszer témáját)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Mappák felülre</string>
@@ -151,7 +153,7 @@
     <string name="thumb_summary">Alkalmazás és kép miniatűrök megjelenítése</string>
     <string name="thumb">Miniatűrök megjelenítése</string>
     <string name="hidden">Rejtett fájlok és mappák megjelenítése</string>
-    <string name="lastModifiedSummary">Megjeleníti a fájl utolsó módosítási dátumát és idejét</string>
+    <string name="lastModifiedSummary">Az utolsó módosítás dátumának és időpontjának megjelenítése</string>
     <string name="lastModifiedPref">Utolsó módosítás megjelenítése</string>
     <string name="size_pref_summary">Megjeleníti a fájlok méretét és a mappában lévő elemek számát</string>
     <string name="size_pref">Méret megjelenítése</string>
@@ -240,6 +242,7 @@
     <string name="needs_access_summary">Kérjük, válassza ki a(z) 	 gyökérkönyvtárát</string>
     <string name="needs_access_summary1">	az írási hozzáférés biztosításához </string>
     <string name="smb_connection">SMB-kapcsolat</string>
+    <string name="smb_server">Kiszolgáló IP-címe</string>
     <string name="server_address">Kiszolgáló IP-címe</string>
     <string name="username">Felhasználónév</string>
     <string name="password">Jelszó</string>
@@ -359,9 +362,9 @@
                         <b>IP-cím keresése</b>\n
                     </li>
                     <p style="margin-left: 40px">
-                        Nyissa meg a parancssort. Írja be az \'ipconfig\' parancsot, majd nyomja le az Enter billentyűt. Keresse az alapértelmezett átjárót
+                        Nyissa meg a parancssort. Írja be az 'ipconfig' parancsot, majd nyomja le az Enter billentyűt. Keresse az alapértelmezett átjárót
                         a hálózati adapter alatt routere IP-címével. Keresse az
-                        \\"IPv4-cím\\" bejegyzést ugyanabban a csatoló részben számítógépe IP-címének
+                        \"IPv4-cím\" bejegyzést ugyanabban a csatoló részben számítógépe IP-címének
                         megtalálásához.\n\n
                     </p>
 
@@ -578,6 +581,8 @@
 
     <string name="update">FRISSÍTÉS</string>
 	<string name="scp_connection">SCP/SFTP kapcsolat</string>
+    <string name="ftp_connection">FTP kapcsolat</string>
+    <string name="ftps_connection">FTP SSL kapcsolaton keresztül</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">A(z) \'%1$s\' állomás hitelessége nem állapítható meg.\n\n%2$s kulcs ujjlenyomat %3$s.\n\nKérjük, koppintson az \"Igen\"-re az identitás megerősítéséhez; ellenkező esetben koppintson a \"Nem\"-re.</string>
     <string name="ssh_host_key_verification_prompt_title">Állomás ellenőrzése</string>
@@ -614,6 +619,7 @@
     <string name="create_file_suggest_txt_extension">Fájlkiterjesztésként ajánlott a \".txt\" használata.</string>
     <string name="ssh_select_pem">Válassza ki a privát kulcsot a hitelesítéshez</string>
     <string name="ssh_key_invalid_passphrase">Érvénytelen kulcs jelszó.</string>
+    <string name="ssh_key_no_decoder_decrypt">Nincs érvényes dekódoló a PEM visszafejtéséhez.</string>
     <string name="encryption_fail_copy">Nem sikerült frissíteni a titkosítási bejegyzést az adatbázisban</string>
     <string name="extracted">Kicsomagolt</string>
     <string name="compressed">Tömörített</string>
@@ -621,11 +627,22 @@
     <string name="no_obtainable_info">Nincs információ erről a fájlról</string>
     <string name="reopen_from_source">Nem sikerült, kérjük, nyissa meg újra az utolsó alkalmazást</string>
     <string name="no_file_error">Valami hiba történt, nincs semmi megnyitva</string>
+    <string name="file_too_long">A fájl túl hosszú és nem szerkeszthető, de az első %d karakter olvasható</string>
     <string name="file_read_only">A megnyitott fájl csak olvasható.</string>
     <string name="got_it">Értem!</string>
     <string name="encrypt_file_save_as">Titkosított fájl mentése mint&#8230;</string>
     <string name="encrypt_folder_save_as">Titkosított mappa mentése mint&#8230;</string>
+    <string name="encrypt_option_use_aze">Amaze titkosítási formátum használata</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>Az AESCrypt egy nyílt forráskódú, AES titkosításon alapuló fájltitkosítási formátum. Emellett hordozható, más platformokon is visszafejthető az AESCrypt programokkal.</p>
+        <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt weboldal]]>
+    </string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>Az Amaze titkosítási formátuma szintén az AES titkosításon alapul; de az AESCrypt formátumtól eltérően csak ezzel az eszközzel lehet visszafejteni; továbbá nem szabad eltávolítani az Amaze File Manager-t erről az eszközről, és nem szabad megváltoztatni a képernyőzár módját, különben nem lesz módja a titkosított fájl helyreállítására.</p>
+    ]]></string>
     <string name="encrypt_file_must_end_with_aze">A titkosított fájloknak az \".aze\" kiterjesztést kell használniuk.</string>
+    <string name="encrypt_file_must_end_with_aes">A titkosított fájloknak fájlkiterjesztésként az \".aes\" kiterjesztést kell használniuk.</string>
+    <string name="error_aescrypt_decrypt_failed">A(z) \'%s\' nem fejthető vissza: \'%s\'</string>
     <string name="cannot_overwrite">Nem lehet felülírni a fájlt.</string>
     <string name="saved_single_file">Fájl mentve \'%s\'-ként.</string>
     <string name="saved_multi_files">%d fájl mentve.</string>
@@ -712,8 +729,13 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="ftp_preference_saf_filesystem_title">Örökölt fájlrendszer használata</string>
     <string name="ftp_preference_saf_filesystem">Engedélyezze ezt az eszköz külső tárolójának újabb Android-verziókon való használatának támogatásához</string>
     <string name="ftp_server_fallback_path_reset_prompt">Az FTP-kiszolgáló megosztott elérési útvonala vissza lett állítva a belső tárolóra, mivel a régi fájlrendszer implementációjára váltott. Kérjük, válasszon új elérési útvonalat a jobb felső sarokban található menü segítségével, ha szükséges.</string>
+    <string name="ftp_server_reset_notify">Az FTP-kiszolgáló megosztott elérési útvonala vissza lett állítva a belső tárolóra</string>
+    <string name="ftp_server_root_unavailable">Olyan elérési utat választ, amelyhez root hozzáférés szükséges. Kérjük, engedélyezze a root explorert a beállításokban, ha a készüléke rootolt.</string>
+    <string name="ftp_server_root_filesystem_warning">Olyan elérési utat választ, amely root hozzáférést igényel, ami lehetővé teszi az eszköz teljes fájlrendszerének írási/olvasási műveleteit, és ez veszélyes - egy óvatlan hiba tönkreteheti készülékét!\n\nBiztos benne?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Hiba a(z) \"%s\" URI olvasásra történő megnyitásakor.</string>
     <string name="error_empty_archive">A(z) \"%s\" egy üres archívum.</string>
+    <string name="error_bad_archive_without_info">A(z) \"%s\" egy sérült archívum.</string>
+    <string name="error_bad_archive_with_info">A(z) \"%s\" egy sérült archívum.\nÜzenet a kicsomagolótól: \"%s\"</string>
     <string name="security_error">A fájlt nem lehet megnyitni ezzel az alkalmazással</string>
     <string name="cloud_drive_tooltip">Hozzon létre egy Google Drive™ kapcsolatot a fájlok kezelésére az Amaze fájlkezelőn belül.</string>
     <string name="signin_with_google_title">Hitelesítés a Google Drive™ használatához</string>
@@ -723,10 +745,73 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="select_by_type">Kiválasztás típus szerint</string>
     <string name="select_by_date">Kiválasztás dátum szerint</string>
     <string name="select_similar">Hasonló kiválasztása</string>
+    <string name="select_fill">Válasszon kitöltést</string>
     <string name="error_fetching_google_play_product_list">Hiba történt a Google Play terméklista lekérésekor.</string>
-    <string name="grant_all_files_permission"><html><body>Az Amaze-nak minden fájlengedélyre szüksége van a folytatáshoz.
-        \nA következő képernyőn válassza az <b>Amaze</b> - <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót.
-            \n\n<font color='#ff6347'><i>A párbeszédpanel megszakításakor az alkalmazás kilép.</i></font></body></html></string>
-    <string name="user_apps">Harmadik féltől származó alkalmazások</string>
+    <string name="grant_all_files_permission"><html><body>Az Android 11 óta a Google arra utasítja a fájlkezelőket, hogy kérjenek felhasználói engedélyt az eszközön lévő összes fájl kezeléséhez. Részletek itt.
+        \n\nAz Amaze File Manager-nek is szüksége van erre az engedélyre. Az &quot;Engedélyez&quot; gomb megnyomása után, válassza a <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót a következő képernyőn.
+        \n\n<font color='#ff6347'><i>A párbeszédpanel megszakításával kilép az alkalmazásból.</i></font></body></html></string>
+    <string name="user_apps">Felhasználói alkalmazások</string>
+    <string name="appearance">Megjelenés</string>
+    <string name="behavior">Viselkedés</string>
+    <string name="appearance_summary">A fájlkezelő témájának, színeinek és megjelenésének testreszabása</string>
+    <string name="ui_summary">Szabályozhatja a megjelenítendő információkat, testre szabhatja az oldalsávot, és válthat a felhasználói felület beállításai között.</string>
+    <string name="behavior_summary">Módosíthatja az olyan viselkedési módokat, mint a speciális keresés és a fájlok új feladatként való megnyitása.</string>
+    <string name="security_summary">Jelszó és titkosítás beállítása</string>
+    <string name="backup_summary">Amaze beállítások exportálása/importálása</string>
+
+    <string name="pref_export">Exportálás</string>
+    <string name="pref_export_summary">Exportálási beállítások</string>
+    <string name="pref_import">Importálás</string>
+    <string name="pref_import_summary">Importálási beállítások</string>
+
+    <string name="quick_desc">Az Amaze-on keresztül legutóbb megnyitott fájlok</string>
+    <string name="recent_desc">Legutóbb létrehozott vagy módosított fájlok</string>
+    <string name="error_cannot_find_way_open">Nem találtam módot a fájl megnyitására</string>
+    <string name="error_cant_decompress_that_file">Nem lehet feldolgozni a kért archívumot</string>
+    <string name="analyse_storage">Tárhely elemzése</string>
+    <string name="download_amaze_utils_text">Önt átirányítják az Amaze File Utilities oldalra. Ez a mi nyílt forráskódú alkalmazásunk, amely beépített audió/videó/kép/dokumentum megjelenítőkkel rendelkezik, lehetővé teszi a felesleges fájlok elemzését a tárhely felszabadítása érdekében, gyors átvitelt tesz lehetővé Wifi P2P segítségével és még sok egyebet.\nTámogasson minket annak kipróbálásával.</string>
+    <string name="download">Letöltés</string>
+    <string name="wifip2p">Wi-Fi P2P</string>
+    <string name="amaze_utils_installed_alias">Köszönjük, hogy telepítette az Amaze File Utilities programot. Átirányítjuk az alkalmazásba.</string>
+    <string name="image_viewer">Amaze képmegjelenítő</string>
+    <string name="video_player">Amaze videólejátszó</string>
+    <string name="amaze_audio_player">Amaze zenelejátszó</string>
+    <string name="pdf_viewer">Amaze dokumentum megtekintő</string>
+    <string name="docx_viewer">Amaze dokumentum megtekintő</string>
+    <string name="share_logs">Naplók megosztása</string>
+    <string name="share_logs_summary">A rögzített naplók megosztása e-mailben / telegramon</string>
+    <string name="open_with_amaze">Megnyitás az Amaze segítségével</string>
+    <string name="confirmation">Megerősítés</string>
+    <string name="open_file_confirmation">Biztos, hogy meg akarja nyitni a következő fájlt?\n\nNév:\n%s\n\nHely:\n%s\n\nMéret:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="error_google_play_cannot_update_myself">A Google Play irányelvek szerint az alkalmazások nem frissíthetik magukat önállóan. Kérjük, frissítse az alkalmazást a Google Play-ről.</string>
+    <string name="error_cannot_get_package_info">A csomaginformáció nem érhető el a(z) \"%s\" fájlból. Vagy a megadott fájl nem APK, vagy a csomagfájl hibás.</string>
+    <string name="preference_delete_confirmation">Megerősítés törlése</string>
+    <string name="preference_delete_confirmation_summary">Kérjen megerősítést a fájlok törlése előtt. Ennek kikapcsolása nem javasolt!</string>
+    <string name="protocol_ftps">Biztonságos FTP</string>
+    <string name="unavailable">Nem elérhető</string>
+
+    <string name="exporting_failed">Az exportálás sikertelen: nem sikerült írni a biztonsági mentési fájlt</string>
+    <string name="importing_failed">Az importálás sikertelen: nem lehet olvasni a biztonsági mentési fájlt</string>
+    <string name="importing_completed">Az importálás befejeződött</string>
+    <string name="invalid_backup_file">Érvénytelen mentési fájl</string>
+    <string name="import_failed_for">Importálás sikertelen:</string>
+    <string name="cloud_error_fdroid">Az Amaze felhőbeépülő nem támogatott az F-Droid verzióval. Kérjük, használja az Amaze Play Store verzióját.</string>
+    <string name="disable_player_intent_filters">Játékos szándékszűrők letiltása</string>
+    <string name="disable_player_intent_filters_summary">Az Amaze beépített médialejátszóinak letiltása a fájlválasztóból</string>
+    <string name="no_app_found_intent">Nem található alkalmazás, amely kezelné ezt a szándékot. Telepítve van a DocumentsUI?</string>
+    <string name="cloud_connection_credentials_cleared">A felhőkapcsolat hitelesítő adatai törölve lettek</string>
+    <string name="cloud_connection_credentials_cleared_msg">Sajnos nem tudtuk átvinni a felhőcsatlakozási hitelesítő adatait az új adatbázis-sémába, ezért el kellett távolítanunk azokat az alkalmazásból. Kérjük, hozza létre újra a felhőkapcsolatot.</string>
+    <string name="not_finding_what_you_re_looking_for">Nem találja, amit keres?</string>
+    <string name="try_deep_search">Próbálja ki a mélykeresést!</string>
+    <string name="try_indexed_search">Próbálja ki az indexelt keresést!</string>
+    <string name="search_recent">Legutóbbi</string>
+    <string name="results">Eredmények</string>
+    <string name="grant_notification_permission">Az Amaze értesítési engedélyt igényel a fájlműveletek előrehaladásának megjelenítéséhez, valamint egy praktikus panelre az FTP-kiszolgáló indításához/leállításához.</string>
+    <string name="error_unsupported_or_null_uri">Érvénytelen, nem támogatott vagy nincs URI megadva</string>
+    <string name="complete_paste_warning">Kérjük, először fejezze be a beillesztési műveletet</string>
+    <string name="same_dir_move_error">A cél- és a forrásmappának nem kell megegyeznie az áthelyezéshez.</string>
+    <string name="checking_conflicts">Konfliktusok ellenőrzése</string>
+    <string name="same_dir_overwrite_error">A cél- és forrásmappa nem kell megegyeznie a felülíráshoz.</string>
+    <string name="not_found_enabled_webview">Nincs elérhető böngésző</string>
 </resources>
 
