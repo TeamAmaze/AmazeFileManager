@@ -767,5 +767,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="checking_conflicts">Konfliktusok ellenőrzése</string>
     <string name="same_dir_overwrite_error">A cél- és forrásmappa nem kell megegyeznie a felülíráshoz.</string>
     <string name="not_found_enabled_webview">Nincs elérhető böngésző</string>
+    <string name="preference_language_title">Alkalmazás nyelve</string>
     </resources>
 
