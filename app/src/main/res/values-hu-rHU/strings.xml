@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
     <string name="directorysort">Könyvtár rendezési mód</string>
     <string name="sort_by">Elrendezés</string>
+    <string name="sort_by_colon">Rendezés módja:1</string>
     <string name="sort_only_this">Csak ez a mappa</string>
     <string name="theme">Téma</string>
     <string name="random">Véletlenszerű felszín</string>
