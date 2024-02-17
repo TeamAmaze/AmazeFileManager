@@ -774,5 +774,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="delete_permanently_checkbox">Végleges törlés</string>
     <string name="restore">Visszaállítás</string>
     <string name="restore_files">Fájlok visszaállítása</string>
+    <string name="restoring">Visszaállítás...</string>
     </resources>
 
