@@ -769,5 +769,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="not_found_enabled_webview">Nincs elérhető böngésző</string>
     <string name="preference_language_title">Alkalmazás nyelve</string>
     <string name="preference_language_dialog_title">Válasszon nyelvet</string>
+    <string name="preference_language_system_default">Rendszer alapértelmezett</string>
     </resources>
 
