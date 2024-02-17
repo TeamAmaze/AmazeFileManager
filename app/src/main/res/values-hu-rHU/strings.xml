@@ -76,6 +76,7 @@
     <string name="dialog_delete_category_directories">Könyvtárak</string>
     <string name="dialog_delete_category_files">fájl</string>
     <string name="dialog_delete_disclaimer">Az alábbi elemek törlése véglegesen eltávolítja azokat a készülékről, és nem lehet őket visszaállítani.</string>
+    <string name="dialog_delete_temporarily_disclaimer">Törli a következő elemeket?</string>
     <string name="dialog_delete_title">Véglegesen törli az elemeket?</string>
     <string name="deleting">Törlés</string>
     <string name="question_set_path_as_home">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
