@@ -743,5 +743,5 @@ Silakan gunakan Amaze versi Play Sore</string>
     <string name="complete_paste_warning">Silakan selesaikan tindakan tempel terlebih dahulu</string>
     <string name="checking_conflicts">Memeriksa konflik</string>
     <string name="not_found_enabled_webview">Tidak ada peramban yang tersedia</string>
-</resources>
+    </resources>
 
