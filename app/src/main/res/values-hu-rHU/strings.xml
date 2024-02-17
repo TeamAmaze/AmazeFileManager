@@ -773,5 +773,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="error.listfile.smb.title">Nem lehet betölteni az SMB fájllistát</string>
     <string name="delete_permanently_checkbox">Végleges törlés</string>
     <string name="restore">Visszaállítás</string>
+    <string name="restore_files">Fájlok visszaállítása</string>
     </resources>
 
