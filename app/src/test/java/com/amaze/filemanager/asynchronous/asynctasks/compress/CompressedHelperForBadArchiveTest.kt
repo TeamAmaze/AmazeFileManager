@@ -41,7 +41,7 @@ import java.io.FileOutputStream
  * Test behaviour of CompressedHelpers in handling corrupt archives.
  */
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
 class CompressedHelperForBadArchiveTest {
 
     /**

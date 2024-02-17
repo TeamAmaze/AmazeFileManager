@@ -33,7 +33,6 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.Task;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -77,20 +76,18 @@ public class EncryptService extends AbstractProgressiveService {
   private NotificationManagerCompat notificationManager;
   private NotificationCompat.Builder notificationBuilder;
   private Context context;
-  private IBinder mBinder = new ObtainableServiceBinder<>(this);
-  private ProgressHandler progressHandler = new ProgressHandler();
+  private final IBinder binder = new ObtainableServiceBinder<>(this);
+  private final ProgressHandler progressHandler = new ProgressHandler();
   private ProgressListener progressListener;
   // list of data packages, to initiate chart in process viewer fragment
-  private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
+  private final ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
   private ServiceWatcherUtil serviceWatcherUtil;
   private long totalSize = 0L;
   private HybridFileParcelable baseFile;
-  private ArrayList<HybridFile> failedOps = new ArrayList<>();
+  private final ArrayList<HybridFile> failedOps = new ArrayList<>();
   private String targetFilename;
-  private int accentColor;
   private boolean useAesCrypt;
   private String password;
-  private SharedPreferences sharedPreferences;
   private RemoteViews customSmallContentViews, customBigContentViews;
 
   @Override
@@ -110,16 +107,14 @@ public class EncryptService extends AbstractProgressiveService {
     if (useAesCrypt) {
       password = intent.getStringExtra(TAG_PASSWORD);
     }
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    accentColor =
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    int accentColor =
         ((AppConfig) getApplication())
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
             .getAccent();
 
-    OpenMode openMode =
-        OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
     notificationManager = NotificationManagerCompat.from(getApplicationContext());
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -284,7 +279,7 @@ public class EncryptService extends AbstractProgressiveService {
 
   @Override
   public IBinder onBind(Intent intent) {
-    return mBinder;
+    return binder;
   }
 
   @Override
@@ -293,7 +288,7 @@ public class EncryptService extends AbstractProgressiveService {
     this.unregisterReceiver(cancelReceiver);
   }
 
-  private BroadcastReceiver cancelReceiver =
+  private final BroadcastReceiver cancelReceiver =
       new BroadcastReceiver() {
 
         @Override

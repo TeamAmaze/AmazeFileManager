@@ -31,13 +31,17 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.filesystem.files.sort.DirSortBy
+import com.amaze.filemanager.filesystem.files.sort.SortBy
+import com.amaze.filemanager.filesystem.files.sort.SortOrder
+import com.amaze.filemanager.filesystem.files.sort.SortType
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Objects
 
 class MainFragmentViewModel : ViewModel() {
 
@@ -56,11 +60,12 @@ class MainFragmentViewModel : ViewModel() {
     var searchHelper = ArrayList<HybridFileParcelable>()
     var no = 0
 
-    var sortby = 0
-    var dsort = 0
-    var asc = 0
+    var sortType: SortType = SortType(SortBy.NAME, SortOrder.ASC)
+
+    var dsort: DirSortBy = DirSortBy.DIR_ON_TOP
+
     var home: String? = null
-    var results: Boolean = false
+
     lateinit var openMode: OpenMode
 
     // defines the current visible tab, default either 0 or 1
@@ -80,10 +85,6 @@ class MainFragmentViewModel : ViewModel() {
 
     // defines the current visible tab, default either 0 or 1
     // private int mCurrentTab;
-
-    /*boolean identifying if the search task should be re-run on back press after pressing on
-    any of the search result*/
-    var retainSearchTask = false
 
     /** boolean to identify if the view is a list or grid  */
     var isList = true
@@ -163,19 +164,13 @@ class MainFragmentViewModel : ViewModel() {
      *
      * Final value of [.sortby] varies from 0 to 3
      */
-    fun initSortModes(sortType: Int, sharedPref: SharedPreferences) {
-        if (sortType <= 3) {
-            sortby = sortType
-            asc = 1
-        } else {
-            asc = -1
-            sortby = sortType - 4
-        }
+    fun initSortModes(sortType: SortType, sharedPref: SharedPreferences) {
+        this.sortType = sortType
         sharedPref.getString(
             PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE,
             "0"
         )?.run {
-            dsort = Integer.parseInt(this)
+            dsort = DirSortBy.getDirSortBy(Integer.parseInt(this))
         }
     }
 
@@ -242,5 +237,19 @@ class MainFragmentViewModel : ViewModel() {
             }
         }
         return mutableLiveData
+    }
+
+    /**
+     * increments `fileCount`
+     */
+    fun incrementFileCount() {
+        fileCount++
+    }
+
+    /**
+     * increments `folderCount`
+     */
+    fun incrementFolderCount() {
+        folderCount++
     }
 }

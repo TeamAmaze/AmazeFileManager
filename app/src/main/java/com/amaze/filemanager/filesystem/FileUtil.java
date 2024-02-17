@@ -43,7 +43,7 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.SmbUtil;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
@@ -105,7 +105,7 @@ public abstract class FileUtil {
   /** Writes uri stream from external application to the specified path */
   public static final void writeUriToStorage(
       @NonNull final MainActivity mainActivity,
-      @NonNull final ArrayList<Uri> uris,
+      @NonNull final List<Uri> uris,
       @NonNull final ContentResolver contentResolver,
       @NonNull final String currentPath) {
 

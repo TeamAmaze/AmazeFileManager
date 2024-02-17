@@ -25,7 +25,7 @@
                 android:paddingBottom="@dimen/material_generic"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -43,14 +43,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_type_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/type"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_type_title"
@@ -75,14 +75,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_location_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/location"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_location_title"
@@ -107,14 +107,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_subject_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/subject"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_subject_title"
@@ -139,14 +139,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_author_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/author"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_author_title"
@@ -171,14 +171,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_keywords_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/keywords"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_keywords_title"
@@ -203,14 +203,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_producer_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/producer"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_producer_title"
@@ -235,14 +235,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_creator_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/creator"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_creator_title"
@@ -267,14 +267,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_created_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/created"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_created_title"
@@ -299,14 +299,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_modified_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/modified"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_modified_title"
@@ -331,14 +331,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_format_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/format"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_format_title"
@@ -363,14 +363,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_pages_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pages"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_pages_title"
@@ -395,14 +395,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_optimized_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/optimized"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_optimized_title"
@@ -427,14 +427,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_security_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/security"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_security_title"
@@ -459,14 +459,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_paper_size_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/paper_size"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_paper_size_title"
@@ -491,14 +491,14 @@
                 android:gravity="center_vertical"
                 >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text_view_document_size_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/size"
                     android:textSize="@dimen/material_generic_title"
                     />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_view_document_size_title"

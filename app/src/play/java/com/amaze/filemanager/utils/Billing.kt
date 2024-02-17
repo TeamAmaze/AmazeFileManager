@@ -257,7 +257,7 @@ class Billing(private val activity: BasicActivity) :
                     val builder: MaterialDialog.Builder = MaterialDialog.Builder(context)
                     builder.title(R.string.donate)
                     builder.adapter(this, null)
-                    builder.theme(context.appTheme.getMaterialDialogTheme(context))
+                    builder.theme(context.appTheme.getMaterialDialogTheme())
                     builder.cancelListener { purchaseProduct.purchaseCancel() }
                     donationDialog = builder.show()
                     null

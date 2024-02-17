@@ -1,46 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/search_view"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@drawable/search_view_shape"
-
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/search_view_margin"
-    android:gravity="center_vertical"
-    android:visibility="gone"
-    android:elevation="8dp">
+    android:background="@drawable/search_view_shape"
+    android:clickable="true"
+    android:elevation="8dp"
+    android:focusable="true"
+    android:visibility="gone">
 
-    <ImageView
-        android:id="@+id/img_view_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_arrow_back_black_24dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
-        android:layout_marginRight="@dimen/search_view_back_margin_left_right"/>
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/search_edit_text"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/img_view_back"
-        android:hint="@string/search_hint"
-        android:inputType="textAutoComplete"
-        android:imeOptions="actionSearch"
-        android:maxLines="1"
-        android:layout_toLeftOf="@+id/search_close_btn"
-        android:theme="@style/appCompatLight"
-        android:textColorHint="?colorAccent"/>
-    <ImageView
-        android:id="@+id/search_close_btn"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        app:srcCompat="@drawable/ic_close_black_24dp"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
-        android:layout_marginRight="@dimen/search_view_info_margin_left_right"
-        />
-</RelativeLayout>
+        tools:ignore="ContentDescription">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_view_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
+            android:layout_marginRight="@dimen/search_view_back_margin_left_right"
+            app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
+            app:layout_constraintEnd_toStartOf="@id/search_edit_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/search_edit_text"
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textAutoComplete"
+            android:maxLines="1"
+            android:minHeight="?attr/actionBarSize"
+            android:textColorHint="?colorAccent"
+            android:theme="@style/appCompatLight"
+            app:layout_constraintBottom_toTopOf="@id/searchRecentHintTV"
+            app:layout_constraintEnd_toStartOf="@id/search_close_btn"
+            app:layout_constraintStart_toEndOf="@id/img_view_back"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/search_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
+            android:layout_marginRight="@dimen/search_view_info_margin_left_right"
+            app:layout_constraintBottom_toBottomOf="@id/search_edit_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/search_edit_text"
+            app:layout_constraintTop_toTopOf="@id/search_edit_text"
+            app:srcCompat="@drawable/ic_close_black_24dp" />
+
+        <TextView
+            android:id="@+id/searchRecentHintTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/search_recent"
+            android:textColor="@color/accent_material_light"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/searchRecentItemsScrollView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/search_edit_text" />
+
+        <HorizontalScrollView
+            android:id="@+id/searchRecentItemsScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@id/searchDeepSearchTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchRecentHintTV">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/searchRecentItemsChipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:chipSpacing="4dp"
+                app:singleLine="true" />
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/searchDeepSearchTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/searchResultsHintTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchRecentItemsScrollView" />
+
+        <TextView
+            android:id="@+id/searchResultsHintTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/results"
+            android:textColor="@color/accent_material_light"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/searchRecyclerView"
+            app:layout_constraintEnd_toStartOf="@+id/searchResultsSortHintTV"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV" />
+
+        <TextView
+            android:id="@+id/searchResultsSortHintTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/sort_by_colon"
+            android:textColor="@color/accent_material_light"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/searchRecyclerView"
+            app:layout_constraintEnd_toStartOf="@+id/searchResultsSortButton"
+            app:layout_constraintStart_toEndOf="@+id/searchResultsHintTV"
+            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV"
+            app:layout_constraintHorizontal_bias="1" />
+
+        <Button
+            android:id="@+id/searchResultsSortButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/accent_material_light"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/searchRecyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/searchResultsSortHintTV"
+            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV"
+            app:layout_constraintHorizontal_bias="1"
+            style="@style/SearchSortButton" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="@dimen/zero_dp"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchResultsHintTV" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

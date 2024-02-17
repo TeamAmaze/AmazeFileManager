@@ -18,16 +18,17 @@
     -->
     
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:minHeight="60dp">
-    <ImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/delete_button"
         android:layout_width="48dp"
         android:gravity="center_vertical"
         android:layout_alignParentRight="true"
         android:layout_height="fill_parent"
-        android:src="@drawable/ic_action_cancel_light"
+        app:srcCompat="@drawable/ic_action_cancel_light"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/delbook" />
 

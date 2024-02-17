@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope
+      xmlns:pnpx="http://schemas.microsoft.com/windows/pnpx/2005/10"
+      xmlns:pub="http://schemas.microsoft.com/windows/pub/2005/07"
+      xmlns:soap="http://www.w3.org/2003/05/soap-envelope"
+      xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+      xmlns:wsd="http://schemas.xmlsoap.org/ws/2005/04/discovery"
+      xmlns:wsdp="http://schemas.xmlsoap.org/ws/2006/02/devprof"
+      xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex">
+      <soap:Header>
+            <wsa:To>##DEST_UUID##</wsa:To>
+            <wsa:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</wsa:Action>
+            <wsa:MessageID>##MESSAGE_ID##</wsa:MessageID>
+            <wsa:ReplyTo>
+                 <wsa:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</wsa:Address>
+            </wsa:ReplyTo>
+            <wsa:From>
+                 <wsa:Address>##MY_UUID##</wsa:Address>
+            </wsa:From>
+      </soap:Header>
+      <soap:Body />
+</soap:Envelope>

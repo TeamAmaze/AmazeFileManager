@@ -22,7 +22,7 @@ package com.amaze.filemanager.adapters.holders
 
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 
@@ -31,11 +31,11 @@ class DonationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val ROOT_VIEW: LinearLayout = itemView.findViewById(R.id.adapter_donation_root)
 
     @JvmField
-    val TITLE: TextView = itemView.findViewById(R.id.adapter_donation_title)
+    val TITLE: AppCompatTextView = itemView.findViewById(R.id.adapter_donation_title)
 
     @JvmField
-    val SUMMARY: TextView = itemView.findViewById(R.id.adapter_donation_summary)
+    val SUMMARY: AppCompatTextView = itemView.findViewById(R.id.adapter_donation_summary)
 
     @JvmField
-    val PRICE: TextView = itemView.findViewById(R.id.adapter_donation_price)
+    val PRICE: AppCompatTextView = itemView.findViewById(R.id.adapter_donation_price)
 }

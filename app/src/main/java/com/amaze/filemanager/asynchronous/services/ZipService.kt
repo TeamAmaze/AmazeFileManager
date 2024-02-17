@@ -24,7 +24,6 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.*
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.O
 import android.os.IBinder
@@ -45,6 +44,12 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.DatapointParcelable
 import com.amaze.filemanager.utils.ObtainableServiceBinder
 import com.amaze.filemanager.utils.ProgressHandler
+import io.reactivex.Completable
+import io.reactivex.CompletableEmitter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.*
@@ -62,10 +67,10 @@ class ZipService : AbstractProgressiveService() {
     private val log: Logger = LoggerFactory.getLogger(ZipService::class.java)
 
     private val mBinder: IBinder = ObtainableServiceBinder(this)
-    private lateinit var asyncTask: CompressAsyncTask
+    private val disposables = CompositeDisposable()
     private lateinit var mNotifyManager: NotificationManagerCompat
     private lateinit var mBuilder: NotificationCompat.Builder
-    private lateinit var progressListener: ProgressListener
+    private var progressListener: ProgressListener? = null
     private val progressHandler = ProgressHandler()
 
     // list of data packages, to initiate chart in process viewer fragment
@@ -139,8 +144,8 @@ class ZipService : AbstractProgressiveService() {
         initNotificationViews()
         super.onStartCommand(intent, flags, startId)
         super.progressHalted()
-        asyncTask = CompressAsyncTask(this, baseFiles, mZipPath!!)
-        asyncTask.execute()
+        val zipTask = CompressTask(this, baseFiles, zipFile.absolutePath)
+        disposables.add(zipTask.compress())
         // If we get killed, after returning from here, restart
         return START_NOT_STICKY
     }
@@ -158,9 +163,9 @@ class ZipService : AbstractProgressiveService() {
 
     override fun getNotificationCustomViewBig(): RemoteViews = customBigContentViews!!
 
-    override fun getProgressListener(): ProgressListener = progressListener
+    override fun getProgressListener(): ProgressListener? = progressListener
 
-    override fun setProgressListener(progressListener: ProgressListener) {
+    override fun setProgressListener(progressListener: ProgressListener?) {
         this.progressListener = progressListener
     }
 
@@ -170,59 +175,76 @@ class ZipService : AbstractProgressiveService() {
 
     override fun clearDataPackages() = dataPackages.clear()
 
-    inner class CompressAsyncTask(
+    inner class CompressTask(
         private val zipService: ZipService,
         private val baseFiles: ArrayList<HybridFileParcelable>,
         private val zipPath: String
-    ) : AsyncTask<Void, Void?, Void?>() {
+    ) {
 
         private lateinit var zos: ZipOutputStream
         private lateinit var watcherUtil: ServiceWatcherUtil
-        private var totalBytes = 0L
 
-        override fun doInBackground(vararg p1: Void): Void? {
-            // setting up service watchers and initial data packages
-            // finding total size on background thread (this is necessary condition for SMB!)
-            totalBytes = FileUtils.getTotalBytes(baseFiles, zipService.applicationContext)
-            progressHandler.sourceSize = baseFiles.size
-            progressHandler.totalSize = totalBytes
-            progressHandler.setProgressListener { speed: Long ->
-                publishResults(speed, false, false)
+        /**
+         * Main use case for executing zipping task by given [zipPath]
+         */
+        fun compress(): Disposable {
+            return Completable.create { emitter ->
+                // setting up service watchers and initial data packages
+                // finding total size on background thread (this is necessary condition for SMB!)
+                val totalBytes = FileUtils.getTotalBytes(baseFiles, zipService.applicationContext)
+                progressHandler.sourceSize = baseFiles.size
+                progressHandler.totalSize = totalBytes
+
+                progressHandler.setProgressListener { speed: Long ->
+                    publishResults(speed, false, false)
+                }
+                zipService.addFirstDatapoint(
+                    baseFiles[0].getName(applicationContext),
+                    baseFiles.size,
+                    totalBytes,
+                    false
+                )
+                execute(
+                    emitter,
+                    zipService.applicationContext,
+                    FileUtils.hybridListToFileArrayList(baseFiles),
+                    zipPath
+                )
+
+                emitter.onComplete()
             }
-            zipService.addFirstDatapoint(
-                baseFiles[0].getName(applicationContext),
-                baseFiles.size,
-                totalBytes,
-                false
-            )
-            execute(
-                zipService.applicationContext,
-                FileUtils.hybridListToFileArrayList(baseFiles),
-                zipPath
-            )
-
-            return null
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        watcherUtil.stopWatch()
+                        val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
+                            .putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath)
+                        zipService.sendBroadcast(intent)
+                        zipService.stopSelf()
+                    },
+                    { log.error(it.message ?: "ZipService.CompressAsyncTask.compress failed") }
+                )
         }
 
-        override fun onCancelled() {
-            super.onCancelled()
+        /**
+         * Deletes the destination file zip file if exists
+         */
+        fun cancel() {
             progressHandler.cancelled = true
             val zipFile = File(zipPath)
             if (zipFile.exists()) zipFile.delete()
         }
 
-        public override fun onPostExecute(a: Void?) {
-            watcherUtil.stopWatch()
-            val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
-                .putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath)
-            zipService.sendBroadcast(intent)
-            zipService.stopSelf()
-        }
-
         /**
          * Main logic for zipping specified files.
          */
-        fun execute(context: Context, baseFiles: ArrayList<File>, zipPath: String?) {
+        fun execute(
+            emitter: CompletableEmitter,
+            context: Context,
+            baseFiles: ArrayList<File>,
+            zipPath: String
+        ) {
             val out: OutputStream?
             val zipDirectory = File(zipPath)
             watcherUtil = ServiceWatcherUtil(progressHandler)
@@ -231,7 +253,7 @@ class ZipService : AbstractProgressiveService() {
                 out = FileUtil.getOutputStream(zipDirectory, context)
                 zos = ZipOutputStream(BufferedOutputStream(out))
                 for ((fileProgress, file) in baseFiles.withIndex()) {
-                    if (isCancelled) return
+                    if (emitter.isDisposed) return
                     progressHandler.fileName = file.name
                     progressHandler.sourceFilesProcessed = fileProgress + 1
                     compressFile(file, "")
@@ -259,8 +281,8 @@ class ZipService : AbstractProgressiveService() {
                 zos.putNextEntry(createZipEntry(file, path))
                 val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
                 var len: Int
-                BufferedInputStream(FileInputStream(file)).use { `in` ->
-                    while (`in`.read(buf).also { len = it } > 0) {
+                BufferedInputStream(FileInputStream(file)).use { bufferedInputStream ->
+                    while (bufferedInputStream.read(buf).also { len = it } > 0) {
                         if (!progressHandler.cancelled) {
                             zos.write(buf, 0, len)
                             ServiceWatcherUtil.position += len.toLong()
@@ -312,6 +334,7 @@ class ZipService : AbstractProgressiveService() {
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(receiver1)
+        disposables.dispose()
     }
 
     companion object {

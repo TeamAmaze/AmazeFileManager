@@ -20,4 +20,8 @@
         android:id="@+id/select_similar"
         android:title="@string/select_similar"
         />
+    <item
+        android:id="@+id/select_fill"
+        android:title="@string/select_fill"
+        />
 </menu>

@@ -20,54 +20,81 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static android.util.Base64.URL_SAFE;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.AT;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.COLON;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.SLASH;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
-import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
+import static com.amaze.filemanager.utils.smb.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
+import static java.net.URLDecoder.decode;
+import static java.net.URLEncoder.encode;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.databinding.SmbDialogBinding;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
+import com.amaze.filemanager.utils.PasswordUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
-import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.TextView;
+import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.preference.PreferenceManager;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.DialogFragment;
 
 import jcifs.smb.SmbFile;
+import kotlin.text.Charsets;
 
 public class SmbConnectDialog extends DialogFragment {
 
+  // Dialog tag.
+  public static final String TAG = "smbdialog";
+
+  public static final String ARG_NAME = "name";
+
+  public static final String ARG_PATH = "path";
+
+  public static final String ARG_EDIT = "edit";
+
+  private static final Logger LOG = LoggerFactory.getLogger(SmbConnectDialog.class);
+
   private UtilitiesProvider utilsProvider;
 
-  private final Logger LOG = LoggerFactory.getLogger(SmbConnectDialog.class);
+  private SmbConnectionListener smbConnectionListener;
+
+  private SmbDialogBinding binding;
+  private String emptyAddress;
+  private String emptyName;
+  private String invalidDomain;
+  private String invalidUsername;
 
   public interface SmbConnectionListener {
 
@@ -76,8 +103,6 @@ public class SmbConnectDialog extends DialogFragment {
      *
      * @param edit whether we edit existing connection or not
      * @param name name of connection as appears in navigation drawer
-     * @param path the full path to the server. Includes an un-encrypted password to support runtime
-     *     loading without reloading stuff from database.
      * @param encryptedPath the full path to the server. Includes encrypted password to save in
      *     database. Later be decrypted at every boot when we read from db entry.
      * @param oldname the old name of connection if we're here to edit
@@ -86,11 +111,10 @@ public class SmbConnectDialog extends DialogFragment {
      */
     void addConnection(
         boolean edit,
-        String name,
-        String path,
-        String encryptedPath,
-        String oldname,
-        String oldPath);
+        @NonNull String name,
+        @NonNull String encryptedPath,
+        @Nullable String oldname,
+        @Nullable String oldPath);
 
     /**
      * Callback denoting a connection been deleted from dialog
@@ -107,9 +131,20 @@ public class SmbConnectDialog extends DialogFragment {
     void deleteConnection(String name, String path);
   }
 
-  Context context;
-  SmbConnectionListener smbConnectionListener;
-  String emptyAddress, emptyName, invalidDomain, invalidUsername;
+  @VisibleForTesting
+  public void setSmbConnectionListener(SmbConnectionListener smbConnectionListener) {
+    this.smbConnectionListener = smbConnectionListener;
+  }
+
+  @VisibleForTesting
+  public SmbConnectionListener getSmbConnectionListener() {
+    return smbConnectionListener;
+  }
+
+  @VisibleForTesting
+  public SmbDialogBinding getBinding() {
+    return binding;
+  }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -117,32 +152,31 @@ public class SmbConnectDialog extends DialogFragment {
     utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
   }
 
+  @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-    final boolean edit = getArguments().getBoolean("edit", false);
-    final String path = getArguments().getString("path");
-    final String name = getArguments().getString("name");
-    context = getActivity();
+    final boolean edit = getArguments().getBoolean(ARG_EDIT, false);
+    final String path = getArguments().getString(ARG_PATH);
+    final String name = getArguments().getString(ARG_NAME);
+    Context context = requireActivity();
     emptyAddress = getString(R.string.cant_be_empty, getString(R.string.ip));
     emptyName = getString(R.string.cant_be_empty, getString(R.string.connection_name));
     invalidDomain = getString(R.string.invalid, getString(R.string.domain));
     invalidUsername = getString(R.string.invalid, getString(R.string.username).toLowerCase());
-    if (getActivity() instanceof SmbConnectionListener) {
+    if (requireActivity() instanceof SmbConnectionListener && smbConnectionListener == null) {
       smbConnectionListener = (SmbConnectionListener) getActivity();
     }
-    final SharedPreferences sharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context);
     final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(context);
     ba3.title((R.string.smb_connection));
     ba3.autoDismiss(false);
-    final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
-    final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
-    final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
-    final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
-    final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
-    final TextInputLayout passwordTIL = v2.findViewById(R.id.passwordTIL);
-    final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
+    binding = SmbDialogBinding.inflate(LayoutInflater.from(context));
+    final TextInputLayout connectionTIL = binding.connectionTIL;
+    final TextInputLayout ipTIL = binding.ipTIL;
+    final TextInputLayout domainTIL = binding.domainTIL;
+    final TextInputLayout usernameTIL = binding.usernameTIL;
+    final TextInputLayout passwordTIL = binding.passwordTIL;
+    final AppCompatEditText conName = binding.connectionET;
 
     ExtensionsKt.makeRequired(connectionTIL);
     ExtensionsKt.makeRequired(ipTIL);
@@ -152,60 +186,60 @@ public class SmbConnectDialog extends DialogFragment {
     conName.addTextChangedListener(
         new SimpleTextWatcher() {
           @Override
-          public void afterTextChanged(Editable s) {
+          public void afterTextChanged(@NonNull Editable s) {
             if (conName.getText().toString().length() == 0) connectionTIL.setError(emptyName);
             else connectionTIL.setError("");
           }
         });
-    final AppCompatEditText ip = v2.findViewById(R.id.ipET);
+    final AppCompatEditText ip = binding.ipET;
     ip.addTextChangedListener(
         new SimpleTextWatcher() {
           @Override
-          public void afterTextChanged(Editable s) {
+          public void afterTextChanged(@NonNull Editable s) {
             if (ip.getText().toString().length() == 0) ipTIL.setError(emptyAddress);
             else ipTIL.setError("");
           }
         });
-    final AppCompatEditText share = v2.findViewById(R.id.shareET);
-    final AppCompatEditText domain = v2.findViewById(R.id.domainET);
+    final AppCompatEditText share = binding.shareET;
+    final AppCompatEditText domain = binding.domainET;
     domain.addTextChangedListener(
         new SimpleTextWatcher() {
           @Override
-          public void afterTextChanged(Editable s) {
+          public void afterTextChanged(@NonNull Editable s) {
             if (domain.getText().toString().contains(";")) domainTIL.setError(invalidDomain);
             else domainTIL.setError("");
           }
         });
-    final AppCompatEditText user = v2.findViewById(R.id.usernameET);
+    final AppCompatEditText user = binding.usernameET;
     user.addTextChangedListener(
         new SimpleTextWatcher() {
           @Override
-          public void afterTextChanged(Editable s) {
-            if (user.getText().toString().contains(":")) usernameTIL.setError(invalidUsername);
+          public void afterTextChanged(@NonNull Editable s) {
+            if (user.getText().toString().contains(String.valueOf(COLON)))
+              usernameTIL.setError(invalidUsername);
             else usernameTIL.setError("");
           }
         });
 
     int accentColor = ((ThemedActivity) getActivity()).getAccent();
-    final AppCompatEditText pass = v2.findViewById(R.id.passwordET);
-    final AppCompatCheckBox chkSmbAnonymous = v2.findViewById(R.id.chkSmbAnonymous);
-    final AppCompatCheckBox chkSmbDisableIpcSignature =
-        v2.findViewById(R.id.chkSmbDisableIpcSignature);
-    TextView help = v2.findViewById(R.id.wanthelp);
+    final AppCompatEditText pass = binding.passwordET;
+    final AppCompatCheckBox chkSmbAnonymous = binding.chkSmbAnonymous;
+    final AppCompatCheckBox chkSmbDisableIpcSignature = binding.chkSmbDisableIpcSignature;
+    AppCompatTextView help = binding.wanthelp;
 
-    EditTextColorStateUtil.setTint(context, conName, accentColor);
-    EditTextColorStateUtil.setTint(context, user, accentColor);
-    EditTextColorStateUtil.setTint(context, pass, accentColor);
+    EditTextColorStateUtil.setTint(getActivity(), conName, accentColor);
+    EditTextColorStateUtil.setTint(getActivity(), user, accentColor);
+    EditTextColorStateUtil.setTint(getActivity(), pass, accentColor);
 
-    Utils.setTint(context, chkSmbAnonymous, accentColor);
+    Utils.setTint(getActivity(), chkSmbAnonymous, accentColor);
     help.setOnClickListener(
         v -> {
           int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
-          GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
+          GeneralDialogCreation.showSMBHelpDialog(getActivity(), accentColor1);
         });
 
     chkSmbAnonymous.setOnClickListener(
-        view -> {
+        v -> {
           if (chkSmbAnonymous.isChecked()) {
             user.setEnabled(false);
             pass.setEnabled(false);
@@ -227,12 +261,23 @@ public class SmbConnectDialog extends DialogFragment {
         URL a = new URL(path);
         String userinfo = a.getUserInfo();
         if (userinfo != null) {
-          String inf = URLDecoder.decode(userinfo, "UTF-8");
+          String inf = decode(userinfo, Charsets.UTF_8.name());
           int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
           domainp = inf.substring(0, domainDelim);
           if (domainp != null && domainp.length() > 0) inf = inf.substring(domainDelim + 1);
-          userp = inf.substring(0, inf.indexOf(":"));
-          passp = inf.substring(inf.indexOf(":") + 1, inf.length());
+          if (!inf.contains(":")) userp = inf;
+          else {
+            userp = inf.substring(0, inf.indexOf(COLON));
+            try {
+              passp =
+                  PasswordUtil.INSTANCE.decryptPassword(
+                      context, inf.substring(inf.indexOf(COLON) + 1), URL_SAFE);
+              passp = decode(passp, Charsets.UTF_8.name());
+            } catch (GeneralSecurityException | IOException e) {
+              LOG.warn("Error decrypting password", e);
+              passp = "";
+            }
+          }
           domain.setText(domainp);
           user.setText(userp);
           pass.setText(passp);
@@ -264,15 +309,15 @@ public class SmbConnectDialog extends DialogFragment {
       conName.requestFocus();
     }
 
-    ba3.customView(v2, true);
-    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme(getContext()));
-    ba3.neutralText(R.string.cancel);
-    ba3.positiveText(R.string.create);
+    ba3.customView(binding.getRoot(), true);
+    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+    ba3.neutralText(android.R.string.cancel);
+    ba3.positiveText(edit ? R.string.update : R.string.create);
     if (edit) ba3.negativeText(R.string.delete);
     ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
     ba3.onPositive(
         (dialog, which) -> {
-          String s[];
+          String[] s;
           String ipa = ip.getText().toString();
           String con_nam = conName.getText().toString();
           String sDomain = domain.getText().toString();
@@ -301,7 +346,8 @@ public class SmbConnectDialog extends DialogFragment {
           }
           SmbFile smbFile;
           String domaind = domain.getText().toString();
-          if (chkSmbAnonymous.isChecked())
+          if (chkSmbAnonymous.isChecked()
+              || (TextUtils.isEmpty(user.getText()) && TextUtils.isEmpty(pass.getText())))
             smbFile = createSMBPath(new String[] {ipa, "", "", domaind, sShare}, true, false);
           else {
             String useraw = user.getText().toString();
@@ -332,8 +378,7 @@ public class SmbConnectDialog extends DialogFragment {
           if (smbConnectionListener != null) {
             // encrypted path means path with encrypted pass
             String qs = extraParams.length() > 0 ? extraParams.insert(0, '?').toString() : "";
-            smbConnectionListener.addConnection(
-                edit, s[0], smbFile.getPath() + qs, s[1] + qs, name, path);
+            smbConnectionListener.addConnection(edit, s[0], s[1] + qs, name, path);
           }
           dismiss();
         });
@@ -350,6 +395,7 @@ public class SmbConnectDialog extends DialogFragment {
     return ba3.build();
   }
 
+  // Begin URL building, hence will need to URL encode credentials here, to begin with.
   private SmbFile createSMBPath(String[] auth, boolean anonymous, boolean disableIpcSignCheck) {
     try {
       String yourPeerIP = auth[0];
@@ -357,22 +403,19 @@ public class SmbConnectDialog extends DialogFragment {
       String share = auth[4];
 
       StringBuilder sb = new StringBuilder(SMB_URI_PREFIX);
-      if (!android.text.TextUtils.isEmpty(domain))
-        sb.append(URLEncoder.encode(domain + ";", "UTF-8"));
+      if (!TextUtils.isEmpty(domain)) sb.append(encode(domain + ";", Charsets.UTF_8.name()));
       if (!anonymous)
-        sb.append(URLEncoder.encode(auth[1], "UTF-8"))
-            .append(":")
-            .append(URLEncoder.encode(auth[2], "UTF-8"))
-            .append("@");
-      sb.append(yourPeerIP).append("/");
+        sb.append(encode(auth[1], Charsets.UTF_8.name()))
+            .append(COLON)
+            .append(encode(auth[2], Charsets.UTF_8.name()))
+            .append(AT);
+      sb.append(yourPeerIP).append(SLASH);
       if (!TextUtils.isEmpty(share)) {
-        sb.append(share).append("/");
+        sb.append(share).append(SLASH);
       }
-      SmbFile smbFile =
-          new SmbFile(
-              sb.toString(),
-              CifsContexts.createWithDisableIpcSigningCheck(sb.toString(), disableIpcSignCheck));
-      return smbFile;
+      return new SmbFile(
+          sb.toString(),
+          CifsContexts.createWithDisableIpcSigningCheck(sb.toString(), disableIpcSignCheck));
     } catch (MalformedURLException e) {
       LOG.warn("failed to load smb path", e);
     } catch (UnsupportedEncodingException | IllegalArgumentException e) {

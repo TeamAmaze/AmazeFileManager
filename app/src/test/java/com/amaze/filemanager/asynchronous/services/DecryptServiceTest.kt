@@ -23,6 +23,7 @@ package com.amaze.filemanager.asynchronous.services
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.M
@@ -63,7 +64,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 @Suppress("StringLiteralDuplication")
 class DecryptServiceTest {
 
@@ -124,7 +125,7 @@ class DecryptServiceTest {
             putExtra(
                 TAG_SOURCE,
                 HybridFileParcelable(targetFile.absolutePath).also {
-                    it.size = targetFile.length()
+                    it.setSize(targetFile.length())
                 }
             )
             putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)
@@ -182,7 +183,7 @@ class DecryptServiceTest {
                 putExtra(
                     TAG_SOURCE,
                     HybridFileParcelable(sourceFile.absolutePath).also {
-                        it.size = sourceFile.length()
+                        it.setSize(sourceFile.length())
                     }
                 )
                 putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)

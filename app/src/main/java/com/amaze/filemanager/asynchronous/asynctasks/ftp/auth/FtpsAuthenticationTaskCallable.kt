@@ -20,9 +20,11 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
+import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.X509CertificateUtil
 import com.amaze.filemanager.utils.X509CertificateUtil.FINGERPRINT
 import net.schmizz.sshj.userauth.UserAuthException
@@ -50,7 +52,10 @@ class FtpsAuthenticationTaskCallable(
                 FTPClientImpl.generateRandomEmailAddressForLogin()
             )
         } else {
-            ftpClient.login(username, password)
+            ftpClient.login(
+                username,
+                PasswordUtil.decryptPassword(AppConfig.getInstance(), password)
+            )
         }
         return if (loginSuccess) {
             // RFC 2228 set protection buffer size to 0

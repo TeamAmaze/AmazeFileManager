@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.utils.NetworkUtil;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -64,8 +65,8 @@ public class FtpTileService extends TileService {
                 .sendBroadcast(
                     new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getPackageName()));
           } else {
-            if (FtpService.isConnectedToWifi(getApplicationContext())
-                || FtpService.isConnectedToLocalNetwork(getApplicationContext())) {
+            if (NetworkUtil.isConnectedToWifi(getApplicationContext())
+                || NetworkUtil.isConnectedToLocalNetwork(getApplicationContext())) {
               Intent i = new Intent(FtpService.ACTION_START_FTPSERVER).setPackage(getPackageName());
               i.putExtra(FtpService.TAG_STARTED_BY_TILE, true);
               getApplicationContext().sendBroadcast(i);

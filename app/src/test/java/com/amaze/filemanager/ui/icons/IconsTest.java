@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.icons;
 
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +33,7 @@ import org.robolectric.shadows.ShadowMimeTypeMap;
 
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
+import android.os.Build;
 import android.webkit.MimeTypeMap;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -41,7 +41,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+    sdk = {KITKAT, P, Build.VERSION_CODES.R})
 public class IconsTest {
 
   @Before

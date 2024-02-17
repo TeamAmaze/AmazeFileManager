@@ -152,4 +152,13 @@ public class CompressedObjectParcelable implements Parcelable {
           && size == otherObj.size;
     } else return false;
   }
+
+  @Override
+  public int hashCode() {
+    int result = (directory ? 1 : 0);
+    result = 31 * result + type;
+    result = 31 * result + name.hashCode();
+    result = 31 * result + (int) (size ^ (size >>> 32));
+    return result;
+  }
 }

@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.database
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
@@ -35,7 +35,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -53,7 +53,7 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class UtilsHandlerTest {
 
@@ -104,8 +104,13 @@ class UtilsHandlerTest {
                 saveToDatabase(o)
                 val verify = smbList
                 assertEquals(1, verify.size)
-                // UtilsHandler.getSmbList() will decrypt password when return
-                assertEquals(path, verify[0][1])
+                assertEquals(
+                    SmbUtil.getSmbEncryptedPath(
+                        AppConfig.getInstance(),
+                        path
+                    ),
+                    verify[0][1]
+                )
             }
             utilitiesDatabase.run {
                 val verify = smbEntryDao().list().blockingGet()

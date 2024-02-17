@@ -68,7 +68,6 @@ import com.amaze.filemanager.utils.AnimUtils.marqueeAfterDelay
 import com.amaze.filemanager.utils.Utils
 import com.amaze.filemanager.utils.safeLet
 import java.io.File
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class AppsRecyclerAdapter(
@@ -184,6 +183,10 @@ class AppsRecyclerAdapter(
                     )
                 }
                 holder.txtTitle.text = rowItem.label
+
+                holder.packageName.text = rowItem.packageName
+                holder.packageName.isSelected = true // for marquee
+
                 val enableMarqueeFilename =
                     (fragment.requireActivity() as MainActivity)
                         .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
@@ -198,7 +201,7 @@ class AppsRecyclerAdapter(
 
                 // 	File f = new File(rowItem.getDesc());
                 if (!isBottomSheet) {
-                    holder.txtDesc.text = rowItem.fileSize
+                    holder.txtDesc.text = rowItem.fileSize + " |"
                 }
                 holder.rl.isClickable = true
                 holder.rl.nextFocusRightId = holder.about.id
@@ -250,6 +253,7 @@ class AppsRecyclerAdapter(
                     ) {
                             uri, mimeType, useNewStack ->
                         val intent = buildIntent(
+                            fragment.requireContext(),
                             uri,
                             mimeType,
                             useNewStack,
@@ -288,7 +292,7 @@ class AppsRecyclerAdapter(
             if ((
                 fragment.requireActivity()
                     as MainActivity
-                ).appTheme.getSimpleTheme(fragment.requireContext()) == AppTheme.BLACK
+                ).appTheme == AppTheme.BLACK
             ) {
                 context = ContextThemeWrapper(context, R.style.overflow_black)
             }
@@ -490,7 +494,7 @@ class AppsRecyclerAdapter(
             MaterialDialog.Builder(fragment.requireContext())
         builder1
             .theme(
-                themedActivity.appTheme.getMaterialDialogTheme(fragment.requireContext())
+                themedActivity.appTheme.getMaterialDialogTheme()
             )
             .content(fragment.getString(R.string.unin_system_apk))
             .title(fragment.getString(R.string.warning))
@@ -517,7 +521,7 @@ class AppsRecyclerAdapter(
                 } else {
                     files.add(f1)
                 }
-                DeleteTask(fragment.requireContext()).execute(files)
+                DeleteTask(fragment.requireContext(), false).execute(files)
             }
             .build()
             .show()

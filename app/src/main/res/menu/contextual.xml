@@ -20,11 +20,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/openmulti"
-        android:title="@string/select_intent"
-        android:visible="false"
-        app:showAsAction="ifRoom|withText" />
-    <item
         android:id="@+id/cpy"
         android:title="@string/copy"
         android:icon="@drawable/ic_content_copy_white_24dp"
@@ -33,6 +28,12 @@
         android:id="@+id/delete"
         android:title="@string/delete"
         android:icon="@drawable/ic_delete_white_36dp"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/restore"
+        android:title="@string/restore"
+        android:icon="@drawable/round_restore_from_trash_24"
+        android:visible="false"
         app:showAsAction="always" />
 
     <item

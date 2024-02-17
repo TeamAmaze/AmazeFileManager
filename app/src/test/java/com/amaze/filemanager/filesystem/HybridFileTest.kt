@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem
 
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
@@ -39,7 +39,8 @@ import kotlin.random.Random
 
 /* ktlint-disable max-line-length */
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Suppress("StringLiteralDuplication")
 class HybridFileTest {
 
     /**
@@ -224,6 +225,48 @@ class HybridFileTest {
             "ftp://user:password@127.0.0.1:22222/multiple/levels/down the pipe"
         )
         assertEquals("down the pipe", file.getName(AppConfig.getInstance()))
+    }
+
+    /**
+     * Test [HybridFile.sanitizePathAsNecessary].
+     */
+    @Test
+    fun testSanitizePathAsNecessary() {
+        assertEquals(
+            "ftp://user:password@127.0.0.1:22222/multiple/levels/down/the/pipe",
+            HybridFile(
+                OpenMode.FTP,
+                "ftp://user:password@127.0.0.1:22222//multiple///levels////down////the/pipe"
+            ).path
+        )
+        assertEquals(
+            "ssh://user@127.0.0.1/multiple/levels/down/the/pipe",
+            HybridFile(
+                OpenMode.SFTP,
+                "ssh://user@127.0.0.1//multiple///levels////down////the/pipe"
+            ).path
+        )
+        assertEquals(
+            "ssh://user@127.0.0.1/multiple/levels/down/the/pipe",
+            HybridFile(
+                OpenMode.SFTP,
+                "ssh://user@127.0.0.1/multiple/levels/down/the/pipe"
+            ).path
+        )
+        assertEquals(
+            "smb://127.0.0.1/legacy?disableIpcSigningCheck=true",
+            HybridFile(
+                OpenMode.SMB,
+                "smb://127.0.0.1/legacy?disableIpcSigningCheck=true"
+            ).path
+        )
+        assertEquals(
+            "smb://127.0.0.1/legacy/again/try/duplicate/folder?disableIpcSigningCheck=true",
+            HybridFile(
+                OpenMode.SMB,
+                "smb://127.0.0.1/legacy//again/try/duplicate/////folder?disableIpcSigningCheck=true"
+            ).path
+        )
     }
 }
 /* ktlint-enable max-line-length */

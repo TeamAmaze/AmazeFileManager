@@ -23,7 +23,11 @@ package com.amaze.filemanager.utils;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -39,6 +43,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -46,18 +52,20 @@ import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -81,12 +89,16 @@ public class Utils {
   private static final String DATE_TIME_FORMAT = "%s | %s";
   private static final String EMAIL_EMMANUEL = "emmanuelbendavid@gmail.com";
   private static final String EMAIL_RAYMOND = "airwave209gt@gmail.com";
+  private static final String EMAIL_VISHNU = "t.v.s10123@gmail.com";
   private static final String EMAIL_VISHAL = "vishalmeham2@gmail.com";
   private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
   private static final String URL_INSTGRAM = "https://www.instagram.com/teamamaze.xyz/";
 
   public static final String EMAIL_NOREPLY_REPORTS = "no-reply@teamamaze.xyz";
   public static final String EMAIL_SUPPORT = "support@teamamaze.xyz";
+
+  private static final Logger log = LoggerFactory.getLogger(Utils.class);
+  private static boolean isToastShowing = false;
 
   // methods for fastscroller
   public static float clamp(float min, float max, float value) {
@@ -102,7 +114,7 @@ public class Utils {
     return location[1];
   }
 
-  public static void setTint(Context context, CheckBox box, int color) {
+  public static void setTint(Context context, AppCompatCheckBox box, int color) {
     if (Build.VERSION.SDK_INT >= 21) return;
     ColorStateList sl =
         new ColorStateList(
@@ -352,7 +364,7 @@ public class Utils {
 
     Button actionButton = customSnackView.findViewById(R.id.snackBarActionButton);
     Button cancelButton = customSnackView.findViewById(R.id.snackBarCancelButton);
-    TextView textView = customSnackView.findViewById(R.id.snackBarTextTV);
+    AppCompatTextView textView = customSnackView.findViewById(R.id.snackBarTextTV);
 
     actionButton.setText(actionTextId);
     textView.setText(text);
@@ -377,7 +389,22 @@ public class Utils {
   public static void openURL(String url, Context context) {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.setData(Uri.parse(url));
-    context.startActivity(intent);
+
+    PackageManager packageManager = context.getPackageManager();
+    List<ResolveInfo> webViews =
+        packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+    if (!webViews.isEmpty()) {
+      context.startActivity(intent);
+    } else {
+      log.warn("A browser is not available");
+      if (!isToastShowing) {
+        isToastShowing = true;
+        Toast.makeText(context, R.string.not_found_enabled_webview, Toast.LENGTH_SHORT).show();
+        // Prevents a myriad of duplicates
+        new Handler().postDelayed(() -> isToastShowing = false, 2200);
+      }
+    }
   }
 
   /** Open telegram in browser */
@@ -400,7 +427,7 @@ public class Utils {
   public static Intent buildEmailIntent(Context context, String text, String supportMail) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
     String[] aEmailList = {supportMail};
-    String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
+    String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND, EMAIL_VISHNU};
     emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
     emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
     emailIntent.putExtra(
@@ -450,10 +477,17 @@ public class Utils {
             .setActivity(componentName)
             .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))
             .setIntent(shortcutIntent)
-            .setLongLabel(path.desc)
-            .setShortLabel(new File(path.desc).getName())
+            .setLongLabel(path.title)
+            .setShortLabel(path.title)
             .build();
 
     ShortcutManagerCompat.requestPinShortcut(context, info, null);
+  }
+
+  public static void hideKeyboard(MainActivity mainActivity) {
+    View view = mainActivity.getCurrentFocus();
+    if (view != null)
+      ((InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE))
+          .hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
 }

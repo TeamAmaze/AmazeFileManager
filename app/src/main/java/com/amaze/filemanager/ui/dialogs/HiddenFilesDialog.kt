@@ -52,7 +52,7 @@ object HiddenFilesDialog {
             builder.positiveText(R.string.close)
             builder.positiveColor(mainActivity.accent)
             builder.title(R.string.hiddenfiles)
-            builder.theme(appTheme.getMaterialDialogTheme(mainFragment.requireContext()))
+            builder.theme(appTheme.getMaterialDialogTheme())
             builder.autoDismiss(true)
             builder.adapter(adapter, null)
             builder.dividerColor(Color.GRAY)

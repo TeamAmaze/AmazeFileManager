@@ -47,7 +47,7 @@ object EncryptWarningDialog {
         MaterialDialog.Builder(main).run {
             title(main.getString(R.string.warning))
             content(main.getString(R.string.crypt_warning_key))
-            theme(appTheme.getMaterialDialogTheme(main))
+            theme(appTheme.getMaterialDialogTheme())
             negativeText(main.getString(R.string.warning_never_show))
             positiveText(main.getString(R.string.warning_confirm))
             positiveColor(accentColor)

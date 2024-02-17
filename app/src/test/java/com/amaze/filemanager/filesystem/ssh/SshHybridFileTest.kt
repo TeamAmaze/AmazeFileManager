@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh
 
 import android.content.Context
-import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
@@ -46,7 +46,7 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R]
 )
 class SshHybridFileTest {
 

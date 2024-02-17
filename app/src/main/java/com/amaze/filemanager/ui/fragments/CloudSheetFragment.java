@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.databinding.FragmentSheetCloudBinding;
@@ -121,6 +122,14 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
       mGetCloudLayout.setVisibility(View.GONE);
     }
 
+    if (BuildConfig.IS_VERSION_FDROID) {
+      mBoxLayout.setVisibility(View.GONE);
+      mDropboxLayout.setVisibility(View.GONE);
+      mGoogleDriveLayout.setVisibility(View.GONE);
+      mOnedriveLayout.setVisibility(View.GONE);
+      mGetCloudLayout.setVisibility(View.GONE);
+    }
+
     mSmbLayout.setOnClickListener(this);
     mScpLayout.setOnClickListener(this);
     mBoxLayout.setOnClickListener(this);
@@ -150,7 +159,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
       case R.id.linear_layout_smb:
         dismiss();
         SmbSearchDialog smbDialog = new SmbSearchDialog();
-        smbDialog.show(getActivity().getFragmentManager(), "tab");
+        smbDialog.show(getActivity().getSupportFragmentManager(), "tab");
         return;
       case R.id.linear_layout_scp:
         dismiss();

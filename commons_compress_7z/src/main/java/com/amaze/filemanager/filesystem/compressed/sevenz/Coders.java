@@ -79,7 +79,8 @@ class Coders {
       final InputStream is,
       final long uncompressedLength,
       final Coder coder,
-      final byte[] password)
+      final byte[] password,
+      final int maxMemoryLimitInKb)
       throws IOException {
     final CoderBase cb = findByMethod(SevenZMethod.byId(coder.decompressionMethodId));
     if (cb == null) {
@@ -89,7 +90,7 @@ class Coders {
               + " used in "
               + archiveName);
     }
-    return cb.decode(archiveName, is, uncompressedLength, coder, password);
+    return cb.decode(archiveName, is, uncompressedLength, coder, password, maxMemoryLimitInKb);
   }
 
   static OutputStream addEncoder(
@@ -108,7 +109,8 @@ class Coders {
         final InputStream in,
         final long uncompressedLength,
         final Coder coder,
-        final byte[] password)
+        final byte[] password,
+        final int maxMemoryLimitInKb)
         throws IOException {
       return in;
     }
@@ -132,7 +134,8 @@ class Coders {
         final InputStream in,
         final long uncompressedLength,
         final Coder coder,
-        final byte[] password)
+        final byte[] password,
+        final int maxMemoryLimitInKb)
         throws IOException {
       try {
         return opts.getInputStream(in);
@@ -168,7 +171,8 @@ class Coders {
         final InputStream in,
         final long uncompressedLength,
         final Coder coder,
-        final byte[] password)
+        final byte[] password,
+        final int maxMemoryLimitInKb)
         throws IOException {
       final Inflater inflater = new Inflater(true);
       // Inflater with nowrap=true has this odd contract for a zero padding
@@ -192,10 +196,11 @@ class Coders {
 
     static class DeflateDecoderInputStream extends InputStream {
 
-      InflaterInputStream inflaterInputStream;
+      final InflaterInputStream inflaterInputStream;
       Inflater inflater;
 
-      public DeflateDecoderInputStream(InflaterInputStream inflaterInputStream, Inflater inflater) {
+      public DeflateDecoderInputStream(
+          final InflaterInputStream inflaterInputStream, final Inflater inflater) {
         this.inflaterInputStream = inflaterInputStream;
         this.inflater = inflater;
       }
@@ -227,11 +232,11 @@ class Coders {
 
     static class DeflateDecoderOutputStream extends OutputStream {
 
-      DeflaterOutputStream deflaterOutputStream;
+      final DeflaterOutputStream deflaterOutputStream;
       Deflater deflater;
 
       public DeflateDecoderOutputStream(
-          DeflaterOutputStream deflaterOutputStream, Deflater deflater) {
+          final DeflaterOutputStream deflaterOutputStream, final Deflater deflater) {
         this.deflaterOutputStream = deflaterOutputStream;
         this.deflater = deflater;
       }
@@ -274,7 +279,8 @@ class Coders {
         final InputStream in,
         final long uncompressedLength,
         final Coder coder,
-        final byte[] password)
+        final byte[] password,
+        final int maxMemoryLimitInKb)
         throws IOException {
       return new Deflate64CompressorInputStream(in);
     }
@@ -291,7 +297,8 @@ class Coders {
         final InputStream in,
         final long uncompressedLength,
         final Coder coder,
-        final byte[] password)
+        final byte[] password,
+        final int maxMemoryLimitInKb)
         throws IOException {
       return new BZip2CompressorInputStream(in);
     }

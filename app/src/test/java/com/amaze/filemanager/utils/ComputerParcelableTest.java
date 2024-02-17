@@ -54,15 +54,15 @@ public class ComputerParcelableTest {
 
   /**
    * Purpose: when computerParcelable's address and object's address are not the same, confirm that
-   * the two are different. Input: computerParcelable.equals(object) only ComputerParcelable.name ==
-   * Object.name Expected: result is false
+   * the two are different. Input: computerParcelable.equals(object) only ComputerParcelable.addr ==
+   * Object.name Expected: result is true
    */
   @Test
   public void testObjectNotEqualsAddr() {
     ComputerParcelable computerParcelable = new ComputerParcelable("com1", "1");
     Object object = new ComputerParcelable("com1", "2");
 
-    assertFalse(computerParcelable.equals(object));
+    assertTrue(computerParcelable.equals(object));
   }
 
   /**

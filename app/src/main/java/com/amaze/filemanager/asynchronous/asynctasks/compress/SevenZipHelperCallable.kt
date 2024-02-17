@@ -20,16 +20,15 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.util.Log
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
 import org.apache.commons.compress.PasswordRequiredException
 import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.io.IOException
-import java.lang.UnsupportedOperationException
 
 class SevenZipHelperCallable(
     private val filePath: String,
@@ -50,32 +49,51 @@ class SevenZipHelperCallable(
             } else {
                 SevenZFile(File(filePath))
             }
-            for (entry in sevenzFile.entries) {
-                val name = entry.name
-                val isInBaseDir = (
-                    relativePath == "" &&
-                        !name.contains(CompressedHelper.SEPARATOR)
-                    )
-                val isInRelativeDir = (
-                    name.contains(CompressedHelper.SEPARATOR) &&
-                        name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
-                        == relativePath
-                    )
-                if (isInBaseDir || isInRelativeDir) {
+
+            val entriesMap = sevenzFile.entries.associateBy { it.name }
+            val entries = HashSet<String>()
+
+            // Start filter out the paths we need to present based on relativePath
+
+            entries.addAll(
+                consolidate(
+                    entriesMap.keys.filter {
+                        it.startsWith(relativePath)
+                    },
+                    if (relativePath == "") {
+                        0
+                    } else if (relativePath.isNotBlank() && !relativePath.contains(SEPARATOR)) {
+                        1
+                    } else {
+                        relativePath.count { it == CompressedHelper.SEPARATOR_CHAR } + 1
+                    }
+                )
+            )
+
+            entries.forEach { path ->
+                if (entriesMap.containsKey(path)) {
+                    entriesMap[path]?.let { entry ->
+                        elements.add(
+                            CompressedObjectParcelable(
+                                entry.name,
+                                try {
+                                    entry.lastModifiedDate.time
+                                } catch (e: UnsupportedOperationException) {
+                                    logger.warn("Unable to get modified date for 7zip file", e)
+                                    0L
+                                },
+                                entry.size,
+                                entry.isDirectory
+                            )
+                        )
+                    }
+                } else {
                     elements.add(
                         CompressedObjectParcelable(
-                            entry.name,
-                            try {
-                                entry.lastModifiedDate.time
-                            } catch (e: UnsupportedOperationException) {
-                                Log.w(
-                                    javaClass.simpleName,
-                                    "Unable to get modified date for 7zip file"
-                                )
-                                0L
-                            },
-                            entry.size,
-                            entry.isDirectory
+                            path,
+                            0L,
+                            0,
+                            true
                         )
                     )
                 }
@@ -86,5 +104,32 @@ class SevenZipHelperCallable(
         } catch (e: IOException) {
             throw ArchiveException(String.format("7zip archive %s is corrupt", filePath))
         }
+    }
+
+    internal fun consolidate(paths: Collection<String>, level: Int = 0): Set<String> {
+        return paths.mapNotNull { path ->
+            when (level) {
+                0 -> {
+                    if (path.contains(SEPARATOR)) {
+                        path.substringBefore(SEPARATOR)
+                    } else {
+                        path
+                    }
+                }
+                else -> {
+                    if (path.contains(SEPARATOR)) {
+                        path.split(SEPARATOR).let {
+                            if (it.size > level) {
+                                it.subList(0, level + 1).joinToString(SEPARATOR)
+                            } else {
+                                null
+                            }
+                        }
+                    } else {
+                        null
+                    }
+                }
+            }
+        }.toSet()
     }
 }

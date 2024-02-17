@@ -20,13 +20,16 @@
 
 package com.amaze.filemanager.filesystem.compressed.sevenz;
 
+import java.util.Objects;
+
 /**
  * Combines a SevenZMethod with configuration options for the method.
  *
  * <p>The exact type and interpretation of options depends on the method being configured. Currently
  * supported are:
  *
- * <table summary="Options">
+ * <table>
+ * <caption>Options</caption>
  * <tr><th>Method</th><th>Option Type</th><th>Description</th></tr>
  * <tr><td>BZIP2</td><td>Number</td><td>Block Size - an number between 1 and 9</td></tr>
  * <tr><td>DEFLATE</td><td>Number</td><td>Compression Level - an number between 1 and 9</td></tr>
@@ -84,5 +87,22 @@ public class SevenZMethodConfiguration {
    */
   public Object getOptions() {
     return options;
+  }
+
+  @Override
+  public int hashCode() {
+    return method == null ? 0 : method.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    final SevenZMethodConfiguration other = (SevenZMethodConfiguration) obj;
+    return Objects.equals(method, other.method) && Objects.equals(options, other.options);
   }
 }

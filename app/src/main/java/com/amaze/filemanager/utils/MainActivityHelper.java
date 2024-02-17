@@ -62,10 +62,9 @@ import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import android.annotation.SuppressLint;
@@ -74,22 +73,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
 public class MainActivityHelper {
@@ -101,12 +95,6 @@ public class MainActivityHelper {
   private int accentColor;
   private SpeedDialView.OnActionSelectedListener fabActionListener;
 
-  /*
-   * A static string which saves the last searched query. Used to retain search task after
-   * user presses back button from pressing on any list item of search results
-   */
-  public static String SEARCH_TEXT;
-
   public MainActivityHelper(MainActivity mainActivity) {
     this.mainActivity = mainActivity;
     accentColor = mainActivity.getAccent();
@@ -116,7 +104,7 @@ public class MainActivityHelper {
       ArrayList<HybridFileParcelable> failedOps, Context context) {
     MaterialDialog.Builder mat = new MaterialDialog.Builder(context);
     mat.title(context.getString(R.string.operation_unsuccesful));
-    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme(context));
+    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     mat.positiveColor(accentColor);
     mat.positiveText(R.string.cancel);
     String content = context.getString(R.string.operation_fail_following);
@@ -165,7 +153,8 @@ public class MainActivityHelper {
         R.string.newfolder,
         "",
         (dialog, which) -> {
-          EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText textfield =
+              dialog.getCustomView().findViewById(R.id.singleedittext_input);
           String parentPath = path;
           if (OpenMode.DOCUMENT_FILE.equals(openMode)
               && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -203,7 +192,8 @@ public class MainActivityHelper {
         R.string.newfile,
         AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT),
         (dialog, which) -> {
-          EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          AppCompatEditText textfield =
+              dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(
               new HybridFile(openMode, path),
               new HybridFile(openMode, path, textfield.getText().toString().trim(), false),
@@ -262,7 +252,7 @@ public class MainActivityHelper {
     dialog.show();
 
     // place cursor at the beginning
-    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+    AppCompatEditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
     textfield.post(
         () -> {
           textfield.setSelection(0);
@@ -293,6 +283,9 @@ public class MainActivityHelper {
       case 6:
         newPath = mainActivity.getString(R.string.recent);
         break;
+      case 7:
+        newPath = mainActivity.getString(R.string.trash_bin);
+        break;
     }
     return newPath;
   }
@@ -303,20 +296,20 @@ public class MainActivityHelper {
 
   public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
-    x.theme(
-        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
+    x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     x.title(R.string.needs_access);
     LayoutInflater layoutInflater =
         (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View view = layoutInflater.inflate(R.layout.lexadrawer, null);
     x.customView(view, true);
     // textView
-    TextView textView = view.findViewById(R.id.description);
+    AppCompatTextView textView = view.findViewById(R.id.description);
     textView.setText(
         mainActivity.getString(R.string.needs_access_summary)
             + path
             + mainActivity.getString(R.string.needs_access_summary1));
-    ((ImageView) view.findViewById(R.id.icon)).setImageResource(R.drawable.sd_operate_step);
+    ((AppCompatImageView) view.findViewById(R.id.icon))
+        .setImageResource(R.drawable.sd_operate_step);
     x.positiveText(R.string.open)
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)
@@ -675,10 +668,10 @@ public class MainActivityHelper {
         });
   }
 
-  public void deleteFiles(ArrayList<HybridFileParcelable> files) {
+  public void deleteFiles(ArrayList<HybridFileParcelable> files, boolean doDeletePermanently) {
     if (files == null || files.size() == 0) return;
     if (files.get(0).isSmb() || files.get(0).isFtp()) {
-      new DeleteTask(mainActivity).execute(files);
+      new DeleteTask(mainActivity, doDeletePermanently).execute(files);
       return;
     }
     @FolderState
@@ -688,7 +681,7 @@ public class MainActivityHelper {
       mainActivity.oparrayList = (files);
       mainActivity.operation = DELETE;
     } else if (mode == WRITABLE_OR_ON_SDCARD || mode == DOESNT_EXIST)
-      new DeleteTask(mainActivity).execute((files));
+      new DeleteTask(mainActivity, doDeletePermanently).execute((files));
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
@@ -731,103 +724,18 @@ public class MainActivityHelper {
     switch (serviceType) {
       case DROPBOX:
         if (path.contains(CloudHandler.CLOUD_PREFIX_DROPBOX)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_DROPBOX
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_DROPBOX + path.substring(path.indexOf(":") + 1);
       case BOX:
         if (path.contains(CloudHandler.CLOUD_PREFIX_BOX)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_BOX
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_BOX + path.substring(path.indexOf(":") + 1);
       case GDRIVE:
         if (path.contains(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + path.substring(path.indexOf(":") + 1);
       case ONEDRIVE:
         if (path.contains(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) return path;
-        else
-          return CloudHandler.CLOUD_PREFIX_ONE_DRIVE
-              + path.substring(path.indexOf(":") + 1, path.length());
+        else return CloudHandler.CLOUD_PREFIX_ONE_DRIVE + path.substring(path.indexOf(":") + 1);
       default:
         return path;
     }
-  }
-
-  /**
-   * Creates a fragment which will handle the search AsyncTask {@link SearchWorkerFragment}
-   *
-   * @param query the text query entered the by user
-   */
-  public void search(SharedPreferences sharedPrefs, String query) {
-    TabFragment tabFragment = mainActivity.getTabFragment();
-    if (tabFragment == null) {
-      Log.w(getClass().getSimpleName(), "Failed to search: tab fragment not available");
-      return;
-    }
-    final MainFragment ma = (MainFragment) tabFragment.getCurrentTabFragment();
-    if (ma == null || ma.getMainFragmentViewModel() == null) {
-      Log.w(getClass().getSimpleName(), "Failed to search: main fragment not available");
-      return;
-    }
-    final String fpath = ma.getCurrentPath();
-
-    /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
-    task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
-    // ma.searchTask = task;
-    SEARCH_TEXT = query;
-    FragmentManager fm = mainActivity.getSupportFragmentManager();
-    SearchWorkerFragment fragment =
-        (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
-
-    if (fragment != null) {
-      if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-        fragment.searchAsyncTask.cancel(true);
-      }
-      fm.beginTransaction().remove(fragment).commit();
-    }
-
-    addSearchFragment(
-        fm,
-        new SearchWorkerFragment(),
-        fpath,
-        query,
-        ma.getMainFragmentViewModel().getOpenMode(),
-        mainActivity.isRootExplorer(),
-        sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-        sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
-  }
-
-  /**
-   * Adds a search fragment that can persist it's state on config change
-   *
-   * @param fragmentManager fragmentManager
-   * @param fragment current fragment
-   * @param path current path
-   * @param input query typed by user
-   * @param openMode defines the file type
-   * @param rootMode is root enabled
-   * @param regex is regular expression search enabled
-   * @param matches is matches enabled for patter matching
-   */
-  public static void addSearchFragment(
-      @NonNull FragmentManager fragmentManager,
-      @NonNull Fragment fragment,
-      @NonNull String path,
-      @NonNull String input,
-      @NonNull OpenMode openMode,
-      boolean rootMode,
-      boolean regex,
-      boolean matches) {
-    Bundle args = new Bundle();
-    args.putString(SearchWorkerFragment.KEY_INPUT, input);
-    args.putString(SearchWorkerFragment.KEY_PATH, path);
-    args.putInt(SearchWorkerFragment.KEY_OPEN_MODE, openMode.ordinal());
-    args.putBoolean(SearchWorkerFragment.KEY_ROOT_MODE, rootMode);
-    args.putBoolean(SearchWorkerFragment.KEY_REGEX, regex);
-    args.putBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, matches);
-
-    fragment.setArguments(args);
-    fragmentManager.beginTransaction().add(fragment, MainActivity.TAG_ASYNC_HELPER).commit();
   }
 }

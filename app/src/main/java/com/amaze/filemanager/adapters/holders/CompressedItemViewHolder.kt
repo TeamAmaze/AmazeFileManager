@@ -21,8 +21,8 @@
 package com.amaze.filemanager.adapters.holders
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.views.ThemedTextView
@@ -30,28 +30,28 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 class CompressedItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
     @JvmField
-    val pictureIcon: ImageView = view.findViewById(R.id.picture_icon)
+    val pictureIcon: AppCompatImageView = view.findViewById(R.id.picture_icon)
 
     @JvmField
-    val genericIcon: ImageView = view.findViewById(R.id.generic_icon)
+    val genericIcon: AppCompatImageView = view.findViewById(R.id.generic_icon)
 
     @JvmField
-    val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
+    val apkIcon: AppCompatImageView = view.findViewById(R.id.apk_icon)
 
     @JvmField
     val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
 
     @JvmField
-    val txtDesc: TextView = view.findViewById(R.id.secondLine)
+    val txtDesc: AppCompatTextView = view.findViewById(R.id.secondLine)
 
     @JvmField
-    val date: TextView = view.findViewById(R.id.date)
+    val date: AppCompatTextView = view.findViewById(R.id.date)
 
-    val perm: TextView = view.findViewById(R.id.permis)
+    val perm: AppCompatTextView = view.findViewById(R.id.permis)
 
     @JvmField
     val rl: View = view.findViewById(R.id.second)
 
     @JvmField
-    val checkImageView: ImageView = view.findViewById(R.id.check_icon)
+    val checkImageView: AppCompatImageView = view.findViewById(R.id.check_icon)
 }

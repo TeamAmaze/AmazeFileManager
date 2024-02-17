@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils
 
+import java.net.URLDecoder.decode
+import java.net.URLEncoder.encode
+import java.nio.charset.Charset
+
 /**
  * Allow null checks on more than one parameters at the same time.
  * Alternative of doing nested p1?.let p2?.let
@@ -93,6 +97,20 @@ fun List<*>.containsPath(path: String): Boolean {
         (path.endsWith('/') && this.contains(path.substringBeforeLast('/')))
 }
 
-interface Function<T, R> {
-    fun apply(t: T): R
+/**
+ * Convenience method to return a string in URL encoded form, with specified [Charset].
+ *
+ * @param charset [Charset] to encode string. Default is UTF-8
+ */
+fun String.urlEncoded(charset: Charset = Charsets.UTF_8): String {
+    return encode(this, charset.name())
+}
+
+/**
+ * Convenience method to return a string in URL decoded form, with specified [Charset].
+ *
+ * @param charset [Charset] to decode string. Default is UTF-8
+ */
+fun String.urlDecoded(charset: Charset = Charsets.UTF_8): String {
+    return decode(this, charset.name())
 }

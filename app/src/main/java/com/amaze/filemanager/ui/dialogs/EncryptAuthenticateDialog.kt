@@ -123,7 +123,7 @@ object EncryptAuthenticateDialog {
                 .customView(rootView, true)
                 .positiveText(c.getString(R.string.ok))
                 .negativeText(c.getString(R.string.cancel))
-                .theme(appTheme.getMaterialDialogTheme(c))
+                .theme(appTheme.getMaterialDialogTheme())
                 .positiveColor(accentColor)
                 .negativeColor(accentColor)
                 .autoDismiss(false)

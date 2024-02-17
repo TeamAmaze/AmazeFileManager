@@ -171,7 +171,9 @@ object OTGUtil {
         var retval: DocumentFile? = DocumentFile.fromTreeUri(context, rootUri)
             ?: throw DocumentFileNotFoundException(rootUri, path)
         val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
-            path.substringAfter(URLDecoder.decode(rootUri.toString(), Charsets.UTF_8.name()))
+            URLDecoder.decode(path, Charsets.UTF_8.name()).substringAfter(
+                URLDecoder.decode(rootUri.toString(), Charsets.UTF_8.name())
+            )
                 .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
         } else {
             path.split("/").toTypedArray()
