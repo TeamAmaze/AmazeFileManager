@@ -124,6 +124,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Válasszon egy fájlt</string>
+    <string name="pick_files">Válasszon egy vagy több fájlt</string>
     <string name="process_viewer">Folyamatfigyelő</string>
     <string name="in_safe">Nincs elég hely</string>
     <string name="no_file_overwrite">Nincs fájl felülírás</string>
