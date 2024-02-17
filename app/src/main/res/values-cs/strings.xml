@@ -791,5 +791,5 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="checking_conflicts">Hledání konfliktů</string>
     <string name="same_dir_overwrite_error">Cílová a zdrojová složka by se k přepisu neměla shodovat </string>
     <string name="not_found_enabled_webview">Žádný dostupný prohlížeč</string>
-</resources>
+    </resources>
 
