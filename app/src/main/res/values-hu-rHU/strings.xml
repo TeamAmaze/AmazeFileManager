@@ -771,6 +771,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="preference_language_dialog_title">Válasszon nyelvet</string>
     <string name="preference_language_system_default">Rendszer alapértelmezett</string>
     <string name="error.listfile.smb.title">Nem lehet betölteni az SMB fájllistát</string>
+    <string name="delete_permanently_checkbox">Végleges törlés</string>
     <string name="restore">Visszaállítás</string>
     </resources>
 
