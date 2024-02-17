@@ -23,8 +23,8 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze</string>
-    <string name="drawer_open">Apri il pannello di navigazione</string>
-    <string name="drawer_close">Chiudi il pannello di navigazione</string>
+    <string name="drawer_open">Apri pannello di navigazione</string>
+    <string name="drawer_close">Chiudi pannello di navigazione</string>
     <string name="icon">icona</string>
     <string name="apps">Gestione app</string>
     <string name="ftp">Server FTP</string>
@@ -38,7 +38,7 @@
     <string name="properties">Proprietà</string>
     <string name="copyingapks">Copia di %d file APK su %s</string>
     <string name="delbook">Elimina Preferito</string>
-    <string name="add_to_bookmarks">Aggiungi ai segnalibri</string>
+    <string name="add_to_bookmarks">Aggiungi a segnalibro</string>
     <string name="enterpath">Inserisci percorso</string>
     <string name="cancel">ANNULLA</string>
     <string name="create">CREA</string>
@@ -394,7 +394,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cancelled">Annullato</string>
     <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
     <string name="written">Scritti</string>
-    <string name="out_of">di</string>
+    <string name="out_of">fuori da</string>
     <!-- reference to - 'Processing file # of #' in process viewer -->
     <string name="of">di</string>
     <string name="processing_file">Elaborazione file</string>
@@ -743,6 +743,7 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="preference_delete_confirmation_summary">Chiede una conferma prima di cancellare file. La disabilitazione di questa funzione è altamente sconsigliata!</string>
     <string name="protocol_ftps">FTP sicuro</string>
     <string name="unavailable">Non disponibile</string>
+
     <string name="exporting_failed">Esportazione fallita: non è possibile scrivere il file di backup</string>
     <string name="importing_failed">Importazione fallita: non è stato possibile leggere il file di backup</string>
     <string name="importing_completed">Importazione completata</string>
@@ -767,5 +768,5 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="checking_conflicts">Verifica dei conflitti</string>
     <string name="same_dir_overwrite_error">La cartella di destinazione e quella di origine non devono corrispondere per la sovrascrittura.</string>
     <string name="not_found_enabled_webview">Nessun browser disponibile</string>
-</resources>
+    </resources>
 
