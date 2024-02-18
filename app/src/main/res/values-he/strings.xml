@@ -778,6 +778,8 @@
     <string name="image_viewer">מציג התמונות של Amaze</string>
     <string name="video_player">נגן הווידאו של Amaze</string>
     <string name="amaze_audio_player">נגן המוזיקה של Amaze</string>
+    <string name="pdf_viewer">מציג המסמכים של Amaze</string>
+    <string name="docx_viewer">מציג המסמכים של Amaze</string>
     <string name="share_logs">שיתוף יומנים</string>
     <string name="share_logs_summary">שיתוף היומנים שנאספו דרך דוא״ל / טלגרם</string>
     <string name="open_with_amaze">פתיחה עם Amaze</string>
