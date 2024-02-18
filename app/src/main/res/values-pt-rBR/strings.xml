@@ -707,6 +707,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="security_summary">Configurar senha e criptografia</string>
     <string name="backup_summary">Exportar/Importar configurações Amaze</string>
 
+    <string name="pref_export">Exportar</string>
     <string name="quick_desc">Arquivos acessados através do Amaze recentemente</string>
     <string name="recent_desc">Arquivos criados ou modificados recentemente</string>
     <string name="error_cannot_find_way_open">Não foi encontrada forma de abrir arquivo</string>
