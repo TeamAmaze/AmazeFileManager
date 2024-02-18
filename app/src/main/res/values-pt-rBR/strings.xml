@@ -184,6 +184,7 @@
     <string name="circular_images">Utiliza ícones circulares para imagens e vídeos</string>
     <string name="circular_icons">Usar ícones circulares</string>
     <string name="follow_battery_saver_title">Seguir a economia de bateria</string>
+    <string name="follow_battery_saver_desc">Se selecionado e o modo de economia de bateria estiver ativado, o tema mudará para o tema escuro</string>
     <string name="back_title">Botão de navegação</string>
     <string name="back_summary">Ativa o botão de navegação no topo da lista</string>
     <string name="details">Detalhes</string>
