@@ -124,6 +124,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Escolha um arquivo</string>
+    <string name="pick_files">Escolher um ou mais arquivos</string>
     <string name="process_viewer">Visualizador de processos</string>
     <string name="in_safe">Espaço insuficiente</string>
     <string name="no_file_overwrite">Nenhum arquivo substituído</string>
