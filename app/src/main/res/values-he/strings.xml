@@ -806,5 +806,7 @@
     <string name="cloud_connection_credentials_cleared">פרטי הגישה לחיבור לענן נמחקו</string>
     <string name="search_recent">אחרונים</string>
     <string name="results">תוצאות</string>
+    <string name="preference_language_title">שפת היישומון</string>
+    <string name="preference_language_dialog_title">בחירת שפה</string>
     </resources>
 
