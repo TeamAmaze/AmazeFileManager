@@ -622,6 +622,7 @@
     <string name="create_file_suggest_txt_extension">מומלץ להשתמש ב־„‎.txt” כסיומת לקובץ.</string>
     <string name="ssh_select_pem">נא לבחור מפתח פרטי לאימות</string>
     <string name="ssh_key_invalid_passphrase">מילת צופן שגויה למפתח.</string>
+    <string name="ssh_key_no_decoder_decrypt">אין מנגנון תקף לפענוח PEM.</string>
     <string name="encryption_fail_copy">עדכון רשומת ההצפנה במסד הנתונים נכשל</string>
     <string name="extracted">חולץ</string>
     <string name="compressed">דחוס</string>
