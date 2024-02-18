@@ -794,6 +794,7 @@
     <string name="unavailable">לא זמין</string>
 
     <string name="exporting_failed">הייצוא נכשל: לא ניתן לכתוב את קובץ הגיבוי</string>
+    <string name="importing_failed">הייבוא נכשל: לא ניתן לקרוא את קובץ הגיבוי</string>
     <string name="free_of">\"%s\n%s פנויים מתוך %s</string>
     <string name="cloud_error_fdroid">אין תמיכה בתוסף Amaze Cloud בגרסת ה־F-Droid. נא להשתמש בגרסת חנות ה־Play של Amaze.</string>
     <string name="disable_player_intent_filters">השבתת מסנני Intent של הנגן</string>
