@@ -808,5 +808,6 @@
     <string name="results">תוצאות</string>
     <string name="preference_language_title">שפת היישומון</string>
     <string name="preference_language_dialog_title">בחירת שפה</string>
+    <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
     </resources>
 
