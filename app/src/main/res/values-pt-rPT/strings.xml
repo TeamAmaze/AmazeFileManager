@@ -571,6 +571,7 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="create_file_suggest_txt_extension">Não recomendamos usar \".txt\" como extenção do arquivo.</string>
     <string name="ssh_select_pem">Selecione a chave privada para autenticação</string>
     <string name="ssh_key_invalid_passphrase">A senha da chave é inválida.</string>
+    <string name="ssh_key_no_decoder_decrypt">Nenhum decodificador válido para descriptografar PEM.</string>
     <string name="encryption_fail_copy">Ocorreu uma falha ao atualizar o item de criptografia no banco de dados</string>
     <string name="extracted">Extraído</string>
     <string name="compressed">Compactado</string>
