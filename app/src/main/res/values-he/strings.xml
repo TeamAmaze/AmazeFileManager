@@ -811,5 +811,7 @@
     <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
     <string name="error.listfile.smb.title">לא ניתן לטעון את רשימת קובצי ה־SMB</string>
     <string name="error.listfile.smb">שגיאה בהצגת קבצים מתוך %s: %s</string>
+    <string name="trash_bin">סל אשפה</string>
+    <string name="delete_permanently_checkbox">מחיקה לצמיתות</string>
     </resources>
 
