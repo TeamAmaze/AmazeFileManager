@@ -86,7 +86,7 @@ spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java', 'portscanner/src/**/*.java'
-        googleJavaFormat('1.15.0')
+        googleJavaFormat('1.19.2')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
