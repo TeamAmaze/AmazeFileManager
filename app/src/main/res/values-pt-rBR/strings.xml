@@ -328,6 +328,46 @@
     <string name="use_custom_ip">Usar IP personalizado</string>
     <string name="bookmark_lost">Favorito não encontrado, recriando&#8230;</string>
 
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Como acessar a pasta compartilhada do Windows no Android (SM)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Ativar Compartilhamento de Arquivos no Windows</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Abra o Painel de Controle, clique em Escolher o grupo doméstico e as opções de compartilhamento em Rede e Internet e clique em Alterar configurações de compartilhamento avançadas. Ative o recurso de compartilhamento de arquivos e impressoras.\n\n
+                    </p>
+
+                    <li>
+                        <b>Configurações adicionais de compartilhamento de arquivos</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Você também pode querer configurar as outras configurações de compartilhamento avançadas aqui. \n
+                        Por exemplo, você pode habilitar o acesso aos seus arquivos sem uma senha se confiar em todos os dispositivos da sua rede local. Uma vez que o compartilhamento de arquivos e impressoras estiver ativado, abra o Explorador de Arquivos ou Windows Explorer, clique com o botão direito do mouse na pasta que deseja compartilhar e selecione Propriedades. \n
+                        Clique no botão Compartilhar e disponibilize a pasta na rede.\n\n
+                        </p>
+                        
+                    <li>
+                        <b>Certifique-se de que ambos os dispositivos estejam na mesma rede Wi-Fi</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Esta funcionalidade torna os arquivos disponíveis na rede local, por isso o seu PC e os dispositivos móveis têm de estar na mesma rede local. Você não pode acessar uma pasta compartilhada do Windows pela Internet ou quando o smartphone estiver utilizando dados móveis - ele precisa estar conectado ao Wi-Fi.\n\n
+                    </p>
+                    
+                    <li>
+                        <b>Localizar endereço IP</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Abra o Prompt de Comando. Digite \'ipconfig\' e pressione Enter. Procure por Gateway Padrão em seu adaptador de rede para o endereço IP do seu roteador. Procure por \\"Endereço IPv4\\" na mesma seção do adaptador para encontrar o endereço IP do seu computador.\n\n
+                    </p>
+                    
+                    <b>Insira os detalhes na caixa de diálogo SMB</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
     <string name="share_limit">Não é possível compartilhar mais que 100 arquivos</string>
     <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
     <string name="information">Informação</string>
