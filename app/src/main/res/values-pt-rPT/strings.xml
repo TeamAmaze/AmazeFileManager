@@ -765,5 +765,6 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="same_dir_move_error">A pastas de destino e de origem não devem coincidir para mover.</string>
     <string name="checking_conflicts">Verificando conflitos</string>
     <string name="same_dir_overwrite_error">A pasta de destino e de origem não devem coincidir para sobrescrever.</string>
+    <string name="not_found_enabled_webview">Nenhum navegador disponível</string>
     </resources>
 
