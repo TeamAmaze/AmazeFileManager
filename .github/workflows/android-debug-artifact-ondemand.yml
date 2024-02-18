@@ -59,4 +59,4 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            The requested APKs has been built. Please find them from the artifacts section of this PR.
+            The requested APKs has been built. Please find them from the actions section [here](https://github.com/TeamAmaze/AmazeFileManager/actions/workflows/android-debug-artifact-ondemand.yml).
