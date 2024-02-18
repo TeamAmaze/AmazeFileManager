@@ -815,5 +815,6 @@
     <string name="delete_permanently_checkbox">מחיקה לצמיתות</string>
     <string name="restore">שחזור</string>
     <string name="restore_files">שחזור קבצים</string>
+    <string name="restoring">מתבצע שחזור…</string>
     </resources>
 
