@@ -76,6 +76,7 @@
     <string name="dialog_delete_category_directories">Diretórios</string>
     <string name="dialog_delete_category_files">Arquivos</string>
     <string name="dialog_delete_disclaimer">A exclusão dos itens abaixo irá removê-los permanentemente do seu aparelho e não será possível recuperá-los.</string>
+    <string name="dialog_delete_temporarily_disclaimer">Tem certeza de que deseja excluir os seguintes itens?</string>
     <string name="dialog_delete_title">Excluir os itens permanentemente?</string>
     <string name="deleting">Excluindo</string>
     <string name="question_set_path_as_home">Deseja definir o caminho atual como pasta inicial desta aba?</string>
