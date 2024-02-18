@@ -120,6 +120,7 @@
     <string name="sort_name">Nome</string>
     <string name="lastModified">Última modificação</string>
     <string name="sort_size">Tamanho</string>
+    <string name="sort_relevance">Relevância</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Escolha um arquivo</string>
