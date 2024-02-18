@@ -740,6 +740,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
 
     <string name="exporting_failed">Exportação falhou: não foi possível gravar o arquivo de backup</string>
     <string name="importing_failed">Importação falhou: não foi possível ler o arquivo de backup</string>
+    <string name="importing_completed">Importação completa</string>
     <string name="cloud_error_fdroid">Amaze Cloud Plugin não é compatível com a versão F-Droid. Por favor, use a versão da Play Store do Amaze.</string>
     </resources>
 
