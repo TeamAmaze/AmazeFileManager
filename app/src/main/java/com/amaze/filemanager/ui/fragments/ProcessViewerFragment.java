@@ -85,6 +85,7 @@ public class ProcessViewerFragment extends Fragment {
   private int accentColor;
   private final LineData lineData = new LineData();
   private ProcessparentBinding binding = null;
+
   /** Time in seconds just for showing to the user. No guarantees. */
   private long looseTimeInSeconds = 0L;
 

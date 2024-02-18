@@ -72,7 +72,9 @@ public class WriteTextFileCallable implements Callable<Unit> {
   @WorkerThread
   @Override
   public Unit call()
-      throws IOException, StreamNotFoundException, ShellNotRunningException,
+      throws IOException,
+          StreamNotFoundException,
+          ShellNotRunningException,
           IllegalArgumentException {
     OutputStream outputStream;
     File destFile = null;

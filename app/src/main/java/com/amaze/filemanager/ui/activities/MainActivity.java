@@ -277,6 +277,7 @@ public class MainActivity extends PermissionsActivity
   private UtilsHandler utilsHandler;
   private CloudHandler cloudHandler;
   private CloudLoaderAsyncTask cloudLoaderAsyncTask;
+
   /**
    * This is for a hack.
    *
