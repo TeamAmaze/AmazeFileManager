@@ -331,7 +331,7 @@
     <string name="smb_instructions">
         <html>
             <body>
-                <h1>Como acessar a pasta compartilhada do Windows no Android (SM)</h1>\n\n
+                <h1>Como acessar a pasta compartilhada do Windows no Android (SMB)</h1>\n\n
                 <ul>
                     <li>
                         <b>Ativar Compartilhamento de Arquivos no Windows</b>\n
