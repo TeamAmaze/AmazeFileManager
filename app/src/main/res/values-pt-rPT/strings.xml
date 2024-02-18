@@ -779,5 +779,6 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="restoring">Restaurando...</string>
     <string name="trash_bin_retention_num_of_files_title">Retenção por número de arquivos</string>
     <string name="trash_bin_retention_num_of_files_summary">Número máximo de arquivos que a lixeira pode armazenar</string>
+    <string name="trash_bin_retention_days_title">Retenção por dias</string>
     </resources>
 
