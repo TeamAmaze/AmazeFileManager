@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">Deseja definir o caminho atual como pasta inicial desta aba?</string>
     <string name="directorysort">Modo de ordenação de pastas</string>
     <string name="sort_by">Ordenar por</string>
+    <string name="sort_by_colon">Ordenar por:</string>
     <string name="sort_only_this">Apenas esta pasta</string>
     <string name="theme">Tema</string>
     <string name="random">Visual aleatório</string>
