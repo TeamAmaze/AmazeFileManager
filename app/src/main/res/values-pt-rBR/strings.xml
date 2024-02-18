@@ -693,6 +693,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="select_by_type">Selecionar por tipo</string>
     <string name="select_by_date">Selecionar por data</string>
     <string name="select_similar">Selecionar similares</string>
+    <string name="select_fill">Selecionar preenchimento</string>
     <string name="error_fetching_google_play_product_list">Erro ao adquirir lista de produtos pelo Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Desde o Android 11, o Google requer que Gerenciadores de Arquivos peçam permissão para administrar todos arquivos no dispositivo. Mais detalhes <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">aqui</a>.
  \n\nO Gerenciador de Arquivos Amaze precisa dessa permissão também. Depois de apertar &quot;Grant&quot; aqui, por favor selecione <b>Permitir acesso para acessar todos arquivos</b>na próxima tela.
