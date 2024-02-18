@@ -748,6 +748,7 @@
     <string name="select_by_type">בחירה לפי סוג</string>
     <string name="select_by_date">בחירה לפי תאריך</string>
     <string name="select_similar">בחירת דומים</string>
+    <string name="select_fill">בחירת המילוי</string>
     <string name="error_fetching_google_play_product_list">שגיאה במשיכת המוצר מ־Google Play.</string>
     <string name="grant_all_files_permission"><html><body>החל מ Android 11, דורשת Google ממנהלי קבצים לבקש הרשאה מהמשתמש לניהול כל הקבצים במכשיר. פרטים נוספים <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">כאן</a>.
         \n\nגם מנהל הקבציםAmaze צריך את ההרשאה הזאת. לאחר לחיצה על „הענקה”, נא לבחור באפשרות <b>לאפשר גישה לניהול כל הקבצים</b> במסך העוקב.
