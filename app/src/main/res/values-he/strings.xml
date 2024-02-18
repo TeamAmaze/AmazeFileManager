@@ -187,6 +187,7 @@
     <string name="circular_images">להשתמש בסמלים עגולים עבור תמונות וסרטונים</string>
     <string name="circular_icons">להשתמש בסמלים עגולים</string>
     <string name="follow_battery_saver_title">לאפשר חיסכון בסוללה</string>
+    <string name="follow_battery_saver_desc">אם האפשרות נבחרה ומצב חיסכון בסוללה פעיל, ערכת העיצוב תוחלף לכהה</string>
     <string name="back_title">ניווט אחורה</string>
     <string name="back_summary">מפעיל קיצור לחזרה אחורה בראש כל תיקייה</string>
     <string name="details">פרטים</string>
