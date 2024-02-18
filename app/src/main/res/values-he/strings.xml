@@ -805,6 +805,7 @@
     <string name="no_app_found_intent">לא נמצא יישומון לטיפול ב־Intent הזה. האם מותקן אצלך DocumentsUI?</string>
     <string name="cloud_connection_credentials_cleared">פרטי הגישה לחיבור לענן נמחקו</string>
     <string name="not_finding_what_you_re_looking_for">לא מצאת את מבוקשך?</string>
+    <string name="try_deep_search">התנסות בחיפוש מעמיק!</string>
     <string name="search_recent">אחרונים</string>
     <string name="results">תוצאות</string>
     <string name="preference_language_title">שפת היישומון</string>
