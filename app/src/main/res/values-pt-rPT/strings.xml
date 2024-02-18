@@ -76,6 +76,7 @@
     <string name="dialog_delete_category_directories">Diretórios</string>
     <string name="dialog_delete_category_files">Ficheiros</string>
     <string name="dialog_delete_disclaimer">Deseja mesmo apagar estes ficheiros?</string>
+    <string name="dialog_delete_temporarily_disclaimer">Tem certeza de que deseja excluir os seguintes itens?</string>
     <string name="dialog_delete_title">Confirmação</string>
     <string name="deleting">A apagar</string>
     <string name="question_set_path_as_home">Deseja definir o caminho atual como padrão deste separador?</string>
