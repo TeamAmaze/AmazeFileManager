@@ -810,6 +810,8 @@
     <string name="search_recent">אחרונים</string>
     <string name="results">תוצאות</string>
     <string name="checking_conflicts">בדיקת סתירות</string>
+    <string name="same_dir_overwrite_error">תיקיות היעד והמקור לא אמור להיות חופפות כדי לשכתב.</string>
+    <string name="not_found_enabled_webview">אין דפדפן זמין</string>
     <string name="preference_language_title">שפת היישומון</string>
     <string name="preference_language_dialog_title">בחירת שפה</string>
     <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
