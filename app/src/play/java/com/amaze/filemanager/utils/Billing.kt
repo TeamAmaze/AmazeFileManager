@@ -246,11 +246,11 @@ class Billing(private val activity: BasicActivity) :
 
     private fun showPaymentsDialog(context: BasicActivity) {
         /*
-     * As of Billing library 4.0, all callbacks are running on background thread.
-     * Need to use AppConfig.runInApplicationThread() for UI interactions
-     *
-     *
-     */
+         * As of Billing library 4.0, all callbacks are running on background thread.
+         * Need to use AppConfig.runInApplicationThread() for UI interactions
+         *
+         *
+         */
         AppConfig.getInstance()
             .runInApplicationThread(
                 Callable {

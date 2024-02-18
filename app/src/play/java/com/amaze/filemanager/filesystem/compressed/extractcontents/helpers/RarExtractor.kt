@@ -160,7 +160,7 @@ class RarExtractor(
         /* junrar doesn't throw exceptions if wrong archive password is supplied, until extracted file
            CRC is compared against the one stored in archive. So we can only rely on verifying CRC
            during extracting
-        */
+         */
         val inputStream = BufferedInputStream(rarFile.getInputStream(entry))
         val outputStream = CheckedOutputStream(
             BufferedOutputStream(FileUtil.getOutputStream(outputFile, context)),

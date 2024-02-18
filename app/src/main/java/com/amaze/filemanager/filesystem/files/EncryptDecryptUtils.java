@@ -65,6 +65,7 @@ public class EncryptDecryptUtils {
 
   public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
   private static final Logger LOG = LoggerFactory.getLogger(EncryptDecryptUtils.class);
+
   /**
    * Queries database to map path and password. Starts the encryption process after database query
    *

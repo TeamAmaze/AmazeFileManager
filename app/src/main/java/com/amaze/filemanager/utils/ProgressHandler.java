@@ -41,11 +41,13 @@ public class ProgressHandler {
    * (see Java Language Specification 17.7)
    */
   private volatile long writtenSize = 0L;
+
   /** total number of source files to be processed */
   private volatile int sourceFiles = 0;
 
   /** number of source files processed so far */
   private volatile int sourceFilesProcessed = 0;
+
   /** file name currently being processed */
   private volatile String fileName;
 

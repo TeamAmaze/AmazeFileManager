@@ -29,6 +29,7 @@ import org.apache.commons.compress.utils.ByteUtils;
 /** Base Codec class. */
 abstract class CoderBase {
   private final Class<?>[] acceptableOptions;
+
   /**
    * @param acceptableOptions types that can be used as options for this codec.
    */
