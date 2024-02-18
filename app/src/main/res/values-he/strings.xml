@@ -813,5 +813,7 @@
     <string name="error.listfile.smb">שגיאה בהצגת קבצים מתוך %s: %s</string>
     <string name="trash_bin">סל אשפה</string>
     <string name="delete_permanently_checkbox">מחיקה לצמיתות</string>
+    <string name="restore">שחזור</string>
+    <string name="restore_files">שחזור קבצים</string>
     </resources>
 
