@@ -717,6 +717,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="error_cannot_find_way_open">Não foi encontrada forma de abrir arquivo</string>
     <string name="error_cant_decompress_that_file">Não foi possível processar o arquivo</string>
     <string name="analyse_storage">Analizar Armazenamento</string>
+    <string name="download_amaze_utils_text">Você está sendo redirecionado para o Amaze File Utilities. É o nosso aplicativo de código aberto que possui visualizadores de áudio/vídeo/imagem/documento integrados, permite analisar arquivos inúteis para liberar espaço de armazenamento, transferência rápida usando Wifi P2P e muito mais.\nPor favor, apoie-nos experimentando-o.</string>
     <string name="download">Baixar</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Obrigado por instalar Amaze File Utilities. Você está sendo redirecionado para o app.</string>
