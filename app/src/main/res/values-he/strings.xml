@@ -803,5 +803,6 @@
     <string name="disable_player_intent_filters">השבתת מסנני Intent של הנגן</string>
     <string name="disable_player_intent_filters_summary">משבית את נגני המדיה המובנים של Amaze בבוחר הקבצים</string>
     <string name="no_app_found_intent">לא נמצא יישומון לטיפול ב־Intent הזה. האם מותקן אצלך DocumentsUI?</string>
+    <string name="cloud_connection_credentials_cleared">פרטי הגישה לחיבור לענן נמחקו</string>
     </resources>
 
