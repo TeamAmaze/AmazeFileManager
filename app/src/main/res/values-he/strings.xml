@@ -824,5 +824,6 @@
     <string name="restore">שחזור</string>
     <string name="restore_files">שחזור קבצים</string>
     <string name="restoring">מתבצע שחזור…</string>
+    <string name="trash_bin_retention_days_summary">מספר הימים המרבי שסל האשפה יכול לאחסן בו קובץ</string>
     </resources>
 
