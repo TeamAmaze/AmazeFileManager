@@ -536,23 +536,41 @@ public class LoadFilesListTask
 
   private @Nullable List<LayoutElementParcelable> listRecentFiles() {
     final Context context = this.context.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
 
     if (context == null) {
       cancel(true);
       return null;
     }
+    MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
+    List<LayoutElementParcelable> recentFiles = new ArrayList<>(40);
 
-    List<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
+    Cursor cursor = getCursor(context);
+    if (cursor == null) return recentFiles;
+    if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+      do {
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
+        File f = new File(path);
+        if (f.isDirectory()) {
+          List<File> files = getFilesFromDirectory(f);
+          for (File file : files) {
+            compareFileAndAddToList(viewModel, recentFiles, file);
+          }
+        }
+      } while (cursor.moveToNext());
+    }
+    cursor.close();
+    return recentFiles;
+  }
+
+  @Nullable
+  private Cursor getCursor(Context context) {
     final String[] projection = {
       MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
     };
-    Calendar c = Calendar.getInstance();
-    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
-    Date d = c.getTime();
     Cursor cursor;
     if (SDK_INT >= Q) {
       Bundle queryArgs = new Bundle();
-      queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 20);
       queryArgs.putStringArray(
           ContentResolver.QUERY_ARG_SORT_COLUMNS,
           new String[] {MediaStore.Files.FileColumns.DATE_MODIFIED});
@@ -574,23 +592,48 @@ public class LoadFilesListTask
                   null,
                   MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
     }
-    if (cursor == null) return recentFiles;
-    if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        File f = new File(path);
-        if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
-          HybridFileParcelable strings =
-              RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-          if (strings != null) {
-            LayoutElementParcelable parcelable = createListParcelables(strings);
-            if (parcelable != null) recentFiles.add(parcelable);
-          }
+    return cursor;
+  }
+
+  private void compareFileAndAddToList(
+      MainFragmentViewModel viewModel, List<LayoutElementParcelable> recentFiles, File file) {
+    Calendar c = Calendar.getInstance();
+    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
+    Date d = c.getTime();
+
+    if (d.compareTo(new Date(file.lastModified())) != 1 && !file.isDirectory()) {
+      HybridFileParcelable strings = RootHelper.generateBaseFile(file, showHiddenFiles);
+      if (strings != null) {
+        LayoutElementParcelable parcelable = createListParcelables(strings);
+        if (parcelable != null) {
+          recentFiles.add(parcelable);
+          viewModel.incrementFileCount();
         }
-      } while (cursor.moveToNext());
+      }
     }
-    cursor.close();
-    return recentFiles;
+  }
+
+  /**
+   * Recursively fetches the files from directory tree and adds all the files in a list
+   *
+   * @param f: File
+   * @return List of files in directory tree.
+   */
+  private List<File> getFilesFromDirectory(File f) {
+    List<File> allFilesInDir = new ArrayList<>();
+    try {
+      File[] files = f.listFiles();
+      for (File file : files) {
+        if (file.isDirectory()) {
+          getFilesFromDirectory(file);
+        } else {
+          allFilesInDir.add(file);
+        }
+      }
+    } catch (Exception exception) {
+      LOG.error(exception.getLocalizedMessage());
+    }
+    return allFilesInDir;
   }
 
   private @Nullable List<LayoutElementParcelable> listTrashBinFiles() {
