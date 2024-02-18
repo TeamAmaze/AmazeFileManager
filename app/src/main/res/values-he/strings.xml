@@ -809,6 +809,7 @@
     <string name="try_indexed_search">התנסות בחיפוש במפתח!</string>
     <string name="search_recent">אחרונים</string>
     <string name="results">תוצאות</string>
+    <string name="complete_paste_warning">נא להשלים קודם את פעולת ההדבקה</string>
     <string name="checking_conflicts">בדיקת סתירות</string>
     <string name="same_dir_overwrite_error">תיקיות היעד והמקור לא אמור להיות חופפות כדי לשכתב.</string>
     <string name="not_found_enabled_webview">אין דפדפן זמין</string>
