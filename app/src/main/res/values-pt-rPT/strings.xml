@@ -763,5 +763,6 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="error_unsupported_or_null_uri">Inválido, não suportado ou nenhum URI foi fornecido</string>
     <string name="complete_paste_warning">Por favor, conclua a operação de colar primeiro.</string>
     <string name="same_dir_move_error">A pastas de destino e de origem não devem coincidir para mover.</string>
+    <string name="checking_conflicts">Verificando conflitos</string>
     </resources>
 
