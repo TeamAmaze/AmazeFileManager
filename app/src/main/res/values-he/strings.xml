@@ -810,5 +810,6 @@
     <string name="preference_language_dialog_title">בחירת שפה</string>
     <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
     <string name="error.listfile.smb.title">לא ניתן לטעון את רשימת קובצי ה־SMB</string>
+    <string name="error.listfile.smb">שגיאה בהצגת קבצים מתוך %s: %s</string>
     </resources>
 
