@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">Deseja definir o caminho atual como padrão deste separador?</string>
     <string name="directorysort">Organização de diretórios</string>
     <string name="sort_by">Organizar por</string>
+    <string name="sort_by_colon">Ordenar por:</string>
     <string name="sort_only_this">Apenas esta pasta</string>
     <string name="theme">Tema</string>
     <string name="random">Cor aleatória</string>
