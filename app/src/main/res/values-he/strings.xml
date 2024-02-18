@@ -809,6 +809,7 @@
     <string name="try_indexed_search">התנסות בחיפוש במפתח!</string>
     <string name="search_recent">אחרונים</string>
     <string name="results">תוצאות</string>
+    <string name="checking_conflicts">בדיקת סתירות</string>
     <string name="preference_language_title">שפת היישומון</string>
     <string name="preference_language_dialog_title">בחירת שפה</string>
     <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
