@@ -779,5 +779,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="trash_bin">Cestino</string>
     <string name="delete_permanently_checkbox">Elimina in modo definitivo</string>
     <string name="restore">Ripristina</string>
+    <string name="restore_files">Ripristina file</string>
     </resources>
 
