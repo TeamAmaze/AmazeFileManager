@@ -770,5 +770,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="checking_conflicts">Verifica dei conflitti</string>
     <string name="same_dir_overwrite_error">La cartella di destinazione e quella di origine non devono corrispondere per la sovrascrittura.</string>
     <string name="not_found_enabled_webview">Nessun browser disponibile</string>
+    <string name="preference_language_title">Lingua dell\'applicazione</string>
     </resources>
 
