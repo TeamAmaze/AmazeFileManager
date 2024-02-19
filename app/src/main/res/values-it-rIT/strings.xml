@@ -781,5 +781,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="restore">Ripristina</string>
     <string name="restore_files">Ripristina file</string>
     <string name="restoring">Ripristino in corso…</string>
+    <string name="trash_bin_retention_num_of_files_title">Conserva per numero di file</string>
     </resources>
 
