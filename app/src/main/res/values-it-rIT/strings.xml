@@ -775,5 +775,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="preference_language_system_default">Predefinita di sistema</string>
     <string name="error.listfile.smb.title">Impossibile caricare la lista dei file SMB</string>
     <string name="error.listfile.smb">Errore nella lista dei file a %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Errore nella lista dei file a %s - probabilmente il server SMB non permette l\'accesso anonimo al nome di condivisione IPC$. Si può riprovare specificando direttamente il nome di condivisione direttamente nelle impostazioni di collegamento.</string>
     </resources>
 
