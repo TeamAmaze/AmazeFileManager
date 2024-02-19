@@ -77,6 +77,7 @@
     <string name="dialog_delete_category_files">File</string>
     <string name="dialog_delete_disclaimer">Vuoi davvero eliminare i seguenti file?</string>
     <string name="dialog_delete_temporarily_disclaimer">Eliminare davvero i seguenti elementi?</string>
+    <string name="dialog_restore_disclaimer">Ripristinare davvero i seguenti elementi?</string>
     <string name="dialog_delete_title">Conferma</string>
     <string name="deleting">Eliminazione</string>
     <string name="question_set_path_as_home">Vuoi impostare il percorso corrente come home per questa scheda?</string>
