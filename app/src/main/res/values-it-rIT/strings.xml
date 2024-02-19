@@ -772,5 +772,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="not_found_enabled_webview">Nessun browser disponibile</string>
     <string name="preference_language_title">Lingua dell\'applicazione</string>
     <string name="preference_language_dialog_title">Selezione della lingua</string>
+    <string name="preference_language_system_default">Predefinita di sistema</string>
     </resources>
 
