@@ -80,6 +80,13 @@ android {
         }
     }
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
     sourceSets {
         test.java.srcDirs += '../testShared/src/test/java'
     }
