@@ -21,6 +21,8 @@
 package com.amaze.filemanager.utils
 
 import android.content.Context
+import android.os.Build
+import android.os.Build.VERSION_CODES.N
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.amaze.filemanager.R
@@ -48,6 +50,12 @@ fun Context.getLocaleListFromXml(): LocaleListCompat {
         e.printStackTrace()
     } catch (e: IOException) {
         e.printStackTrace()
+    }
+
+    // Remove locale tags that would produce same locale on Android N or above
+    if (Build.VERSION.SDK_INT >= N) {
+        tagsList.remove("id")
+        tagsList.remove("he")
     }
 
     return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
