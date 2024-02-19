@@ -321,7 +321,7 @@
     <string name="source_title">Código Fonte</string>
     <string name="source_summary">Veja o nosso código fonte no GitHub</string>
     <string name="report_bugs_summary">Comunique erros encontrados ou solicite novas funcionalidades</string>
-    <string name="translate_title">Traduza</string>
+    <string name="translate_title">Traduzir</string>
     <string name="translate_summary">Traduza o Amaze para seu idioma</string>
     <string name="paypal_copy_message">ID do Paypal copiado para a área de transferência</string>
     <string name="searching_devices">Procurando dispositivos</string>
