@@ -777,7 +777,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="open_file_confirmation">Tem certeza de que deseja abrir o seguinte arquivo?\n\nNome:\n%s\n\nLocal:\n%s\n\nTamanho:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
     <string name="error_google_play_cannot_update_myself">Pelos requerimentos da política de privacidade do Google Play, apps não são permitidos atualizarem a si mesmos. Por favor atualize o aplicativo através da Google Play.</string>
     <string name="error_cannot_get_package_info">Não foi possível abrir informações do pacote do arquivo \"%s\". Ou o arquivo especificado não é um APK, ou o arquivo está corrompido.</string>
-    <string name="preference_delete_confirmation">Excluir confirmação</string>
+    <string name="preference_delete_confirmation">Confirmação da exclusão</string>
     <string name="preference_delete_confirmation_summary">Pedir confirmação antes de apagar arquivos. Desabilitar essa opção é perigoso!</string>
     <string name="protocol_ftps">FTP com segurança</string>
     <string name="unavailable">Não disponível</string>
