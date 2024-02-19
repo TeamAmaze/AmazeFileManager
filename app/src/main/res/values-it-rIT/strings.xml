@@ -788,5 +788,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="trash_bin_retention_bytes_title">Conserva per dimensione dei dati</string>
     <string name="trash_bin_retention_bytes_summary">Numero massimo di dati (in MB) che il cestino può conservare</string>
     <string name="trash_bin_cleanup_interval_title">Intervallo di pulizia</string>
-    </resources>
+    <string name="trash_bin_cleanup_interval_summary">Esegui l\'intervallo di auto-pulizia (ore)</string>
+</resources>
 
