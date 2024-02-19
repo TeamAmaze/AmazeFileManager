@@ -783,5 +783,6 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="restoring">Ripristino in corso…</string>
     <string name="trash_bin_retention_num_of_files_title">Conserva per numero di file</string>
     <string name="trash_bin_retention_num_of_files_summary">Numero massimo di file che il cestino può conservare</string>
+    <string name="trash_bin_retention_days_title">Conserva per numero di giorni</string>
     </resources>
 
