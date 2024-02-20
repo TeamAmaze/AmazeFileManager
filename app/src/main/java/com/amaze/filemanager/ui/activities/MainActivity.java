@@ -101,6 +101,7 @@ import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.UriUtilsKt;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
@@ -631,6 +632,25 @@ public class MainActivity extends PermissionsActivity
          * http://teamamaze.xyz/open_file?path=path-to-file
          */
         path = Utils.sanitizeInput(uri.getQueryParameter("path"));
+      } else if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())
+          || ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+        File fromUri = null;
+        try {
+          String path = UriUtilsKt.fromUri(uri, this);
+          if (path != null) {
+            fromUri = new File(path);
+          }
+        } catch (Exception ignored) {
+        }
+
+        if (fromUri != null && fromUri.getParent() != null) {
+          path = Utils.sanitizeInput(fromUri.getParent());
+          scrollToFileName = Utils.sanitizeInput(fromUri.getName());
+        } else {
+          Toast.makeText(this, getString(R.string.error_file_not_found), Toast.LENGTH_LONG).show();
+          path = null;
+          scrollToFileName = null;
+        }
       } else {
         LOG.warn(getString(R.string.error_cannot_find_way_open));
       }

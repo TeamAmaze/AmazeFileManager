@@ -111,6 +111,14 @@
                 <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
 
+            <intent-filter
+                android:label="@string/show_in_folder">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+                <data android:scheme="content" />
+            </intent-filter>
+
             <intent-filter android:label="@string/open_with_amaze">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
