@@ -8,7 +8,7 @@ Contributions are always welcome!
 
 # How to contribute?
 
-- **Translation**: We use [Transfeix](https://www.transifex.com/amaze/amaze-file-manager/) for our translations, feel free to contribute translations there.
+- **Translation**: We use [Transifex](https://www.transifex.com/amaze/amaze-file-manager/) for our translations, feel free to contribute translations there.
 - **Monetary Contributions**: You can do monetary contributions via [OpenCollective](https://opencollective.com/TeamAmaze), [LiberaPay](https://liberapay.com/Team-Amaze/donate) or PayPal](https://www.paypal.me/vishalnehra).
 - **Bug Reports**: Reporting bugs clearly & concisely helps us improve Amaze. It would be great for us to pinpoint the cause of a bug if there are logs attached to the bug report. Or clearcut steps to reproduce the issue you are facing. Yes, good bug reports are considered as contributions too!
 - **Code Contributions**: This file discusses about code contributions.
