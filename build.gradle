@@ -83,6 +83,8 @@ allprojects {
 }
 
 spotless {
+    // update license header from first commit
+    ratchetFrom='78b1a4cf3c0a9519be92ff8445f7dff2cd8722b1'
     java {
         licenseHeaderFile 'amaze.license.spotless.txt'
         target '*/src/**/*.java'
