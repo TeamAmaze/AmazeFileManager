@@ -8,7 +8,7 @@ on:
 
 jobs:
   apk:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     if: github.event.comment.body == 'Build test apk' && (github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess' || github.actor == 'VishnuSanal')
     steps:
       - name: Acknowledge the request with thumbs up reaction
