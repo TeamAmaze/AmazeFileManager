@@ -92,13 +92,10 @@ spotless {
     }
     kotlin {
         licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.kt', 'file_operations/src/**/*.kt'
-        ktlint("0.44.0").setUseExperimental(true).userData(['disabled_rules': 'no-wildcard-imports',
-                                   'kotlin_imports_layout': 'idea', 'indent_size': '4',
-                                   'max_line_length': '100'])
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
+        target '*/src/**/*.kt'
+        ktlint("1.1.1")
+                .setEditorConfigPath("$projectDir/.editorconfig")
+
     }
 }
 
@@ -179,7 +176,7 @@ subprojects {
                 it.dependsOn fetchRobolectricDependencies
             }
         }
-        if (project.plugins.hasPlugin("jacoco-android")){
+        if (project.plugins.hasPlugin("jacoco-android")) {
             android {
                 testOptions.unitTests.all {
                     jacoco {
