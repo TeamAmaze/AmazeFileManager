@@ -33,9 +33,8 @@ import javax.net.ssl.HostnameVerifier
 
 open class FtpsGetHostCertificateTaskCallable(
     private val hostname: String,
-    private val port: Int
+    private val port: Int,
 ) : Callable<JSONObject> {
-
     @WorkerThread
     override fun call(): JSONObject? {
         val latch = CountDownLatch(1)
@@ -43,20 +42,20 @@ open class FtpsGetHostCertificateTaskCallable(
         val ftpClient = createFTPClient()
         ftpClient.connectTimeout = CONNECT_TIMEOUT
         ftpClient.controlEncoding = Charsets.UTF_8.name()
-        ftpClient.hostnameVerifier = HostnameVerifier { _, session ->
-            if (session.peerCertificateChain.isNotEmpty()) {
-                val certinfo = X509CertificateUtil.parse(session.peerCertificateChain[0])
-                result = JSONObject(certinfo)
+        ftpClient.hostnameVerifier =
+            HostnameVerifier { _, session ->
+                if (session.peerCertificateChain.isNotEmpty()) {
+                    val certinfo = X509CertificateUtil.parse(session.peerCertificateChain[0])
+                    result = JSONObject(certinfo)
+                }
+                latch.countDown()
+                true
             }
-            latch.countDown()
-            true
-        }
         ftpClient.connect(hostname, port)
         latch.await()
         ftpClient.disconnect()
         return result
     }
 
-    protected open fun createFTPClient(): FTPSClient =
-        NetCopyClientConnectionPool.ftpClientFactory.create(FTPS_URI_PREFIX) as FTPSClient
+    protected open fun createFTPClient(): FTPSClient = NetCopyClientConnectionPool.ftpClientFactory.create(FTPS_URI_PREFIX) as FTPSClient
 }

@@ -29,10 +29,8 @@ class TarHelperCallable(
     context: Context,
     filePath: String,
     relativePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     AbstractCommonsArchiveHelperCallable(context, filePath, relativePath, goBack) {
-
-    override fun createFrom(inputStream: InputStream): ArchiveInputStream =
-        TarArchiveInputStream(inputStream)
+    override fun createFrom(inputStream: InputStream): ArchiveInputStream = TarArchiveInputStream(inputStream)
 }

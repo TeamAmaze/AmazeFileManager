@@ -35,12 +35,14 @@ import java.io.OutputStream
  */
 @Implements(ContentResolver::class)
 class ShadowContentResolver : ShadowContentResolver() {
-
     /**
      * Implements [ContentResolver.openOutputStream] with open mode parameter.
      *
      * Simply delegate to one without open mode.
      */
     @Implementation
-    fun openOutputStream(uri: Uri, mode: String): OutputStream? = super.openOutputStream(uri)
+    fun openOutputStream(
+        uri: Uri,
+        mode: String,
+    ): OutputStream? = super.openOutputStream(uri)
 }

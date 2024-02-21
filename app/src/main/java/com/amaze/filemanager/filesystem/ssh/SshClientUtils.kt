@@ -42,17 +42,18 @@ import java.io.IOException
 import kotlin.concurrent.thread
 
 object SshClientUtils {
-
     @JvmStatic
     private val LOG = LoggerFactory.getLogger(SshClientUtils::class.java)
 
     @JvmField
     val sftpGetSize: (String) -> Long? = { path ->
-        NetCopyClientUtils.execute(object : SFtpClientTemplate<Long>(path, true) {
-            override fun execute(client: SFTPClient): Long {
-                return client.size(extractRemotePathFrom(path))
-            }
-        })
+        NetCopyClientUtils.execute(
+            object : SFtpClientTemplate<Long>(path, true) {
+                override fun execute(client: SFTPClient): Long {
+                    return client.size(extractRemotePathFrom(path))
+                }
+            },
+        )
     }
 
     /**
@@ -85,7 +86,7 @@ object SshClientUtils {
                     }
                     return retval
                 }
-            }
+            },
         )
     }
 
@@ -111,7 +112,7 @@ object SshClientUtils {
     @JvmStatic
     fun formatPlainServerPathToAuthorised(
         servers: ArrayList<Array<String?>>,
-        path: String
+        path: String,
     ): String {
         for (serverEntry in servers) {
             val inputUri = Uri.parse(path)
@@ -119,11 +120,12 @@ object SshClientUtils {
             if (inputUri.scheme.equals(serverUri.scheme, ignoreCase = true) &&
                 serverUri.authority!!.contains(inputUri.authority!!)
             ) {
-                val output = inputUri
-                    .buildUpon()
-                    .encodedAuthority(serverUri.encodedAuthority)
-                    .build()
-                    .toString()
+                val output =
+                    inputUri
+                        .buildUpon()
+                        .encodedAuthority(serverUri.encodedAuthority)
+                        .build()
+                        .toString()
                 LOG.info("build authorised path {} from plain path {}", output, path)
                 return output
             }
@@ -153,7 +155,10 @@ object SshClientUtils {
      */
     @JvmStatic
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun launchFtp(baseFile: HybridFile, activity: MainActivity) {
+    fun launchFtp(
+        baseFile: HybridFile,
+        activity: MainActivity,
+    ) {
         val streamer = CloudStreamer.getInstance()
         thread {
             try {
@@ -162,20 +167,21 @@ object SshClientUtils {
                 streamer.setStreamSrc(
                     baseFile.getInputStream(activity),
                     baseFile.getName(activity),
-                    fileLength
+                    fileLength,
                 )
                 activity.runOnUiThread {
                     try {
-                        val file = File(
-                            extractRemotePathFrom(
-                                baseFile.path
+                        val file =
+                            File(
+                                extractRemotePathFrom(
+                                    baseFile.path,
+                                ),
                             )
-                        )
                         val uri = Uri.parse(CloudStreamer.URL + Uri.fromFile(file).encodedPath)
                         val i = Intent(Intent.ACTION_VIEW)
                         i.setDataAndType(
                             uri,
-                            MimeTypes.getMimeType(baseFile.path, isDirectory)
+                            MimeTypes.getMimeType(baseFile.path, isDirectory),
                         )
                         val packageManager = activity.packageManager
                         val resInfos = packageManager.queryIntentActivities(i, 0)
@@ -185,7 +191,7 @@ object SshClientUtils {
                             Toast.makeText(
                                 activity,
                                 activity.resources.getString(R.string.smb_launch_error),
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             )
                                 .show()
                         }
@@ -206,7 +212,10 @@ object SshClientUtils {
      */
     @JvmStatic
     @Throws(IOException::class)
-    fun isDirectory(client: SFTPClient, info: RemoteResourceInfo): Boolean {
+    fun isDirectory(
+        client: SFTPClient,
+        info: RemoteResourceInfo,
+    ): Boolean {
         var isDirectory = info.isDirectory
         if (info.attributes.type == FileMode.Type.SYMLINK) {
             try {

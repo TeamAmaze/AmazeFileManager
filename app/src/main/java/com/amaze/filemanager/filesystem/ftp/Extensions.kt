@@ -49,13 +49,13 @@ fun FTPClient.makeDirectoryTree(dirTree: String) {
             if (!dirExists) {
                 if (!makeDirectory(dir)) {
                     throw IOException(
-                        "Unable to create remote directory '$dir'. Error='$replyString'"
+                        "Unable to create remote directory '$dir'. Error='$replyString'",
                     )
                 }
                 if (!changeWorkingDirectory(dir)) {
                     throw IOException(
                         "Unable to change into newly created remote directory '$dir'. " +
-                            "Error='$replyString'"
+                            "Error='$replyString'",
                     )
                 }
             }

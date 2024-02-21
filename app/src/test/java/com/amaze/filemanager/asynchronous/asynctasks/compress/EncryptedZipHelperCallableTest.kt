@@ -24,15 +24,17 @@ import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
 class EncryptedZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive-encrypted.zip"
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         ZipHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

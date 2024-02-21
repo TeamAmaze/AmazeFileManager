@@ -25,7 +25,6 @@ import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_RENAME_
 import org.junit.Test
 
 class SmbOperationsTest : AbstractOperationsTestBase() {
-
     /**
      * Test case to verify rename SMB file failure scenario.
      *
@@ -36,7 +35,7 @@ class SmbOperationsTest : AbstractOperationsTestBase() {
         super.testRenameFileAccessDenied(
             OpenMode.SMB,
             PATH_CANNOT_RENAME_OLDFILE,
-            "smb://user:password@1.2.3.4/cannot/rename.file.new"
+            "smb://user:password@1.2.3.4/cannot/rename.file.new",
         )
     }
 }

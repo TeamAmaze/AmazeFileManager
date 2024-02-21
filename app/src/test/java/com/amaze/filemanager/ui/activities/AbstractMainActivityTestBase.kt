@@ -59,8 +59,8 @@ import org.robolectric.shadows.ShadowStorageManager
         ShadowMultiDex::class,
         ShadowStorageManager::class,
         ShadowPasswordUtil::class,
-        ShadowSmbFile::class
-    ]
+        ShadowSmbFile::class,
+    ],
 )
 /*
  * Need to make LooperMode PAUSED and flush the main looper before activity can show up.
@@ -69,7 +69,6 @@ import org.robolectric.shadows.ShadowStorageManager
  */
 @LooperMode(LooperMode.Mode.PAUSED)
 abstract class AbstractMainActivityTestBase {
-
     @Rule
     @NonNull
     @JvmField
@@ -98,8 +97,8 @@ abstract class AbstractMainActivityTestBase {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Shadows.shadowOf(
                 ApplicationProvider.getApplicationContext<Context>().getSystemService(
-                    StorageManager::class.java
-                )
+                    StorageManager::class.java,
+                ),
             ).resetStorageVolumeList()
         }
     }

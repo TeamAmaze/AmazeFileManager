@@ -31,19 +31,19 @@ import java.time.ZonedDateTime
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 abstract class AbstractCompressedHelperCallableArchiveTest :
     AbstractCompressedHelperCallableTest() {
-
     companion object {
         @JvmStatic
-        private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
-            2018,
-            5,
-            29,
-            10,
-            38,
-            0,
-            0,
-            ZoneId.of("UTC")
-        ).toInstant().toEpochMilli()
+        private val EXPECTED_TIMESTAMP =
+            ZonedDateTime.of(
+                2018,
+                5,
+                29,
+                10,
+                38,
+                0,
+                0,
+                ZoneId.of("UTC"),
+            ).toInstant().toEpochMilli()
     }
 
     protected abstract val archiveFileName: String
@@ -51,8 +51,7 @@ abstract class AbstractCompressedHelperCallableArchiveTest :
     /**
      * Assert archive entry timestamp is correct.
      */
-    protected open fun assertEntryTimestampCorrect(entry: CompressedObjectParcelable) =
-        assertEquals(EXPECTED_TIMESTAMP, entry.date)
+    protected open fun assertEntryTimestampCorrect(entry: CompressedObjectParcelable) = assertEquals(EXPECTED_TIMESTAMP, entry.date)
 
     /**
      * Test browse archive top level.
@@ -130,11 +129,11 @@ abstract class AbstractCompressedHelperCallableArchiveTest :
     protected fun createCallable(relativePath: String): CompressedHelperCallable =
         doCreateCallable(
             File(Environment.getExternalStorageDirectory(), archiveFileName),
-            relativePath
+            relativePath,
         )
 
     protected abstract fun doCreateCallable(
         archive: File,
-        relativePath: String
+        relativePath: String,
     ): CompressedHelperCallable
 }

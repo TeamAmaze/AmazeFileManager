@@ -24,7 +24,8 @@ package com.amaze.filemanager.filesystem.files.sort
 enum class DirSortBy {
     DIR_ON_TOP,
     FILE_ON_TOP,
-    NONE_ON_TOP;
+    NONE_ON_TOP,
+    ;
 
     companion object {
         /** Returns the corresponding [DirSortBy] to [index] */

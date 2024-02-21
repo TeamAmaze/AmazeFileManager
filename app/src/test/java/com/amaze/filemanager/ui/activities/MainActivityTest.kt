@@ -37,24 +37,25 @@ import java.util.concurrent.TimeUnit
  */
 @Suppress("StringLiteralDuplication")
 class MainActivityTest : AbstractMainActivityTestBase() {
-
     /**
      * Test update SMB connection should never throw [NullPointerException] i.e. the correct
      * connection is updated.
      */
     @Test
     fun testUpdateSmbExceptionShouldNotThrowNPE() {
-        val scenario = ActivityScenario.launch(
-            MainActivity::class.java
-        )
+        val scenario =
+            ActivityScenario.launch(
+                MainActivity::class.java,
+            )
         ShadowLooper.idleMainLooper()
         scenario.moveToState(Lifecycle.State.STARTED)
         scenario.onActivity { activity: MainActivity ->
             val path = "smb://root:toor@192.168.1.1"
-            val encryptedPath = getSmbEncryptedPath(
-                ApplicationProvider.getApplicationContext(),
-                path
-            )
+            val encryptedPath =
+                getSmbEncryptedPath(
+                    ApplicationProvider.getApplicationContext(),
+                    path,
+                )
             val oldName = "SMB connection"
             val newName = "root@192.168.1.1"
             try {
@@ -63,14 +64,14 @@ class MainActivityTest : AbstractMainActivityTestBase() {
                     oldName,
                     encryptedPath,
                     null,
-                    null
+                    null,
                 )
                 activity.addConnection(
                     true,
                     newName,
                     encryptedPath,
                     oldName,
-                    encryptedPath
+                    encryptedPath,
                 )
                 ShadowLooper.idleMainLooper()
                 await()
@@ -84,7 +85,7 @@ class MainActivityTest : AbstractMainActivityTestBase() {
                                 .utilsHandler
                                 .smbList[0][0]
                                 == newName
-                            )
+                        )
                     }
                 val verify: List<Array<String>> = AppConfig.getInstance().utilsHandler.smbList
                 assertEquals(1, verify.size.toLong())

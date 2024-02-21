@@ -31,13 +31,10 @@ import org.robolectric.shadows.ShadowLooper
  * Base class for preference fragments, started from [PreferencesActivity].
  */
 abstract class PreferencesActivityTestBase : AbstractMainActivityTestBase() {
-
     /**
      * Put in your test here.
      */
-    protected open fun doTestPreferenceFragment(
-        test: (PreferencesActivity, PrefsFragment) -> Unit
-    ) {
+    protected open fun doTestPreferenceFragment(test: (PreferencesActivity, PrefsFragment) -> Unit) {
         val scenario = ActivityScenario.launch(PreferencesActivity::class.java)
         ShadowLooper.idleMainLooper()
         scenario.moveToState(Lifecycle.State.STARTED)
@@ -46,7 +43,7 @@ abstract class PreferencesActivityTestBase : AbstractMainActivityTestBase() {
             assertTrue(activity.supportFragmentManager.fragments.first() is PrefsFragment)
             test.invoke(
                 activity,
-                activity.supportFragmentManager.fragments.first() as PrefsFragment
+                activity.supportFragmentManager.fragments.first() as PrefsFragment,
             )
         }
     }

@@ -50,21 +50,23 @@ class UtilitiesAliasActivity : AppCompatActivity() {
                 } else {
                     AboutActivity.URL_AMAZE_UTILS
                 },
-                this
+                this,
             )
         }
         _binding.cancelButton.setOnClickListener {
             finish()
         }
-        val isAUInstalled = PackageUtils.appInstalledOrNot(
-            AboutActivity.PACKAGE_AMAZE_UTILS,
-            packageManager
-        )
+        val isAUInstalled =
+            PackageUtils.appInstalledOrNot(
+                AboutActivity.PACKAGE_AMAZE_UTILS,
+                packageManager,
+            )
         if (isAUInstalled) {
             AppConfig.toast(this, R.string.amaze_utils_installed_alias)
-            val intent = packageManager.getLaunchIntentForPackage(
-                AboutActivity.PACKAGE_AMAZE_UTILS
-            )
+            val intent =
+                packageManager.getLaunchIntentForPackage(
+                    AboutActivity.PACKAGE_AMAZE_UTILS,
+                )
             try {
                 if (intent != null) {
                     this.updateAUAlias(false)

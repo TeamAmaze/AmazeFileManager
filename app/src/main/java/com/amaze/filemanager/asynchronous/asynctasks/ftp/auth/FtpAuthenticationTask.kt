@@ -37,16 +37,15 @@ class FtpAuthenticationTask(
     private val port: Int,
     private val certInfo: JSONObject?,
     private val username: String,
-    private val password: String?
+    private val password: String?,
 ) : Task<FTPClient, FtpAuthenticationTaskCallable> {
-
     override fun getTask(): FtpAuthenticationTaskCallable {
         return if (protocol == FTP_URI_PREFIX) {
             FtpAuthenticationTaskCallable(
                 host,
                 port,
                 username,
-                password ?: ""
+                password ?: "",
             )
         } else {
             FtpsAuthenticationTaskCallable(
@@ -54,7 +53,7 @@ class FtpAuthenticationTask(
                 port,
                 certInfo!!,
                 username,
-                password ?: ""
+                password ?: "",
             )
         }
     }
@@ -71,8 +70,8 @@ class FtpAuthenticationTask(
                         R.string.ssh_connect_failed,
                         host,
                         port,
-                        error.localizedMessage ?: error.message
-                    )
+                        error.localizedMessage ?: error.message,
+                    ),
             )
         }
     }

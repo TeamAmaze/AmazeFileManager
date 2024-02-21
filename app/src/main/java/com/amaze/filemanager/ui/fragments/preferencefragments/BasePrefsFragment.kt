@@ -37,7 +37,10 @@ abstract class BasePrefsFragment : PreferenceFragmentCompat(), FolderChooserDial
         activity.supportActionBar?.title = getString(title)
     }
 
-    override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {
+    override fun onFolderSelection(
+        dialog: FolderChooserDialog,
+        folder: File,
+    ) {
         dialog.dismiss()
     }
 

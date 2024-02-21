@@ -30,14 +30,14 @@ class XzExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : AbstractCommonsCompressedFileExtractor(
-    context,
-    filePath,
-    outputPath,
-    listener,
-    updatePosition
-) {
+        context,
+        filePath,
+        outputPath,
+        listener,
+        updatePosition,
+    ) {
     override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> {
         return XZCompressorInputStream::class.java
     }

@@ -39,13 +39,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class DragAndDropDialog : DialogFragment() {
-
     var pasteLocation: String? = null
     var operationFiles: ArrayList<HybridFileParcelable>? = null
     var mainActivity: MainActivity? = null
 
     companion object {
-
         private val log: Logger = LoggerFactory.getLogger(DragAndDropDialog::class.java)
         private const val KEY_PASTE_LOCATION = "pasteLocation"
         private const val KEY_FILES = "files"
@@ -57,40 +55,45 @@ class DragAndDropDialog : DialogFragment() {
         fun showDialogOrPerformOperation(
             pasteLocation: String,
             files: ArrayList<HybridFileParcelable>,
-            activity: MainActivity
+            activity: MainActivity,
         ) {
-            val dragAndDropPref = activity.prefs
-                .getInt(
-                    PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-                    PreferencesConstants.PREFERENCE_DRAG_DEFAULT
-                )
+            val dragAndDropPref =
+                activity.prefs
+                    .getInt(
+                        PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+                        PreferencesConstants.PREFERENCE_DRAG_DEFAULT,
+                    )
             if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY) {
-                val dragAndDropCopy = activity.prefs
-                    .getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, "")
+                val dragAndDropCopy =
+                    activity.prefs
+                        .getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, "")
                 if (dragAndDropCopy != "") {
                     startCopyOrMoveTask(
                         pasteLocation,
                         files,
                         PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE
                             .equals(dragAndDropCopy, ignoreCase = true),
-                        activity
+                        activity,
                     )
                 } else {
                     val dragAndDropDialog = newInstance(pasteLocation, files)
                     dragAndDropDialog.show(
                         activity.supportFragmentManager,
-                        javaClass.simpleName
+                        javaClass.simpleName,
                     )
                 }
             } else {
                 log.warn(
                     "Trying to drop for copy / move while setting " +
-                        "is drag select"
+                        "is drag select",
                 )
             }
         }
-        private fun newInstance(pasteLocation: String, files: ArrayList<HybridFileParcelable>):
-            DragAndDropDialog {
+
+        private fun newInstance(
+            pasteLocation: String,
+            files: ArrayList<HybridFileParcelable>,
+        ): DragAndDropDialog {
             val dragAndDropDialog = DragAndDropDialog()
             val args = Bundle()
             args.putString(KEY_PASTE_LOCATION, pasteLocation)
@@ -103,7 +106,7 @@ class DragAndDropDialog : DialogFragment() {
             pasteLocation: String,
             files: ArrayList<HybridFileParcelable>,
             move: Boolean,
-            mainActivity: MainActivity
+            mainActivity: MainActivity,
         ) {
             val openMode =
                 mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode ?: return
@@ -113,7 +116,7 @@ class DragAndDropDialog : DialogFragment() {
                     move,
                     mainActivity.isRootExplorer,
                     openMode,
-                    files
+                    files,
                 )
         }
     }
@@ -135,20 +138,21 @@ class DragAndDropDialog : DialogFragment() {
             mainActivity?.appTheme?.getMaterialDialogTheme(),
             mainActivity?.accent,
             pasteLocation,
-            operationFiles
+            operationFiles,
         ) {
                 context, dialogTheme, accent, pasteLocation, operationFiles ->
-            val dialog: MaterialDialog = MaterialDialog.Builder(context)
-                .title(getString(R.string.choose_operation))
-                .customView(R.layout.dialog_drag_drop, true)
-                .theme(dialogTheme)
-                .negativeText(getString(R.string.cancel).toUpperCase())
-                .negativeColor(accent)
-                .cancelable(false)
-                .onNeutral { _: MaterialDialog?, _: DialogAction? ->
-                    dismiss()
-                }
-                .build()
+            val dialog: MaterialDialog =
+                MaterialDialog.Builder(context)
+                    .title(getString(R.string.choose_operation))
+                    .customView(R.layout.dialog_drag_drop, true)
+                    .theme(dialogTheme)
+                    .negativeText(getString(R.string.cancel).toUpperCase())
+                    .negativeColor(accent)
+                    .cancelable(false)
+                    .onNeutral { _: MaterialDialog?, _: DialogAction? ->
+                        dismiss()
+                    }
+                    .build()
 
             dialog.customView?.run {
                 // Get views from custom layout to set text values.
@@ -178,13 +182,13 @@ class DragAndDropDialog : DialogFragment() {
                         R.drawable.ic_baseline_content_cut_24,
                         0,
                         0,
-                        0
+                        0,
                     )
                     copyButton.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_baseline_content_copy_24,
                         0,
                         0,
-                        0
+                        0,
                     )
                 }
             }
@@ -202,8 +206,11 @@ class DragAndDropDialog : DialogFragment() {
         mainActivity?.prefs?.edit()
             ?.putString(
                 PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED,
-                if (shouldMove) PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE
-                else PreferencesConstants.PREFERENCE_DRAG_REMEMBER_COPY
+                if (shouldMove) {
+                    PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE
+                } else {
+                    PreferencesConstants.PREFERENCE_DRAG_REMEMBER_COPY
+                },
             )?.apply()
     }
 }

@@ -59,10 +59,9 @@ import kotlin.random.Random
  */
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFingerprintManager::class],
-    sdk = [P]
+    sdk = [P],
 )
 class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
-
     private lateinit var file: File
 
     /**
@@ -71,13 +70,14 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
     @Before
     override fun setUp() {
         super.setUp()
-        file = File(
-            Environment.getExternalStorageDirectory(),
-            RandomPathGenerator.generateRandomPath(
-                randomizer,
-                16
-            ) + CRYPT_EXTENSION
-        )
+        file =
+            File(
+                Environment.getExternalStorageDirectory(),
+                RandomPathGenerator.generateRandomPath(
+                    randomizer,
+                    16,
+                ) + CRYPT_EXTENSION,
+            )
         initMockSecretKeygen()
         shadowOf(AppConfig.getInstance()).grantPermissions(USE_FINGERPRINT)
     }
@@ -91,17 +91,19 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
         performTest(
             testContent = {
                 shadowOf(
-                    AppConfig.getInstance().getSystemService(FingerprintManager::class.java)
+                    AppConfig.getInstance().getSystemService(FingerprintManager::class.java),
                 ).run {
                     setDefaultFingerprints(1)
                     setIsHardwareDetected(true)
                     authenticationSucceeds()
                 }
             },
-            callback = object : EncryptDecryptUtils.DecryptButtonCallbackInterface {
-                override fun confirm(intent: Intent) = assertTrue(true)
-                override fun failed() = fail("Should never called")
-            }
+            callback =
+                object : EncryptDecryptUtils.DecryptButtonCallbackInterface {
+                    override fun confirm(intent: Intent) = assertTrue(true)
+
+                    override fun failed() = fail("Should never called")
+                },
         )
     }
 
@@ -114,24 +116,26 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
         performTest(
             testContent = {
                 shadowOf(
-                    AppConfig.getInstance().getSystemService(FingerprintManager::class.java)
+                    AppConfig.getInstance().getSystemService(FingerprintManager::class.java),
                 ).run {
                     setDefaultFingerprints(1)
                     setIsHardwareDetected(true)
                     authenticationFails()
                 }
             },
-            callback = object : EncryptDecryptUtils.DecryptButtonCallbackInterface {
-                override fun confirm(intent: Intent) = fail("Should never called")
-                override fun failed() = assertTrue(true)
-            }
+            callback =
+                object : EncryptDecryptUtils.DecryptButtonCallbackInterface {
+                    override fun confirm(intent: Intent) = fail("Should never called")
+
+                    override fun failed() = assertTrue(true)
+                },
         )
     }
 
     private fun performTest(
         testContent: () -> Unit,
         callback: EncryptDecryptUtils.DecryptButtonCallbackInterface =
-            object : EncryptDecryptUtils.DecryptButtonCallbackInterface {}
+            object : EncryptDecryptUtils.DecryptButtonCallbackInterface {},
     ) {
         scenario.onActivity { activity ->
             DecryptFingerprintDialog.show(
@@ -141,10 +145,10 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
                     .putExtra(TAG_OPEN_MODE, OpenMode.FILE)
                     .putExtra(
                         TAG_DECRYPT_PATH,
-                        Environment.getExternalStorageDirectory().absolutePath
+                        Environment.getExternalStorageDirectory().absolutePath,
                     ),
                 activity.appTheme,
-                callback
+                callback,
             )
             ShadowDialog.getLatestDialog()?.run {
                 assertTrue(this is MaterialDialog)
@@ -156,7 +160,6 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
     }
 
     companion object {
-
         private val randomizer = Random(System.currentTimeMillis())
         private val key = SecretKeySpec(randomizer.nextBytes(16), "AES")
 

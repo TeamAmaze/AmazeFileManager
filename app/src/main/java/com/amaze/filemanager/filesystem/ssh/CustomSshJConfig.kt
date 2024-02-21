@@ -36,7 +36,6 @@ import java.security.Security
  * @see net.schmizz.sshj.AndroidConfig
  */
 class CustomSshJConfig : DefaultConfig() {
-
     companion object {
         /**
          * This is where we different from the original AndroidConfig. Found it only work if we remove

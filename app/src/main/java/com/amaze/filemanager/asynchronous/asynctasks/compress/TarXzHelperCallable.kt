@@ -28,10 +28,8 @@ class TarXzHelperCallable(
     context: Context,
     filePath: String,
     relativePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     AbstractCompressedTarArchiveHelperCallable(context, filePath, relativePath, goBack) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        XZCompressorInputStream::class.java
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> = XZCompressorInputStream::class.java
 }

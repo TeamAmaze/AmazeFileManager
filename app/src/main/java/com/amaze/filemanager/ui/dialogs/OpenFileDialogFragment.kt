@@ -61,7 +61,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
-
     private var uri: Uri? = null
     private var mimeType: String? = null
     private var useNewStack: Boolean? = null
@@ -73,7 +72,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
     private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
-
         private val log: Logger = LoggerFactory.getLogger(OpenFileDialogFragment::class.java)
 
         private const val KEY_URI = "uri"
@@ -90,33 +88,36 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             mimeType: String,
             useNewStack: Boolean,
             activity: PreferenceActivity,
-            forceChooser: Boolean
+            forceChooser: Boolean,
         ) {
             if (mimeType == MimeTypes.ALL_MIME_TYPES ||
                 forceChooser ||
                 !getPreferenceAndStartActivity(
-                        uri,
-                        mimeType,
-                        useNewStack,
-                        activity
-                    )
+                    uri,
+                    mimeType,
+                    useNewStack,
+                    activity,
+                )
             ) {
                 if (forceChooser) {
                     clearMimeTypePreference(
                         MimeTypes.getMimeType(uri.toString(), false),
-                        activity.prefs
+                        activity.prefs,
                     )
                 }
                 val openFileDialogFragment = newInstance(uri, mimeType, useNewStack)
                 openFileDialogFragment.show(
                     activity.supportFragmentManager,
-                    javaClass.simpleName
+                    javaClass.simpleName,
                 )
             }
         }
 
-        private fun newInstance(uri: Uri, mimeType: String, useNewStack: Boolean):
-            OpenFileDialogFragment {
+        private fun newInstance(
+            uri: Uri,
+            mimeType: String,
+            useNewStack: Boolean,
+        ): OpenFileDialogFragment {
             val args = Bundle()
 
             val fragment = OpenFileDialogFragment()
@@ -127,7 +128,10 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             return fragment
         }
 
-        private fun startActivity(context: Context, intent: Intent) {
+        private fun startActivity(
+            context: Context,
+            intent: Intent,
+        ) {
             try {
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
@@ -146,7 +150,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             mimeType: String,
             useNewStack: Boolean,
             className: String?,
-            packageName: String?
+            packageName: String?,
         ): Intent {
             val chooserIntent = Intent()
             chooserIntent.action = Intent.ACTION_VIEW
@@ -157,13 +161,13 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 resolveInfo in context.packageManager
                     .queryIntentActivities(
                         chooserIntent,
-                        PackageManager.MATCH_DEFAULT_ONLY
+                        PackageManager.MATCH_DEFAULT_ONLY,
                     )
-            ) context.grantUriPermission(
-                resolveInfo.activityInfo.packageName,
-                uri,
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
+                ) context.grantUriPermission(
+                    resolveInfo.activityInfo.packageName,
+                    uri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION,
+                )
 
             if (useNewStack) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -171,7 +175,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 } else {
                     chooserIntent.addFlags(
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                            or Intent.FLAG_ACTIVITY_TASK_ON_HOME,
                     )
                 }
             }
@@ -187,32 +191,34 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             uri: Uri,
             mimeType: String,
             useNewStack: Boolean,
-            activity: PreferenceActivity
+            activity: PreferenceActivity,
         ): Boolean {
-            val classAndPackageRaw = activity.prefs.getString(
-                mimeType.plus(
-                    KEY_PREFERENCES_DEFAULT
-                ),
-                null
-            )
+            val classAndPackageRaw =
+                activity.prefs.getString(
+                    mimeType.plus(
+                        KEY_PREFERENCES_DEFAULT,
+                    ),
+                    null,
+                )
             var result = false
             if (!classAndPackageRaw.isNullOrEmpty()) {
                 try {
                     val classNameAndPackageName = classAndPackageRaw.split(" ")
-                    val intent = buildIntent(
-                        activity,
-                        uri,
-                        mimeType,
-                        useNewStack,
-                        classNameAndPackageName[0],
-                        classNameAndPackageName[1]
-                    )
+                    val intent =
+                        buildIntent(
+                            activity,
+                            uri,
+                            mimeType,
+                            useNewStack,
+                            classNameAndPackageName[0],
+                            classNameAndPackageName[1],
+                        )
                     startActivity(activity, intent)
                     result = true
                 } catch (e: ActivityNotFoundException) {
                     activity.prefs.edit().putString(
                         mimeType.plus(KEY_PREFERENCES_DEFAULT),
-                        null
+                        null,
                     ).apply()
                 }
             }
@@ -225,15 +231,15 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
          */
         fun setLastOpenedApp(
             appDataParcelable: AppDataParcelable,
-            preferenceActivity: PreferenceActivity
+            preferenceActivity: PreferenceActivity,
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable?.mimeType.plus(KEY_PREFERENCES_LAST),
                 String.format(
                     "%s %s",
                     appDataParcelable.openFileParcelable?.className,
-                    appDataParcelable.openFileParcelable?.packageName
-                )
+                    appDataParcelable.openFileParcelable?.packageName,
+                ),
             ).apply()
         }
 
@@ -242,15 +248,15 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
          */
         private fun setDefaultOpenedApp(
             appDataParcelable: AppDataParcelable,
-            preferenceActivity: PreferenceActivity
+            preferenceActivity: PreferenceActivity,
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable?.mimeType.plus(KEY_PREFERENCES_DEFAULT),
                 String.format(
                     "%s %s",
                     appDataParcelable.openFileParcelable?.className,
-                    appDataParcelable.openFileParcelable?.packageName
-                )
+                    appDataParcelable.openFileParcelable?.packageName,
+                ),
             ).apply()
         }
 
@@ -275,7 +281,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
         private fun clearMimeTypePreference(
             mimeType: String,
-            sharedPreferences: SharedPreferences
+            sharedPreferences: SharedPreferences,
         ) {
             sharedPreferences.edit().remove(mimeType.plus(KEY_PREFERENCES_DEFAULT)).apply()
         }
@@ -293,7 +299,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         fragmentOpenFileDialogBinding = FragmentOpenFileDialogBinding.inflate(inflater)
         initDialogResources(viewBinding.parent)
@@ -305,43 +311,51 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         fragmentOpenFileDialogBinding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         val modelProvider = AppsAdapterPreloadModel(this, true)
         val sizeProvider = ViewPreloadSizeProvider<String>()
-        var preloader = RecyclerViewPreloader(
-            GlideApp.with(this),
-            modelProvider,
-            sizeProvider,
-            GlideConstants.MAX_PRELOAD_FILES
-        )
+        var preloader =
+            RecyclerViewPreloader(
+                GlideApp.with(this),
+                modelProvider,
+                sizeProvider,
+                GlideConstants.MAX_PRELOAD_FILES,
+            )
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
-        val intent = buildIntent(
-            requireContext(),
-            uri!!,
-            mimeType!!,
-            useNewStack!!,
-            null,
-            null
-        )
+        val intent =
+            buildIntent(
+                requireContext(),
+                uri!!,
+                mimeType!!,
+                useNewStack!!,
+                null,
+                null,
+            )
         val appDataParcelableList = initAppDataParcelableList(intent)
-        val lastClassAndPackageRaw = sharedPreferences
-            .getString(mimeType.plus(KEY_PREFERENCES_LAST), null)
+        val lastClassAndPackageRaw =
+            sharedPreferences
+                .getString(mimeType.plus(KEY_PREFERENCES_LAST), null)
         val lastClassAndPackage = lastClassAndPackageRaw?.split(" ")
-        val lastAppData: AppDataParcelable = initLastAppData(
-            lastClassAndPackage,
-            appDataParcelableList
-        ) ?: return
+        val lastAppData: AppDataParcelable =
+            initLastAppData(
+                lastClassAndPackage,
+                appDataParcelableList,
+            ) ?: return
 
-        adapter = AppsRecyclerAdapter(
-            this,
-            modelProvider,
-            true,
-            this,
-            appDataParcelableList
-        )
+        adapter =
+            AppsRecyclerAdapter(
+                this,
+                modelProvider,
+                true,
+                this,
+                appDataParcelableList,
+            )
         loadViews(lastAppData)
 
         viewBinding.appsRecyclerView.addOnScrollListener(preloader)
@@ -354,21 +368,22 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
     private fun loadViews(lastAppData: AppDataParcelable) {
         lastAppData.let {
-            val lastAppIntent = buildIntent(
-                requireContext(),
-                it.openFileParcelable?.uri!!,
-                it.openFileParcelable?.mimeType!!,
-                it.openFileParcelable?.useNewStack!!,
-                it.openFileParcelable?.className,
-                it.openFileParcelable?.packageName
-            )
+            val lastAppIntent =
+                buildIntent(
+                    requireContext(),
+                    it.openFileParcelable?.uri!!,
+                    it.openFileParcelable?.mimeType!!,
+                    it.openFileParcelable?.useNewStack!!,
+                    it.openFileParcelable?.className,
+                    it.openFileParcelable?.packageName,
+                )
 
             viewBinding.run {
                 appsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                 appsRecyclerView.adapter = adapter
                 lastAppTitle.text = it.label
                 lastAppImage.setImageDrawable(
-                    requireActivity().packageManager.getApplicationIcon(it.packageName)
+                    requireActivity().packageManager.getApplicationIcon(it.packageName),
                 )
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->
@@ -394,13 +409,14 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         val packageManager = requireContext().packageManager
         val appDataParcelableList: MutableList<AppDataParcelable> = ArrayList()
         packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL).forEach {
-            val openFileParcelable = OpenFileParcelable(
-                uri,
-                mimeType,
-                useNewStack,
-                it.activityInfo.name,
-                it.activityInfo.packageName
-            )
+            val openFileParcelable =
+                OpenFileParcelable(
+                    uri,
+                    mimeType,
+                    useNewStack,
+                    it.activityInfo.name,
+                    it.activityInfo.packageName,
+                )
             val label = it.loadLabel(packageManager).toString()
             val appDataParcelable =
                 AppDataParcelable(
@@ -412,7 +428,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                     "",
                     0,
                     0, false,
-                    openFileParcelable
+                    openFileParcelable,
                 )
             appDataParcelableList.add(appDataParcelable)
         }
@@ -421,7 +437,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
     private fun initLastAppData(
         lastClassAndPackage: List<String>?,
-        appDataParcelableList: MutableList<AppDataParcelable>
+        appDataParcelableList: MutableList<AppDataParcelable>,
     ): AppDataParcelable? {
         if (appDataParcelableList.size == 0) {
             AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))
@@ -438,27 +454,31 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                     appDataParcelableList[0].openFileParcelable?.mimeType!!,
                     appDataParcelableList[0].openFileParcelable?.useNewStack!!,
                     appDataParcelableList[0].openFileParcelable?.className,
-                    appDataParcelableList[0].openFileParcelable?.packageName
-                )
+                    appDataParcelableList[0].openFileParcelable?.packageName,
+                ),
             )
 
             dismiss()
             return null
         }
 
-        var lastAppData: AppDataParcelable? = if (!lastClassAndPackage.isNullOrEmpty()) {
-            appDataParcelableList.find {
-                it.openFileParcelable?.className == lastClassAndPackage[0]
+        var lastAppData: AppDataParcelable? =
+            if (!lastClassAndPackage.isNullOrEmpty()) {
+                appDataParcelableList.find {
+                    it.openFileParcelable?.className == lastClassAndPackage[0]
+                }
+            } else {
+                null
             }
-        } else {
-            null
-        }
         lastAppData = lastAppData ?: appDataParcelableList[0]
         appDataParcelableList.remove(lastAppData)
         return lastAppData
     }
 
-    override fun adjustListViewForTv(viewHolder: AppHolder, mainActivity: MainActivity) {
+    override fun adjustListViewForTv(
+        viewHolder: AppHolder,
+        mainActivity: MainActivity,
+    ) {
         // do nothing
     }
 }

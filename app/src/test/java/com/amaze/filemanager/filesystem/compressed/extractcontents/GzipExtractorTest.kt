@@ -23,7 +23,6 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor
 
 class GzipExtractorTest : AbstractCompressedFileExtractorTest() {
-
     override fun extractorClass(): Class<out Extractor> = GzipExtractor::class.java
 
     override val archiveType: String = "gz"

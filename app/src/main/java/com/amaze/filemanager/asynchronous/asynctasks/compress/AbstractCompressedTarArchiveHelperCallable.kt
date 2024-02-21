@@ -31,15 +31,15 @@ abstract class AbstractCompressedTarArchiveHelperCallable(
     context: Context,
     filePath: String,
     relativePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     AbstractCommonsArchiveHelperCallable(context, filePath, relativePath, goBack) {
-
     private val compressorInputStreamConstructor: Constructor<out CompressorInputStream>
 
     init {
-        compressorInputStreamConstructor = getCompressorInputStreamClass()
-            .getDeclaredConstructor(InputStream::class.java)
+        compressorInputStreamConstructor =
+            getCompressorInputStreamClass()
+                .getDeclaredConstructor(InputStream::class.java)
         compressorInputStreamConstructor.isAccessible = true
     }
 

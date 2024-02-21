@@ -29,25 +29,24 @@ import java.util.*
 import java.util.concurrent.Callable
 
 abstract class CompressedHelperCallable internal constructor(
-    private val createBackItem: Boolean
+    private val createBackItem: Boolean,
 ) :
     Callable<ArrayList<CompressedObjectParcelable>> {
+        protected val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    protected val logger: Logger = LoggerFactory.getLogger(javaClass)
+        @WorkerThread
+        @Throws(ArchiveException::class)
+        override fun call(): ArrayList<CompressedObjectParcelable> {
+            val elements = ArrayList<CompressedObjectParcelable>()
+            if (createBackItem) {
+                elements.add(0, CompressedObjectParcelable())
+            }
 
-    @WorkerThread
-    @Throws(ArchiveException::class)
-    override fun call(): ArrayList<CompressedObjectParcelable> {
-        val elements = ArrayList<CompressedObjectParcelable>()
-        if (createBackItem) {
-            elements.add(0, CompressedObjectParcelable())
+            addElements(elements)
+            Collections.sort(elements, CompressedObjectParcelable.Sorter())
+            return elements
         }
 
-        addElements(elements)
-        Collections.sort(elements, CompressedObjectParcelable.Sorter())
-        return elements
+        @Throws(ArchiveException::class)
+        protected abstract fun addElements(elements: ArrayList<CompressedObjectParcelable>)
     }
-
-    @Throws(ArchiveException::class)
-    protected abstract fun addElements(elements: ArrayList<CompressedObjectParcelable>)
-}

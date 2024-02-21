@@ -53,10 +53,9 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class UtilsHandlerTest {
-
     companion object {
         /**
          * Enforce use of in-mem database during test.
@@ -91,14 +90,15 @@ class UtilsHandlerTest {
     @Test
     fun testSimpleSaveSmb() {
         val path = "smb://user:password@127.0.0.1/user"
-        val o = OperationData(
-            UtilsHandler.Operation.SMB,
-            "SMB Connection 1",
-            SmbUtil.getSmbEncryptedPath(
-                AppConfig.getInstance(),
-                path
+        val o =
+            OperationData(
+                UtilsHandler.Operation.SMB,
+                "SMB Connection 1",
+                SmbUtil.getSmbEncryptedPath(
+                    AppConfig.getInstance(),
+                    path,
+                ),
             )
-        )
         AppConfig.getInstance().run {
             utilsHandler.run {
                 saveToDatabase(o)
@@ -107,9 +107,9 @@ class UtilsHandlerTest {
                 assertEquals(
                     SmbUtil.getSmbEncryptedPath(
                         AppConfig.getInstance(),
-                        path
+                        path,
                     ),
-                    verify[0][1]
+                    verify[0][1],
                 )
             }
             utilitiesDatabase.run {
@@ -126,14 +126,15 @@ class UtilsHandlerTest {
     @Test
     fun testRepeatedSaveSmb() {
         val path = "smb://user:password@127.0.0.1/user"
-        val o = OperationData(
-            UtilsHandler.Operation.SMB,
-            "SMB Connection 1",
-            SmbUtil.getSmbEncryptedPath(
-                AppConfig.getInstance(),
-                path
+        val o =
+            OperationData(
+                UtilsHandler.Operation.SMB,
+                "SMB Connection 1",
+                SmbUtil.getSmbEncryptedPath(
+                    AppConfig.getInstance(),
+                    path,
+                ),
             )
-        )
         AppConfig.getInstance().run {
             utilsHandler.run {
                 saveToDatabase(o)
@@ -181,25 +182,26 @@ class UtilsHandlerTest {
     fun testSaveCommonBookmarks() {
         AppConfig.getInstance().utilsHandler.run {
             addCommonBookmarks()
-            val verify = bookmarksList.map {
-                Pair(it[0], it[1])
-            }
+            val verify =
+                bookmarksList.map {
+                    Pair(it[0], it[1])
+                }
             for (
-                d in arrayOf(
-                    DIRECTORY_DOWNLOADS,
-                    DIRECTORY_DCIM,
-                    DIRECTORY_MUSIC,
-                    DIRECTORY_MOVIES,
-                    DIRECTORY_PICTURES
-                )
+            d in arrayOf(
+                DIRECTORY_DOWNLOADS,
+                DIRECTORY_DCIM,
+                DIRECTORY_MUSIC,
+                DIRECTORY_MOVIES,
+                DIRECTORY_PICTURES,
+            )
             ) {
                 assertTrue(
                     verify.contains(
                         Pair<String, String>(
                             d,
-                            File(Environment.getExternalStorageDirectory(), d).absolutePath
-                        )
-                    )
+                            File(Environment.getExternalStorageDirectory(), d).absolutePath,
+                        ),
+                    ),
                 )
             }
         }
@@ -210,14 +212,15 @@ class UtilsHandlerTest {
      */
     @Test
     fun testRepeatedSaveSshWithPassword() {
-        val o = OperationData(
-            UtilsHandler.Operation.SFTP,
-            "ssh://root:toor@127.0.0.1/root/.ssh",
-            "SSH connection 1",
-            "ab:cd:ef:gh",
-            null,
-            null
-        )
+        val o =
+            OperationData(
+                UtilsHandler.Operation.SFTP,
+                "ssh://root:toor@127.0.0.1/root/.ssh",
+                "SSH connection 1",
+                "ab:cd:ef:gh",
+                null,
+                null,
+            )
         AppConfig.getInstance().run {
             utilsHandler.run {
                 saveToDatabase(o)
@@ -247,14 +250,15 @@ class UtilsHandlerTest {
      */
     @Test
     fun testRepeatedSaveSshWithKeyAuth() {
-        val o = OperationData(
-            UtilsHandler.Operation.SFTP,
-            "ssh://root@127.0.0.1/root/.ssh",
-            "SSH connection 1",
-            "ab:cd:ef:gh",
-            "Test SSH key",
-            "abcdefghijkl"
-        )
+        val o =
+            OperationData(
+                UtilsHandler.Operation.SFTP,
+                "ssh://root@127.0.0.1/root/.ssh",
+                "SSH connection 1",
+                "ab:cd:ef:gh",
+                "Test SSH key",
+                "abcdefghijkl",
+            )
         AppConfig.getInstance().run {
             utilsHandler.run {
                 saveToDatabase(o)

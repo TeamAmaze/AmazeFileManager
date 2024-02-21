@@ -63,7 +63,6 @@ import java.util.zip.ZipOutputStream
 
 @Suppress("TooManyFunctions") // Hack.
 class ZipService : AbstractProgressiveService() {
-
     private val log: Logger = LoggerFactory.getLogger(ZipService::class.java)
 
     private val mBinder: IBinder = ObtainableServiceBinder(this)
@@ -85,7 +84,11 @@ class ZipService : AbstractProgressiveService() {
         registerReceiver(receiver1, IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL))
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent,
+        flags: Int,
+        startId: Int,
+    ): Int {
         val mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH)
         val baseFiles: ArrayList<HybridFileParcelable> =
             intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES)!!
@@ -99,45 +102,51 @@ class ZipService : AbstractProgressiveService() {
             }
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        accentColor = (application as AppConfig)
-            .utilsProvider
-            .colorPreference
-            .getCurrentUserColorPreferences(this, sharedPreferences).accent
+        accentColor =
+            (application as AppConfig)
+                .utilsProvider
+                .colorPreference
+                .getCurrentUserColorPreferences(this, sharedPreferences).accent
 
-        val notificationIntent = Intent(this, MainActivity::class.java)
-            .putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            0,
-            notificationIntent,
-            getPendingIntentFlag(0)
-        )
+        val notificationIntent =
+            Intent(this, MainActivity::class.java)
+                .putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true)
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this,
+                0,
+                notificationIntent,
+                getPendingIntentFlag(0),
+            )
 
         customSmallContentViews = RemoteViews(packageName, R.layout.notification_service_small)
         customBigContentViews = RemoteViews(packageName, R.layout.notification_service_big)
 
         val stopIntent = Intent(KEY_COMPRESS_BROADCAST_CANCEL)
-        val stopPendingIntent = PendingIntent.getBroadcast(
-            applicationContext,
-            1234,
-            stopIntent,
-            getPendingIntentFlag(FLAG_UPDATE_CURRENT)
-        )
-        val action = NotificationCompat.Action(
-            R.drawable.ic_zip_box_grey,
-            getString(R.string.stop_ftp),
-            stopPendingIntent
-        )
-        mBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
-            .setSmallIcon(R.drawable.ic_zip_box_grey)
-            .setContentIntent(pendingIntent)
-            .setCustomContentView(customSmallContentViews)
-            .setCustomBigContentView(customBigContentViews)
-            .setCustomHeadsUpContentView(customSmallContentViews)
-            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            .addAction(action)
-            .setOngoing(true)
-            .setColor(accentColor)
+        val stopPendingIntent =
+            PendingIntent.getBroadcast(
+                applicationContext,
+                1234,
+                stopIntent,
+                getPendingIntentFlag(FLAG_UPDATE_CURRENT),
+            )
+        val action =
+            NotificationCompat.Action(
+                R.drawable.ic_zip_box_grey,
+                getString(R.string.stop_ftp),
+                stopPendingIntent,
+            )
+        mBuilder =
+            NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
+                .setSmallIcon(R.drawable.ic_zip_box_grey)
+                .setContentIntent(pendingIntent)
+                .setCustomContentView(customSmallContentViews)
+                .setCustomBigContentView(customBigContentViews)
+                .setCustomHeadsUpContentView(customSmallContentViews)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(action)
+                .setOngoing(true)
+                .setColor(accentColor)
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL)
         startForeground(NotificationConstants.ZIP_ID, mBuilder.build())
@@ -178,9 +187,8 @@ class ZipService : AbstractProgressiveService() {
     inner class CompressTask(
         private val zipService: ZipService,
         private val baseFiles: ArrayList<HybridFileParcelable>,
-        private val zipPath: String
+        private val zipPath: String,
     ) {
-
         private lateinit var zos: ZipOutputStream
         private lateinit var watcherUtil: ServiceWatcherUtil
 
@@ -202,13 +210,13 @@ class ZipService : AbstractProgressiveService() {
                     baseFiles[0].getName(applicationContext),
                     baseFiles.size,
                     totalBytes,
-                    false
+                    false,
                 )
                 execute(
                     emitter,
                     zipService.applicationContext,
                     FileUtils.hybridListToFileArrayList(baseFiles),
-                    zipPath
+                    zipPath,
                 )
 
                 emitter.onComplete()
@@ -218,12 +226,13 @@ class ZipService : AbstractProgressiveService() {
                 .subscribe(
                     {
                         watcherUtil.stopWatch()
-                        val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
-                            .putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath)
+                        val intent =
+                            Intent(MainActivity.KEY_INTENT_LOAD_LIST)
+                                .putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath)
                         zipService.sendBroadcast(intent)
                         zipService.stopSelf()
                     },
-                    { log.error(it.message ?: "ZipService.CompressAsyncTask.compress failed") }
+                    { log.error(it.message ?: "ZipService.CompressAsyncTask.compress failed") },
                 )
         }
 
@@ -243,7 +252,7 @@ class ZipService : AbstractProgressiveService() {
             emitter: CompletableEmitter,
             context: Context,
             baseFiles: ArrayList<File>,
-            zipPath: String
+            zipPath: String,
         ) {
             val out: OutputStream?
             val zipDirectory = File(zipPath)
@@ -266,7 +275,7 @@ class ZipService : AbstractProgressiveService() {
                     zos.close()
                     context.sendBroadcast(
                         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-                            .setData(Uri.fromFile(zipDirectory))
+                            .setData(Uri.fromFile(zipDirectory)),
                     )
                 } catch (e: IOException) {
                     log.warn("failed to close zip streams", e)
@@ -275,7 +284,10 @@ class ZipService : AbstractProgressiveService() {
         }
 
         @Throws(IOException::class, NullPointerException::class, ZipException::class)
-        private fun compressFile(file: File, path: String) {
+        private fun compressFile(
+            file: File,
+            path: String,
+        ) {
             if (progressHandler.cancelled) return
             if (!file.isDirectory) {
                 zos.putNextEntry(createZipEntry(file, path))
@@ -286,7 +298,9 @@ class ZipService : AbstractProgressiveService() {
                         if (!progressHandler.cancelled) {
                             zos.write(buf, 0, len)
                             ServiceWatcherUtil.position += len.toLong()
-                        } else break
+                        } else {
+                            break
+                        }
                     }
                 }
                 return
@@ -304,13 +318,17 @@ class ZipService : AbstractProgressiveService() {
             "$path/"
         }
 
-    private fun createZipEntry(file: File, path: String): ZipEntry =
+    private fun createZipEntry(
+        file: File,
+        path: String,
+    ): ZipEntry =
         ZipEntry("${createZipEntryPrefixWith(path)}${file.name}").apply {
             if (SDK_INT >= O) {
-                val attrs = Files.readAttributes(
-                    Paths.get(file.absolutePath),
-                    BasicFileAttributes::class.java
-                )
+                val attrs =
+                    Files.readAttributes(
+                        Paths.get(file.absolutePath),
+                        BasicFileAttributes::class.java,
+                    )
                 setCreationTime(attrs.creationTime())
                     .setLastAccessTime(attrs.lastAccessTime())
                     .lastModifiedTime = attrs.lastModifiedTime()
@@ -323,11 +341,15 @@ class ZipService : AbstractProgressiveService() {
      * Class used for the client Binder. Because we know this service always runs in the same process
      * as its clients, we don't need to deal with IPC.
      */
-    private val receiver1: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            progressHandler.cancelled = true
+    private val receiver1: BroadcastReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context,
+                intent: Intent,
+            ) {
+                progressHandler.cancelled = true
+            }
         }
-    }
 
     override fun onBind(arg0: Intent): IBinder = mBinder
 

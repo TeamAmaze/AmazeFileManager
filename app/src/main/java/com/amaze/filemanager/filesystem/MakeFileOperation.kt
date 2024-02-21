@@ -43,13 +43,19 @@ object MakeFileOperation {
      * @return The temp file.
      */
     @JvmStatic
-    fun getTempFile(file: File, context: Context): File {
+    fun getTempFile(
+        file: File,
+        context: Context,
+    ): File {
         val extDir = context.getExternalFilesDir(null)
         return File(extDir, file.name)
     }
 
     @JvmStatic
-    fun mkfile(file: File?, context: Context): Boolean {
+    fun mkfile(
+        file: File?,
+        context: Context,
+    ): Boolean {
         if (file == null) return false
         if (file.exists()) {
             // nothing to create.
@@ -75,10 +81,10 @@ object MakeFileOperation {
                 (
                     document?.createFile(
                         MimeTypes.getMimeType(file.path, file.isDirectory),
-                        file.name
+                        file.name,
                     )
                         != null
-                    )
+                )
             } catch (e: UnsupportedOperationException) {
                 log.warn("Failed to create file on sd card using document file", e)
                 false
@@ -86,15 +92,22 @@ object MakeFileOperation {
         }
         return if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             MediaStoreHack.mkfile(context, file)
-        } else false
+        } else {
+            false
+        }
     }
 
     @JvmStatic
-    fun mktextfile(data: String?, path: String?, fileName: String): Boolean {
-        val f = File(
-            path,
-            "$fileName${AppConstants.NEW_FILE_DELIMITER}${AppConstants.NEW_FILE_EXTENSION_TXT}"
-        )
+    fun mktextfile(
+        data: String?,
+        path: String?,
+        fileName: String,
+    ): Boolean {
+        val f =
+            File(
+                path,
+                "$fileName${AppConstants.NEW_FILE_DELIMITER}${AppConstants.NEW_FILE_EXTENSION_TXT}",
+            )
         var out: FileOutputStream? = null
         var outputWriter: OutputStreamWriter? = null
         return try {

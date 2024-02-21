@@ -38,9 +38,8 @@ abstract class AbstractCommonsArchiveExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
-
     /**
      * Subclasses implement this method to create [ArchiveInputStream] instances with given archive
      * as [InputStream].
@@ -92,7 +91,7 @@ abstract class AbstractCommonsArchiveExtractor(
         context: Context,
         inputStream: ArchiveInputStream,
         entry: ArchiveEntry,
-        outputDir: String
+        outputDir: String,
     ) {
         if (entry.isDirectory) {
             MakeDirectoryOperation.mkdir(File(outputDir, entry.name), context)
@@ -118,8 +117,8 @@ abstract class AbstractCommonsArchiveExtractor(
             context.getString(
                 R.string.error_archive_cannot_extract,
                 entry.name,
-                outputDir
-            )
+                outputDir,
+            ),
         )
     }
 }

@@ -53,22 +53,27 @@ class HiddenAdapter(
     private val sharedPrefs: SharedPreferences,
     hiddenFiles: List<HybridFile>,
     var materialDialog: MaterialDialog?,
-    private val hide: Boolean
+    private val hide: Boolean,
 ) : RecyclerView.Adapter<HiddenViewHolder>() {
-
     companion object {
         private const val TAG = "HiddenAdapter"
     }
 
     private val hiddenFiles = hiddenFiles.toMutableList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HiddenViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): HiddenViewHolder {
         val mInflater = context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = mInflater.inflate(R.layout.bookmarkrow, parent, false)
         return HiddenViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: HiddenViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: HiddenViewHolder,
+        position: Int,
+    ) {
         val file = hiddenFiles[position]
         holder.textTitle.text = file.getName(context)
         holder.textDescription.text = file.getReadablePath(file.path)
@@ -80,9 +85,10 @@ class HiddenAdapter(
             // TODO: the "hide files" feature just hide files from view in Amaze and not create
             // .nomedia
             if (!file.isSmb && file.isDirectory(context)) {
-                val nomediaFile = HybridFileParcelable(
-                    hiddenFiles[position].path + "/" + FileUtils.NOMEDIA_FILE
-                )
+                val nomediaFile =
+                    HybridFileParcelable(
+                        hiddenFiles[position].path + "/" + FileUtils.NOMEDIA_FILE,
+                    )
                 nomediaFile.mode = OpenMode.FILE
                 val filesToDelete = ArrayList<HybridFileParcelable>()
                 filesToDelete.add(nomediaFile)
@@ -105,7 +111,7 @@ class HiddenAdapter(
                             file.path,
                             false,
                             OpenMode.UNKNOWN,
-                            false
+                            false,
                         )
                     }
                 } else if (!file.isSmb) {
@@ -113,7 +119,7 @@ class HiddenAdapter(
                         FileUtils.openFile(
                             File(file.path),
                             (fragmentActivity as MainActivity),
-                            sharedPrefs
+                            sharedPrefs,
                         )
                     }
                 }

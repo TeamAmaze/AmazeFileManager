@@ -27,7 +27,6 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
 class SevenZipDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean
-    ) =
-        SevenZipHelperCallable(filePath, path, addGoBackItem)
+        addGoBackItem: Boolean,
+    ) = SevenZipHelperCallable(filePath, path, addGoBackItem)
 }

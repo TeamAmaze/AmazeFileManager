@@ -59,27 +59,27 @@ import kotlin.random.Random
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 class ZipServiceTest {
-
     val dt = DateTimeFormatter.ofPattern("yyyyMMddkkmm")
-    val dates = listOf(
-        parse("201906121300", dt).atZone(of("Antarctica/South_Pole")),
-        parse("201906152100", dt).atZone(of("Asia/Taipei")),
-        parse("201906161530", dt).atZone(of("Australia/Adelaide")),
-        parse("201907020000", dt).atZone(of("Pacific/Norfolk")),
-        parse("201907211330", dt).atZone(of("Europe/Dublin")),
-        parse("201908180929", dt).atZone(of("Europe/Warsaw")),
-        parse("201908230700", dt).atZone(of("America/Indianapolis")),
-        parse("201908312330", dt).atZone(of("Asia/Tokyo")),
-        parse("201909191315", dt).atZone(of("Asia/Ho_Chi_Minh")),
-        parse("201910010700", dt).atZone(of("America/Havana")),
-        parse("201911080109", dt).atZone(of("Europe/Oslo")),
-        parse("201911111030", dt).atZone(of("Australia/North")),
-        parse("201911120300", dt).atZone(of("Asia/Gaza")),
-        parse("201911170400", dt).atZone(of("Europe/Kiev")),
-        parse("201912312300", dt).atZone(of("America/Ojinaga")),
-        parse("202006301900", dt).atZone(of("Africa/Nairobi")),
-        parse("202008230830", dt).atZone(of("Pacific/Guam"))
-    )
+    val dates =
+        listOf(
+            parse("201906121300", dt).atZone(of("Antarctica/South_Pole")),
+            parse("201906152100", dt).atZone(of("Asia/Taipei")),
+            parse("201906161530", dt).atZone(of("Australia/Adelaide")),
+            parse("201907020000", dt).atZone(of("Pacific/Norfolk")),
+            parse("201907211330", dt).atZone(of("Europe/Dublin")),
+            parse("201908180929", dt).atZone(of("Europe/Warsaw")),
+            parse("201908230700", dt).atZone(of("America/Indianapolis")),
+            parse("201908312330", dt).atZone(of("Asia/Tokyo")),
+            parse("201909191315", dt).atZone(of("Asia/Ho_Chi_Minh")),
+            parse("201910010700", dt).atZone(of("America/Havana")),
+            parse("201911080109", dt).atZone(of("Europe/Oslo")),
+            parse("201911111030", dt).atZone(of("Australia/North")),
+            parse("201911120300", dt).atZone(of("Asia/Gaza")),
+            parse("201911170400", dt).atZone(of("Europe/Kiev")),
+            parse("201912312300", dt).atZone(of("America/Ojinaga")),
+            parse("202006301900", dt).atZone(of("Africa/Nairobi")),
+            parse("202008230830", dt).atZone(of("Pacific/Guam")),
+        )
 
     var context: Context? = null
 
@@ -99,13 +99,14 @@ class ZipServiceTest {
         val zipPath = File(context!!.getExternalFilesDir(null), "files.zip")
         val files = generateSomeRandomFiles()
 
-        val intent = Intent()
-            .setClass(context!!, ZipService::class.java)
-            .putParcelableArrayListExtra(
-                KEY_COMPRESS_FILES,
-                ArrayList(listOf(HybridFileParcelable(files[0].absolutePath)))
-            )
-            .putExtra(KEY_COMPRESS_PATH, zipPath.absolutePath)
+        val intent =
+            Intent()
+                .setClass(context!!, ZipService::class.java)
+                .putParcelableArrayListExtra(
+                    KEY_COMPRESS_FILES,
+                    ArrayList(listOf(HybridFileParcelable(files[0].absolutePath))),
+                )
+                .putExtra(KEY_COMPRESS_PATH, zipPath.absolutePath)
 
         Robolectric.buildService(ZipService::class.java, intent).bind().startCommand(0, 0)
 
@@ -127,7 +128,7 @@ class ZipServiceTest {
                             "${Date(this[idx].lastModified())} " +
                             "vs ${Date(entry.lastModifiedTimeEpoch)}",
                         this[idx].lastModified(),
-                        entry.lastModifiedTimeEpoch
+                        entry.lastModifiedTimeEpoch,
                     )
                 }
             }
@@ -150,10 +151,22 @@ class ZipServiceTest {
                     }
                 }
             }
-            File(root1, "a").apply { mkdirs(); files.add(this); }
-            File(root1, "a/b").apply { mkdirs(); files.add(this); }
-            File(root1, "a/b/c").apply { mkdirs(); files.add(this); }
-            File(root1, "a/b/c/d").apply { mkdirs(); files.add(this); }
+            File(root1, "a").apply {
+                mkdirs()
+                files.add(this)
+            }
+            File(root1, "a/b").apply {
+                mkdirs()
+                files.add(this)
+            }
+            File(root1, "a/b/c").apply {
+                mkdirs()
+                files.add(this)
+            }
+            File(root1, "a/b/c/d").apply {
+                mkdirs()
+                files.add(this)
+            }
 
             val root2 = File(root1, "a/b/c/d")
             for (x in 1..4) {
@@ -168,12 +181,12 @@ class ZipServiceTest {
             run {
                 Files.getFileAttributeView(
                     Paths.get(files[index].absolutePath),
-                    BasicFileAttributeView::class.java
+                    BasicFileAttributeView::class.java,
                 )
                     .setTimes(
                         FileTime.from(zonedDateTime.toInstant()),
                         FileTime.from(zonedDateTime.toInstant()),
-                        null
+                        null,
                     )
             }
         }

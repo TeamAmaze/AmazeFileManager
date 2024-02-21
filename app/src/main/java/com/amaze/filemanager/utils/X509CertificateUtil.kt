@@ -26,14 +26,12 @@ import java.security.MessageDigest
 import java.util.*
 
 object X509CertificateUtil {
-
     const val SUBJECT = "subject"
     const val ISSUER = "issuer"
     const val SERIAL = "serial"
     const val FINGERPRINT = "sha256Fingerprint"
 
-    private fun colonSeparatedHex(array: ByteArray) =
-        ByteArrayUtils.toHex(array).chunked(2).joinToString(":")
+    private fun colonSeparatedHex(array: ByteArray) = ByteArrayUtils.toHex(array).chunked(2).joinToString(":")
 
     /**
      * Parse a [javax.security.cert.X509Certificate] and return part of its information in a JSON object.
@@ -48,9 +46,10 @@ object X509CertificateUtil {
         retval[SUBJECT] = certificate.subjectDN.name
         retval[ISSUER] = certificate.issuerDN.name
         retval[SERIAL] = colonSeparatedHex(certificate.serialNumber.toByteArray())
-        retval[FINGERPRINT] = MessageDigest.getInstance("sha-256").run {
-            colonSeparatedHex(digest(certificate.encoded))
-        }
+        retval[FINGERPRINT] =
+            MessageDigest.getInstance("sha-256").run {
+                colonSeparatedHex(digest(certificate.encoded))
+            }
         return retval
     }
 
@@ -67,9 +66,10 @@ object X509CertificateUtil {
         retval[SUBJECT] = certificate.subjectDN.name
         retval[ISSUER] = certificate.issuerDN.name
         retval[SERIAL] = colonSeparatedHex(certificate.serialNumber.toByteArray())
-        retval[FINGERPRINT] = MessageDigest.getInstance("sha-256").run {
-            colonSeparatedHex(digest(certificate.encoded))
-        }
+        retval[FINGERPRINT] =
+            MessageDigest.getInstance("sha-256").run {
+                colonSeparatedHex(digest(certificate.encoded))
+            }
         return retval
     }
 }

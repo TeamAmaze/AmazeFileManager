@@ -37,7 +37,11 @@ object PortScanUDP {
      * @return - true if port is open, false if not or unknown
      */
     @JvmStatic
-    fun scanAddress(ia: InetAddress?, portNo: Int, timeoutMillis: Int): Boolean {
+    fun scanAddress(
+        ia: InetAddress?,
+        portNo: Int,
+        timeoutMillis: Int,
+    ): Boolean {
         try {
             val bytes = ByteArray(128)
             val dp = DatagramPacket(bytes, bytes.size)
