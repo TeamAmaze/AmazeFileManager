@@ -37,7 +37,6 @@ import com.amaze.filemanager.utils.PasswordUtil.encryptPassword
  * @see PasswordUtil.decryptPassword
  */
 object EncryptedStringTypeConverter {
-
     @JvmStatic
     private val TAG = EncryptedStringTypeConverter::class.java.simpleName
 
@@ -49,7 +48,7 @@ object EncryptedStringTypeConverter {
     fun toPassword(encryptedStringEntryInDb: String): StringWrapper {
         return runCatching {
             StringWrapper(
-                decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb)
+                decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb),
             )
         }.onFailure {
             Log.e(TAG, "Error decrypting password", it)
@@ -67,7 +66,7 @@ object EncryptedStringTypeConverter {
         return runCatching {
             encryptPassword(
                 AppConfig.getInstance(),
-                unencryptedPasswordString.value
+                unencryptedPasswordString.value,
             )
         }.onFailure {
             Log.e(TAG, "Error encrypting password", it)

@@ -48,13 +48,13 @@ import java.io.StringReader
 import java.security.KeyPair
 
 class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubscribe<KeyPair> {
-
-    private val converters = arrayOf(
-        JcaPemToKeyPairConverter(),
-        OpenSshPemToKeyPairConverter(),
-        OpenSshV1PemToKeyPairConverter(),
-        PuttyPrivateKeyToKeyPairConverter()
-    )
+    private val converters =
+        arrayOf(
+            JcaPemToKeyPairConverter(),
+            OpenSshPemToKeyPairConverter(),
+            OpenSshV1PemToKeyPairConverter(),
+            PuttyPrivateKeyToKeyPairConverter(),
+        )
     private var passwordFinder: PasswordFinder? = null
     private var errorMessage: String? = null
 
@@ -75,13 +75,15 @@ class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubsc
             }
         }
         if (passwordFinder != null) {
-            errorMessage = AppConfig
-                .getInstance()
-                .getString(R.string.ssh_key_invalid_passphrase)
+            errorMessage =
+                AppConfig
+                    .getInstance()
+                    .getString(R.string.ssh_key_invalid_passphrase)
         } else {
-            errorMessage = AppConfig
-                .getInstance()
-                .getString(R.string.ssh_key_no_decoder_decrypt)
+            errorMessage =
+                AppConfig
+                    .getInstance()
+                    .getString(R.string.ssh_key_no_decoder_decrypt)
         }
         emitter.onError(IOException(errorMessage))
     }
@@ -93,14 +95,16 @@ class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubsc
     fun displayPassphraseDialog(
         exception: Throwable,
         positiveCallback: (() -> Unit),
-        negativeCallback: (() -> Unit)
+        negativeCallback: (() -> Unit),
     ) {
-        val builder = MaterialDialog.Builder(
-            AppConfig.getInstance().mainActivityContext!!
-        )
-        val dialogLayout = DialogSingleedittextBinding.inflate(
-            LayoutInflater.from(AppConfig.getInstance().mainActivityContext)
-        )
+        val builder =
+            MaterialDialog.Builder(
+                AppConfig.getInstance().mainActivityContext!!,
+            )
+        val dialogLayout =
+            DialogSingleedittextBinding.inflate(
+                LayoutInflater.from(AppConfig.getInstance().mainActivityContext),
+            )
         val wilTextfield: WarnableTextInputLayout =
             dialogLayout.singleedittextWarnabletextinputlayout
         val textfield = dialogLayout.singleedittextInput
@@ -112,14 +116,16 @@ class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubsc
             .title(R.string.ssh_key_prompt_passphrase)
             .positiveText(R.string.ok)
             .onPositive { dialog: MaterialDialog, which: DialogAction? ->
-                passwordFinder = object : PasswordFinder {
-                    override fun reqPassword(resource: Resource<*>?): CharArray {
-                        return textfield.text.toString().toCharArray()
+                passwordFinder =
+                    object : PasswordFinder {
+                        override fun reqPassword(resource: Resource<*>?): CharArray {
+                            return textfield.text.toString().toCharArray()
+                        }
+
+                        override fun shouldRetry(resource: Resource<*>?): Boolean {
+                            return false
+                        }
                     }
-                    override fun shouldRetry(resource: Resource<*>?): Boolean {
-                        return false
-                    }
-                }
                 dialog.dismiss()
                 positiveCallback.invoke()
             }
@@ -134,12 +140,12 @@ class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubsc
             AppConfig.getInstance().mainActivityContext,
             textfield,
             wilTextfield,
-            dialog.getActionButton(DialogAction.POSITIVE)
+            dialog.getActionButton(DialogAction.POSITIVE),
         ) { text: String ->
             if (text.isEmpty()) {
                 WarnableTextInputValidator.ReturnState(
                     WarnableTextInputValidator.ReturnState.STATE_ERROR,
-                    R.string.field_empty
+                    R.string.field_empty,
                 )
             }
             WarnableTextInputValidator.ReturnState()
@@ -156,17 +162,18 @@ class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubsc
             AppConfig.getInstance()
                 .resources
                 .getString(R.string.ssh_pem_key_parse_error, result.localizedMessage),
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
         )
             .show()
     }
 
     private abstract inner class PemToKeyPairConverter {
-        fun convert(source: String): KeyPair? = runCatching {
-            throwingConvert(source)
-        }.onFailure {
-            log.warn("failed to convert pem to keypair", it)
-        }.getOrNull()
+        fun convert(source: String): KeyPair? =
+            runCatching {
+                throwingConvert(source)
+            }.onFailure {
+                log.warn("failed to convert pem to keypair", it)
+            }.getOrNull()
 
         protected abstract fun throwingConvert(source: String?): KeyPair?
     }

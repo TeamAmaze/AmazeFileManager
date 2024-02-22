@@ -27,7 +27,6 @@ import org.junit.Test
 
 @Suppress("StringLiteralDuplication")
 class FilenameHelperTest {
-
     /**
      * [FilenameHelper.strip] should remove linux-style increments from a filename.
      */

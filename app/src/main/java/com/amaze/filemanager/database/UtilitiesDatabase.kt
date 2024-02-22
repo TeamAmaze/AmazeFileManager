@@ -65,14 +65,13 @@ import java.security.GeneralSecurityException
         History::class,
         com.amaze.filemanager.database.models.utilities.List::class,
         SmbEntry::class,
-        SftpEntry::class
+        SftpEntry::class,
     ],
     version = UtilitiesDatabase.DATABASE_VERSION,
-    exportSchema = false
+    exportSchema = false,
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod")
 abstract class UtilitiesDatabase : RoomDatabase() {
-
     /**
      * Returns DAO for [Hidden] objects.
      */
@@ -139,7 +138,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PATH +
                 " TEXT UNIQUE" +
                 ");"
-            )
+        )
         private const val queryHidden = (
             "CREATE TABLE IF NOT EXISTS " +
                 TABLE_HIDDEN +
@@ -149,7 +148,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PATH +
                 " TEXT UNIQUE" +
                 ");"
-            )
+        )
         private const val queryList = (
             "CREATE TABLE IF NOT EXISTS " +
                 TABLE_LIST +
@@ -159,7 +158,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PATH +
                 " TEXT UNIQUE" +
                 ");"
-            )
+        )
         private const val queryGrid = (
             "CREATE TABLE IF NOT EXISTS " +
                 TABLE_GRID +
@@ -169,7 +168,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PATH +
                 " TEXT UNIQUE" +
                 ");"
-            )
+        )
         private const val queryBookmarks = (
             "CREATE TABLE IF NOT EXISTS " +
                 TABLE_BOOKMARKS +
@@ -181,7 +180,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PATH +
                 " TEXT UNIQUE" +
                 ");"
-            )
+        )
         private const val querySmb = (
             "CREATE TABLE IF NOT EXISTS " +
                 TABLE_SMB +
@@ -193,7 +192,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PATH +
                 " TEXT UNIQUE" +
                 ");"
-            )
+        )
         private const val querySftp = (
             "CREATE TABLE IF NOT EXISTS " +
                 TABLE_SFTP +
@@ -211,214 +210,218 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 COLUMN_PRIVATE_KEY +
                 " TEXT" +
                 ");"
-            )
+        )
 
-        internal val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS " +
-                        TABLE_SFTP +
-                        " (" +
-                        COLUMN_ID +
-                        " INTEGER PRIMARY KEY," +
-                        COLUMN_NAME +
-                        " TEXT," +
-                        COLUMN_PATH +
-                        " TEXT UNIQUE," +
-                        COLUMN_HOST_PUBKEY +
-                        " TEXT," +
-                        COLUMN_PRIVATE_KEY_NAME +
-                        " TEXT," +
-                        COLUMN_PRIVATE_KEY +
-                        " TEXT" +
-                        ");"
-                )
+        internal val MIGRATION_1_2: Migration =
+            object : Migration(1, 2) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    database.execSQL(
+                        "CREATE TABLE IF NOT EXISTS " +
+                            TABLE_SFTP +
+                            " (" +
+                            COLUMN_ID +
+                            " INTEGER PRIMARY KEY," +
+                            COLUMN_NAME +
+                            " TEXT," +
+                            COLUMN_PATH +
+                            " TEXT UNIQUE," +
+                            COLUMN_HOST_PUBKEY +
+                            " TEXT," +
+                            COLUMN_PRIVATE_KEY_NAME +
+                            " TEXT," +
+                            COLUMN_PRIVATE_KEY +
+                            " TEXT" +
+                            ");",
+                    )
+                }
             }
-        }
 
-        internal val MIGRATION_2_3: Migration = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                var backupTable = TEMP_TABLE_PREFIX + TABLE_HISTORY
-                database.execSQL(queryHistory.replace(TABLE_HISTORY, backupTable))
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_HISTORY group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_HISTORY;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HISTORY;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_HIDDEN
-                database.execSQL(queryHidden.replace(TABLE_HIDDEN, backupTable))
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_HIDDEN group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_HIDDEN;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HIDDEN;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_LIST
-                database.execSQL(queryList.replace(TABLE_LIST, backupTable))
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_LIST group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_LIST;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_LIST;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_GRID
-                database.execSQL(queryGrid.replace(TABLE_GRID, backupTable))
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_GRID group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_GRID;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_GRID;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS
-                database.execSQL(queryBookmarks.replace(TABLE_BOOKMARKS, backupTable))
-                database.execSQL(
-                    "INSERT INTO " +
-                        backupTable +
-                        " SELECT * FROM " +
-                        TABLE_BOOKMARKS +
-                        " group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_BOOKMARKS;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_BOOKMARKS;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_SMB
-                database.execSQL(querySmb.replace(TABLE_SMB, backupTable))
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_SMB group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_SMB;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SMB;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_SFTP
-                database.execSQL(querySftp.replace(TABLE_SFTP, backupTable))
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_SFTP group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_SFTP;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SFTP;")
+        internal val MIGRATION_2_3: Migration =
+            object : Migration(2, 3) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    var backupTable = TEMP_TABLE_PREFIX + TABLE_HISTORY
+                    database.execSQL(queryHistory.replace(TABLE_HISTORY, backupTable))
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_HISTORY group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_HISTORY;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HISTORY;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_HIDDEN
+                    database.execSQL(queryHidden.replace(TABLE_HIDDEN, backupTable))
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_HIDDEN group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_HIDDEN;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HIDDEN;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_LIST
+                    database.execSQL(queryList.replace(TABLE_LIST, backupTable))
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_LIST group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_LIST;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_LIST;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_GRID
+                    database.execSQL(queryGrid.replace(TABLE_GRID, backupTable))
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_GRID group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_GRID;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_GRID;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS
+                    database.execSQL(queryBookmarks.replace(TABLE_BOOKMARKS, backupTable))
+                    database.execSQL(
+                        "INSERT INTO " +
+                            backupTable +
+                            " SELECT * FROM " +
+                            TABLE_BOOKMARKS +
+                            " group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_BOOKMARKS;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_BOOKMARKS;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_SMB
+                    database.execSQL(querySmb.replace(TABLE_SMB, backupTable))
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_SMB group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_SMB;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SMB;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_SFTP
+                    database.execSQL(querySftp.replace(TABLE_SFTP, backupTable))
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_SFTP group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_SFTP;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SFTP;")
+                }
             }
-        }
 
-        internal val MIGRATION_3_4: Migration = object : Migration(3, 4) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                var backupTable = TEMP_TABLE_PREFIX + TABLE_HISTORY
-                database.execSQL(
-                    queryHistory
-                        .replace(TABLE_HISTORY, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_HISTORY group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_HISTORY;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HISTORY;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_HIDDEN
-                database.execSQL(
-                    queryHidden
-                        .replace(TABLE_HIDDEN, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_HIDDEN group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_HIDDEN;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HIDDEN;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_LIST
-                database.execSQL(
-                    queryList
-                        .replace(TABLE_LIST, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_LIST group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_LIST;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_LIST;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_GRID
-                database.execSQL(
-                    queryGrid
-                        .replace(TABLE_GRID, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_GRID group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_GRID;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_GRID;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS
-                database.execSQL(
-                    queryBookmarks
-                        .replace(TABLE_BOOKMARKS, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO " +
-                        backupTable +
-                        " SELECT * FROM " +
-                        TABLE_BOOKMARKS +
-                        " group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_BOOKMARKS;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_BOOKMARKS;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_SMB
-                database.execSQL(
-                    querySmb
-                        .replace(TABLE_SMB, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_SMB group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_SMB;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SMB;")
-                backupTable = TEMP_TABLE_PREFIX + TABLE_SFTP
-                database.execSQL(
-                    querySftp
-                        .replace(TABLE_SFTP, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO $backupTable SELECT * FROM $TABLE_SFTP group by path;"
-                )
-                database.execSQL("DROP TABLE $TABLE_SFTP;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SFTP;")
+        internal val MIGRATION_3_4: Migration =
+            object : Migration(3, 4) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    var backupTable = TEMP_TABLE_PREFIX + TABLE_HISTORY
+                    database.execSQL(
+                        queryHistory
+                            .replace(TABLE_HISTORY, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_HISTORY group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_HISTORY;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HISTORY;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_HIDDEN
+                    database.execSQL(
+                        queryHidden
+                            .replace(TABLE_HIDDEN, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_HIDDEN group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_HIDDEN;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_HIDDEN;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_LIST
+                    database.execSQL(
+                        queryList
+                            .replace(TABLE_LIST, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_LIST group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_LIST;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_LIST;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_GRID
+                    database.execSQL(
+                        queryGrid
+                            .replace(TABLE_GRID, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_GRID group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_GRID;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_GRID;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS
+                    database.execSQL(
+                        queryBookmarks
+                            .replace(TABLE_BOOKMARKS, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO " +
+                            backupTable +
+                            " SELECT * FROM " +
+                            TABLE_BOOKMARKS +
+                            " group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_BOOKMARKS;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_BOOKMARKS;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_SMB
+                    database.execSQL(
+                        querySmb
+                            .replace(TABLE_SMB, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_SMB group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_SMB;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SMB;")
+                    backupTable = TEMP_TABLE_PREFIX + TABLE_SFTP
+                    database.execSQL(
+                        querySftp
+                            .replace(TABLE_SFTP, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO $backupTable SELECT * FROM $TABLE_SFTP group by path;",
+                    )
+                    database.execSQL("DROP TABLE $TABLE_SFTP;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_SFTP;")
+                }
             }
-        }
 
-        internal val MIGRATION_4_5: Migration = object : Migration(4, 5) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                val backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS
-                database.execSQL(
-                    queryBookmarks
-                        .replace(TABLE_BOOKMARKS, backupTable)
-                        .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,")
-                )
-                database.execSQL(
-                    "INSERT INTO " +
-                        backupTable +
-                        "(" +
-                        COLUMN_NAME +
-                        "," +
-                        COLUMN_PATH +
-                        ") SELECT DISTINCT(" +
-                        COLUMN_NAME +
-                        "), " +
-                        COLUMN_PATH +
-                        " FROM " +
-                        TABLE_BOOKMARKS
-                )
-                database.execSQL("DROP TABLE $TABLE_BOOKMARKS;")
-                database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_BOOKMARKS;")
-                database.execSQL(
-                    "CREATE UNIQUE INDEX 'bookmarks_idx' ON " +
-                        TABLE_BOOKMARKS +
-                        "(" +
-                        COLUMN_NAME +
-                        ", " +
-                        COLUMN_PATH +
-                        ");"
-                )
+        internal val MIGRATION_4_5: Migration =
+            object : Migration(4, 5) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    val backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS
+                    database.execSQL(
+                        queryBookmarks
+                            .replace(TABLE_BOOKMARKS, backupTable)
+                            .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"),
+                    )
+                    database.execSQL(
+                        "INSERT INTO " +
+                            backupTable +
+                            "(" +
+                            COLUMN_NAME +
+                            "," +
+                            COLUMN_PATH +
+                            ") SELECT DISTINCT(" +
+                            COLUMN_NAME +
+                            "), " +
+                            COLUMN_PATH +
+                            " FROM " +
+                            TABLE_BOOKMARKS,
+                    )
+                    database.execSQL("DROP TABLE $TABLE_BOOKMARKS;")
+                    database.execSQL("ALTER TABLE $backupTable RENAME TO $TABLE_BOOKMARKS;")
+                    database.execSQL(
+                        "CREATE UNIQUE INDEX 'bookmarks_idx' ON " +
+                            TABLE_BOOKMARKS +
+                            "(" +
+                            COLUMN_NAME +
+                            ", " +
+                            COLUMN_PATH +
+                            ");",
+                    )
+                }
             }
-        }
 
         private fun migratePasswordInUris(
             database: SupportSQLiteDatabase,
-            tableName: String
+            tableName: String,
         ): List<String> {
             val updateSqls: MutableList<String> = ArrayList()
             val cursor =
@@ -430,21 +433,24 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                     val userCredentials =
                         oldPath.substring(oldPath.indexOf("://") + 3, oldPath.lastIndexOf(AT))
                     if (userCredentials.contains(":")) {
-                        val password = userCredentials.substring(
-                            userCredentials.lastIndexOf(COLON) + 1
-                        )
+                        val password =
+                            userCredentials.substring(
+                                userCredentials.lastIndexOf(COLON) + 1,
+                            )
                         if (!TextUtils.isEmpty(password)) {
                             try {
-                                val oldPassword = decryptPassword(
-                                    AppConfig.getInstance(),
-                                    password,
-                                    Base64.DEFAULT
-                                )
-                                val newPassword = encryptPassword(
-                                    AppConfig.getInstance(),
-                                    oldPassword,
-                                    Base64.URL_SAFE
-                                )
+                                val oldPassword =
+                                    decryptPassword(
+                                        AppConfig.getInstance(),
+                                        password,
+                                        Base64.DEFAULT,
+                                    )
+                                val newPassword =
+                                    encryptPassword(
+                                        AppConfig.getInstance(),
+                                        oldPassword,
+                                        Base64.URL_SAFE,
+                                    )
                                 val newPath = oldPath.replace(password, newPassword!!)
                                 updateSqls.add(
                                     "UPDATE " +
@@ -459,7 +465,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                                         COLUMN_PATH +
                                         "='" +
                                         oldPath +
-                                        "'"
+                                        "'",
                                 )
                             } catch (e: GeneralSecurityException) {
                                 logger.error("Error migrating database records")
@@ -474,16 +480,17 @@ abstract class UtilitiesDatabase : RoomDatabase() {
             return updateSqls
         }
 
-        internal val MIGRATION_5_6: Migration = object : Migration(5, DATABASE_VERSION) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                val updateSqls: MutableList<String> = ArrayList()
-                updateSqls.addAll(migratePasswordInUris(database, TABLE_SMB))
-                updateSqls.addAll(migratePasswordInUris(database, TABLE_SFTP))
-                for (updateSql in updateSqls) {
-                    database.execSQL(updateSql)
+        internal val MIGRATION_5_6: Migration =
+            object : Migration(5, DATABASE_VERSION) {
+                override fun migrate(database: SupportSQLiteDatabase) {
+                    val updateSqls: MutableList<String> = ArrayList()
+                    updateSqls.addAll(migratePasswordInUris(database, TABLE_SMB))
+                    updateSqls.addAll(migratePasswordInUris(database, TABLE_SFTP))
+                    for (updateSql in updateSqls) {
+                        database.execSQL(updateSql)
+                    }
                 }
             }
-        }
 
         /**
          * Initialize the database. Optionally, may provide a custom way to create the database
@@ -495,7 +502,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                 overrideDatabaseBuilder?.invoke(context) ?: Room.databaseBuilder(
                     context,
                     UtilitiesDatabase::class.java,
-                    DATABASE_NAME
+                    DATABASE_NAME,
                 )
             return builder
                 .allowMainThreadQueries()
@@ -504,7 +511,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                     MIGRATION_2_3,
                     MIGRATION_3_4,
                     MIGRATION_4_5,
-                    MIGRATION_5_6
+                    MIGRATION_5_6,
                 )
                 .build()
         }

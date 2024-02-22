@@ -27,7 +27,6 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
 class TarLzmaDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean
-    ) =
-        TarLzmaHelperCallable(context, filePath, path, addGoBackItem)
+        addGoBackItem: Boolean,
+    ) = TarLzmaHelperCallable(context, filePath, path, addGoBackItem)
 }

@@ -29,7 +29,6 @@ import org.robolectric.util.ReflectionHelpers
 
 @Implements(TabHandler::class)
 class ShadowTabHandler {
-
     companion object {
         /**
          * Implements [TabHandler.getInstance]

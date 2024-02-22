@@ -36,10 +36,9 @@ internal class Slf4jPrintCommandListener(
     private val nologin: Boolean = true,
     private val eolMarker: Char = 0.toChar(),
     private val directionMarker: Boolean = false,
-    private val loggerLevel: Level = Level.DEBUG
+    private val loggerLevel: Level = Level.DEBUG,
 ) :
     ProtocolCommandListener {
-
     private val logger: Logger = LoggerFactory.getLogger(SocketClient::class.java)
 
     private val logMessage: (String) -> Unit = { msg ->
@@ -72,11 +71,12 @@ internal class Slf4jPrintCommandListener(
     }
 
     override fun protocolReplyReceived(event: ProtocolCommandEvent) {
-        val msg = if (directionMarker) {
-            "< ${event.message}"
-        } else {
-            event.message
-        }
+        val msg =
+            if (directionMarker) {
+                "< ${event.message}"
+            } else {
+                event.message
+            }
         logMessage.invoke(msg)
     }
 

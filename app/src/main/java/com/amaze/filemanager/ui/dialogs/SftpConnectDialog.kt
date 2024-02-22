@@ -87,9 +87,7 @@ import java.util.concurrent.Callable
 
 /** SSH/SFTP connection setup dialog.  */
 class SftpConnectDialog : DialogFragment() {
-
     companion object {
-
         @JvmStatic
         private val log: Logger = LoggerFactory.getLogger(SftpConnectDialog::class.java)
 
@@ -142,27 +140,29 @@ class SftpConnectDialog : DialogFragment() {
 
         // Use system provided action to get Uri to PEM.
         binding.selectPemBTN.setOnClickListener {
-            val intent = Intent()
-                .setType(MimeTypes.ALL_MIME_TYPES)
-                .setAction(Intent.ACTION_GET_CONTENT)
+            val intent =
+                Intent()
+                    .setType(MimeTypes.ALL_MIME_TYPES)
+                    .setAction(Intent.ACTION_GET_CONTENT)
             activityResultHandlerForPemSelection.launch(intent)
         }
 
         // Define action for buttons
-        val dialogBuilder = MaterialDialog.Builder(ctx.get()!!)
-            .title(R.string.scp_connection)
-            .autoDismiss(false)
-            .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.getMaterialDialogTheme())
-            .negativeText(R.string.cancel)
-            .positiveText(if (edit) R.string.update else R.string.create)
-            .positiveColor(accentColor)
-            .negativeColor(accentColor)
-            .neutralColor(accentColor)
-            .onPositive(handleOnPositiveButton(edit))
-            .onNegative { dialog: MaterialDialog, _: DialogAction? ->
-                dialog.dismiss()
-            }
+        val dialogBuilder =
+            MaterialDialog.Builder(ctx.get()!!)
+                .title(R.string.scp_connection)
+                .autoDismiss(false)
+                .customView(binding.root, true)
+                .theme(utilsProvider.appTheme.getMaterialDialogTheme())
+                .negativeText(R.string.cancel)
+                .positiveText(if (edit) R.string.update else R.string.create)
+                .positiveColor(accentColor)
+                .negativeColor(accentColor)
+                .neutralColor(accentColor)
+                .onPositive(handleOnPositiveButton(edit))
+                .onNegative { dialog: MaterialDialog, _: DialogAction? ->
+                    dialog.dismiss()
+                }
 
         // If we are editing connection settings, give new actions for neutral and negative buttons
         if (edit) {
@@ -182,113 +182,121 @@ class SftpConnectDialog : DialogFragment() {
         return dialog
     }
 
-    private fun initForm(edit: Boolean) = binding.run {
-        portET.apply {
-            filters = arrayOf(MinMaxInputFilter(VALID_PORT_RANGE))
-            // For convenience, so I don't need to press backspace all the time
-            onFocusChangeListener = View.OnFocusChangeListener { _: View?, hasFocus: Boolean ->
-                if (hasFocus) {
-                    selectAll()
-                }
-            }
-        }
-        protocolDropDown.adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            requireContext().resources.getStringArray(R.array.ftpProtocols)
-        )
-        chkFtpAnonymous.setOnCheckedChangeListener { _, isChecked ->
-            usernameET.isEnabled = !isChecked
-            passwordET.isEnabled = !isChecked
-            if (isChecked) {
-                usernameET.setText("")
-                passwordET.setText("")
-            }
-        }
-        defaultPathET.filters = arrayOf(defaultPathCharFilter)
-        // If it's new connection setup, set some default values
-        // Otherwise, use given Bundle instance for filling in the blanks
-        if (!edit) {
-            connectionET.setText(R.string.scp_connection)
-            portET.setText(NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString())
-            protocolDropDown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    portET.setText(
-                        when (position) {
-                            1 -> NetCopyClientConnectionPool.FTP_DEFAULT_PORT.toString()
-                            2 -> NetCopyClientConnectionPool.FTPS_DEFAULT_PORT.toString()
-                            else -> NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString()
+    private fun initForm(edit: Boolean) =
+        binding.run {
+            portET.apply {
+                filters = arrayOf(MinMaxInputFilter(VALID_PORT_RANGE))
+                // For convenience, so I don't need to press backspace all the time
+                onFocusChangeListener =
+                    View.OnFocusChangeListener { _: View?, hasFocus: Boolean ->
+                        if (hasFocus) {
+                            selectAll()
                         }
-                    )
-                    chkFtpAnonymous.visibility = when (position) {
-                        0 -> View.GONE
-                        else -> View.VISIBLE
                     }
-                    if (position == 0) {
-                        chkFtpAnonymous.isChecked = false
-                    }
-                    selectPemBTN.visibility = when (position) {
-                        0 -> View.VISIBLE
-                        else -> View.GONE
-                    }
-                }
-                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
             }
-        } else {
-            protocolDropDown.setSelection(
-                when (requireArguments().getString(ARG_PROTOCOL)) {
-                    FTP_URI_PREFIX -> 1
-                    FTPS_URI_PREFIX -> 2
-                    else -> 0
+            protocolDropDown.adapter =
+                ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    requireContext().resources.getStringArray(R.array.ftpProtocols),
+                )
+            chkFtpAnonymous.setOnCheckedChangeListener { _, isChecked ->
+                usernameET.isEnabled = !isChecked
+                passwordET.isEnabled = !isChecked
+                if (isChecked) {
+                    usernameET.setText("")
+                    passwordET.setText("")
                 }
-            )
-            connectionET.setText(requireArguments().getString(ARG_NAME))
-            ipET.setText(requireArguments().getString(ARG_ADDRESS))
-            portET.setText(requireArguments().getInt(ARG_PORT).toString())
-            defaultPathET.setText(requireArguments().getString(ARG_DEFAULT_PATH))
-            usernameET.setText(requireArguments().getString(ARG_USERNAME))
-            if (requireArguments().getBoolean(ARG_HAS_PASSWORD)) {
-                passwordET.setHint(R.string.password_unchanged)
-            } else {
-                selectedParsedKeyPairName = requireArguments().getString(ARG_KEYPAIR_NAME)
-                selectPemBTN.text = selectedParsedKeyPairName
             }
-            oldPath = NetCopyClientUtils.deriveUriFrom(
-                requireArguments().getString(ARG_PROTOCOL)!!,
-                requireArguments().getString(ARG_ADDRESS)!!,
-                requireArguments().getInt(ARG_PORT),
-                requireArguments().getString(ARG_DEFAULT_PATH, ""),
-                requireArguments().getString(ARG_USERNAME)!!,
-                requireArguments().getString(ARG_PASSWORD),
-                edit
-            )
-        }
-    }
+            defaultPathET.filters = arrayOf(defaultPathCharFilter)
+            // If it's new connection setup, set some default values
+            // Otherwise, use given Bundle instance for filling in the blanks
+            if (!edit) {
+                connectionET.setText(R.string.scp_connection)
+                portET.setText(NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString())
+                protocolDropDown.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long,
+                        ) {
+                            portET.setText(
+                                when (position) {
+                                    1 -> NetCopyClientConnectionPool.FTP_DEFAULT_PORT.toString()
+                                    2 -> NetCopyClientConnectionPool.FTPS_DEFAULT_PORT.toString()
+                                    else -> NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString()
+                                },
+                            )
+                            chkFtpAnonymous.visibility =
+                                when (position) {
+                                    0 -> View.GONE
+                                    else -> View.VISIBLE
+                                }
+                            if (position == 0) {
+                                chkFtpAnonymous.isChecked = false
+                            }
+                            selectPemBTN.visibility =
+                                when (position) {
+                                    0 -> View.VISIBLE
+                                    else -> View.GONE
+                                }
+                        }
 
-    private fun appendButtonListenersForEdit(
-        dialogBuilder: MaterialDialog.Builder
-    ) {
+                        override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+                    }
+            } else {
+                protocolDropDown.setSelection(
+                    when (requireArguments().getString(ARG_PROTOCOL)) {
+                        FTP_URI_PREFIX -> 1
+                        FTPS_URI_PREFIX -> 2
+                        else -> 0
+                    },
+                )
+                connectionET.setText(requireArguments().getString(ARG_NAME))
+                ipET.setText(requireArguments().getString(ARG_ADDRESS))
+                portET.setText(requireArguments().getInt(ARG_PORT).toString())
+                defaultPathET.setText(requireArguments().getString(ARG_DEFAULT_PATH))
+                usernameET.setText(requireArguments().getString(ARG_USERNAME))
+                if (requireArguments().getBoolean(ARG_HAS_PASSWORD)) {
+                    passwordET.setHint(R.string.password_unchanged)
+                } else {
+                    selectedParsedKeyPairName = requireArguments().getString(ARG_KEYPAIR_NAME)
+                    selectPemBTN.text = selectedParsedKeyPairName
+                }
+                oldPath =
+                    NetCopyClientUtils.deriveUriFrom(
+                        requireArguments().getString(ARG_PROTOCOL)!!,
+                        requireArguments().getString(ARG_ADDRESS)!!,
+                        requireArguments().getInt(ARG_PORT),
+                        requireArguments().getString(ARG_DEFAULT_PATH, ""),
+                        requireArguments().getString(ARG_USERNAME)!!,
+                        requireArguments().getString(ARG_PASSWORD),
+                        edit,
+                    )
+            }
+        }
+
+    private fun appendButtonListenersForEdit(dialogBuilder: MaterialDialog.Builder) {
         createConnectionSettings(edit = true).run {
             dialogBuilder
                 .negativeText(R.string.delete)
                 .onNegative { dialog: MaterialDialog, _: DialogAction? ->
-                    val path = NetCopyClientUtils.deriveUriFrom(
-                        getProtocolPrefixFromDropdownSelection(),
-                        hostname,
-                        port,
-                        defaultPath,
-                        username,
-                        requireArguments().getString(ARG_PASSWORD, null),
-                        edit = true
-                    )
-                    val i = DataUtils.getInstance().containsServer(
-                        arrayOf(connectionName, path)
-                    )
+                    val path =
+                        NetCopyClientUtils.deriveUriFrom(
+                            getProtocolPrefixFromDropdownSelection(),
+                            hostname,
+                            port,
+                            defaultPath,
+                            username,
+                            requireArguments().getString(ARG_PASSWORD, null),
+                            edit = true,
+                        )
+                    val i =
+                        DataUtils.getInstance().containsServer(
+                            arrayOf(connectionName, path),
+                        )
                     if (i > -1) {
                         DataUtils.getInstance().removeServer(i)
                         AppConfig.getInstance()
@@ -300,8 +308,8 @@ class SftpConnectDialog : DialogFragment() {
                                         connectionName,
                                         null,
                                         null,
-                                        null
-                                    )
+                                        null,
+                                    ),
                                 )
                             }
                         (activity as MainActivity).drawer.refreshDrawer()
@@ -312,42 +320,46 @@ class SftpConnectDialog : DialogFragment() {
         }
     }
 
-    private fun createValidator(edit: Boolean, okBTN: MDButton): SimpleTextWatcher {
+    private fun createValidator(
+        edit: Boolean,
+        okBTN: MDButton,
+    ): SimpleTextWatcher {
         return object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 val portETValue = binding.portET.text.toString()
-                val port = if (portETValue.isDigitsOnly() && (portETValue.length in 1..5)) {
-                    portETValue.toInt()
-                } else {
-                    -1
-                }
-                val hasCredential: Boolean = if (edit) {
-                    if (true == binding.passwordET.text?.isNotEmpty() ||
-                        !TextUtils.isEmpty(requireArguments().getString(ARG_PASSWORD))
-                    ) {
-                        true
+                val port =
+                    if (portETValue.isDigitsOnly() && (portETValue.length in 1..5)) {
+                        portETValue.toInt()
                     } else {
-                        true == selectedParsedKeyPairName?.isNotEmpty()
+                        -1
                     }
-                } else {
-                    true == binding.passwordET.text?.isNotEmpty() || selectedParsedKeyPair != null
-                }
+                val hasCredential: Boolean =
+                    if (edit) {
+                        if (true == binding.passwordET.text?.isNotEmpty() ||
+                            !TextUtils.isEmpty(requireArguments().getString(ARG_PASSWORD))
+                        ) {
+                            true
+                        } else {
+                            true == selectedParsedKeyPairName?.isNotEmpty()
+                        }
+                    } else {
+                        true == binding.passwordET.text?.isNotEmpty() || selectedParsedKeyPair != null
+                    }
                 okBTN.isEnabled = (
                     true == binding.connectionET.text?.isNotEmpty() &&
                         true == binding.ipET.text?.isNotEmpty() &&
                         port in VALID_PORT_RANGE &&
                         true == binding.usernameET.text?.isNotEmpty() &&
                         hasCredential
-                    ) || (
+                ) || (
                     binding.chkFtpAnonymous.isChecked &&
                         binding.protocolDropDown.selectedItemPosition > 0
-                    )
+                )
             }
         }
     }
 
-    private fun handleOnPositiveButton(edit: Boolean):
-        MaterialDialog.SingleButtonCallback =
+    private fun handleOnPositiveButton(edit: Boolean): MaterialDialog.SingleButtonCallback =
         MaterialDialog.SingleButtonCallback { _, _ ->
             createConnectionSettings(edit).run {
                 when (prefix) {
@@ -357,7 +369,10 @@ class SftpConnectDialog : DialogFragment() {
             }
         }
 
-    private fun positiveButtonForFtp(connectionSettings: ConnectionSettings, edit: Boolean) {
+    private fun positiveButtonForFtp(
+        connectionSettings: ConnectionSettings,
+        edit: Boolean,
+    ) {
         connectionSettings.run {
             authenticateAndSaveSetup(connectionSettings = connectionSettings, isEdit = edit)
         }
@@ -366,7 +381,10 @@ class SftpConnectDialog : DialogFragment() {
     /*
      * for SSH and FTPS, get host's cert/public key fingerprint.
      */
-    private fun positiveButtonForSftp(connectionSettings: ConnectionSettings, edit: Boolean) {
+    private fun positiveButtonForSftp(
+        connectionSettings: ConnectionSettings,
+        edit: Boolean,
+    ) {
         connectionSettings.run {
             // Get original SSH host key
             AppConfig.getInstance().utilsHandler.getRemoteHostKey(
@@ -377,17 +395,17 @@ class SftpConnectDialog : DialogFragment() {
                     defaultPath,
                     username,
                     requireArguments().getString(ARG_PASSWORD, null),
-                    edit
-                )
+                    edit,
+                ),
             )?.let { sshHostKey ->
                 NetCopyClientConnectionPool.removeConnection(
-                    this.toUriString()
+                    this.toUriString(),
                 ) {
                     if (prefix == FTPS_URI_PREFIX) {
                         reconnectToFtpsServerToVerifyHostFingerprint(
                             this,
                             JSONObject(sshHostKey),
-                            edit
+                            edit,
                         )
                     } else {
                         reconnectToSshServerToVerifyHostFingerprint(this, sshHostKey, edit)
@@ -413,7 +431,8 @@ class SftpConnectDialog : DialogFragment() {
                 hostAndPort,
                 hostKeyAlgorithm,
                 hostKeyFingerprint,
-                hostInfo ->
+                hostInfo,
+            ->
             AlertDialog.Builder(ctx.get())
                 .setTitle(R.string.ssh_host_key_verification_prompt_title)
                 .setMessage(
@@ -421,8 +440,8 @@ class SftpConnectDialog : DialogFragment() {
                         R.string.ssh_host_key_verification_prompt,
                         hostAndPort,
                         hostKeyAlgorithm,
-                        hostKeyFingerprint
-                    )
+                        hostKeyFingerprint,
+                    ),
                 ).setCancelable(true)
                 .setPositiveButton(R.string.yes) {
                         dialog1: DialogInterface, _: Int ->
@@ -431,7 +450,7 @@ class SftpConnectDialog : DialogFragment() {
                     if (authenticateAndSaveSetup(
                             connectionSettings,
                             hostInfo?.toString() ?: hostKeyFingerprint,
-                            edit
+                            edit,
                         )
                     ) {
                         dialog1.dismiss()
@@ -446,13 +465,13 @@ class SftpConnectDialog : DialogFragment() {
 
     private fun firstConnectToFtpsServer(
         connectionSettings: ConnectionSettings,
-        edit: Boolean
+        edit: Boolean,
     ) = connectionSettings.run {
         connectToSecureServerInternal(
             FtpsGetHostCertificateTask(
                 hostname,
                 port,
-                requireContext()
+                requireContext(),
             ) { hostInfo ->
                 createFirstConnectCallback.invoke(
                     edit,
@@ -464,21 +483,21 @@ class SftpConnectDialog : DialogFragment() {
                     }.toString(),
                     "SHA-256",
                     hostInfo.getString(FINGERPRINT),
-                    hostInfo
+                    hostInfo,
                 )
-            }
+            },
         )
     }
 
     private fun firstConnectToSftpServer(
         connectionSettings: ConnectionSettings,
-        edit: Boolean
+        edit: Boolean,
     ) = connectionSettings.run {
         connectToSecureServerInternal(
             GetSshHostFingerprintTask(
                 hostname,
                 port,
-                true
+                true,
             ) { hostKey: PublicKey ->
                 createFirstConnectCallback.invoke(
                     edit,
@@ -490,9 +509,9 @@ class SftpConnectDialog : DialogFragment() {
                     }.toString(),
                     hostKey.algorithm,
                     SecurityUtils.getFingerprint(hostKey),
-                    null
+                    null,
                 )
-            }
+            },
         )
     }
 
@@ -503,21 +522,21 @@ class SftpConnectDialog : DialogFragment() {
                 authenticateAndSaveSetup(
                     connectionSettings,
                     oldHostIdentity,
-                    edit
+                    edit,
                 )
             } else {
                 AlertDialog.Builder(ctx.get())
                     .setTitle(
-                        R.string.ssh_connect_failed_host_key_changed_title
+                        R.string.ssh_connect_failed_host_key_changed_title,
                     ).setMessage(
-                        R.string.ssh_connect_failed_host_key_changed_prompt
+                        R.string.ssh_connect_failed_host_key_changed_prompt,
                     ).setPositiveButton(
-                        R.string.update_host_key
+                        R.string.update_host_key,
                     ) { _: DialogInterface?, _: Int ->
                         authenticateAndSaveSetup(
                             connectionSettings,
                             newHostIdentity,
-                            edit
+                            edit,
                         )
                     }.setNegativeButton(R.string.cancel_recommended) {
                             dialog1: DialogInterface, _: Int ->
@@ -529,7 +548,7 @@ class SftpConnectDialog : DialogFragment() {
     private fun reconnectToSshServerToVerifyHostFingerprint(
         connectionSettings: ConnectionSettings,
         sshHostKey: String,
-        edit: Boolean
+        edit: Boolean,
     ) {
         connectionSettings.run {
             connectToSecureServerInternal(
@@ -542,10 +561,10 @@ class SftpConnectDialog : DialogFragment() {
                             sshHostKey,
                             currentHostKeyFingerprint,
                             { currentHostKeyFingerprint == sshHostKey },
-                            edit
+                            edit,
                         )
                     }
-                }
+                },
             )
         }
     }
@@ -553,30 +572,28 @@ class SftpConnectDialog : DialogFragment() {
     private fun reconnectToFtpsServerToVerifyHostFingerprint(
         connectionSettings: ConnectionSettings,
         ftpsHostInfo: JSONObject,
-        edit: Boolean
+        edit: Boolean,
     ) {
         connectionSettings.run {
             connectToSecureServerInternal(
                 FtpsGetHostCertificateTask(
                     hostname,
                     port,
-                    requireContext()
+                    requireContext(),
                 ) { hostInfo: JSONObject ->
                     createReconnectSecureServerCallback(
                         connectionSettings,
                         ftpsHostInfo.toString(),
                         hostInfo.toString(),
                         { ftpsHostInfo.getString(FINGERPRINT) == hostInfo.getString(FINGERPRINT) },
-                        edit
+                        edit,
                     )
-                }
+                },
             )
         }
     }
 
-    private fun <V, T : Callable<V>> connectToSecureServerInternal(
-        task: AbstractGetHostInfoTask<V, T>
-    ) {
+    private fun <V, T : Callable<V>> connectToSecureServerInternal(task: AbstractGetHostInfoTask<V, T>) {
         Single.fromCallable(task.getTask())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -585,73 +602,77 @@ class SftpConnectDialog : DialogFragment() {
     }
 
     @Suppress("LabeledExpression")
-    private val activityResultHandlerForPemSelection = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (Activity.RESULT_OK == it.resultCode) {
-            it.data?.data?.run {
-                selectedPem = this
-                runCatching {
-                    requireContext().contentResolver.openInputStream(this)?.let {
-                            selectedKeyContent ->
-                        val observable = PemToKeyPairObservable(selectedKeyContent)
-                        create(observable).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retryWhen { exceptions ->
-                                exceptions.flatMap { exception ->
-                                    create<Any> { subscriber ->
-                                        observable.displayPassphraseDialog(exception, {
-                                            subscriber.onNext(Unit)
-                                        }, {
-                                            subscriber.onError(exception)
-                                        })
+    private val activityResultHandlerForPemSelection =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+        ) {
+            if (Activity.RESULT_OK == it.resultCode) {
+                it.data?.data?.run {
+                    selectedPem = this
+                    runCatching {
+                        requireContext().contentResolver.openInputStream(this)?.let {
+                                selectedKeyContent ->
+                            val observable = PemToKeyPairObservable(selectedKeyContent)
+                            create(observable).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .retryWhen { exceptions ->
+                                    exceptions.flatMap { exception ->
+                                        create<Any> { subscriber ->
+                                            observable.displayPassphraseDialog(exception, {
+                                                subscriber.onNext(Unit)
+                                            }, {
+                                                subscriber.onError(exception)
+                                            })
+                                        }
                                     }
                                 }
-                            }
-                            .subscribe({ result ->
-                                selectedParsedKeyPair = result
-                                selectedParsedKeyPairName = this
-                                    .lastPathSegment!!
-                                    .substring(
-                                        this.lastPathSegment!!
-                                            .indexOf('/') + 1
-                                    )
-                                val okBTN = (dialog as MaterialDialog)
-                                    .getActionButton(DialogAction.POSITIVE)
-                                okBTN.isEnabled = okBTN.isEnabled || true
-                                binding.selectPemBTN.text = selectedParsedKeyPairName
-                            }, {})
+                                .subscribe({ result ->
+                                    selectedParsedKeyPair = result
+                                    selectedParsedKeyPairName =
+                                        this
+                                            .lastPathSegment!!
+                                            .substring(
+                                                this.lastPathSegment!!
+                                                    .indexOf('/') + 1,
+                                            )
+                                    val okBTN =
+                                        (dialog as MaterialDialog)
+                                            .getActionButton(DialogAction.POSITIVE)
+                                    okBTN.isEnabled = okBTN.isEnabled || true
+                                    binding.selectPemBTN.text = selectedParsedKeyPairName
+                                }, {})
+                        }
+                    }.onFailure {
+                        log.error("Error reading PEM key", it)
                     }
-                }.onFailure {
-                    log.error("Error reading PEM key", it)
                 }
             }
         }
-    }
 
     private fun authenticateAndSaveSetup(
         connectionSettings: ConnectionSettings,
         hostKeyFingerprint: String? = null,
-        isEdit: Boolean
-    ): Boolean = connectionSettings.run {
-        val path = this.toUriString()
-        val encryptedPath = NetCopyClientUtils.encryptFtpPathAsNecessary(path)
-        return if (!isEdit) {
-            saveFtpConnectionAndLoadlist(
-                connectionSettings,
-                hostKeyFingerprint,
-                encryptedPath,
-                selectedParsedKeyPairName,
-                selectedParsedKeyPair
-            )
-        } else {
-            updateFtpConnection(
-                connectionName,
-                hostKeyFingerprint,
-                encryptedPath
-            )
+        isEdit: Boolean,
+    ): Boolean =
+        connectionSettings.run {
+            val path = this.toUriString()
+            val encryptedPath = NetCopyClientUtils.encryptFtpPathAsNecessary(path)
+            return if (!isEdit) {
+                saveFtpConnectionAndLoadlist(
+                    connectionSettings,
+                    hostKeyFingerprint,
+                    encryptedPath,
+                    selectedParsedKeyPairName,
+                    selectedParsedKeyPair,
+                )
+            } else {
+                updateFtpConnection(
+                    connectionName,
+                    hostKeyFingerprint,
+                    encryptedPath,
+                )
+            }
         }
-    }
 
     @Suppress("LongParameterList")
     private fun saveFtpConnectionAndLoadlist(
@@ -659,7 +680,7 @@ class SftpConnectDialog : DialogFragment() {
         hostKeyFingerprint: String?,
         encryptedPath: String,
         selectedParsedKeyPairName: String?,
-        selectedParsedKeyPair: KeyPair?
+        selectedParsedKeyPair: KeyPair?,
     ): Boolean {
         connectionSettings.run {
             return runCatching {
@@ -674,7 +695,7 @@ class SftpConnectDialog : DialogFragment() {
                     } else {
                         password
                     },
-                    selectedParsedKeyPair
+                    selectedParsedKeyPair,
                 )?.run {
                     if (DataUtils.getInstance().containsServer(encryptedPath) == -1) {
                         DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
@@ -686,8 +707,8 @@ class SftpConnectDialog : DialogFragment() {
                                 connectionName,
                                 hostKeyFingerprint,
                                 selectedParsedKeyPairName,
-                                getPemContents()
-                            )
+                                getPemContents(),
+                            ),
                         )
                         val ma = (activity as MainActivity).currentMainFragment
                         ma?.loadlist(
@@ -698,14 +719,14 @@ class SftpConnectDialog : DialogFragment() {
                             } else {
                                 OpenMode.FTP
                             },
-                            false
+                            false,
                         )
                         dismiss()
                     } else {
                         Snackbar.make(
                             requireActivity().findViewById(R.id.content_frame),
                             getString(R.string.connection_exists),
-                            Snackbar.LENGTH_SHORT
+                            Snackbar.LENGTH_SHORT,
                         ).show()
                         dismiss()
                     }
@@ -721,7 +742,7 @@ class SftpConnectDialog : DialogFragment() {
     private fun updateFtpConnection(
         connectionName: String,
         hostKeyFingerprint: String?,
-        encryptedPath: String
+        encryptedPath: String,
     ): Boolean {
         val i = DataUtils.getInstance().containsServer(oldPath)
 
@@ -739,7 +760,7 @@ class SftpConnectDialog : DialogFragment() {
                 encryptedPath,
                 hostKeyFingerprint,
                 selectedParsedKeyPairName,
-                getPemContents()
+                getPemContents(),
             )
         }
         dismiss()
@@ -747,13 +768,14 @@ class SftpConnectDialog : DialogFragment() {
     }
 
     // Read the PEM content from InputStream to String.
-    private fun getPemContents(): String? = selectedPem?.run {
-        runCatching {
-            requireContext().contentResolver.openInputStream(this)
-                ?.bufferedReader()
-                ?.use(BufferedReader::readText)
-        }.getOrNull()
-    }
+    private fun getPemContents(): String? =
+        selectedPem?.run {
+            runCatching {
+                requireContext().contentResolver.openInputStream(this)
+                    ?.bufferedReader()
+                    ?.use(BufferedReader::readText)
+            }.getOrNull()
+        }
 
     private fun getProtocolPrefixFromDropdownSelection(): String {
         return when (binding.protocolDropDown.selectedItem.toString()) {
@@ -772,16 +794,17 @@ class SftpConnectDialog : DialogFragment() {
         val username: String,
         val password: String? = null,
         val selectedParsedKeyPairName: String? = null,
-        val selectedParsedKeyPair: KeyPair? = null
+        val selectedParsedKeyPair: KeyPair? = null,
     ) {
-        fun toUriString() = NetCopyClientUtils.deriveUriFrom(
-            prefix,
-            hostname,
-            port,
-            defaultPath,
-            username,
-            password
-        )
+        fun toUriString() =
+            NetCopyClientUtils.deriveUriFrom(
+                prefix,
+                hostname,
+                port,
+                defaultPath,
+                username,
+                password,
+            )
     }
 
     // FIXME: username/password may not need urlEncoded during edit mode
@@ -793,18 +816,19 @@ class SftpConnectDialog : DialogFragment() {
             port = binding.portET.text.toString().toInt(),
             defaultPath = binding.defaultPathET.text.toString(),
             username = binding.usernameET.text.toString().urlEncoded(),
-            password = if (true == binding.passwordET.text?.isEmpty()) {
-                if (edit) {
-                    requireArguments().getString(ARG_PASSWORD, null)?.run {
-                        PasswordUtil.decryptPassword(AppConfig.getInstance(), this)
+            password =
+                if (true == binding.passwordET.text?.isEmpty()) {
+                    if (edit) {
+                        requireArguments().getString(ARG_PASSWORD, null)?.run {
+                            PasswordUtil.decryptPassword(AppConfig.getInstance(), this)
+                        }
+                    } else {
+                        requireArguments().getString(ARG_PASSWORD, null)
                     }
                 } else {
-                    requireArguments().getString(ARG_PASSWORD, null)
-                }
-            } else {
-                binding.passwordET.text.toString().urlEncoded()
-            },
+                    binding.passwordET.text.toString().urlEncoded()
+                },
             selectedParsedKeyPairName = this.selectedParsedKeyPairName,
-            selectedParsedKeyPair = selectedParsedKeyPair
+            selectedParsedKeyPair = selectedParsedKeyPair,
         )
 }

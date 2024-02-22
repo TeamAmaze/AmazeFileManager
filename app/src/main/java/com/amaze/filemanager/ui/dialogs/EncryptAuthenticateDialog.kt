@@ -77,7 +77,7 @@ object EncryptAuthenticateDialog {
         intent: Intent,
         main: MainActivity,
         appTheme: AppTheme,
-        encryptButtonCallbackInterface: EncryptButtonCallbackInterface
+        encryptButtonCallbackInterface: EncryptButtonCallbackInterface,
     ) {
         intent.getParcelableExtra<HybridFileParcelable>(EncryptService.TAG_SOURCE)?.run {
             val preferences = PreferenceManager.getDefaultSharedPreferences(c)
@@ -88,16 +88,19 @@ object EncryptAuthenticateDialog {
                 DialogEncryptAuthenticateBinding.inflate(LayoutInflater.from(c))
             val rootView: View = vb.root
             val passwordEditText: TextInputEditText = vb.editTextDialogEncryptPassword
-            val passwordConfirmEditText: TextInputEditText = vb
-                .editTextDialogEncryptPasswordConfirm
+            val passwordConfirmEditText: TextInputEditText =
+                vb
+                    .editTextDialogEncryptPasswordConfirm
             val encryptSaveAsEditText: TextInputEditText = vb.editTextEncryptSaveAs
             val useAzeEncrypt: AppCompatCheckBox = vb.checkboxUseAze
-            val usageTextInfo: AppCompatTextView = vb.textViewCryptInfo.apply {
-                text = HtmlCompat.fromHtml(
-                    main.getString(R.string.encrypt_option_use_aescrypt_desc),
-                    FROM_HTML_MODE_COMPACT
-                )
-            }
+            val usageTextInfo: AppCompatTextView =
+                vb.textViewCryptInfo.apply {
+                    text =
+                        HtmlCompat.fromHtml(
+                            main.getString(R.string.encrypt_option_use_aescrypt_desc),
+                            FROM_HTML_MODE_COMPACT,
+                        )
+                }
             useAzeEncrypt.setOnCheckedChangeListener(
                 createUseAzeEncryptCheckboxOnCheckedChangeListener(
                     c,
@@ -105,12 +108,13 @@ object EncryptAuthenticateDialog {
                     preferences,
                     main,
                     encryptSaveAsEditText,
-                    usageTextInfo
-                )
+                    usageTextInfo,
+                ),
             )
             val textInputLayoutPassword: WarnableTextInputLayout = vb.tilEncryptPassword
-            val textInputLayoutPasswordConfirm: WarnableTextInputLayout = vb
-                .tilEncryptPasswordConfirm
+            val textInputLayoutPasswordConfirm: WarnableTextInputLayout =
+                vb
+                    .tilEncryptPasswordConfirm
             val textInputLayoutEncryptSaveAs: WarnableTextInputLayout = vb.tilEncryptSaveAs
             encryptSaveAsEditText.setText(this.getName(c) + AESCRYPT_EXTENSION)
             textInputLayoutEncryptSaveAs.hint =
@@ -135,14 +139,14 @@ object EncryptAuthenticateDialog {
                     runCatching {
                         encryptButtonCallbackInterface.onButtonPressed(
                             intent,
-                            passwordEditText.text.toString()
+                            passwordEditText.text.toString(),
                         )
                     }.onFailure {
                         log.error("Failed to encrypt", it)
                         Toast.makeText(
                             c,
                             c.getString(R.string.crypt_encryption_fail),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_LONG,
                         ).show()
                     }.also {
                         dialog.dismiss()
@@ -159,7 +163,7 @@ object EncryptAuthenticateDialog {
                 textInputLayoutPassword,
                 encryptSaveAsEditText,
                 useAzeEncrypt,
-                btnOK
+                btnOK,
             )
             createPasswordFieldValidator(
                 c,
@@ -168,7 +172,7 @@ object EncryptAuthenticateDialog {
                 textInputLayoutPasswordConfirm,
                 encryptSaveAsEditText,
                 useAzeEncrypt,
-                btnOK
+                btnOK,
             )
             WarnableTextInputValidator(
                 c,
@@ -178,7 +182,7 @@ object EncryptAuthenticateDialog {
                 createFilenameValidator(useAzeEncrypt, extraCondition = {
                     true == passwordEditText.text?.isNotBlank() &&
                         passwordEditText.text.toString() == passwordConfirmEditText.text.toString()
-                })
+                }),
             )
         } ?: throw IllegalArgumentException("No TAG_SOURCE parameter specified")
     }
@@ -190,12 +194,12 @@ object EncryptAuthenticateDialog {
         warningTextInputLayout: WarnableTextInputLayout,
         encryptSaveAsEditText: TextInputEditText,
         useAzeEncrypt: AppCompatCheckBox,
-        btnOK: MDButton
+        btnOK: MDButton,
     ) = WarnableTextInputValidator(
         c,
         passwordField,
         warningTextInputLayout,
-        btnOK
+        btnOK,
     ) { text: String ->
         if (text.isNotBlank() &&
             text == comparingPasswordField.text.toString() &&
@@ -221,11 +225,12 @@ object EncryptAuthenticateDialog {
         preferences: SharedPreferences,
         main: MainActivity,
         encryptSaveAsEditText: TextInputEditText,
-        usageTextInfo: AppCompatTextView
+        usageTextInfo: AppCompatTextView,
     ) = { _: CompoundButton?, isChecked: Boolean ->
-        if (isChecked && !preferences.getBoolean(
+        if (isChecked &&
+            !preferences.getBoolean(
                 PREFERENCE_CRYPT_WARNING_REMEMBER,
-                false
+                false,
             )
         ) {
             EncryptWarningDialog.show(main, main.appTheme)
@@ -235,18 +240,19 @@ object EncryptAuthenticateDialog {
                 CRYPT_EXTENSION
             } else {
                 AESCRYPT_EXTENSION
-            }}"
+            }}",
         )
-        usageTextInfo.text = HtmlCompat.fromHtml(
-            main.getString(
-                if (isChecked) {
-                    R.string.encrypt_option_use_azecrypt_desc
-                } else {
-                    R.string.encrypt_option_use_aescrypt_desc
-                }
-            ),
-            FROM_HTML_MODE_COMPACT
-        )
+        usageTextInfo.text =
+            HtmlCompat.fromHtml(
+                main.getString(
+                    if (isChecked) {
+                        R.string.encrypt_option_use_azecrypt_desc
+                    } else {
+                        R.string.encrypt_option_use_aescrypt_desc
+                    },
+                ),
+                FROM_HTML_MODE_COMPACT,
+            )
     }
 
     /**
@@ -255,7 +261,7 @@ object EncryptAuthenticateDialog {
     @JvmStatic
     fun createFilenameValidator(
         useAzeEncrypt: AppCompatCheckBox,
-        extraCondition: () -> Boolean = { true }
+        extraCondition: () -> Boolean = { true },
     ) = { text: String ->
         if (text.isNotBlank() && filenameIsValid(text, useAzeEncrypt) && extraCondition.invoke()) {
             ReturnState()
@@ -280,14 +286,14 @@ object EncryptAuthenticateDialog {
     @JvmStatic
     fun filenameIsValid(
         filename: String?,
-        useAzeEncrypt: AppCompatCheckBox
+        useAzeEncrypt: AppCompatCheckBox,
     ): Boolean {
         return (
             true == filename?.isNotBlank() && filename.endsWith(CRYPT_EXTENSION) &&
                 (useAzeEncrypt.visibility == INVISIBLE || useAzeEncrypt.isChecked)
-            ) || (
+        ) || (
             true == filename?.isNotBlank() && filename.endsWith(AESCRYPT_EXTENSION) &&
                 (useAzeEncrypt.visibility == VISIBLE && !useAzeEncrypt.isChecked)
-            )
+        )
     }
 }

@@ -24,15 +24,17 @@ import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
 class TarXzHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive.tar.xz"
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         TarXzHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

@@ -40,19 +40,19 @@ data class Hash(val md5: String, val sha: String)
 class CalculateHashTask(
     private val file: HybridFileParcelable,
     context: Context,
-    view: View
+    view: View,
 ) : Task<Hash, Callable<Hash>> {
-
     private val log: Logger = LoggerFactory.getLogger(CalculateHashTask::class.java)
 
-    private val task: Callable<Hash> = if (file.isSftp && !file.isDirectory(context)) {
-        CalculateHashSftpCallback(file)
-    } else if (file.isFtp || file.isDirectory(context)) {
-        // Don't do this. Especially when FTPClient requires thread safety.
-        DoNothingCalculateHashCallback()
-    } else {
-        CalculateHashCallback(file, context)
-    }
+    private val task: Callable<Hash> =
+        if (file.isSftp && !file.isDirectory(context)) {
+            CalculateHashSftpCallback(file)
+        } else if (file.isFtp || file.isDirectory(context)) {
+            // Don't do this. Especially when FTPClient requires thread safety.
+            DoNothingCalculateHashCallback()
+        } else {
+            CalculateHashCallback(file, context)
+        }
 
     private val context = WeakReference(context)
     private val view = WeakReference(view)
@@ -94,7 +94,7 @@ class CalculateHashTask(
                     context.resources.getString(R.string.md5).uppercase(Locale.getDefault()) +
                         " " +
                         context.resources.getString(R.string.properties_copied_clipboard),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 )
                     .show()
                 false
@@ -105,7 +105,7 @@ class CalculateHashTask(
                     context,
                     context.resources.getString(R.string.hash_sha256) + " " +
                         context.resources.getString(R.string.properties_copied_clipboard),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 )
                     .show()
                 false

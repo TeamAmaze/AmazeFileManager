@@ -67,7 +67,6 @@ import kotlin.random.Random
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 @Suppress("StringLiteralDuplication")
 class DecryptServiceTest {
-
     private lateinit var source: ByteArray
     private lateinit var service: DecryptService
     private lateinit var notificationManager: ShadowNotificationManager
@@ -79,10 +78,11 @@ class DecryptServiceTest {
     fun setUp() {
         source = Random(System.currentTimeMillis()).nextBytes(73)
         service = Robolectric.setupService(DecryptService::class.java)
-        notificationManager = shadowOf(
-            ApplicationProvider.getApplicationContext<Context>()
-                .getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        )
+        notificationManager =
+            shadowOf(
+                ApplicationProvider.getApplicationContext<Context>()
+                    .getSystemService(NOTIFICATION_SERVICE) as NotificationManager,
+            )
         initMockSecretKeygen()
     }
 
@@ -111,12 +111,13 @@ class DecryptServiceTest {
             ArrayList<HybridFile>(),
             "test.bin${CryptUtil.CRYPT_EXTENSION}",
             false,
-            null
+            null,
         )
-        val targetFile = File(
-            Environment.getExternalStorageDirectory(),
-            "test.bin${CryptUtil.CRYPT_EXTENSION}"
-        )
+        val targetFile =
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test.bin${CryptUtil.CRYPT_EXTENSION}",
+            )
         assertTrue(targetFile.exists())
         sourceFile.delete()
 
@@ -126,7 +127,7 @@ class DecryptServiceTest {
                 TAG_SOURCE,
                 HybridFileParcelable(targetFile.absolutePath).also {
                     it.setSize(targetFile.length())
-                }
+                },
             )
             putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)
             assertEquals(START_NOT_STICKY, service.onStartCommand(this, 0, 0))
@@ -165,15 +166,16 @@ class DecryptServiceTest {
     @Test
     fun testAescryptWorkflow() {
         if (SDK_INT >= M) {
-            val sourceFile = File(
-                Environment.getExternalStorageDirectory(),
-                "test.bin${CryptUtil.AESCRYPT_EXTENSION}"
-            )
+            val sourceFile =
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    "test.bin${CryptUtil.AESCRYPT_EXTENSION}",
+                )
             val targetFile = File(Environment.getExternalStorageDirectory(), "test.bin")
             AESCrypt("passW0rD").encrypt(
                 `in` = ByteArrayInputStream(source),
                 out = FileOutputStream(sourceFile),
-                progressHandler = ProgressHandler()
+                progressHandler = ProgressHandler(),
             )
             await().atMost(10, TimeUnit.SECONDS).until {
                 sourceFile.length() > source.size
@@ -184,7 +186,7 @@ class DecryptServiceTest {
                     TAG_SOURCE,
                     HybridFileParcelable(sourceFile.absolutePath).also {
                         it.setSize(sourceFile.length())
-                    }
+                    },
                 )
                 putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)
                 putExtra(TAG_PASSWORD, "passW0rD")

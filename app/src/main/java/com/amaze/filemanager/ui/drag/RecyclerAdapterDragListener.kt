@@ -40,19 +40,21 @@ class RecyclerAdapterDragListener(
     private val adapter: RecyclerAdapter,
     private val holder: ItemViewHolder?,
     private val dragAndDropPref: Int,
-    private val mainFragment: MainFragment
+    private val mainFragment: MainFragment,
 ) : View.OnDragListener {
-
     private val TAG = javaClass.simpleName
 
-    override fun onDrag(p0: View?, p1: DragEvent?): Boolean {
+    override fun onDrag(
+        p0: View?,
+        p1: DragEvent?,
+    ): Boolean {
         return when (p1?.action) {
             DragEvent.ACTION_DRAG_ENDED -> {
                 Log.d(TAG, "ENDING DRAG, DISABLE CORNERS")
                 mainFragment.requireMainActivity().initCornersDragListener(
                     true,
                     dragAndDropPref
-                        != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+                        != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT,
                 )
                 if (dragAndDropPref
                     != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
@@ -82,7 +84,7 @@ class RecyclerAdapterDragListener(
                                         holder.checkImageView
                                     } else {
                                         holder.checkImageViewGrid
-                                    }
+                                    },
                                 )
                             }
                         } else {
@@ -148,39 +150,42 @@ class RecyclerAdapterDragListener(
                     var currentFileParcelable: HybridFileParcelable? = null
                     var isCurrentElementDirectory: Boolean? = null
                     var isEmptyArea: Boolean? = null
-                    var pasteLocation: String? = if (adapter.itemsDigested?.size == 0) {
-                        mainFragment.currentPath
-                    } else {
-                        if (holder == null || holder.adapterPosition == RecyclerView.NO_POSITION) {
-                            Log.d(TAG, "Trying to drop into empty area")
-                            isEmptyArea = true
+                    var pasteLocation: String? =
+                        if (adapter.itemsDigested?.size == 0) {
                             mainFragment.currentPath
                         } else {
-                            adapter.itemsDigested?.let {
-                                    itemsDigested ->
-                                if (itemsDigested[holder.adapterPosition].specialType
-                                    == RecyclerAdapter.TYPE_BACK
-                                ) {
-                                    // dropping in goback button
-                                    // hack to get the parent path
-                                    val hybridFileParcelable = mainFragment
-                                        .elementsList!![1].generateBaseFile()
-                                    val hybridFile = HybridFile(
-                                        hybridFileParcelable.mode,
-                                        hybridFileParcelable.getParent(mainFragment.context)
-                                    )
-                                    hybridFile.getParent(mainFragment.context)
-                                } else {
-                                    val currentElement =
-                                        itemsDigested[holder.adapterPosition]
-                                            .layoutElementParcelable
-                                    currentFileParcelable = currentElement?.generateBaseFile()
-                                    isCurrentElementDirectory = currentElement?.isDirectory
-                                    currentElement?.desc
+                            if (holder == null || holder.adapterPosition == RecyclerView.NO_POSITION) {
+                                Log.d(TAG, "Trying to drop into empty area")
+                                isEmptyArea = true
+                                mainFragment.currentPath
+                            } else {
+                                adapter.itemsDigested?.let {
+                                        itemsDigested ->
+                                    if (itemsDigested[holder.adapterPosition].specialType
+                                        == RecyclerAdapter.TYPE_BACK
+                                    ) {
+                                        // dropping in goback button
+                                        // hack to get the parent path
+                                        val hybridFileParcelable =
+                                            mainFragment
+                                                .elementsList!![1].generateBaseFile()
+                                        val hybridFile =
+                                            HybridFile(
+                                                hybridFileParcelable.mode,
+                                                hybridFileParcelable.getParent(mainFragment.context),
+                                            )
+                                        hybridFile.getParent(mainFragment.context)
+                                    } else {
+                                        val currentElement =
+                                            itemsDigested[holder.adapterPosition]
+                                                .layoutElementParcelable
+                                        currentFileParcelable = currentElement?.generateBaseFile()
+                                        isCurrentElementDirectory = currentElement?.isDirectory
+                                        currentElement?.desc
+                                    }
                                 }
                             }
                         }
-                    }
                     if (checkedItems?.size == 0) {
                         // probably because we switched tabs and
                         // this adapter doesn't have any checked items, get from data utils
@@ -189,7 +194,7 @@ class RecyclerAdapterDragListener(
                             TAG,
                             "Didn't find checked items in adapter, " +
                                 "checking dataUtils size ${
-                                dataUtils.checkedItemsList?.size ?: "null"}"
+                                    dataUtils.checkedItemsList?.size ?: "null"}",
                         )
                         checkedItems = dataUtils.checkedItemsList
                     }
@@ -202,19 +207,20 @@ class RecyclerAdapterDragListener(
                                     isCurrentElementDirectory == false &&
                                         currentFileParcelable?.getParent(mainFragment.context)
                                             .equals(file.getParent(mainFragment.context))
-                                    ) ||
+                                ) ||
                                     (
-                                        isEmptyArea == true && mainFragment.currentPath
-                                            .equals(file.getParent(mainFragment.context))
-                                        )
-                                )
+                                        isEmptyArea == true &&
+                                            mainFragment.currentPath
+                                                .equals(file.getParent(mainFragment.context))
+                                    )
+                            )
                         ) {
                             Log.d(
                                 TAG,
                                 (
                                     "Trying to drop into one of checked items or current " +
                                         "location, not allowed ${it.desc}"
-                                    )
+                                ),
                             )
                             holder?.baseItemView?.run {
                                 isFocusable = false
@@ -233,12 +239,12 @@ class RecyclerAdapterDragListener(
                         (
                             "Trying to drop into one of checked items " +
                                 "%s"
-                            ).format(pasteLocation)
+                        ).format(pasteLocation),
                     )
                     DragAndDropDialog.showDialogOrPerformOperation(
                         pasteLocation!!,
                         arrayList,
-                        mainFragment.requireMainActivity()
+                        mainFragment.requireMainActivity(),
                     )
                     adapter.toggleChecked(false)
                     holder?.baseItemView?.run {

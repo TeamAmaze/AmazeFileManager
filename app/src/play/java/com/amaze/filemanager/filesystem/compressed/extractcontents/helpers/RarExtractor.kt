@@ -50,41 +50,41 @@ class RarExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
-
     private val isRobolectricTest = Build.HARDWARE == "robolectric"
 
     @Throws(IOException::class)
     override fun extractWithFilter(filter: Filter) {
         try {
             var totalBytes: Long = 0
-            val rarFile = runCatching {
-                ArchivePasswordCache.getInstance()[filePath]?.let {
-                    Archive(File(filePath), it).also { archive ->
-                        archive.password = it
-                    }
-                } ?: Archive(File(filePath))
-            }.onFailure {
-                when {
-                    // Hack. CorruptHeaderException will throw if archive is really corrupt or
-                    // password-protected RAR with wrong password, hence have to distinguish two
-                    // situations
-                    (
-                        !ArchivePasswordCache.getInstance().containsKey(filePath) &&
-                            CorruptHeaderException::class.java.isAssignableFrom(it::class.java)
+            val rarFile =
+                runCatching {
+                    ArchivePasswordCache.getInstance()[filePath]?.let {
+                        Archive(File(filePath), it).also { archive ->
+                            archive.password = it
+                        }
+                    } ?: Archive(File(filePath))
+                }.onFailure {
+                    when {
+                        // Hack. CorruptHeaderException will throw if archive is really corrupt or
+                        // password-protected RAR with wrong password, hence have to distinguish two
+                        // situations
+                        (
+                            !ArchivePasswordCache.getInstance().containsKey(filePath) &&
+                                CorruptHeaderException::class.java.isAssignableFrom(it::class.java)
                         ) or
-                        MainHeaderNullException::class.java.isAssignableFrom(it::class.java) -> {
-                        throw BadArchiveNotice(it)
+                            MainHeaderNullException::class.java.isAssignableFrom(it::class.java) -> {
+                            throw BadArchiveNotice(it)
+                        }
+                        UnsupportedRarV5Exception::class.java.isAssignableFrom(it::class.java) -> {
+                            throw it
+                        }
+                        else -> {
+                            throw PasswordRequiredException(filePath)
+                        }
                     }
-                    UnsupportedRarV5Exception::class.java.isAssignableFrom(it::class.java) -> {
-                        throw it
-                    }
-                    else -> {
-                        throw PasswordRequiredException(filePath)
-                    }
-                }
-            }.getOrNull()!!
+                }.getOrNull()!!
 
             if (rarFile.isPasswordProtectedCompat() || rarFile.isEncrypted) {
                 if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
@@ -134,14 +134,15 @@ class RarExtractor(
         context: Context,
         rarFile: Archive,
         entry: FileHeader,
-        outputDir: String
+        outputDir: String,
     ) {
         var _entry = entry
         val entrySpawnsVolumes = entry.isSplitAfter
-        val name = fixEntryName(entry.fileName).replace(
-            "\\\\".toRegex(),
-            CompressedHelper.SEPARATOR
-        )
+        val name =
+            fixEntryName(entry.fileName).replace(
+                "\\\\".toRegex(),
+                CompressedHelper.SEPARATOR,
+            )
         val outputFile = File(outputDir, name)
         if (!outputFile.canonicalPath.startsWith(outputDir) &&
             (isRobolectricTest && !outputFile.canonicalPath.startsWith("/private$outputDir"))
@@ -160,12 +161,13 @@ class RarExtractor(
         /* junrar doesn't throw exceptions if wrong archive password is supplied, until extracted file
            CRC is compared against the one stored in archive. So we can only rely on verifying CRC
            during extracting
-        */
+         */
         val inputStream = BufferedInputStream(rarFile.getInputStream(entry))
-        val outputStream = CheckedOutputStream(
-            BufferedOutputStream(FileUtil.getOutputStream(outputFile, context)),
-            CRC32()
-        )
+        val outputStream =
+            CheckedOutputStream(
+                BufferedOutputStream(FileUtil.getOutputStream(outputFile, context)),
+                CRC32(),
+            )
         try {
             var len: Int
             val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
@@ -173,7 +175,9 @@ class RarExtractor(
                 if (!listener.isCancelled) {
                     outputStream.write(buf, 0, len)
                     ServiceWatcherUtil.position += len.toLong()
-                } else break
+                } else {
+                    break
+                }
             }
             /* In multi-volume archives, FileHeader may have changed as the other parts of the
                archive is processed. Need to lookup the FileHeader in the volume the archive
@@ -202,12 +206,15 @@ class RarExtractor(
         }
     }
 
-    private fun tryExtractSmallestFileInArchive(context: Context, archive: Archive): String {
+    private fun tryExtractSmallestFileInArchive(
+        context: Context,
+        archive: Archive,
+    ): String {
         archive.fileHeaders ?: throw IOException(CorruptHeaderException())
         with(
             archive.fileHeaders.filter {
                 !it.isDirectory
-            }
+            },
         ) {
             if (isEmpty()) {
                 throw IOException(CorruptHeaderException())
@@ -216,13 +223,15 @@ class RarExtractor(
                     .minByOrNull {
                         it.value
                     }!!.run {
-                    val header = archive.fileHeaders.find {
-                        it.fileName.equals(this.key)
-                    }!!
-                    val filename = fixEntryName(header.fileName).replace(
-                        "\\\\".toRegex(),
-                        CompressedHelper.SEPARATOR
-                    )
+                    val header =
+                        archive.fileHeaders.find {
+                            it.fileName.equals(this.key)
+                        }!!
+                    val filename =
+                        fixEntryName(header.fileName).replace(
+                            "\\\\".toRegex(),
+                            CompressedHelper.SEPARATOR,
+                        )
                     extractEntry(context, archive, header, context.externalCacheDir!!.absolutePath)
                     return "${context.externalCacheDir!!.absolutePath}/$filename"
                 }

@@ -23,16 +23,15 @@ package com.amaze.filemanager.filesystem.ssh
 import net.schmizz.sshj.connection.channel.direct.Session
 import java.io.IOException
 
-abstract class SshClientSessionTemplate<T>
-/**
+abstract class SshClientSessionTemplate<T>/**
  * Constructor.
  *
  * @param url SSH connection URL, in the form of `
  * ssh://<username>:<password>@<host>:<port>` or `
  * ssh://<username>@<host>:<port>`
- */
-(@JvmField val url: String) {
-
+ */(
+    @JvmField val url: String,
+) {
     /**
      * Implement logic here.
      *

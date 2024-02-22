@@ -40,23 +40,23 @@ class SshAuthenticationTaskCallable(
     private val hostKey: String,
     private val username: String,
     private val password: String? = null,
-    private val privateKey: KeyPair? = null
+    private val privateKey: KeyPair? = null,
 ) : Callable<SSHClient> {
-
     init {
         require(
-            true == password?.isNotEmpty() || privateKey != null
+            true == password?.isNotEmpty() || privateKey != null,
         ) {
             "Must provide either password or privateKey"
         }
     }
 
     override fun call(): SSHClient {
-        val sshClient = NetCopyClientConnectionPool.sshClientFactory
-            .create(CustomSshJConfig()).also {
-                it.addHostKeyVerifier(hostKey)
-                it.connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-            }
+        val sshClient =
+            NetCopyClientConnectionPool.sshClientFactory
+                .create(CustomSshJConfig()).also {
+                    it.addHostKeyVerifier(hostKey)
+                    it.connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
+                }
         return run {
             sshClient.connect(hostname, port)
             if (privateKey != null) {
@@ -68,7 +68,7 @@ class SshAuthenticationTaskCallable(
                         override fun getPublic(): PublicKey = privateKey.public
 
                         override fun getType(): KeyType = KeyType.fromKey(public)
-                    }
+                    },
                 )
                 sshClient
             } else {
@@ -77,10 +77,10 @@ class SshAuthenticationTaskCallable(
                     decode(
                         PasswordUtil.decryptPassword(
                             AppConfig.getInstance(),
-                            password!!
+                            password!!,
                         ),
-                        UTF_8.name()
-                    )
+                        UTF_8.name(),
+                    ),
                 )
                 sshClient
             }

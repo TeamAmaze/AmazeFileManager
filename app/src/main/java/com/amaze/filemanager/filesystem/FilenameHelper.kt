@@ -27,53 +27,57 @@ import kotlin.math.absoluteValue
 /**
  * Convenient extension to return path element of a path string = the part before the last slash.
  */
-fun String.pathDirname(): String = if (contains(SLASH)) {
-    substringBeforeLast(SLASH)
-} else {
-    ""
-}
+fun String.pathDirname(): String =
+    if (contains(SLASH)) {
+        substringBeforeLast(SLASH)
+    } else {
+        ""
+    }
 
 /**
  * Convenient extension to return the name element of a path = the part after the last slash.
  */
-fun String.pathBasename(): String = if (contains(SLASH)) {
-    substringAfterLast(SLASH)
-} else {
-    this
-}
+fun String.pathBasename(): String =
+    if (contains(SLASH)) {
+        substringAfterLast(SLASH)
+    } else {
+        this
+    }
 
 /**
  * Convenient extension to return the basename element of a filename = the part after the last
  * slash and before the extension (.).
  */
-fun String.pathFileBasename(): String = if (contains('.')) {
-    pathBasename().substringBeforeLast('.')
-} else {
-    pathBasename()
-}
+fun String.pathFileBasename(): String =
+    if (contains('.')) {
+        pathBasename().substringBeforeLast('.')
+    } else {
+        pathBasename()
+    }
 
 /**
  * Convenient extension to return the extension element of a filename = the part after the last
  * slash and after the extension (.). Returns empty string if no extension dot exist.
  */
-fun String.pathFileExtension(): String = if (contains('.')) {
-    pathBasename().substringAfterLast('.')
-} else {
-    ""
-}
+fun String.pathFileExtension(): String =
+    if (contains('.')) {
+        pathBasename().substringAfterLast('.')
+    } else {
+        ""
+    }
 
 enum class FilenameFormatFlag {
-    DARWIN, DEFAULT, WINDOWS, LINUX
+    DARWIN,
+    DEFAULT,
+    WINDOWS,
+    LINUX,
 }
 
 object FilenameHelper {
+    // Don't split complex regexs into multiple lines.
 
-    /* Don't split complex regexs into multiple lines. */
-
-    /* ktlint-disable max-line-length */
     private const val REGEX_RAW_NUMBERS = "| [0-9]+"
     private const val REGEX_SOURCE = " \\((?:(another|[0-9]+(th|st|nd|rd)) )?copy\\)|copy( [0-9]+)?|\\.\\(incomplete\\)| \\([0-9]+\\)|[- ]+"
-    /* ktlint-enable max-line-length */
 
     private val ordinals = arrayOf("th", "st", "nd", "rd")
 
@@ -83,7 +87,10 @@ object FilenameHelper {
      * Default will not strip the raw numbers; specify removeRawNumbers = true to do so.
      */
     @JvmStatic
-    fun strip(input: String, removeRawNumbers: Boolean = false): String {
+    fun strip(
+        input: String,
+        removeRawNumbers: Boolean = false,
+    ): String {
         val filepath = stripIncrementInternal(input, removeRawNumbers)
         val extension = filepath.pathFileExtension()
         val dirname = stripIncrementInternal(filepath.pathDirname(), removeRawNumbers)
@@ -129,7 +136,7 @@ object FilenameHelper {
         platform: FilenameFormatFlag = FilenameFormatFlag.DEFAULT,
         strip: Boolean = true,
         removeRawNumbers: Boolean = false,
-        startArg: Int = 1
+        startArg: Int = 1,
     ): HybridFile {
         var filename = file.getName(AppConfig.getInstance())
         var dirname = file.path.pathDirname()
@@ -144,46 +151,56 @@ object FilenameHelper {
             basename = strip(basename, removeRawNumbers)
         }
 
-        var retval = HybridFile(
-            file.mode,
-            dirname,
-            filename,
-            file.isDirectory(AppConfig.getInstance())
-        )
-
-        while (retval.exists(AppConfig.getInstance())) {
-            filename = if (extension.isNotBlank()) {
-                format(platform, basename, start++) + ".$extension"
-            } else {
-                format(platform, basename, start++)
-            }
-            retval = HybridFile(
+        var retval =
+            HybridFile(
                 file.mode,
                 dirname,
                 filename,
-                file.isDirectory(AppConfig.getInstance())
+                file.isDirectory(AppConfig.getInstance()),
             )
+
+        while (retval.exists(AppConfig.getInstance())) {
+            filename =
+                if (extension.isNotBlank()) {
+                    format(platform, basename, start++) + ".$extension"
+                } else {
+                    format(platform, basename, start++)
+                }
+            retval =
+                HybridFile(
+                    file.mode,
+                    dirname,
+                    filename,
+                    file.isDirectory(AppConfig.getInstance()),
+                )
         }
 
         return retval
     }
 
-    private fun stripIncrementInternal(input: String, removeRawNumbers: Boolean = false): String {
-        val source = StringBuilder().run {
-            append(REGEX_SOURCE)
-            if (removeRawNumbers) {
-                append(REGEX_RAW_NUMBERS)
+    private fun stripIncrementInternal(
+        input: String,
+        removeRawNumbers: Boolean = false,
+    ): String {
+        val source =
+            StringBuilder().run {
+                append(REGEX_SOURCE)
+                if (removeRawNumbers) {
+                    append(REGEX_RAW_NUMBERS)
+                }
+                toString()
             }
-            toString()
-        }
         return Regex("($source)+$", RegexOption.IGNORE_CASE).replace(input, "")
     }
 
-    private fun stem(filepath: String, removeRawNumbers: Boolean = false): String {
+    private fun stem(
+        filepath: String,
+        removeRawNumbers: Boolean = false,
+    ): String {
         val extension = filepath.pathFileExtension()
         return stripIncrementInternal(
             filepath.pathBasename().substringBefore(".$extension"),
-            removeRawNumbers
+            removeRawNumbers,
         )
     }
 
@@ -199,7 +216,11 @@ object FilenameHelper {
     }
 
     // TODO: i18n
-    private fun format(flag: FilenameFormatFlag, stem: String, n: Int): String {
+    private fun format(
+        flag: FilenameFormatFlag,
+        stem: String,
+        n: Int,
+    ): String {
         return when (flag) {
             FilenameFormatFlag.DARWIN -> {
                 if (n == 1) {

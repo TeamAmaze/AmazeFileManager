@@ -52,21 +52,21 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class UtilitiesDatabaseMigrationTest {
-
     companion object {
         private const val TEST_DB = "utilities-test"
     }
 
     @Rule
     @JvmField
-    val helper = MigrationTestHelper(
-        InstrumentationRegistry.getInstrumentation(),
-        UtilitiesDatabase::class.java.canonicalName,
-        FrameworkSQLiteOpenHelperFactory()
-    )
+    val helper =
+        MigrationTestHelper(
+            InstrumentationRegistry.getInstrumentation(),
+            UtilitiesDatabase::class.java.canonicalName,
+            FrameworkSQLiteOpenHelperFactory(),
+        )
 
     /**
      * Sanity check for all migrations.
@@ -76,20 +76,21 @@ class UtilitiesDatabaseMigrationTest {
         val db = helper.createDatabase(TEST_DB, 1)
         db.close()
 
-        val utilitiesDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            UtilitiesDatabase::class.java,
-            TEST_DB
-        )
-            .allowMainThreadQueries()
-            .addMigrations(
-                UtilitiesDatabase.MIGRATION_1_2,
-                UtilitiesDatabase.MIGRATION_2_3,
-                UtilitiesDatabase.MIGRATION_3_4,
-                UtilitiesDatabase.MIGRATION_4_5,
-                UtilitiesDatabase.MIGRATION_5_6
+        val utilitiesDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                UtilitiesDatabase::class.java,
+                TEST_DB,
             )
-            .build()
+                .allowMainThreadQueries()
+                .addMigrations(
+                    UtilitiesDatabase.MIGRATION_1_2,
+                    UtilitiesDatabase.MIGRATION_2_3,
+                    UtilitiesDatabase.MIGRATION_3_4,
+                    UtilitiesDatabase.MIGRATION_4_5,
+                    UtilitiesDatabase.MIGRATION_5_6,
+                )
+                .build()
         utilitiesDatabase.openHelper.writableDatabase
         utilitiesDatabase.close()
     }
@@ -102,44 +103,47 @@ class UtilitiesDatabaseMigrationTest {
     fun testMigrationFrom5To6() {
         val db: SupportSQLiteDatabase =
             helper.createDatabase(TEST_DB, 5)
-        val password1 = PasswordUtil.encryptPassword(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            "passw0rd",
-            Base64.DEFAULT
-        )
-        val password2 = PasswordUtil.encryptPassword(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            "\\password/%&*()",
-            Base64.DEFAULT
+        val password1 =
+            PasswordUtil.encryptPassword(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                "passw0rd",
+                Base64.DEFAULT,
+            )
+        val password2 =
+            PasswordUtil.encryptPassword(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                "\\password/%&*()",
+                Base64.DEFAULT,
+            )
+        db.execSQL(
+            "INSERT INTO $TABLE_SMB ($COLUMN_NAME, $COLUMN_PATH) " +
+                "VALUES ('test', 'smb://user:$password1@127.0.0.1/user')",
         )
         db.execSQL(
             "INSERT INTO $TABLE_SMB ($COLUMN_NAME, $COLUMN_PATH) " +
-                "VALUES ('test', 'smb://user:$password1@127.0.0.1/user')"
-        )
-        db.execSQL(
-            "INSERT INTO $TABLE_SMB ($COLUMN_NAME, $COLUMN_PATH) " +
-                "VALUES ('test anonymous', 'smb://127.0.0.1/Public')"
+                "VALUES ('test anonymous', 'smb://127.0.0.1/Public')",
         )
         db.execSQL(
             "INSERT INTO $TABLE_SFTP ($COLUMN_NAME, $COLUMN_PATH, $COLUMN_HOST_PUBKEY) " +
-                "VALUES ('test password', 'ssh://user:$password2@10.0.0.1', '12345678')"
+                "VALUES ('test password', 'ssh://user:$password2@10.0.0.1', '12345678')",
         )
         db.execSQL(
             "INSERT INTO $TABLE_SFTP ($COLUMN_NAME, $COLUMN_PATH, $COLUMN_HOST_PUBKEY, " +
                 "$COLUMN_PRIVATE_KEY_NAME, $COLUMN_PRIVATE_KEY) " +
                 "VALUES ('test no password', 'ssh://user@10.0.0.2', '1234'," +
-                " 'test private key', 'abcd')"
+                " 'test private key', 'abcd')",
         )
         db.close()
 
-        val utilitiesDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            UtilitiesDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(UtilitiesDatabase.MIGRATION_5_6)
-            .allowMainThreadQueries()
-            .build()
+        val utilitiesDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                UtilitiesDatabase::class.java,
+                TEST_DB,
+            )
+                .addMigrations(UtilitiesDatabase.MIGRATION_5_6)
+                .allowMainThreadQueries()
+                .build()
         utilitiesDatabase.openHelper.writableDatabase
         val smbEntries = utilitiesDatabase.smbEntryDao().list().blockingGet()
         smbEntries.find { it.name == "test" }?.run {
@@ -147,8 +151,8 @@ class UtilitiesDatabaseMigrationTest {
                 "smb://user:passw0rd@127.0.0.1/user",
                 SmbUtil.getSmbDecryptedPath(
                     InstrumentationRegistry.getInstrumentation().targetContext,
-                    this.path
-                )
+                    this.path,
+                ),
             )
         }
 //        smbEntries.find { it.name == "test anonymous" }?.run {

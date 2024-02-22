@@ -37,7 +37,6 @@ import org.robolectric.shadows.ShadowDialog
  * Test [EncryptWarningDialog].
  */
 class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
-
     /**
      * Verify dialog behaviour.
      */
@@ -52,17 +51,17 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
                 assertEquals(getString(R.string.crypt_warning_key), contentView?.text.toString())
                 assertEquals(
                     getString(R.string.warning_never_show),
-                    getActionButton(DialogAction.NEGATIVE).text
+                    getActionButton(DialogAction.NEGATIVE).text,
                 )
                 assertEquals(
                     getString(R.string.warning_confirm),
-                    getActionButton(DialogAction.POSITIVE).text
+                    getActionButton(DialogAction.POSITIVE).text,
                 )
                 assertTrue(getActionButton(DialogAction.POSITIVE).performClick())
             }
             assertFalse(
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
-                    .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false)
+                    .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
         }
     }
@@ -81,7 +80,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
             }
             assertTrue(
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
-                    .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false)
+                    .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
         }
     }

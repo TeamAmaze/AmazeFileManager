@@ -42,47 +42,47 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication")
 abstract class AbstractFilenameHelperIncrementNameTests {
-
     protected abstract val formatFlag: FilenameFormatFlag
 
     protected lateinit var file: HybridFile
 
-    private val existingFiles = arrayOf(
-        "/test/afile",
-        "/test/abc (2) - Copy - Copy.txt",
-        "/test/abc (2) - Copy.txt",
-        "/test/abc.txt",
-        "/test/bar.txt",
-        "/test/foo (2).txt",
-        "/test/foo 2 2.txt",
-        "/test/foo 2.txt",
-        "/test/foo 22.txt",
-        "/test/foo 3 copy.txt",
-        "/test/foo copy 2.txt",
-        "/test/foo copy 3.txt",
-        "/test/foo copy 4.txt",
-        "/test/foo copy 5.txt",
-        "/test/foo copy 6.txt",
-        "/test/foo copy.txt",
-        "/test/foo.txt",
-        "/test/one (copy).txt",
-        "/test/one.txt",
-        "/test/qux (2).txt",
-        "/test/qux 2.txt",
-        "/test/qux.txt",
-        "/test/sub/foo.txt",
-        "/test/sub/bar.txt",
-        "/test/sub/nested/bar.txt",
-        "/test/sub/nested/foo.txt",
-        "/test/sub/nested/foo copy.txt",
-        "/test/sub/nested/qux.txt",
-        "/test/sub/nested/qux 2.txt",
-        "/test/sub/nested/qux (2).txt"
-    )
+    private val existingFiles =
+        arrayOf(
+            "/test/afile",
+            "/test/abc (2) - Copy - Copy.txt",
+            "/test/abc (2) - Copy.txt",
+            "/test/abc.txt",
+            "/test/bar.txt",
+            "/test/foo (2).txt",
+            "/test/foo 2 2.txt",
+            "/test/foo 2.txt",
+            "/test/foo 22.txt",
+            "/test/foo 3 copy.txt",
+            "/test/foo copy 2.txt",
+            "/test/foo copy 3.txt",
+            "/test/foo copy 4.txt",
+            "/test/foo copy 5.txt",
+            "/test/foo copy 6.txt",
+            "/test/foo copy.txt",
+            "/test/foo.txt",
+            "/test/one (copy).txt",
+            "/test/one.txt",
+            "/test/qux (2).txt",
+            "/test/qux 2.txt",
+            "/test/qux.txt",
+            "/test/sub/foo.txt",
+            "/test/sub/bar.txt",
+            "/test/sub/nested/bar.txt",
+            "/test/sub/nested/foo.txt",
+            "/test/sub/nested/foo copy.txt",
+            "/test/sub/nested/qux.txt",
+            "/test/sub/nested/qux 2.txt",
+            "/test/sub/nested/qux (2).txt",
+        )
 
     /**
      * Sanity check.
@@ -126,7 +126,7 @@ abstract class AbstractFilenameHelperIncrementNameTests {
         pairs: Array<Pair<String, String>>,
         strip: Boolean = false,
         removeRawNumbers: Boolean = false,
-        start: Int = 1
+        start: Int = 1,
     ) {
         for (pair in pairs) performTest(pair, strip, removeRawNumbers, start)
     }
@@ -135,7 +135,7 @@ abstract class AbstractFilenameHelperIncrementNameTests {
         pair: Pair<String, String>,
         strip: Boolean = false,
         removeRawNumbers: Boolean = false,
-        start: Int = 1
+        start: Int = 1,
     ) {
         Mockito.mockConstruction(HybridFile::class.java) { file, context ->
             file.mode = context.arguments()[0] as OpenMode

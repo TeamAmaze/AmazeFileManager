@@ -29,7 +29,6 @@ import com.amaze.filemanager.asynchronous.services.ExtractService
 /** @author Emmanuel on 20/11/2017, at 17:14.
  */
 abstract class Decompressor(protected var context: Context) {
-
     lateinit var filePath: String
 
     /**
@@ -39,16 +38,17 @@ abstract class Decompressor(protected var context: Context) {
      */
     abstract fun changePath(
         path: String,
-        addGoBackItem: Boolean
+        addGoBackItem: Boolean,
     ): CompressedHelperCallable
 
     /** Decompress a file somewhere  */
     fun decompress(whereToDecompress: String) {
-        val intent = Intent(context, ExtractService::class.java).also {
-            it.putExtra(ExtractService.KEY_PATH_ZIP, filePath)
-            it.putExtra(ExtractService.KEY_ENTRIES_ZIP, arrayOfNulls<String>(0))
-            it.putExtra(ExtractService.KEY_PATH_EXTRACT, whereToDecompress)
-        }
+        val intent =
+            Intent(context, ExtractService::class.java).also {
+                it.putExtra(ExtractService.KEY_PATH_ZIP, filePath)
+                it.putExtra(ExtractService.KEY_ENTRIES_ZIP, arrayOfNulls<String>(0))
+                it.putExtra(ExtractService.KEY_PATH_EXTRACT, whereToDecompress)
+            }
         ServiceWatcherUtil.runService(context, intent)
     }
 
@@ -58,15 +58,19 @@ abstract class Decompressor(protected var context: Context) {
      * @param subDirectories separator is "/", ended with "/" if it is a directory, does not if it's a
      * file
      */
-    fun decompress(whereToDecompress: String, subDirectories: Array<String?>) {
+    fun decompress(
+        whereToDecompress: String,
+        subDirectories: Array<String?>,
+    ) {
         subDirectories.filterNotNull().map {
             realRelativeDirectory(it)
         }.run {
-            val intent = Intent(context, ExtractService::class.java).also {
-                it.putExtra(ExtractService.KEY_PATH_ZIP, filePath)
-                it.putExtra(ExtractService.KEY_ENTRIES_ZIP, subDirectories)
-                it.putExtra(ExtractService.KEY_PATH_EXTRACT, whereToDecompress)
-            }
+            val intent =
+                Intent(context, ExtractService::class.java).also {
+                    it.putExtra(ExtractService.KEY_PATH_ZIP, filePath)
+                    it.putExtra(ExtractService.KEY_ENTRIES_ZIP, subDirectories)
+                    it.putExtra(ExtractService.KEY_PATH_EXTRACT, whereToDecompress)
+                }
             ServiceWatcherUtil.runService(context, intent)
         }
     }

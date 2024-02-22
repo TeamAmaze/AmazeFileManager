@@ -66,7 +66,6 @@ import kotlin.random.Random
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("StringLiteralDuplication")
 class FtpServiceAndroidFileSystemIntegrationTest {
-
     private val FTP_PORT = 62222
 
     private var server: FtpServer? = null
@@ -76,21 +75,21 @@ class FtpServiceAndroidFileSystemIntegrationTest {
     private var ftpClient: FTPClient? = null
 
     companion object {
-
-        val directories = arrayOf(
-            Environment.DIRECTORY_MUSIC,
-            Environment.DIRECTORY_PODCASTS,
-            Environment.DIRECTORY_RINGTONES,
-            Environment.DIRECTORY_ALARMS,
-            Environment.DIRECTORY_NOTIFICATIONS,
-            Environment.DIRECTORY_PICTURES,
-            Environment.DIRECTORY_MOVIES,
-            Environment.DIRECTORY_DOWNLOADS,
-            Environment.DIRECTORY_DCIM,
-            Environment.DIRECTORY_DOCUMENTS,
-            "1/2/3/4/5/6/7",
-            "lost+found"
-        )
+        val directories =
+            arrayOf(
+                Environment.DIRECTORY_MUSIC,
+                Environment.DIRECTORY_PODCASTS,
+                Environment.DIRECTORY_RINGTONES,
+                Environment.DIRECTORY_ALARMS,
+                Environment.DIRECTORY_NOTIFICATIONS,
+                Environment.DIRECTORY_PICTURES,
+                Environment.DIRECTORY_MOVIES,
+                Environment.DIRECTORY_DOWNLOADS,
+                Environment.DIRECTORY_DCIM,
+                Environment.DIRECTORY_DOCUMENTS,
+                "1/2/3/4/5/6/7",
+                "lost+found",
+            )
     }
 
     /**
@@ -109,7 +108,7 @@ class FtpServiceAndroidFileSystemIntegrationTest {
             .run {
                 edit().putString(
                     FtpService.KEY_PREFERENCE_PATH,
-                    Environment.getExternalStorageDirectory().absolutePath
+                    Environment.getExternalStorageDirectory().absolutePath,
                 )
                     .apply()
             }
@@ -129,62 +128,67 @@ class FtpServiceAndroidFileSystemIntegrationTest {
             connectionConfig = connectionConfigFactory.createConnectionConfig()
             userManager.save(user)
 
-            fileSystem = AndroidFileSystemFactory(
-                ApplicationProvider.getApplicationContext()
-            )
+            fileSystem =
+                AndroidFileSystemFactory(
+                    ApplicationProvider.getApplicationContext(),
+                )
             addListener(
                 "default",
                 ListenerFactory().also {
                     it.port = FTP_PORT
-                }.createListener()
+                }.createListener(),
             )
 
-            server = createServer().apply {
-                start()
-            }
+            server =
+                createServer().apply {
+                    start()
+                }
         }
 
-        ftpClient = FTPClient().also {
-            it.connect("127.0.0.1", FTP_PORT)
-            it.login("anonymous", "no@e.mail")
-            it.enterLocalPassiveMode()
-        }
+        ftpClient =
+            FTPClient().also {
+                it.connect("127.0.0.1", FTP_PORT)
+                it.login("anonymous", "no@e.mail")
+                it.enterLocalPassiveMode()
+            }
     }
 
     private fun setupNetwork() {
-        val cm = shadowOf(
-            ApplicationProvider.getApplicationContext<Context>()
-                .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        )
-        val wifiManager = shadowOf(
-            ApplicationProvider.getApplicationContext<Context>()
-                .getSystemService(Context.WIFI_SERVICE) as WifiManager
-        )
+        val cm =
+            shadowOf(
+                ApplicationProvider.getApplicationContext<Context>()
+                    .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager,
+            )
+        val wifiManager =
+            shadowOf(
+                ApplicationProvider.getApplicationContext<Context>()
+                    .getSystemService(Context.WIFI_SERVICE) as WifiManager,
+            )
         cm.setActiveNetworkInfo(
             ShadowNetworkInfo.newInstance(
                 NetworkInfo.DetailedState.CONNECTED,
                 ConnectivityManager.TYPE_WIFI,
                 -1,
                 true,
-                NetworkInfo.State.CONNECTED
-            )
+                NetworkInfo.State.CONNECTED,
+            ),
         )
         ReflectionHelpers.callInstanceMethod<Any>(
             wifiManager,
             "setWifiEnabled",
-            ReflectionHelpers.ClassParameter.from(Boolean::class.java, true)
+            ReflectionHelpers.ClassParameter.from(Boolean::class.java, true),
         )
         ReflectionHelpers.callInstanceMethod<WifiInfo>(
             wifiManager,
-            "getConnectionInfo"
+            "getConnectionInfo",
         ).run {
             ReflectionHelpers.callInstanceMethod<Any>(
                 this,
                 "setInetAddress",
                 ReflectionHelpers.ClassParameter.from(
                     InetAddress::class.java,
-                    InetAddress.getLoopbackAddress()
-                )
+                    InetAddress.getLoopbackAddress(),
+                ),
             )
         }
     }
@@ -247,8 +251,8 @@ class FtpServiceAndroidFileSystemIntegrationTest {
             assertFalse(
                 retrieveFile(
                     "/barrier/nonexist.file.jpg",
-                    FileOutputStream(File.createTempFile("notused", "output"))
-                )
+                    FileOutputStream(File.createTempFile("notused", "output")),
+                ),
             )
             assertTrue(changeWorkingDirectory("/"))
             retrieveFileStream("test.bin").let {

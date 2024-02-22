@@ -24,7 +24,8 @@ enum class SearchParameter {
     ROOT,
     REGEX,
     REGEX_MATCHES,
-    SHOW_HIDDEN_FILES;
+    SHOW_HIDDEN_FILES,
+    ;
 
     /**
      * Returns [SearchParameters] containing [this] and [other]

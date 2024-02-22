@@ -42,7 +42,6 @@ import java.io.File
  */
 @Suppress("StringLiteralDuplication")
 class PWDCommandTest : AbstractFtpserverCommandTest() {
-
     private lateinit var fsView: NativeFileSystemView
 
     private lateinit var user: User
@@ -50,7 +49,6 @@ class PWDCommandTest : AbstractFtpserverCommandTest() {
     private lateinit var ftpSession: FtpIoSession
 
     companion object {
-
         // Nobody is interested in this, nor asking it any question.
         // Of course in reality FtpServerContext will never be static
         private lateinit var context: FtpServerContext
@@ -75,10 +73,11 @@ class PWDCommandTest : AbstractFtpserverCommandTest() {
     override fun setUp() {
         super.setUp()
         File(Environment.getExternalStorageDirectory(), "Music").mkdirs()
-        user = BaseUser().also {
-            it.homeDirectory = Environment.getExternalStorageDirectory().absolutePath
-            it.authorities = listOf(WritePermission())
-        }
+        user =
+            BaseUser().also {
+                it.homeDirectory = Environment.getExternalStorageDirectory().absolutePath
+                it.authorities = listOf(WritePermission())
+            }
         fsView = NativeFileSystemView(user, false)
 
         ftpSession = FtpIoSession(session, context)
@@ -139,7 +138,7 @@ class PWDCommandTest : AbstractFtpserverCommandTest() {
         command.execute(
             session = ftpSession,
             context = context,
-            request = DefaultFtpRequest("PWD")
+            request = DefaultFtpRequest("PWD"),
         )
     }
 }

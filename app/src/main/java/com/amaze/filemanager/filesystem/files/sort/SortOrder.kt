@@ -27,5 +27,5 @@ package com.amaze.filemanager.filesystem.files.sort
  */
 enum class SortOrder(val sortFactor: Int) {
     ASC(1),
-    DESC(-1)
+    DESC(-1),
 }

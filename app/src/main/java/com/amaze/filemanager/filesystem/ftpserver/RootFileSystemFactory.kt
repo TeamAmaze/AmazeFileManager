@@ -26,9 +26,7 @@ import org.apache.ftpserver.ftplet.User
 
 class RootFileSystemFactory(
     private val fileFactory: RootFileSystemView.SuFileFactory =
-        RootFileSystemView.DefaultSuFileFactory()
+        RootFileSystemView.DefaultSuFileFactory(),
 ) : FileSystemFactory {
-
-    override fun createFileSystemView(user: User): FileSystemView =
-        RootFileSystemView(user, fileFactory)
+    override fun createFileSystemView(user: User): FileSystemView = RootFileSystemView(user, fileFactory)
 }

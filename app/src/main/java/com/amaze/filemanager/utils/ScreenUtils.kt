@@ -26,7 +26,6 @@ import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 class ScreenUtils(act: Activity) {
-
     private val _activity: WeakReference<Activity> = WeakReference(act)
     private val activity: Activity?
         get() = _activity.get()

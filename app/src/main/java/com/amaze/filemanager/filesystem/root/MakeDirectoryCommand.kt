@@ -25,7 +25,6 @@ import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object MakeDirectoryCommand : IRootCommand() {
-
     /**
      * Creates an empty directory using root
      *
@@ -33,7 +32,10 @@ object MakeDirectoryCommand : IRootCommand() {
      * @param name name of directory
      */
     @Throws(ShellNotRunningException::class)
-    fun makeDirectory(path: String, name: String) {
+    fun makeDirectory(
+        path: String,
+        name: String,
+    ) {
         val mountPoint = MountPathCommand.mountPath(path, MountPathCommand.READ_WRITE)
         val filePath = "$path/$name"
         runShellCommand("mkdir \"${RootHelper.getCommandLineString(filePath)}\"")

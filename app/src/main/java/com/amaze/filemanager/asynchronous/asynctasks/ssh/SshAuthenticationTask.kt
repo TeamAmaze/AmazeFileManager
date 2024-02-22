@@ -39,9 +39,8 @@ class SshAuthenticationTask(
     private val hostKey: String,
     private val username: String,
     private val password: String? = null,
-    private val privateKey: KeyPair? = null
+    private val privateKey: KeyPair? = null,
 ) : Task<SSHClient, SshAuthenticationTaskCallable> {
-
     override fun getTask(): SshAuthenticationTaskCallable =
         SshAuthenticationTaskCallable(hostname, port, hostKey, username, password, privateKey)
 
@@ -60,11 +59,11 @@ class SshAuthenticationTask(
                         R.string.ssh_connect_failed,
                         hostname,
                         port,
-                        error.localizedMessage ?: error.message
-                    )
+                        error.localizedMessage ?: error.message,
+                    ),
             )
         } else if (TransportException::class.java
-            .isAssignableFrom(error.javaClass)
+                .isAssignableFrom(error.javaClass)
         ) {
             val disconnectReason =
                 TransportException::class.java.cast(error)!!.disconnectReason
@@ -80,12 +79,12 @@ class SshAuthenticationTask(
         } else if (password != null) {
             AppConfig.toast(
                 AppConfig.getInstance(),
-                R.string.ssh_authentication_failure_password
+                R.string.ssh_authentication_failure_password,
             )
         } else if (privateKey != null) {
             AppConfig.toast(
                 AppConfig.getInstance(),
-                R.string.ssh_authentication_failure_key
+                R.string.ssh_authentication_failure_key,
             )
         }
     }

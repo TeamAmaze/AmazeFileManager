@@ -1,0 +1,9 @@
+# Run this command to always ignore specific commits in `git blame`
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# format all java files
+94dae8259f075e4099cd92c258386dc39bfc30c1
+
+# format all kotlin files
+45178b3d348cd1fe768bcfc086b04b15ea5d69ea
+

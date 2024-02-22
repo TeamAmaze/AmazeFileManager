@@ -29,7 +29,7 @@ class CustomScrollGridLayoutManager(context: Context?, spanCount: Int) :
     override fun smoothScrollToPosition(
         recyclerView: RecyclerView?,
         state: RecyclerView.State?,
-        position: Int
+        position: Int,
     ) {
         val linearSmoothScroller = CustomLinearSmoothScroller(recyclerView!!.context, false)
         linearSmoothScroller.targetPosition = position

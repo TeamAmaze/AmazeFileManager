@@ -43,7 +43,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod", "LargeClass")
 class FileListSorterTest {
@@ -57,38 +57,41 @@ class FileListSorterTest {
      */
     @Test
     fun testDir0File1DirAndFile2NoDir() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.DIR_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.DIR_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), -1)
     }
 
@@ -96,7 +99,8 @@ class FileListSorterTest {
      public LayoutElementParcelable(String title, String path, String permissions,
                                 String symlink, String size, long longSize, boolean header,
                                 String date, boolean isDirectory, boolean useThumbs, OpenMode openMode)
-  */
+     */
+
     /**
      * Purpose: when dirsOnTop is [DirSortBy.DIR_ON_TOP], if file1 is not directory && file2 is directory, result is 1
      *
@@ -107,38 +111,41 @@ class FileListSorterTest {
      */
     @Test
     fun testDir0File1NoDirAndFile2Dir() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.DIR_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1.txt",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.DIR_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1.txt",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 1)
     }
 
@@ -152,38 +159,41 @@ class FileListSorterTest {
      */
     @Test
     fun testDir1File1DirAndFile2NoDir() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.FILE_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.FILE_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 1)
     }
 
@@ -197,42 +207,46 @@ class FileListSorterTest {
      */
     @Test
     fun testDir1File1NoDirAndFile2Dir() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.FILE_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1.txt",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.FILE_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1.txt",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), -1)
     }
 
     // From here, use dir is not DIR_ON_TOP or FILE_ON_TOP. -> Select dir is NONE_ON_TOP
+
     /**
      * Purpose: when sort is [SortBy.NAME], if file1 title's length bigger than file2 title's length, result is
      * positive
@@ -244,38 +258,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort0File1TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1.txt",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1.txt",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.greaterThan(0))
     }
 
@@ -290,38 +307,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort0File2TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.lessThan(0))
     }
 
@@ -336,38 +356,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort0TitleSame() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.NAME, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "ABC.txt",
-            "C:\\AmazeFileManager\\ABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.NAME, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "ABC.txt",
+                "C:\\AmazeFileManager\\ABC",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
     }
 
@@ -381,38 +404,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort1File1DateLatest() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.LAST_MODIFIED, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.greaterThan(0))
     }
 
@@ -426,38 +452,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort1File2DateLatest() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1235",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.LAST_MODIFIED, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1235",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.lessThan(0))
     }
 
@@ -471,38 +500,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort1FileDateSame() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.LAST_MODIFIED, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
     }
 
@@ -517,38 +549,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2NoDirAndFile1SizeBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.greaterThan(0))
     }
 
@@ -563,38 +598,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2NoDirAndFile2SizeBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.lessThan(0))
     }
 
@@ -609,38 +647,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2NoDirAndFileSizeSame() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
     }
 
@@ -655,38 +696,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2File1DirAndFile1TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.greaterThan(0))
     }
 
@@ -701,38 +745,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2File1DirAndFile2TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.lessThan(0))
     }
 
@@ -747,38 +794,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2File2DirAndFile1TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1.txt",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1.txt",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.greaterThan(0))
     }
 
@@ -793,38 +843,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2File2DirAndFile2TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.lessThan(0))
     }
 
@@ -839,38 +892,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort2File2DirAndFileTitleSame() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.SIZE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            true,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.SIZE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                true,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
     }
 
@@ -885,38 +941,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort3FileExtensionSameAndFile1TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.TYPE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc1.txt",
-            "C:\\AmazeFileManager\\abc1",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.TYPE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc1.txt",
+                "C:\\AmazeFileManager\\abc1",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.greaterThan(0))
     }
 
@@ -931,38 +990,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort3FileExtensionSameAndFile2TitleBigger() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.TYPE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc2.txt",
-            "C:\\AmazeFileManager\\abc2",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.TYPE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc2.txt",
+                "C:\\AmazeFileManager\\abc2",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertThat(fileListSorter.compare(file1, file2), Matchers.lessThan(0))
     }
 
@@ -977,38 +1039,41 @@ class FileListSorterTest {
      */
     @Test
     fun testSort3FileExtensionSameAndFileTitleSame() {
-        val fileListSorter = FileListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.TYPE, SortOrder.ASC)
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "abc.txt",
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "ABC.txt",
-            "C:\\AmazeFileManager\\ABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        )
+        val fileListSorter =
+            FileListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.TYPE, SortOrder.ASC),
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "abc.txt",
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "ABC.txt",
+                "C:\\AmazeFileManager\\ABC",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            )
         Assert.assertEquals(fileListSorter.compare(file1, file2).toLong(), 0)
     }
 }

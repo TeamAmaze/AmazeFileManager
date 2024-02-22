@@ -75,10 +75,9 @@ import kotlin.text.Charsets.UTF_8
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class NetCopyClientConnectionPoolSshTest {
-
     /**
      * Post test cleanup.
      */
@@ -104,10 +103,10 @@ class NetCopyClientConnectionPoolSshTest {
                 "testuser",
                 PasswordUtil.encryptPassword(
                     AppConfig.getInstance(),
-                    "testpassword"
+                    "testpassword",
                 ),
-                null
-            )
+                null,
+            ),
         )
         assertNull(
             getConnection(
@@ -118,16 +117,16 @@ class NetCopyClientConnectionPoolSshTest {
                 "invaliduser",
                 PasswordUtil.encryptPassword(
                     AppConfig.getInstance(),
-                    "invalidpassword"
+                    "invalidpassword",
                 ),
-                null
-            )
+                null,
+            ),
         )
         verify(mock, times(2))
             .addHostKeyVerifier(
                 SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
+                    hostKeyPair.public,
+                ),
             )
         verify(mock, times(2)).connect(HOST, PORT)
         verify(mock).authPassword("testuser", "testpassword")
@@ -149,8 +148,8 @@ class NetCopyClientConnectionPoolSshTest {
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 "testuser",
                 null,
-                userKeyPair
-            )
+                userKeyPair,
+            ),
         )
         shutdown()
         assertNull(
@@ -161,14 +160,14 @@ class NetCopyClientConnectionPoolSshTest {
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 "invaliduser",
                 null,
-                userKeyPair
-            )
+                userKeyPair,
+            ),
         )
         verify(mock, times(2))
             .addHostKeyVerifier(
                 SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
+                    hostKeyPair.public,
+                ),
             )
         verify(mock, times(2)).connect(HOST, PORT)
         verify(mock).authPublickey("testuser", sshKeyProvider)
@@ -314,20 +313,25 @@ class NetCopyClientConnectionPoolSshTest {
         doRunTest(validUsername, validPassword)
     }
 
-    private fun doRunTest(validUsername: String, validPassword: String, subPath: String? = null) {
+    private fun doRunTest(
+        validUsername: String,
+        validPassword: String,
+        subPath: String? = null,
+    ) {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val encodedPassword = encode(validPassword, UTF_8.name())
-        val encryptedPassword = PasswordUtil.encryptPassword(
-            AppConfig.getInstance(),
-            encodedPassword
-        )?.replace("\n", "")
+        val encryptedPassword =
+            PasswordUtil.encryptPassword(
+                AppConfig.getInstance(),
+                encodedPassword,
+            )?.replace("\n", "")
         val mock = createSshServer(validUsername, validPassword)
         TestUtils.saveSshConnectionSettings(
             hostKeyPair,
             encodedUsername,
             encryptedPassword,
             null,
-            subPath
+            subPath,
         )
         assertNotNull(
             getConnection<SSHClient>(
@@ -335,8 +339,8 @@ class NetCopyClientConnectionPoolSshTest {
                     "ssh://$encodedUsername:$encryptedPassword@$HOST:$PORT"
                 } else {
                     "ssh://$encodedUsername:$encryptedPassword@$HOST:$PORT$subPath"
-                }
-            )
+                },
+            ),
         )
         assertNull(
             getConnection<SSHClient>(
@@ -345,15 +349,15 @@ class NetCopyClientConnectionPoolSshTest {
                         "ssh://$encodedInvalidUsername:$encodedInvalidPassword@$HOST:$PORT"
                     } else {
                         "ssh://$encodedInvalidUsername:$encodedInvalidPassword@$HOST:$PORT$subPath"
-                    }
-                )
-            )
+                    },
+                ),
+            ),
         )
         verify(mock, atLeastOnce())
             .addHostKeyVerifier(
                 SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
+                    hostKeyPair.public,
+                ),
             )
         verify(mock, atLeastOnce()).connectTimeout =
             NetCopyClientConnectionPool.CONNECT_TIMEOUT
@@ -366,7 +370,7 @@ class NetCopyClientConnectionPoolSshTest {
     private fun doRunTest(
         validUsername: String,
         validPrivateKey: PrivateKey = userKeyPair.private,
-        subPath: String? = null
+        subPath: String? = null,
     ) {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val mock = createSshServer(validUsername, null)
@@ -375,7 +379,7 @@ class NetCopyClientConnectionPoolSshTest {
             encodedUsername,
             null,
             validPrivateKey,
-            subPath
+            subPath,
         )
         assertNotNull(
             getConnection<SSHClient>(
@@ -383,8 +387,8 @@ class NetCopyClientConnectionPoolSshTest {
                     "ssh://$encodedUsername@$HOST:$PORT"
                 } else {
                     "ssh://$encodedUsername@$HOST:$PORT$subPath"
-                }
-            )
+                },
+            ),
         )
         assertNull(
             getConnection<SSHClient>(
@@ -392,14 +396,14 @@ class NetCopyClientConnectionPoolSshTest {
                     "ssh://$encodedInvalidUsername@$HOST:$PORT"
                 } else {
                     "ssh://$encodedInvalidUsername@$HOST:$PORT$subPath"
-                }
-            )
+                },
+            ),
         )
         verify(mock, atLeastOnce())
             .addHostKeyVerifier(
                 SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
+                    hostKeyPair.public,
+                ),
             )
         verify(mock, atLeastOnce()).connectTimeout =
             NetCopyClientConnectionPool.CONNECT_TIMEOUT
@@ -410,15 +414,18 @@ class NetCopyClientConnectionPoolSshTest {
     }
 
     @Throws(IOException::class)
-    private fun createSshServer(validUsername: String, validPassword: String?): SSHClient {
+    private fun createSshServer(
+        validUsername: String,
+        validPassword: String?,
+    ): SSHClient {
         val mock = Mockito.mock(SSHClient::class.java)
         doNothing().`when`(mock).connect(HOST, PORT)
         doNothing()
             .`when`(mock)
             .addHostKeyVerifier(
                 SecurityUtils.getFingerprint(
-                    hostKeyPair.public
-                )
+                    hostKeyPair.public,
+                ),
             )
         doNothing().`when`(mock).disconnect()
         if (!Utils.isNullOrEmpty(validPassword)) {
@@ -427,7 +434,7 @@ class NetCopyClientConnectionPoolSshTest {
                 .`when`(mock)
                 .authPassword(
                     not(eq(validUsername)),
-                    not(eq(validPassword))
+                    not(eq(validPassword)),
                 )
         } else {
             doNothing().`when`(mock).authPublickey(validUsername, sshKeyProvider)
@@ -435,7 +442,7 @@ class NetCopyClientConnectionPoolSshTest {
                 .`when`(mock)
                 .authPublickey(
                     not(eq(validUsername)),
-                    eq(sshKeyProvider)
+                    eq(sshKeyProvider),
                 )
         }
         `when`(mock.isConnected).thenReturn(true)
@@ -450,7 +457,6 @@ class NetCopyClientConnectionPoolSshTest {
     }
 
     companion object {
-
         const val HOST = "127.0.0.1"
         const val PORT = 22222
         private const val invalidUsername = "invaliduser"
@@ -470,22 +476,22 @@ class NetCopyClientConnectionPoolSshTest {
         fun bootstrap() {
             hostKeyPair = TestUtils.createKeyPair()
             userKeyPair = TestUtils.createKeyPair()
-            sshKeyProvider = object : KeyProvider {
+            sshKeyProvider =
+                object : KeyProvider {
+                    override fun getPrivate() = userKeyPair.private
 
-                override fun getPrivate() = userKeyPair.private
+                    override fun getPublic() = userKeyPair.public
 
-                override fun getPublic() = userKeyPair.public
+                    override fun getType() = KeyType.RSA
 
-                override fun getType() = KeyType.RSA
-
-                override fun equals(other: Any?): Boolean {
-                    return if (other !is KeyProvider) {
-                        false
-                    } else {
-                        other.private == private && other.public == public
+                    override fun equals(other: Any?): Boolean {
+                        return if (other !is KeyProvider) {
+                            false
+                        } else {
+                            other.private == private && other.public == public
+                        }
                     }
                 }
-            }
             RxJavaPlugins.reset()
             RxJavaPlugins.setIoSchedulerHandler {
                 Schedulers.trampoline()

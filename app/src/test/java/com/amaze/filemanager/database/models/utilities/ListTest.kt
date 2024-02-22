@@ -29,7 +29,6 @@ import org.junit.Test
  */
 @Suppress("StringLiteralDuplication")
 class ListTest {
-
     /**
      * Test [List.equals] for equality.
      */

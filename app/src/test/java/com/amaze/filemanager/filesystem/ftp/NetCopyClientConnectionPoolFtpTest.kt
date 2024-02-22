@@ -64,10 +64,9 @@ import kotlin.text.Charsets.UTF_8
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class NetCopyClientConnectionPoolFtpTest {
-
     /**
      * Post test cleanup.
      */
@@ -89,11 +88,12 @@ class NetCopyClientConnectionPoolFtpTest {
                 host = HOST,
                 port = PORT,
                 username = "testuser",
-                password = PasswordUtil.encryptPassword(
-                    AppConfig.getInstance(),
-                    "testpassword"
-                )
-            )
+                password =
+                    PasswordUtil.encryptPassword(
+                        AppConfig.getInstance(),
+                        "testpassword",
+                    ),
+            ),
         )
         assertNull(
             getConnection(
@@ -101,11 +101,12 @@ class NetCopyClientConnectionPoolFtpTest {
                 host = HOST,
                 port = PORT,
                 username = "invaliduser",
-                password = PasswordUtil.encryptPassword(
-                    AppConfig.getInstance(),
-                    "invalidpassword"
-                )
-            )
+                password =
+                    PasswordUtil.encryptPassword(
+                        AppConfig.getInstance(),
+                        "invalidpassword",
+                    ),
+            ),
         )
         verify(mock, times(2)).connect(HOST, PORT)
         verify(mock).login("testuser", "testpassword")
@@ -203,24 +204,28 @@ class NetCopyClientConnectionPoolFtpTest {
         doRunTest(validUsername, validPassword)
     }
 
-    private fun doRunTest(validUsername: String, validPassword: String) {
+    private fun doRunTest(
+        validUsername: String,
+        validPassword: String,
+    ) {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val encodedPassword = encode(validPassword, UTF_8.name())
-        val encryptedPassword = PasswordUtil.encryptPassword(
-            AppConfig.getInstance(),
-            encodedPassword
-        )?.replace("\n", "")
+        val encryptedPassword =
+            PasswordUtil.encryptPassword(
+                AppConfig.getInstance(),
+                encodedPassword,
+            )?.replace("\n", "")
         val mock = createFTPClient(validUsername, validPassword)
         TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
         assertNotNull(
             getConnection<FTPClient>(
-                "ftp://$encodedUsername:$encryptedPassword@127.0.0.1:22222"
-            )
+                "ftp://$encodedUsername:$encryptedPassword@127.0.0.1:22222",
+            ),
         )
         assertNull(
             getConnection<FTPClient>(
-                "ftp://$encodedInvalidUsername:$encodedInvalidPassword@127.0.0.1:22222"
-            )
+                "ftp://$encodedInvalidUsername:$encodedInvalidPassword@127.0.0.1:22222",
+            ),
         )
         verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
         verify(mock, atLeastOnce()).connect(HOST, PORT)
@@ -228,7 +233,10 @@ class NetCopyClientConnectionPoolFtpTest {
         verify(mock, atMostOnce()).login(invalidUsername, invalidPassword)
     }
 
-    private fun createFTPClient(validUsername: String, validPassword: String): FTPClient {
+    private fun createFTPClient(
+        validUsername: String,
+        validPassword: String,
+    ): FTPClient {
         val mock = Mockito.mock(FTPClient::class.java)
         doNothing().`when`(mock).connect(HOST, PORT)
         doNothing().`when`(mock).disconnect()
@@ -237,9 +245,9 @@ class NetCopyClientConnectionPoolFtpTest {
             mock.login(
                 not(eq(validUsername)),
                 not(
-                    eq(validPassword)
-                )
-            )
+                    eq(validPassword),
+                ),
+            ),
         ).thenReturn(false)
         // reset(mock);
         NetCopyClientConnectionPool.ftpClientFactory =
@@ -250,7 +258,6 @@ class NetCopyClientConnectionPoolFtpTest {
     }
 
     companion object {
-
         const val HOST = "127.0.0.1"
         const val PORT = 22222
         private const val invalidUsername = "invaliduser"

@@ -48,10 +48,9 @@ import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class CryptUtilTest {
-
     /**
      * Test AESCrypt function under CryptUtil.
      *
@@ -63,12 +62,12 @@ class CryptUtilTest {
         performTest(
             useAescrypt = true,
             password = "abcdefgh1234567890",
-            targetExtension = "aes"
+            targetExtension = "aes",
         )
         performFolderTest(
             useAescrypt = true,
             password = "abcdefgh1234567890",
-            targetExtension = "aes"
+            targetExtension = "aes",
         )
     }
 
@@ -87,7 +86,7 @@ class CryptUtilTest {
     private fun performTest(
         useAescrypt: Boolean,
         password: String? = null,
-        targetExtension: String
+        targetExtension: String,
     ) {
         val source = randomizer.nextBytes(117)
         val sourceFile = File(Environment.getExternalStorageDirectory(), "test.bin")
@@ -99,12 +98,13 @@ class CryptUtilTest {
             ArrayList(),
             "test.bin.$targetExtension",
             useAescrypt,
-            password
+            password,
         )
-        val targetFile = File(
-            Environment.getExternalStorageDirectory(),
-            "test.bin.$targetExtension"
-        )
+        val targetFile =
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test.bin.$targetExtension",
+            )
         assertTrue(targetFile.length() > source.size)
         sourceFile.delete()
         CryptUtil(
@@ -115,7 +115,7 @@ class CryptUtilTest {
             Environment.getExternalStorageDirectory().absolutePath,
             ProgressHandler(),
             ArrayList(),
-            password
+            password,
         )
         File(Environment.getExternalStorageDirectory(), "test.bin").run {
             assertTrue(this.exists())
@@ -126,12 +126,13 @@ class CryptUtilTest {
     private fun performFolderTest(
         useAescrypt: Boolean,
         password: String? = null,
-        targetExtension: String
+        targetExtension: String,
     ) {
         val filesSize = randomizer.nextInt(10, 20)
-        val sourceData = Array(filesSize) {
-            randomizer.nextBytes(117)
-        }
+        val sourceData =
+            Array(filesSize) {
+                randomizer.nextBytes(117)
+            }
         val sourceFolder = File(Environment.getExternalStorageDirectory(), "test")
         sourceFolder.mkdirs()
         repeat(filesSize) {
@@ -147,12 +148,13 @@ class CryptUtilTest {
             ArrayList(),
             "test.$targetExtension",
             useAescrypt,
-            password
+            password,
         )
-        val targetFolder = File(
-            Environment.getExternalStorageDirectory(),
-            "test.$targetExtension"
-        )
+        val targetFolder =
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test.$targetExtension",
+            )
         assertTrue(targetFolder.isDirectory)
         assertEquals(sourceData.size, targetFolder.listFiles()?.size)
         sourceFolder.deleteRecursively()
@@ -164,7 +166,7 @@ class CryptUtilTest {
             Environment.getExternalStorageDirectory().absolutePath,
             ProgressHandler(),
             ArrayList(),
-            password
+            password,
         )
         File(Environment.getExternalStorageDirectory(), "test").run {
             assertTrue(this.exists())
@@ -174,14 +176,15 @@ class CryptUtilTest {
             }
             this.listFiles()?.forEach { file: File? ->
                 file?.run {
-                    val index = file.name.substring(
-                        "test".length,
-                        file.name.indexOf('.')
-                    ).toInt()
+                    val index =
+                        file.name.substring(
+                            "test".length,
+                            file.name.indexOf('.'),
+                        ).toInt()
                     assertArrayEquals(
                         "Comparison broken at ${file.absolutePath}",
                         sourceData[index],
-                        file.readBytes()
+                        file.readBytes(),
                     )
                 } ?: fail("File not found")
             } ?: fail("No files found")
@@ -189,7 +192,6 @@ class CryptUtilTest {
     }
 
     companion object {
-
         private val randomizer = Random(System.currentTimeMillis())
         private val key = SecretKeySpec(randomizer.nextBytes(16), "AES")
 

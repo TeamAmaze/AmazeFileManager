@@ -31,18 +31,18 @@ class IndexedSearch(
     query: String,
     path: String,
     searchParameters: SearchParameters,
-    private val cursor: Cursor
+    private val cursor: Cursor,
 ) : FileSearch(query, path, searchParameters) {
     override suspend fun search(filter: SearchFilter) {
         if (cursor.count > 0 && cursor.moveToFirst()) {
             do {
                 val nextPath =
                     cursor.getString(
-                        cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
+                        cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA),
                     )
                 val displayName =
                     cursor.getString(
-                        cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME)
+                        cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME),
                     )
                 if (nextPath != null && displayName != null && nextPath.contains(path)) {
                     val resultRange = filter.searchFilter(displayName)
@@ -50,7 +50,7 @@ class IndexedSearch(
                         val hybridFileParcelable =
                             RootHelper.generateBaseFile(
                                 File(nextPath),
-                                SearchParameter.SHOW_HIDDEN_FILES in searchParameters
+                                SearchParameter.SHOW_HIDDEN_FILES in searchParameters,
                             )
                         if (hybridFileParcelable != null) {
                             publishProgress(hybridFileParcelable, resultRange)

@@ -31,35 +31,41 @@ class QuickAccessesPrefsFragment : BasePrefsFragment() {
 
     companion object {
         const val KEY = "quick access array"
-        val KEYS = arrayOf(
-            "fastaccess",
-            "recent",
-            "image",
-            "video",
-            "audio",
-            "documents",
-            "apks"
-        )
+        val KEYS =
+            arrayOf(
+                "fastaccess",
+                "recent",
+                "image",
+                "video",
+                "audio",
+                "documents",
+                "apks",
+            )
         val DEFAULT = arrayOf(true, true, true, true, true, true, true)
 
-        val prefPos: Map<String, Int> = KEYS.withIndex().associate {
-            Pair(it.value, it.index)
-        }
+        val prefPos: Map<String, Int> =
+            KEYS.withIndex().associate {
+                Pair(it.value, it.index)
+            }
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.quickaccess_prefs, rootKey)
 
         val currentValue = TinyDB.getBooleanArray(activity.prefs, KEY, DEFAULT)!!
 
-        val onChange = Preference.OnPreferenceClickListener { preference ->
-            prefPos[preference.key]?.let {
-                currentValue[it] = (preference as SwitchPreference).isChecked
-                TinyDB.putBooleanArray(activity.prefs, KEY, currentValue)
-            }
+        val onChange =
+            Preference.OnPreferenceClickListener { preference ->
+                prefPos[preference.key]?.let {
+                    currentValue[it] = (preference as SwitchPreference).isChecked
+                    TinyDB.putBooleanArray(activity.prefs, KEY, currentValue)
+                }
 
-            true
-        }
+                true
+            }
 
         for (key in KEYS) {
             findPreference<Preference>(key)?.onPreferenceClickListener = onChange

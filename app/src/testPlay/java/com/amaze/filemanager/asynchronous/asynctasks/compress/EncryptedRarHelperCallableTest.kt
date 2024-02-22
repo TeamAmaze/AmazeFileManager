@@ -23,14 +23,16 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 import java.io.File
 
 class EncryptedRarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive-encrypted.rar"
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         RarHelperCallable(
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

@@ -29,11 +29,9 @@ class FtpsGetHostCertificateTask(
     private val host: String,
     private val port: Int,
     context: Context,
-    callback: (JSONObject) -> Unit
+    callback: (JSONObject) -> Unit,
 ) : AbstractGetHostInfoTask<JSONObject, FtpsGetHostCertificateTaskCallable>(host, port, callback) {
-
     val ctx: WeakReference<Context> = WeakReference(context)
 
-    override fun getTask(): FtpsGetHostCertificateTaskCallable =
-        FtpsGetHostCertificateTaskCallable(host, port)
+    override fun getTask(): FtpsGetHostCertificateTaskCallable = FtpsGetHostCertificateTaskCallable(host, port)
 }

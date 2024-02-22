@@ -27,7 +27,6 @@ import org.junit.Test
 import java.io.File
 
 class ZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive.zip"
 
@@ -39,20 +38,22 @@ class ZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
     @Test
     fun testVariableYAssignment() {
         var a = "aaz"
-        var y = a.apply {
-            if (startsWith("/")) {
-                substring(1, length)
+        var y =
+            a.apply {
+                if (startsWith("/")) {
+                    substring(1, length)
+                }
             }
-        }
         assertEquals("aaz", y)
         a = "/abcdefg"
-        y = a.let {
-            if (it.startsWith("/")) {
-                it.substring(1, it.length)
-            } else {
-                it
+        y =
+            a.let {
+                if (it.startsWith("/")) {
+                    it.substring(1, it.length)
+                } else {
+                    it
+                }
             }
-        }
         assertEquals("abcdefg", y)
     }
 
@@ -65,15 +66,18 @@ class ZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
             ApplicationProvider.getApplicationContext(),
             "mailto:test@test.com",
             "",
-            false
+            false,
         ).addElements(ArrayList())
     }
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         ZipHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

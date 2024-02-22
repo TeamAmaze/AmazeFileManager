@@ -35,5 +35,5 @@ class AppDataParcelable(
     var size: Long,
     var lastModification: Long,
     var isSystemApp: Boolean,
-    var openFileParcelable: OpenFileParcelable?
+    var openFileParcelable: OpenFileParcelable?,
 ) : Parcelable

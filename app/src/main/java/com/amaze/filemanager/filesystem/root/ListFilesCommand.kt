@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 object ListFilesCommand : IRootCommand() {
-
     private val log: Logger = LoggerFactory.getLogger(ListFilesCommand::class.java)
 
     /**
@@ -48,7 +47,7 @@ object ListFilesCommand : IRootCommand() {
         root: Boolean,
         showHidden: Boolean,
         openModeCallback: (openMode: OpenMode) -> Unit,
-        onFileFoundCallback: (file: HybridFileParcelable) -> Unit
+        onFileFoundCallback: (file: HybridFileParcelable) -> Unit,
     ) {
         val mode: OpenMode
         if (root && FileUtils.isRunningAboveStorage(path)) {
@@ -60,7 +59,7 @@ object ListFilesCommand : IRootCommand() {
                     parseStringForHybridFile(
                         rawFile = it,
                         path = path,
-                        isStat = !result.second
+                        isStat = !result.second,
                     )
                         ?.let(onFileFoundCallback)
                 }
@@ -84,13 +83,14 @@ object ListFilesCommand : IRootCommand() {
      */
     fun getOpenMode(
         path: String,
-        root: Boolean
+        root: Boolean,
     ): OpenMode {
-        val mode: OpenMode = if (root && FileUtils.isRunningAboveStorage(path)) {
-            OpenMode.ROOT
-        } else {
-            OpenMode.FILE
-        }
+        val mode: OpenMode =
+            if (root && FileUtils.isRunningAboveStorage(path)) {
+                OpenMode.ROOT
+            } else {
+                OpenMode.FILE
+            }
         return mode
     }
 
@@ -102,7 +102,7 @@ object ListFilesCommand : IRootCommand() {
     fun executeRootCommand(
         path: String,
         showHidden: Boolean,
-        retryWithLs: Boolean = false
+        retryWithLs: Boolean = false,
     ): Pair<List<String>, Boolean> {
         try {
             /**
@@ -111,18 +111,20 @@ object ListFilesCommand : IRootCommand() {
              */
             var appendedPath = path
             val sanitizedPath = RootHelper.getCommandLineString(appendedPath)
-            appendedPath = when (path) {
-                "/" -> sanitizedPath.replace("/", "")
-                else -> sanitizedPath.plus("/")
-            }
+            appendedPath =
+                when (path) {
+                    "/" -> sanitizedPath.replace("/", "")
+                    else -> sanitizedPath.plus("/")
+                }
 
-            val command = "stat -c '%A %h %G %U %B %Y %N' " +
-                "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
+            val command =
+                "stat -c '%A %h %G %U %B %Y %N' " +
+                    "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
             val enforceLegacyFileListing: Boolean =
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
                     .getBoolean(
                         PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING,
-                        false
+                        false,
                     )
             // #3476: Check current working dir, change back to / before proceeding
             runShellCommand("pwd").run {
@@ -133,23 +135,26 @@ object ListFilesCommand : IRootCommand() {
             return if (!retryWithLs && !enforceLegacyFileListing) {
                 log.info("Using stat for list parsing")
                 Pair(
-                    first = runShellCommandToList(command).map {
-                        it.replace(appendedPath, "")
-                    },
-                    second = enforceLegacyFileListing
+                    first =
+                        runShellCommandToList(command).map {
+                            it.replace(appendedPath, "")
+                        },
+                    second = enforceLegacyFileListing,
                 )
             } else {
                 log.info("Using ls for list parsing")
                 Pair(
-                    first = runShellCommandToList(
-                        "ls -l " + (if (showHidden) "-a " else "") +
-                            "\"$sanitizedPath\""
-                    ),
-                    second = if (retryWithLs) {
-                        true
-                    } else {
-                        enforceLegacyFileListing
-                    }
+                    first =
+                        runShellCommandToList(
+                            "ls -l " + (if (showHidden) "-a " else "") +
+                                "\"$sanitizedPath\"",
+                        ),
+                    second =
+                        if (retryWithLs) {
+                            true
+                        } else {
+                            enforceLegacyFileListing
+                        },
                 )
             }
         } catch (invalidCommand: ShellCommandInvalidException) {
@@ -177,7 +182,7 @@ object ListFilesCommand : IRootCommand() {
     private fun getFilesList(
         path: String,
         showHidden: Boolean,
-        listener: (HybridFileParcelable) -> Unit
+        listener: (HybridFileParcelable) -> Unit,
     ): ArrayList<HybridFileParcelable> {
         val pathFile = File(path)
         val files = ArrayList<HybridFileParcelable>()
@@ -192,7 +197,7 @@ object ListFilesCommand : IRootCommand() {
                         RootHelper.parseFilePermission(currentFile),
                         currentFile.lastModified(),
                         size,
-                        currentFile.isDirectory
+                        currentFile.isDirectory,
                     ).let { baseFile ->
                         baseFile.name = currentFile.name
                         baseFile.mode = OpenMode.FILE
@@ -223,14 +228,18 @@ object ListFilesCommand : IRootCommand() {
     private fun parseStringForHybridFile(
         rawFile: String,
         path: String,
-        isStat: Boolean
+        isStat: Boolean,
     ): HybridFileParcelable? {
         return FileUtils.parseName(
-            if (isStat) rawFile.replace(
-                "('|`)".toRegex(),
-                ""
-            ) else rawFile,
-            isStat
+            if (isStat) {
+                rawFile.replace(
+                    "('|`)".toRegex(),
+                    "",
+                )
+            } else {
+                rawFile
+            },
+            isStat,
         )?.apply {
             this.mode = OpenMode.ROOT
             this.name = this.path

@@ -62,7 +62,6 @@ import java.util.concurrent.TimeUnit
 @Suppress("StringLiteralDuplication")
 @androidx.test.filters.Suppress
 class FtpServiceEspressoTest {
-
     @get:Rule
     var serviceTestRule = ServiceTestRule()
 
@@ -88,10 +87,11 @@ class FtpServiceEspressoTest {
             .remove(FtpService.KEY_PREFERENCE_USERNAME)
             .remove(FtpService.KEY_PREFERENCE_PASSWORD)
             .commit()
-        service = create(
-            Intent(FtpService.ACTION_START_FTPSERVER)
-                .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
-        )
+        service =
+            create(
+                Intent(FtpService.ACTION_START_FTPSERVER)
+                    .putExtra(FtpService.TAG_STARTED_BY_TILE, false),
+            )
 
         await().atMost(10, TimeUnit.SECONDS).until {
             FtpService.isRunning() && isServerReady()
@@ -116,10 +116,11 @@ class FtpServiceEspressoTest {
             .remove(FtpService.KEY_PREFERENCE_USERNAME)
             .remove(FtpService.KEY_PREFERENCE_PASSWORD)
             .commit()
-        service = create(
-            Intent(FtpService.ACTION_START_FTPSERVER)
-                .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
-        )
+        service =
+            create(
+                Intent(FtpService.ACTION_START_FTPSERVER)
+                    .putExtra(FtpService.TAG_STARTED_BY_TILE, false),
+            )
 
         await().atMost(10, TimeUnit.SECONDS).until {
             FtpService.isRunning() && isServerReady()
@@ -146,14 +147,15 @@ class FtpServiceEspressoTest {
                 FtpService.KEY_PREFERENCE_PASSWORD,
                 PasswordUtil.encryptPassword(
                     ApplicationProvider.getApplicationContext(),
-                    "passw0rD"
-                )
+                    "passw0rD",
+                ),
             )
             .commit()
-        service = create(
-            Intent(FtpService.ACTION_START_FTPSERVER)
-                .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
-        )
+        service =
+            create(
+                Intent(FtpService.ACTION_START_FTPSERVER)
+                    .putExtra(FtpService.TAG_STARTED_BY_TILE, false),
+            )
 
         await().atMost(10, TimeUnit.SECONDS).until {
             FtpService.isRunning() && isServerReady()
@@ -176,7 +178,7 @@ class FtpServiceEspressoTest {
         assertTrue(
             "No files found on device? It is also possible that app doesn't have " +
                 "permission to access storage, which may occur on broken Android emulators",
-            files.isNotEmpty()
+            files.isNotEmpty(),
         )
         var downloadFolderExists = false
         for (f in files) {
@@ -187,7 +189,7 @@ class FtpServiceEspressoTest {
         assertTrue(
             "Download folder not found on device. Either storage is not available, " +
                 "or something is really wrong with FtpService. Check logcat.",
-            downloadFolderExists
+            downloadFolderExists,
         )
     }
 
@@ -289,13 +291,14 @@ class FtpServiceEspressoTest {
     }
 
     private fun create(intent: Intent): FtpService {
-        val binder = serviceTestRule
-            .bindService(
-                intent.setClass(
-                    ApplicationProvider.getApplicationContext(),
-                    FtpService::class.java
+        val binder =
+            serviceTestRule
+                .bindService(
+                    intent.setClass(
+                        ApplicationProvider.getApplicationContext(),
+                        FtpService::class.java,
+                    ),
                 )
-            )
         return ((binder as ObtainableServiceBinder<FtpService>).service as FtpService).also {
             it.onStartCommand(intent, 0, 0)
         }

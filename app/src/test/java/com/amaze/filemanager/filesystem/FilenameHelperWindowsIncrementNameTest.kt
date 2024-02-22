@@ -29,7 +29,6 @@ import org.junit.Test
  */
 @Suppress("StringLiteralDuplication")
 class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNameTests() {
-
     override val formatFlag: FilenameFormatFlag
         get() = FilenameFormatFlag.WINDOWS
 
@@ -38,12 +37,13 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
      */
     @Test
     fun testWindowsIncrementSimple() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file (1).txt"),
-            Pair("sub/foo.txt", "sub/foo (1).txt"),
-            Pair("sub/nested/foo.txt", "sub/nested/foo (1).txt"),
-            Pair("/test/afile", "/test/afile (1)")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file (1).txt"),
+                Pair("sub/foo.txt", "sub/foo (1).txt"),
+                Pair("sub/nested/foo.txt", "sub/nested/foo (1).txt"),
+                Pair("/test/afile", "/test/afile (1)"),
+            )
         performTest(pairs, true)
     }
 
@@ -53,16 +53,17 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
      */
     @Test
     fun testWindowsStripRawNumbersAndIncrementsBeforeUpdatingIncrement() {
-        val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo (1).txt"),
-            Pair("/test/foo 2.txt", "/test/foo (1).txt"),
-            Pair("/test/foo copy.txt", "/test/foo (1).txt"),
-            Pair("/test/qux 2.txt", "/test/qux (1).txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc (1).txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (1).txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (1).txt"),
-            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (1).txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo.txt", "/test/foo (1).txt"),
+                Pair("/test/foo 2.txt", "/test/foo (1).txt"),
+                Pair("/test/foo copy.txt", "/test/foo (1).txt"),
+                Pair("/test/qux 2.txt", "/test/qux (1).txt"),
+                Pair("/test/abc (2) - Copy.txt", "/test/abc (1).txt"),
+                Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (1).txt"),
+                Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (1).txt"),
+                Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (1).txt"),
+            )
         performTest(pairs, strip = true, removeRawNumbers = true)
     }
 
@@ -72,16 +73,17 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
      */
     @Test
     fun testWindowsStripBeforeUpdatingIncrement() {
-        val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo (1).txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 (1).txt"),
-            Pair("/test/foo copy.txt", "/test/foo (1).txt"),
-            Pair("/test/qux 2.txt", "/test/qux 2 (1).txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc (1).txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (1).txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (1).txt"),
-            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (1).txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo.txt", "/test/foo (1).txt"),
+                Pair("/test/foo 2.txt", "/test/foo 2 (1).txt"),
+                Pair("/test/foo copy.txt", "/test/foo (1).txt"),
+                Pair("/test/qux 2.txt", "/test/qux 2 (1).txt"),
+                Pair("/test/abc (2) - Copy.txt", "/test/abc (1).txt"),
+                Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (1).txt"),
+                Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (1).txt"),
+                Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (1).txt"),
+            )
         performTest(pairs, strip = true, removeRawNumbers = false)
     }
 
@@ -91,22 +93,23 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
      */
     @Test
     fun testWindowsIncrementStartWithSpecifiedNumber() {
-        val pairs = arrayOf(
-            Pair("/test/foo (1).txt", 1),
-            Pair("/test/foo (3).txt", 2),
-            Pair("/test/foo (3).txt", 3),
-            Pair("/test/foo (4).txt", 4),
-            Pair("/test/foo (5).txt", 5),
-            Pair("/test/foo (6).txt", 6),
-            Pair("/test/foo (7).txt", 7),
-            Pair("/test/foo (101).txt", 101),
-            Pair("/test/foo (102).txt", 102)
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo (1).txt", 1),
+                Pair("/test/foo (3).txt", 2),
+                Pair("/test/foo (3).txt", 3),
+                Pair("/test/foo (4).txt", 4),
+                Pair("/test/foo (5).txt", 5),
+                Pair("/test/foo (6).txt", 6),
+                Pair("/test/foo (7).txt", 7),
+                Pair("/test/foo (101).txt", 101),
+                Pair("/test/foo (102).txt", 102),
+            )
         for (pair in pairs) {
             performTest(
                 Pair("/test/foo.txt", pair.first),
                 true,
-                start = pair.second
+                start = pair.second,
             )
         }
     }
@@ -117,11 +120,12 @@ class FilenameHelperWindowsIncrementNameTest : AbstractFilenameHelperIncrementNa
      */
     @Test
     fun testWindowsIncrementStripOff() {
-        val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo (1).txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 (1).txt"),
-            Pair("/test/foo copy.txt", "/test/foo copy (1).txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo.txt", "/test/foo (1).txt"),
+                Pair("/test/foo 2.txt", "/test/foo 2 (1).txt"),
+                Pair("/test/foo copy.txt", "/test/foo copy (1).txt"),
+            )
         performTest(pairs, false)
     }
 }

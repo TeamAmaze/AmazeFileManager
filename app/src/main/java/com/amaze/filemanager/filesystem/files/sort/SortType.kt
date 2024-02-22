@@ -22,7 +22,6 @@ package com.amaze.filemanager.filesystem.files.sort
 
 /** Describes how to sort with [sortBy] and which direction to use for the sort with [sortOrder] */
 data class SortType(val sortBy: SortBy, val sortOrder: SortOrder) {
-
     /**
      * Returns the Int corresponding to the combination of [sortBy] and [sortOrder]
      */

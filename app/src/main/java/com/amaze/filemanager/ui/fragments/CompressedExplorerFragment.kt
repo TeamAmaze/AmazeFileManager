@@ -92,7 +92,6 @@ import java.io.IOException
 
 @Suppress("TooManyFunctions")
 class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
-
     lateinit var compressedFile: File
 
     private val viewModel: CompressedExplorerFragmentViewModel by viewModels()
@@ -155,27 +154,29 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val rootView: View = MainFragBinding.inflate(inflater).root
-        listView = rootView.findViewById<RecyclerView>(R.id.listView).also {
-            it.setOnTouchListener { _: View?, _: MotionEvent? ->
-                compressedExplorerAdapter?.apply {
-                    if (stopAnims && !this.stoppedAnimation) {
-                        stopAnim()
+        listView =
+            rootView.findViewById<RecyclerView>(R.id.listView).also {
+                it.setOnTouchListener { _: View?, _: MotionEvent? ->
+                    compressedExplorerAdapter?.apply {
+                        if (stopAnims && !this.stoppedAnimation) {
+                            stopAnim()
+                        }
+                        this.stoppedAnimation = true
+                        stopAnims = false
                     }
-                    this.stoppedAnimation = true
-                    stopAnims = false
+                    false
                 }
-                false
             }
-        }
 
-        swipeRefreshLayout = rootView
-            .findViewById<SwipeRefreshLayout>(R.id.activity_main_swipe_refresh_layout).also {
-                it.setOnRefreshListener { refresh() }
-                it.isRefreshing = true
-            }
+        swipeRefreshLayout =
+            rootView
+                .findViewById<SwipeRefreshLayout>(R.id.activity_main_swipe_refresh_layout).also {
+                    it.setOnRefreshListener { refresh() }
+                    it.isRefreshing = true
+                }
         viewModel.elements.observe(
             viewLifecycleOwner,
             { elements ->
@@ -184,7 +185,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     swipeRefreshLayout.isRefreshing = false
                     updateBottomBar()
                 }
-            }
+            },
         )
         return rootView
     }
@@ -198,22 +199,26 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         val sp = PreferenceManager.getDefaultSharedPreferences(requireActivity())
         val fileName = prepareCompressedFile(requireArguments().getString(KEY_PATH, "/"))
-        mToolbarContainer = requireMainActivity().appbar.appbarLayout.also {
-            it.setOnTouchListener { _: View?, _: MotionEvent? ->
-                if (stopAnims) {
-                    if (false == compressedExplorerAdapter?.stoppedAnimation) {
-                        stopAnim()
+        mToolbarContainer =
+            requireMainActivity().appbar.appbarLayout.also {
+                it.setOnTouchListener { _: View?, _: MotionEvent? ->
+                    if (stopAnims) {
+                        if (false == compressedExplorerAdapter?.stoppedAnimation) {
+                            stopAnim()
+                        }
+                        compressedExplorerAdapter?.stoppedAnimation = true
                     }
-                    compressedExplorerAdapter?.stoppedAnimation = true
+                    stopAnims = false
+                    false
                 }
-                stopAnims = false
-                false
             }
-        }
         listView?.visibility = View.VISIBLE
         listView?.layoutManager = LinearLayoutManager(activity)
         val utilsProvider = AppConfig.getInstance().utilsProvider
@@ -227,8 +232,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 listView?.setBackgroundColor(
                     Utils.getColor(
                         context,
-                        android.R.color.background_light
-                    )
+                        android.R.color.background_light,
+                    ),
                 )
         }
         gobackitem = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false)
@@ -257,7 +262,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     Toast.makeText(
                         requireContext(),
                         R.string.error_cant_decompress_that_file,
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     ).show()
                     parentFragmentManager.beginTransaction()
                         .remove(this@CompressedExplorerFragment).commit()
@@ -283,22 +288,23 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
                     null,
                     null,
-                    null
+                    null,
                 )?.run {
                     try {
                         if (moveToFirst()) {
-                            fileName = getString(0).let {
+                            fileName =
+                                getString(0).let {
                                 /*
                                  * Strip any slashes to prevent possibility to access files outside
                                  * cache dir if malicious ContentProvider gives malicious value
                                  * of MediaStore.MediaColumns.DISPLAY_NAME when querying
                                  */
-                                if (it.contains(File.pathSeparator)) {
-                                    it.substringAfterLast(File.pathSeparatorChar)
-                                } else {
-                                    it
+                                    if (it.contains(File.pathSeparator)) {
+                                        it.substringAfterLast(File.pathSeparatorChar)
+                                    } else {
+                                        it
+                                    }
                                 }
-                            }
                             compressedFile = File(requireContext().cacheDir, fileName)
                         } else {
                             // At this point, we know nothing the file the URI represents, we are doing everything
@@ -307,7 +313,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                                 File.createTempFile(
                                     "compressed",
                                     null,
-                                    requireContext().cacheDir
+                                    requireContext().cacheDir,
                                 )
                                     .also {
                                         fileName = it.name
@@ -326,8 +332,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                             requireContext()
                                 .getString(
                                     R.string.compressed_explorer_fragment_error_open_uri,
-                                    pathUri.toString()
-                                )
+                                    pathUri.toString(),
+                                ),
                         )
                         requireActivity().onBackPressed()
                     } finally {
@@ -336,9 +342,10 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 }
         } else {
             pathUri.path?.let { path ->
-                compressedFile = File(path).also {
-                    fileName = it.name.substring(0, it.name.lastIndexOf("."))
-                }
+                compressedFile =
+                    File(path).also {
+                        fileName = it.name.substring(0, it.name.lastIndexOf("."))
+                    }
             }
         }
 
@@ -368,7 +375,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     Toast.makeText(
                         requireContext(),
                         R.string.error_cant_decompress_that_file,
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     ).show()
                     return
                 }
@@ -379,144 +386,162 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     }
 
     @JvmField
-    var mActionModeCallback: ActionMode.Callback = object : ActionMode.Callback {
-        private fun hideOption(id: Int, menu: Menu) {
-            val item = menu.findItem(id)
-            item.isVisible = false
-        }
+    var mActionModeCallback: ActionMode.Callback =
+        object : ActionMode.Callback {
+            private fun hideOption(
+                id: Int,
+                menu: Menu,
+            ) {
+                val item = menu.findItem(id)
+                item.isVisible = false
+            }
 
-        private fun showOption(id: Int, menu: Menu) {
-            val item = menu.findItem(id)
-            item.isVisible = true
-        }
+            private fun showOption(
+                id: Int,
+                menu: Menu,
+            ) {
+                val item = menu.findItem(id)
+                item.isVisible = true
+            }
 
-        // called when the action mode is created; startActionMode() was called
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            // Inflate a menu resource providing context menu items
-            val v = ActionmodeBinding.inflate(LayoutInflater.from(requireContext())).root
-            mode.customView = v
-            // assumes that you have "contexual.xml" menu resources
-            mode.menuInflater.inflate(R.menu.contextual, menu)
-            hideOption(R.id.cpy, menu)
-            hideOption(R.id.cut, menu)
-            hideOption(R.id.delete, menu)
-            hideOption(R.id.addshortcut, menu)
-            hideOption(R.id.share, menu)
-            hideOption(R.id.openwith, menu)
-            showOption(R.id.all, menu)
-            hideOption(R.id.compress, menu)
-            hideOption(R.id.hide, menu)
-            showOption(R.id.ex, menu)
-            mode.title = getString(R.string.select)
-            requireMainActivity().updateViews(
-                ColorDrawable(
-                    Utils.getColor(
-                        context,
-                        R.color.holo_dark_action_mode
-                    )
+            // called when the action mode is created; startActionMode() was called
+            override fun onCreateActionMode(
+                mode: ActionMode,
+                menu: Menu,
+            ): Boolean {
+                // Inflate a menu resource providing context menu items
+                val v = ActionmodeBinding.inflate(LayoutInflater.from(requireContext())).root
+                mode.customView = v
+                // assumes that you have "contexual.xml" menu resources
+                mode.menuInflater.inflate(R.menu.contextual, menu)
+                hideOption(R.id.cpy, menu)
+                hideOption(R.id.cut, menu)
+                hideOption(R.id.delete, menu)
+                hideOption(R.id.addshortcut, menu)
+                hideOption(R.id.share, menu)
+                hideOption(R.id.openwith, menu)
+                showOption(R.id.all, menu)
+                hideOption(R.id.compress, menu)
+                hideOption(R.id.hide, menu)
+                showOption(R.id.ex, menu)
+                mode.title = getString(R.string.select)
+                requireMainActivity().updateViews(
+                    ColorDrawable(
+                        Utils.getColor(
+                            context,
+                            R.color.holo_dark_action_mode,
+                        ),
+                    ),
                 )
-            )
-            if (SDK_INT >= LOLLIPOP) {
-                val window = requireActivity().window
-                if (requireMainActivity()
-                    .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
-                ) {
-                    window.navigationBarColor =
-                        Utils.getColor(context, android.R.color.black)
+                if (SDK_INT >= LOLLIPOP) {
+                    val window = requireActivity().window
+                    if (requireMainActivity()
+                            .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
+                    ) {
+                        window.navigationBarColor =
+                            Utils.getColor(context, android.R.color.black)
+                    }
                 }
+                if (SDK_INT < KITKAT) {
+                    requireMainActivity().appbar.toolbar.visibility = View.GONE
+                }
+                return true
             }
-            if (SDK_INT < KITKAT) {
-                requireMainActivity().appbar.toolbar.visibility = View.GONE
-            }
-            return true
-        }
 
-        // the following method is called each time
-        // the action mode is shown. Always called after
-        // onCreateActionMode, but
-        // may be called multiple times if the mode is invalidated.
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            compressedExplorerAdapter?.checkedItemPositions?.let { positions ->
-                (mode.customView.findViewById<View>(R.id.item_count) as AppCompatTextView).text =
-                    positions.size.toString()
-                menu.findItem(R.id.all)
-                    .setTitle(
-                        if (positions.size == folder + file) {
-                            R.string.deselect_all
-                        } else {
-                            R.string.select_all
-                        }
-                    )
-            }
-            return false // Return false if nothing is done
-        }
-
-        // called when the user selects a contextual menu item
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            return compressedExplorerAdapter?.let {
-                when (item.itemId) {
-                    R.id.all -> {
-                        val positions = it.checkedItemPositions
-                        val shouldDeselectAll = positions.size != folder + file
-                        it.toggleChecked(shouldDeselectAll)
-                        mode.invalidate()
-                        item.setTitle(
-                            if (shouldDeselectAll) {
+            // the following method is called each time
+            // the action mode is shown. Always called after
+            // onCreateActionMode, but
+            // may be called multiple times if the mode is invalidated.
+            override fun onPrepareActionMode(
+                mode: ActionMode,
+                menu: Menu,
+            ): Boolean {
+                compressedExplorerAdapter?.checkedItemPositions?.let { positions ->
+                    (mode.customView.findViewById<View>(R.id.item_count) as AppCompatTextView).text =
+                        positions.size.toString()
+                    menu.findItem(R.id.all)
+                        .setTitle(
+                            if (positions.size == folder + file) {
                                 R.string.deselect_all
                             } else {
                                 R.string.select_all
-                            }
+                            },
                         )
-                        if (!shouldDeselectAll) {
-                            selection = false
-                            mActionMode?.finish()
-                            mActionMode = null
-                        }
-                        return true
-                    }
-                    R.id.ex -> {
-                        Toast.makeText(activity, getString(R.string.extracting), Toast.LENGTH_SHORT)
-                            .show()
-                        val dirs = arrayOfNulls<String>(
-                            it.checkedItemPositions.size
-                        )
-                        var i = 0
-                        while (i < dirs.size) {
-                            dirs[i] =
-                                viewModel
-                                    .elements
-                                    .value!![it.checkedItemPositions[i]].path
-                            i++
-                        }
-                        decompressor.decompress(compressedFile.path, dirs)
-                        mode.finish()
-                        return true
-                    }
-                    else -> false
                 }
-            } ?: false
-        }
-
-        override fun onDestroyActionMode(actionMode: ActionMode) {
-            compressedExplorerAdapter?.toggleChecked(false)
-            @ColorInt val primaryColor = ColorPreferenceHelper.getPrimary(
-                requireMainActivity().currentColorPreference,
-                MainActivity.currentTab
-            )
-            selection = false
-            requireMainActivity().updateViews(ColorDrawable(primaryColor))
-            if (SDK_INT >= LOLLIPOP) {
-                val window = requireActivity().window
-                if (requireMainActivity()
-                    .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
-                ) {
-                    window.navigationBarColor =
-                        requireMainActivity().skinStatusBar
-                }
+                return false // Return false if nothing is done
             }
-            mActionMode = null
+
+            // called when the user selects a contextual menu item
+            override fun onActionItemClicked(
+                mode: ActionMode,
+                item: MenuItem,
+            ): Boolean {
+                return compressedExplorerAdapter?.let {
+                    when (item.itemId) {
+                        R.id.all -> {
+                            val positions = it.checkedItemPositions
+                            val shouldDeselectAll = positions.size != folder + file
+                            it.toggleChecked(shouldDeselectAll)
+                            mode.invalidate()
+                            item.setTitle(
+                                if (shouldDeselectAll) {
+                                    R.string.deselect_all
+                                } else {
+                                    R.string.select_all
+                                },
+                            )
+                            if (!shouldDeselectAll) {
+                                selection = false
+                                mActionMode?.finish()
+                                mActionMode = null
+                            }
+                            return true
+                        }
+                        R.id.ex -> {
+                            Toast.makeText(activity, getString(R.string.extracting), Toast.LENGTH_SHORT)
+                                .show()
+                            val dirs =
+                                arrayOfNulls<String>(
+                                    it.checkedItemPositions.size,
+                                )
+                            var i = 0
+                            while (i < dirs.size) {
+                                dirs[i] =
+                                    viewModel
+                                        .elements
+                                        .value!![it.checkedItemPositions[i]].path
+                                i++
+                            }
+                            decompressor.decompress(compressedFile.path, dirs)
+                            mode.finish()
+                            return true
+                        }
+                        else -> false
+                    }
+                } ?: false
+            }
+
+            override fun onDestroyActionMode(actionMode: ActionMode) {
+                compressedExplorerAdapter?.toggleChecked(false)
+                @ColorInt val primaryColor =
+                    ColorPreferenceHelper.getPrimary(
+                        requireMainActivity().currentColorPreference,
+                        MainActivity.currentTab,
+                    )
+                selection = false
+                requireMainActivity().updateViews(ColorDrawable(primaryColor))
+                if (SDK_INT >= LOLLIPOP) {
+                    val window = requireActivity().window
+                    if (requireMainActivity()
+                            .getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
+                    ) {
+                        window.navigationBarColor =
+                            requireMainActivity().skinStatusBar
+                    }
+                }
+                mActionMode = null
+            }
         }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -525,7 +550,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         // be cleaned after it is destroyed, preventing leaks
         mToolbarContainer?.setOnTouchListener(null)
         (mToolbarContainer as AppBarLayout?)?.removeOnOffsetChangedListener(
-            offsetListenerForToolbar
+            offsetListenerForToolbar,
         )
         requireMainActivity().supportInvalidateOptionsMenu()
 
@@ -551,28 +576,33 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         requireActivity().unbindService(mServiceConnection)
     }
 
-    private val mServiceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) = Unit
-        override fun onServiceDisconnected(name: ComponentName) {
-            // open file if pending
-            if (isOpen) {
-                files?.let { cachedFiles ->
-                    // open most recent entry added to files to be deleted from cache
-                    val cacheFile = File(cachedFiles[cachedFiles.size - 1].path)
-                    if (cacheFile.exists()) {
-                        FileUtils.openFile(
-                            cacheFile,
-                            requireMainActivity(),
-                            requireMainActivity().prefs
-                        )
+    private val mServiceConnection: ServiceConnection =
+        object : ServiceConnection {
+            override fun onServiceConnected(
+                name: ComponentName,
+                service: IBinder,
+            ) = Unit
+
+            override fun onServiceDisconnected(name: ComponentName) {
+                // open file if pending
+                if (isOpen) {
+                    files?.let { cachedFiles ->
+                        // open most recent entry added to files to be deleted from cache
+                        val cacheFile = File(cachedFiles[cachedFiles.size - 1].path)
+                        if (cacheFile.exists()) {
+                            FileUtils.openFile(
+                                cacheFile,
+                                requireMainActivity(),
+                                requireMainActivity().prefs,
+                            )
+                        }
+                        // reset the flag and cache file, as it's root is already in the list for deletion
+                        isOpen = false
+                        cachedFiles.removeAt(cachedFiles.size - 1)
                     }
-                    // reset the flag and cache file, as it's root is already in the list for deletion
-                    isOpen = false
-                    cachedFiles.removeAt(cachedFiles.size - 1)
                 }
             }
         }
-    }
 
     override fun changePath(path: String) {
         var folder = path
@@ -593,7 +623,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                         } else {
                             archiveCorruptOrUnsupportedToast(error)
                         }
-                    }
+                    },
                 )
             swipeRefreshLayout.isRefreshing = true
             updateBottomBar()
@@ -603,9 +633,10 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     private fun dialogGetPasswordFromUser(filePath: String) {
         val positiveCallback =
             SingleButtonCallback { dialog: MaterialDialog, _: DialogAction? ->
-                val editText = dialog.view.findViewById<AppCompatEditText>(
-                    R.id.singleedittext_input
-                )
+                val editText =
+                    dialog.view.findViewById<AppCompatEditText>(
+                        R.id.singleedittext_input,
+                    )
                 val password: String = editText.text.toString()
                 ArchivePasswordCache.getInstance()[filePath] = password
                 dialog.dismiss()
@@ -619,7 +650,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             R.string.archive_password_prompt,
             R.string.authenticate_password,
             positiveCallback,
-            null
+            null,
         )
     }
 
@@ -633,17 +664,18 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         Toast.makeText(
             activity,
             requireContext().getString(msg, compressedFile.absolutePath),
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
         ).show()
         requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
     override val path: String
-        get() = if (!isRootRelativePath) {
-            CompressedHelper.SEPARATOR + relativeDirectory
-        } else {
-            ""
-        }
+        get() =
+            if (!isRootRelativePath) {
+                CompressedHelper.SEPARATOR + relativeDirectory
+            } else {
+                ""
+            }
 
     override val rootDrawable: Int
         get() = R.drawable.ic_compressed_white_24dp
@@ -667,16 +699,20 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         }
     }
 
-    private fun createViews(items: List<CompressedObjectParcelable>?, dir: String) {
+    private fun createViews(
+        items: List<CompressedObjectParcelable>?,
+        dir: String,
+    ) {
         if (compressedExplorerAdapter == null) {
-            compressedExplorerAdapter = CompressedExplorerAdapter(
-                activity,
-                AppConfig.getInstance().utilsProvider,
-                items,
-                this,
-                decompressor,
-                PreferenceManager.getDefaultSharedPreferences(requireMainActivity())
-            )
+            compressedExplorerAdapter =
+                CompressedExplorerAdapter(
+                    activity,
+                    AppConfig.getInstance().utilsProvider,
+                    items,
+                    this,
+                    decompressor,
+                    PreferenceManager.getDefaultSharedPreferences(requireMainActivity()),
+                )
             listView?.adapter = compressedExplorerAdapter
         } else {
             compressedExplorerAdapter?.generateZip(items)
@@ -695,21 +731,23 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             // listView.removeItemDecoration(headersDecor);
             addheader = true
         } else {
-            dividerItemDecoration = DividerItemDecoration(
-                activity,
-                true,
-                showDividers
-            ).also {
-                listView?.addItemDecoration(it)
-            }
+            dividerItemDecoration =
+                DividerItemDecoration(
+                    activity,
+                    true,
+                    showDividers,
+                ).also {
+                    listView?.addItemDecoration(it)
+                }
             // headersDecor = new StickyRecyclerHeadersDecoration(compressedExplorerAdapter);
             // listView.addItemDecoration(headersDecor);
             addheader = false
         }
-        fastScroller = requireView().findViewById<FastScroller>(R.id.fastscroll).also {
-            it.setRecyclerView(listView!!, 1)
-            it.setPressedHandleColor(requireMainActivity().accent)
-        }
+        fastScroller =
+            requireView().findViewById<FastScroller>(R.id.fastscroll).also {
+                it.setRecyclerView(listView!!, 1)
+                it.setPressedHandleColor(requireMainActivity().accent)
+            }
         (mToolbarContainer as AppBarLayout?)?.addOnOffsetChangedListener(offsetListenerForToolbar)
         listView?.stopScroll()
         relativeDirectory = dir

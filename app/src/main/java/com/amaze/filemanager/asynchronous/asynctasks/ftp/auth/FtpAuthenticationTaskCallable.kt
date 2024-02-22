@@ -37,29 +37,29 @@ open class FtpAuthenticationTaskCallable(
     protected val hostname: String,
     protected val port: Int,
     protected val username: String,
-    protected val password: String
+    protected val password: String,
 ) : Callable<FTPClient> {
-
     @WorkerThread
     override fun call(): FTPClient {
         val ftpClient = createFTPClient()
         ftpClient.connectTimeout = CONNECT_TIMEOUT
         ftpClient.controlEncoding = Charsets.UTF_8.name()
         ftpClient.connect(hostname, port)
-        val loginSuccess = if (username.isBlank() && password.isBlank()) {
-            ftpClient.login(
-                FTPClientImpl.ANONYMOUS,
-                FTPClientImpl.generateRandomEmailAddressForLogin()
-            )
-        } else {
-            ftpClient.login(
-                decode(username, UTF_8.name()),
-                decode(
-                    PasswordUtil.decryptPassword(AppConfig.getInstance(), password),
-                    UTF_8.name()
+        val loginSuccess =
+            if (username.isBlank() && password.isBlank()) {
+                ftpClient.login(
+                    FTPClientImpl.ANONYMOUS,
+                    FTPClientImpl.generateRandomEmailAddressForLogin(),
                 )
-            )
-        }
+            } else {
+                ftpClient.login(
+                    decode(username, UTF_8.name()),
+                    decode(
+                        PasswordUtil.decryptPassword(AppConfig.getInstance(), password),
+                        UTF_8.name(),
+                    ),
+                )
+            }
         return if (loginSuccess) {
             ftpClient.enterLocalPassiveMode()
             ftpClient
@@ -68,6 +68,5 @@ open class FtpAuthenticationTaskCallable(
         }
     }
 
-    protected open fun createFTPClient(): FTPClient =
-        NetCopyClientConnectionPool.ftpClientFactory.create(FTP_URI_PREFIX)
+    protected open fun createFTPClient(): FTPClient = NetCopyClientConnectionPool.ftpClientFactory.create(FTP_URI_PREFIX)
 }

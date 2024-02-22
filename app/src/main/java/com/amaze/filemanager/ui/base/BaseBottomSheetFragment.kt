@@ -30,7 +30,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState) as BottomSheetDialog
     }
@@ -43,23 +42,23 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
             AppTheme.DARK -> {
                 rootView.setBackgroundDrawable(
                     context?.resources?.getDrawable(
-                        R.drawable.shape_dialog_bottomsheet_dark
-                    )
+                        R.drawable.shape_dialog_bottomsheet_dark,
+                    ),
                 )
             }
             AppTheme.BLACK -> {
                 rootView.setBackgroundDrawable(
                     context?.resources?.getDrawable(
-                        R.drawable.shape_dialog_bottomsheet_black
-                    )
+                        R.drawable.shape_dialog_bottomsheet_black,
+                    ),
                 )
             }
             AppTheme.LIGHT -> {
                 rootView
                     .setBackgroundDrawable(
                         context?.resources?.getDrawable(
-                            R.drawable.shape_dialog_bottomsheet_white
-                        )
+                            R.drawable.shape_dialog_bottomsheet_white,
+                        ),
                     )
             }
         }

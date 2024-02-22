@@ -35,7 +35,11 @@ object PortScanTCP {
      */
     @JvmStatic
     @Suppress("LabeledExpression")
-    fun scanAddress(ia: InetAddress?, portNo: Int, timeoutMillis: Int): Boolean {
+    fun scanAddress(
+        ia: InetAddress?,
+        portNo: Int,
+        timeoutMillis: Int,
+    ): Boolean {
         return Socket().let { s ->
             runCatching {
                 s.connect(InetSocketAddress(ia, portNo), timeoutMillis)

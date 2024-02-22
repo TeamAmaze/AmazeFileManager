@@ -32,7 +32,7 @@ class DeepSearch(
     path: String,
     searchParameters: SearchParameters,
     context: Context,
-    private val openMode: OpenMode
+    private val openMode: OpenMode,
 ) : FileSearch(query, path, searchParameters) {
     private val LOG = LoggerFactory.getLogger(DeepSearch::class.java)
 
@@ -59,7 +59,7 @@ class DeepSearch(
                 val nextFile = worklist.removeFirst()
                 nextFile.forEachChildrenFile(
                     applicationContext,
-                    SearchParameter.ROOT in searchParameters
+                    SearchParameter.ROOT in searchParameters,
                 ) { file ->
                     if (!file.isHidden || SearchParameter.SHOW_HIDDEN_FILES in searchParameters) {
                         val resultRange = filter.searchFilter(file.getName(applicationContext))

@@ -35,12 +35,10 @@ class SelectionPopupMenu(
     private val recyclerAdapter: RecyclerAdapter,
     private val actionModeView: View,
     private val currentPath: String,
-    context: Context
+    context: Context,
 ) :
     PopupMenu(context, actionModeView), PopupMenu.OnMenuItemClickListener {
-
     companion object {
-
         private const val SIMILARITY_THRESHOLD = 500
         const val FUZZYNESS_FACTOR = 4
 
@@ -48,22 +46,24 @@ class SelectionPopupMenu(
             recyclerAdapter: RecyclerAdapter,
             actionModeView: View,
             currentPath: String,
-            mainActivity: MainActivity?
+            mainActivity: MainActivity?,
         ) {
             mainActivity?.also {
                 var currentContext: Context = mainActivity.applicationContext
                 if (mainActivity.appTheme == AppTheme.BLACK) {
-                    currentContext = ContextThemeWrapper(
-                        mainActivity.applicationContext,
-                        R.style.overflow_black
-                    )
+                    currentContext =
+                        ContextThemeWrapper(
+                            mainActivity.applicationContext,
+                            R.style.overflow_black,
+                        )
                 }
-                val popupMenu = SelectionPopupMenu(
-                    recyclerAdapter,
-                    actionModeView,
-                    currentPath,
-                    currentContext
-                )
+                val popupMenu =
+                    SelectionPopupMenu(
+                        recyclerAdapter,
+                        actionModeView,
+                        currentPath,
+                        currentContext,
+                    )
                 popupMenu.inflate(R.menu.selection_criteria)
                 recyclerAdapter.itemsDigested?.let {
                         itemsDigested ->
@@ -87,7 +87,7 @@ class SelectionPopupMenu(
                 recyclerAdapter.toggleChecked(
                     !recyclerAdapter
                         .areAllChecked(currentPath),
-                    currentPath
+                    currentPath,
                 )
             }
             R.id.select_inverse -> {
@@ -107,8 +107,9 @@ class SelectionPopupMenu(
             }
         }
         actionModeView.invalidate()
-        actionModeView.findViewById<AppCompatTextView>(R.id.item_count).text = recyclerAdapter
-            .checkedItems.size.toString()
+        actionModeView.findViewById<AppCompatTextView>(R.id.item_count).text =
+            recyclerAdapter
+                .checkedItems.size.toString()
         return true
     }
 }

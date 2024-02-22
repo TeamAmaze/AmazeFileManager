@@ -33,13 +33,17 @@ import org.apache.ftpserver.impl.FtpServerContext
  * Custom [org.apache.ftpserver.command.impl.FEAT] to add [AVBL] command to the list.
  */
 class FEAT : AbstractCommand() {
-    override fun execute(session: FtpIoSession, context: FtpServerContext, request: FtpRequest) {
+    override fun execute(
+        session: FtpIoSession,
+        context: FtpServerContext,
+        request: FtpRequest,
+    ) {
         session.resetState()
         session.write(
             DefaultFtpReply(
                 FtpReply.REPLY_211_SYSTEM_STATUS_REPLY,
-                AppConfig.getInstance().getString(R.string.ftp_command_FEAT)
-            )
+                AppConfig.getInstance().getString(R.string.ftp_command_FEAT),
+            ),
         )
     }
 }

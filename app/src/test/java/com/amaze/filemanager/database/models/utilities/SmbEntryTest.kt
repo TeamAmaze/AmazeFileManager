@@ -29,7 +29,6 @@ import org.junit.Test
  */
 @Suppress("StringLiteralDuplication")
 class SmbEntryTest {
-
     /**
      * Test [SmbEntry.equals] for equality.
      */

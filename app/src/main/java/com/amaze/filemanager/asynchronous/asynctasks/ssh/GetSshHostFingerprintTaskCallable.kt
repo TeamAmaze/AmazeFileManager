@@ -34,34 +34,42 @@ import java.util.concurrent.CountDownLatch
 class GetSshHostFingerprintTaskCallable(
     private val hostname: String,
     private val port: Int,
-    private val firstContact: Boolean = false
+    private val firstContact: Boolean = false,
 ) : Callable<PublicKey> {
-
     companion object {
         @JvmStatic
-        private val logger: Logger = LoggerFactory.getLogger(
-            GetSshHostFingerprintTaskCallable::class.java
-        )
+        private val logger: Logger =
+            LoggerFactory.getLogger(
+                GetSshHostFingerprintTaskCallable::class.java,
+            )
     }
 
     override fun call(): PublicKey {
         var holder: PublicKey? = null
         val latch = CountDownLatch(1)
-        val sshClient = NetCopyClientConnectionPool.sshClientFactory
-            .create(CustomSshJConfig()).also {
-                it.connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-                it.addHostKeyVerifier(object : HostKeyVerifier {
-                    override fun verify(hostname: String?, port: Int, key: PublicKey?): Boolean {
-                        holder = key
-                        latch.countDown()
-                        return true
-                    }
-                    override fun findExistingAlgorithms(
-                        hostname: String?,
-                        port: Int
-                    ): MutableList<String> = Collections.emptyList()
-                })
-            }
+        val sshClient =
+            NetCopyClientConnectionPool.sshClientFactory
+                .create(CustomSshJConfig()).also {
+                    it.connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
+                    it.addHostKeyVerifier(
+                        object : HostKeyVerifier {
+                            override fun verify(
+                                hostname: String?,
+                                port: Int,
+                                key: PublicKey?,
+                            ): Boolean {
+                                holder = key
+                                latch.countDown()
+                                return true
+                            }
+
+                            override fun findExistingAlgorithms(
+                                hostname: String?,
+                                port: Int,
+                            ): MutableList<String> = Collections.emptyList()
+                        },
+                    )
+                }
         return runCatching {
             sshClient.connect(hostname, port)
             latch.await()

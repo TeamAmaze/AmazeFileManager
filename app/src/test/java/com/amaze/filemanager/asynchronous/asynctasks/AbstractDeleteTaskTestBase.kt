@@ -62,19 +62,19 @@ import org.robolectric.shadows.ShadowToast
         ShadowMultiDex::class,
         ShadowSmbUtil::class,
         ShadowTabHandler::class,
-        ShadowPasswordUtil::class
+        ShadowPasswordUtil::class,
     ],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractDeleteTaskTestBase {
-
     private var ctx: Context? = null
 
     @Rule
     @JvmField
     @RequiresApi(Build.VERSION_CODES.R)
-    val allFilesPermissionRule = GrantPermissionRule
-        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    val allFilesPermissionRule =
+        GrantPermissionRule
+            .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     /**
      * Test case setup.
@@ -134,7 +134,7 @@ abstract class AbstractDeleteTaskTestBase {
                 }!!.apply {
                     assertEquals(MainActivity.TAG_INTENT_FILTER_GENERAL, action)
                     getParcelableArrayListExtra<HybridFileParcelable>(
-                        MainActivity.TAG_INTENT_FILTER_FAILED_OPS
+                        MainActivity.TAG_INTENT_FILTER_FAILED_OPS,
                     )
                         .run {
                             assertTrue(size > 0)

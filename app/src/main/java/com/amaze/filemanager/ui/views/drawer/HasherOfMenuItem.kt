@@ -29,7 +29,7 @@ data class HasherOfMenuItem(
     val groupId: Int,
     val itemId: Int,
     val title: CharSequence?,
-    val ordering: Int
+    val ordering: Int,
 )
 
 fun MenuItem.toNonLeaking(): HasherOfMenuItem {

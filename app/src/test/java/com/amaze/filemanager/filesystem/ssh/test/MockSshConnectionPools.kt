@@ -37,7 +37,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 object MockSshConnectionPools {
-
     private const val ACCESS_DENIED = "Access is denied."
 
     private val hostKeyPair = TestUtils.createKeyPair()
@@ -59,39 +58,43 @@ object MockSshConnectionPools {
             "user",
             "password",
             userKeyPair.private,
-            null
+            null,
         )
 
-        val fileAttributes = mock(FileAttributes::class.java).apply {
-            `when`(type).thenReturn(FileMode.Type.DIRECTORY)
-        }
-        val sftpClient = mock(SFTPClient::class.java).apply {
-            doThrow(SFTPException(ACCESS_DENIED))
-                .`when`(this).rename("/tmp/old.file", "/tmp/new.file")
-            `when`(stat("/tmp/old.file")).thenReturn(fileAttributes)
-            `when`(stat("/tmp/new.file")).thenReturn(null)
-            val fa = mock(FileAttributes::class.java).apply {
-                `when`(type).thenReturn(FileMode.Type.REGULAR)
+        val fileAttributes =
+            mock(FileAttributes::class.java).apply {
+                `when`(type).thenReturn(FileMode.Type.DIRECTORY)
             }
-            `when`(stat("/test.file")).thenReturn(fa)
+        val sftpClient =
+            mock(SFTPClient::class.java).apply {
+                doThrow(SFTPException(ACCESS_DENIED))
+                    .`when`(this).rename("/tmp/old.file", "/tmp/new.file")
+                `when`(stat("/tmp/old.file")).thenReturn(fileAttributes)
+                `when`(stat("/tmp/new.file")).thenReturn(null)
+                val fa =
+                    mock(FileAttributes::class.java).apply {
+                        `when`(type).thenReturn(FileMode.Type.REGULAR)
+                    }
+                `when`(stat("/test.file")).thenReturn(fa)
 
-            if (canDelete) {
-                doNothing().`when`(this).rm(anyString())
-                doNothing().`when`(this).rmdir(anyString())
-            } else {
-                `when`(rm(anyString())).thenThrow(SFTPException(ACCESS_DENIED))
-                `when`(rmdir(anyString())).thenThrow(SFTPException(ACCESS_DENIED))
+                if (canDelete) {
+                    doNothing().`when`(this).rm(anyString())
+                    doNothing().`when`(this).rmdir(anyString())
+                } else {
+                    `when`(rm(anyString())).thenThrow(SFTPException(ACCESS_DENIED))
+                    `when`(rmdir(anyString())).thenThrow(SFTPException(ACCESS_DENIED))
+                }
             }
-        }
-        val sshClient = mock(SSHClient::class.java).apply {
-            doNothing().`when`(this).addHostKeyVerifier(anyString())
-            doNothing().`when`(this).connect(anyString(), anyInt())
-            doNothing().`when`(this).authPassword(anyString(), anyString())
-            doNothing().`when`(this).disconnect()
-            `when`(isConnected).thenReturn(true)
-            `when`(isAuthenticated).thenReturn(true)
-            `when`(newSFTPClient()).thenReturn(sftpClient)
-        }
+        val sshClient =
+            mock(SSHClient::class.java).apply {
+                doNothing().`when`(this).addHostKeyVerifier(anyString())
+                doNothing().`when`(this).connect(anyString(), anyInt())
+                doNothing().`when`(this).authPassword(anyString(), anyString())
+                doNothing().`when`(this).disconnect()
+                `when`(isConnected).thenReturn(true)
+                `when`(isAuthenticated).thenReturn(true)
+                `when`(newSFTPClient()).thenReturn(sftpClient)
+            }
 
         /*
          * We don't need to go through authentication flow here, and in fact SshAuthenticationTask
@@ -105,15 +108,16 @@ object MockSshConnectionPools {
                 mutableMapOf(
                     Pair<String, NetCopyClient<SSHClient>>(
                         "ssh://user:password@127.0.0.1:22222",
-                        SSHClientImpl(sshClient)
-                    )
-                )
+                        SSHClientImpl(sshClient),
+                    ),
+                ),
             )
         }
 
-        NetCopyClientConnectionPool.sshClientFactory = object :
-            NetCopyClientConnectionPool.SSHClientFactory {
-            override fun create(config: Config): SSHClient = sshClient
-        }
+        NetCopyClientConnectionPool.sshClientFactory =
+            object :
+                NetCopyClientConnectionPool.SSHClientFactory {
+                override fun create(config: Config): SSHClient = sshClient
+            }
     }
 }

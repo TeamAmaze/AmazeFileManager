@@ -31,7 +31,7 @@ import com.amaze.filemanager.R
 class PathSwitchPreference(
     context: Context,
     private val onEdit: (PathSwitchPreference) -> Unit,
-    private val onDelete: (PathSwitchPreference) -> Unit
+    private val onDelete: (PathSwitchPreference) -> Unit,
 ) : Preference(context) {
     var lastItemClicked = -1
         private set

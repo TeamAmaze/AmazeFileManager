@@ -42,7 +42,8 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
     DARK(1, false),
     TIMED(2, true),
     BLACK(3, false),
-    SYSTEM(4, true);
+    SYSTEM(4, true),
+    ;
 
     /**
      * Returns the correct [Theme] associated with this [AppThemePreference] based on [context].
@@ -58,20 +59,24 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
      */
     fun getSimpleTheme(context: Context): AppTheme {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val followBatterySaver = preferences.getBoolean(
-            PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER,
-            false
-        )
+        val followBatterySaver =
+            preferences.getBoolean(
+                PreferencesConstants.FRAGMENT_FOLLOW_BATTERY_SAVER,
+                false,
+            )
         return getSimpleTheme(
             isNightMode(context),
-            followBatterySaver && isBatterySaverMode(context)
+            followBatterySaver && isBatterySaverMode(context),
         )
     }
 
     /**
      * Returns the correct [AppTheme] based on [isNightMode] and [isBatterySaver].
      */
-    fun getSimpleTheme(isNightMode: Boolean, isBatterySaver: Boolean): AppTheme {
+    fun getSimpleTheme(
+        isNightMode: Boolean,
+        isBatterySaver: Boolean,
+    ): AppTheme {
         return if (canBeLight && isBatterySaver) {
             AppTheme.DARK
         } else {
@@ -100,7 +105,7 @@ enum class AppThemePreference(val id: Int, val canBeLight: Boolean) {
         return (
             context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
                 == Configuration.UI_MODE_NIGHT_YES
-            )
+        )
     }
 
     /**

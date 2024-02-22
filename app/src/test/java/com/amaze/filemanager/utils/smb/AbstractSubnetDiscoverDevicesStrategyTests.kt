@@ -40,7 +40,6 @@ import java.net.InetAddress
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [KITKAT, P, VERSION_CODES.R])
 abstract class AbstractSubnetDiscoverDevicesStrategyTests {
-
     /**
      * Post test cleanup.
      */
@@ -60,12 +59,16 @@ abstract class AbstractSubnetDiscoverDevicesStrategyTests {
         mockkStatic(NetworkUtil::class)
         every { NetworkUtil.isConnectedToWifi(any()) } returns true
         every { NetworkUtil.isConnectedToLocalNetwork(any()) } returns true
-        every { NetworkUtil.getLocalInetAddress(any()) } returns mockk<InetAddress>().also {
-            every { it.hostName } returns "192.168.233.240"
-        }
+        every { NetworkUtil.getLocalInetAddress(any()) } returns
+            mockk<InetAddress>().also {
+                every { it.hostName } returns "192.168.233.240"
+            }
     }
 
-    protected fun mockInetAddress(hostName: String, hostAddress: String): InetAddress {
+    protected fun mockInetAddress(
+        hostName: String,
+        hostAddress: String,
+    ): InetAddress {
         val upHost = mockk<InetAddress>()
         every { upHost.hostName } returns hostName
         every { upHost.hostAddress } returns hostAddress

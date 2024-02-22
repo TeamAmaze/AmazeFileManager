@@ -30,5 +30,5 @@ class OpenFileParcelable(
     var mimeType: String?,
     var useNewStack: Boolean?,
     var className: String?,
-    var packageName: String?
+    var packageName: String?,
 ) : Parcelable

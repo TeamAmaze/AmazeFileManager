@@ -25,5 +25,5 @@ import java.io.File
 data class ReturnedValueOnReadFile(
     val fileContents: String,
     val cachedFile: File?,
-    val fileIsTooLong: Boolean
+    val fileIsTooLong: Boolean,
 )

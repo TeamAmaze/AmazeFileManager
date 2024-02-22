@@ -31,7 +31,6 @@ import java.io.IOException
  */
 abstract class SshClientTemplate<T>(url: String, closeClientOnFinish: Boolean = true) :
     NetCopyClientTemplate<SSHClient, T>(url, closeClientOnFinish) {
-
     @Throws(IOException::class)
     final override fun execute(client: NetCopyClient<SSHClient>): T? {
         val sshClient: SSHClient = client.getClientImpl()

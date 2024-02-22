@@ -32,7 +32,10 @@ import com.amaze.filemanager.utils.Utils
 class PrefsFragment : BasePrefsFragment() {
     override val title = R.string.setting
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         findPreference<Preference>("appearance")?.onPreferenceClickListener =
@@ -72,31 +75,33 @@ class PrefsFragment : BasePrefsFragment() {
             }
 
         findPreference<Preference>("feedback")
-            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val emailIntent = Utils.buildEmailIntent(requireContext(), null, Utils.EMAIL_SUPPORT)
+            ?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                val emailIntent = Utils.buildEmailIntent(requireContext(), null, Utils.EMAIL_SUPPORT)
 
-            val activities = activity.packageManager.queryIntentActivities(
-                emailIntent,
-                PackageManager.MATCH_DEFAULT_ONLY
-            )
-
-            if (activities.isNotEmpty()) {
-                startActivity(
-                    Intent.createChooser(
+                val activities =
+                    activity.packageManager.queryIntentActivities(
                         emailIntent,
-                        resources.getString(R.string.feedback)
+                        PackageManager.MATCH_DEFAULT_ONLY,
                     )
-                )
-            } else {
-                Toast.makeText(
-                    getActivity(),
-                    resources.getString(R.string.send_email_to) + " " + Utils.EMAIL_SUPPORT,
-                    Toast.LENGTH_LONG
-                )
-                    .show()
-            }
 
-            false
-        }
+                if (activities.isNotEmpty()) {
+                    startActivity(
+                        Intent.createChooser(
+                            emailIntent,
+                            resources.getString(R.string.feedback),
+                        ),
+                    )
+                } else {
+                    Toast.makeText(
+                        getActivity(),
+                        resources.getString(R.string.send_email_to) + " " + Utils.EMAIL_SUPPORT,
+                        Toast.LENGTH_LONG,
+                    )
+                        .show()
+                }
+
+                false
+            }
     }
 }

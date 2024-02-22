@@ -32,44 +32,43 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 class SortByTest {
-
     /** Tests if [SortBy.getSortBy] returns the correct [SortBy] corresponding to the given index */
     @Test
     fun getSortByTest() {
         Assert.assertEquals(
             "SortBy.getSortBy(0) did not return NAME",
             SortBy.NAME,
-            SortBy.getSortBy(0)
+            SortBy.getSortBy(0),
         )
         Assert.assertEquals(
             "SortBy.getSortBy(1) did not return LAST_MODIFIED",
             SortBy.LAST_MODIFIED,
-            SortBy.getSortBy(1)
+            SortBy.getSortBy(1),
         )
         Assert.assertEquals(
             "SortBy.getSortBy(2) did not return SIZE",
             SortBy.SIZE,
-            SortBy.getSortBy(2)
+            SortBy.getSortBy(2),
         )
         Assert.assertEquals(
             "SortBy.getSortBy(3) did not return TYPE",
             SortBy.TYPE,
-            SortBy.getSortBy(3)
+            SortBy.getSortBy(3),
         )
         Assert.assertEquals(
             "SortBy.getSortBy(4) did not return RELEVANCE",
             SortBy.RELEVANCE,
-            SortBy.getSortBy(4)
+            SortBy.getSortBy(4),
         )
         // could be any int except 0 to 4
         val randomIndex = Random.nextInt(5, Int.MAX_VALUE)
         Assert.assertEquals(
             "SortBy.getDirectorySortBy($randomIndex) did not return NAME",
             SortBy.NAME,
-            SortBy.getDirectorySortBy(randomIndex)
+            SortBy.getDirectorySortBy(randomIndex),
         )
     }
 
@@ -79,29 +78,29 @@ class SortByTest {
         Assert.assertEquals(
             "SortBy.getDirectorySortBy(0) did not return NAME",
             SortBy.NAME,
-            SortBy.getDirectorySortBy(0)
+            SortBy.getDirectorySortBy(0),
         )
         Assert.assertEquals(
             "SortBy.getDirectorySortBy(1) did not return LAST_MODIFIED",
             SortBy.LAST_MODIFIED,
-            SortBy.getDirectorySortBy(1)
+            SortBy.getDirectorySortBy(1),
         )
         Assert.assertEquals(
             "SortBy.getDirectorySortBy(2) did not return SIZE",
             SortBy.SIZE,
-            SortBy.getDirectorySortBy(2)
+            SortBy.getDirectorySortBy(2),
         )
         Assert.assertEquals(
             "SortBy.getDirectorySortBy(3) did not return TYPE",
             SortBy.TYPE,
-            SortBy.getDirectorySortBy(3)
+            SortBy.getDirectorySortBy(3),
         )
         // could be any int except 0 to 3
         val randomIndex = Random.nextInt(4, Int.MAX_VALUE)
         Assert.assertEquals(
             "SortBy.getDirectorySortBy($randomIndex) did not return NAME",
             SortBy.NAME,
-            SortBy.getDirectorySortBy(randomIndex)
+            SortBy.getDirectorySortBy(randomIndex),
         )
     }
 }

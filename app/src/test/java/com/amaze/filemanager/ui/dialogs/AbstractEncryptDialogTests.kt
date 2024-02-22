@@ -47,17 +47,17 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractEncryptDialogTests {
-
     protected lateinit var scenario: ActivityScenario<MainActivity>
 
     @Rule
     @JvmField
     @RequiresApi(Build.VERSION_CODES.R)
-    var allFilesPermissionRule = GrantPermissionRule
-        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    var allFilesPermissionRule =
+        GrantPermissionRule
+            .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     /**
      * MainActivity setup.

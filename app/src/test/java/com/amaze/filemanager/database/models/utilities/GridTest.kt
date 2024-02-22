@@ -29,7 +29,6 @@ import org.junit.Test
  */
 @Suppress("StringLiteralDuplication")
 class GridTest {
-
     /**
      * Test [Grid.equals] for equality.
      */

@@ -64,10 +64,9 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class],
-    sdk = [KITKAT, P, VERSION_CODES.R]
+    sdk = [KITKAT, P, VERSION_CODES.R],
 )
 class PemToKeyPairObservableRsaTest {
-
     companion object {
         private const val unencryptedPuttyKey = (
             "PuTTY-User-Key-File-2: ssh-rsa\n" +
@@ -96,7 +95,7 @@ class PemToKeyPairObservableRsaTest {
                 "THdPSgA2f6EmqCOPR1VAA4jdQkK8VkN3/O3zWFdfRGqN5Kka7a7cmcyd93sq3LIU\n" +
                 "EYe4EYW7BQwe1W5ZCO+lRzjquGAB5rMhdAnzYfvkPc7sfJ8=\n" +
                 "Private-MAC: 2cd5ec740c5dd854e8a6bea3773f98697670bdc6"
-            )
+        )
 
         // Passphrase = test
         private const val encryptedPuttyKey = (
@@ -126,7 +125,7 @@ class PemToKeyPairObservableRsaTest {
                 "Gs4agAG3InJnMiuIOzaNOIFLGM9STtYNyvG411rj6tR4EEQ6cJCxIlVe5a1mEt7M\n" +
                 "GVfbB5wUvow0o0a56OBmFMZOCxV2Vpxu6PuGTD8QQ0O0YzNDWFk3Fj2RRnnLCBLF\n" +
                 "Private-MAC: f742e2954fbb0c98984db0d9855a0f15507ecc0a"
-            )
+        )
     }
 
     private lateinit var scenario: ActivityScenario<MainActivity>
@@ -173,10 +172,12 @@ class PemToKeyPairObservableRsaTest {
         val task = PemToKeyPairObservable(encryptedPuttyKey)
         val field = PemToKeyPairObservable::class.java.getDeclaredField("passwordFinder")
         field.isAccessible = true
-        field[task] = object : PasswordFinder {
-            override fun reqPassword(resource: Resource<*>): CharArray = "test".toCharArray()
-            override fun shouldRetry(resource: Resource<*>): Boolean = false
-        }
+        field[task] =
+            object : PasswordFinder {
+                override fun reqPassword(resource: Resource<*>): CharArray = "test".toCharArray()
+
+                override fun shouldRetry(resource: Resource<*>): Boolean = false
+            }
         val result = Observable.create(task).subscribeOn(Schedulers.single()).blockingFirst()
         assertNotNull(result)
         assertNotNull(result?.public)
@@ -194,10 +195,12 @@ class PemToKeyPairObservableRsaTest {
             val field = PemToKeyPairObservable::class.java.getDeclaredField("passwordFinder")
             var result: KeyPair? = null
             field.isAccessible = true
-            field[task] = object : PasswordFinder {
-                override fun reqPassword(resource: Resource<*>): CharArray = "foobar".toCharArray()
-                override fun shouldRetry(resource: Resource<*>): Boolean = false
-            }
+            field[task] =
+                object : PasswordFinder {
+                    override fun reqPassword(resource: Resource<*>): CharArray = "foobar".toCharArray()
+
+                    override fun shouldRetry(resource: Resource<*>): Boolean = false
+                }
             Observable.create(task).subscribeOn(Schedulers.io())
                 .retryWhen { exceptions ->
                     exceptions.flatMap { exception ->
@@ -228,7 +231,7 @@ class PemToKeyPairObservableRsaTest {
             (ShadowDialog.getLatestDialog() as MaterialDialog).let { dialog ->
                 assertEquals(
                     AppConfig.getInstance().resources.getText(R.string.ssh_key_prompt_passphrase),
-                    dialog.titleView.text
+                    dialog.titleView.text,
                 )
                 dialog.customView?.run {
                     lap++
@@ -273,7 +276,7 @@ class PemToKeyPairObservableRsaTest {
             (ShadowDialog.getLatestDialog() as MaterialDialog).let { dialog ->
                 assertEquals(
                     AppConfig.getInstance().resources.getText(R.string.ssh_key_prompt_passphrase),
-                    dialog.titleView.text
+                    dialog.titleView.text,
                 )
                 dialog.getActionButton(DialogAction.NEGATIVE).performClick()
             }
@@ -284,10 +287,10 @@ class PemToKeyPairObservableRsaTest {
                 AppConfig.getInstance().resources.getString(
                     R.string.ssh_pem_key_parse_error,
                     AppConfig.getInstance().resources.getString(
-                        R.string.ssh_key_no_decoder_decrypt
-                    )
+                        R.string.ssh_key_no_decoder_decrypt,
+                    ),
                 ),
-                ShadowToast.getTextOfLatestToast()
+                ShadowToast.getTextOfLatestToast(),
             )
         }
     }

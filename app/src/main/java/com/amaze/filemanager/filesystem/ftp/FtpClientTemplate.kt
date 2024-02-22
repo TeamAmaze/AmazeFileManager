@@ -29,7 +29,6 @@ import java.io.IOException
  */
 abstract class FtpClientTemplate<T>(url: String, closeClientOnFinish: Boolean = true) :
     NetCopyClientTemplate<FTPClient, T>(url, closeClientOnFinish) {
-
     @Throws(IOException::class)
     final override fun execute(client: NetCopyClient<FTPClient>): T? {
         val ftpClient: FTPClient = client.getClientImpl()

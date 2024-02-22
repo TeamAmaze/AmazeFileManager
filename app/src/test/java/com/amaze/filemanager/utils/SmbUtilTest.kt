@@ -47,10 +47,9 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     sdk = [KITKAT, P, Build.VERSION_CODES.R],
-    shadows = [ShadowPasswordUtil::class, ShadowSmbUtil::class]
+    shadows = [ShadowPasswordUtil::class, ShadowSmbUtil::class],
 )
 class SmbUtilTest {
-
     /**
      * Test encrypt/decrypt SMB URIs.
      */
@@ -87,7 +86,7 @@ class SmbUtilTest {
         val path = "smb://127.0.0.1"
         assertEquals(
             path,
-            getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path)
+            getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
         )
     }
 
@@ -99,7 +98,7 @@ class SmbUtilTest {
         val path = "smb://toor@127.0.0.1"
         assertEquals(
             path,
-            getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path)
+            getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
         )
     }
 
@@ -110,23 +109,23 @@ class SmbUtilTest {
     fun testCheckFolder() {
         assertEquals(
             DOESNT_EXIST,
-            checkFolder("smb://user:password@5.6.7.8/newfolder/DummyFolder")
+            checkFolder("smb://user:password@5.6.7.8/newfolder/DummyFolder"),
         )
         assertEquals(
             DOESNT_EXIST,
-            checkFolder("smb://user:password@5.6.7.8/newfolder/resume.doc")
+            checkFolder("smb://user:password@5.6.7.8/newfolder/resume.doc"),
         )
         assertEquals(
             WRITABLE_ON_REMOTE,
-            checkFolder("smb://user:password@5.6.7.8/newfolder/Documents")
+            checkFolder("smb://user:password@5.6.7.8/newfolder/Documents"),
         )
         assertEquals(
             DOESNT_EXIST,
-            checkFolder("smb://user:password@5.6.7.8/newfolder/wirebroken.log")
+            checkFolder("smb://user:password@5.6.7.8/newfolder/wirebroken.log"),
         )
         assertEquals(
             DOESNT_EXIST,
-            checkFolder("smb://user:password@5.6.7.8/newfolder/failcheck")
+            checkFolder("smb://user:password@5.6.7.8/newfolder/failcheck"),
         )
     }
 

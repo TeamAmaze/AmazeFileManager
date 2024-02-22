@@ -31,7 +31,6 @@ import java.io.File
  *
  */
 object PackageInstallValidation {
-
     /**
      * Perform validation by getting [PackageInfo] of file at specified path, then see if it's us.
      * If yes, throw [PackageCannotBeInstalledException] and [FileUtils.installApk] should exit
@@ -44,14 +43,14 @@ object PackageInstallValidation {
             val packageInfo: PackageInfo? =
                 packageManager.getPackageArchiveInfo(
                     f.absolutePath,
-                    PackageManager.GET_ACTIVITIES
+                    PackageManager.GET_ACTIVITIES,
                 )
             if (packageInfo == null) {
                 throw IllegalStateException("Cannot get package info")
             } else {
                 if (packageInfo.packageName == this.packageName) {
                     throw PackageCannotBeInstalledException(
-                        "Cannot update myself per Google Play policy"
+                        "Cannot update myself per Google Play policy",
                     )
                 }
             }

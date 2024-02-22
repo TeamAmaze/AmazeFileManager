@@ -24,7 +24,6 @@ package com.amaze.filemanager.filesystem.ftp
  * Base interface for defining client class that interacts with a remote server.
  */
 interface NetCopyClient<T> {
-
     /**
      * Returns the physical client implementation.
      */

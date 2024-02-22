@@ -46,35 +46,39 @@ import java.io.File
  * See [Draft spec](https://www.ietf.org/archive/id/draft-peterson-streamlined-ftp-command-extensions-10.txt)
  */
 class AVBL : AbstractCommand() {
-
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(AVBL::class.java)
     }
 
-    override fun execute(session: FtpIoSession, context: FtpServerContext, request: FtpRequest) {
+    override fun execute(
+        session: FtpIoSession,
+        context: FtpServerContext,
+        request: FtpRequest,
+    ) {
         // argument check
         val fileName: String? = request.argument
         if (context.fileSystemManager is AndroidFileSystemFactory) {
             doWriteReply(
                 session,
                 REPLY_502_COMMAND_NOT_IMPLEMENTED,
-                "AVBL.notimplemented"
+                "AVBL.notimplemented",
             )
         } else {
-            val ftpFile: FtpFile? = if (true == fileName?.isNotBlank()) {
-                runCatching {
-                    session.fileSystemView.getFile(fileName)
-                }.getOrNull()
-            } else {
-                session.fileSystemView.homeDirectory
-            }
+            val ftpFile: FtpFile? =
+                if (true == fileName?.isNotBlank()) {
+                    runCatching {
+                        session.fileSystemView.getFile(fileName)
+                    }.getOrNull()
+                } else {
+                    session.fileSystemView.homeDirectory
+                }
             if (ftpFile != null) {
                 if (session.user.authorize(
                         if (true == fileName?.isNotBlank()) {
                             WriteRequest(fileName)
                         } else {
                             WriteRequest()
-                        }
+                        },
                     ) != null ||
                     !(ftpFile.physicalFile as File).canWrite()
                 ) {
@@ -83,7 +87,7 @@ class AVBL : AbstractCommand() {
                             runCatching {
                                 freeSpace.let {
                                     session.write(
-                                        DefaultFtpReply(REPLY_213_FILE_STATUS, it.toString())
+                                        DefaultFtpReply(REPLY_213_FILE_STATUS, it.toString()),
                                     )
                                 }
                             }.onFailure {
@@ -107,14 +111,14 @@ class AVBL : AbstractCommand() {
     private fun replyError(
         session: FtpIoSession,
         subId: String,
-        fileName: String? = null
+        fileName: String? = null,
     ) = doWriteReply(session, REPLY_550_REQUESTED_ACTION_NOT_TAKEN, subId, fileName)
 
     private fun doWriteReply(
         session: FtpIoSession,
         code: Int,
         subId: String,
-        fileName: String? = null
+        fileName: String? = null,
     ) {
         val packageName = AppConfig.getInstance().packageName
         val resources = AppConfig.getInstance().resources
@@ -123,9 +127,9 @@ class AVBL : AbstractCommand() {
                 code,
                 resources.getString(
                     resources.getIdentifier("$packageName:string/ftp_error_$subId", null, null),
-                    fileName
-                )
-            )
+                    fileName,
+                ),
+            ),
         )
     }
 }

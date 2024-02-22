@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory
 import java.io.*
 
 class BackupPrefsFragment : BasePrefsFragment() {
-
     private val TAG: String = TagsHelper.getTag(BasePrefsFragment::class.java)
     private val log: Logger = LoggerFactory.getLogger(BackupPrefsFragment::class.java)
 
@@ -53,8 +52,9 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
     /** Export app settings to a JSON file */
     fun exportPrefs() {
-        val map: Map<String?, *> = PreferenceManager
-            .getDefaultSharedPreferences(requireActivity()).all
+        val map: Map<String?, *> =
+            PreferenceManager
+                .getDefaultSharedPreferences(requireActivity()).all
 
         val gsonString: String = Gson().toJson(map)
 
@@ -73,7 +73,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
             Toast.makeText(
                 context,
                 getString(R.string.select_save_location),
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
 
             val intent = Intent(context, MainActivity::class.java)
@@ -99,23 +99,27 @@ class BackupPrefsFragment : BasePrefsFragment() {
                     .setType("*/*")
                     .putExtra(
                         Intent.EXTRA_MIME_TYPES,
-                        arrayOf("application/json")
+                        arrayOf("application/json"),
                     ),
-                IMPORT_BACKUP_FILE
+                IMPORT_BACKUP_FILE,
             )
         } else {
             startActivityForResult(
                 Intent.createChooser(
                     Intent(Intent.ACTION_GET_CONTENT)
                         .setType("application/json"),
-                    "Choose backup file"
+                    "Choose backup file",
                 ),
-                IMPORT_BACKUP_FILE
+                IMPORT_BACKUP_FILE,
             )
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?,
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
 
         val nonNull = data != null && data.data != null
@@ -129,9 +133,10 @@ class BackupPrefsFragment : BasePrefsFragment() {
             Log.i(TAG, "read import file: $uri")
 
             try {
-                val inputStream = uri?.let {
-                    context?.contentResolver?.openInputStream(it)
-                }
+                val inputStream =
+                    uri?.let {
+                        context?.contentResolver?.openInputStream(it)
+                    }
 
                 val bufferedReader = BufferedReader(InputStreamReader(inputStream))
                 val stringBuilder = StringBuilder()
@@ -142,10 +147,11 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
                 val type = object : TypeToken<Map<String?, Any>>() {}.type
 
-                val map: Map<String?, Any> = Gson().fromJson(
-                    stringBuilder.toString(),
-                    type
-                )
+                val map: Map<String?, Any> =
+                    Gson().fromJson(
+                        stringBuilder.toString(),
+                        type,
+                    )
 
                 val editor: SharedPreferences.Editor? =
                     PreferenceManager.getDefaultSharedPreferences(requireActivity()).edit()
@@ -158,20 +164,20 @@ class BackupPrefsFragment : BasePrefsFragment() {
                 Toast.makeText(
                     context,
                     getString(R.string.importing_completed),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
 
                 startActivity(
                     Intent(
                         context,
-                        MainActivity::class.java
-                    )
+                        MainActivity::class.java,
+                    ),
                 ) // restart Amaze for changes to take effect
             } catch (e: IOException) {
                 Toast.makeText(
                     context,
                     getString(R.string.importing_failed),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 log.error(getString(R.string.importing_failed), e)
             }
@@ -181,7 +187,11 @@ class BackupPrefsFragment : BasePrefsFragment() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun storePreference(editor: SharedPreferences.Editor?, key: String?, value: Any) {
+    private fun storePreference(
+        editor: SharedPreferences.Editor?,
+        key: String?,
+        value: Any,
+    ) {
         try {
             when (value::class.simpleName) {
                 "Boolean" -> editor?.putBoolean(key, value as Boolean)
@@ -195,27 +205,32 @@ class BackupPrefsFragment : BasePrefsFragment() {
             Toast.makeText(
                 context,
                 "${getString(R.string.import_failed_for)} $key",
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_SHORT,
             ).show()
             log.error("${getString(R.string.import_failed_for)} $key", e)
         }
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.backup_prefs, rootKey)
 
         findPreference<Preference>(
-            PreferencesConstants.PREFERENCE_EXPORT_SETTINGS
-        )?.onPreferenceClickListener = OnPreferenceClickListener {
-            exportPrefs()
-            true
-        }
+            PreferencesConstants.PREFERENCE_EXPORT_SETTINGS,
+        )?.onPreferenceClickListener =
+            OnPreferenceClickListener {
+                exportPrefs()
+                true
+            }
 
         findPreference<Preference>(
-            PreferencesConstants.PREFERENCE_IMPORT_SETTINGS
-        )?.onPreferenceClickListener = OnPreferenceClickListener {
-            importPrefs()
-            true
-        }
+            PreferencesConstants.PREFERENCE_IMPORT_SETTINGS,
+        )?.onPreferenceClickListener =
+            OnPreferenceClickListener {
+                importPrefs()
+                true
+            }
     }
 }

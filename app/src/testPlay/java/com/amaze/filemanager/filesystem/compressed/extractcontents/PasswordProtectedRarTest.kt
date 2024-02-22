@@ -27,11 +27,9 @@ import org.junit.Test
 import java.io.IOException
 
 open class PasswordProtectedRarTest : AbstractExtractorPasswordProtectedArchivesTest() {
-
     override fun extractorClass(): Class<out Extractor> = RarExtractor::class.java
 
-    override fun expectedRootExceptionClass(): Array<Class<*>> =
-        arrayOf(IOException::class.java, PasswordRequiredException::class.java)
+    override fun expectedRootExceptionClass(): Array<Class<*>> = arrayOf(IOException::class.java, PasswordRequiredException::class.java)
 
     override val archiveType: String = "rar"
 

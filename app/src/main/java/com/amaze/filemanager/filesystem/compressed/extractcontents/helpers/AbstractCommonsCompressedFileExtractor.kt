@@ -40,14 +40,14 @@ abstract class AbstractCommonsCompressedFileExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
-
     private val compressorInputStreamConstructor: Constructor<out CompressorInputStream>
 
     init {
-        compressorInputStreamConstructor = getCompressorInputStreamClass()
-            .getDeclaredConstructor(InputStream::class.java)
+        compressorInputStreamConstructor =
+            getCompressorInputStreamClass()
+                .getDeclaredConstructor(InputStream::class.java)
         compressorInputStreamConstructor.isAccessible = true
     }
 
@@ -84,8 +84,8 @@ abstract class AbstractCommonsCompressedFileExtractor(
                         context.getString(
                             R.string.error_archive_cannot_extract,
                             entryName,
-                            outputPath
-                        )
+                            outputPath,
+                        ),
                     )
                 }
         }.onFailure {

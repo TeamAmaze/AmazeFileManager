@@ -33,22 +33,22 @@ import java.io.IOException
 class SevenZipHelperCallable(
     private val filePath: String,
     private val relativePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     CompressedHelperCallable(goBack) {
-
     @Throws(ArchiveException::class)
     @Suppress("Detekt.RethrowCaughtException")
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         try {
-            val sevenzFile = if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
-                SevenZFile(
-                    File(filePath),
-                    ArchivePasswordCache.getInstance()[filePath]!!.toCharArray()
-                )
-            } else {
-                SevenZFile(File(filePath))
-            }
+            val sevenzFile =
+                if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
+                    SevenZFile(
+                        File(filePath),
+                        ArchivePasswordCache.getInstance()[filePath]!!.toCharArray(),
+                    )
+                } else {
+                    SevenZFile(File(filePath))
+                }
 
             val entriesMap = sevenzFile.entries.associateBy { it.name }
             val entries = HashSet<String>()
@@ -66,8 +66,8 @@ class SevenZipHelperCallable(
                         1
                     } else {
                         relativePath.count { it == CompressedHelper.SEPARATOR_CHAR } + 1
-                    }
-                )
+                    },
+                ),
             )
 
             entries.forEach { path ->
@@ -83,8 +83,8 @@ class SevenZipHelperCallable(
                                     0L
                                 },
                                 entry.size,
-                                entry.isDirectory
-                            )
+                                entry.isDirectory,
+                            ),
                         )
                     }
                 } else {
@@ -93,8 +93,8 @@ class SevenZipHelperCallable(
                             path,
                             0L,
                             0,
-                            true
-                        )
+                            true,
+                        ),
                     )
                 }
             }
@@ -106,7 +106,10 @@ class SevenZipHelperCallable(
         }
     }
 
-    internal fun consolidate(paths: Collection<String>, level: Int = 0): Set<String> {
+    internal fun consolidate(
+        paths: Collection<String>,
+        level: Int = 0,
+    ): Set<String> {
         return paths.mapNotNull { path ->
             when (level) {
                 0 -> {

@@ -47,8 +47,8 @@ import java.util.*
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 abstract class AbstractExtractorTest {
-
     protected abstract fun extractorClass(): Class<out Extractor>
+
     protected abstract val archiveType: String
 
     private lateinit var systemTz: TimeZone
@@ -95,26 +95,33 @@ abstract class AbstractExtractorTest {
     @Test
     open fun testExtractBadArchive() {
         val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
-        val extractor = extractorClass()
-            .getConstructor(
-                Context::class.java,
-                String::class.java,
-                String::class.java,
-                Extractor.OnUpdate::class.java,
-                UpdatePosition::class.java
-            )
-            .newInstance(
-                ApplicationProvider.getApplicationContext(),
-                badArchive.absolutePath,
-                Environment.getExternalStorageDirectory().absolutePath,
-                object : Extractor.OnUpdate {
-                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-                    override fun onUpdate(entryPath: String) = Unit
-                    override fun isCancelled(): Boolean = false
-                    override fun onFinish() = Unit
-                },
-                ServiceWatcherUtil.UPDATE_POSITION
-            )
+        val extractor =
+            extractorClass()
+                .getConstructor(
+                    Context::class.java,
+                    String::class.java,
+                    String::class.java,
+                    Extractor.OnUpdate::class.java,
+                    UpdatePosition::class.java,
+                )
+                .newInstance(
+                    ApplicationProvider.getApplicationContext(),
+                    badArchive.absolutePath,
+                    Environment.getExternalStorageDirectory().absolutePath,
+                    object : Extractor.OnUpdate {
+                        override fun onStart(
+                            totalBytes: Long,
+                            firstEntryName: String,
+                        ) = Unit
+
+                        override fun onUpdate(entryPath: String) = Unit
+
+                        override fun isCancelled(): Boolean = false
+
+                        override fun onFinish() = Unit
+                    },
+                    ServiceWatcherUtil.UPDATE_POSITION,
+                )
         try {
             extractor.extractEverything()
             fail("BadArchiveNotice was not thrown")
@@ -130,13 +137,13 @@ abstract class AbstractExtractorTest {
         }?.forEach {
             FileInputStream(it).copyTo(
                 FileOutputStream(
-                    File(Environment.getExternalStorageDirectory(), it.name)
-                )
+                    File(Environment.getExternalStorageDirectory(), it.name),
+                ),
             )
             ByteArrayInputStream(randomBytes()).copyTo(
                 FileOutputStream(
-                    File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
-                )
+                    File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType"),
+                ),
             )
         }
     }

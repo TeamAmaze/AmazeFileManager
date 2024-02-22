@@ -65,10 +65,9 @@ import kotlin.text.Charsets.UTF_8
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, VERSION_CODES.R]
+    sdk = [KITKAT, P, VERSION_CODES.R],
 )
 abstract class AbstractSftpServerTest {
-
     protected var encryptedPassword: String? =
         PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)?.replace("\n", "")
     protected var serverPort = 0
@@ -80,19 +79,20 @@ abstract class AbstractSftpServerTest {
     @Before
     @Throws(IOException::class)
     open fun setUp() {
-        serverPort = createSshServer(
-            VirtualFileSystemFactory(
-                Paths.get(Environment.getExternalStorageDirectory().absolutePath)
-            ),
-            64000
-        )
+        serverPort =
+            createSshServer(
+                VirtualFileSystemFactory(
+                    Paths.get(Environment.getExternalStorageDirectory().absolutePath),
+                ),
+                64000,
+            )
         prepareSshConnection()
         TestUtils.saveSshConnectionSettings(
             hostKeyPair = hostKeyProvider.keyPair,
             validUsername = encode(USERNAME, UTF_8.name()),
             validPassword = encryptedPassword,
             privateKey = null,
-            port = 64000
+            port = 64000,
         )
     }
 
@@ -117,12 +117,15 @@ abstract class AbstractSftpServerTest {
             hostFingerprint,
             USERNAME,
             PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)?.replace("\n", ""),
-            null
+            null,
         )
     }
 
     @Throws(IOException::class)
-    protected fun createSshServer(fileSystemFactory: FileSystemFactory, startPort: Int): Int {
+    protected fun createSshServer(
+        fileSystemFactory: FileSystemFactory,
+        startPort: Int,
+    ): Int {
         server = SshServer.setUpDefaultServer()
         server.fileSystemFactory = fileSystemFactory
         server.publickeyAuthenticator = AcceptAllPublickeyAuthenticator.INSTANCE
@@ -144,7 +147,6 @@ abstract class AbstractSftpServerTest {
     }
 
     companion object {
-
         @JvmStatic
         protected val HOST = "127.0.0.1"
 

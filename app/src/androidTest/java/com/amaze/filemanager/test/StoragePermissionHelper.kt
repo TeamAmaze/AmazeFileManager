@@ -34,7 +34,6 @@ package com.amaze.filemanager.test
 // import org.junit.Assert.assertTrue
 
 object StoragePermissionHelper {
-
     /**
      * This method is intended for Android R or above devices to obtain MANAGE_EXTERNAL_STORAGE
      * permission via UI Automator framework when running relevant Espresso tests.

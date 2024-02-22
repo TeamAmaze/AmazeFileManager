@@ -23,14 +23,16 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 import java.io.File
 
 class SevenZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive.7z"
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         SevenZipHelperCallable(
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

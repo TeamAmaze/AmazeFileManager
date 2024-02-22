@@ -21,6 +21,5 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 class TarBzip2ExtractorTest2 : TarBzip2ExtractorTest() {
-
     override val archiveType: String = "tbz"
 }

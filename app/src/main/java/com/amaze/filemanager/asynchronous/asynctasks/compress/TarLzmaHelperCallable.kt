@@ -28,10 +28,8 @@ class TarLzmaHelperCallable(
     context: Context,
     filePath: String,
     relativePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     AbstractCompressedTarArchiveHelperCallable(context, filePath, relativePath, goBack) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        LZMACompressorInputStream::class.java
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> = LZMACompressorInputStream::class.java
 }

@@ -31,7 +31,6 @@ import org.apache.ftpserver.command.CommandFactoryFactory
  * Custom [CommandFactory] factory with custom commands.
  */
 object CommandFactoryFactory {
-
     /**
      * Encapsulate custom [CommandFactory] construction logic. Append custom AVBL and PWD command,
      * as well as feature flag in FEAT command if not using [AndroidFtpFileSystemView].

@@ -41,17 +41,22 @@ import java.util.regex.Pattern
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod", "LargeClass")
 class SearchResultListSorterTest {
-
-    private fun getSimpleMatchRange(searchTerm: String, fileName: String): MatchRange {
+    private fun getSimpleMatchRange(
+        searchTerm: String,
+        fileName: String,
+    ): MatchRange {
         val startIndex = fileName.lowercase().indexOf(searchTerm.lowercase())
         return startIndex..(startIndex + searchTerm.length)
     }
 
-    private fun getPatternMatchRange(pattern: Pattern, fileName: String): MatchRange {
+    private fun getPatternMatchRange(
+        pattern: Pattern,
+        fileName: String,
+    ): MatchRange {
         val matcher = pattern.matcher(fileName)
         matcher.find()
         return matcher.start()..matcher.end()
@@ -73,48 +78,51 @@ class SearchResultListSorterTest {
         val title2 = "ABCDE.txt"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
 
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
 
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            "ABCDE.txt",
-            "C:\\AmazeFileManager\\ABCDE",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                "ABCDE.txt",
+                "C:\\AmazeFileManager\\ABCDE",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
 
         Assert.assertEquals(
             -1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -133,45 +141,48 @@ class SearchResultListSorterTest {
         val matchRange1 = getSimpleMatchRange(searchTerm, title1)
         val title2 = "ABC.txt"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abcdefg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abcdefg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -192,45 +203,48 @@ class SearchResultListSorterTest {
         val title2 = "XYZ_ABC"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\XYZ_ABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\XYZ_ABC",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             -1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -251,45 +265,48 @@ class SearchResultListSorterTest {
         val title2 = "ABC.txt"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\txt-abc",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\txt-abc",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -312,45 +329,48 @@ class SearchResultListSorterTest {
         val title2 = "ABCD-FG.txt"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc-efg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABCD-FG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc-efg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABCD-FG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             -1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -372,45 +392,48 @@ class SearchResultListSorterTest {
         val matchRange1 = getSimpleMatchRange(searchTerm, title1)
         val title2 = "ABC_EFG"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abcdefg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC_EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abcdefg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC_EFG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -433,45 +456,48 @@ class SearchResultListSorterTest {
         val title2 = "ABC EFG"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            "abc"
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abcdefg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                "abc",
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abcdefg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC EFG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -494,45 +520,48 @@ class SearchResultListSorterTest {
         val title2 = "ABC.EFG"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abcdefg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC.EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abcdefg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC.EFG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -555,46 +584,49 @@ class SearchResultListSorterTest {
         val title2 = "ABC_EFG"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
         val currentTime = Date().time
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc.efg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC_EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc.efg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC_EFG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             -1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -617,46 +649,49 @@ class SearchResultListSorterTest {
         val title2 = "ABC_EFG"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
         val currentTime = Date().time
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc.efg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC_EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc.efg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC_EFG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -679,45 +714,48 @@ class SearchResultListSorterTest {
         val title2 = "ABC_EFG"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            searchTerm
-        )
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc.efg",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\ABC_EFG",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            "1234",
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                searchTerm,
+            )
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc.efg",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\ABC_EFG",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                "1234",
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             0,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 
@@ -740,55 +778,58 @@ class SearchResultListSorterTest {
         val title2 = "EFGABC"
         val matchRange2 = getSimpleMatchRange(searchTerm, title2)
 
-        val searchResultListSorter = SearchResultListSorter(
-            DirSortBy.NONE_ON_TOP,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC),
-            "abc"
-        )
+        val searchResultListSorter =
+            SearchResultListSorter(
+                DirSortBy.NONE_ON_TOP,
+                SortType(SortBy.RELEVANCE, SortOrder.ASC),
+                "abc",
+            )
         val currentTime = Date().time
 
         // matches 3/10
         // starts with search term
         // contains search as whole word
         // modification time is less recent
-        val file1 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title1,
-            "C:\\AmazeFileManager\\abc.efghij",
-            "user",
-            "symlink",
-            "100",
-            123L,
-            true,
-            (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val file1 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title1,
+                "C:\\AmazeFileManager\\abc.efghij",
+                "user",
+                "symlink",
+                "100",
+                123L,
+                true,
+                (currentTime - TimeUnit.MINUTES.toMillis(10)).toString(),
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         // matches 3/6
         // doesn't start with search term
         // doesn't contain as whole word
         // modification time is more recent
-        val file2 = LayoutElementParcelable(
-            ApplicationProvider.getApplicationContext(),
-            title2,
-            "C:\\AmazeFileManager\\EFGABC",
-            "user",
-            "symlink",
-            "101",
-            124L,
-            true,
-            (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
-            false,
-            false,
-            OpenMode.UNKNOWN
-        ).generateBaseFile()
+        val file2 =
+            LayoutElementParcelable(
+                ApplicationProvider.getApplicationContext(),
+                title2,
+                "C:\\AmazeFileManager\\EFGABC",
+                "user",
+                "symlink",
+                "101",
+                124L,
+                true,
+                (currentTime - TimeUnit.MINUTES.toMillis(5)).toString(),
+                false,
+                false,
+                OpenMode.UNKNOWN,
+            ).generateBaseFile()
         Assert.assertEquals(
             -1,
             searchResultListSorter.compare(
                 SearchResult(file1, matchRange1),
-                SearchResult(file2, matchRange2)
-            ).toLong()
+                SearchResult(file2, matchRange2),
+            ).toLong(),
         )
     }
 }

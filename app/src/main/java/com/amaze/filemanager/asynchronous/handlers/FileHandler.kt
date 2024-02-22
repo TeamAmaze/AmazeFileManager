@@ -37,10 +37,10 @@ import java.lang.ref.WeakReference
 class FileHandler(
     mainFragment: MainFragment,
     private val listView: RecyclerView,
-    private val useThumbs: Boolean
+    private val useThumbs: Boolean,
 ) : Handler(
-    Looper.getMainLooper()
-) {
+        Looper.getMainLooper(),
+    ) {
     private val mainFragment: WeakReference<MainFragment> = WeakReference(mainFragment)
     private val log: Logger = LoggerFactory.getLogger(FileHandler::class.java)
 
@@ -63,17 +63,19 @@ class FileHandler(
                     log.error("Path is empty for file")
                     return
                 }
-                val fileCreated = HybridFile(
-                    mainFragmentViewModel.openMode,
-                    "${main.currentPath}/$path"
-                )
+                val fileCreated =
+                    HybridFile(
+                        mainFragmentViewModel.openMode,
+                        "${main.currentPath}/$path",
+                    )
                 val newElement = fileCreated.generateLayoutElement(main.requireContext(), useThumbs)
                 main.elementsList?.add(newElement)
             }
             CustomFileObserver.DELETED_ITEM -> {
-                val index = elementsList.withIndex().find {
-                    File(it.value.desc).name == path
-                }?.index
+                val index =
+                    elementsList.withIndex().find {
+                        File(it.value.desc).name == path
+                    }?.index
 
                 if (index != null) {
                     main.elementsList?.removeAt(index)
@@ -89,7 +91,7 @@ class FileHandler(
                 // no item left in list, recreate views
                 main.reloadListElements(
                     true,
-                    !mainFragmentViewModel.isList
+                    !mainFragmentViewModel.isList,
                 )
             } else {
                 listView.adapter?.let {

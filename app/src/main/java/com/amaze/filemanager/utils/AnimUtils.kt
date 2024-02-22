@@ -44,14 +44,17 @@ object AnimUtils {
      * Animates filenames textview to marquee after a delay. Make sure to set [ ][TextView.setSelected] to false in order to stop the marquee later
      */
     @JvmStatic
-    fun marqueeAfterDelay(delayInMillis: Int, marqueeView: ThemedTextView) {
+    fun marqueeAfterDelay(
+        delayInMillis: Int,
+        marqueeView: ThemedTextView,
+    ) {
         Handler()
             .postDelayed(
                 {
                     // marquee works only when text view has focus
                     marqueeView.isSelected = true
                 },
-                delayInMillis.toLong()
+                delayInMillis.toLong(),
             )
     }
 }

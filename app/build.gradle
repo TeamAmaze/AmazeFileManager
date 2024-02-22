@@ -153,7 +153,8 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutineTestVersion"
     testImplementation "androidx.arch.core:core-testing:$androidXArchCoreTestVersion"
-    kaptTest "com.google.auto.service:auto-service:1.0-rc4"
+    testImplementation 'ch.qos.logback:logback-classic:1.4.14'
+    kaptTest "com.google.auto.service:auto-service:1.1.1"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"

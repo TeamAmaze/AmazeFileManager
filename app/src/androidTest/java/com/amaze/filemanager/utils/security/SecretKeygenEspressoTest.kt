@@ -37,7 +37,6 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class SecretKeygenEspressoTest {
-
     /**
      * Test [SecretKeygen.getSecretKey].
      *

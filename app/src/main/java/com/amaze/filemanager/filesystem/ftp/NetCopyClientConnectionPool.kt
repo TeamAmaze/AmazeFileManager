@@ -47,7 +47,6 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
 object NetCopyClientConnectionPool {
-
     const val FTP_DEFAULT_PORT = 21
     const val FTPS_DEFAULT_PORT = 990
     const val SSH_DEFAULT_PORT = 22
@@ -132,27 +131,29 @@ object NetCopyClientConnectionPool {
         hostFingerprint: String? = null,
         username: String,
         password: String? = null,
-        keyPair: KeyPair? = null
+        keyPair: KeyPair? = null,
     ): NetCopyClient<*>? {
-        val url = NetCopyClientUtils.deriveUriFrom(
-            protocol,
-            host,
-            port,
-            "",
-            username,
-            password
-        )
-        var client = connections[url]
-        if (client == null) {
-            client = createNetCopyClientInternal(
+        val url =
+            NetCopyClientUtils.deriveUriFrom(
                 protocol,
                 host,
                 port,
-                hostFingerprint,
+                "",
                 username,
                 password,
-                keyPair
             )
+        var client = connections[url]
+        if (client == null) {
+            client =
+                createNetCopyClientInternal(
+                    protocol,
+                    host,
+                    port,
+                    hostFingerprint,
+                    username,
+                    password,
+                    keyPair,
+                )
             if (client != null) connections[url] = client
         } else {
             if (!validate(client)) {
@@ -181,7 +182,7 @@ object NetCopyClientConnectionPool {
         String?,
         String,
         String?,
-        KeyPair?
+        KeyPair?,
     ) -> NetCopyClient<*>? = { protocol, host, port, hostFingerprint, username, password, keyPair ->
         if (protocol == SSH_URI_PREFIX) {
             createSshClient(host, port, hostFingerprint!!, username, password, keyPair)
@@ -192,7 +193,7 @@ object NetCopyClientConnectionPool {
                 port,
                 hostFingerprint?.let { JSONObject(it) },
                 username,
-                password
+                password,
             )
         }
     }
@@ -208,7 +209,10 @@ object NetCopyClientConnectionPool {
      * @param url SSH connection URI
      */
     @SuppressLint("CheckResult")
-    fun removeConnection(url: String, callback: () -> Unit) {
+    fun removeConnection(
+        url: String,
+        callback: () -> Unit,
+    ) {
         Maybe.fromCallable(AsyncRemoveConnection(url))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -238,9 +242,10 @@ object NetCopyClientConnectionPool {
         }.subscribeOn(NetCopyClientUtils.getScheduler(client)).blockingGet()
     }
 
-    private fun expire(client: NetCopyClient<*>) = Flowable.fromCallable {
-        client.expire()
-    }.subscribeOn(NetCopyClientUtils.getScheduler(client))
+    private fun expire(client: NetCopyClient<*>) =
+        Flowable.fromCallable {
+            client.expire()
+        }.subscribeOn(NetCopyClientUtils.getScheduler(client))
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
@@ -267,7 +272,7 @@ object NetCopyClientConnectionPool {
                             }
                         }
                     }
-                    .blockingFirst()
+                    .blockingFirst(),
             )
         }
         val hostKey = utilsHandler.getRemoteHostKey(url) ?: return null
@@ -277,7 +282,7 @@ object NetCopyClientConnectionPool {
             hostKey,
             connInfo.username,
             connInfo.password,
-            keyPair.get()
+            keyPair.get(),
         )
     }
 
@@ -288,7 +293,7 @@ object NetCopyClientConnectionPool {
         hostKey: String,
         username: String,
         password: String?,
-        keyPair: KeyPair?
+        keyPair: KeyPair?,
     ): NetCopyClient<SSHClient>? {
         return createSshClientInternal(
             host,
@@ -296,7 +301,7 @@ object NetCopyClientConnectionPool {
             hostKey,
             username,
             password,
-            keyPair
+            keyPair,
         )
     }
 
@@ -307,16 +312,17 @@ object NetCopyClientConnectionPool {
         hostKey: String,
         username: String,
         password: String?,
-        keyPair: KeyPair?
+        keyPair: KeyPair?,
     ): NetCopyClient<SSHClient>? {
-        val task = SshAuthenticationTask(
-            hostname = host,
-            port = port,
-            hostKey = hostKey,
-            username = username,
-            password = password,
-            privateKey = keyPair
-        )
+        val task =
+            SshAuthenticationTask(
+                hostname = host,
+                port = port,
+                hostKey = hostKey,
+                username = username,
+                password = password,
+                privateKey = keyPair,
+            )
         val latch = CountDownLatch(1)
         var retval: SSHClient? = null
         Maybe.fromCallable(task.getTask())
@@ -336,18 +342,19 @@ object NetCopyClientConnectionPool {
 
     private fun createFtpClient(url: String): NetCopyClient<FTPClient>? {
         NetCopyConnectionInfo(url).run {
-            val certInfo = if (FTPS_URI_PREFIX == prefix) {
-                AppConfig.getInstance().utilsHandler.getRemoteHostKey(url)
-            } else {
-                null
-            }
+            val certInfo =
+                if (FTPS_URI_PREFIX == prefix) {
+                    AppConfig.getInstance().utilsHandler.getRemoteHostKey(url)
+                } else {
+                    null
+                }
             return createFtpClient(
                 prefix,
                 host,
                 port,
                 certInfo?.let { JSONObject(it) },
                 username,
-                password
+                password,
             )
         }
     }
@@ -359,16 +366,17 @@ object NetCopyClientConnectionPool {
         port: Int,
         certInfo: JSONObject?,
         username: String,
-        password: String?
+        password: String?,
     ): NetCopyClient<FTPClient>? {
-        val task = FtpAuthenticationTask(
-            protocol,
-            host,
-            port,
-            certInfo,
-            username,
-            password
-        )
+        val task =
+            FtpAuthenticationTask(
+                protocol,
+                host,
+                port,
+                certInfo,
+                username,
+                password,
+            )
         val latch = CountDownLatch(1)
         var result: FTPClient? = null
         Single.fromCallable(task.getTask())
@@ -387,9 +395,8 @@ object NetCopyClientConnectionPool {
     }
 
     class AsyncRemoveConnection internal constructor(
-        private val url: String
+        private val url: String,
     ) : Callable<Unit> {
-
         override fun call() {
             extractBaseUriFrom(url).run {
                 if (connections.containsKey(this)) {
@@ -443,7 +450,7 @@ object NetCopyClientConnectionPool {
                 } else {
                     FTPClient()
                 }
-                ).also {
+            ).also {
                 it.addProtocolCommandListener(Slf4jPrintCommandListener())
                 it.connectTimeout = CONNECT_TIMEOUT
                 it.controlEncoding = Charsets.UTF_8.name()

@@ -29,9 +29,8 @@ import com.github.junrar.rarfile.FileHeader
 class RarDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean
-    ) =
-        RarHelperCallable(filePath, path, addGoBackItem)
+        addGoBackItem: Boolean,
+    ) = RarHelperCallable(filePath, path, addGoBackItem)
 
     override fun realRelativeDirectory(dir: String): String {
         var dir = dir
@@ -42,7 +41,6 @@ class RarDecompressor(context: Context) : Decompressor(context) {
     }
 
     companion object {
-
         /**
          * Helper method to convert RAR [FileHeader] entries containing backslashes back to slashes.
          *

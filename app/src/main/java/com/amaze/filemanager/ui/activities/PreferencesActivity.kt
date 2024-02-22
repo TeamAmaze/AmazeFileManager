@@ -96,7 +96,9 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
         return if (item.itemId == android.R.id.home) {
             onBackPressed()
             true
-        } else false
+        } else {
+            false
+        }
     }
 
     override fun recreate() {
@@ -129,14 +131,16 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
      * Used to update color
      */
     fun invalidateNavBar() {
-        val primaryColor = ColorPreferenceHelper
-            .getPrimary(currentColorPreference, MainActivity.currentTab)
+        val primaryColor =
+            ColorPreferenceHelper
+                .getPrimary(currentColorPreference, MainActivity.currentTab)
         if (Build.VERSION.SDK_INT == 20 || Build.VERSION.SDK_INT == 19) {
             val tintManager = SystemBarTintManager(this)
             tintManager.isStatusBarTintEnabled = true
             tintManager.setStatusBarTintColor(primaryColor)
-            val layoutParams = findViewById<View>(R.id.activity_preferences).layoutParams
-                as ViewGroup.MarginLayoutParams
+            val layoutParams =
+                findViewById<View>(R.id.activity_preferences).layoutParams
+                    as ViewGroup.MarginLayoutParams
             val config = tintManager.config
             layoutParams.setMargins(0, config.statusBarHeight, 0, 0)
         } else if (Build.VERSION.SDK_INT >= 21) {
@@ -165,7 +169,10 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
         }
     }
 
-    override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {
+    override fun onFolderSelection(
+        dialog: FolderChooserDialog,
+        folder: File,
+    ) {
         supportFragmentManager.fragments.lastOrNull { it is BasePrefsFragment }?.let {
             (it as BasePrefsFragment).onFolderSelection(dialog, folder)
         }

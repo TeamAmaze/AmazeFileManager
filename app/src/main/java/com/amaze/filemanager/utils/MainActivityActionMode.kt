@@ -44,23 +44,31 @@ import java.lang.ref.WeakReference
 
 class MainActivityActionMode(private val mainActivityReference: WeakReference<MainActivity>) :
     ActionMode.Callback {
-
     var actionModeView: View? = null
     var actionMode: ActionMode? = null
     var pasteHelper: PasteHelper? = null
 
-    private fun hideOption(id: Int, menu: Menu) {
+    private fun hideOption(
+        id: Int,
+        menu: Menu,
+    ) {
         val item = menu.findItem(id)
         item.isVisible = false
     }
 
-    private fun showOption(id: Int, menu: Menu) {
+    private fun showOption(
+        id: Int,
+        menu: Menu,
+    ) {
         val item = menu.findItem(id)
         item.isVisible = true
     }
 
     // called when the action mode is created; startActionMode() was called
-    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+    override fun onCreateActionMode(
+        mode: ActionMode,
+        menu: Menu,
+    ): Boolean {
         // Inflate a menu resource providing context menu items
         val inflater = mode.menuInflater
         mainActivityReference.get()?.let {
@@ -89,8 +97,8 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 .updateViews(
                     ColorDrawable(
                         mainActivity.resources
-                            .getColor(R.color.holo_dark_action_mode)
-                    )
+                            .getColor(R.color.holo_dark_action_mode),
+                    ),
                 )
 
             // do not allow drawer to open when item gets selected
@@ -105,11 +113,14 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
      * the following method is called each time the action mode is shown. Always called after
      * onCreateActionMode, but may be called multiple times if the mode is invalidated.
      */
-    override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+    override fun onPrepareActionMode(
+        mode: ActionMode,
+        menu: Menu,
+    ): Boolean {
         safeLet(
             mainActivityReference.get(),
             mainActivityReference.get()?.currentMainFragment?.mainFragmentViewModel,
-            mainActivityReference.get()?.currentMainFragment?.adapter
+            mainActivityReference.get()?.currentMainFragment?.adapter,
         ) {
                 mainActivity, mainFragmentViewModel, adapter ->
             val checkedItems: ArrayList<LayoutElementParcelable> =
@@ -119,15 +130,16 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     adapter,
                     actionModeView!!,
                     mainFragmentViewModel.currentPath!!,
-                    mainActivity
+                    mainActivity,
                 )
             }
             val textView: AppCompatTextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
 
-            if (mainActivity.mReturnIntent && !mainActivity.intent.getBooleanExtra(
+            if (mainActivity.mReturnIntent &&
+                !mainActivity.intent.getBooleanExtra(
                     Intent.EXTRA_ALLOW_MULTIPLE,
-                    false
+                    false,
                 )
             ) {
                 // Only one item can be returned, so there should not be a "Select all" button
@@ -138,7 +150,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         if (checkedItems.size
                             == mainFragmentViewModel.folderCount +
                             mainFragmentViewModel.fileCount
-                        ) R.string.deselect_all else R.string.select_all
+                        ) {
+                            R.string.deselect_all
+                        } else {
+                            R.string.select_all
+                        },
                     )
             }
 
@@ -193,12 +209,15 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
     }
 
     // called when the user selects a contextual menu item
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+    override fun onActionItemClicked(
+        mode: ActionMode,
+        item: MenuItem,
+    ): Boolean {
         mainActivityReference.get()?.currentMainFragment?.computeScroll()
         safeLet(
             mainActivityReference.get(),
             mainActivityReference
-                .get()?.currentMainFragment?.mainFragmentViewModel?.getCheckedItems()
+                .get()?.currentMainFragment?.mainFragmentViewModel?.getCheckedItems(),
         ) {
                 mainActivity, checkedItems ->
             return when (item.itemId) {
@@ -211,7 +230,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                             mainActivity,
                             it,
                             mainActivity.isRootExplorer,
-                            mainActivity.utilsProvider.appTheme
+                            mainActivity.utilsProvider.appTheme,
                         )
                     }
                     mode.finish()
@@ -222,7 +241,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainActivity,
                         mainActivity,
                         checkedItems,
-                        mainActivity.utilsProvider.appTheme
+                        mainActivity.utilsProvider.appTheme,
                     )
                     true
                 }
@@ -231,26 +250,29 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainActivity,
                         mainActivity,
                         checkedItems,
-                        mainActivity.utilsProvider.appTheme
+                        mainActivity.utilsProvider.appTheme,
                     )
                     true
                 }
                 R.id.share -> {
-                    if (checkedItems.size > 100) Toast.makeText(
-                        mainActivity,
-                        mainActivity.resources.getString(R.string.share_limit),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show() else {
+                    if (checkedItems.size > 100) {
+                        Toast.makeText(
+                            mainActivity,
+                            mainActivity.resources.getString(R.string.share_limit),
+                            Toast.LENGTH_SHORT,
+                        )
+                            .show()
+                    } else {
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.also {
                                 mainFragmentViewModel ->
                             when (checkedItems[0].mode) {
                                 OpenMode.DROPBOX, OpenMode.BOX, OpenMode.GDRIVE,
-                                OpenMode.ONEDRIVE ->
+                                OpenMode.ONEDRIVE,
+                                ->
                                     FileUtils.shareCloudFiles(
                                         checkedItems,
                                         checkedItems[0].mode,
-                                        mainActivity
+                                        mainActivity,
                                     )
                                 else -> {
                                     val arrayList = ArrayList<File>()
@@ -261,7 +283,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                                         arrayList,
                                         mainActivity,
                                         mainActivity.utilsProvider.appTheme,
-                                        mainFragmentViewModel.accentColor
+                                        mainFragmentViewModel.accentColor,
                                     )
                                 }
                             }
@@ -274,7 +296,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         File(checkedItems[0].desc).parent,
                         false,
                         OpenMode.FILE,
-                        false
+                        false,
                     )
 
                     true
@@ -282,19 +304,19 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 R.id.all -> {
                     safeLet(
                         mainActivity.currentMainFragment?.mainFragmentViewModel,
-                        mainActivity.currentMainFragment?.adapter
+                        mainActivity.currentMainFragment?.adapter,
                     ) {
                             mainFragmentViewModel, adapter ->
                         if (adapter.areAllChecked(mainFragmentViewModel.currentPath)) {
                             adapter.toggleChecked(
                                 false,
-                                mainFragmentViewModel.currentPath
+                                mainFragmentViewModel.currentPath,
                             )
                             item.setTitle(R.string.select_all)
                         } else {
                             adapter.toggleChecked(
                                 true,
-                                mainFragmentViewModel.currentPath
+                                mainFragmentViewModel.currentPath,
                             )
                             item.setTitle(R.string.deselect_all)
                         }
@@ -331,8 +353,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         i++
                     }
                     val op =
-                        if (item.itemId == R.id.cpy) PasteHelper.OPERATION_COPY
-                        else PasteHelper.OPERATION_CUT
+                        if (item.itemId == R.id.cpy) {
+                            PasteHelper.OPERATION_COPY
+                        } else {
+                            PasteHelper.OPERATION_CUT
+                        }
                     // Making sure we don't cause an IllegalArgumentException
                     // when passing copies to PasteHelper
                     if (copies.isNotEmpty()) {
@@ -352,7 +377,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     GeneralDialogCreation.showCompressDialog(
                         mainActivity,
                         copies1,
-                        mainActivity.currentMainFragment?.mainFragmentViewModel?.currentPath
+                        mainActivity.currentMainFragment?.mainFragmentViewModel?.currentPath,
                     )
                     mode.finish()
                     true
@@ -361,7 +386,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     FileUtils.openFile(
                         File(checkedItems[0].desc),
                         mainActivity,
-                        mainActivity.prefs
+                        mainActivity.prefs,
                     )
                     true
                 }
@@ -369,7 +394,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     Utils.addShortcut(
                         mainActivity,
                         mainActivity.componentName,
-                        checkedItems[0]
+                        checkedItems[0],
                     )
                     mode.finish()
                     true
@@ -395,7 +420,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             mainActivity.setPagingEnabled(true)
             safeLet(
                 mainActivity.currentMainFragment?.mainFragmentViewModel,
-                mainActivity.currentMainFragment?.adapter
+                mainActivity.currentMainFragment?.adapter,
             ) {
                     mainFragmentViewModel, adapter ->
                 adapter.toggleChecked(false, mainFragmentViewModel.currentPath)
@@ -404,8 +429,10 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         ColorDrawable(
                             if (MainActivity.currentTab == 1) {
                                 mainFragmentViewModel.primaryTwoColor
-                            } else mainFragmentViewModel.primaryColor
-                        )
+                            } else {
+                                mainFragmentViewModel.primaryColor
+                            },
+                        ),
                     )
             }
 

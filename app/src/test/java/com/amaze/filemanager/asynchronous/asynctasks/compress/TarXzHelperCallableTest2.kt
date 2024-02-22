@@ -56,11 +56,14 @@ class TarXzHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest() {
         assertEquals(6, result[0].size)
     }
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         TarXzHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

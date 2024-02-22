@@ -27,7 +27,6 @@ import org.junit.Test
  * Test for [UUIDv5].
  */
 class UUIDv5Test {
-
     /**
      * Test UUID generation. Value is based on SHA-1 hash, so it can be expected.
      *

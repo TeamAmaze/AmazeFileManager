@@ -42,6 +42,6 @@ import org.junit.runners.Suite.SuiteClasses
     SevenZipWithoutTimestampTest::class,
     PasswordProtectedZipTest::class,
     PasswordProtected7ZipTest::class,
-    ListPasswordProtected7ZipTest::class
+    ListPasswordProtected7ZipTest::class,
 )
 class ExtractorTestSuite

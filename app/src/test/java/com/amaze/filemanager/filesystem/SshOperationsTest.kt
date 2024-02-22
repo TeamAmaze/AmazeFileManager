@@ -25,7 +25,6 @@ import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import org.junit.Test
 
 class SshOperationsTest : AbstractOperationsTestBase() {
-
     /**
      * Test case to verify rename SSH file failure scenario.
      *
@@ -37,7 +36,7 @@ class SshOperationsTest : AbstractOperationsTestBase() {
         super.testRenameFileAccessDenied(
             OpenMode.SFTP,
             "ssh://user:password@127.0.0.1:22222/tmp/old.file",
-            "ssh://user:password@127.0.0.1:22222/tmp/new.file"
+            "ssh://user:password@127.0.0.1:22222/tmp/new.file",
         )
     }
 }

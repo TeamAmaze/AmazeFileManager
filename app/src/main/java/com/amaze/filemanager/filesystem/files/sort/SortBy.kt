@@ -33,7 +33,8 @@ enum class SortBy(val index: Int, val sortDirectory: Boolean) {
     LAST_MODIFIED(1, true),
     SIZE(2, true),
     TYPE(3, true),
-    RELEVANCE(4, false);
+    RELEVANCE(4, false),
+    ;
 
     /** Returns the corresponding string resource of the enum */
     fun toResourceString(context: Context): String {

@@ -26,7 +26,6 @@ import java.io.File
 import java.util.*
 
 class TextEditorActivityViewModel : ViewModel() {
-
     var original: String? = null
 
     /**

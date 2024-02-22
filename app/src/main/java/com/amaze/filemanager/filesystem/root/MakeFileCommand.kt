@@ -25,7 +25,6 @@ import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object MakeFileCommand : IRootCommand() {
-
     /**
      * Creates an empty file using root
      *

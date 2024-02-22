@@ -41,9 +41,8 @@ class AndroidFtpFile(
     context: Context,
     private val parentDocument: DocumentFile,
     private val backingDocument: DocumentFile?,
-    private val path: String
+    private val path: String,
 ) : FtpFile {
-
     private val _context: WeakReference<Context> = WeakReference(context)
     private val context: Context
         get() = _context.get()!!
@@ -127,16 +126,18 @@ class AndroidFtpFile(
      */
     override fun setLastModified(time: Long): Boolean {
         return if (doesExist()) {
-            val updateValues = ContentValues().also {
-                it.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, time)
-            }
+            val updateValues =
+                ContentValues().also {
+                    it.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, time)
+                }
             val docUri: Uri = backingDocument!!.uri
-            val updated: Int = context.contentResolver.update(
-                docUri,
-                updateValues,
-                null,
-                null
-            )
+            val updated: Int =
+                context.contentResolver.update(
+                    docUri,
+                    updateValues,
+                    null,
+                    null,
+                )
             return updated == 1
         } else {
             false
@@ -170,46 +171,49 @@ class AndroidFtpFile(
      * @see FtpFile.move
      * @see DocumentFile.renameTo
      */
-    override fun move(destination: FtpFile): Boolean =
-        backingDocument?.renameTo(destination.name) ?: false
+    override fun move(destination: FtpFile): Boolean = backingDocument?.renameTo(destination.name) ?: false
 
     /**
      * @see FtpFile.listFiles
      * @see DocumentFile.listFiles
      */
-    override fun listFiles(): MutableList<out FtpFile> = if (doesExist()) {
-        backingDocument!!.listFiles().map {
-            AndroidFtpFile(context, backingDocument, it, it.name!!)
-        }.toMutableList()
-    } else {
-        mutableListOf()
-    }
+    override fun listFiles(): MutableList<out FtpFile> =
+        if (doesExist()) {
+            backingDocument!!.listFiles().map {
+                AndroidFtpFile(context, backingDocument, it, it.name!!)
+            }.toMutableList()
+        } else {
+            mutableListOf()
+        }
 
     /**
      * @see FtpFile.createOutputStream
      * @see ContentResolver.openOutputStream
      */
-    override fun createOutputStream(offset: Long): OutputStream? = runCatching {
-        val uri = if (doesExist()) {
-            backingDocument!!.uri
-        } else {
-            val newFile = parentDocument.createFile("", name)
-            newFile?.uri ?: throw IOException("Cannot create file at $path")
-        }
-        context.contentResolver.openOutputStream(uri)
-    }.getOrThrow()
+    override fun createOutputStream(offset: Long): OutputStream? =
+        runCatching {
+            val uri =
+                if (doesExist()) {
+                    backingDocument!!.uri
+                } else {
+                    val newFile = parentDocument.createFile("", name)
+                    newFile?.uri ?: throw IOException("Cannot create file at $path")
+                }
+            context.contentResolver.openOutputStream(uri)
+        }.getOrThrow()
 
     /**
      * @see FtpFile.createInputStream
      * @see ContentResolver.openInputStream
      */
-    override fun createInputStream(offset: Long): InputStream? = runCatching {
-        if (doesExist()) {
-            context.contentResolver.openInputStream(backingDocument!!.uri).also {
-                it?.skip(offset)
+    override fun createInputStream(offset: Long): InputStream? =
+        runCatching {
+            if (doesExist()) {
+                context.contentResolver.openInputStream(backingDocument!!.uri).also {
+                    it?.skip(offset)
+                }
+            } else {
+                throw FileNotFoundException(path)
             }
-        } else {
-            throw FileNotFoundException(path)
-        }
-    }.getOrThrow()
+        }.getOrThrow()
 }

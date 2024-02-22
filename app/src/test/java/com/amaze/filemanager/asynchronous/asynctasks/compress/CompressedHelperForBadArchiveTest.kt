@@ -43,7 +43,6 @@ import java.io.FileOutputStream
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
 class CompressedHelperForBadArchiveTest {
-
     /**
      * Test handling of corrupt archive with random junk.
      */
@@ -62,17 +61,19 @@ class CompressedHelperForBadArchiveTest {
 
     private fun doTestBadArchive(data: ByteArray) {
         for (
-            archiveType in supportedArchiveExtensions().subtract(excludedArchiveTypes)
+        archiveType in supportedArchiveExtensions().subtract(excludedArchiveTypes)
         ) {
-            val badArchive = File(
-                Environment.getExternalStorageDirectory(),
-                "bad-archive.$archiveType"
-            )
+            val badArchive =
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    "bad-archive.$archiveType",
+                )
             ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
-            val task = CompressedHelper.getCompressorInstance(
-                ApplicationProvider.getApplicationContext(),
-                badArchive
-            )
+            val task =
+                CompressedHelper.getCompressorInstance(
+                    ApplicationProvider.getApplicationContext(),
+                    badArchive,
+                )
             Assert.assertNotNull(task)
             task!!
             try {
@@ -82,14 +83,13 @@ class CompressedHelperForBadArchiveTest {
                 Assert.assertNotNull(exception)
                 Assert.assertTrue(
                     "Thrown from ${task.javaClass}: ${exception.javaClass} was thrown",
-                    ArchiveException::class.java.isAssignableFrom(exception.javaClass)
+                    ArchiveException::class.java.isAssignableFrom(exception.javaClass),
                 )
             }
         }
     }
 
     companion object {
-
         /*
          * tar and rar currently will produce empty list.
          * bz2, lzma, gz, xz by default must have one entry

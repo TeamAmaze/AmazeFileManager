@@ -29,5 +29,5 @@ class UserColorPreferences(
     @ColorInt val primaryFirstTab: Int,
     @ColorInt val primarySecondTab: Int,
     @ColorInt val accent: Int,
-    @ColorInt val iconSkin: Int
+    @ColorInt val iconSkin: Int,
 ) : Parcelable

@@ -34,7 +34,6 @@ import java.net.NetworkInterface
 import java.net.UnknownHostException
 
 object NetworkUtil {
-
     private val log: Logger = LoggerFactory.getLogger(NetworkUtil::class.java)
 
     private fun getConnectivityManager(context: Context) =
@@ -61,8 +60,8 @@ object NetworkUtil {
                     ni.type and (
                         ConnectivityManager.TYPE_WIFI
                             or ConnectivityManager.TYPE_ETHERNET
-                        ) != 0
-                    )
+                    ) != 0
+                )
             } ?: false
         }
 
@@ -106,8 +105,9 @@ object NetworkUtil {
             return null
         }
         if (isConnectedToWifi(context)) {
-            val wm = context.applicationContext.getSystemService(Service.WIFI_SERVICE)
-                as WifiManager
+            val wm =
+                context.applicationContext.getSystemService(Service.WIFI_SERVICE)
+                    as WifiManager
             val ipAddress = wm.connectionInfo.ipAddress
             return if (ipAddress == 0) null else intToInet(ipAddress)
         }
@@ -146,7 +146,10 @@ object NetworkUtil {
         }
     }
 
-    private fun byteOfInt(value: Int, which: Int): Byte {
+    private fun byteOfInt(
+        value: Int,
+        which: Int,
+    ): Byte {
         val shift = which * 8
         return (value shr shift).toByte()
     }

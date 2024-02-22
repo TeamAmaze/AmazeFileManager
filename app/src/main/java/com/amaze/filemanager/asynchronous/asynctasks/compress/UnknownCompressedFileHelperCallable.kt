@@ -52,10 +52,9 @@ import java.util.ArrayList
  */
 class UnknownCompressedFileHelperCallable(
     private val filePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     CompressedHelperCallable(goBack) {
-
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         val entryName = filePath.substringAfterLast('/').substringBeforeLast('.')
         elements.add(
@@ -63,8 +62,8 @@ class UnknownCompressedFileHelperCallable(
                 entryName,
                 0L,
                 0L,
-                false
-            )
+                false,
+            ),
         )
     }
 }

@@ -25,7 +25,6 @@ import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object DeleteFileCommand : IRootCommand() {
-
     /**
      * Recursively removes a path with it's contents (if any)
      *
@@ -34,9 +33,10 @@ object DeleteFileCommand : IRootCommand() {
     @Throws(ShellNotRunningException::class)
     fun deleteFile(path: String): Boolean {
         val mountPoint = MountPathCommand.mountPath(path, MountPathCommand.READ_WRITE)
-        val result = runShellCommandToList(
-            "rm -rf \"${RootHelper.getCommandLineString(path)}\""
-        )
+        val result =
+            runShellCommandToList(
+                "rm -rf \"${RootHelper.getCommandLineString(path)}\"",
+            )
 
         mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
 

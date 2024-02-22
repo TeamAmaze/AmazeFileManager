@@ -29,7 +29,6 @@ import org.junit.Test
  */
 @Suppress("StringLiteralDuplication")
 class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNameTests() {
-
     override val formatFlag: FilenameFormatFlag
         get() = FilenameFormatFlag.DARWIN
 
@@ -38,12 +37,13 @@ class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNam
      */
     @Test
     fun testDarwinIncrementSimple() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file copy.txt"),
-            Pair("/test/sub/foo.txt", "/test/sub/foo copy.txt"),
-            Pair("/test/sub/nested/foo.txt", "/test/sub/nested/foo copy 2.txt"),
-            Pair("/test/afile", "/test/afile copy")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file copy.txt"),
+                Pair("/test/sub/foo.txt", "/test/sub/foo copy.txt"),
+                Pair("/test/sub/nested/foo.txt", "/test/sub/nested/foo copy 2.txt"),
+                Pair("/test/afile", "/test/afile copy"),
+            )
         performTest(pairs, true)
     }
 
@@ -53,16 +53,17 @@ class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNam
      */
     @Test
     fun testDarwinIncrementStripExistingRawNumbersBeforeIncrement() {
-        val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo copy 7.txt"),
-            Pair("/test/foo 2.txt", "/test/foo copy 7.txt"),
-            Pair("/test/foo copy.txt", "/test/foo copy 7.txt"),
-            Pair("/test/qux 2.txt", "/test/qux copy.txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc copy.txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc copy.txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo copy 2.txt"),
-            Pair("/test/sub/nested/foo copy 3.txt", "/test/sub/nested/foo copy 2.txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo.txt", "/test/foo copy 7.txt"),
+                Pair("/test/foo 2.txt", "/test/foo copy 7.txt"),
+                Pair("/test/foo copy.txt", "/test/foo copy 7.txt"),
+                Pair("/test/qux 2.txt", "/test/qux copy.txt"),
+                Pair("/test/abc (2) - Copy.txt", "/test/abc copy.txt"),
+                Pair("/test/abc (2) - Copy Copy.txt", "/test/abc copy.txt"),
+                Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo copy 2.txt"),
+                Pair("/test/sub/nested/foo copy 3.txt", "/test/sub/nested/foo copy 2.txt"),
+            )
         performTest(pairs, strip = true, removeRawNumbers = true)
     }
 
@@ -72,16 +73,17 @@ class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNam
      */
     @Test
     fun testDarwinIncrementStripExistingNumbersBeforeIncrement() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file copy.txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 copy.txt"),
-            Pair("/test/foo copy.txt", "/test/foo copy 7.txt"),
-            Pair("/test/qux 2.txt", "/test/qux 2 copy.txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc copy.txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc copy.txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo copy 2.txt"),
-            Pair("/test/sub/nested/foo copy 3.txt", "/test/sub/nested/foo copy 2.txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file copy.txt"),
+                Pair("/test/foo 2.txt", "/test/foo 2 copy.txt"),
+                Pair("/test/foo copy.txt", "/test/foo copy 7.txt"),
+                Pair("/test/qux 2.txt", "/test/qux 2 copy.txt"),
+                Pair("/test/abc (2) - Copy.txt", "/test/abc copy.txt"),
+                Pair("/test/abc (2) - Copy Copy.txt", "/test/abc copy.txt"),
+                Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo copy 2.txt"),
+                Pair("/test/sub/nested/foo copy 3.txt", "/test/sub/nested/foo copy 2.txt"),
+            )
         performTest(pairs, strip = true, removeRawNumbers = false)
     }
 
@@ -91,22 +93,23 @@ class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNam
      */
     @Test
     fun testDarwinIncrementStartWithSpecifiedNumber() {
-        val pairs = arrayOf(
-            Pair("/test/foo copy 7.txt", 1),
-            Pair("/test/foo copy 7.txt", 2),
-            Pair("/test/foo copy 7.txt", 3),
-            Pair("/test/foo copy 7.txt", 4),
-            Pair("/test/foo copy 7.txt", 5),
-            Pair("/test/foo copy 7.txt", 6),
-            Pair("/test/foo copy 7.txt", 7),
-            Pair("/test/foo copy 8.txt", 8),
-            Pair("/test/foo copy 101.txt", 101)
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo copy 7.txt", 1),
+                Pair("/test/foo copy 7.txt", 2),
+                Pair("/test/foo copy 7.txt", 3),
+                Pair("/test/foo copy 7.txt", 4),
+                Pair("/test/foo copy 7.txt", 5),
+                Pair("/test/foo copy 7.txt", 6),
+                Pair("/test/foo copy 7.txt", 7),
+                Pair("/test/foo copy 8.txt", 8),
+                Pair("/test/foo copy 101.txt", 101),
+            )
         for (pair in pairs) {
             performTest(
                 Pair("/test/foo.txt", pair.first),
                 true,
-                start = pair.second
+                start = pair.second,
             )
         }
     }
@@ -117,11 +120,12 @@ class FilenameHelperDarwinIncrementNameTest : AbstractFilenameHelperIncrementNam
      */
     @Test
     fun testDarwinIncrementStripOff() {
-        val pairs = arrayOf(
-            Pair("/test/foo.txt", "/test/foo copy 7.txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 copy.txt"),
-            Pair("/test/foo copy.txt", "/test/foo copy copy.txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/foo.txt", "/test/foo copy 7.txt"),
+                Pair("/test/foo 2.txt", "/test/foo 2 copy.txt"),
+                Pair("/test/foo copy.txt", "/test/foo copy copy.txt"),
+            )
         performTest(pairs, false)
     }
 }

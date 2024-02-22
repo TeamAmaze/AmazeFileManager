@@ -29,26 +29,25 @@ import org.junit.Ignore
  */
 @Ignore
 class FtpsHybridFileAnonymousLoginTest : FtpsHybridFileTest() {
-
     override val ftpPort: Int
         get() = PORT
     override val ftpUrl: String
-        get() = NetCopyClientUtils.encryptFtpPathAsNecessary(
-            "${ftpPrefix}127.0.0.1:$ftpPort"
-        )
+        get() =
+            NetCopyClientUtils.encryptFtpPathAsNecessary(
+                "${ftpPrefix}127.0.0.1:$ftpPort",
+            )
 
     companion object {
         private const val PORT = 2224
     }
 
-    override fun saveConnectionSettings() =
-        TestUtils.saveFtpConnectionSettings("", "", certInfo, PORT)
+    override fun saveConnectionSettings() = TestUtils.saveFtpConnectionSettings("", "", certInfo, PORT)
 
     override fun createFtpServerFactory(): FtpServerFactory =
         FtpHybridFileAnonymousLoginTest.createAnonymousFtpServerFactory().also {
             it.addListener(
                 "default",
-                createDefaultFtpServerListener()
+                createDefaultFtpServerListener(),
             )
         }
 }

@@ -25,7 +25,6 @@ import org.apache.commons.compress.PasswordRequiredException
 import org.tukaani.xz.CorruptedInputException
 
 open class PasswordProtected7ZipTest : AbstractExtractorPasswordProtectedArchivesTest() {
-
     override fun extractorClass(): Class<out Extractor?> = SevenZipExtractor::class.java
 
     override fun expectedRootExceptionClass(): Array<Class<*>> =

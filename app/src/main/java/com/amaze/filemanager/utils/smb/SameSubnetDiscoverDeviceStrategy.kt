@@ -40,7 +40,6 @@ import java.net.InetAddress
  * TODO: if we can get the gateway using __legit__ API, may swarm the network in broader netmasks
  */
 class SameSubnetDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStrategy {
-
     private lateinit var worker: Disposable
 
     companion object {
@@ -60,37 +59,39 @@ class SameSubnetDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDevi
 
     override fun discoverDevices(callback: (ComputerParcelable) -> Unit) {
         val neighbourhoods = getNeighbourhoodHosts()
-        worker = Flowable.fromIterable(neighbourhoods)
-            .parallel(PARALLELISM)
-            .runOn(Schedulers.io())
-            .map { addr ->
-                if (addr.isReachable(HOST_UP_TIMEOUT)) {
-                    val portsReachable = listOf(
-                        PortScan.onAddress(addr).setPorts(TCP_PORTS).setMethodTCP().doScan()
-                    ).flatten()
-                    if (portsReachable.isNotEmpty()) {
-                        addr
+        worker =
+            Flowable.fromIterable(neighbourhoods)
+                .parallel(PARALLELISM)
+                .runOn(Schedulers.io())
+                .map { addr ->
+                    if (addr.isReachable(HOST_UP_TIMEOUT)) {
+                        val portsReachable =
+                            listOf(
+                                PortScan.onAddress(addr).setPorts(TCP_PORTS).setMethodTCP().doScan(),
+                            ).flatten()
+                        if (portsReachable.isNotEmpty()) {
+                            addr
+                        } else {
+                            false
+                        }
                     } else {
                         false
                     }
-                } else {
-                    false
-                }
-            }.filter {
-                it is InetAddress
-            }.doOnNext { addr ->
-                addr as InetAddress
-                callback.invoke(
-                    ComputerParcelable(
-                        addr.hostAddress,
-                        if (addr.hostName == addr.hostAddress) {
-                            addr.canonicalHostName
-                        } else {
-                            addr.hostName
-                        }
+                }.filter {
+                    it is InetAddress
+                }.doOnNext { addr ->
+                    addr as InetAddress
+                    callback.invoke(
+                        ComputerParcelable(
+                            addr.hostAddress,
+                            if (addr.hostName == addr.hostAddress) {
+                                addr.canonicalHostName
+                            } else {
+                                addr.hostName
+                            },
+                        ),
                     )
-                )
-            }.sequential().subscribe()
+                }.sequential().subscribe()
     }
 
     private fun getNeighbourhoodHosts(): List<InetAddress> {

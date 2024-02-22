@@ -26,7 +26,6 @@ import org.junit.Test
 import java.io.File
 
 class UnknownCompressedHelperCallableTest : AbstractCompressedHelperCallableTest() {
-
     /**
      * Test file decompression.
      */
@@ -37,10 +36,10 @@ class UnknownCompressedHelperCallableTest : AbstractCompressedHelperCallableTest
                 UnknownCompressedFileHelperCallable(
                     File(
                         Environment.getExternalStorageDirectory(),
-                        "test.txt.$ext"
+                        "test.txt.$ext",
                     ).absolutePath,
-                    false
-                )
+                    false,
+                ),
             )
         }
     }

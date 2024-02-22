@@ -45,9 +45,8 @@ data class DatapointParcelable(
     val byteProgress: Long,
     val speedRaw: Long,
     val move: Boolean,
-    val completed: Boolean
+    val completed: Boolean,
 ) : Parcelable {
-
     companion object {
         /**
          * For the first datapoint, everything is 0 or false except the params. Allows move boolean to
@@ -62,7 +61,7 @@ data class DatapointParcelable(
             name: String?,
             amountOfSourceFiles: Int,
             totalSize: Long,
-            move: Boolean
+            move: Boolean,
         ): DatapointParcelable =
             DatapointParcelable(
                 name,
@@ -72,7 +71,7 @@ data class DatapointParcelable(
                 0,
                 0,
                 move,
-                false
+                false,
             )
     }
 }

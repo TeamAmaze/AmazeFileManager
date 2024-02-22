@@ -49,10 +49,8 @@
     <locale android:name="hu" />
     <locale android:name="hy-AM" />
     <locale android:name="id" />
-    <locale android:name="in" />
     <locale android:name="is" />
     <locale android:name="it" />
-    <locale android:name="iw" />
     <locale android:name="ja" />
     <locale android:name="ka-GE" />
     <locale android:name="kk-KZ" />

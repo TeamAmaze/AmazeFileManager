@@ -73,7 +73,9 @@ fun supportedArchiveExtensions(): List<String> {
  *
  * @param id String resource ID
  */
-fun getString(@StringRes id: Int) = AppConfig.getInstance().getString(id)
+fun getString(
+    @StringRes id: Int,
+) = AppConfig.getInstance().getString(id)
 
 object TestUtils {
     /**
@@ -146,14 +148,17 @@ object TestUtils {
      * compile. So we are injecting our mock copy using reflection.
      */
     @JvmStatic
-    fun <T> replaceObjectInstance(clazz: Class<T>, newInstance: T?): T {
+    fun <T> replaceObjectInstance(
+        clazz: Class<T>,
+        newInstance: T?,
+    ): T {
         if (!clazz.declaredFields.any {
-            it.name == "INSTANCE" && it.type == clazz && Modifier.isStatic(it.modifiers)
-        }
+                it.name == "INSTANCE" && it.type == clazz && Modifier.isStatic(it.modifiers)
+            }
         ) {
             throw InstantiationException(
                 "clazz ${clazz.canonicalName} does not have a static  " +
-                    "INSTANCE field, is it really a Kotlin \"object\"?"
+                    "INSTANCE field, is it really a Kotlin \"object\"?",
             )
         }
 
@@ -170,11 +175,12 @@ object TestUtils {
 
     private fun addVolumeToStorageManager(parcel: Parcel) {
         parcel.setDataPosition(0)
-        val storageManager = Shadows.shadowOf(
-            ApplicationProvider.getApplicationContext<Context>().getSystemService(
-                StorageManager::class.java
+        val storageManager =
+            Shadows.shadowOf(
+                ApplicationProvider.getApplicationContext<Context>().getSystemService(
+                    StorageManager::class.java,
+                ),
             )
-        )
         val volume = StorageVolume.CREATOR.createFromParcel(parcel)
         storageManager.addStorageVolume(volume)
     }

@@ -54,10 +54,9 @@ import java.io.InputStreamReader
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class ListFilesCommandTest {
-
     private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
     private val statLines =
@@ -85,7 +84,7 @@ class ListFilesCommandTest {
                 anyBoolean(),
                 anyBoolean(),
                 argumentCaptor<(OpenMode) -> Unit>().capture(),
-                argumentCaptor<(HybridFileParcelable) -> Unit>().capture()
+                argumentCaptor<(HybridFileParcelable) -> Unit>().capture(),
             )
         } answers { callOriginal() }
         every {
@@ -94,7 +93,9 @@ class ListFilesCommandTest {
         every { ListFilesCommand.runShellCommand("pwd") }.answers {
             object : Shell.Result() {
                 override fun getOut(): MutableList<String> = listOf("/").toMutableList()
+
                 override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
+
                 override fun getCode(): Int = 0
             }
         }
@@ -124,7 +125,7 @@ class ListFilesCommandTest {
             root = true,
             showHidden = false,
             openModeCallback = {},
-            onFileFoundCallback = { ++statCount }
+            onFileFoundCallback = { ++statCount },
         )
         assertEquals(statLines.size, statCount)
         statCount = 0
@@ -133,7 +134,7 @@ class ListFilesCommandTest {
             root = true,
             showHidden = false,
             openModeCallback = {},
-            onFileFoundCallback = { ++statCount }
+            onFileFoundCallback = { ++statCount },
         )
         assertEquals(statRootLines.size, statCount)
 
@@ -145,7 +146,7 @@ class ListFilesCommandTest {
             root = true,
             showHidden = false,
             openModeCallback = {},
-            onFileFoundCallback = { ++lsCount }
+            onFileFoundCallback = { ++lsCount },
         )
         assertEquals(lsLines.size - 1, lsCount)
         lsCount = 0
@@ -154,7 +155,7 @@ class ListFilesCommandTest {
             root = true,
             showHidden = false,
             openModeCallback = {},
-            onFileFoundCallback = { ++lsCount }
+            onFileFoundCallback = { ++lsCount },
         )
         assertEquals(lsRootLines.size - 1, lsCount)
     }

@@ -62,7 +62,7 @@ buildscript {
 }
 
 plugins {
-    id "com.diffplug.spotless" version "6.5.0"
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 allprojects {
@@ -83,22 +83,21 @@ allprojects {
 }
 
 spotless {
+    // update license header from first commit
+    // ratchetFrom='78b1a4cf3c0a9519be92ff8445f7dff2cd8722b1'
     java {
-        licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java', 'portscanner/src/**/*.java'
-        googleJavaFormat('1.15.0')
+        licenseHeaderFile 'amaze.license.spotless.txt'
+        target '*/src/**/*.java'
+        googleJavaFormat('1.19.2')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
     kotlin {
-        licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.kt', 'file_operations/src/**/*.kt'
-        ktlint("0.44.0").setUseExperimental(true).userData(['disabled_rules': 'no-wildcard-imports',
-                                   'kotlin_imports_layout': 'idea', 'indent_size': '4',
-                                   'max_line_length': '100'])
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
+        licenseHeaderFile 'amaze.license.spotless.txt'
+        target '*/src/**/*.kt'
+        ktlint("1.1.1")
+                .setEditorConfigPath("$projectDir/.editorconfig")
+
     }
 }
 
@@ -179,7 +178,7 @@ subprojects {
                 it.dependsOn fetchRobolectricDependencies
             }
         }
-        if (project.plugins.hasPlugin("jacoco-android")){
+        if (project.plugins.hasPlugin("jacoco-android")) {
             android {
                 testOptions.unitTests.all {
                     jacoco {

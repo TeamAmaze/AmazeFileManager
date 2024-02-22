@@ -32,15 +32,15 @@ abstract class AbstractCompressedTarArchiveExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) :
     AbstractCommonsArchiveExtractor(context, filePath, outputPath, listener, updatePosition) {
-
     private val compressorInputStreamConstructor: Constructor<out CompressorInputStream>
 
     init {
-        compressorInputStreamConstructor = getCompressorInputStreamClass()
-            .getDeclaredConstructor(InputStream::class.java)
+        compressorInputStreamConstructor =
+            getCompressorInputStreamClass()
+                .getDeclaredConstructor(InputStream::class.java)
         compressorInputStreamConstructor.isAccessible = true
     }
 

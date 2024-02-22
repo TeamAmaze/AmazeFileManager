@@ -43,10 +43,9 @@ import javax.security.cert.X509Certificate
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class X509CertificateUtilTest {
-
     private lateinit var cert: X509Certificate
 
     /**
@@ -54,13 +53,14 @@ class X509CertificateUtilTest {
      */
     @Before
     fun setUp() {
-        val parser = PEMParser(
-            StringReader(
-                String(
-                    javaClass.getResourceAsStream("/test.pem").readBytes()
-                )
+        val parser =
+            PEMParser(
+                StringReader(
+                    String(
+                        javaClass.getResourceAsStream("/test.pem").readBytes(),
+                    ),
+                ),
             )
-        )
         val a = parser.readObject()
         cert = X509Certificate.getInstance((a as X509CertificateHolder).encoded)
     }
@@ -75,23 +75,23 @@ class X509CertificateUtilTest {
         assertTrue(verify.containsKey(SUBJECT))
         assertEquals(
             "C=in,O=Team Amaze,CN=test.ftpsd.local",
-            verify[SUBJECT]
+            verify[SUBJECT],
         )
         assertTrue(verify.containsKey(ISSUER))
         assertEquals(
             "C=in,O=Team Amaze,CN=test.ftpsd.local",
-            verify[ISSUER]
+            verify[ISSUER],
         )
         assertTrue(verify.containsKey(SERIAL))
         assertEquals(
             "11:f5:7b:bf:1e:4f:da:f6:b9:e8:0c:e3:49:67:5e:f1:5f:b7:0a:1f",
-            verify[SERIAL]
+            verify[SERIAL],
         )
         assertTrue(verify.containsKey(FINGERPRINT))
         assertEquals(
             "a9:ab:de:6f:67:3a:f8:db:41:e0:30:81:f9:b7:36:cb:7a:2b:42:fc:cd:a9:af:a2:bc:" +
                 "64:55:95:f2:c7:9a:74",
-            verify[FINGERPRINT]
+            verify[FINGERPRINT],
         )
     }
 }

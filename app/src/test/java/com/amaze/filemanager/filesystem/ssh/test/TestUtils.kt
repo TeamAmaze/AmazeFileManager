@@ -44,7 +44,6 @@ import java.security.SecureRandom
  * Test support util methods.
  */
 object TestUtils {
-
     /**
      * Generate a [KeyPair] for testing.
      */
@@ -61,16 +60,17 @@ object TestUtils {
         validUsername: String,
         validPassword: String,
         certInfo: JSONObject? = null,
-        port: Int = NetCopyClientConnectionPoolFtpTest.PORT
+        port: Int = NetCopyClientConnectionPoolFtpTest.PORT,
     ) {
         val utilsHandler = AppConfig.getInstance().utilsHandler
-        val fullUri: StringBuilder = StringBuilder().append(
-            if (certInfo != null) {
-                FTPS_URI_PREFIX
-            } else {
-                FTP_URI_PREFIX
-            }
-        )
+        val fullUri: StringBuilder =
+            StringBuilder().append(
+                if (certInfo != null) {
+                    FTPS_URI_PREFIX
+                } else {
+                    FTP_URI_PREFIX
+                },
+            )
         if (validUsername != "" && validPassword != "") {
             fullUri.append(validUsername)
             fullUri.append(':').append(validPassword).append("@")
@@ -84,8 +84,8 @@ object TestUtils {
                 "Test",
                 certInfo?.toString(),
                 null,
-                null
-            )
+                null,
+            ),
         )
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
@@ -99,7 +99,7 @@ object TestUtils {
         validPassword: String?,
         privateKey: PrivateKey?,
         subpath: String? = null,
-        port: Int = NetCopyClientConnectionPoolSshTest.PORT
+        port: Int = NetCopyClientConnectionPoolSshTest.PORT,
     ) {
         val utilsHandler = AppConfig.getInstance().utilsHandler
         var privateKeyContents: String? = null
@@ -111,36 +111,41 @@ object TestUtils {
             jw.close()
             privateKeyContents = writer.toString()
         }
-        val fullUri: StringBuilder = StringBuilder()
-            .append(SSH_URI_PREFIX).append(validUsername)
+        val fullUri: StringBuilder =
+            StringBuilder()
+                .append(SSH_URI_PREFIX).append(validUsername)
         if (validPassword != null) fullUri.append(':').append(validPassword)
         fullUri.append(
-            "@${NetCopyClientConnectionPoolSshTest.HOST}:$port"
+            "@${NetCopyClientConnectionPoolSshTest.HOST}:$port",
         )
 
         if (true == subpath?.isNotEmpty()) {
             fullUri.append(subpath)
         }
 
-        if (validPassword != null) utilsHandler.saveToDatabase(
-            OperationData(
-                UtilsHandler.Operation.SFTP,
-                fullUri.toString(),
-                "Test",
-                SecurityUtils.getFingerprint(hostKeyPair.public),
-                null,
-                null
+        if (validPassword != null) {
+            utilsHandler.saveToDatabase(
+                OperationData(
+                    UtilsHandler.Operation.SFTP,
+                    fullUri.toString(),
+                    "Test",
+                    SecurityUtils.getFingerprint(hostKeyPair.public),
+                    null,
+                    null,
+                ),
             )
-        ) else utilsHandler.saveToDatabase(
-            OperationData(
-                UtilsHandler.Operation.SFTP,
-                encryptFtpPathAsNecessary(fullUri.toString()),
-                "Test",
-                SecurityUtils.getFingerprint(hostKeyPair.public),
-                "id_rsa",
-                privateKeyContents
+        } else {
+            utilsHandler.saveToDatabase(
+                OperationData(
+                    UtilsHandler.Operation.SFTP,
+                    encryptFtpPathAsNecessary(fullUri.toString()),
+                    "Test",
+                    SecurityUtils.getFingerprint(hostKeyPair.public),
+                    "id_rsa",
+                    privateKeyContents,
+                ),
             )
-        )
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 }

@@ -33,17 +33,17 @@ import java.io.IOException
  * Monkey-patch [org.apache.ftpserver.command.impl.PWD] to prevent true path exposed to end user.
  */
 class PWD : AbstractCommand() {
-
     @Throws(IOException::class, FtpException::class)
     override fun execute(
         session: FtpIoSession,
         context: FtpServerContext,
-        request: FtpRequest
+        request: FtpRequest,
     ) {
         session.resetState()
         val fsView = session.fileSystemView
-        var currDir = fsView.workingDirectory.absolutePath
-            .substringAfter(fsView.homeDirectory.absolutePath)
+        var currDir =
+            fsView.workingDirectory.absolutePath
+                .substringAfter(fsView.homeDirectory.absolutePath)
         if (currDir.isEmpty()) {
             currDir = "/"
         }
@@ -57,8 +57,8 @@ class PWD : AbstractCommand() {
                 context,
                 FtpReply.REPLY_257_PATHNAME_CREATED,
                 "PWD",
-                currDir
-            )
+                currDir,
+            ),
         )
     }
 }

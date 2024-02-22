@@ -42,7 +42,6 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class FtpServiceStaticMethodsTest {
-
     /** To test [FtpService.getLocalInetAddress] must not return an empty string.  */
     @Test
     fun testGetLocalInetAddressMustNotBeEmpty() {

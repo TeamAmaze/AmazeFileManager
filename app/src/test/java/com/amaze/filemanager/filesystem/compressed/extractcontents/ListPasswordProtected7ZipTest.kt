@@ -24,9 +24,9 @@ import android.os.Environment
 import java.io.File
 
 class ListPasswordProtected7ZipTest : PasswordProtected7ZipTest() {
-
-    override val archiveFile: File = File(
-        Environment.getExternalStorageDirectory(),
-        "test-archive-encrypted-list.$archiveType"
-    )
+    override val archiveFile: File =
+        File(
+            Environment.getExternalStorageDirectory(),
+            "test-archive-encrypted-list.$archiveType",
+        )
 }

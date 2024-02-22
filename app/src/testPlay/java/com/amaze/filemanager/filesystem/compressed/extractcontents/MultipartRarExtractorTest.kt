@@ -44,16 +44,22 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P],
 )
 class MultipartRarExtractorTest {
+    private val callback =
+        object : OnUpdate {
+            override fun onStart(
+                totalBytes: Long,
+                firstEntryName: String,
+            ) = Unit
 
-    private val callback = object : OnUpdate {
-        override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-        override fun onUpdate(entryPath: String) = Unit
-        override fun onFinish() = Unit
-        override fun isCancelled(): Boolean = false
-    }
+            override fun onUpdate(entryPath: String) = Unit
+
+            override fun onFinish() = Unit
+
+            override fun isCancelled(): Boolean = false
+        }
 
     /**
      * Test setup.
@@ -74,7 +80,7 @@ class MultipartRarExtractorTest {
             ApplicationProvider.getApplicationContext(),
             File(
                 Environment.getExternalStorageDirectory(),
-                "test-multipart-archive-v4.part1.rar"
+                "test-multipart-archive-v4.part1.rar",
             ).absolutePath,
             Environment.getExternalStorageDirectory().absolutePath,
             object : OnUpdate by callback {
@@ -85,7 +91,7 @@ class MultipartRarExtractorTest {
                     Assert.assertEquals((1024 * 128).toLong(), verify.length())
                 }
             },
-            ServiceWatcherUtil.UPDATE_POSITION
+            ServiceWatcherUtil.UPDATE_POSITION,
         ).extractEverything()
         latch.await()
     }
@@ -100,12 +106,12 @@ class MultipartRarExtractorTest {
                 ApplicationProvider.getApplicationContext(),
                 File(
                     Environment.getExternalStorageDirectory(),
-                    "test-multipart-archive-v5.part1.rar"
+                    "test-multipart-archive-v5.part1.rar",
                 )
                     .absolutePath,
                 Environment.getExternalStorageDirectory().absolutePath,
                 callback,
-                ServiceWatcherUtil.UPDATE_POSITION
+                ServiceWatcherUtil.UPDATE_POSITION,
             ).extractEverything()
             Assert.fail("No exception was thrown")
         } catch (expected: IOException) {

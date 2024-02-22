@@ -38,7 +38,6 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [KITKAT, P, Build.VERSION_CODES.R])
 class AESCryptTest {
-
     /**
      * Simple sanity test on [AESCrypt].
      */
@@ -50,7 +49,7 @@ class AESCryptTest {
         crypter.encrypt(
             `in` = ByteArrayInputStream(contents),
             out = out,
-            progressHandler = ProgressHandler()
+            progressHandler = ProgressHandler(),
         )
         out.close()
         val encrypted = out.toByteArray()
@@ -73,7 +72,7 @@ class AESCryptTest {
         crypter.encrypt(
             `in` = ByteArrayInputStream(contents),
             out = out,
-            progressHandler = ProgressHandler()
+            progressHandler = ProgressHandler(),
         )
         out.close()
         val encrypted = out.toByteArray()

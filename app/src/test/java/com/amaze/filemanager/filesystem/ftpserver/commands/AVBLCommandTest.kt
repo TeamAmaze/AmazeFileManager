@@ -47,9 +47,7 @@ import java.io.File
  * Unit test for [AVBL].
  */
 class AVBLCommandTest : AbstractFtpserverCommandTest() {
-
     companion object {
-
         private lateinit var fsFactory: FileSystemFactory
 
         private lateinit var fsView: NativeFileSystemView
@@ -100,13 +98,13 @@ class AVBLCommandTest : AbstractFtpserverCommandTest() {
         executeRequest(
             "AVBL",
             listOf(WritePermission()),
-            mock(AndroidFileSystemFactory::class.java)
+            mock(AndroidFileSystemFactory::class.java),
         )
         assertEquals(1, logger.messages.size)
         assertEquals(502, logger.messages[0].code)
         assertEquals(
             AppConfig.getInstance().getString(R.string.ftp_error_AVBL_notimplemented),
-            logger.messages[0].message
+            logger.messages[0].message,
         )
     }
 
@@ -153,7 +151,7 @@ class AVBLCommandTest : AbstractFtpserverCommandTest() {
         assertEquals(550, logger.messages[0].code)
         assertEquals(
             AppConfig.getInstance().getString(R.string.ftp_error_AVBL_missing),
-            logger.messages[0].message
+            logger.messages[0].message,
         )
     }
 
@@ -167,7 +165,7 @@ class AVBLCommandTest : AbstractFtpserverCommandTest() {
         assertEquals(550, logger.messages[0].code)
         assertEquals(
             AppConfig.getInstance().getString(R.string.ftp_error_AVBL_accessdenied),
-            logger.messages[0].message
+            logger.messages[0].message,
         )
     }
 
@@ -182,7 +180,7 @@ class AVBLCommandTest : AbstractFtpserverCommandTest() {
         assertEquals(550, logger.messages[0].code)
         assertEquals(
             AppConfig.getInstance().getString(R.string.ftp_error_AVBL_accessdenied),
-            logger.messages[0].message
+            logger.messages[0].message,
         )
     }
 
@@ -196,28 +194,29 @@ class AVBLCommandTest : AbstractFtpserverCommandTest() {
         assertEquals(550, logger.messages[0].code)
         assertEquals(
             AppConfig.getInstance().getString(R.string.ftp_error_AVBL_isafile),
-            logger.messages[0].message
+            logger.messages[0].message,
         )
     }
 
     private fun executeRequest(
         commandLine: String,
         permissions: List<Authority>,
-        fileSystemFactory: FileSystemFactory = fsFactory
+        fileSystemFactory: FileSystemFactory = fsFactory,
     ) {
         val context = mock(FtpServerContext::class.java)
         val ftpSession = FtpIoSession(session, context)
-        ftpSession.user = BaseUser().also {
-            it.homeDirectory = Environment.getExternalStorageDirectory().absolutePath
-            it.authorities = permissions
-        }
+        ftpSession.user =
+            BaseUser().also {
+                it.homeDirectory = Environment.getExternalStorageDirectory().absolutePath
+                it.authorities = permissions
+            }
         ftpSession.setLogin(fsView)
         `when`(context.fileSystemManager).thenReturn(fileSystemFactory)
         val command = AVBL()
         command.execute(
             session = ftpSession,
             context = context,
-            request = DefaultFtpRequest(commandLine)
+            request = DefaultFtpRequest(commandLine),
         )
     }
 }

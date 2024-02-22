@@ -62,27 +62,38 @@ import org.robolectric.shadows.ShadowSQLiteConnection
         ShadowSmbUtil::class,
         ShadowMultiDex::class,
         ShadowTabHandler::class,
-        ShadowPasswordUtil::class
+        ShadowPasswordUtil::class,
     ],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractOperationsTestBase {
-
     private var ctx: Context? = null
 
-    private val blankCallback = object : Operations.ErrorCallBack {
-        override fun exists(file: HybridFile?) = Unit
-        override fun launchSAF(file: HybridFile?) = Unit
-        override fun launchSAF(file: HybridFile?, file1: HybridFile?) = Unit
-        override fun done(hFile: HybridFile?, b: Boolean) = Unit
-        override fun invalidName(file: HybridFile?) = Unit
-    }
+    private val blankCallback =
+        object : Operations.ErrorCallBack {
+            override fun exists(file: HybridFile?) = Unit
+
+            override fun launchSAF(file: HybridFile?) = Unit
+
+            override fun launchSAF(
+                file: HybridFile?,
+                file1: HybridFile?,
+            ) = Unit
+
+            override fun done(
+                hFile: HybridFile?,
+                b: Boolean,
+            ) = Unit
+
+            override fun invalidName(file: HybridFile?) = Unit
+        }
 
     @Rule
     @JvmField
     @RequiresApi(Build.VERSION_CODES.R)
-    val allFilesPermissionRule = GrantPermissionRule
-        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    val allFilesPermissionRule =
+        GrantPermissionRule
+            .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     /**
      * Test case setup.
@@ -110,7 +121,7 @@ abstract class AbstractOperationsTestBase {
     protected fun testRenameFileAccessDenied(
         fileMode: OpenMode,
         oldFilePath: String,
-        newFilePath: String
+        newFilePath: String,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) TestUtils.initializeInternalStorage()
 
@@ -130,7 +141,7 @@ abstract class AbstractOperationsTestBase {
                     assertEquals(MainActivity.TAG_INTENT_FILTER_GENERAL, this.action)
                     this
                         .getParcelableArrayListExtra<HybridFileParcelable>(
-                            MainActivity.TAG_INTENT_FILTER_FAILED_OPS
+                            MainActivity.TAG_INTENT_FILTER_FAILED_OPS,
                         )
                         .run {
                             assertNotNull(this)

@@ -28,7 +28,6 @@ import org.junit.Test
  * Test [SevenZipHelperCallable] internals
  */
 class SevenZipHelperCallableInternalTest {
-
     /**
      * Test simple scenario of consolidate()
      */
@@ -56,22 +55,23 @@ class SevenZipHelperCallableInternalTest {
     @Test
     fun testConsolidateClassic() {
         val callable = SevenZipHelperCallable("dummy", "", false)
-        val list = listOf(
-            "test-archive",
-            "test-archive/1",
-            "test-archive/2",
-            "test-archive/3",
-            "test-archive/4",
-            "test-archive/a",
-            "test-archive/a/b",
-            "test-archive/a/b/c",
-            "test-archive/a/b/c/d",
-            "test-archive/1/8",
-            "test-archive/2/7",
-            "test-archive/3/6",
-            "test-archive/4/5",
-            "test-archive/a/b/c/d/lipsum.bin"
-        )
+        val list =
+            listOf(
+                "test-archive",
+                "test-archive/1",
+                "test-archive/2",
+                "test-archive/3",
+                "test-archive/4",
+                "test-archive/a",
+                "test-archive/a/b",
+                "test-archive/a/b/c",
+                "test-archive/a/b/c/d",
+                "test-archive/1/8",
+                "test-archive/2/7",
+                "test-archive/3/6",
+                "test-archive/4/5",
+                "test-archive/a/b/c/d/lipsum.bin",
+            )
         var result = callable.consolidate(list)
         assertEquals(1, result.size)
         assertEquals("test-archive", result.first())

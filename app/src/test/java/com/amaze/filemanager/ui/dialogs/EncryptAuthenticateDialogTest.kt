@@ -62,7 +62,6 @@ import kotlin.random.Random
  * Logic test for [EncryptAuthenticateDialog].
  */
 class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
-
     private val randomizer = Random(System.currentTimeMillis())
     private lateinit var file: File
     private lateinit var tilFileSaveAs: WarnableTextInputLayout
@@ -81,13 +80,14 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
     @Before
     override fun setUp() {
         super.setUp()
-        file = File(
-            Environment.getExternalStorageDirectory(),
-            RandomPathGenerator.generateRandomPath(
-                randomizer,
-                16
+        file =
+            File(
+                Environment.getExternalStorageDirectory(),
+                RandomPathGenerator.generateRandomPath(
+                    randomizer,
+                    16,
+                ),
             )
-        )
     }
 
     /**
@@ -105,16 +105,19 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                 okButton.performClick()
             },
             object : EncryptDecryptUtils.EncryptButtonCallbackInterface {
-                override fun onButtonPressed(intent: Intent, password: String) {
+                override fun onButtonPressed(
+                    intent: Intent,
+                    password: String,
+                ) {
                     assertEquals(file.absolutePath, intent.getStringExtra(TAG_SOURCE))
                     assertTrue(intent.getBooleanExtra(TAG_AESCRYPT, false))
                     assertEquals(
                         "${file.name}$AESCRYPT_EXTENSION",
-                        intent.getStringExtra(TAG_ENCRYPT_TARGET)
+                        intent.getStringExtra(TAG_ENCRYPT_TARGET),
                     )
                     assertEquals("abcdefgh", password)
                 }
-            }
+            },
         )
     }
 
@@ -135,16 +138,19 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                 okButton.performClick()
             },
             object : EncryptDecryptUtils.EncryptButtonCallbackInterface {
-                override fun onButtonPressed(intent: Intent, password: String) {
+                override fun onButtonPressed(
+                    intent: Intent,
+                    password: String,
+                ) {
                     assertEquals(file.absolutePath, intent.getStringExtra(TAG_SOURCE))
                     assertFalse(intent.getBooleanExtra(TAG_AESCRYPT, true))
                     assertEquals(
                         "testfile$CRYPT_EXTENSION",
-                        intent.getStringExtra(TAG_ENCRYPT_TARGET)
+                        intent.getStringExtra(TAG_ENCRYPT_TARGET),
                     )
                     assertEquals("abcdefgh", password)
                 }
-            }
+            },
         )
     }
 
@@ -159,7 +165,7 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.password_no_match),
-                tilEncryptPasswordConfirm.error
+                tilEncryptPasswordConfirm.error,
             )
             editTextEncryptPassword.setText("")
             editTextEncryptPasswordConfirm.setText("")
@@ -189,13 +195,13 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.encrypt_file_must_end_with_aes),
-                tilFileSaveAs.error
+                tilFileSaveAs.error,
             )
             editTextFileSaveAs.setText("${file.name}.aze")
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.encrypt_file_must_end_with_aes),
-                tilFileSaveAs.error
+                tilFileSaveAs.error,
             )
             checkboxUseAze.isChecked = true
             assertTrue(okButton.isEnabled)
@@ -204,25 +210,25 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.encrypt_file_must_end_with_aze),
-                tilFileSaveAs.error
+                tilFileSaveAs.error,
             )
             editTextFileSaveAs.setText("${file.name}.aes")
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.encrypt_file_must_end_with_aze),
-                tilFileSaveAs.error
+                tilFileSaveAs.error,
             )
             editTextFileSaveAs.setText("")
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.field_empty),
-                tilFileSaveAs.error
+                tilFileSaveAs.error,
             )
             editTextFileSaveAs.setText("          ")
             assertFalse(okButton.isEnabled)
             assertEquals(
                 getString(R.string.field_empty),
-                tilFileSaveAs.error
+                tilFileSaveAs.error,
             )
             editTextFileSaveAs.setText("${file.name}.aze")
             assertTrue(okButton.isEnabled)
@@ -240,10 +246,10 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertEquals(
                 HtmlCompat.fromHtml(
                     getString(R.string.encrypt_option_use_azecrypt_desc),
-                    FROM_HTML_MODE_COMPACT
+                    FROM_HTML_MODE_COMPACT,
                 )
                     .toString(),
-                textViewCryptInfo.text.toString()
+                textViewCryptInfo.text.toString(),
             )
             assertTrue(ShadowDialog.getShownDialogs().size == 2)
             assertTrue(ShadowDialog.getLatestDialog() is MaterialDialog)
@@ -252,11 +258,11 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                 assertEquals(getString(R.string.crypt_warning_key), contentView?.text.toString())
                 assertEquals(
                     getString(R.string.warning_never_show),
-                    getActionButton(DialogAction.NEGATIVE).text
+                    getActionButton(DialogAction.NEGATIVE).text,
                 )
                 assertEquals(
                     getString(R.string.warning_confirm),
-                    getActionButton(DialogAction.POSITIVE).text
+                    getActionButton(DialogAction.POSITIVE).text,
                 )
                 assertTrue(getActionButton(DialogAction.POSITIVE).performClick())
             }
@@ -267,10 +273,10 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertEquals(
                 HtmlCompat.fromHtml(
                     getString(R.string.encrypt_option_use_aescrypt_desc),
-                    FROM_HTML_MODE_COMPACT
+                    FROM_HTML_MODE_COMPACT,
                 )
                     .toString(),
-                textViewCryptInfo.text.toString()
+                textViewCryptInfo.text.toString(),
             )
             assertEquals(2, ShadowDialog.getShownDialogs().size)
             assertFalse(ShadowDialog.getLatestDialog().isShowing)
@@ -279,10 +285,10 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertEquals(
                 HtmlCompat.fromHtml(
                     getString(R.string.encrypt_option_use_azecrypt_desc),
-                    FROM_HTML_MODE_COMPACT
+                    FROM_HTML_MODE_COMPACT,
                 )
                     .toString(),
-                textViewCryptInfo.text.toString()
+                textViewCryptInfo.text.toString(),
             )
             assertEquals(3, ShadowDialog.getShownDialogs().size)
             assertTrue(ShadowDialog.getLatestDialog().isShowing)
@@ -293,7 +299,7 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertFalse(ShadowDialog.getLatestDialog().isShowing)
             assertTrue(
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
-                    .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false)
+                    .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
             checkboxUseAze.isChecked = false
             assertEquals(3, ShadowDialog.getShownDialogs().size) // no new dialog
@@ -327,10 +333,10 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
         testContent: (
             dialog: MaterialDialog,
             intent: Intent,
-            activity: MainActivity
+            activity: MainActivity,
         ) -> Unit,
         callback: EncryptDecryptUtils.EncryptButtonCallbackInterface =
-            object : EncryptDecryptUtils.EncryptButtonCallbackInterface {}
+            object : EncryptDecryptUtils.EncryptButtonCallbackInterface {},
     ) {
         scenario.onActivity { activity ->
             Intent().putExtra(TAG_SOURCE, HybridFileParcelable(file.absolutePath))
@@ -340,33 +346,40 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                         intent,
                         activity,
                         activity.appTheme,
-                        callback
+                        callback,
                     )
                     ShadowDialog.getLatestDialog()?.run {
                         assertTrue(this is MaterialDialog)
                         (this as MaterialDialog).let {
-                            editTextFileSaveAs = findViewById<TextInputEditText>(
-                                R.id.edit_text_encrypt_save_as
-                            )
-                            editTextEncryptPassword = findViewById<TextInputEditText>(
-                                R.id.edit_text_dialog_encrypt_password
-                            )
-                            editTextEncryptPasswordConfirm = findViewById<TextInputEditText>(
-                                R.id.edit_text_dialog_encrypt_password_confirm
-                            )
-                            tilFileSaveAs = findViewById<WarnableTextInputLayout>(
-                                R.id.til_encrypt_save_as
-                            )
-                            tilEncryptPassword = findViewById<WarnableTextInputLayout>(
-                                R.id.til_encrypt_password
-                            )
-                            tilEncryptPasswordConfirm = findViewById<WarnableTextInputLayout>(
-                                R.id.til_encrypt_password
-                            )
+                            editTextFileSaveAs =
+                                findViewById<TextInputEditText>(
+                                    R.id.edit_text_encrypt_save_as,
+                                )
+                            editTextEncryptPassword =
+                                findViewById<TextInputEditText>(
+                                    R.id.edit_text_dialog_encrypt_password,
+                                )
+                            editTextEncryptPasswordConfirm =
+                                findViewById<TextInputEditText>(
+                                    R.id.edit_text_dialog_encrypt_password_confirm,
+                                )
+                            tilFileSaveAs =
+                                findViewById<WarnableTextInputLayout>(
+                                    R.id.til_encrypt_save_as,
+                                )
+                            tilEncryptPassword =
+                                findViewById<WarnableTextInputLayout>(
+                                    R.id.til_encrypt_password,
+                                )
+                            tilEncryptPasswordConfirm =
+                                findViewById<WarnableTextInputLayout>(
+                                    R.id.til_encrypt_password,
+                                )
                             checkboxUseAze = findViewById<AppCompatCheckBox>(R.id.checkbox_use_aze)
-                            textViewCryptInfo = findViewById<AppCompatTextView>(
-                                R.id.text_view_crypt_info
-                            )
+                            textViewCryptInfo =
+                                findViewById<AppCompatTextView>(
+                                    R.id.text_view_crypt_info,
+                                )
                             okButton = getActionButton(DialogAction.POSITIVE)
                             assertFalse(okButton.isEnabled)
                             assertTrue(true == editTextFileSaveAs.text?.startsWith(file.name))

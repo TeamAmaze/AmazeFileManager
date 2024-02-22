@@ -36,7 +36,10 @@ import java.io.File
 class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCallback {
     override val title = R.string.behavior
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.behavior_prefs, rootKey)
 
         findPreference<Preference>("clear_open_file")?.onPreferenceClickListener =
@@ -47,45 +50,53 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             }
 
         findPreference<Preference>(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)
-            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            FolderChooserDialog.Builder(activity)
-                .tag(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)
-                .goUpLabel(getString(R.string.folder_go_up_one_level))
-                .chooseButton(R.string.choose_folder)
-                .cancelButton(R.string.cancel)
-                .initialPath(
-                    activity.prefs.getString(
-                        PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
-                        Environment.getExternalStorageDirectory().path
+            ?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                FolderChooserDialog.Builder(activity)
+                    .tag(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)
+                    .goUpLabel(getString(R.string.folder_go_up_one_level))
+                    .chooseButton(R.string.choose_folder)
+                    .cancelButton(R.string.cancel)
+                    .initialPath(
+                        activity.prefs.getString(
+                            PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
+                            Environment.getExternalStorageDirectory().path,
+                        ),
                     )
-                )
-                .build()
-                .show(activity)
-            true
-        }
+                    .build()
+                    .show(activity)
+                true
+            }
         findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_RETENTION_NUM_OF_FILES)
-            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            trashBinRetentionNumOfFiles()
-            true
-        }
+            ?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                trashBinRetentionNumOfFiles()
+                true
+            }
         findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_RETENTION_DAYS)
-            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            trashBinRetentionDays()
-            true
-        }
+            ?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                trashBinRetentionDays()
+                true
+            }
         findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_RETENTION_BYTES)
-            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            trashBinRetentionBytes()
-            true
-        }
+            ?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                trashBinRetentionBytes()
+                true
+            }
         findPreference<Preference>(PreferencesConstants.PREFERENCE_TRASH_BIN_CLEANUP_INTERVAL)
-            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            trashBinCleanupInterval()
-            true
-        }
+            ?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                trashBinCleanupInterval()
+                true
+            }
     }
 
-    override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {
+    override fun onFolderSelection(
+        dialog: FolderChooserDialog,
+        folder: File,
+    ) {
         // Just to be safe
         if (folder.exists() && folder.isDirectory) {
             // Write settings to preferences
@@ -99,21 +110,22 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
     private fun trashBinRetentionNumOfFiles() {
         val dialogBuilder = MaterialDialog.Builder(activity)
         dialogBuilder.title(
-            resources.getString(R.string.trash_bin_retention_num_of_files_title)
+            resources.getString(R.string.trash_bin_retention_num_of_files_title),
         )
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val numOfFiles = sharedPrefs.getInt(
-            PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
-            TrashBinConfig.RETENTION_NUM_OF_FILES
-        )
+        val numOfFiles =
+            sharedPrefs.getInt(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
+                TrashBinConfig.RETENTION_NUM_OF_FILES,
+            )
         dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
         dialogBuilder.input(
             "",
             "$numOfFiles",
-            true
+            true,
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.materialDialogTheme
+            activity.utilsProvider.appTheme.materialDialogTheme,
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -125,13 +137,13 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             val inputText = dialog.inputEditText?.text.toString()
             sharedPrefs.edit().putInt(
                 PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
-                inputText.toInt()
+                inputText.toInt(),
             ).apply()
         }
         dialogBuilder.onNeutral { _, _ ->
             sharedPrefs.edit().putInt(
                 PreferencesConstants.KEY_TRASH_BIN_RETENTION_NUM_OF_FILES,
-                TrashBinConfig.RETENTION_NUM_OF_FILES
+                TrashBinConfig.RETENTION_NUM_OF_FILES,
             ).apply()
         }
         dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
@@ -141,21 +153,22 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
     private fun trashBinRetentionDays() {
         val dialogBuilder = MaterialDialog.Builder(activity)
         dialogBuilder.title(
-            resources.getString(R.string.trash_bin_retention_days_title)
+            resources.getString(R.string.trash_bin_retention_days_title),
         )
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val days = sharedPrefs.getInt(
-            PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
-            TrashBinConfig.RETENTION_DAYS_INFINITE
-        )
+        val days =
+            sharedPrefs.getInt(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
+                TrashBinConfig.RETENTION_DAYS_INFINITE,
+            )
         dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
         dialogBuilder.input(
             "",
             "$days",
-            true
+            true,
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.materialDialogTheme
+            activity.utilsProvider.appTheme.materialDialogTheme,
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -167,13 +180,13 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             val inputText = dialog.inputEditText?.text.toString()
             sharedPrefs.edit().putInt(
                 PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
-                inputText.toInt()
+                inputText.toInt(),
             ).apply()
         }
         dialogBuilder.onNeutral { _, _ ->
             sharedPrefs.edit().putInt(
                 PreferencesConstants.KEY_TRASH_BIN_RETENTION_DAYS,
-                TrashBinConfig.RETENTION_DAYS_INFINITE
+                TrashBinConfig.RETENTION_DAYS_INFINITE,
             ).apply()
         }
         dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
@@ -183,21 +196,22 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
     private fun trashBinRetentionBytes() {
         val dialogBuilder = MaterialDialog.Builder(activity)
         dialogBuilder.title(
-            resources.getString(R.string.trash_bin_retention_bytes_title)
+            resources.getString(R.string.trash_bin_retention_bytes_title),
         )
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val bytes = sharedPrefs.getLong(
-            PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
-            TrashBinConfig.RETENTION_BYTES_INFINITE
-        )
+        val bytes =
+            sharedPrefs.getLong(
+                PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
+                TrashBinConfig.RETENTION_BYTES_INFINITE,
+            )
         dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
         dialogBuilder.input(
             "",
             "$bytes",
-            true
+            true,
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.materialDialogTheme
+            activity.utilsProvider.appTheme.materialDialogTheme,
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -209,13 +223,13 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             val inputText = dialog.inputEditText?.text.toString()
             sharedPrefs.edit().putLong(
                 PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
-                inputText.toLong()
+                inputText.toLong(),
             ).apply()
         }
         dialogBuilder.onNeutral { _, _ ->
             sharedPrefs.edit().putLong(
                 PreferencesConstants.KEY_TRASH_BIN_RETENTION_BYTES,
-                TrashBinConfig.RETENTION_BYTES_INFINITE
+                TrashBinConfig.RETENTION_BYTES_INFINITE,
             ).apply()
         }
         dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }
@@ -225,21 +239,22 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
     private fun trashBinCleanupInterval() {
         val dialogBuilder = MaterialDialog.Builder(activity)
         dialogBuilder.title(
-            resources.getString(R.string.trash_bin_cleanup_interval_title)
+            resources.getString(R.string.trash_bin_cleanup_interval_title),
         )
         val sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val intervalHours = sharedPrefs.getInt(
-            PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
-            TrashBinConfig.INTERVAL_CLEANUP_HOURS
-        )
+        val intervalHours =
+            sharedPrefs.getInt(
+                PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
+                TrashBinConfig.INTERVAL_CLEANUP_HOURS,
+            )
         dialogBuilder.inputType(InputType.TYPE_CLASS_NUMBER)
         dialogBuilder.input(
             "",
             "$intervalHours",
-            true
+            true,
         ) { _, _ -> }
         dialogBuilder.theme(
-            activity.utilsProvider.appTheme.materialDialogTheme
+            activity.utilsProvider.appTheme.materialDialogTheme,
         )
         dialogBuilder.positiveText(resources.getString(R.string.ok))
         dialogBuilder.negativeText(resources.getString(R.string.cancel))
@@ -251,13 +266,13 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
             val inputText = dialog.inputEditText?.text.toString()
             sharedPrefs.edit().putInt(
                 PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
-                inputText.toInt()
+                inputText.toInt(),
             ).apply()
         }
         dialogBuilder.onNeutral { _, _ ->
             sharedPrefs.edit().putInt(
                 PreferencesConstants.KEY_TRASH_BIN_CLEANUP_INTERVAL_HOURS,
-                TrashBinConfig.INTERVAL_CLEANUP_HOURS
+                TrashBinConfig.INTERVAL_CLEANUP_HOURS,
             ).apply()
         }
         dialogBuilder.onNegative { dialog, _ -> dialog.cancel() }

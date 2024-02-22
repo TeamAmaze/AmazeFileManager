@@ -44,18 +44,18 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod")
 class ExplorerDatabaseMigrationTest {
-
     @Rule
     @JvmField
-    val helper = MigrationTestHelper(
-        InstrumentationRegistry.getInstrumentation(),
-        ExplorerDatabase::class.java.canonicalName,
-        FrameworkSQLiteOpenHelperFactory()
-    )
+    val helper =
+        MigrationTestHelper(
+            InstrumentationRegistry.getInstrumentation(),
+            ExplorerDatabase::class.java.canonicalName,
+            FrameworkSQLiteOpenHelperFactory(),
+        )
 
     /**
      * Sanity check for all migrations.
@@ -65,24 +65,25 @@ class ExplorerDatabaseMigrationTest {
     fun migrateAll() {
         val db = helper.createDatabase(TEST_DB, 1)
         db.close()
-        val explorerDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ExplorerDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(
-                ExplorerDatabase.MIGRATION_1_2,
-                ExplorerDatabase.MIGRATION_2_3,
-                ExplorerDatabase.MIGRATION_3_4,
-                ExplorerDatabase.MIGRATION_4_5,
-                ExplorerDatabase.MIGRATION_5_6,
-                ExplorerDatabase.MIGRATION_6_7,
-                ExplorerDatabase.MIGRATION_7_8,
-                ExplorerDatabase.MIGRATION_8_9,
-                ExplorerDatabase.MIGRATION_9_10,
-                ExplorerDatabase.MIGRATION_10_11
+        val explorerDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                ExplorerDatabase::class.java,
+                TEST_DB,
             )
-            .build()
+                .addMigrations(
+                    ExplorerDatabase.MIGRATION_1_2,
+                    ExplorerDatabase.MIGRATION_2_3,
+                    ExplorerDatabase.MIGRATION_3_4,
+                    ExplorerDatabase.MIGRATION_4_5,
+                    ExplorerDatabase.MIGRATION_5_6,
+                    ExplorerDatabase.MIGRATION_6_7,
+                    ExplorerDatabase.MIGRATION_7_8,
+                    ExplorerDatabase.MIGRATION_8_9,
+                    ExplorerDatabase.MIGRATION_9_10,
+                    ExplorerDatabase.MIGRATION_10_11,
+                )
+                .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
     }
@@ -95,20 +96,21 @@ class ExplorerDatabaseMigrationTest {
     fun migrateFromV5() {
         val db = helper.createDatabase(TEST_DB, 5)
         db.close()
-        val explorerDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ExplorerDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(
-                ExplorerDatabase.MIGRATION_5_6,
-                ExplorerDatabase.MIGRATION_6_7,
-                ExplorerDatabase.MIGRATION_7_8,
-                ExplorerDatabase.MIGRATION_8_9,
-                ExplorerDatabase.MIGRATION_9_10,
-                ExplorerDatabase.MIGRATION_10_11
+        val explorerDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                ExplorerDatabase::class.java,
+                TEST_DB,
             )
-            .build()
+                .addMigrations(
+                    ExplorerDatabase.MIGRATION_5_6,
+                    ExplorerDatabase.MIGRATION_6_7,
+                    ExplorerDatabase.MIGRATION_7_8,
+                    ExplorerDatabase.MIGRATION_8_9,
+                    ExplorerDatabase.MIGRATION_9_10,
+                    ExplorerDatabase.MIGRATION_10_11,
+                )
+                .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
     }
@@ -121,19 +123,20 @@ class ExplorerDatabaseMigrationTest {
     fun migrateFromV6() {
         val db = helper.createDatabase(TEST_DB, 6)
         db.close()
-        val explorerDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ExplorerDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(
-                ExplorerDatabase.MIGRATION_6_7,
-                ExplorerDatabase.MIGRATION_7_8,
-                ExplorerDatabase.MIGRATION_8_9,
-                ExplorerDatabase.MIGRATION_9_10,
-                ExplorerDatabase.MIGRATION_10_11
+        val explorerDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                ExplorerDatabase::class.java,
+                TEST_DB,
             )
-            .build()
+                .addMigrations(
+                    ExplorerDatabase.MIGRATION_6_7,
+                    ExplorerDatabase.MIGRATION_7_8,
+                    ExplorerDatabase.MIGRATION_8_9,
+                    ExplorerDatabase.MIGRATION_9_10,
+                    ExplorerDatabase.MIGRATION_10_11,
+                )
+                .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
     }
@@ -156,7 +159,7 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (1," +
                 (OpenMode.GDRIVE.ordinal - 1) +
-                ",'abcd')"
+                ",'abcd')",
         )
         db.execSQL(
             "INSERT INTO " +
@@ -169,7 +172,7 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (2," +
                 (OpenMode.DROPBOX.ordinal - 1) +
-                ",'efgh')"
+                ",'efgh')",
         )
         db.execSQL(
             "INSERT INTO " +
@@ -182,7 +185,7 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (3," +
                 (OpenMode.BOX.ordinal - 1) +
-                ",'ijkl')"
+                ",'ijkl')",
         )
         db.execSQL(
             "INSERT INTO " +
@@ -195,48 +198,53 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (4," +
                 (OpenMode.ONEDRIVE.ordinal - 1) +
-                ",'mnop')"
+                ",'mnop')",
         )
         db.close()
-        val explorerDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ExplorerDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(
-                ExplorerDatabase.MIGRATION_7_8,
-                ExplorerDatabase.MIGRATION_8_9,
-                ExplorerDatabase.MIGRATION_9_10,
-                ExplorerDatabase.MIGRATION_10_11
-            ).allowMainThreadQueries()
-            .build()
+        val explorerDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                ExplorerDatabase::class.java,
+                TEST_DB,
+            )
+                .addMigrations(
+                    ExplorerDatabase.MIGRATION_7_8,
+                    ExplorerDatabase.MIGRATION_8_9,
+                    ExplorerDatabase.MIGRATION_9_10,
+                    ExplorerDatabase.MIGRATION_10_11,
+                ).allowMainThreadQueries()
+                .build()
         explorerDatabase.openHelper.writableDatabase
-        var verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.GDRIVE.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        var verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.GDRIVE.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(1, verify.id.toLong())
         Assert.assertEquals("abcd", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.BOX.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.BOX.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(3, verify.id.toLong())
         Assert.assertEquals("ijkl", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.DROPBOX.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.DROPBOX.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(2, verify.id.toLong())
         Assert.assertEquals("efgh", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.ONEDRIVE.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.ONEDRIVE.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(4, verify.id.toLong())
         Assert.assertEquals("mnop", verify.persistData.toString())
         explorerDatabase.close()
@@ -260,7 +268,7 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (1," +
                 (OpenMode.GDRIVE.ordinal) +
-                ",'abcd')"
+                ",'abcd')",
         )
         db.execSQL(
             "INSERT INTO " +
@@ -273,7 +281,7 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (2," +
                 (OpenMode.DROPBOX.ordinal) +
-                ",'efgh')"
+                ",'efgh')",
         )
         db.execSQL(
             "INSERT INTO " +
@@ -286,7 +294,7 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (3," +
                 (OpenMode.BOX.ordinal) +
-                ",'ijkl')"
+                ",'ijkl')",
         )
         db.execSQL(
             "INSERT INTO " +
@@ -299,48 +307,53 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (4," +
                 (OpenMode.ONEDRIVE.ordinal) +
-                ",'mnop')"
+                ",'mnop')",
         )
         db.close()
-        val explorerDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ExplorerDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(
-                ExplorerDatabase.MIGRATION_8_9,
-                ExplorerDatabase.MIGRATION_9_10,
-                ExplorerDatabase.MIGRATION_10_11
+        val explorerDatabase =
+            Room.databaseBuilder(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                ExplorerDatabase::class.java,
+                TEST_DB,
             )
-            .allowMainThreadQueries()
-            .build()
+                .addMigrations(
+                    ExplorerDatabase.MIGRATION_8_9,
+                    ExplorerDatabase.MIGRATION_9_10,
+                    ExplorerDatabase.MIGRATION_10_11,
+                )
+                .allowMainThreadQueries()
+                .build()
         explorerDatabase.openHelper.writableDatabase
-        var verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.GDRIVE.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        var verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.GDRIVE.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(1, verify.id.toLong())
         Assert.assertEquals("abcd", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.BOX.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.BOX.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(3, verify.id.toLong())
         Assert.assertEquals("ijkl", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.DROPBOX.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.DROPBOX.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(2, verify.id.toLong())
         Assert.assertEquals("efgh", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.ONEDRIVE.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
+        verify =
+            explorerDatabase
+                .cloudEntryDao()
+                .findByServiceType(OpenMode.ONEDRIVE.ordinal)
+                .subscribeOn(Schedulers.trampoline())
+                .blockingGet()
         Assert.assertEquals(4, verify.id.toLong())
         Assert.assertEquals("mnop", verify.persistData.toString())
         explorerDatabase.close()

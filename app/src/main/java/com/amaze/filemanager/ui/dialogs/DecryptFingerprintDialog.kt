@@ -41,7 +41,6 @@ import java.security.GeneralSecurityException
  * Decrypt dialog prompt for user fingerprint.
  */
 object DecryptFingerprintDialog {
-
     /**
      * Display dialog prompting user for fingerprint in order to decrypt file.
      */
@@ -49,22 +48,23 @@ object DecryptFingerprintDialog {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
     fun show(
         c: Context,
         main: MainActivity,
         intent: Intent,
         appTheme: AppTheme,
-        decryptButtonCallbackInterface: DecryptButtonCallbackInterface
+        decryptButtonCallbackInterface: DecryptButtonCallbackInterface,
     ) {
         val accentColor = main.accent
         val builder = MaterialDialog.Builder(c)
         builder.title(c.getString(R.string.crypt_decrypt))
         val rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null)
-        val cancelButton = rootView.findViewById<AppCompatButton>(
-            R.id.button_decrypt_fingerprint_cancel
-        )
+        val cancelButton =
+            rootView.findViewById<AppCompatButton>(
+                R.id.button_decrypt_fingerprint_cancel,
+            )
         cancelButton.setTextColor(accentColor)
         builder.customView(rootView, true)
         builder.canceledOnTouchOutside(false)

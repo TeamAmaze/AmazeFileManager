@@ -42,6 +42,6 @@ import org.junit.runners.Suite.SuiteClasses
     EncryptedSevenZipHelperCallableTest::class,
     ListEncryptedSevenZipHelperCallableTest::class,
     UnknownCompressedHelperCallableTest::class,
-    CompressedHelperForBadArchiveTest::class
+    CompressedHelperForBadArchiveTest::class,
 )
 class CompressedHelperCallableTestSuite

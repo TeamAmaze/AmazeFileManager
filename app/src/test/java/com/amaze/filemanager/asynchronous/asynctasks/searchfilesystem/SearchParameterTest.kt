@@ -25,7 +25,6 @@ import org.junit.Test
 import java.util.EnumSet
 
 class SearchParameterTest {
-
     /** Tests [SearchParameter.and] */
     @Test
     fun testAnd() {

@@ -24,11 +24,13 @@ import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswor
 import java.io.File
 
 class ListEncryptedSevenZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive-encrypted-list.7z"
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable {
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable {
         archive.absolutePath.let {
             ArchivePasswordCache.getInstance()[it] = "123456"
             return SevenZipHelperCallable(it, relativePath, false)

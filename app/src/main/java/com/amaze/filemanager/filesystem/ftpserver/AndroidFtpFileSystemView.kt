@@ -34,20 +34,18 @@ import java.net.URI
 
 @RequiresApi(KITKAT)
 class AndroidFtpFileSystemView(private var context: Context, root: String) : FileSystemView {
-
     private val rootPath = root
     private val rootDocumentFile = createDocumentFileFrom(rootPath)
     private var currentPath: String? = "/"
 
-    override fun getHomeDirectory(): FtpFile =
-        AndroidFtpFile(context, rootDocumentFile, resolveDocumentFileFromRoot("/"), "/")
+    override fun getHomeDirectory(): FtpFile = AndroidFtpFile(context, rootDocumentFile, resolveDocumentFileFromRoot("/"), "/")
 
     override fun getWorkingDirectory(): FtpFile {
         return AndroidFtpFile(
             context,
             rootDocumentFile,
             resolveDocumentFileFromRoot(currentPath!!),
-            currentPath!!
+            currentPath!!,
         )
     }
 
@@ -67,30 +65,32 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 }
             }
             else -> {
-                currentPath = when {
-                    currentPath.isNullOrEmpty() || currentPath == "/" -> dir
-                    !dir.startsWith("/") -> normalizePath("$currentPath/$dir")
-                    else -> normalizePath(dir)
-                }
+                currentPath =
+                    when {
+                        currentPath.isNullOrEmpty() || currentPath == "/" -> dir
+                        !dir.startsWith("/") -> normalizePath("$currentPath/$dir")
+                        else -> normalizePath(dir)
+                    }
                 resolveDocumentFileFromRoot(currentPath) != null
             }
         }
     }
 
     override fun getFile(file: String): FtpFile {
-        val path = if (currentPath.isNullOrEmpty() || currentPath == "/") {
-            "/$file"
-        } else if (file.startsWith('/')) {
-            file
-        } else {
-            "$currentPath/$file"
-        }
+        val path =
+            if (currentPath.isNullOrEmpty() || currentPath == "/") {
+                "/$file"
+            } else if (file.startsWith('/')) {
+                file
+            } else {
+                "$currentPath/$file"
+            }
         return normalizePath(path).let { normalizedPath ->
             AndroidFtpFile(
                 context,
                 resolveDocumentFileFromRoot(getParentFrom(normalizedPath))!!, // rootDocumentFile,
                 resolveDocumentFileFromRoot(normalizedPath),
-                normalizedPath
+                normalizedPath,
             )
         }
     }
@@ -113,7 +113,7 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 Uri.decode(
                     URI(Uri.encode(path, "/"))
                         .normalize()
-                        .toString()
+                        .toString(),
                 ).replace("//", "/")
             }
         }

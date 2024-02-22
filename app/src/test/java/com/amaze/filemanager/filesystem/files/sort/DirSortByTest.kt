@@ -32,7 +32,7 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 class DirSortByTest {
     /** Tests if [DirSortBy.getDirSortBy] returns the correct [DirSortBy] corresponding to the given index */
@@ -41,24 +41,24 @@ class DirSortByTest {
         Assert.assertEquals(
             "DirSortBy.getDirSortBy(0) did not return DIR_ON_TOP",
             DirSortBy.DIR_ON_TOP,
-            DirSortBy.getDirSortBy(0)
+            DirSortBy.getDirSortBy(0),
         )
         Assert.assertEquals(
             "DirSortBy.getDirSortBy(1) did not return FILE_ON_TOP",
             DirSortBy.FILE_ON_TOP,
-            DirSortBy.getDirSortBy(1)
+            DirSortBy.getDirSortBy(1),
         )
         Assert.assertEquals(
             "DirSortBy.getDirSortBy(2) did not return NONE_ON_TOP",
             DirSortBy.NONE_ON_TOP,
-            DirSortBy.getDirSortBy(2)
+            DirSortBy.getDirSortBy(2),
         )
         // could be any int except 0 to 2
         val randomIndex = Random.nextInt(3, Int.MAX_VALUE)
         Assert.assertEquals(
             "DirSortBy.getDirSortBy($randomIndex) did not return NONE_ON_TOP",
             DirSortBy.NONE_ON_TOP,
-            DirSortBy.getDirSortBy(randomIndex)
+            DirSortBy.getDirSortBy(randomIndex),
         )
     }
 }

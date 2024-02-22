@@ -26,7 +26,6 @@ import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object MountPathCommand : IRootCommand() {
-
     const val READ_ONLY = "RO"
     const val READ_WRITE = "RW"
 
@@ -39,7 +38,10 @@ object MountPathCommand : IRootCommand() {
      * @return String the root of mount point that was ro, and mounted to rw; null otherwise
      */
     @Throws(ShellNotRunningException::class)
-    fun mountPath(pathArg: String, operation: String): String? {
+    fun mountPath(
+        pathArg: String,
+        operation: String,
+    ): String? {
         val path = RootHelper.getCommandLineString(pathArg)
         return when (operation) {
             READ_WRITE -> mountReadWrite(path)

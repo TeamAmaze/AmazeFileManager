@@ -28,7 +28,7 @@ class BasicSearch(
     query: String,
     path: String,
     searchParameters: SearchParameters,
-    context: Context
+    context: Context,
 ) : FileSearch(query, path, searchParameters) {
     private val applicationContext = context.applicationContext
 
@@ -37,7 +37,7 @@ class BasicSearch(
             path,
             SearchParameter.ROOT in searchParameters,
             SearchParameter.SHOW_HIDDEN_FILES in searchParameters,
-            { }
+            { },
         ) { hybridFileParcelable: HybridFileParcelable ->
             if (SearchParameter.SHOW_HIDDEN_FILES in searchParameters ||
                 !hybridFileParcelable.isHidden

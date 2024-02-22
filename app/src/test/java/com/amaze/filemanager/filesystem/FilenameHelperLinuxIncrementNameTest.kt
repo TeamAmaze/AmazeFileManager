@@ -29,7 +29,6 @@ import org.junit.Test
  */
 @Suppress("StringLiteralDuplication")
 class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementNameTests() {
-
     override val formatFlag: FilenameFormatFlag
         get() = FilenameFormatFlag.LINUX
 
@@ -38,12 +37,13 @@ class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementName
      */
     @Test
     fun testLinuxIncrementSimple() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file (copy).txt"),
-            Pair("sub/foo.txt", "sub/foo (copy).txt"),
-            Pair("sub/nested/foo.txt", "sub/nested/foo (copy).txt"),
-            Pair("/test/afile", "/test/afile (copy)")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file (copy).txt"),
+                Pair("sub/foo.txt", "sub/foo (copy).txt"),
+                Pair("sub/nested/foo.txt", "sub/nested/foo (copy).txt"),
+                Pair("/test/afile", "/test/afile (copy)"),
+            )
         performTest(pairs, true)
     }
 
@@ -53,17 +53,18 @@ class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementName
      */
     @Test
     fun testLinuxIncrementStripExistingNumbersBeforeIncrement() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file (copy).txt"),
-            Pair("/test/file 2.txt", "/test/file (copy).txt"),
-            Pair("/test/foo copy.txt", "/test/foo (copy).txt"),
-            Pair("/test/one (copy).txt", "/test/one (another copy).txt"),
-            Pair("/test/qux 2.txt", "/test/qux (copy).txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc (copy).txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (copy).txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (copy).txt"),
-            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (copy).txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file (copy).txt"),
+                Pair("/test/file 2.txt", "/test/file (copy).txt"),
+                Pair("/test/foo copy.txt", "/test/foo (copy).txt"),
+                Pair("/test/one (copy).txt", "/test/one (another copy).txt"),
+                Pair("/test/qux 2.txt", "/test/qux (copy).txt"),
+                Pair("/test/abc (2) - Copy.txt", "/test/abc (copy).txt"),
+                Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (copy).txt"),
+                Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (copy).txt"),
+                Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (copy).txt"),
+            )
         performTest(pairs, strip = true, removeRawNumbers = true)
     }
 
@@ -73,17 +74,18 @@ class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementName
      */
     @Test
     fun testLinuxIncrementNotStripExistingNumbersBeforeIncrement() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file (copy).txt"),
-            Pair("/test/file 2.txt", "/test/file 2 (copy).txt"),
-            Pair("/test/foo copy.txt", "/test/foo (copy).txt"),
-            Pair("/test/one (copy).txt", "/test/one (another copy).txt"),
-            Pair("/test/qux 2.txt", "/test/qux 2 (copy).txt"),
-            Pair("/test/abc (2) - Copy.txt", "/test/abc (copy).txt"),
-            Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (copy).txt"),
-            Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (copy).txt"),
-            Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (copy).txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file (copy).txt"),
+                Pair("/test/file 2.txt", "/test/file 2 (copy).txt"),
+                Pair("/test/foo copy.txt", "/test/foo (copy).txt"),
+                Pair("/test/one (copy).txt", "/test/one (another copy).txt"),
+                Pair("/test/qux 2.txt", "/test/qux 2 (copy).txt"),
+                Pair("/test/abc (2) - Copy.txt", "/test/abc (copy).txt"),
+                Pair("/test/abc (2) - Copy Copy.txt", "/test/abc (copy).txt"),
+                Pair("/test/sub/nested/foo copy.txt", "/test/sub/nested/foo (copy).txt"),
+                Pair("/test/sub/nested/foo copy 2.txt", "/test/sub/nested/foo (copy).txt"),
+            )
         performTest(pairs, strip = true, removeRawNumbers = false)
     }
 
@@ -95,33 +97,34 @@ class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementName
     fun testLinuxIncrementWithSpecifiedNumbers() {
         performTest(
             Pair("/test/file.txt", "/test/file (copy).txt"),
-            start = 0
+            start = 0,
         )
-        val pairs = arrayOf(
-            Pair(3, "3rd"),
-            Pair(4, "4th"),
-            Pair(5, "5th"),
-            Pair(6, "6th"),
-            Pair(7, "7th"),
-            Pair(8, "8th"),
-            Pair(9, "9th"),
-            Pair(10, "10th"),
-            Pair(11, "11th"),
-            Pair(12, "12th"),
-            Pair(13, "13th"),
-            Pair(14, "14th"),
-            Pair(112, "112th"),
-            Pair(1112, "1112th"),
-            Pair(22, "22nd"),
-            Pair(122, "122nd"),
-            Pair(1122, "1122nd"),
-            Pair(102, "102nd"),
-            Pair(103, "103rd")
-        )
+        val pairs =
+            arrayOf(
+                Pair(3, "3rd"),
+                Pair(4, "4th"),
+                Pair(5, "5th"),
+                Pair(6, "6th"),
+                Pair(7, "7th"),
+                Pair(8, "8th"),
+                Pair(9, "9th"),
+                Pair(10, "10th"),
+                Pair(11, "11th"),
+                Pair(12, "12th"),
+                Pair(13, "13th"),
+                Pair(14, "14th"),
+                Pair(112, "112th"),
+                Pair(1112, "1112th"),
+                Pair(22, "22nd"),
+                Pair(122, "122nd"),
+                Pair(1122, "1122nd"),
+                Pair(102, "102nd"),
+                Pair(103, "103rd"),
+            )
         for (pair in pairs) {
             performTest(
                 Pair("/test/file.txt", "/test/file (${pair.second} copy).txt"),
-                start = pair.first
+                start = pair.first,
             )
         }
     }
@@ -132,11 +135,12 @@ class FilenameHelperLinuxIncrementNameTest : AbstractFilenameHelperIncrementName
      */
     @Test
     fun testLinuxIncrementStripOff() {
-        val pairs = arrayOf(
-            Pair("/test/file.txt", "/test/file (copy).txt"),
-            Pair("/test/foo 2.txt", "/test/foo 2 (copy).txt"),
-            Pair("/test/foo copy.txt", "/test/foo copy (copy).txt")
-        )
+        val pairs =
+            arrayOf(
+                Pair("/test/file.txt", "/test/file (copy).txt"),
+                Pair("/test/foo 2.txt", "/test/foo 2 (copy).txt"),
+                Pair("/test/foo copy.txt", "/test/foo copy (copy).txt"),
+            )
         performTest(pairs, false)
     }
 }

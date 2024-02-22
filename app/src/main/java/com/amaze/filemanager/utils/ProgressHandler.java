@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -41,11 +41,13 @@ public class ProgressHandler {
    * (see Java Language Specification 17.7)
    */
   private volatile long writtenSize = 0L;
+
   /** total number of source files to be processed */
   private volatile int sourceFiles = 0;
 
   /** number of source files processed so far */
   private volatile int sourceFilesProcessed = 0;
+
   /** file name currently being processed */
   private volatile String fileName;
 

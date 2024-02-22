@@ -28,7 +28,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object RenameFileCommand : IRootCommand() {
-
     private val log: Logger = LoggerFactory.getLogger(RenameFileCommand::class.java)
 
     /**
@@ -39,10 +38,14 @@ object RenameFileCommand : IRootCommand() {
      * @return if rename was successful or not
      */
     @Throws(ShellNotRunningException::class)
-    fun renameFile(oldPath: String, newPath: String): Boolean {
+    fun renameFile(
+        oldPath: String,
+        newPath: String,
+    ): Boolean {
         val mountPoint = MountPathCommand.mountPath(oldPath, MountPathCommand.READ_WRITE)
-        val command = "mv \"${RootHelper.getCommandLineString(oldPath)}\"" +
-            " \"${RootHelper.getCommandLineString(newPath)}\""
+        val command =
+            "mv \"${RootHelper.getCommandLineString(oldPath)}\"" +
+                " \"${RootHelper.getCommandLineString(newPath)}\""
         return try {
             val output = runShellCommandToList(command)
             mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }

@@ -48,7 +48,6 @@ import java.util.regex.Pattern
 // TODO check if these can be done with just File methods
 // TODO make all of these methods File extensions
 object FileProperties {
-
     private val log: Logger = LoggerFactory.getLogger(FileProperties::class.java)
 
     private const val STORAGE_PRIMARY = "primary"
@@ -56,15 +55,17 @@ object FileProperties {
         "com.android.externalstorage.documents"
 
     @JvmField
-    val ANDROID_DATA_DIRS = arrayOf(
-        "Android/data",
-        "Android/obb"
-    )
+    val ANDROID_DATA_DIRS =
+        arrayOf(
+            "Android/data",
+            "Android/obb",
+        )
 
     @JvmField
-    val ANDROID_DEVICE_DATA_DIRS = ANDROID_DATA_DIRS.map {
-        File(Environment.getExternalStorageDirectory(), it).absolutePath
-    }
+    val ANDROID_DEVICE_DATA_DIRS =
+        ANDROID_DATA_DIRS.map {
+            File(Environment.getExternalStorageDirectory(), it).absolutePath
+        }
 
     /**
      * Check if a file is readable.
@@ -122,7 +123,10 @@ object FileProperties {
      * @return true if it is possible to write in this directory.
      */
     @JvmStatic
-    fun isWritableNormalOrSaf(folder: File?, c: Context): Boolean {
+    fun isWritableNormalOrSaf(
+        folder: File?,
+        c: Context,
+    ): Boolean {
         if (folder == null) {
             return false
         }
@@ -158,6 +162,7 @@ object FileProperties {
     }
 
     // Utility methods for Kitkat
+
     /**
      * Checks whether the target path exists or is writable
      *
@@ -165,7 +170,10 @@ object FileProperties {
      * @return 1 if exists or writable, 0 if not writable
      */
     @JvmStatic
-    fun checkFolder(f: String?, context: Context): Int {
+    fun checkFolder(
+        f: String?,
+        context: Context,
+    ): Int {
         if (f == null) return 0
         if (f.startsWith(CifsContexts.SMB_URI_PREFIX) ||
             f.startsWith(NetCopyClientConnectionPool.SSH_URI_PREFIX) ||
@@ -177,7 +185,9 @@ object FileProperties {
             f.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
             f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
             f.startsWith("content://")
-        ) return 1
+        ) {
+            return 1
+        }
         val folder = File(f)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
             isOnExtSdCard(folder, context)
@@ -190,15 +200,17 @@ object FileProperties {
             if (isWritableNormalOrSaf(folder, context)) {
                 return 1
             }
-        } else return if (Build.VERSION.SDK_INT == 19 &&
-            isOnExtSdCard(folder, context)
-        ) {
-            // Assume that Kitkat workaround works
-            1
-        } else if (folder.canWrite()) {
-            1
         } else {
-            0
+            return if (Build.VERSION.SDK_INT == 19 &&
+                isOnExtSdCard(folder, context)
+            ) {
+                // Assume that Kitkat workaround works
+                1
+            } else if (folder.canWrite()) {
+                1
+            } else {
+                0
+            }
         }
         return 0
     }
@@ -227,7 +239,7 @@ object FileProperties {
             return uri.path?.let { p ->
                 File(
                     Environment.getExternalStorageDirectory(),
-                    p.substringAfter("tree/primary:")
+                    p.substringAfter("tree/primary:"),
                 ).absolutePath
             }
         } else {
@@ -235,13 +247,23 @@ object FileProperties {
         }
     }
 
+    /**
+     * Remap file path
+     * @param path file path
+     * @param openDocumentTree open document tree default false
+     * @return remapped file path
+     */
     @JvmStatic
-    fun remapPathForApi30OrAbove(path: String, openDocumentTree: Boolean = false): String {
+    fun remapPathForApi30OrAbove(
+        path: String,
+        openDocumentTree: Boolean = false,
+    ): String {
         return if (ANDROID_DEVICE_DATA_DIRS.containsPath(path)) {
             path
-        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && ANDROID_DEVICE_DATA_DIRS.any {
-            path.startsWith(it) && path != it
-        }
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q &&
+            ANDROID_DEVICE_DATA_DIRS.any {
+                path.startsWith(it) && path != it
+            }
         ) {
             val suffix =
                 path.substringAfter(Environment.getExternalStorageDirectory().absolutePath)
@@ -250,12 +272,12 @@ object FileProperties {
             if (openDocumentTree) {
                 DocumentsContract.buildDocumentUri(
                     COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS,
-                    documentId
+                    documentId,
                 ).toString()
             } else {
                 DocumentsContract.buildTreeDocumentUri(
                     COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS,
-                    documentId
+                    documentId,
                 ).toString()
             }
         } else {
@@ -272,6 +294,8 @@ object FileProperties {
                 AppConfig.getInstance().getSystemService(StorageStatsManager::class.java)
                     .getFreeBytes(StorageManager.UUID_DEFAULT)
             }
-        } else 0L
+        } else {
+            0L
+        }
     }
 }

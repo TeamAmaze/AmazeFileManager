@@ -86,13 +86,14 @@ class DeepSearchTest {
      */
     @Test
     fun testSimpleSearchMatch() {
-        val deepSearch = DeepSearch(
-            "ab",
-            filePath,
-            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
-            context,
-            OpenMode.FILE
-        )
+        val deepSearch =
+            DeepSearch(
+                "ab",
+                filePath,
+                EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
+                context,
+                OpenMode.FILE,
+            )
 
         val expectedMatchRanges = listOf(0..1)
 
@@ -113,19 +114,20 @@ class DeepSearchTest {
      */
     @Test
     fun testSimpleSearchNotMatch() {
-        val deepSearch = DeepSearch(
-            "ba",
-            filePath,
-            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
-            context,
-            OpenMode.FILE
-        )
+        val deepSearch =
+            DeepSearch(
+                "ba",
+                filePath,
+                EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
+                context,
+                OpenMode.FILE,
+            )
 
         deepSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
 
@@ -140,19 +142,20 @@ class DeepSearchTest {
      */
     @Test
     fun testSearchWithPathMatchButNameNotMatch() {
-        val deepSearch = DeepSearch(
-            "test",
-            filePath,
-            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
-            context,
-            OpenMode.FILE
-        )
+        val deepSearch =
+            DeepSearch(
+                "test",
+                filePath,
+                EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
+                context,
+                OpenMode.FILE,
+            )
 
         deepSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
 
@@ -167,19 +170,20 @@ class DeepSearchTest {
      */
     @Test
     fun testMatchHiddenFile() {
-        val basicSearch = DeepSearch(
-            "ab",
-            filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
-            context,
-            OpenMode.FILE
-        )
+        val basicSearch =
+            DeepSearch(
+                "ab",
+                filePath,
+                EnumSet.noneOf(SearchParameter::class.java),
+                context,
+                OpenMode.FILE,
+            )
 
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
 
@@ -188,6 +192,5 @@ class DeepSearchTest {
         }
     }
 
-    private fun listNotEmptyError(size: Int) =
-        "List was not empty as expected but had $size elements"
+    private fun listNotEmptyError(size: Int) = "List was not empty as expected but had $size elements"
 }

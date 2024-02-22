@@ -30,15 +30,13 @@ class TarLzmaExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : AbstractCompressedTarArchiveExtractor(
-    context,
-    filePath,
-    outputPath,
-    listener,
-    updatePosition
-) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        LZMACompressorInputStream::class.java
+        context,
+        filePath,
+        outputPath,
+        listener,
+        updatePosition,
+    ) {
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> = LZMACompressorInputStream::class.java
 }
