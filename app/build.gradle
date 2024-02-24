@@ -107,12 +107,19 @@ android {
 dependencies {
 
     modules {
+        module("org.bouncycastle:bcprov-jdk15on") {
+            replacedBy("org.bouncycastle:bcprov-jdk18on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15on") {
+            replacedBy("org.bouncycastle:bcpkix-jdk18on")
+        }
         module("org.bouncycastle:bcprov-jdk15to18") {
-            replacedBy("org.bouncycastle:bcprov-jdk15on")
+            replacedBy("org.bouncycastle:bcprov-jdk18on")
         }
         module("org.bouncycastle:bcpkix-jdk15to18") {
-            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+            replacedBy("org.bouncycastle:bcpkix-jdk18on")
         }
+
     }
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -210,8 +217,8 @@ dependencies {
     //OkHttp
     implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
 
-    implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
-    implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
+    implementation "org.bouncycastle:bcpkix-jdk18on:$bouncyCastleVersion"
+    implementation "org.bouncycastle:bcprov-jdk18on:$bouncyCastleVersion"
 
     //Glide: loads icons seemlessly
     implementation "com.github.bumptech.glide:glide:$glideVersion"

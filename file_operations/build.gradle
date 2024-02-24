@@ -61,11 +61,17 @@ kotlin {
 
 dependencies {
     modules {
+        module("org.bouncycastle:bcprov-jdk15on") {
+            replacedBy("org.bouncycastle:bcprov-jdk18on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15on") {
+            replacedBy("org.bouncycastle:bcpkix-jdk18on")
+        }
         module("org.bouncycastle:bcprov-jdk15to18") {
-            replacedBy("org.bouncycastle:bcprov-jdk15on")
+            replacedBy("org.bouncycastle:bcprov-jdk18on")
         }
         module("org.bouncycastle:bcpkix-jdk15to18") {
-            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+            replacedBy("org.bouncycastle:bcpkix-jdk18on")
         }
     }
 
