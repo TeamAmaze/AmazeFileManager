@@ -809,5 +809,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="same_dir_overwrite_error">Ziel- und Quellordner sollten zum Überschreiben nicht übereinstimmen.</string>
     <string name="not_found_enabled_webview">Kein verfügbarer Browser</string>
     <string name="trash_bin">Papierkorb</string>
+    <string name="delete_permanently_checkbox">Unwiderruflich löschen</string>
     </resources>
 
