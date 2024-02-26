@@ -812,5 +812,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="preference_language_system_default">Systemstandard</string>
     <string name="trash_bin">Papierkorb</string>
     <string name="delete_permanently_checkbox">Unwiderruflich löschen</string>
+    <string name="restore">Wiederherstellen</string>
     </resources>
 
