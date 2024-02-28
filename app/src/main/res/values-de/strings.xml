@@ -76,6 +76,7 @@
     <string name="dialog_delete_category_directories">VERZEICHNISSE</string>
     <string name="dialog_delete_category_files">DATEIEN</string>
     <string name="dialog_delete_disclaimer">Möchten Sie die folgenden Dateien wirklich endgültig löschen?</string>
+    <string name="dialog_restore_disclaimer">Sind Sie sicher, dass Sie die folgenden Elemente wiederherstellen möchten?</string>
     <string name="dialog_delete_title">Bestätigen</string>
     <string name="deleting">Löschen</string>
     <string name="question_set_path_as_home">Möchten Sie den aktuellen Pfad als Standard für dieses Tab setzen?</string>
