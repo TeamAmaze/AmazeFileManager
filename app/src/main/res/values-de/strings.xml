@@ -826,5 +826,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="trash_bin_retention_days_summary">Maximale Anzahl Tage, die Dateien im Papierkorb verbleiben</string>
     <string name="trash_bin_retention_bytes_title">Aufbewahrung nach Datengröße</string>
     <string name="trash_bin_retention_bytes_summary">Maximale Datenmenge (in MB), die der Papierkorb speichern kann</string>
+    <string name="trash_bin_cleanup_interval_title">Reinigungsintervall</string>
     </resources>
 
