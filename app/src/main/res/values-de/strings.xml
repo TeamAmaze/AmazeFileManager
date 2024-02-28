@@ -815,6 +815,7 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="preference_language_system_default">Systemstandard</string>
     <string name="error.listfile.smb.title">SMB-Dateiliste kann nicht geladen werden</string>
     <string name="error.listfile.smb">Fehler beim Auflisten der Dateien unter %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Fehler beim Auflisten der Dateien unter %s - wahrscheinlich erlaubt der SMB-Server keinen anonymen Zugriff auf die IPC$-Freigabe. Sie können versuchen, den Freigabenamen direkt in den Verbindungseinstellungen anzugeben.</string>
     <string name="trash_bin">Papierkorb</string>
     <string name="delete_permanently_checkbox">Unwiderruflich löschen</string>
     <string name="restore">Wiederherstellen</string>
