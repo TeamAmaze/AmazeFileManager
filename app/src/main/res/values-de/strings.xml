@@ -813,6 +813,7 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="preference_language_title">App-Sprache</string>
     <string name="preference_language_dialog_title">Sprache auswählen</string>
     <string name="preference_language_system_default">Systemstandard</string>
+    <string name="error.listfile.smb.title">SMB-Dateiliste kann nicht geladen werden</string>
     <string name="error.listfile.smb">Fehler beim Auflisten der Dateien unter %s: %s</string>
     <string name="trash_bin">Papierkorb</string>
     <string name="delete_permanently_checkbox">Unwiderruflich löschen</string>
