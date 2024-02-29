@@ -960,7 +960,7 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         SshClientUtils.execute(
-            new SFtpClientTemplate<Boolean>(getPath(), true) {
+            new SFtpClientTemplate<Boolean>(getPath(), false) {
               @Override
               public Boolean execute(@NonNull SFTPClient client) {
                 try {
