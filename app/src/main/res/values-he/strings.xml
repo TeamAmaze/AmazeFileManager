@@ -833,5 +833,6 @@
     <string name="trash_bin_retention_bytes_title">שימור לפי גודל נתונים</string>
     <string name="trash_bin_retention_bytes_summary">גודל הנתונים המרבי (במגה בתים) שסל האשפה יכול לאחסן</string>
     <string name="trash_bin_cleanup_interval_title">הפרש בין פינויים</string>
-    </resources>
+    <string name="trash_bin_cleanup_interval_summary">הפרשים בין ניקוי אוטומטי למשנהו (בשעות)</string>
+</resources>
 
