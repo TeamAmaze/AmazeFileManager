@@ -809,6 +809,7 @@
     <string name="try_indexed_search">התנסות בחיפוש במפתח!</string>
     <string name="search_recent">אחרונים</string>
     <string name="results">תוצאות</string>
+    <string name="grant_notification_permission">Amaze צריך הרשאה להתראות כדי להציג את תהליך הפעולות על קבצים, לרבות לוח שימושי להפעלת/עצירת שרת FTP.</string>
     <string name="error_unsupported_or_null_uri">כתובת שגויה, לא נתמכת או שלא סופקה</string>
     <string name="complete_paste_warning">נא להשלים קודם את פעולת ההדבקה</string>
     <string name="same_dir_move_error">תיקיות היעד והמקור לא אמור להיות חופפות כדי להעביר.</string>
