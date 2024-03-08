@@ -799,5 +799,6 @@
     <string name="trash_bin">Corbeille</string>
     <string name="delete_permanently_checkbox">Supprimer définitivement</string>
     <string name="restore">Restaurer</string>
+    <string name="restore_files">Restaurer les fichiers</string>
     </resources>
 
