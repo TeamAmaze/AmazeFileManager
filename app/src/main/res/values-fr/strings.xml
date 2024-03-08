@@ -794,5 +794,6 @@
     <string name="not_found_enabled_webview">Aucun navigateur disponible</string>
     <string name="preference_language_title">Langue de l\'application</string>
     <string name="preference_language_dialog_title">Sélectionner la langue</string>
+    <string name="preference_language_system_default">Système par défaut</string>
     </resources>
 
