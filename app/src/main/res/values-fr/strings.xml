@@ -795,5 +795,6 @@
     <string name="preference_language_title">Langue de l\'application</string>
     <string name="preference_language_dialog_title">Sélectionner la langue</string>
     <string name="preference_language_system_default">Système par défaut</string>
+    <string name="error.listfile.smb.title">Impossible de charger la liste des fichiers SMB</string>
     </resources>
 
