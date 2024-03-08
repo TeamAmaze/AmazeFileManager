@@ -802,5 +802,6 @@
     <string name="restore_files">Restaurer les fichiers</string>
     <string name="restoring">Restauration en cours...</string>
     <string name="trash_bin_retention_num_of_files_title">Conservation par nombre de fichiers</string>
+    <string name="trash_bin_retention_num_of_files_summary">Nombre de fichiers que la corbeille peut stocker</string>
     </resources>
 
