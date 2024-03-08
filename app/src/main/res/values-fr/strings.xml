@@ -808,5 +808,6 @@
     <string name="trash_bin_retention_bytes_title">Conservation par taille des données</string>
     <string name="trash_bin_retention_bytes_summary">Quantité de données (en Mo) que la corbeille peut stocker</string>
     <string name="trash_bin_cleanup_interval_title">Intervalle de nettoyage</string>
-    </resources>
+    <string name="trash_bin_cleanup_interval_summary">Déclencher l\'intervalle de nettoyage automatique (heures)</string>
+</resources>
 
