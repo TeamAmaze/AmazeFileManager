@@ -796,5 +796,8 @@
     <string name="preference_language_dialog_title">Sélectionner la langue</string>
     <string name="preference_language_system_default">Système par défaut</string>
     <string name="error.listfile.smb.title">Impossible de charger la liste des fichiers SMB</string>
+    <string name="trash_bin">Corbeille</string>
+    <string name="delete_permanently_checkbox">Supprimer définitivement</string>
+    <string name="restore">Restaurer</string>
     </resources>
 
