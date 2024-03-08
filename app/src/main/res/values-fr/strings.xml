@@ -797,6 +797,7 @@
     <string name="preference_language_system_default">Système par défaut</string>
     <string name="error.listfile.smb.title">Impossible de charger la liste des fichiers SMB</string>
     <string name="error.listfile.smb">Erreur lors de l\'énumération des fichiers à %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Erreur lors de l\'énumération des fichiers à %s - le serveur SMB n\'autorise probablement pas l\'accès anonyme au partage IPC$. Vous pouvez essayer de spécifier le nom du partage directement dans les paramètres de connexion.</string>
     <string name="trash_bin">Corbeille</string>
     <string name="delete_permanently_checkbox">Supprimer définitivement</string>
     <string name="restore">Restaurer</string>
