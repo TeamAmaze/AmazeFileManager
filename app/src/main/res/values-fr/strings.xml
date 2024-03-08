@@ -186,6 +186,7 @@
     <string name="xda_summary">Questions/Réponses, Support</string>
     <string name="circular_images">Utilise des icônes circulaires pour les images et vidéos</string>
     <string name="circular_icons">Utiliser des icônes circulaires</string>
+    <string name="follow_battery_saver_title">Suivre l\'économiseur de batterie</string>
     <string name="back_title">Ajouter un raccourci de Retour pour naviguer dans l\'application</string>
     <string name="back_summary">Active et affiche le raccourci Retour en haut de la liste</string>
     <string name="details">Détails</string>
