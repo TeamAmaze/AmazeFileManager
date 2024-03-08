@@ -793,5 +793,6 @@
     <string name="same_dir_overwrite_error">Les dossiers de destination et source ne doivent pas correspondre pour écraser les éléments.</string>
     <string name="not_found_enabled_webview">Aucun navigateur disponible</string>
     <string name="preference_language_title">Langue de l\'application</string>
+    <string name="preference_language_dialog_title">Sélectionner la langue</string>
     </resources>
 
