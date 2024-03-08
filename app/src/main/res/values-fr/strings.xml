@@ -806,5 +806,6 @@
     <string name="trash_bin_retention_days_title">Conservation par jours</string>
     <string name="trash_bin_retention_days_summary">Nombre de jours pendant lesquels la corbeille peut stocker un fichier</string>
     <string name="trash_bin_retention_bytes_title">Conservation par taille des données</string>
+    <string name="trash_bin_retention_bytes_summary">Quantité de données (en Mo) que la corbeille peut stocker</string>
     </resources>
 
