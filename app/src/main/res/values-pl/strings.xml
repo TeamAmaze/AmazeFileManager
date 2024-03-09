@@ -121,6 +121,7 @@
     <string name="sort_name">Nazwa</string>
     <string name="lastModified">Data modyfikacji</string>
     <string name="sort_size">Rozmiar</string>
+    <string name="sort_relevance">Znaczenie</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Wybierz plik</string>
