@@ -77,6 +77,7 @@
     <string name="dialog_delete_category_files">Pliki</string>
     <string name="dialog_delete_disclaimer">Czy usunąć następujące pliki?</string>
     <string name="dialog_delete_temporarily_disclaimer">Czy na pewno chcesz usunąć następujące elementy?</string>
+    <string name="dialog_restore_disclaimer">Czy na pewno chcesz przywrócić następujące elementy?</string>
     <string name="dialog_delete_title">Potwierdź</string>
     <string name="deleting">Usuwanie</string>
     <string name="question_set_path_as_home">Czy ustawić aktualną ścieżkę jako główną dla tej karty?</string>
