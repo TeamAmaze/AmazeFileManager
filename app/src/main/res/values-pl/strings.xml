@@ -739,6 +739,7 @@ smb_instructions
     <string name="behavior_summary">Zmodyfikuj zachowania, takie jak wyszukiwanie zaawansowane i czy otwierać pliki jako nowe zadanie</string>
     <string name="security_summary">Skonfiguruj hasło i szyfrowanie</string>
     <string name="pref_export">Eksport</string>
+    <string name="pref_export_summary">Eksportuj ustawienia</string>
     <string name="pref_import">Import</string>
     <string name="quick_desc">Pliki ostatnio otwierane przez Amaze</string>
     <string name="recent_desc">Ostatnio utworzone lub zmodyfikowane pliki</string>
