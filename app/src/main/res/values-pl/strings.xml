@@ -759,6 +759,7 @@ smb_instructions
     <string name="disable_player_intent_filters">Wyłącz filtry intencji odtwarzacza</string>
     <string name="disable_player_intent_filters_summary">Wyłącza wbudowane odtwarzacze multimedialne Amaze w wyborze plików</string>
     <string name="no_app_found_intent">Nie znaleziono aplikacji obsługującej tej czynności. Czy masz zainstalowany DocumentsUI?</string>
+    <string name="preference_language_title">Język aplikacji</string>
     <string name="trash_bin">Kosz</string>
     </resources>
 
