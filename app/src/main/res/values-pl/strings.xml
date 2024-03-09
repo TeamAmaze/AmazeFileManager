@@ -761,6 +761,7 @@ smb_instructions
     <string name="no_app_found_intent">Nie znaleziono aplikacji obsługującej tej czynności. Czy masz zainstalowany DocumentsUI?</string>
     <string name="preference_language_title">Język aplikacji</string>
     <string name="preference_language_dialog_title">Wybierz język</string>
+    <string name="preference_language_system_default">Domyślne ustawienie systemowe</string>
     <string name="trash_bin">Kosz</string>
     </resources>
 
