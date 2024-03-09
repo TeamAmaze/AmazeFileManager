@@ -729,7 +729,7 @@ smb_instructions
     <string name="select_similar">Wybierz podobne</string>
     <string name="error_fetching_google_play_product_list">Błąd podczas pobierania listy produktów z Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Począwszy od Androida 11 Google wymaga od menedżerów plików zezwolenia od użytkownika na zarządzanie wszystkimi plikami na urządzeniu. Szczegóły <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">tutaj</a>.
-        \n\nMenedżer plików Amaze również potrzebuje tego pozwolenia. Po naciśnięciu &quot;Przyznaj&quot;poniżej, wybierz opcję <b>Zezwól na dostęp do zarządzania wszystkimi plikami</b> na następnym ekranie.
+        \n\nMenedżer plików Amaze również potrzebuje tego pozwolenia. Po naciśnięciu &quot;Przyznaj&quot; poniżej, wybierz opcję <b>Zezwól na dostęp do zarządzania wszystkimi plikami</b> na następnym ekranie.
         \n\n<font color='#ff6347'><i>Anulowanie tego okna dialogowego spowoduje zamknięcie aplikacji.</i></font></body></html></string>
     <string name="user_apps">Aplikacje użytkownika</string>
     <string name="appearance">Wygląd</string>
