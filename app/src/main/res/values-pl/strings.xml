@@ -768,6 +768,7 @@ smb_instructions
     <string name="protocol_ftps">FTPS</string>
     <string name="unavailable">Niedostępne</string>
 
+    <string name="importing_completed">Importowanie zakończone</string>
     <string name="free_of">\"%s\n%s wolnych z %s</string>
     <string name="cloud_error_fdroid">Wtyczka Amaze Cloud nie jest obsługiwana w wersji aplikacji ze sklepu F-Droid. Użyj wersji Amaze z Sklepu Play.</string>
     <string name="disable_player_intent_filters">Wyłącz filtry intencji odtwarzacza</string>
