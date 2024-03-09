@@ -81,6 +81,7 @@
     <string name="question_set_path_as_home">Czy ustawić aktualną ścieżkę jako główną dla tej karty?</string>
     <string name="directorysort">Tryb sortowania katalogów</string>
     <string name="sort_by">Sortowanie po</string>
+    <string name="sort_by_colon">Sortuj po:</string>
     <string name="sort_only_this">Tylko ten folder</string>
     <string name="theme">Motyw</string>
     <string name="random">Losowy wygląd</string>
