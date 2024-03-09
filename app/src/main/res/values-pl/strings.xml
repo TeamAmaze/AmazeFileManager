@@ -187,6 +187,7 @@
     <string name="circular_images">Używa okrągłych ikon dla obrazów i wideo</string>
     <string name="circular_icons">Okrągłe ikony</string>
     <string name="follow_battery_saver_title">Postępuj zgodnie z oszczędzaniem baterii</string>
+    <string name="follow_battery_saver_desc">Jeśli ta opcja zostanie wybrana i włączony zostanie tryb oszczędzania baterii, motyw zmieni się na ciemny</string>
     <string name="back_title">Przycisk cofania</string>
     <string name="back_summary">Wyświetla przycisk powrotu na górze listy</string>
     <string name="details">Szczegóły</string>
