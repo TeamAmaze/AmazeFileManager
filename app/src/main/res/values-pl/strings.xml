@@ -738,6 +738,7 @@ smb_instructions
     <string name="ui_summary">Kontroluj, jakie informacje mają być wyświetlane, dostosuj pasek boczny i przełączaj preferencje interfejsu użytkownika</string>
     <string name="behavior_summary">Zmodyfikuj zachowania, takie jak wyszukiwanie zaawansowane i czy otwierać pliki jako nowe zadanie</string>
     <string name="security_summary">Skonfiguruj hasło i szyfrowanie</string>
+    <string name="pref_export">Eksport</string>
     <string name="quick_desc">Pliki ostatnio otwierane przez Amaze</string>
     <string name="recent_desc">Ostatnio utworzone lub zmodyfikowane pliki</string>
     <string name="error_cannot_find_way_open">Nie można znaleźć sposobu na otwarcie pliku</string>
