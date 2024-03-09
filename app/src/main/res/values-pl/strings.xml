@@ -742,6 +742,8 @@ smb_instructions
     <string name="image_viewer">Przeglądarka obrazów Amaze</string>
     <string name="video_player">Odtwarzacz Video Amaze</string>
     <string name="amaze_audio_player">Odtwarzacz muzyki Amaze</string>
+    <string name="pdf_viewer">Podgląd dokumentów Amaze</string>
+    <string name="docx_viewer">Podgląd dokumentów Amaze</string>
     <string name="share_logs">Udostępnij logi</string>
     <string name="share_logs_summary">Udostępnij przechwycone logi za pośrednictwem emaila / Telegrama</string>
     <string name="open_with_amaze">Otwórz w Amaze</string>
