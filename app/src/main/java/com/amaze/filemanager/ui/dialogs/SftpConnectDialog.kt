@@ -32,7 +32,6 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -55,6 +54,7 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
@@ -82,7 +82,6 @@ import java.io.BufferedReader
 import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.security.PublicKey
-import java.util.*
 import java.util.concurrent.Callable
 
 /** SSH/SFTP connection setup dialog.  */
@@ -132,7 +131,7 @@ class SftpConnectDialog : DialogFragment() {
     @Suppress("ComplexMethod")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         ctx = WeakReference(activity)
-        binding = SftpDialogBinding.inflate(LayoutInflater.from(context))
+        binding = SftpDialogBinding.inflate(layoutInflater)
         val utilsProvider: UtilitiesProvider = AppConfig.getInstance().utilsProvider
         val edit = requireArguments().getBoolean(ARG_EDIT, false)
 
@@ -790,7 +789,13 @@ class SftpConnectDialog : DialogFragment() {
             prefix = getProtocolPrefixFromDropdownSelection(),
             connectionName = binding.connectionET.text.toString(),
             hostname = binding.ipET.text.toString(),
-            port = binding.portET.text.toString().toInt(),
+            port = binding.portET.text.toString().let {
+                if (it.isEmpty() || it.isBlank()) {
+                    SSH_DEFAULT_PORT
+                } else {
+                    it.toInt()
+                }
+            },
             defaultPath = binding.defaultPathET.text.toString(),
             username = binding.usernameET.text.toString().urlEncoded(),
             password = if (true == binding.passwordET.text?.isEmpty()) {
