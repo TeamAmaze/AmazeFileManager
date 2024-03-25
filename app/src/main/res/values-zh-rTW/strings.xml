@@ -751,6 +751,8 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="pref_export">导出</string>
     <string name="pref_export_summary">到处是隋朝</string>
     <string name="pref_import">导入</string>
+    <string name="pref_import_summary">导入设置</string>
+
     <string name="quick_desc">最近通过 Amaze 访问的文件</string>
     <string name="recent_desc">最近创建或修改的文件</string>
     <string name="error_cannot_find_way_open">找不到打开文件的方式</string>
