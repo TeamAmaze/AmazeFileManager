@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的主页吗？</string>
     <string name="directorysort">目录排序方式</string>
     <string name="sort_by">排序方式</string>
+    <string name="sort_by_colon">排列方式：</string>
     <string name="sort_only_this">仅应用于此目录</string>
     <string name="theme">主题</string>
     <string name="random">随机皮肤</string>
