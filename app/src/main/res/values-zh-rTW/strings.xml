@@ -746,6 +746,11 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="ui_summary">控制信息展示，定制侧边栏，以及个性化界面</string>
     <string name="behavior_summary">修改诸如高级搜索或是否以新任务打开文件等行为</string>
     <string name="security_summary">设置口令与加密</string>
+    <string name="backup_summary">导出 / 导入 Amaze 设置</string>
+
+    <string name="pref_export">导出</string>
+    <string name="pref_export_summary">到处是隋朝</string>
+    <string name="pref_import">导入</string>
     <string name="quick_desc">最近通过 Amaze 访问的文件</string>
     <string name="recent_desc">最近创建或修改的文件</string>
     <string name="error_cannot_find_way_open">找不到打开文件的方式</string>
