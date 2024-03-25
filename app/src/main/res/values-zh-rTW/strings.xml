@@ -605,6 +605,7 @@
     <string name="create_file_suggest_txt_extension">建議以 \".txt\"作為檔案擴展名稱。</string>
     <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
     <string name="ssh_key_invalid_passphrase">私鑰密碼錯誤。</string>
+    <string name="ssh_key_no_decoder_decrypt">没有有效的解码器来解密 PEM。</string>
     <string name="encryption_fail_copy">不能更新在資料庫內的加密檔案記錄。</string>
     <string name="extracted">已解壓</string>
     <string name="compressed">已壓縮</string>
