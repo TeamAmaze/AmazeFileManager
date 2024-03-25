@@ -77,11 +77,13 @@
     <string name="dialog_delete_category_files">近期檔案</string>
     <string name="dialog_delete_disclaimer">刪除以下項目將永久將其從裝置中刪除，並且無法恢復。</string>
     <string name="dialog_delete_temporarily_disclaimer">您确定要删除以下项目吗？</string>
+    <string name="dialog_restore_disclaimer">您确定要恢复以下项目吗？</string>
     <string name="dialog_delete_title">永久刪除項目？</string>
     <string name="deleting">正在刪除</string>
     <string name="question_set_path_as_home">您要將此頁籤的目前路徑設為首頁嗎？</string>
     <string name="directorysort">目錄排序方式</string>
     <string name="sort_by">排序方式</string>
+    <string name="sort_by_colon">排列方式：</string>
     <string name="sort_only_this">僅應用於此目錄</string>
     <string name="theme">主題</string>
     <string name="random">隨機色彩</string>
