@@ -608,6 +608,7 @@
     <string name="create_file_suggest_txt_extension">请使用“.txt”作为文件后缀名</string>
     <string name="ssh_select_pem">選擇登入認證用嘅私鑰</string>
     <string name="ssh_key_invalid_passphrase">私鑰嘅密碼唔啱。</string>
+    <string name="ssh_key_no_decoder_decrypt">没有有效的解码器来解密 PEM。</string>
     <string name="encryption_fail_copy">更新唔到資料庫入面加密檔案嘅資料</string>
     <string name="extracted">已解壓</string>
     <string name="compressed">已壓縮</string>
