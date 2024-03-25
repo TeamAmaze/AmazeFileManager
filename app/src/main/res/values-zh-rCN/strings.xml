@@ -614,6 +614,7 @@
     <string name="create_file_suggest_txt_extension">请使用“.txt”作为文件后缀名</string>
     <string name="ssh_select_pem">选择适当的私钥用以验证身份</string>
     <string name="ssh_key_invalid_passphrase">错误的密钥密码</string>
+    <string name="ssh_key_no_decoder_decrypt">没有有效的解码器来解密 PEM。</string>
     <string name="encryption_fail_copy">无法更新数据库中的加密信息</string>
     <string name="extracted">已解压</string>
     <string name="compressed">已压缩</string>
