@@ -124,6 +124,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">揀個檔案</string>
+    <string name="pick_files">选择一个或多个文件</string>
     <string name="process_viewer">進程管理器</string>
     <string name="in_safe">空間不足</string>
     <string name="no_file_overwrite">未覆蓋任何檔</string>
