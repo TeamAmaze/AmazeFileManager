@@ -51,7 +51,12 @@ import kotlin.random.Random
  * Tests for [UiPrefsFragment].
  */
 @Config(
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
+    sdk = [
+        Build.VERSION_CODES.KITKAT,
+        Build.VERSION_CODES.N,
+        Build.VERSION_CODES.P,
+        Build.VERSION_CODES.R
+    ],
     shadows = [
         ShadowMultiDex::class,
         ShadowStorageManager::class,
