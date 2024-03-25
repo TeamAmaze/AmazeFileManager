@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的首页吗？</string>
     <string name="directorysort">目錄排序方式</string>
     <string name="sort_by">排序方式</string>
+    <string name="sort_by_colon">排列方式：</string>
     <string name="sort_only_this">只限呢個檔案夾</string>
     <string name="theme">主題</string>
     <string name="random">隨機色彩</string>
