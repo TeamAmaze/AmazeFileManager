@@ -766,6 +766,8 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="image_viewer">Amaze图像查看器</string>
     <string name="video_player">Amaze视频播放器</string>
     <string name="amaze_audio_player">Amaze音乐播放器</string>
+    <string name="pdf_viewer">文档浏览器-Amaze</string>
+    <string name="docx_viewer">文档浏览器-Amaze</string>
     <string name="share_logs">分享日志</string>
     <string name="share_logs_summary">使用邮件或电报来分享已抓取的日志</string>
     <string name="open_with_amaze">使用Amaze打开</string>
