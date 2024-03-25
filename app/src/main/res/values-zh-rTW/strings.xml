@@ -790,6 +790,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="protocol_ftps">安全型文件传输协议</string>
     <string name="unavailable">不可用</string>
 
+    <string name="exporting_failed">导出失败：无法写入备份文件</string>
     <string name="free_of">\"%s
 没有%s的%s</string>
     <string name="cloud_error_fdroid">在F-Droid版本的Amaze文件管理器上，不支持云插件功能。请使用谷歌应用商店版本的Amaze文件管理器</string>
