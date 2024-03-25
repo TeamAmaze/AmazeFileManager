@@ -76,6 +76,8 @@
     <string name="dialog_delete_category_directories">目录</string>
     <string name="dialog_delete_category_files">近期檔案</string>
     <string name="dialog_delete_disclaimer">您确定要永久删除这些文件吗？删除后将无法恢复。</string>
+    <string name="dialog_delete_temporarily_disclaimer">您确定要删除以下项目吗？</string>
+    <string name="dialog_restore_disclaimer">您确定要恢复以下项目吗？</string>
     <string name="dialog_delete_title">永久删除？</string>
     <string name="deleting">正在刪除</string>
     <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的首页吗？</string>
