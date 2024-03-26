@@ -320,7 +320,7 @@
     <string name="source_summary">在 GitHub 上查看源代码</string>
     <string name="report_bugs_summary">反馈问题或提交新功能需求</string>
     <string name="translate_title">贡献翻译</string>
-    <string name="translate_summary">将Amaze程序翻译为您的语言</string>
+    <string name="translate_summary">将 Amaze 程序翻译为您的语言</string>
     <string name="paypal_copy_message">Paypal ID 已复制至剪切板</string>
     <string name="searching_devices">正在搜索设备</string>
     <string name="use_custom_ip">使用自定义 IP</string>
