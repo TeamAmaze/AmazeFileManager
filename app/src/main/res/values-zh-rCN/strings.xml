@@ -658,7 +658,7 @@
     <string name="hide_media">从媒体浏览器隐藏</string>
     <string name="ssh_connect_failed_host_key_changed_prompt">可能有人正在恶意操作！
 可能有人正在窃听您的通信（中间人攻击）！也有可能主机密钥刚刚被更改。远程主机发送的公钥指纹与 Amaze 中存储的不匹配。
-您可以继续更新主机指纹，或取消更新安全门禁协议(SSH)连接设置。\"。</string>
+您可以继续更新主机指纹，或取消更新 SSH 连接设置。\"。</string>
     <string name="update_host_key">更新主机密钥</string>
     <string name="cancel_recommended">取消（建议）</string>
     <string name="failed_install_apk">安装失败</string>
