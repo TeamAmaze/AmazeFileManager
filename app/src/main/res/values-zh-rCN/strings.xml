@@ -754,8 +754,8 @@
     <string name="select_by_date">选择同日期</string>
     <string name="select_similar">选择相似项</string>
     <string name="error_fetching_google_play_product_list">从谷歌应用商店获取产品列表时出现错误</string>
-    <string name="grant_all_files_permission"><html><body>依照谷歌要求，从安卓11开始，文件管理器应当先经过用户授权，才能管理该设备所有文件。详情<a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">请点击此处</a>。
-Amaze文件管理器也需要该权限才能管理设备的所有文件。在此处按“授权”后，请在下一个界面上选择<b>“允许访问以管理所有文件”选项。</b>
+    <string name="grant_all_files_permission"><html><body>依照谷歌要求，从安卓 11 开始，文件管理器应当先经过用户授权，才能管理该设备所有文件。详情<a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">请点击此处</a>。
+Amaze 文件管理器也需要该权限才能管理设备的所有文件。在此处按“授权”后，请在下一个界面上选择<b>“允许访问以管理所有文件”选项。</b>
 <font color='#ff6347'><i>取消此对话框将退出应用程序。</i></font></body></html></string>
     <string name="user_apps">用户应用</string>
     <string name="appearance">外观</string>
