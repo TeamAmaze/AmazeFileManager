@@ -794,6 +794,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="importing_failed">导入失败：无法读取备份文件</string>
     <string name="importing_completed">导入完成</string>
     <string name="invalid_backup_file">无效的备份文件</string>
+    <string name="import_failed_for">导入失败：</string>
     <string name="free_of">\"%s
 没有%s的%s</string>
     <string name="cloud_error_fdroid">在F-Droid版本的Amaze文件管理器上，不支持云插件功能。请使用谷歌应用商店版本的Amaze文件管理器</string>
