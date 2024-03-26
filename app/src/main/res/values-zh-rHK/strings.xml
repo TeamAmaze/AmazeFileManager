@@ -764,12 +764,14 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="disable_player_intent_filters">禁止应用来响应与播放器关联的打开方式</string>
     <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
     <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
+    <string name="checking_conflicts">冲突检查</string>
     <string name="not_found_enabled_webview">没有可用的浏览器</string>
     <string name="preference_language_title">APP 语言</string>
     <string name="preference_language_dialog_title">选择语言</string>
     <string name="preference_language_system_default">系统默认</string>
     <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
     <string name="error.listfile.smb">在 %s : %s 列出文件出错</string>
+    <string name="error.listfile.smb.noipcshare">在 %s 列出文件列表失败——SMB 服务器可能不允许匿名访问 IPC$ 共享。您可以尝试在连接设置中直接指定共享名称。</string>
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>
     <string name="restore">恢复</string>
