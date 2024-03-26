@@ -304,8 +304,8 @@
     <string name="domain">域名</string>
     <string name="smb_share">分享路径</string>
     <string name="invalid">无效的 %s</string>
-    <string name="ftp_notif_starting">文件传输协议服务器正在启动中</string>
-    <string name="ftp_notif_starting_title">文件传输协议服务器</string>
+    <string name="ftp_notif_starting">FTP 服务器正在启动中</string>
+    <string name="ftp_notif_starting_title">FTP 服务器</string>
     <string name="ftp_notif_title">Amaze 文件传输协议服务器已启动</string>
     <string name="ftp_notif_text">位于 %s</string>
     <string name="ftp_notif_stop_server">停止</string>
