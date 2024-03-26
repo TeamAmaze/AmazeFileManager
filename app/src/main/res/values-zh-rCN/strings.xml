@@ -306,7 +306,7 @@
     <string name="invalid">无效的 %s</string>
     <string name="ftp_notif_starting">FTP 服务器正在启动中</string>
     <string name="ftp_notif_starting_title">FTP 服务器</string>
-    <string name="ftp_notif_title">Amaze 文件传输协议服务器已启动</string>
+    <string name="ftp_notif_title">Amaze FTP 服务器已启动</string>
     <string name="ftp_notif_text">位于 %s</string>
     <string name="ftp_notif_stop_server">停止</string>
     <string name="ftp_port_edit_menu_title">选择文件传输协议端口</string>
