@@ -828,7 +828,7 @@ SHA-256：
     <string name="restore">恢复</string>
     <string name="restore_files">恢复文件</string>
     <string name="restoring">正在恢复……</string>
-    <string name="trash_bin_retention_num_of_files_summary">回收站最多可以存储</string>
+    <string name="trash_bin_retention_num_of_files_summary">回收站可以存储文件的最大数量</string>
     <string name="trash_bin_retention_days_summary">回收站可以存储文件的最大天数</string>
     <string name="trash_bin_retention_bytes_summary">回收站可存储的最大大小（MB）</string>
     </resources>
