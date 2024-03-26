@@ -816,7 +816,7 @@ SHA-256：
 没有%s的%s</string>
     <string name="cloud_error_fdroid">在 F-Droid 版本的 Amaze 文件管理器上，不支持云插件功能。请使用谷歌应用商店版本的 Amaze 文件管理器</string>
     <string name="disable_player_intent_filters">禁止应用来响应与播放器关联的打开方式</string>
-    <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
+    <string name="disable_player_intent_filters_summary">Amaze 内置的媒体播放器，禁止它出现在文件打开方式中</string>
     <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
     </resources>
 
