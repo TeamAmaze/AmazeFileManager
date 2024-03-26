@@ -802,6 +802,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
     <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
     <string name="not_finding_what_you_re_looking_for">没有找到？</string>
+    <string name="try_deep_search">尝试深度（Deep）搜索！</string>
     <string name="results">结果</string>
     <string name="complete_paste_warning">请首先完成粘贴操作</string>
     <string name="same_dir_move_error">要移动的目标文件夹和源文件夹相同。</string>
