@@ -734,8 +734,8 @@
     <string name="android_data_prompt_saf_access_title">从存储访问框架获取权限</string>
     <string name="ftp_preference_saf_filesystem_title">使用传统文件系统</string>
     <string name="ftp_preference_saf_filesystem">启用此功能，进而可以在新版本的安卓系统上使用外部存储</string>
-    <string name="ftp_server_fallback_path_reset_prompt">由于您正在切换回旧版的文件系统的实现方式，文件传输协议服务器的共享路径已经被重新设定为内部存储。请您根据自身需求，通过右上角的菜单选择新路径。</string>
-    <string name="ftp_server_reset_notify">文件传输协议服务器的共享路径已被重置为内部存储</string>
+    <string name="ftp_server_fallback_path_reset_prompt">由于您正在切换回旧版的文件系统的实现方式，FTP 服务器的共享路径已经被重新设定为内部存储。请您根据自身需求，通过右上角的菜单选择新路径。</string>
+    <string name="ftp_server_reset_notify">FTP 服务器的共享路径已被重置为内部存储</string>
     <string name="ftp_server_root_unavailable">访问当前路径需要根权限。如果您的设备已获取根权限，请在设置中启用根目录浏览器功能</string>
     <string name="ftp_server_root_filesystem_warning">您当前所选路径需要根权限。授权后，Amaze能够读取和写入您设备上的所有文件。这很危险——粗心大意可以使您的设备变砖！
 您确定要继续吗？</string>
