@@ -292,7 +292,7 @@
     <string name="invalid_name">无效的名称</string>
     <string name="search_hint">请输入要搜索的内容&#8230;</string>
     <string name="advanced_search">高级搜索</string>
-    <string name="regular_expression">规则化表达式</string>
+    <string name="regular_expression">正则表达式</string>
     <string name="regular_expression_summary">通过规则化表达来搜索，该规则化表达基于波恩第二代命令语言解释程序</string>
     <string name="match_content">匹配到的内容</string>
     <string name="match_content_summary">启用此选项后，规则化表达式将匹配整个文件名；若不启用该选项，将会查找文件名中出现的次数</string>
