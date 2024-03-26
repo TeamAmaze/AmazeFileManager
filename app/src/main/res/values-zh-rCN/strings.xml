@@ -745,7 +745,7 @@
     <string name="error_bad_archive_with_info">“%s”是一个已损坏的压缩文件。
 本通知来自于解压缩程序。“%s”</string>
     <string name="security_error">使用该应用无法打开此文件</string>
-    <string name="cloud_drive_tooltip">连接到谷歌云端硬盘™，您就可以在Amaze文件管理器上管理谷歌云端硬盘的文件</string>
+    <string name="cloud_drive_tooltip">连接到谷歌云端硬盘™，您就可以在 Amaze 文件管理器上管理谷歌云端硬盘的文件</string>
     <string name="signin_with_google_title">登录账号，以便使用谷歌云端硬盘™</string>
     <string name="show_system_apps">显示系统应用</string>
     <string name="system_apps">系统应用</string>
