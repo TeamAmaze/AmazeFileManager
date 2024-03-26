@@ -633,7 +633,7 @@
         <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt 网站</a></p>]]>
     </string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
-        <p>Amaze使用的加密格式也采用了高级加密标准。但是，与AES Crypt格式不同的是，它只能在本设备上解密；除此之外，您不能卸载本设备上的Amaze文件管理器，也不能更改锁屏方式，否则您将无法恢复加密文件。</p>
+        <p>Amaze 使用的加密格式也采用了高级加密标准。但是，与 AES Crypt 格式不同的是，它只能在本设备上解密；除此之外，您不能卸载本设备上的 Amaze 文件管理器，也不能更改锁屏方式，否则您将无法恢复加密文件。</p>
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">加密文件必须以“.aze”作为文件后缀名</string>
     <string name="encrypt_file_must_end_with_aes">加密文件必须以“.aze”作为文件后缀名</string>
