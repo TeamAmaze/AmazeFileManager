@@ -701,7 +701,7 @@
     <string name="app_ui_crash">应用程序或用户界面已崩溃</string>
     <string name="error_report_title">错误报告</string>
     <string name="crash_report_copied">崩溃报告已复制到剪贴板。</string>
-    <string name="disableIpcSignature">禁止进程间通信的签名检查（危险！仅适用于旧版服务器通讯包协议的服务器——SMB Version1 ）</string>
+    <string name="disableIpcSignature">禁止进程间通信的签名检查（危险！仅适用于旧版协议——SMB Version1）</string>
     <string name="cannot_delete_file">无法删除文件</string>
     <string name="cannot_delete_file_with_reason">无法删除文件 - %s</string>
     <string name="cannot_rename_file">无法重命名文件%s-%s</string>
