@@ -477,7 +477,7 @@
     <string name="ftp_seconds">秒</string>
     <string name="intellihide_toolbar_title">自动隐藏工具栏</string>
     <string name="intellihide_toolbar_summary">页面滚动时自动隐藏工具栏</string>
-    <string name="hash_sha256">256位哈希安全算法</string>
+    <string name="hash_sha256">SHA-256</string>
     <!-- references 'name/size/location/hash' copied to clipboard -->
     <string name="properties_copied_clipboard">已复制到剪切板</string>
     <string name="contributors_1_summary">语言翻译</string>
