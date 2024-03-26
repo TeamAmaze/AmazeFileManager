@@ -772,5 +772,6 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>
     <string name="restore">恢复</string>
+    <string name="restore_files">恢复文件</string>
     </resources>
 
