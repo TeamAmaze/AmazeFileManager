@@ -795,9 +795,9 @@ Amaze 文件管理器也需要该权限才能管理设备的所有文件。在�
 %s
 大小：
 %s
-第5版信息提炼算法：
+MD5：
 %s
-256位哈希安全算法：
+SHA-256：
 %s
 </string>
     <string name="error_google_play_cannot_update_myself">根据谷歌应用市场的强制要求，应用不可自行更新。请您从谷歌应用市场更新应用。</string>
