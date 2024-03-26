@@ -260,7 +260,7 @@
     <string name="documents">文档</string>
     <string name="images">图片</string>
     <string name="clear">清空</string>
-    <string name="md5">第5版信息提炼算法</string>
+    <string name="md5">MD5</string>
     <string name="total">总计：</string>
     <string name="calculating">正在计算</string>
     <string name="sort">排序</string>
