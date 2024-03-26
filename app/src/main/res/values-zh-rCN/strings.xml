@@ -27,7 +27,7 @@
     <string name="drawer_close">关闭抽屉式导航栏</string>
     <string name="icon">图标</string>
     <string name="apps">应用管理</string>
-    <string name="ftp">FTP 服务器</string>
+    <string name="ftp">文件传输协议服务器</string>
     <string name="setting">设置</string>
     <string name="select">请选择</string>
     <string name="press_again">再次点击退出</string>
