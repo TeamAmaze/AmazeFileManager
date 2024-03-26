@@ -826,5 +826,6 @@ SHA-256：
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>
     <string name="restore">恢复</string>
+    <string name="restore_files">恢复文件</string>
     </resources>
 
