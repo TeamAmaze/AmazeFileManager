@@ -485,7 +485,7 @@
     <string name="contributors_3_summary">主题引擎</string>
     <string name="contributors_4_summary">浮动操作按钮阴影</string>
     <string name="contributors_5_summary">在选项卡间滑动时的颜色过渡</string>
-    <string name="contributors_6_summary">文件传输协议服务器</string>
+    <string name="contributors_6_summary">FTP 服务器</string>
     <string name="contributors_7_summary">启动交互式命令语言解释程序</string>
     <string name="connection_exists">连接已存在</string>
 
