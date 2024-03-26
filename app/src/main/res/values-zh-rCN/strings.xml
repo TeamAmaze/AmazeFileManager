@@ -566,7 +566,7 @@
     <string name="no_bitcoin_app">请安装比特币钱包</string>
     <string name="channel_name_normal">Amaze 通知</string>
     <string name="channel_description_normal">Amaze 文件管理器的通知</string>
-    <string name="channel_name_ftp">Amaze文件传输协议服务器</string>
+    <string name="channel_name_ftp">Amaze FTP 服务器</string>
     <string name="channel_description_ftp">Amaze的文件传输协议服务器的通知</string>
 
     <string name="processing">正在处理中&#8230;</string>
