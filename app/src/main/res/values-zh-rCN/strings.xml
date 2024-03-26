@@ -737,7 +737,7 @@
     <string name="ftp_server_fallback_path_reset_prompt">由于您正在切换回旧版的文件系统的实现方式，FTP 服务器的共享路径已经被重新设定为内部存储。请您根据自身需求，通过右上角的菜单选择新路径。</string>
     <string name="ftp_server_reset_notify">FTP 服务器的共享路径已被重置为内部存储</string>
     <string name="ftp_server_root_unavailable">访问当前路径需要 Root 权限。如果您的设备已获取 Root 权限，请在设置中启用根目录浏览器功能</string>
-    <string name="ftp_server_root_filesystem_warning">您当前所选路径需要根权限。授权后，Amaze能够读取和写入您设备上的所有文件。这很危险——粗心大意可以使您的设备变砖！
+    <string name="ftp_server_root_filesystem_warning">您当前所选路径需要 Root 权限。授权后，Amaze 能够读取和写入您设备上的所有文件。这很危险——粗心大意可以使您的设备变砖！
 您确定要继续吗？</string>
     <string name="compressed_explorer_fragment_error_open_uri">读取 URI \"%s\" 时发生错误。</string>
     <string name="error_empty_archive">压缩文件 \"%s\" 是空的。</string>
