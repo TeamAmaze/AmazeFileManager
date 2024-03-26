@@ -823,6 +823,7 @@ SHA-256：
     <string name="preference_language_dialog_title">选择语言</string>
     <string name="preference_language_system_default">系统默认</string>
     <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
+    <string name="error.listfile.smb">在 %s : %s 列出文件出错</string>
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>
     <string name="restore">恢复</string>
