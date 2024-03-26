@@ -581,7 +581,7 @@
 %2$s密钥指纹为%3$s。
 请点击“是”来确认身份；否则，请点击“否”。</string>
     <string name="ssh_host_key_verification_prompt_title">验证主机</string>
-    <string name="ssh_select_pem_button">安全门禁协议(SSH)私钥</string>
+    <string name="ssh_select_pem_button">SSH 私钥</string>
     <string name="ssh_pem_key_parse_error">您所选的加密邮件标准文件(PEM)——%s无法被读取</string>
     <string name="password_unchanged">(保持不变)</string>
     <string name="ssh_authentication_failure_password">登录失败：您提供的用户名或密码有误，无法通过验证。</string>
