@@ -765,5 +765,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
     <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
     <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
+    <string name="delete_permanently_checkbox">永久删除</string>
+    <string name="restore">恢复</string>
     </resources>
 
