@@ -55,7 +55,7 @@
     <string name="location">位置</string>
     <string name="size_capitalized">大小</string>
     <string name="size">文件夹大小</string>
-    <string name="enterzipname">请输入 Zip 文件名</string>
+    <string name="enterzipname">请输入 ZIP 文件名</string>
     <string name="no_app_found">无法找到可以打开此文件的应用</string>
     <string name="copying">正在复制</string>
     <string name="moving">正在移动</string>
