@@ -583,7 +583,7 @@
     <string name="ssh_host_key_verification_prompt_title">验证主机</string>
     <string name="ssh_select_pem_button">SSH 私钥</string>
     <string name="ssh_pem_key_parse_error">您所选的 PEM 文件——%s无法被读取</string>
-    <string name="password_unchanged">(保持不变)</string>
+    <string name="password_unchanged">（保持不变）</string>
     <string name="ssh_authentication_failure_password">登录失败：您提供的用户名或密码有误，无法通过验证。</string>
     <string name="ssh_authentication_failure_key">登录失败：您提供的用户名或私钥有误，无法通过验证。</string>
     <string name="ssh_connect_failed">连接到 %1$s:%2$d: %3$s 失败</string>
