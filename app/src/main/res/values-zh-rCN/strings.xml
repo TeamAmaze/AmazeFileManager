@@ -111,7 +111,7 @@
     <string name="dark">深色质感风格</string>
     <string name="daytime">随昼夜变化</string>
     <string name="black">纯黑（冷光屏专用）</string>
-    <string name="system">系统 (跟随系统主题)</string>
+    <string name="system">系统（跟随系统主题）</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">文件夹显示在顶部</string>
