@@ -804,6 +804,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="not_found_enabled_webview">没有可用的浏览器</string>
     <string name="preference_language_title">APP 语言</string>
     <string name="preference_language_dialog_title">选择语言</string>
+    <string name="preference_language_system_default">系统默认</string>
     <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>
