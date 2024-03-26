@@ -811,5 +811,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="restore">恢复</string>
     <string name="restore_files">恢复文件</string>
     <string name="restoring">正在恢复……</string>
+    <string name="trash_bin_retention_num_of_files_summary">回收站最多可以存储</string>
+    <string name="trash_bin_retention_days_title">保留天数</string>
     </resources>
 
