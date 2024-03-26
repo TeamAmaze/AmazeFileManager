@@ -300,7 +300,7 @@
     <string name="stop_ftp">停止</string>
     <string name="ftp_status_running">正在运行</string>
     <string name="ftp_status_not_running">没有运行</string>
-    <string name="ftp_no_wifi">请确保您已连接上可用的无线局域网</string>
+    <string name="ftp_no_wifi">请确保您已连接上可用的 Wi-Fi</string>
     <string name="domain">域名</string>
     <string name="smb_share">分享路径</string>
     <string name="invalid">无效的 %s</string>
