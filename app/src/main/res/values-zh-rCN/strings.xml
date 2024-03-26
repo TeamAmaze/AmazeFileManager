@@ -575,8 +575,8 @@
     <string name="update">更新</string>
 	<string name="scp_connection">SCP/SFTP 连接</string>
     <string name="ftp_connection">FTP 连接</string>
-    <string name="ftps_connection">基于安全型层接口协议的文件传输协议连接</string>
-    <string name="scp_port">端口号</string>
+    <string name="ftps_connection">FTPS 连接</string>
+    <string name="scp_port">端口</string>
     <string name="ssh_host_key_verification_prompt">主机“%1$s”的真实性无法确认。
 %2$s密钥指纹为%3$s。
 请点击“是”来确认身份；否则，请点击“否”。</string>
