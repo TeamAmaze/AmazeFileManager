@@ -629,7 +629,7 @@
     <string name="encrypt_folder_save_as">保存加密后的文件夹至…</string>
     <string name="encrypt_option_use_aze">使用 Amaze 加密格式</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
-        <p>AESCrypt是一种开源的文件加密格式，并且它采用了高级加密标准。这种文件加密格式可以在不同的操作系统上使用，您可以使用其他平台上的AESCrypt程序对它解密。</p>
+        <p>AESCrypt 是一种开源的文件加密格式，并且它采用了 AES 加密。这种文件加密格式可以在不同的操作系统上使用，您可以使用其他平台上的 AESCrypt 程序对它解密。</p>
         <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt 网站</a></p>]]>
     </string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
