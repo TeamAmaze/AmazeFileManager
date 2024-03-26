@@ -778,5 +778,6 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="trash_bin_retention_days_title">保留天数</string>
     <string name="trash_bin_retention_days_summary">回收站可以存储文件的最大天数</string>
     <string name="trash_bin_retention_bytes_summary">回收站可存储的最大大小（MB）</string>
-    </resources>
+    <string name="trash_bin_cleanup_interval_summary">触发自动清洁间隔（小时）</string>
+</resources>
 
