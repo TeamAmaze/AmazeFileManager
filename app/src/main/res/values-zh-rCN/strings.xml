@@ -729,8 +729,8 @@
     <string name="ftp_prompt_accept_first_start_saf_access">这是您第一次运行 FTP 服务器，并且您把设备的内部存储作为共享文件夹，所以需要您允许 Amaze 通过存储访问框架来访问内部存储。
 
 您只需授权一次，直到下一次您选择新路径作为共享文件夹时，才需要再次授权。</string>
-    <string name="android_data_prompt_saf_access">从安卓10开始，部分文件目录被限制访问。需要通过存储访问框架才能访问这些目录。
-请您点击“授予”，才能让Amaze通过系统文件管理器访问该目录。</string>
+    <string name="android_data_prompt_saf_access">从安卓 10 开始，部分文件目录被限制访问。需要通过存储访问框架才能访问这些目录。
+请您点击“授予”，才能让 Amaze 通过系统文件管理器访问该目录。</string>
     <string name="android_data_prompt_saf_access_title">从存储访问框架获取权限</string>
     <string name="ftp_preference_saf_filesystem_title">使用传统文件系统</string>
     <string name="ftp_preference_saf_filesystem">启用此功能，进而可以在新版本的安卓系统上使用外部存储</string>
