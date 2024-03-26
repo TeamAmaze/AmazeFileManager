@@ -714,7 +714,7 @@
     <string name="ftp_readonly">只读访问权限</string>
     <string name="legacy_listing_title">对根目录使用传统的文件列表方式</string>
     <string name="legacy_listing_summary">启用后，将使用传统方法列出文件</string>
-    <string name="error_unsupported_v5_rar">尚不支持RAR 压缩文件\"%s\"，因为它是最新的第5版RAR格式。</string>
+    <string name="error_unsupported_v5_rar">RAR 压缩文件\"%s\"是不受支持的 RAR v5 格式。</string>
     <string name="ftp_prompt_restart_server">需要您重启文件传输协议服务器，使得新设定生效</string>
     <string name="error_permission_denied">拒绝许可</string>
     <string name="error_archive_password_incorrect">解压密码有误</string>
