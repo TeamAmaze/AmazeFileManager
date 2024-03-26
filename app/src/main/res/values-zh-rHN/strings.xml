@@ -808,6 +808,7 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="preference_language_system_default">系统默认</string>
     <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
     <string name="error.listfile.smb">在 %s : %s 列出文件出错</string>
+    <string name="error.listfile.smb.noipcshare">在 %s 列出文件列表失败——SMB 服务器可能不允许匿名访问 IPC$ 共享。您可以尝试在连接设置中直接指定共享名称。</string>
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>
     <string name="restore">恢复</string>
