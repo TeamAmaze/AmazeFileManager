@@ -311,7 +311,7 @@
     <string name="ftp_notif_stop_server">停止</string>
     <string name="ftp_port_edit_menu_title">选择 FTP 端口</string>
     <string name="ftp_port_change_success">FTP 端口更改成功</string>
-    <string name="ftp_port_change_error_invalid">选定的端口号无效</string>
+    <string name="ftp_port_change_error_invalid">选定的端口无效</string>
     <string name="primary_two_title">主色调（右侧面板）</string>
     <string name="primary_two_summary">设置右侧面板大部分控件的颜色</string>
     <string name="support_development">协助开发</string>
