@@ -295,7 +295,7 @@
     <string name="regular_expression">正则表达式</string>
     <string name="regular_expression_summary">使用 BASH 风格的正则表达式搜索</string>
     <string name="match_content">匹配到的内容</string>
-    <string name="match_content_summary">启用此选项后，规则化表达式将匹配整个文件名；若不启用该选项，将会查找文件名中出现的次数</string>
+    <string name="match_content_summary">启用此选项后，正则表达式将匹配整个文件名；若不启用该选项，将会查找文件名中出现的次数</string>
     <string name="start_ftp">开始</string>
     <string name="stop_ftp">停止</string>
     <string name="ftp_status_running">正在运行</string>
