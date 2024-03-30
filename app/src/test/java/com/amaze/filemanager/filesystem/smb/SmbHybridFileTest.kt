@@ -45,11 +45,10 @@ import org.robolectric.shadows.ShadowSQLiteConnection
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowSmbUtil::class, ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 @LooperMode(LooperMode.Mode.PAUSED)
 class SmbHybridFileTest {
-
     private var ctx: Context? = null
 
     /**

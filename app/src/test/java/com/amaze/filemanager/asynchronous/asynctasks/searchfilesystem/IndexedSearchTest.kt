@@ -82,12 +82,13 @@ class IndexedSearchTest {
         val expectedPaths = listOf(filePath)
         val expectedRanges = listOf<MatchRange>(0..1)
 
-        val indexedSearch = IndexedSearch(
-            "ab",
-            "/",
-            EnumSet.noneOf(SearchParameter::class.java),
-            mockCursor
-        )
+        val indexedSearch =
+            IndexedSearch(
+                "ab",
+                "/",
+                EnumSet.noneOf(SearchParameter::class.java),
+                mockCursor,
+            )
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertEquals(expectedNames, actualResults!!.map { (file, _) -> file.name })
@@ -105,17 +106,18 @@ class IndexedSearchTest {
      */
     @Test
     fun testSimpleSearchNotMatch() {
-        val indexedSearch = IndexedSearch(
-            "ba",
-            "/",
-            EnumSet.noneOf(SearchParameter::class.java),
-            mockCursor
-        )
+        val indexedSearch =
+            IndexedSearch(
+                "ba",
+                "/",
+                EnumSet.noneOf(SearchParameter::class.java),
+                mockCursor,
+            )
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
         runTest {
@@ -129,17 +131,18 @@ class IndexedSearchTest {
      */
     @Test
     fun testSearchWithPathMatchButNameNotMatch() {
-        val indexedSearch = IndexedSearch(
-            "te",
-            "/",
-            EnumSet.noneOf(SearchParameter::class.java),
-            mockCursor
-        )
+        val indexedSearch =
+            IndexedSearch(
+                "te",
+                "/",
+                EnumSet.noneOf(SearchParameter::class.java),
+                mockCursor,
+            )
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
         runTest {
@@ -147,6 +150,5 @@ class IndexedSearchTest {
         }
     }
 
-    private fun listNotEmptyError(size: Int) =
-        "List was not empty as expected but had $size elements"
+    private fun listNotEmptyError(size: Int) = "List was not empty as expected but had $size elements"
 }

@@ -31,32 +31,38 @@ import java.io.File
 import java.util.concurrent.CountDownLatch
 
 abstract class AbstractCompressedFileExtractorTest : AbstractExtractorTest() {
-
     @Throws(Exception::class)
     override fun doTestExtractFiles() {
         val latch = CountDownLatch(1)
-        val extractor = extractorClass()
-            .getConstructor(
-                Context::class.java,
-                String::class.java,
-                String::class.java,
-                Extractor.OnUpdate::class.java,
-                UpdatePosition::class.java
-            )
-            .newInstance(
-                ApplicationProvider.getApplicationContext(),
-                archiveFile.absolutePath,
-                Environment.getExternalStorageDirectory().absolutePath,
-                object : Extractor.OnUpdate {
-                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-                    override fun onUpdate(entryPath: String) = Unit
-                    override fun isCancelled(): Boolean = false
-                    override fun onFinish() {
-                        latch.countDown()
-                    }
-                },
-                ServiceWatcherUtil.UPDATE_POSITION
-            )
+        val extractor =
+            extractorClass()
+                .getConstructor(
+                    Context::class.java,
+                    String::class.java,
+                    String::class.java,
+                    Extractor.OnUpdate::class.java,
+                    UpdatePosition::class.java,
+                )
+                .newInstance(
+                    ApplicationProvider.getApplicationContext(),
+                    archiveFile.absolutePath,
+                    Environment.getExternalStorageDirectory().absolutePath,
+                    object : Extractor.OnUpdate {
+                        override fun onStart(
+                            totalBytes: Long,
+                            firstEntryName: String,
+                        ) = Unit
+
+                        override fun onUpdate(entryPath: String) = Unit
+
+                        override fun isCancelled(): Boolean = false
+
+                        override fun onFinish() {
+                            latch.countDown()
+                        }
+                    },
+                    ServiceWatcherUtil.UPDATE_POSITION,
+                )
         extractor.extractEverything()
         latch.await()
         verifyExtractedArchiveContents()

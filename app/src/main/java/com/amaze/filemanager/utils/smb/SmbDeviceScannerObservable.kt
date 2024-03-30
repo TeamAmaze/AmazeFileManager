@@ -35,7 +35,6 @@ import java.net.InetAddress
  * Uses a series of [DiscoverDeviceStrategy] instances to discover nodes.
  */
 class SmbDeviceScannerObservable : Observable<ComputerParcelable>() {
-
     /**
      * Device discovery strategy interface.
      */
@@ -54,7 +53,7 @@ class SmbDeviceScannerObservable : Observable<ComputerParcelable>() {
     var discoverDeviceStrategies: Array<DiscoverDeviceStrategy> =
         arrayOf(
             WsddDiscoverDeviceStrategy(),
-            SameSubnetDiscoverDeviceStrategy()
+            SameSubnetDiscoverDeviceStrategy(),
         )
         @VisibleForTesting set
 
@@ -83,18 +82,19 @@ class SmbDeviceScannerObservable : Observable<ComputerParcelable>() {
      */
     override fun subscribeActual(observer: Observer<in ComputerParcelable>) {
         this.observer = observer
-        this.disposable = merge(
-            discoverDeviceStrategies.map { strategy ->
-                fromCallable {
-                    strategy.discoverDevices { addr ->
-                        observer.onNext(ComputerParcelable(addr.addr, addr.name))
-                    }
-                }.subscribeOn(Schedulers.io())
-            }
-        ).observeOn(Schedulers.computation()).doOnComplete {
-            discoverDeviceStrategies.forEach { strategy ->
-                strategy.onCancel()
-            }
-        }.subscribe()
+        this.disposable =
+            merge(
+                discoverDeviceStrategies.map { strategy ->
+                    fromCallable {
+                        strategy.discoverDevices { addr ->
+                            observer.onNext(ComputerParcelable(addr.addr, addr.name))
+                        }
+                    }.subscribeOn(Schedulers.io())
+                },
+            ).observeOn(Schedulers.computation()).doOnComplete {
+                discoverDeviceStrategies.forEach { strategy ->
+                    strategy.onCancel()
+                }
+            }.subscribe()
     }
 }

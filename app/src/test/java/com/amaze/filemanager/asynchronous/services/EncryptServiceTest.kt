@@ -70,7 +70,6 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 class EncryptServiceTest {
-
     private lateinit var service: EncryptService
     private lateinit var notificationManager: ShadowNotificationManager
     private lateinit var source: ByteArray
@@ -84,10 +83,11 @@ class EncryptServiceTest {
     @Before
     fun setUp() {
         service = Robolectric.setupService(EncryptService::class.java)
-        notificationManager = shadowOf(
-            ApplicationProvider.getApplicationContext<Context?>()
-                .getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        )
+        notificationManager =
+            shadowOf(
+                ApplicationProvider.getApplicationContext<Context?>()
+                    .getSystemService(NOTIFICATION_SERVICE) as NotificationManager,
+            )
         source = Random(System.currentTimeMillis()).nextBytes(73)
         sourceFile = File(Environment.getExternalStorageDirectory(), "test.bin")
         ByteArrayInputStream(source).copyTo(FileOutputStream(sourceFile))
@@ -141,7 +141,7 @@ class EncryptServiceTest {
             Environment.getExternalStorageDirectory().absolutePath,
             ProgressHandler(),
             ArrayList<HybridFile>(),
-            null
+            null,
         )
         val verifyFile = File(Environment.getExternalStorageDirectory(), "test.bin")
         await().atMost(10, TimeUnit.SECONDS).until {
@@ -181,9 +181,9 @@ class EncryptServiceTest {
                 source.contentEquals(
                     File(
                         Environment.getExternalStorageDirectory(),
-                        targetFilename
-                    ).readBytes()
-                )
+                        targetFilename,
+                    ).readBytes(),
+                ),
             )
             val verify = ByteArrayOutputStream()
             AESCrypt("passW0rD").decrypt(targetFile.length(), FileInputStream(targetFile), verify)

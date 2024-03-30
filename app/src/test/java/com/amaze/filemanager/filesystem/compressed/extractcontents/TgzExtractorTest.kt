@@ -21,6 +21,5 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 class TgzExtractorTest : TarGzExtractorTest() {
-
     override val archiveType: String = "tgz"
 }

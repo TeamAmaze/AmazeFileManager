@@ -29,10 +29,12 @@ import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isRu
 
 /** Created by yashwanthreddyg on 09-06-2016.  */
 class FtpReceiver : BroadcastReceiver() {
-
     private val TAG = FtpReceiver::class.java.simpleName
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         if (DEBUG) {
             Log.v(TAG, "Received: ${intent.action}")
         }
@@ -43,7 +45,9 @@ class FtpReceiver : BroadcastReceiver() {
                 context.startService(service)
             } else if (intent.action == FtpService.ACTION_STOP_FTPSERVER) {
                 context.stopService(service)
-            } else Unit
+            } else {
+                Unit
+            }
         }.onFailure {
             Log.e(TAG, "Failed to start/stop on intent ${it.message}")
         }

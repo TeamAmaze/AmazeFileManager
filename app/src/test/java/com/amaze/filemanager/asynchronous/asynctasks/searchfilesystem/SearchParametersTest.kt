@@ -25,7 +25,6 @@ import org.junit.Test
 import java.util.EnumSet
 
 class SearchParametersTest {
-
     /** Tests [SearchParameters.and] */
     @Test
     fun testAnd() {
@@ -69,34 +68,38 @@ class SearchParametersTest {
     /** Tests [searchParametersFromBoolean] with three flags turned on */
     @Test
     fun testSearchParametersFromBooleanWithThree() {
-        val expected = EnumSet.of(
-            SearchParameter.ROOT,
-            SearchParameter.REGEX,
-            SearchParameter.REGEX_MATCHES
-        )
-        val actual = searchParametersFromBoolean(
-            isRoot = true,
-            isRegexEnabled = true,
-            isRegexMatchesEnabled = true
-        )
+        val expected =
+            EnumSet.of(
+                SearchParameter.ROOT,
+                SearchParameter.REGEX,
+                SearchParameter.REGEX_MATCHES,
+            )
+        val actual =
+            searchParametersFromBoolean(
+                isRoot = true,
+                isRegexEnabled = true,
+                isRegexMatchesEnabled = true,
+            )
         Assert.assertEquals(expected, actual)
     }
 
     /** Tests [searchParametersFromBoolean] with four flags turned on */
     @Test
     fun testSearchParametersFromBooleanWithFour() {
-        val expected = EnumSet.of(
-            SearchParameter.ROOT,
-            SearchParameter.REGEX,
-            SearchParameter.REGEX_MATCHES,
-            SearchParameter.SHOW_HIDDEN_FILES
-        )
-        val actual = searchParametersFromBoolean(
-            isRoot = true,
-            isRegexEnabled = true,
-            isRegexMatchesEnabled = true,
-            showHiddenFiles = true
-        )
+        val expected =
+            EnumSet.of(
+                SearchParameter.ROOT,
+                SearchParameter.REGEX,
+                SearchParameter.REGEX_MATCHES,
+                SearchParameter.SHOW_HIDDEN_FILES,
+            )
+        val actual =
+            searchParametersFromBoolean(
+                isRoot = true,
+                isRegexEnabled = true,
+                isRegexMatchesEnabled = true,
+                showHiddenFiles = true,
+            )
         Assert.assertEquals(expected, actual)
     }
 }

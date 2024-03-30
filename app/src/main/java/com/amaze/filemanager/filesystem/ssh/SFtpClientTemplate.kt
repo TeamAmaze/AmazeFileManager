@@ -32,7 +32,6 @@ import java.io.IOException
  */
 abstract class SFtpClientTemplate<T>(url: String, closeClientOnFinish: Boolean = true) :
     SshClientTemplate<T>(url, closeClientOnFinish) {
-
     private val LOG: Logger = LoggerFactory.getLogger(javaClass)
 
     override fun executeWithSSHClient(sshClient: SSHClient): T? {

@@ -25,7 +25,6 @@ import org.junit.Test
 
 @Suppress("StringLiteralDuplication")
 class NetCopyClientUtilTest {
-
     /**
      * Test [NetCopyClientUtils.deriveUriFrom].
      */
@@ -39,8 +38,8 @@ class NetCopyClientUtilTest {
                 password = "password",
                 hostname = "127.0.0.1",
                 port = 22222,
-                defaultPath = null
-            )
+                defaultPath = null,
+            ),
         )
         assertEquals(
             "ssh://user@127.0.0.1:22222/",
@@ -50,8 +49,8 @@ class NetCopyClientUtilTest {
                 password = null,
                 hostname = "127.0.0.1",
                 port = 22222,
-                defaultPath = null
-            )
+                defaultPath = null,
+            ),
         )
     }
 
@@ -63,34 +62,34 @@ class NetCopyClientUtilTest {
         assertEquals(
             "/home/user/foo/bar",
             NetCopyClientUtils.extractRemotePathFrom(
-                "ssh://user:password@127.0.0.1:22/home/user/foo/bar"
-            )
+                "ssh://user:password@127.0.0.1:22/home/user/foo/bar",
+            ),
         )
         assertEquals(
             "/",
-            NetCopyClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/")
+            NetCopyClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/"),
         )
         assertEquals(
             "/",
-            NetCopyClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22")
+            NetCopyClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22"),
         )
         assertEquals(
             "/",
-            NetCopyClientUtils.extractRemotePathFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
+            NetCopyClientUtils.extractRemotePathFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899"),
         )
         assertEquals(
             "/root/.config",
             NetCopyClientUtils.extractRemotePathFrom(
-                "ssh://root:YTgvODc1ZGJjLT09@127.0.0.1:9899/root/.config"
-            )
+                "ssh://root:YTgvODc1ZGJjLT09@127.0.0.1:9899/root/.config",
+            ),
         )
         assertEquals(
             "/Incoming/shared",
-            NetCopyClientUtils.extractRemotePathFrom("ftp://127.0.0.1:2211/Incoming/shared")
+            NetCopyClientUtils.extractRemotePathFrom("ftp://127.0.0.1:2211/Incoming/shared"),
         )
         assertEquals(
             "/pub/notice.txt",
-            NetCopyClientUtils.extractRemotePathFrom("ftp://127.0.0.1:2211/pub/notice.txt")
+            NetCopyClientUtils.extractRemotePathFrom("ftp://127.0.0.1:2211/pub/notice.txt"),
         )
     }
 
@@ -101,45 +100,45 @@ class NetCopyClientUtilTest {
     fun testExtractBaseUriFromUri() {
         assertEquals(
             "ssh://root@127.0.0.1",
-            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1"),
         )
         assertEquals(
             "ssh://root@127.0.0.1:2233",
-            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1:2233")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1:2233"),
         )
         assertEquals(
             "ssh://root@127.0.0.1",
-            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1/root/.config")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1/root/.config"),
         )
         assertEquals(
             "ssh://root:password@127.0.0.1",
-            NetCopyClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1"),
         )
         assertEquals(
             "ssh://root:password@127.0.0.1:3456",
-            NetCopyClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1:3456/root/.config")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1:3456/root/.config"),
         )
         assertEquals(
             "ssh://root:a8/875dbc-==@127.0.0.1:9899",
-            NetCopyClientUtils.extractBaseUriFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899"),
         )
         assertEquals(
             "ssh://root:a8/875dbc-==@127.0.0.1:9899",
             NetCopyClientUtils.extractBaseUriFrom(
-                "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config"
-            )
+                "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config",
+            ),
         )
         assertEquals(
             "ftp://127.0.0.1:2211",
-            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211")
+            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211"),
         )
         assertEquals(
             "ftp://127.0.0.1:2211",
-            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211/Incoming/shared")
+            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211/Incoming/shared"),
         )
         assertEquals(
             "ftp://127.0.0.1:2211",
-            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211/pub/notice.txt")
+            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211/pub/notice.txt"),
         )
     }
 }

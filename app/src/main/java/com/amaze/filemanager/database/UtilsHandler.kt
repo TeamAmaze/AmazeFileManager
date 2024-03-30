@@ -52,13 +52,18 @@ import java.util.*
  */
 class UtilsHandler(
     private val context: Context,
-    private val utilitiesDatabase: UtilitiesDatabase
+    private val utilitiesDatabase: UtilitiesDatabase,
 ) {
-
     private val log: Logger = LoggerFactory.getLogger(UtilsHandler::class.java)
 
     enum class Operation {
-        HISTORY, HIDDEN, LIST, GRID, BOOKMARKS, SMB, SFTP
+        HISTORY,
+        HIDDEN,
+        LIST,
+        GRID,
+        BOOKMARKS,
+        SMB,
+        SFTP,
     }
 
     /**
@@ -84,7 +89,7 @@ class UtilsHandler(
                 utilitiesDatabase
                     .listEntryDao()
                     .insert(
-                        com.amaze.filemanager.database.models.utilities.List(operationData.path)
+                        com.amaze.filemanager.database.models.utilities.List(operationData.path),
                     )
                     .subscribeOn(Schedulers.io())
                     .subscribe()
@@ -118,9 +123,9 @@ class UtilsHandler(
                                         operationData.name,
                                         operationData.hostKey,
                                         operationData.sshKeyName,
-                                        operationData.sshKey
-                                    )
-                                )
+                                        operationData.sshKey,
+                                    ),
+                                ),
                             )
                             .subscribeOn(Schedulers.io())
                             .subscribe()
@@ -171,13 +176,14 @@ class UtilsHandler(
      */
     fun addCommonBookmarks() {
         val sd = Environment.getExternalStorageDirectory()
-        val dirs = arrayOf(
-            File(sd, Environment.DIRECTORY_DCIM).absolutePath,
-            File(sd, Environment.DIRECTORY_DOWNLOADS).absolutePath,
-            File(sd, Environment.DIRECTORY_MOVIES).absolutePath,
-            File(sd, Environment.DIRECTORY_MUSIC).absolutePath,
-            File(sd, Environment.DIRECTORY_PICTURES).absolutePath
-        )
+        val dirs =
+            arrayOf(
+                File(sd, Environment.DIRECTORY_DCIM).absolutePath,
+                File(sd, Environment.DIRECTORY_DOWNLOADS).absolutePath,
+                File(sd, Environment.DIRECTORY_MOVIES).absolutePath,
+                File(sd, Environment.DIRECTORY_MUSIC).absolutePath,
+                File(sd, Environment.DIRECTORY_PICTURES).absolutePath,
+            )
         for (dir in dirs) {
             saveToDatabase(OperationData(Operation.BOOKMARKS, File(dir).name, dir))
         }
@@ -193,7 +199,7 @@ class UtilsHandler(
         path: String,
         hostKey: String?,
         sshKeyName: String?,
-        sshKey: String?
+        sshKey: String?,
     ) {
         utilitiesDatabase
             .sftpEntryDao()
@@ -222,8 +228,8 @@ class UtilsHandler(
         get() {
             val paths = LinkedList<String>()
             for (
-                history in utilitiesDatabase.historyEntryDao().list().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            history in utilitiesDatabase.historyEntryDao().list().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 paths.add(history.path)
             }
@@ -237,8 +243,8 @@ class UtilsHandler(
         get() {
             val paths = ConcurrentRadixTree<VoidValue>(DefaultCharArrayNodeFactory())
             for (
-                path in utilitiesDatabase.hiddenEntryDao().listPaths().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            path in utilitiesDatabase.hiddenEntryDao().listPaths().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 paths.put(path, VoidValue.SINGLETON)
             }
@@ -249,17 +255,19 @@ class UtilsHandler(
      * Return list of paths using list view.
      */
     val listViewList: ArrayList<String>
-        get() = ArrayList(
-            utilitiesDatabase.listEntryDao().listPaths().subscribeOn(Schedulers.io()).blockingGet()
-        )
+        get() =
+            ArrayList(
+                utilitiesDatabase.listEntryDao().listPaths().subscribeOn(Schedulers.io()).blockingGet(),
+            )
 
     /**
      * Return list of paths using grid view.
      */
     val gridViewList: ArrayList<String>
-        get() = ArrayList(
-            utilitiesDatabase.gridEntryDao().listPaths().subscribeOn(Schedulers.io()).blockingGet()
-        )
+        get() =
+            ArrayList(
+                utilitiesDatabase.gridEntryDao().listPaths().subscribeOn(Schedulers.io()).blockingGet(),
+            )
 
     /**
      * Return list of bookmarks.
@@ -268,8 +276,8 @@ class UtilsHandler(
         get() {
             val row = ArrayList<Array<String>>()
             for (
-                bookmark in utilitiesDatabase.bookmarkEntryDao().list()
-                    .subscribeOn(Schedulers.io()).blockingGet()
+            bookmark in utilitiesDatabase.bookmarkEntryDao().list()
+                .subscribeOn(Schedulers.io()).blockingGet()
             ) {
                 row.add(arrayOf(bookmark.name, bookmark.path))
             }
@@ -283,8 +291,8 @@ class UtilsHandler(
         get() {
             val retval = ArrayList<Array<String>>()
             for (
-                entry in utilitiesDatabase.smbEntryDao().list().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            entry in utilitiesDatabase.smbEntryDao().list().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 try {
                     retval.add(arrayOf(entry.name, entry.path))
@@ -295,7 +303,7 @@ class UtilsHandler(
                     Toast.makeText(
                         context,
                         context.getString(R.string.failed_smb_decrypt_path),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     )
                         .show()
                     removeSmbPath(entry.name, "")
@@ -305,7 +313,7 @@ class UtilsHandler(
                     Toast.makeText(
                         context,
                         context.getString(R.string.failed_smb_decrypt_path),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     )
                         .show()
                     removeSmbPath(entry.name, "")
@@ -322,8 +330,8 @@ class UtilsHandler(
         get() {
             val retval = ArrayList<Array<String>>()
             for (
-                entry in utilitiesDatabase.sftpEntryDao().list().subscribeOn(Schedulers.io())
-                    .blockingGet()
+            entry in utilitiesDatabase.sftpEntryDao().list().subscribeOn(Schedulers.io())
+                .blockingGet()
             ) {
                 val path = entry.path
                 if (path == null) {
@@ -332,7 +340,7 @@ class UtilsHandler(
                     Toast.makeText(
                         context,
                         context.getString(R.string.failed_smb_decrypt_path),
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_LONG,
                     ).show()
                 } else {
                     retval.add(arrayOf(entry.name, path))
@@ -389,7 +397,10 @@ class UtilsHandler(
             }
         }.getOrNull()
 
-    private fun removeBookmarksPath(name: String, path: String) {
+    private fun removeBookmarksPath(
+        name: String,
+        path: String,
+    ) {
         utilitiesDatabase
             .bookmarkEntryDao()
             .deleteByNameAndPath(name, path)
@@ -403,7 +414,10 @@ class UtilsHandler(
      * @param path the path we get from saved runtime variables is a decrypted, to remove entry, we
      * must encrypt it's password fiend first first
      */
-    private fun removeSmbPath(name: String, path: String) {
+    private fun removeSmbPath(
+        name: String,
+        path: String,
+    ) {
         if ("" == path) {
             utilitiesDatabase.smbEntryDao().deleteByName(name)
                 .subscribeOn(Schedulers.io()).subscribe()
@@ -416,7 +430,10 @@ class UtilsHandler(
         }
     }
 
-    private fun removeSftpPath(name: String, path: String) {
+    private fun removeSftpPath(
+        name: String,
+        path: String,
+    ) {
         if ("" == path) {
             utilitiesDatabase.sftpEntryDao().deleteByName(name)
                 .subscribeOn(Schedulers.io()).subscribe()
@@ -432,18 +449,24 @@ class UtilsHandler(
     /**
      * Update [Bookmark].
      */
-    fun renameBookmark(oldName: String, oldPath: String, newName: String, newPath: String) {
-        val bookmark: Bookmark = kotlin.runCatching {
-            utilitiesDatabase
-                .bookmarkEntryDao()
-                .findByNameAndPath(oldName, oldPath)
-                .subscribeOn(Schedulers.io())
-                .blockingGet()
-        }.onFailure {
-            // catch error to handle Single#onError for blockingGet
-            log.error(it.message!!)
-            return
-        }.getOrThrow()
+    fun renameBookmark(
+        oldName: String,
+        oldPath: String,
+        newName: String,
+        newPath: String,
+    ) {
+        val bookmark: Bookmark =
+            kotlin.runCatching {
+                utilitiesDatabase
+                    .bookmarkEntryDao()
+                    .findByNameAndPath(oldName, oldPath)
+                    .subscribeOn(Schedulers.io())
+                    .blockingGet()
+            }.onFailure {
+                // catch error to handle Single#onError for blockingGet
+                log.error(it.message!!)
+                return
+            }.getOrThrow()
 
         bookmark.name = newName
         bookmark.path = newPath
@@ -454,7 +477,12 @@ class UtilsHandler(
     /**
      * Update [SmbEntry].
      */
-    fun renameSMB(oldName: String, oldPath: String, newName: String, newPath: String) {
+    fun renameSMB(
+        oldName: String,
+        oldPath: String,
+        newName: String,
+        newPath: String,
+    ) {
         utilitiesDatabase
             .smbEntryDao()
             .findByNameAndPath(oldName, oldPath)
@@ -475,8 +503,9 @@ class UtilsHandler(
      */
     fun clearTable(table: Operation) {
         when (table) {
-            Operation.HISTORY -> utilitiesDatabase.historyEntryDao().clear()
-                .subscribeOn(Schedulers.io()).subscribe()
+            Operation.HISTORY ->
+                utilitiesDatabase.historyEntryDao().clear()
+                    .subscribeOn(Schedulers.io()).subscribe()
             else -> {}
         }
     }

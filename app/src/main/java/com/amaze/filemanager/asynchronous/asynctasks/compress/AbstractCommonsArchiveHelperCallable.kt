@@ -38,9 +38,8 @@ abstract class AbstractCommonsArchiveHelperCallable(
     context: Context,
     private val filePath: String,
     private val relativePath: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) : CompressedHelperCallable(goBack) {
-
     private val context: WeakReference<Context> = WeakReference(context)
 
     /**
@@ -63,7 +62,7 @@ abstract class AbstractCommonsArchiveHelperCallable(
                         if (!CompressedHelper.isEntryPathValid(name)) {
                             AppConfig.toast(
                                 context.get(),
-                                context.get()!!.getString(R.string.multiple_invalid_archive_entries)
+                                context.get()!!.getString(R.string.multiple_invalid_archive_entries),
                             )
                             return@run
                         }
@@ -76,15 +75,15 @@ abstract class AbstractCommonsArchiveHelperCallable(
                             name.contains(CompressedHelper.SEPARATOR) &&
                                 name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
                                 == relativePath
-                            )
+                        )
                         if (isInBaseDir || isInRelativeDir) {
                             elements.add(
                                 CompressedObjectParcelable(
                                     name,
                                     lastModifiedDate.time,
                                     size,
-                                    isDirectory
-                                )
+                                    isDirectory,
+                                ),
                             )
                         }
                     }

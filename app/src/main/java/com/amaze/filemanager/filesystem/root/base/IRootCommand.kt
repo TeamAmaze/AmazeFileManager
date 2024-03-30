@@ -26,7 +26,6 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import com.topjohnwu.superuser.Shell
 
 open class IRootCommand {
-
     /**
      * Runs the command and stores output in a list. The listener is set on the handler thread [ ]
      * [MainActivity.handlerThread] thus any code run in callback must be thread safe. Command is run

@@ -34,7 +34,6 @@ import javax.crypto.spec.GCMParameterSpec
 
 @Implements(PasswordUtil::class)
 class ShadowPasswordUtil {
-
     companion object {
         val INSTANCE = ShadowPasswordUtil()
         private const val ALGO_AES = "AES/GCM/NoPadding"
@@ -49,7 +48,7 @@ class ShadowPasswordUtil {
     fun encryptPassword(
         context: Context?,
         plainText: String,
-        base64Options: Int = Base64.URL_SAFE
+        base64Options: Int = Base64.URL_SAFE,
     ): String {
         return aesEncryptPassword(plainText, base64Options)
     }
@@ -60,14 +59,17 @@ class ShadowPasswordUtil {
     fun decryptPassword(
         context: Context?,
         cipherText: String,
-        base64Options: Int = Base64.URL_SAFE
+        base64Options: Int = Base64.URL_SAFE,
     ): String {
         return aesDecryptPassword(cipherText, base64Options)
     }
 
     /** Helper method to encrypt plain text password  */
     @Throws(GeneralSecurityException::class)
-    private fun aesEncryptPassword(plainTextPassword: String, base64Options: Int): String {
+    private fun aesEncryptPassword(
+        plainTextPassword: String,
+        base64Options: Int,
+    ): String {
         val cipher = Cipher.getInstance(ALGO_AES)
         val gcmParameterSpec = GCMParameterSpec(128, IV.toByteArray())
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec)
@@ -77,7 +79,10 @@ class ShadowPasswordUtil {
 
     /** Helper method to decrypt cipher text password  */
     @Throws(GeneralSecurityException::class)
-    private fun aesDecryptPassword(cipherPassword: String, base64Options: Int): String {
+    private fun aesDecryptPassword(
+        cipherPassword: String,
+        base64Options: Int,
+    ): String {
         val cipher = Cipher.getInstance(ALGO_AES)
         val gcmParameterSpec = GCMParameterSpec(128, IV.toByteArray())
         cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec)

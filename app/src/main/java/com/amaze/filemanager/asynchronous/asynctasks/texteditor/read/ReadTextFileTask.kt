@@ -42,21 +42,21 @@ import java.util.*
 class ReadTextFileTask(
     activity: TextEditorActivity,
     private val textEditorActivityWR: WeakReference<TextEditorActivity>,
-    private val appContextWR: WeakReference<Context>
+    private val appContextWR: WeakReference<Context>,
 ) : Task<ReturnedValueOnReadFile, ReadTextFileCallable> {
-
     private val log: Logger = LoggerFactory.getLogger(ReadTextFileTask::class.java)
 
     private val task: ReadTextFileCallable
 
     init {
         val viewModel: TextEditorActivityViewModel by activity.viewModels()
-        task = ReadTextFileCallable(
-            activity.contentResolver,
-            viewModel.file,
-            activity.externalCacheDir,
-            activity.isRootExplorer
-        )
+        task =
+            ReadTextFileCallable(
+                activity.contentResolver,
+                viewModel.file,
+                activity.externalCacheDir,
+                activity.isRootExplorer,
+            )
     }
 
     override fun getTask(): ReadTextFileCallable = task
@@ -66,20 +66,21 @@ class ReadTextFileTask(
         log.error("Error on text read", error)
         val applicationContext = appContextWR.get() ?: return
 
-        @StringRes val errorMessage: Int = when (error) {
-            is StreamNotFoundException -> {
-                R.string.error_file_not_found
+        @StringRes val errorMessage: Int =
+            when (error) {
+                is StreamNotFoundException -> {
+                    R.string.error_file_not_found
+                }
+                is IOException -> {
+                    R.string.error_io
+                }
+                is OutOfMemoryError -> {
+                    R.string.error_file_too_large
+                }
+                else -> {
+                    R.string.error
+                }
             }
-            is IOException -> {
-                R.string.error_io
-            }
-            is OutOfMemoryError -> {
-                R.string.error_file_too_large
-            }
-            else -> {
-                R.string.error
-            }
-        }
         Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
         val textEditorActivity = textEditorActivityWR.get() ?: return
         textEditorActivity.dismissLoadingSnackbar()
@@ -107,14 +108,15 @@ class ReadTextFileTask(
 
         if (isFileInCacheAndNotRoot) {
             textEditorActivity.setReadOnly()
-            val snackbar = Snackbar.make(
-                textEditorActivity.mainTextView,
-                R.string.file_read_only,
-                Snackbar.LENGTH_INDEFINITE
-            )
+            val snackbar =
+                Snackbar.make(
+                    textEditorActivity.mainTextView,
+                    R.string.file_read_only,
+                    Snackbar.LENGTH_INDEFINITE,
+                )
             snackbar.setAction(
                 textEditorActivity.resources.getString(R.string.got_it)
-                    .uppercase(Locale.getDefault())
+                    .uppercase(Locale.getDefault()),
             ) { snackbar.dismiss() }
             snackbar.show()
         }
@@ -127,15 +129,16 @@ class ReadTextFileTask(
 
         if (value.fileIsTooLong) {
             textEditorActivity.setReadOnly()
-            val snackbar = Snackbar.make(
-                textEditorActivity.mainTextView,
-                textEditorActivity.resources
-                    .getString(R.string.file_too_long, ReadTextFileCallable.MAX_FILE_SIZE_CHARS),
-                Snackbar.LENGTH_INDEFINITE
-            )
+            val snackbar =
+                Snackbar.make(
+                    textEditorActivity.mainTextView,
+                    textEditorActivity.resources
+                        .getString(R.string.file_too_long, ReadTextFileCallable.MAX_FILE_SIZE_CHARS),
+                    Snackbar.LENGTH_INDEFINITE,
+                )
             snackbar.setAction(
                 textEditorActivity.resources.getString(R.string.got_it)
-                    .uppercase(Locale.getDefault())
+                    .uppercase(Locale.getDefault()),
             ) { snackbar.dismiss() }
             snackbar.show()
         }

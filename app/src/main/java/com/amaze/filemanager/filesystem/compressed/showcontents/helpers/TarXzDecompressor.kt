@@ -27,7 +27,6 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
 class TarXzDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean
-    ) =
-        TarXzHelperCallable(context, filePath, path, addGoBackItem)
+        addGoBackItem: Boolean,
+    ) = TarXzHelperCallable(context, filePath, path, addGoBackItem)
 }

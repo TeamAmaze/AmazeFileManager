@@ -46,10 +46,9 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class ReadTextFileCallableTest {
-
     /**
      * Test read an empty file with [ReadTextFileCallable]
      */
@@ -57,7 +56,7 @@ class ReadTextFileCallableTest {
     @Throws(
         ShellNotRunningException::class,
         IOException::class,
-        StreamNotFoundException::class
+        StreamNotFoundException::class,
     )
     fun testReadEmptyFile() {
         val uri = generatePath()
@@ -65,16 +64,17 @@ class ReadTextFileCallableTest {
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream("".toByteArray())
         Shadows.shadowOf(cr).registerInputStream(uri, input)
-        val task = ReadTextFileCallable(
-            cr,
-            EditableFileAbstraction(ctx, uri),
-            null,
-            false
-        )
+        val task =
+            ReadTextFileCallable(
+                cr,
+                EditableFileAbstraction(ctx, uri),
+                null,
+                false,
+            )
         val result = task.call()
         Assert.assertEquals(
             result,
-            ReturnedValueOnReadFile("", null, false)
+            ReturnedValueOnReadFile("", null, false),
         )
     }
 
@@ -85,7 +85,7 @@ class ReadTextFileCallableTest {
     @Throws(
         ShellNotRunningException::class,
         IOException::class,
-        StreamNotFoundException::class
+        StreamNotFoundException::class,
     )
     fun testReadNormalFile() {
         val random = Random(123)
@@ -98,16 +98,17 @@ class ReadTextFileCallableTest {
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream(fileContents.toByteArray())
         Shadows.shadowOf(cr).registerInputStream(uri, input)
-        val task = ReadTextFileCallable(
-            cr,
-            EditableFileAbstraction(ctx, uri),
-            null,
-            false
-        )
+        val task =
+            ReadTextFileCallable(
+                cr,
+                EditableFileAbstraction(ctx, uri),
+                null,
+                false,
+            )
         val result = task.call()
         Assert.assertEquals(
             result,
-            ReturnedValueOnReadFile(fileContents, null, false)
+            ReturnedValueOnReadFile(fileContents, null, false),
         )
     }
 
@@ -118,7 +119,7 @@ class ReadTextFileCallableTest {
     @Throws(
         ShellNotRunningException::class,
         IOException::class,
-        StreamNotFoundException::class
+        StreamNotFoundException::class,
     )
     fun testReadBigFile() {
         val random = Random(123)
@@ -131,16 +132,17 @@ class ReadTextFileCallableTest {
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream(fileContents.toByteArray())
         Shadows.shadowOf(cr).registerInputStream(uri, input)
-        val task = ReadTextFileCallable(
-            cr,
-            EditableFileAbstraction(ctx, uri),
-            null,
-            false
-        )
+        val task =
+            ReadTextFileCallable(
+                cr,
+                EditableFileAbstraction(ctx, uri),
+                null,
+                false,
+            )
         val result = task.call()
         Assert.assertEquals(
             result,
-            ReturnedValueOnReadFile(fileContents.substring(0, MAX_FILE_SIZE_CHARS), null, true)
+            ReturnedValueOnReadFile(fileContents.substring(0, MAX_FILE_SIZE_CHARS), null, true),
         )
     }
 

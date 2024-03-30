@@ -38,25 +38,25 @@ class FtpsAuthenticationTaskCallable(
     port: Int,
     private val certInfo: JSONObject,
     username: String,
-    password: String
+    password: String,
 ) : FtpAuthenticationTaskCallable(hostname, port, username, password) {
-
     override fun call(): FTPClient {
         val ftpClient = createFTPClient() as FTPSClient
         ftpClient.connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
         ftpClient.controlEncoding = Charsets.UTF_8.name()
         ftpClient.connect(hostname, port)
-        val loginSuccess = if (username.isBlank() && password.isBlank()) {
-            ftpClient.login(
-                FTPClientImpl.ANONYMOUS,
-                FTPClientImpl.generateRandomEmailAddressForLogin()
-            )
-        } else {
-            ftpClient.login(
-                username,
-                PasswordUtil.decryptPassword(AppConfig.getInstance(), password)
-            )
-        }
+        val loginSuccess =
+            if (username.isBlank() && password.isBlank()) {
+                ftpClient.login(
+                    FTPClientImpl.ANONYMOUS,
+                    FTPClientImpl.generateRandomEmailAddressForLogin(),
+                )
+            } else {
+                ftpClient.login(
+                    username,
+                    PasswordUtil.decryptPassword(AppConfig.getInstance(), password),
+                )
+            }
         return if (loginSuccess) {
             // RFC 2228 set protection buffer size to 0
             ftpClient.execPBSZ(0)
@@ -74,16 +74,17 @@ class FtpsAuthenticationTaskCallable(
         return (
             NetCopyClientConnectionPool.ftpClientFactory.create(FTPS_URI_PREFIX)
                 as FTPSClient
-            ).apply {
-            this.hostnameVerifier = HostnameVerifier { _, session ->
-                return@HostnameVerifier if (session.peerCertificateChain.isNotEmpty()) {
-                    X509CertificateUtil.parse(
-                        session.peerCertificateChain.first()
-                    )[FINGERPRINT] == certInfo.get(FINGERPRINT)
-                } else {
-                    false
+        ).apply {
+            this.hostnameVerifier =
+                HostnameVerifier { _, session ->
+                    return@HostnameVerifier if (session.peerCertificateChain.isNotEmpty()) {
+                        X509CertificateUtil.parse(
+                            session.peerCertificateChain.first(),
+                        )[FINGERPRINT] == certInfo.get(FINGERPRINT)
+                    } else {
+                        false
+                    }
                 }
-            }
         }
     }
 }

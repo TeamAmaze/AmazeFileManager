@@ -37,26 +37,25 @@ import java.time.ZonedDateTime
 import java.util.concurrent.CountDownLatch
 
 abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
-
     companion object {
         @JvmStatic
-        private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
-            2018,
-            5,
-            29,
-            10,
-            38,
-            0,
-            0,
-            ZoneId.of("UTC")
-        ).toInstant().toEpochMilli()
+        private val EXPECTED_TIMESTAMP =
+            ZonedDateTime.of(
+                2018,
+                5,
+                29,
+                10,
+                38,
+                0,
+                0,
+                ZoneId.of("UTC"),
+            ).toInstant().toEpochMilli()
     }
 
     /**
      * run assertion on file timestamp correctness.
      */
-    protected open fun assertFileTimestampCorrect(file: File) =
-        assertEquals(EXPECTED_TIMESTAMP, file.lastModified())
+    protected open fun assertFileTimestampCorrect(file: File) = assertEquals(EXPECTED_TIMESTAMP, file.lastModified())
 
     /**
      * Test extractor ability to correct problematic archive entries for security
@@ -64,26 +63,33 @@ abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
     @Test
     @Suppress("StringLiteralDuplication")
     fun testFixEntryName() {
-        val extractor = extractorClass()
-            .getConstructor(
-                Context::class.java,
-                String::class.java,
-                String::class.java,
-                Extractor.OnUpdate::class.java,
-                UpdatePosition::class.java
-            )
-            .newInstance(
-                ApplicationProvider.getApplicationContext(),
-                archiveFile.absolutePath,
-                Environment.getExternalStorageDirectory().absolutePath,
-                object : Extractor.OnUpdate {
-                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-                    override fun onUpdate(entryPath: String) = Unit
-                    override fun isCancelled(): Boolean = false
-                    override fun onFinish() = Unit
-                },
-                ServiceWatcherUtil.UPDATE_POSITION
-            )
+        val extractor =
+            extractorClass()
+                .getConstructor(
+                    Context::class.java,
+                    String::class.java,
+                    String::class.java,
+                    Extractor.OnUpdate::class.java,
+                    UpdatePosition::class.java,
+                )
+                .newInstance(
+                    ApplicationProvider.getApplicationContext(),
+                    archiveFile.absolutePath,
+                    Environment.getExternalStorageDirectory().absolutePath,
+                    object : Extractor.OnUpdate {
+                        override fun onStart(
+                            totalBytes: Long,
+                            firstEntryName: String,
+                        ) = Unit
+
+                        override fun onUpdate(entryPath: String) = Unit
+
+                        override fun isCancelled(): Boolean = false
+
+                        override fun onFinish() = Unit
+                    },
+                    ServiceWatcherUtil.UPDATE_POSITION,
+                )
         assertEquals("test.txt", extractor.fixEntryName("test.txt"))
         assertEquals("test.txt", extractor.fixEntryName("/test.txt"))
         assertEquals("test.txt", extractor.fixEntryName("/////////test.txt"))
@@ -105,34 +111,41 @@ abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
     @Throws(Exception::class)
     override fun doTestExtractFiles() {
         val latch = CountDownLatch(1)
-        val extractor = extractorClass()
-            .getConstructor(
-                Context::class.java,
-                String::class.java,
-                String::class.java,
-                Extractor.OnUpdate::class.java,
-                UpdatePosition::class.java
-            )
-            .newInstance(
-                ApplicationProvider.getApplicationContext(),
-                archiveFile.absolutePath,
-                Environment.getExternalStorageDirectory().absolutePath,
-                object : Extractor.OnUpdate {
-                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-                    override fun onUpdate(entryPath: String) = Unit
-                    override fun isCancelled(): Boolean = false
-                    override fun onFinish() {
-                        latch.countDown()
-                        try {
-                            verifyExtractedArchiveContents()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                            fail("Error verifying extracted archive contents")
+        val extractor =
+            extractorClass()
+                .getConstructor(
+                    Context::class.java,
+                    String::class.java,
+                    String::class.java,
+                    Extractor.OnUpdate::class.java,
+                    UpdatePosition::class.java,
+                )
+                .newInstance(
+                    ApplicationProvider.getApplicationContext(),
+                    archiveFile.absolutePath,
+                    Environment.getExternalStorageDirectory().absolutePath,
+                    object : Extractor.OnUpdate {
+                        override fun onStart(
+                            totalBytes: Long,
+                            firstEntryName: String,
+                        ) = Unit
+
+                        override fun onUpdate(entryPath: String) = Unit
+
+                        override fun isCancelled(): Boolean = false
+
+                        override fun onFinish() {
+                            latch.countDown()
+                            try {
+                                verifyExtractedArchiveContents()
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                                fail("Error verifying extracted archive contents")
+                            }
                         }
-                    }
-                },
-                ServiceWatcherUtil.UPDATE_POSITION
-            )
+                    },
+                    ServiceWatcherUtil.UPDATE_POSITION,
+                )
         extractor.extractEverything()
         latch.await()
     }

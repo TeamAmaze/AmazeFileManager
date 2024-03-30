@@ -49,7 +49,6 @@ import com.amaze.filemanager.ui.views.WarnableTextInputValidator
  * Encryption save as file dialog, for us when fingerprint or master password is set.
  */
 object EncryptWithPresetPasswordSaveAsDialog {
-
     /**
      * Displays the save as dialog.
      */
@@ -61,37 +60,40 @@ object EncryptWithPresetPasswordSaveAsDialog {
         intent: Intent,
         main: MainActivity,
         password: String,
-        encryptButtonCallbackInterface: EncryptButtonCallbackInterface
+        encryptButtonCallbackInterface: EncryptButtonCallbackInterface,
     ) {
         intent.getParcelableExtra<HybridFileParcelable>(EncryptService.TAG_SOURCE)?.run {
             val preferences = PreferenceManager.getDefaultSharedPreferences(c)
             val accentColor = main.accent
             val vb = DialogEncryptWithMasterPasswordBinding.inflate(LayoutInflater.from(c))
             val rootView = vb.root
-            val encryptSaveAsEditText = vb.editTextEncryptSaveAs.also {
-                when (password) {
-                    ENCRYPT_PASSWORD_FINGERPRINT -> {
-                        // Fingerprint not supported for AESCrypt
-                        it.setText(this.getName(c) + CryptUtil.CRYPT_EXTENSION)
-                    }
-                    ENCRYPT_PASSWORD_MASTER -> {
-                        it.setText(this.getName(c) + CryptUtil.AESCRYPT_EXTENSION)
-                    }
-                    else -> {
-                        throw IllegalArgumentException(
-                            "Must be either " +
-                                "ENCRYPT_PASSWORD_FINGERPRINT or ENCRYPT_PASSWORD_MASTER"
-                        )
+            val encryptSaveAsEditText =
+                vb.editTextEncryptSaveAs.also {
+                    when (password) {
+                        ENCRYPT_PASSWORD_FINGERPRINT -> {
+                            // Fingerprint not supported for AESCrypt
+                            it.setText(this.getName(c) + CryptUtil.CRYPT_EXTENSION)
+                        }
+                        ENCRYPT_PASSWORD_MASTER -> {
+                            it.setText(this.getName(c) + CryptUtil.AESCRYPT_EXTENSION)
+                        }
+                        else -> {
+                            throw IllegalArgumentException(
+                                "Must be either " +
+                                    "ENCRYPT_PASSWORD_FINGERPRINT or ENCRYPT_PASSWORD_MASTER",
+                            )
+                        }
                     }
                 }
-            }
             val useAzeEncrypt = vb.checkboxUseAze
-            val usageTextInfo = vb.textViewCryptInfo.apply {
-                text = HtmlCompat.fromHtml(
-                    main.getString(R.string.encrypt_option_use_aescrypt_desc),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-            }
+            val usageTextInfo =
+                vb.textViewCryptInfo.apply {
+                    text =
+                        HtmlCompat.fromHtml(
+                            main.getString(R.string.encrypt_option_use_aescrypt_desc),
+                            HtmlCompat.FROM_HTML_MODE_LEGACY,
+                        )
+                }
             if (ENCRYPT_PASSWORD_FINGERPRINT != password) {
                 useAzeEncrypt.setOnCheckedChangeListener(
                     createUseAzeEncryptCheckboxOnCheckedChangeListener(
@@ -100,47 +102,48 @@ object EncryptWithPresetPasswordSaveAsDialog {
                         preferences,
                         main,
                         encryptSaveAsEditText,
-                        usageTextInfo
-                    )
+                        usageTextInfo,
+                    ),
                 )
             } else {
                 useAzeEncrypt.visibility = View.INVISIBLE
                 usageTextInfo.visibility = View.INVISIBLE
             }
 
-            val saveAsDialog = MaterialDialog.Builder(c)
-                .title(
-                    if (isDirectory) {
-                        R.string.encrypt_folder_save_as
-                    } else {
-                        R.string.encrypt_file_save_as
-                    }
-                ).customView(rootView, true)
-                .positiveColor(accentColor)
-                .negativeColor(accentColor)
-                .positiveText(android.R.string.ok)
-                .negativeText(android.R.string.cancel)
-                .onPositive { dialog, _ ->
-                    intent.putExtra(TAG_ENCRYPT_TARGET, encryptSaveAsEditText.text.toString())
-                    intent.putExtra(TAG_PASSWORD, password)
-                    runCatching {
-                        encryptButtonCallbackInterface.onButtonPressed(intent, password)
-                    }.onFailure {
-                        Toast.makeText(
-                            c,
-                            c.getString(R.string.crypt_encryption_fail),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }.also {
-                        dialog.dismiss()
-                    }
-                }.build()
+            val saveAsDialog =
+                MaterialDialog.Builder(c)
+                    .title(
+                        if (isDirectory) {
+                            R.string.encrypt_folder_save_as
+                        } else {
+                            R.string.encrypt_file_save_as
+                        },
+                    ).customView(rootView, true)
+                    .positiveColor(accentColor)
+                    .negativeColor(accentColor)
+                    .positiveText(android.R.string.ok)
+                    .negativeText(android.R.string.cancel)
+                    .onPositive { dialog, _ ->
+                        intent.putExtra(TAG_ENCRYPT_TARGET, encryptSaveAsEditText.text.toString())
+                        intent.putExtra(TAG_PASSWORD, password)
+                        runCatching {
+                            encryptButtonCallbackInterface.onButtonPressed(intent, password)
+                        }.onFailure {
+                            Toast.makeText(
+                                c,
+                                c.getString(R.string.crypt_encryption_fail),
+                                Toast.LENGTH_LONG,
+                            ).show()
+                        }.also {
+                            dialog.dismiss()
+                        }
+                    }.build()
             WarnableTextInputValidator(
                 c,
                 encryptSaveAsEditText,
                 vb.tilEncryptSaveAs,
                 saveAsDialog.getActionButton(DialogAction.POSITIVE),
-                createFilenameValidator(useAzeEncrypt)
+                createFilenameValidator(useAzeEncrypt),
             )
             saveAsDialog.show()
             saveAsDialog.getActionButton(DialogAction.POSITIVE).isEnabled = true

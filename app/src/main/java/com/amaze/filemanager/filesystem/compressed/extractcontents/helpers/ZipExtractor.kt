@@ -46,9 +46,8 @@ class ZipExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
-
     private val isRobolectricTest = Build.HARDWARE == "robolectric"
 
     @Throws(IOException::class)
@@ -109,7 +108,7 @@ class ZipExtractor(
         context: Context,
         zipFile: ZipFile,
         entry: FileHeader,
-        outputDir: String
+        outputDir: String,
     ) {
         val outputFile = File(outputDir, fixEntryName(entry.fileName))
         if (!outputFile.canonicalPath.startsWith(outputDir) &&
@@ -135,7 +134,9 @@ class ZipExtractor(
                         if (!listener.isCancelled) {
                             write(buf, 0, len)
                             updatePosition.updatePosition(len.toLong())
-                        } else break
+                        } else {
+                            break
+                        }
                     }
                     close()
                     outputFile.setLastModified(entry.lastModifiedTimeEpoch)
@@ -145,8 +146,8 @@ class ZipExtractor(
                 context.getString(
                     R.string.error_archive_cannot_extract,
                     entry.fileName,
-                    outputDir
-                )
+                    outputDir,
+                ),
             )
         }
     }

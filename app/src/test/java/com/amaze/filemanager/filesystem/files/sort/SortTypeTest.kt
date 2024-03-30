@@ -31,62 +31,61 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R]
+    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 class SortTypeTest {
-
     /** Tests if the Int returned from [SortType.toDirectorySortInt] is as expected */
     @Test
     fun toDirectorySortIntTest() {
         Assert.assertEquals(
             "SortType with SortBy.NAME and SortOrder.ASC was not 0",
             0,
-            SortType(SortBy.NAME, SortOrder.ASC).toDirectorySortInt()
+            SortType(SortBy.NAME, SortOrder.ASC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.LAST_MODIFIED and SortOrder.ASC was not 1",
             1,
-            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC).toDirectorySortInt()
+            SortType(SortBy.LAST_MODIFIED, SortOrder.ASC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.SIZE and SortOrder.ASC was not 2",
             2,
-            SortType(SortBy.SIZE, SortOrder.ASC).toDirectorySortInt()
+            SortType(SortBy.SIZE, SortOrder.ASC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.TYPE and SortOrder.ASC was not 3",
             3,
-            SortType(SortBy.TYPE, SortOrder.ASC).toDirectorySortInt()
+            SortType(SortBy.TYPE, SortOrder.ASC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.NAME and SortOrder.DESC was not 4",
             4,
-            SortType(SortBy.NAME, SortOrder.DESC).toDirectorySortInt()
+            SortType(SortBy.NAME, SortOrder.DESC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.LAST_MODIFIED and SortOrder.DESC was not 5",
             5,
-            SortType(SortBy.LAST_MODIFIED, SortOrder.DESC).toDirectorySortInt()
+            SortType(SortBy.LAST_MODIFIED, SortOrder.DESC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.SIZE and SortOrder.DESC was not 6",
             6,
-            SortType(SortBy.SIZE, SortOrder.DESC).toDirectorySortInt()
+            SortType(SortBy.SIZE, SortOrder.DESC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.TYPE and SortOrder.DESC was not 7",
             7,
-            SortType(SortBy.TYPE, SortOrder.DESC).toDirectorySortInt()
+            SortType(SortBy.TYPE, SortOrder.DESC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.RELEVANCE and SortOrder.ASC was not 0",
             0,
-            SortType(SortBy.RELEVANCE, SortOrder.ASC).toDirectorySortInt()
+            SortType(SortBy.RELEVANCE, SortOrder.ASC).toDirectorySortInt(),
         )
         Assert.assertEquals(
             "SortType with SortBy.RELEVANCE and SortOrder.DESC was not 4",
             4,
-            SortType(SortBy.RELEVANCE, SortOrder.DESC).toDirectorySortInt()
+            SortType(SortBy.RELEVANCE, SortOrder.DESC).toDirectorySortInt(),
         )
     }
 
@@ -96,42 +95,42 @@ class SortTypeTest {
         Assert.assertEquals(
             "0 was not translated to SortType with SortBy.NAME and SortOrder.ASC",
             SortType(SortBy.NAME, SortOrder.ASC),
-            SortType.getDirectorySortType(0)
+            SortType.getDirectorySortType(0),
         )
         Assert.assertEquals(
             "1 was not translated to SortType with SortBy.LAST_MODIFIED and SortOrder.ASC",
             SortType(SortBy.LAST_MODIFIED, SortOrder.ASC),
-            SortType.getDirectorySortType(1)
+            SortType.getDirectorySortType(1),
         )
         Assert.assertEquals(
             "2 was not translated to SortType with SortBy.SIZE and SortOrder.ASC",
             SortType(SortBy.SIZE, SortOrder.ASC),
-            SortType.getDirectorySortType(2)
+            SortType.getDirectorySortType(2),
         )
         Assert.assertEquals(
             "3 was not translated to SortType with SortBy.TYPE and SortOrder.ASC",
             SortType(SortBy.TYPE, SortOrder.ASC),
-            SortType.getDirectorySortType(3)
+            SortType.getDirectorySortType(3),
         )
         Assert.assertEquals(
             "4 was not translated to SortType with SortBy.NAME and SortOrder.DESC",
             SortType(SortBy.NAME, SortOrder.DESC),
-            SortType.getDirectorySortType(4)
+            SortType.getDirectorySortType(4),
         )
         Assert.assertEquals(
             "5 was not translated to SortType with SortBy.LAST_MODIFIED and SortOrder.DESC",
             SortType(SortBy.LAST_MODIFIED, SortOrder.DESC),
-            SortType.getDirectorySortType(5)
+            SortType.getDirectorySortType(5),
         )
         Assert.assertEquals(
             "6 was not translated to SortType with SortBy.SIZE and SortOrder.DESC",
             SortType(SortBy.SIZE, SortOrder.DESC),
-            SortType.getDirectorySortType(6)
+            SortType.getDirectorySortType(6),
         )
         Assert.assertEquals(
             "7 was not translated to SortType with SortBy.TYPE and SortOrder.DESC",
             SortType(SortBy.TYPE, SortOrder.DESC),
-            SortType.getDirectorySortType(7)
+            SortType.getDirectorySortType(7),
         )
     }
 }

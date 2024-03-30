@@ -65,7 +65,7 @@ class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
             txtDesc.marginLeft,
             txtDesc.marginTop,
             Utils.dpToPx(view.context, 4),
-            txtDesc.marginBottom
+            txtDesc.marginBottom,
         )
         txtDesc.layoutParams = layoutParams
 

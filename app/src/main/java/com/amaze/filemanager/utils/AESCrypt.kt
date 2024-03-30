@@ -74,7 +74,6 @@ import kotlin.text.Charsets.UTF_8
  *
  */
 class AESCrypt(password: String) {
-
     private lateinit var password: ByteArray
     private val cipher: Cipher
     private val hmac: Mac
@@ -88,6 +87,7 @@ class AESCrypt(password: String) {
     /*******************
      * PRIVATE METHODS *
      */
+
     /**
      * Generates a pseudo-random byte array.
      * @return pseudo-random byte array of <tt>len</tt> bytes.
@@ -106,7 +106,10 @@ class AESCrypt(password: String) {
      * The generated hash is saved back to the original byte array.<br></br>
      * Maximum array size is [.SHA_SIZE] bytes.
      */
-    private fun digestRandomBytes(bytes: ByteArray, num: Int) {
+    private fun digestRandomBytes(
+        bytes: ByteArray,
+        num: Int,
+    ) {
         require(bytes.size <= SHA_SIZE)
         digest.reset()
         digest.update(bytes)
@@ -152,7 +155,10 @@ class AESCrypt(password: String) {
      * This AES key is used to crypt IV 2 and AES key 2.
      * @return AES key of [.KEY_SIZE] bytes.
      */
-    private fun generateAESKey1(iv: ByteArray, password: ByteArray): ByteArray {
+    private fun generateAESKey1(
+        iv: ByteArray,
+        password: ByteArray,
+    ): ByteArray {
         var aesKey = ByteArray(KEY_SIZE)
         iv.copyInto(aesKey, endIndex = iv.size)
         for (i in 0..8191) {
@@ -211,7 +217,7 @@ class AESCrypt(password: String) {
         version: Int = AESCRYPT_SPEC_VERSION,
         `in`: InputStream,
         out: OutputStream,
-        progressHandler: ProgressHandler
+        progressHandler: ProgressHandler,
     ) {
         var text: ByteArray?
         ivSpec1 = IvParameterSpec(generateIv1())
@@ -285,7 +291,11 @@ class AESCrypt(password: String) {
      */
     @Suppress("LongMethod", "ComplexMethod")
     @Throws(GeneralSecurityException::class)
-    fun decrypt(inSize: Long, `in`: InputStream, out: OutputStream) {
+    fun decrypt(
+        inSize: Long,
+        `in`: InputStream,
+        out: OutputStream,
+    ) {
         var text: ByteArray
         var total =
             (3 + 1 + 1 + BLOCK_SIZE + BLOCK_SIZE + KEY_SIZE + SHA_SIZE + 1 + SHA_SIZE).toLong()
@@ -339,7 +349,7 @@ class AESCrypt(password: String) {
         total = inSize - total // Payload size.
         if (total % BLOCK_SIZE != 0L) {
             throw DecryptFailureException(
-                "Input file is corrupt. BLOCK_SIZE = $BLOCK_SIZE, total was $total"
+                "Input file is corrupt. BLOCK_SIZE = $BLOCK_SIZE, total was $total",
             )
         }
         if (total == 0L) { // Hack: empty files won't enter block-processing for-loop below.

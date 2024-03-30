@@ -39,13 +39,14 @@ class CloudUtilTest {
         }
 
         val generatePathForMode = { mode: OpenMode, path: String ->
-            val prefix = when (mode) {
-                DROPBOX -> CloudHandler.CLOUD_PREFIX_DROPBOX
-                BOX -> CloudHandler.CLOUD_PREFIX_BOX
-                GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
-                ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
-                else -> null
-            }
+            val prefix =
+                when (mode) {
+                    DROPBOX -> CloudHandler.CLOUD_PREFIX_DROPBOX
+                    BOX -> CloudHandler.CLOUD_PREFIX_BOX
+                    GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
+                    ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
+                    else -> null
+                }
             requireNotNull(prefix)
             prefix + RandomPathGenerator.separator + path
         }

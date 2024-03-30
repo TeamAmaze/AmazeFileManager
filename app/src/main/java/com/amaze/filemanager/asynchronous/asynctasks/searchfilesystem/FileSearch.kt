@@ -29,7 +29,7 @@ import java.util.regex.Pattern
 abstract class FileSearch(
     protected val query: String,
     protected val path: String,
-    protected val searchParameters: SearchParameters
+    protected val searchParameters: SearchParameters,
 ) {
     private val mutableFoundFilesLiveData: MutableLiveData<List<SearchResult>> =
         MutableLiveData()
@@ -66,7 +66,7 @@ abstract class FileSearch(
      */
     protected fun publishProgress(
         file: HybridFileParcelable,
-        matchRange: MatchRange
+        matchRange: MatchRange,
     ) {
         foundFilesList.add(SearchResult(file, matchRange))
         mutableFoundFilesLiveData.postValue(foundFilesList)
@@ -75,11 +75,12 @@ abstract class FileSearch(
     private fun simpleFilter(query: String): SearchFilter =
         SearchFilter { fileName ->
             // check case-insensitively if query is contained in fileName
-            val start = fileName.lowercase(Locale.getDefault()).indexOf(
-                query.lowercase(
-                    Locale.getDefault()
+            val start =
+                fileName.lowercase(Locale.getDefault()).indexOf(
+                    query.lowercase(
+                        Locale.getDefault(),
+                    ),
                 )
-            )
             if (start >= 0) {
                 start until start + query.length
             } else {
@@ -116,7 +117,7 @@ abstract class FileSearch(
         // compiles the given query into a Pattern
         Pattern.compile(
             bashRegexToJava(query),
-            Pattern.CASE_INSENSITIVE
+            Pattern.CASE_INSENSITIVE,
         )
 
     /**

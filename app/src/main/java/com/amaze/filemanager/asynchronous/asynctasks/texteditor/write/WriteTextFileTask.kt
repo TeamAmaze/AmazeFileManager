@@ -40,23 +40,23 @@ class WriteTextFileTask(
     activity: TextEditorActivity,
     private val editTextString: String,
     private val textEditorActivityWR: WeakReference<TextEditorActivity>,
-    private val appContextWR: WeakReference<Context>
+    private val appContextWR: WeakReference<Context>,
 ) : Task<Unit, WriteTextFileCallable> {
-
     private var log: Logger = LoggerFactory.getLogger(WriteTextFileTask::class.java)
 
     private val task: WriteTextFileCallable
 
     init {
         val viewModel: TextEditorActivityViewModel by activity.viewModels()
-        task = WriteTextFileCallable(
-            activity,
-            activity.contentResolver,
-            viewModel.file,
-            editTextString,
-            viewModel.cacheFile,
-            activity.isRootExplorer
-        )
+        task =
+            WriteTextFileCallable(
+                activity,
+                activity.contentResolver,
+                viewModel.file,
+                editTextString,
+                viewModel.cacheFile,
+                activity.isRootExplorer,
+            )
     }
 
     override fun getTask(): WriteTextFileCallable = task
@@ -66,20 +66,21 @@ class WriteTextFileTask(
         log.error("Error on text write", error)
         val applicationContext = appContextWR.get() ?: return
 
-        @StringRes val errorMessage: Int = when (error) {
-            is StreamNotFoundException -> {
-                R.string.error_file_not_found
+        @StringRes val errorMessage: Int =
+            when (error) {
+                is StreamNotFoundException -> {
+                    R.string.error_file_not_found
+                }
+                is IOException -> {
+                    R.string.error_io
+                }
+                is ShellNotRunningException -> {
+                    R.string.root_failure
+                }
+                else -> {
+                    R.string.error
+                }
             }
-            is IOException -> {
-                R.string.error_io
-            }
-            is ShellNotRunningException -> {
-                R.string.root_failure
-            }
-            else -> {
-                R.string.error
-            }
-        }
         Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show()
     }
 

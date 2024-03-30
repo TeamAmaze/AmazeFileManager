@@ -59,10 +59,9 @@ import java.io.InputStreamReader
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class ListFilesCommandTest2 {
-
     val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
     val lsLines =
@@ -81,28 +80,30 @@ class ListFilesCommandTest2 {
                 anyBoolean(),
                 anyBoolean(),
                 argumentCaptor<(OpenMode) -> Unit>().capture(),
-                argumentCaptor<(HybridFileParcelable) -> Unit>().capture()
-            )
+                argumentCaptor<(HybridFileParcelable) -> Unit>().capture(),
+            ),
         ).thenCallRealMethod()
         `when`(
             mockCommand.executeRootCommand(
                 anyString(),
                 anyBoolean(),
-                anyBoolean()
-            )
+                anyBoolean(),
+            ),
         ).thenCallRealMethod()
         `when`(mockCommand.runShellCommand("pwd")).thenReturn(
             object : Shell.Result() {
                 override fun getOut(): MutableList<String> = listOf("/").toMutableList()
+
                 override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
+
                 override fun getCode(): Int = 0
-            }
+            },
         )
         `when`(mockCommand.runShellCommandToList("ls -l \"/bin\"")).thenReturn(lsLines)
         `when`(
             mockCommand.runShellCommandToList(
-                "stat -c '%A %h %G %U %B %Y %N' /bin/*"
-            )
+                "stat -c '%A %h %G %U %B %Y %N' /bin/*",
+            ),
         ).thenThrow(ShellCommandInvalidException("Intentional exception"))
         TestUtils.replaceObjectInstance(ListFilesCommand.javaClass, mockCommand)
     }

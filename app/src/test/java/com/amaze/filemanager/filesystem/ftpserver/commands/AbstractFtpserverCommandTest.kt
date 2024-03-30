@@ -38,10 +38,9 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractFtpserverCommandTest {
-
     protected lateinit var logger: LogMessageFilter
 
     protected lateinit var session: IoSession
