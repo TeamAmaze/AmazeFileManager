@@ -27,9 +27,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.R;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -51,12 +50,12 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
   private final Logger LOG = LoggerFactory.getLogger(AppsAdapterPreloadModel.class);
 
   private Context mContext;
-  private GlideRequest<Drawable> request;
+  private RequestBuilder<Drawable> request;
   private List<String> items;
   private boolean isBottomSheet;
 
   public AppsAdapterPreloadModel(Fragment f, boolean isBottomSheet) {
-    request = GlideApp.with(f).asDrawable().fitCenter();
+    request = Glide.with(f).asDrawable().fitCenter();
     this.mContext = f.requireContext();
     this.isBottomSheet = isBottomSheet;
   }

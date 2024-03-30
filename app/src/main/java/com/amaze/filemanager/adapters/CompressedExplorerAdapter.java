@@ -23,7 +23,6 @@ package com.amaze.filemanager.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
@@ -39,6 +38,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.Utils;
+import com.bumptech.glide.Glide;
 
 import android.app.Activity;
 import android.content.Context;
@@ -240,7 +240,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
               compressedExplorerFragment.getResources().getDisplayMetrics()));
 
     if (rowItem.type == CompressedObjectParcelable.TYPE_GOBACK) {
-      GlideApp.with(compressedExplorerFragment)
+      Glide.with(compressedExplorerFragment)
           .load(R.drawable.ic_arrow_left_white_24dp)
           .into(holder.genericIcon);
       gradientDrawable.setColor(Utils.getColor(context, R.color.goback_item));
@@ -248,9 +248,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
       holder.txtDesc.setText("");
       holder.date.setText(R.string.goback);
     } else {
-      GlideApp.with(compressedExplorerFragment)
-          .load(rowItem.iconData.image)
-          .into(holder.genericIcon);
+      Glide.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
 
       if (compressedExplorerFragment.showLastModified)
         holder.date.setText(Utils.getDate(context, rowItem.date));

@@ -1,0 +1,167 @@
+[versions]
+compileSdk = "33"
+minSdk = "19"
+targetSdk = "33"
+
+kotlin = "1.9.10"
+
+legacySupportV13 = "1.0.0"
+systembartint = "1.0.3"
+robolectric = "4.9"
+glide = "4.14.2"
+sshj = "0.35.0"
+jcifs = "2.1.9"
+eventbus = "3.3.1"
+fabSpeedDial = "3.1.1"
+room = "2.5.2"
+bouncyCastle = "1.76"
+awaitility = "3.1.6"
+androidXCore = "1.7.0"
+androidMaterial = "1.5.0" # Upgrade to 1.5 requires targetSdk 31
+androidXFragment = "1.5.6"
+androidXAppCompat = "1.6.1"
+androidXAnnotation = "1.7.1"
+androidXPref = "1.2.1"
+androidXPalette = "1.0.0"
+androidXCardView = "1.0.0"
+androidXConstraintLayout = "1.1.3"
+androidXTest = "1.5.0"
+androidXTestRunner = "1.5.2"
+androidXTestExt = "1.1.5"
+androidXArchCoreTest = "2.2.0"
+androidXMultidex = "2.0.1"
+autoService = "1.0-rc4"
+kotlinxCoroutineTest = "1.7.3"
+kotlinStdlibJdk8 = "1.9.20"
+uiAutomator = "2.2.0"
+junit = "4.13.2"
+slf4j = "2.0.7"
+apacheSshd = "1.7.0"
+apacheMina = "2.0.16"
+mockito = "4.11.0"
+mockitoInline = "4.11.0"
+mockitoKotlin = "4.1.0"
+androidBilling = "5.0.0"
+cloudrailSiAndroid = "2.22.4"
+junrar = "7.4.0"
+vectordrawableAnimated = "1.1.0"
+xz = "1.9"
+zip4j = "2.6.4"
+espresso = "3.5.1"
+materialDialogs = "0.9.6.0"
+jacoco = "0.8.11"
+commonsCompress = "1.22"
+libsu = "3.2.1"
+mockk = "1.12.2"
+logbackAndroid = "3.0.0"
+logbackClassic = "1.2.11"
+commonsNet = "3.8.0"
+ftpserver = "1.1.1"
+jsoup = "1.13.1"
+gson = "2.9.1"
+rxAndroid = "2.1.1"
+rxJava = "2.2.9"
+okHttp = "4.9.0"
+acraCore = "5.7.0"
+leakcanaryAndroid = "2.7"
+mpAndroidChart = "v3.0.2"
+concurrentTrees = "2.6.1"
+aboutLibraries = "6.1.1"
+amazeTrashBin = "1.0.10"
+
+[libraries]
+androidX-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidXAppCompat" }
+androidX-constraintLayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidXConstraintLayout" }
+androidX-core = { module = "androidx.core:core-ktx", version.ref = "androidXCore" }
+androidX-cardview = { module = "androidx.cardview:cardview", version.ref = "androidXCardView" }
+androidX-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "androidXArchCoreTest" }
+androidX-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "androidXFragment"}
+androidX-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "androidXFragment"}
+androidX-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
+androidX-legacySupportV13 = { module = "androidx.legacy:legacy-support-v13", version.ref = "legacySupportV13" }
+androidX-annotation = { module = "androidx.annotation:annotation", version.ref = "androidXAnnotation" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidXMultidex" }
+androidX-palette = { module = "androidx.palette:palette-ktx", version.ref = "androidXPalette" }
+androidX-preference = { module = "androidx.preference:preference-ktx", version.ref = "androidXPref" }
+androidX-vectordrawable-animated = { module = "androidx.vectordrawable:vectordrawable-animated", version.ref = "vectordrawableAnimated" }
+
+androidX-test-core = { module = "androidx.test:core", version.ref = "androidXTest" }
+androidX-test-runner = { module = "androidx.test:runner", version.ref = "androidXTestRunner" }
+androidX-test-rules = { module = "androidx.test:rules", version.ref = "androidXTest" }
+androidX-test-expresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+androidX-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidXTestExt" }
+androidX-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiAutomator" }
+
+auto-service = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
+
+bcpkix-jdk18on = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncyCastle" }
+bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncyCastle" }
+
+apache-mina-core = { module = "org.apache.mina:mina-core", version.ref = "apacheMina" }
+apache-sshd = { module = "org.apache.sshd:sshd-core", version.ref = "apacheSshd" }
+apache-ftpserver-ftplet-api = { module = "org.apache.ftpserver:ftplet-api", version.ref = "ftpserver" }
+apache-ftpserver-core = { module = "org.apache.ftpserver:ftpserver-core", version.ref = "ftpserver" }
+
+google-play-billing = { module = "com.android.billingclient:billing", version.ref = "androidBilling" }
+
+cloudrail-si-android = { module = "com.cloudrail:cloudrail-si-android", version.ref = "cloudrailSiAndroid" }
+
+eventbus = { module = "org.greenrobot:eventbus", version.ref = "eventbus" }
+concurrent-trees = { module = "com.github.npgall:concurrent-trees", version.ref = "concurrentTrees" }
+
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }
+kotlin-coroutine-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutineTest" }
+
+libsu-core = { module = "com.github.topjohnwu.libsu:core", version.ref = "libsu" }
+libsu-io = { module = "com.github.topjohnwu.libsu:io", version.ref = "libsu" }
+
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroid" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
+
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-rxjava2 = { module = "androidx.room:room-rxjava2", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-migration = { module = "androidx.room:room-migration", version.ref = "room" }
+
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
+commons-net = { module = "commons-net:commons-net", version.ref = "commonsNet" }
+
+materialdialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "materialDialogs" }
+materialdialogs-commons = { module = "com.afollestad.material-dialogs:commons", version.ref = "materialDialogs" }
+mpAndroidChart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpAndroidChart" }
+aboutLibraries = { module = "com.mikepenz:aboutlibraries", version.ref = "aboutLibraries" }
+
+jcifs-ng = { module = "eu.agno3.jcifs:jcifs-ng", version.ref = "jcifs" }
+speedDial = { module = "com.leinardi.android:speed-dial", version.ref = "fabSpeedDial" }
+sshj = { module = "com.hierynomus:sshj", version.ref = "sshj" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okHttp" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+robolectric-shadows-httpclient = { module = "org.robolectric:shadows-httpclient", version.ref = "robolectric" }
+
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-recyclerView = { module = "com.github.bumptech.glide:recyclerview-integration", version.ref = "glide" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+systembarTint = { module = "com.readystatesoftware.systembartint:systembartint", version.ref = "systembartint" }
+
+rxandroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxAndroid" }
+rxjava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxJava" }
+
+xz = { module = "org.tukaani:xz", version.ref = "xz" }
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
+junrar = { module = "com.github.junrar:junrar", version.ref = "junrar" }
+
+acra-core = { module = "ch.acra:acra-core", version.ref = "acraCore" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
+
+amaze-trashBin = { module = "com.github.TeamAmaze:AmazeTrashBin", version.ref = "amazeTrashBin" }
