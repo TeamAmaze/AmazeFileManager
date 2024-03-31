@@ -22,7 +22,7 @@ package com.amaze.filemanager.utils
 
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.*
+import java.util.UUID
 
 /**
  * UUIDv5 implementation, referenced from

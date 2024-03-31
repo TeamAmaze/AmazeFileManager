@@ -39,7 +39,6 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.utils.DataUtils
 import java.io.File
-import java.util.ArrayList
 import kotlin.concurrent.thread
 
 /**

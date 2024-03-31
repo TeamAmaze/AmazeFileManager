@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.FileSearch.SearchFilter
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import java.util.Locale
 import java.util.regex.Pattern

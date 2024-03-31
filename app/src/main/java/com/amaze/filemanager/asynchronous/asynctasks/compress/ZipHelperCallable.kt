@@ -32,7 +32,6 @@ import net.lingala.zip4j.model.FileHeader
 import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.lang.ref.WeakReference
-import kotlin.collections.ArrayList
 
 class ZipHelperCallable(
     c: Context,

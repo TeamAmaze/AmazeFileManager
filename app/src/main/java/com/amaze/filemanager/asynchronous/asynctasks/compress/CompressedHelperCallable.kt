@@ -25,7 +25,7 @@ import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import org.apache.commons.compress.archivers.ArchiveException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.Callable
 
 abstract class CompressedHelperCallable internal constructor(

@@ -27,7 +27,7 @@ import org.apache.ftpserver.ftplet.FtpFile
 import org.apache.ftpserver.ftplet.User
 import java.io.File
 import java.net.URI
-import java.util.*
+import java.util.StringTokenizer
 
 class RootFileSystemView(
     private val user: User,

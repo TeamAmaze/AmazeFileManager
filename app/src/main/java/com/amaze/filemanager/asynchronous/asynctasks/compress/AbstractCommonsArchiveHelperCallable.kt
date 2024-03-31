@@ -32,7 +32,6 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.lang.ref.WeakReference
-import java.util.*
 
 abstract class AbstractCommonsArchiveHelperCallable(
     context: Context,

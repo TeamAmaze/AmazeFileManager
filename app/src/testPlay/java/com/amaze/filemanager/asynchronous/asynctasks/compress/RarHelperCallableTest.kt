@@ -23,7 +23,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 import android.os.Environment
 import com.github.junrar.exception.UnsupportedRarV5Exception
 import org.apache.commons.compress.archivers.ArchiveException
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.io.File
 

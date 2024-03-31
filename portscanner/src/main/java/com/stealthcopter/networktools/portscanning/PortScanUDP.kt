@@ -17,7 +17,6 @@
  */
 package com.stealthcopter.networktools.portscanning
 
-import java.lang.Exception
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress

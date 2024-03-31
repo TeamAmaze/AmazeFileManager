@@ -27,10 +27,13 @@ package com.amaze.filemanager.asynchronous.management;
  * this class can only handle progress with one object at a time. Hence, class also provides
  * convenience methods to serialize the service startup.
  */
-import static com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil.ServiceStatusCallbacks.*;
+import static com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil.ServiceStatusCallbacks.STATE_HALTED;
+import static com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil.ServiceStatusCallbacks.STATE_RESUMED;
+import static com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil.ServiceStatusCallbacks.STATE_UNSET;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.AbstractRepeatingRunnable;

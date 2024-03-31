@@ -34,7 +34,6 @@ import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
 import com.amaze.filemanager.utils.safeLet
-import kotlin.collections.ArrayList
 
 class RecyclerAdapterDragListener(
     private val adapter: RecyclerAdapter,

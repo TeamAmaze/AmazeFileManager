@@ -21,7 +21,6 @@
 package com.amaze.filemanager.adapters.data
 
 import com.amaze.filemanager.utils.safeLet
-import java.util.Comparator
 
 class AppDataSorter(var sort: Int, isAscending: Boolean) :
     Comparator<AppDataParcelable?> {

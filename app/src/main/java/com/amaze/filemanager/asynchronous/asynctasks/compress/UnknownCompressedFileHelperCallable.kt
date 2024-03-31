@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import java.util.ArrayList
 
 /**
  * For gzip, bz2, lzma and xz compressed files.

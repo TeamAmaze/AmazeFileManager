@@ -25,7 +25,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.robolectric.util.ReflectionHelpers
-import java.util.*
+import java.util.UUID
 import kotlin.text.Charsets.UTF_8
 
 /**

@@ -23,7 +23,7 @@ package com.amaze.filemanager.ui.activities.texteditor
 import androidx.lifecycle.ViewModel
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
 import java.io.File
-import java.util.*
+import java.util.Timer
 
 class TextEditorActivityViewModel : ViewModel() {
     var original: String? = null

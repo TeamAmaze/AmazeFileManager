@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
 import java.security.KeyStore
-import java.util.*
+import java.util.LinkedList
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
 import kotlin.concurrent.thread

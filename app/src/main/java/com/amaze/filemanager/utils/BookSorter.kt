@@ -20,8 +20,6 @@
 
 package com.amaze.filemanager.utils
 
-import java.util.*
-
 /** Created by Arpit on 20-11-2015.  */
 class BookSorter : Comparator<Array<String>> {
     override fun compare(

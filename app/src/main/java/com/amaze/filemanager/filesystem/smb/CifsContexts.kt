@@ -29,7 +29,7 @@ import jcifs.CIFSException
 import jcifs.config.PropertyConfiguration
 import jcifs.context.BaseContext
 import jcifs.context.SingletonContext
-import java.util.*
+import java.util.Properties
 import java.util.concurrent.ConcurrentHashMap
 
 object CifsContexts {

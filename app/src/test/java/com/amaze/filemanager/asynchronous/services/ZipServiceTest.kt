@@ -34,7 +34,9 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.model.FileHeader
 import org.awaitility.Awaitility.await
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,7 +53,7 @@ import java.nio.file.attribute.FileTime
 import java.time.LocalDateTime.parse
 import java.time.ZoneId.of
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
