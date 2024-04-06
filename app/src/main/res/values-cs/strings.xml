@@ -803,6 +803,7 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="preference_language_system_default">Dle systému</string>
     <string name="error.listfile.smb.title">Nedaří se načíst seznam souborů SMB</string>
     <string name="error.listfile.smb">Výpis chybných souborů na %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Chyba při výpisu souborů na %s - server SMB pravděpodobně nepovoluje anonymní přístup ke sdílené složce IPC$. Můžete zkusit zadat název sdílené složky přímo v nastavení připojení.</string>
     <string name="trash_bin">Koš</string>
     <string name="delete_permanently_checkbox">Odstranit trvale</string>
     <string name="restore">Obnovit</string>
