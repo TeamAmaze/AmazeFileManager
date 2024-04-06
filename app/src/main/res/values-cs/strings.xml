@@ -187,6 +187,7 @@
     <string name="circular_images">Používat kruhové ikony pro obrázky a videa</string>
     <string name="circular_icons">Používat kruhové ikony</string>
     <string name="follow_battery_saver_title">Sledujte spořič baterie</string>
+    <string name="follow_battery_saver_desc">Je-li vybrána a režim spořiče baterie je zapnutý, změní se motiv na tmavý.</string>
     <string name="back_title">Tlačítko Zpět</string>
     <string name="back_summary">Tlačítko Zpět na začátku seznamu</string>
     <string name="details">Podrobnosti</string>
