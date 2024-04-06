@@ -813,5 +813,6 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="trash_bin_retention_num_of_files_summary">Maximální počet souborů v koši</string>
     <string name="trash_bin_retention_days_title">Zadržení ve dnech</string>
     <string name="trash_bin_retention_days_summary">Maximální počet dní, po kterých může být soubor v koši</string>
+    <string name="trash_bin_retention_bytes_title">Uchování podle velikosti dat</string>
     </resources>
 
