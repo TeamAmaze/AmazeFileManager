@@ -121,6 +121,7 @@
     <string name="sort_name">Jméno</string>
     <string name="lastModified">Naposledy upraveno</string>
     <string name="sort_size">Rozměry</string>
+    <string name="sort_relevance">Důležitost</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Vybrat soubor</string>
