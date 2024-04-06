@@ -799,5 +799,6 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="same_dir_overwrite_error">Cílová a zdrojová složka by se k přepisu neměla shodovat </string>
     <string name="not_found_enabled_webview">Žádný dostupný prohlížeč</string>
     <string name="preference_language_title">Jazyk aplikace</string>
+    <string name="preference_language_dialog_title">Zvolte jazyk</string>
     </resources>
 
