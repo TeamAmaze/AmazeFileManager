@@ -809,5 +809,6 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="restore">Obnovit</string>
     <string name="restore_files">Obnova souborů</string>
     <string name="restoring">Obnovuji... </string>
+    <string name="trash_bin_retention_num_of_files_title">Uchování podle počtu souborů</string>
     </resources>
 
