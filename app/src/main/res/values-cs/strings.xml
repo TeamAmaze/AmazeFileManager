@@ -816,5 +816,6 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="trash_bin_retention_bytes_title">Uchování podle velikosti dat</string>
     <string name="trash_bin_retention_bytes_summary">Maximální objem dat (v MB), který může koš uložit</string>
     <string name="trash_bin_cleanup_interval_title">Interval čištění</string>
-    </resources>
+    <string name="trash_bin_cleanup_interval_summary">Interval spouštění automatického čištění (v hodinách)</string>
+</resources>
 
