@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
     <string name="directorysort">Režim řazení adresářů</string>
     <string name="sort_by">Seřadit podle</string>
+    <string name="sort_by_colon">Seřadit podle</string>
     <string name="sort_only_this">Pouze pro tuto složku</string>
     <string name="theme">Motiv vzhledu</string>
     <string name="random">Náhodný skin</string>
