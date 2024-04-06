@@ -77,6 +77,7 @@
     <string name="dialog_delete_category_files">Soubory</string>
     <string name="dialog_delete_disclaimer">Vymazání níže uvedených položek je natrvalo odstraní ze zařízení a nebude je možné obnovit.</string>
     <string name="dialog_delete_temporarily_disclaimer">Opravdu chcete smazat následující soubory?</string>
+    <string name="dialog_restore_disclaimer">Opravdu chcete obnovit následující soubory?</string>
     <string name="dialog_delete_title">Odstranit položky natrvalo?</string>
     <string name="deleting">Odstraňování</string>
     <string name="question_set_path_as_home">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
