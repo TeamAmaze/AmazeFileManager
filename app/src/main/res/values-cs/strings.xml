@@ -125,6 +125,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Vybrat soubor</string>
+    <string name="pick_files">Vyberte jeden nebo více souborů</string>
     <string name="process_viewer">Prohlížeč procesů</string>
     <string name="in_safe">Nedostatek místa</string>
     <string name="no_file_overwrite">Žádný soubor nebyl přepsaný</string>
