@@ -801,5 +801,6 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="preference_language_title">Jazyk aplikace</string>
     <string name="preference_language_dialog_title">Zvolte jazyk</string>
     <string name="preference_language_system_default">Dle systému</string>
+    <string name="trash_bin">Koš</string>
     </resources>
 
