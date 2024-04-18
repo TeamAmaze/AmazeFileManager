@@ -34,7 +34,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.amaze.filemanager.GlideApp
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.AppsRecyclerAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
@@ -55,6 +54,7 @@ import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.startActivityCatchingSecurityException
 import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
+import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import org.slf4j.Logger
@@ -321,7 +321,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         val sizeProvider = ViewPreloadSizeProvider<String>()
         var preloader =
             RecyclerViewPreloader(
-                GlideApp.with(this),
+                Glide.with(this),
                 modelProvider,
                 sizeProvider,
                 GlideConstants.MAX_PRELOAD_FILES,

@@ -92,7 +92,7 @@ class CryptUtilEspressoTest {
         CryptUtil(
             AppConfig.getInstance(),
             HybridFileParcelable(targetFile.absolutePath).also {
-                it.size = targetFile.length()
+                it.setSize(targetFile.length())
             },
             Environment.getExternalStorageDirectory().absolutePath,
             ProgressHandler(),
@@ -136,7 +136,7 @@ class CryptUtilEspressoTest {
         CryptUtil(
             AppConfig.getInstance(),
             HybridFileParcelable(targetFile.absolutePath).also {
-                it.size = targetFile.length()
+                it.setSize(targetFile.length())
             },
             Environment.getExternalStorageDirectory().absolutePath,
             ProgressHandler(),
