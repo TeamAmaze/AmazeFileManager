@@ -812,13 +812,14 @@ class SftpConnectDialog : DialogFragment() {
             prefix = getProtocolPrefixFromDropdownSelection(),
             connectionName = binding.connectionET.text.toString(),
             hostname = binding.ipET.text.toString(),
-            port = binding.portET.text.toString().let {
-                if (it.isEmpty() || it.isBlank()) {
-                    SSH_DEFAULT_PORT
-                } else {
-                    it.toInt()
-                }
-            },
+            port =
+                binding.portET.text.toString().let {
+                    if (it.isEmpty() || it.isBlank()) {
+                        SSH_DEFAULT_PORT
+                    } else {
+                        it.toInt()
+                    }
+                },
             defaultPath = binding.defaultPathET.text.toString(),
             username = binding.usernameET.text.toString().urlEncoded(),
             password =
