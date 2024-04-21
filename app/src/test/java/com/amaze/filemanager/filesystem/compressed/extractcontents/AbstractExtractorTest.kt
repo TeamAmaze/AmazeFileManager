@@ -32,17 +32,22 @@ import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswor
 import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.randomBytes
-import org.junit.*
+import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowEnvironment
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
+import java.util.TimeZone
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])

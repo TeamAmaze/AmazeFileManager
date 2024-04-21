@@ -37,7 +37,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Locale
 
 class ReadTextFileTask(
     activity: TextEditorActivity,

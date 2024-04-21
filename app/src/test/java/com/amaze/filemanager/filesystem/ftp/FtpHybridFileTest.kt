@@ -46,8 +46,14 @@ import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.apache.ftpserver.usermanager.impl.WritePermission
 import org.awaitility.Awaitility.await
-import org.junit.*
-import org.junit.Assert.*
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.io.File

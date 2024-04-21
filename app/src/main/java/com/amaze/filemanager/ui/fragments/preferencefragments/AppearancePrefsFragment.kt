@@ -27,7 +27,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.ui.theme.AppThemePreference
-import java.util.*
+import java.util.Objects
 
 class AppearancePrefsFragment : BasePrefsFragment() {
     override val title = R.string.appearance

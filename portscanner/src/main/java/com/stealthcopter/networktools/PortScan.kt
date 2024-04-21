@@ -25,7 +25,6 @@ import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import java.net.InetAddress
 import java.net.UnknownHostException
-import java.util.*
 
 /** Created by mat on 14/12/15.  */
 class PortScan // This class is not to be instantiated

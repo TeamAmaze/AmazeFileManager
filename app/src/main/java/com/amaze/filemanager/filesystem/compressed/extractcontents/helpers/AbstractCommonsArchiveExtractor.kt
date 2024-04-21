@@ -30,8 +30,11 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import org.apache.commons.compress.archivers.ArchiveEntry
 import org.apache.commons.compress.archivers.ArchiveInputStream
-import java.io.*
-import java.util.*
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 
 abstract class AbstractCommonsArchiveExtractor(
     context: Context,

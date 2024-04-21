@@ -20,7 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4

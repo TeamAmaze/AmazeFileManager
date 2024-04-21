@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.views.drawer
 
 import android.view.MenuItem
 import androidx.lifecycle.ViewModel
-import java.util.*
 
 class DrawerViewModel : ViewModel() {
     private val menuMetadataMap = HashMap<HasherOfMenuItem, MenuMetadata>()

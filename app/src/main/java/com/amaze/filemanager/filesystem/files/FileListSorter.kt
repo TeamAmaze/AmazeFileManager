@@ -27,6 +27,10 @@ import com.amaze.filemanager.filesystem.files.sort.SortBy
 import com.amaze.filemanager.filesystem.files.sort.SortType
 import java.lang.Long
 import java.util.Locale
+import kotlin.Boolean
+import kotlin.Comparator
+import kotlin.Int
+import kotlin.String
 
 /**
  * [Comparator] implementation to sort [LayoutElementParcelable]s.

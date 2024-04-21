@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.io.LineNumberReader
 import java.io.StringReader
-import java.util.ArrayList
 
 class SearchTextTask(
     private val textToSearch: String,

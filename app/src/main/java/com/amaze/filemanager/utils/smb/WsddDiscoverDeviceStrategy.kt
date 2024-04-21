@@ -40,7 +40,8 @@ import java.io.StringReader
 import java.net.DatagramPacket
 import java.net.InetAddress
 import java.net.MulticastSocket
-import java.util.*
+import java.util.UUID
+import java.util.WeakHashMap
 
 /**
  * [SmbDeviceScannerObservable.DiscoverDeviceStrategy] implementation to discover SMB devices using

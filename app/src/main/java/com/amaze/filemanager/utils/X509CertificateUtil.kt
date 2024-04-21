@@ -23,7 +23,7 @@ package com.amaze.filemanager.utils
 import net.schmizz.sshj.common.ByteArrayUtils
 import org.json.JSONObject
 import java.security.MessageDigest
-import java.util.*
+import java.util.WeakHashMap
 
 object X509CertificateUtil {
     const val SUBJECT = "subject"

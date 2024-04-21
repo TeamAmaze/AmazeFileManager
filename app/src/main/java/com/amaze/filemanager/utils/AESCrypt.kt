@@ -22,6 +22,8 @@ package com.amaze.filemanager.utils
 
 import android.util.Log
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
+import com.amaze.filemanager.utils.AESCrypt.DecryptFailureException
+import com.amaze.filemanager.utils.AESCrypt.IncorrectEncryptedDataException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream

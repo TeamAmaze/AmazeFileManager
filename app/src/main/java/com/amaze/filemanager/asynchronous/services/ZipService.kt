@@ -22,7 +22,11 @@ package com.amaze.filemanager.asynchronous.services
 
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.O
@@ -52,11 +56,15 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.attribute.BasicFileAttributes
-import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipException
 import java.util.zip.ZipOutputStream

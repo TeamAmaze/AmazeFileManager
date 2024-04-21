@@ -27,7 +27,7 @@ import net.schmizz.sshj.transport.verification.HostKeyVerifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.security.PublicKey
-import java.util.*
+import java.util.Collections
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 

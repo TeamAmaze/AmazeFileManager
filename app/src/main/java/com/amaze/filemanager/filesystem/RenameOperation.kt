@@ -26,7 +26,11 @@ import android.util.Log
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation.mkdir
 import com.amaze.filemanager.filesystem.root.RenameFileCommand.renameFile
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.nio.channels.FileChannel
 
 object RenameOperation {

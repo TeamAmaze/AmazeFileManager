@@ -22,7 +22,10 @@ package com.amaze.filemanager.filesystem.cloud
 
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode.*
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.BOX
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.DROPBOX
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.GDRIVE
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.ONEDRIVE
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import org.junit.Assert
 import org.junit.Test

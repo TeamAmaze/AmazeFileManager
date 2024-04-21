@@ -23,7 +23,12 @@ package com.amaze.filemanager.filesystem.ftp
 import net.schmizz.sshj.xfer.FilePermission
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
-import org.apache.commons.net.ftp.FTPFile.*
+import org.apache.commons.net.ftp.FTPFile.EXECUTE_PERMISSION
+import org.apache.commons.net.ftp.FTPFile.GROUP_ACCESS
+import org.apache.commons.net.ftp.FTPFile.READ_PERMISSION
+import org.apache.commons.net.ftp.FTPFile.USER_ACCESS
+import org.apache.commons.net.ftp.FTPFile.WORLD_ACCESS
+import org.apache.commons.net.ftp.FTPFile.WRITE_PERMISSION
 import org.apache.commons.net.ftp.FTPReply
 import java.io.IOException
 

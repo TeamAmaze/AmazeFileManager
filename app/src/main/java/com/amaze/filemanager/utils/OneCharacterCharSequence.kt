@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.utils
 
-import java.util.*
+import java.util.Arrays
 
 class OneCharacterCharSequence(private val value: Char, override val length: Int) : CharSequence {
     override fun get(index: Int): Char =
