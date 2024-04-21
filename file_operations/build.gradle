@@ -89,7 +89,7 @@ dependencies {
     //smb
     implementation libs.jcifs.ng
 
-    implementation libs.androidx.multidex //Multiple dex files
+    implementation libs.androidX.multidex //Multiple dex files
 
     //TODO some libs are not needed
 
