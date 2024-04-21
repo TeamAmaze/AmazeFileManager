@@ -106,6 +106,8 @@ class HiddenAdapter(
                 val fragmentActivity = mainFragment.requireActivity()
                 if (file.isDirectory(context)) {
                     fragmentActivity.runOnUiThread {
+                        mainFragment.hideFab = false
+                        mainFragment.requireMainActivity().showFab()
                         mainFragment.loadlist(
                             file.path,
                             false,
