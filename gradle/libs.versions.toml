@@ -80,7 +80,7 @@ androidX-fragment-testing = { module = "androidx.fragment:fragment-testing", ver
 androidX-material = { module = "com.google.android.material:material", version.ref = "androidMaterial" }
 androidX-legacySupportV13 = { module = "androidx.legacy:legacy-support-v13", version.ref = "legacySupportV13" }
 androidX-annotation = { module = "androidx.annotation:annotation", version.ref = "androidXAnnotation" }
-androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "androidXMultidex" }
+androidX-multidex = { module = "androidx.multidex:multidex", version.ref = "androidXMultidex" }
 androidX-palette = { module = "androidx.palette:palette-ktx", version.ref = "androidXPalette" }
 androidX-preference = { module = "androidx.preference:preference-ktx", version.ref = "androidXPref" }
 androidX-vectordrawable-animated = { module = "androidx.vectordrawable:vectordrawable-animated", version.ref = "vectordrawableAnimated" }
