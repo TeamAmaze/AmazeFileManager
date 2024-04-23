@@ -781,6 +781,7 @@ smb_instructions
     <string name="preference_language_system_default">Domyślne ustawienie systemowe</string>
     <string name="trash_bin">Kosz</string>
     <string name="delete_permanently_checkbox">Usuń trwale</string>
+    <string name="restore_files">Przywracanie plików</string>
     <string name="restoring">Przywracanie...</string>
     </resources>
 
