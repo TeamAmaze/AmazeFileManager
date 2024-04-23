@@ -738,6 +738,8 @@ smb_instructions
     <string name="ui_summary">Kontroluj, jakie informacje mają być wyświetlane, dostosuj pasek boczny i przełączaj preferencje interfejsu użytkownika</string>
     <string name="behavior_summary">Zmodyfikuj zachowania, takie jak wyszukiwanie zaawansowane i czy otwierać pliki jako nowe zadanie</string>
     <string name="security_summary">Skonfiguruj hasło i szyfrowanie</string>
+    <string name="backup_summary">Eksportuj/Importuj ustawienia Amaze</string>
+
     <string name="pref_export">Eksport</string>
     <string name="pref_export_summary">Eksportuj ustawienia</string>
     <string name="pref_import">Import</string>
