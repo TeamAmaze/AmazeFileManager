@@ -179,7 +179,7 @@
     <string name="package_installer">Εγκαταστάτης Πακέτου</string>
     <string name="view">Εμφάνιση</string>
     <string name="install">Εγκατάσταση</string>
-    <string name="archive">Συμπιεσμένο αρχείο</string>
+    <string name="archive">Αρχειοθέτηση</string>
     <string name="archive_text">Αυτό είναι ένα συμπιεσμένο αρχείο. Τι ενέργεια θέλετε να κάνετε;</string>
     <string name="package_installer_text">Αυτό είναι ένα αρχείο εγκατάστασης. Τι ενέργεια θέλετε να κάνετε;</string>
     <string name="xda_title">XDA</string>
