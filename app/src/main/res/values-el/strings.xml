@@ -125,6 +125,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Επιλέξτε ένα αρχείο</string>
+    <string name="pick_files">Επιλέξτε ένα ή περισσότερα αρχεία</string>
     <string name="process_viewer">Επόπτης διεργασιών</string>
     <string name="in_safe">Ανεπαρκής χώρος</string>
     <string name="no_file_overwrite">Κανένα αρχείο δεν αντικαταστάθηκε</string>
