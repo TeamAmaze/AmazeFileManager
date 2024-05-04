@@ -77,6 +77,7 @@
     <string name="dialog_delete_category_files">Αρχεία</string>
     <string name="dialog_delete_disclaimer">Η διαγραφή των παρακάτω στοιχείων θα τα αφαιρέσει οριστικά από τη συσκευή σας και δεν θα είναι δυνατή η ανάκτησή τους.</string>
     <string name="dialog_delete_temporarily_disclaimer">Σίγουρα θέλετε να διαγράψετε τα ακόλουθα στοιχεία;</string>
+    <string name="dialog_restore_disclaimer">Σίγουρα θέλετε να επαναφέρετε τα ακόλουθα στοιχεία;</string>
     <string name="dialog_delete_title">Διαγραφή στοιχείων μόνιμα;</string>
     <string name="deleting">Διαγραφή</string>
     <string name="question_set_path_as_home">Θέλετε να ορίσετε την τρέχουσα διαδρομή ως \"αρχική\" για αυτή την καρτέλα;</string>
