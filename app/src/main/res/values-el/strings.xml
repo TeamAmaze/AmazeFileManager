@@ -220,7 +220,7 @@
     <string name="archive_summary">Τα συμπιεσμένα αρχεία θα αποσυμπιέζονται σε αυτόν το φάκελο. Η αρχική επιλογή είναι ο φάκελος στον οποίο βρίσκεται το αρχείο συμπίεσης.</string>
     <string name="open_as">Άνοιγμα ως</string>
     <string name="text">Κείμενο</string>
-    <string name="audio">Ήχο</string>
+    <string name="audio">Ήχος</string>
     <string name="video">Βίντεο</string>
     <string name="other">Άλλο</string>
     <string name="image">Εικόνα</string>
