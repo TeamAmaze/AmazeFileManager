@@ -769,5 +769,6 @@
     <string name="preference_language_title">Γλώσσα Εφαρμογής</string>
     <string name="preference_language_dialog_title">Επιλογή Γλώσσας</string>
     <string name="preference_language_system_default">Προεπιλογή Συστήματος</string>
+    <string name="error.listfile.smb.title">Αδυναμία φόρτωσης λίστας αρχείων SMB</string>
     </resources>
 
