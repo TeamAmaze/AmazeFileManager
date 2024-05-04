@@ -188,7 +188,7 @@
     <string name="circular_icons">Χρήση κυκλικών εικονιδίων</string>
     <string name="follow_battery_saver_title">Ακολουθεί την εξοικονόμηση μπαταρίας</string>
     <string name="follow_battery_saver_desc">Εάν επιλεγεί και η λειτουργία εξοικονόμησης μπαταρίας είναι ενεργή, το θέμα αλλάζει σε σκούρο θέμα.</string>
-    <string name="back_title">Πλοήγηση προς τα πίσω</string>
+    <string name="back_title">Πλοήγηση πίσω</string>
     <string name="back_summary">Ενεργοποιεί κατ\' επιλογή πλοήγηση προς τα πίσω στην κορυφή της λίστας</string>
     <string name="details">Λεπτομέρειες</string>
     <string name="translators">Μεταφραστές</string>
