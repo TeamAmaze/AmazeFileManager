@@ -768,5 +768,6 @@
     <string name="not_found_enabled_webview">Δεν υπάρχει διαθέσιμο πρόγραμμα περιήγησης</string>
     <string name="preference_language_title">Γλώσσα Εφαρμογής</string>
     <string name="preference_language_dialog_title">Επιλογή Γλώσσας</string>
+    <string name="preference_language_system_default">Προεπιλογή Συστήματος</string>
     </resources>
 
