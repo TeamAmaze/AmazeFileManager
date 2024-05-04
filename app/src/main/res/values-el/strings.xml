@@ -766,5 +766,6 @@
     <string name="checking_conflicts">Έλεγχος για διενέξεις</string>
     <string name="same_dir_overwrite_error">Ο φάκελος προορισμού και ο φάκελος προέλευσης δεν πρέπει να ταιριάζουν για αντικατάσταση.</string>
     <string name="not_found_enabled_webview">Δεν υπάρχει διαθέσιμο πρόγραμμα περιήγησης</string>
+    <string name="preference_language_title">Γλώσσα Εφαρμογής</string>
     </resources>
 
