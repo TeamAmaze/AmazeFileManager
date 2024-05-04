@@ -456,7 +456,7 @@
     <string name="error_file_too_large">Σφάλμα: Αρχείο πολύ μεγάλο</string>
     <string name="medium_text">Μεσαίο Κείμενο</string>
     <string name="permission_read">Ανάγνωση</string>
-    <string name="permission_write">Γράψε</string>
+    <string name="permission_write">Εγγραφή</string>
     <string name="permission_execute">Εκτέλεση</string>
     <string name="permission_owner">Κάτοχος</string>
     <string name="permission_group">Ομάδα</string>
