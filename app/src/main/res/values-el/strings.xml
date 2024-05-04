@@ -782,5 +782,6 @@
     <string name="trash_bin_retention_days_title">Διατήρηση κατά ημέρες</string>
     <string name="trash_bin_retention_days_summary">Μέγιστες ημέρες για τις οποίες ο κάδος μπορεί να αποθηκεύσει ένα αρχείο</string>
     <string name="trash_bin_retention_bytes_title">Διατήρηση ανά μέγεθος δεδομένων</string>
+    <string name="trash_bin_retention_bytes_summary">Μέγιστα δεδομένα (σε MB) που μπορεί να αποθηκεύσει ο κάδος</string>
     </resources>
 
