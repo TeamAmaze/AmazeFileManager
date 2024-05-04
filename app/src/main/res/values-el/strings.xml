@@ -83,6 +83,7 @@
     <string name="question_set_path_as_home">Θέλετε να ορίσετε την τρέχουσα διαδρομή ως \"αρχική\" για αυτή την καρτέλα;</string>
     <string name="directorysort">Τρόπος ταξινόμησης φακέλων</string>
     <string name="sort_by">Ταξινόμηση κατά</string>
+    <string name="sort_by_colon">Ταξινόμηση κατά:</string>
     <string name="sort_only_this">Μόνο αυτός ο φάκελος</string>
     <string name="theme">Θέμα</string>
     <string name="random">Τυχαία εμφάνιση</string>
