@@ -54,7 +54,7 @@
     <string name="date">Ημερομηνία: </string>
     <string name="location">Βρίσκεται σε: </string>
     <string name="size_capitalized">Μέγεθος</string>
-    <string name="size">μέγεθος φακέλου</string>
+    <string name="size">Μέγ. Φακέλου</string>
     <string name="enterzipname">Εισάγετε το όνομα του Zip</string>
     <string name="no_app_found">Δε βρέθηκε εφαρμογή για το άνοιγμα αυτού του αρχείου</string>
     <string name="copying">Αντιγραφή</string>
