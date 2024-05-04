@@ -777,5 +777,6 @@
     <string name="restore">Επαναφορά</string>
     <string name="restore_files">Επαναφορά Αρχείων</string>
     <string name="restoring">Επαναφορά...</string>
+    <string name="trash_bin_retention_num_of_files_title">Διατήρηση βάσει αριθμού αρχείων</string>
     </resources>
 
