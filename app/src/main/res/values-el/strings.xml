@@ -234,7 +234,7 @@
 
     <string name="color_title">Χρώμα</string>
     <string name="color_summary">Ορίστε το χρώμα διαφόρων στοιχείων της διεπαφής χρήστη</string>
-    <string name="primary_color_title">Κυρίως χρώμα</string>
+    <string name="primary_color_title">Κύριο χρώμα (Αριστερή Καρτέλα)</string>
     <string name="primary_color_summary">Ορίστε το χρώμα των μεγάλων στοιχείων της διεπαφής</string>
     <string name="accent_color_title">Δευτερεύον χρώμα</string>
     <string name="accent_color_summary">Ορίστε το χρώμα του επιπλέοντος κουμπιού + και άλλων μικρών στοιχείων</string>
