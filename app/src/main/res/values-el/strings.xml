@@ -700,7 +700,7 @@
     <string name="info_labels">Τι:\\nΑίτημα:\\nGMT Ώρα:\\nΠακέτο:\\nΈκδοση:\\nOSΈκδοση:\\nΣυσκευή:\\nΜοντέλο:\\nΠροϊόν:</string>
     <string name="your_comment">Το σχόλιό σας (στα Αγγλικά):</string>
     <string name="error_details_headline">Λεπτομέρειες:</string>
-    <string name="app_ui_crash">App/UI κατέρρευσε</string>
+    <string name="app_ui_crash">Διεπ/Εφαρμ. κατέρρευσε</string>
     <string name="error_report_title">Αναφορά σφάλματος</string>
     <string name="crash_report_copied">Αντιγράφηκε η αναφορά κατάρρευσης στο πρόχειρο</string>
     <string name="disableIpcSignature">Απενεργοποίηση ελέγχου υπογραφής IPC (Για παλαιούς διακομιστές SMBv1 - UNSAFE!)</string>
