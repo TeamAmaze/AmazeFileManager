@@ -121,6 +121,7 @@
     <string name="sort_name">Όνομα</string>
     <string name="lastModified">Τροποποίηση</string>
     <string name="sort_size">Μέγεθος</string>
+    <string name="sort_relevance">Σχετικότητα</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Επιλέξτε ένα αρχείο</string>
