@@ -226,7 +226,7 @@
     <string name="image">Εικόνα</string>
     <string name="contributors">Συντελεστές</string>
     <string name="save_paths">Απομνημόνευση διαδρομών</string>
-    <string name="save_path_summary">Κατά την εκκίνηση, οι πιο πρόσφατα προσπελασθέντες φάκελοι θα εμφανίζονται σε κάθε καρτέλα.</string>
+    <string name="save_path_summary">Κατά την εκκίνηση, θα εμφανιστεί ο πιο πρόσφατα προβαλλόμενος φάκελος σε κάθε καρτέλα.</string>
     <string name="select_intent">Επιλογή</string>
     <string name="database">Βάση δεδομένων</string>
     <string name="colored_navigation">Έγχρωμη μπάρα πλοήγησης</string>
