@@ -784,5 +784,6 @@
     <string name="trash_bin_retention_bytes_title">Διατήρηση ανά μέγεθος δεδομένων</string>
     <string name="trash_bin_retention_bytes_summary">Μέγιστα δεδομένα (σε MB) που μπορεί να αποθηκεύσει ο κάδος</string>
     <string name="trash_bin_cleanup_interval_title">Χρονικό διάστημα εκκαθάρισης</string>
-    </resources>
+    <string name="trash_bin_cleanup_interval_summary">Χρονικό διάστημα αυτόματου καθαρισμού (ώρες)</string>
+</resources>
 
