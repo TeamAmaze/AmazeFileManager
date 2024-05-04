@@ -775,5 +775,6 @@
     <string name="trash_bin">Κάδος Απορριμμάτων</string>
     <string name="delete_permanently_checkbox">Μόνιμη Διαγραφή</string>
     <string name="restore">Επαναφορά</string>
+    <string name="restore_files">Επαναφορά Αρχείων</string>
     </resources>
 
