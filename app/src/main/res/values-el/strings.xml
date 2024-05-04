@@ -417,7 +417,7 @@
     <string name="date_taken">Ημ/νία Λήψης</string>
     <string name="exposure_time">Χρόνος έκθεσης</string>
     <string name="aperture_value">Μέγεθος Διαφράγματος</string>
-    <string name="image_iso">Αξιολόγηση Ταχύτητας ISO</string>
+    <string name="image_iso">Βαθμός Ταχύτητας ISO</string>
     <string name="flash_fired">Με Φλας</string>
     <string name="focal_length">Μήκος εστίασης</string>
     <string name="subject">Θέμα</string>
