@@ -140,7 +140,7 @@
     <string name="newfile">Νέο αρχείο</string>
     <string name="no_files">Δεν υπάρχουν αρχεία</string>
     <string name="used">χώρος σε χρήση</string>
-    <string name="used_by_others">χρήση άλλων</string>
+    <string name="used_by_others">Χρήση άλλων</string>
     <string name="free">Ελεύθερα</string>
     <string name="listview">Εμφάνιση σε λίστα</string>
     <string name="gridview">Εμφάνιση σε πλέγμα</string>
