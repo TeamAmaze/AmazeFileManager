@@ -773,5 +773,6 @@
     <string name="error.listfile.smb">Σφάλμα λίστας αρχείων σε %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Σφάλμα λίστας αρχείων στο %s - πιθανότατα ο διακομιστής SMB δεν επιτρέπει την ανώνυμη πρόσβαση κοινής χρήσης σε IPC$. Μπορείτε να δοκιμάσετε να καθορίσετε το όνομα της κοινής χρήσης απευθείας στις ρυθμίσεις σύνδεσης.</string>
     <string name="trash_bin">Κάδος Απορριμμάτων</string>
+    <string name="delete_permanently_checkbox">Μόνιμη Διαγραφή</string>
     </resources>
 
