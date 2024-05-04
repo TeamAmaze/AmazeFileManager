@@ -746,7 +746,7 @@
     <string name="security_error">Αδύνατο το άνοιγμα του αρχείου με αυτήν την εφαρμογή</string>
     <string name="cloud_drive_tooltip">Δημιουργήστε μια σύνδεση Google Drive™ για τη διαχείριση αρχείων από το Amaze File Manager.</string>
     <string name="signin_with_google_title">Πιστοποίηση ταυτότητας για χρήση του Google Drive™</string>
-    <string name="show_system_apps">Εμφάνιση εφαρμογών συστήματος</string>
+    <string name="show_system_apps">Εμφάνιση εφαρμ. συστήματος</string>
     <string name="system_apps">Εφαρμογές συστήματος</string>
     <string name="select_inverse">Επιλέξτε Αντίστροφα</string>
     <string name="select_by_type">Επιλέξτε ανά τύπο</string>
