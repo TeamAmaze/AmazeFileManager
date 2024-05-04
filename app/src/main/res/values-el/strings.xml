@@ -409,7 +409,7 @@
     <string name="image_type">Τύπος εικόνας</string>
     <string name="width">Πλάτος</string>
     <string name="height">Ύψος</string>
-    <string name="date_modified">Ημερομηνία Τροποποίησης</string>
+    <string name="date_modified">Ημ/νία Τροποποίησης</string>
     <string name="software">Λογισμικό</string>
     <string name="creator">Δημιουργός</string>
     <string name="camera_brand">Μάρκα Κάμερας</string>
