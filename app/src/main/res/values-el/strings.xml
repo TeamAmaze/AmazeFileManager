@@ -779,5 +779,6 @@
     <string name="restoring">Επαναφορά...</string>
     <string name="trash_bin_retention_num_of_files_title">Διατήρηση βάσει αριθμού αρχείων</string>
     <string name="trash_bin_retention_num_of_files_summary">Μέγιστα αρχεία που μπορεί να αποθηκεύσει ο κάδος</string>
+    <string name="trash_bin_retention_days_title">Διατήρηση κατά ημέρες</string>
     </resources>
 
