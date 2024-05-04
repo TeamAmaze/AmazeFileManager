@@ -776,7 +776,7 @@
     <string name="error_cannot_find_way_open">Δεν ήταν δυνατή η εύρεση του τρόπου ανοίγματος του αρχείου</string>
     <string name="error_cant_decompress_that_file">Δεν είναι δυνατή η επεξεργασία της αρχειοθήκης που ζητήθηκε</string>
     <string name="analyse_storage">Ανάλυση Αποθήκευσης</string>
-    <string name="download_amaze_utils_text">Σας ανακατευθύνουν στο Amaze File Utilities. Είναι η εφαρμογή ανοιχτού κώδικα που έχει ενσωματωμένους προβολείς ήχου/βίντεο/εικόνας/εγγράφων, σας επιτρέπει να αναλύετε άχρηστα αρχεία για να απελευθερώσετε χώρο αποθήκευσης, γρήγορη μεταφορά μέσω Wifi P2P και πολλά άλλα.\nΠαρακαλούμε να μας υποστηρίξετε δοκιμάζοντας την.</string>
+    <string name="download_amaze_utils_text">Σας ανακατευθύνουμε στο Amaze File Utilities. Είναι η εφαρμογή ανοιχτού κώδικα που έχει ενσωματωμένους προβολείς ήχου/βίντεο/εικόνας/εγγράφων, σας επιτρέπει να αναλύετε άχρηστα αρχεία για να απελευθερώσετε χώρο αποθήκευσης, γρήγορη μεταφορά μέσω Wifi P2P και πολλά άλλα.\nΠαρακαλούμε να μας υποστηρίξετε δοκιμάζοντας την.</string>
     <string name="download">Λήψη</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Σας ευχαριστούμε που εγκαταστήσατε το Amaze File Utilities. Σας ανακατευθύνουμε στην εφαρμογή.</string>
