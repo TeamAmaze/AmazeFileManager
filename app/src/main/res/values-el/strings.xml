@@ -294,7 +294,7 @@
     <string name="invalid_name">Μη έγκυρο όνομα</string>
     <string name="search_hint">Πληκτρολόγησε για αναζήτηση&#8230;</string>
     <string name="advanced_search">Σύνθετη Αναζήτηση</string>
-    <string name="regular_expression">Συνηθισμένη Έκφραση</string>
+    <string name="regular_expression">Κανονική Έκφραση</string>
     <string name="regular_expression_summary">Αναζήτηση χρησιμοποιώντας μια τύπου BASH συνηθισμένη έκφραση</string>
     <string name="match_content">Ταίριασμα περιεχομένου</string>
     <string name="match_content_summary">Αν οριστεί, η κανονική έκφραση θα ταιριάξει με ολόκληρο το όνομα του αρχείου,
