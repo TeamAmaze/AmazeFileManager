@@ -771,5 +771,6 @@
     <string name="preference_language_system_default">Προεπιλογή Συστήματος</string>
     <string name="error.listfile.smb.title">Αδυναμία φόρτωσης λίστας αρχείων SMB</string>
     <string name="error.listfile.smb">Σφάλμα λίστας αρχείων σε %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Σφάλμα λίστας αρχείων στο %s - πιθανότατα ο διακομιστής SMB δεν επιτρέπει την ανώνυμη πρόσβαση κοινής χρήσης σε IPC$. Μπορείτε να δοκιμάσετε να καθορίσετε το όνομα της κοινής χρήσης απευθείας στις ρυθμίσεις σύνδεσης.</string>
     </resources>
 
