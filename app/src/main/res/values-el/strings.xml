@@ -176,7 +176,7 @@
     <string name="unsaved_changes">Μη αποθηκευμένες αλλαγές</string>
     <string name="unsaved_changes_description">Έχετε μη αποθηκευμένες αλλαγές. Θέλετε να τις αποθηκεύσετε πριν την έξοδο;</string>
     <string name="saving">Αποθήκευση</string>
-    <string name="package_installer">Αρχείο εγκατάστασης</string>
+    <string name="package_installer">Εγκαταστάτης Πακέτου</string>
     <string name="view">Εμφάνιση</string>
     <string name="install">Εγκατάσταση</string>
     <string name="archive">Συμπιεσμένο αρχείο</string>
