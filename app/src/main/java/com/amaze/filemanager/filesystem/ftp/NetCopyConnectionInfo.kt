@@ -70,6 +70,7 @@ class NetCopyConnectionInfo(url: String) {
         const val AT = '@'
         const val SLASH = '/'
         const val COLON = ':'
+        const val QUESTION_MARK = '?'
     }
 
     init {
@@ -157,7 +158,7 @@ class NetCopyConnectionInfo(url: String) {
     }
 
     override fun toString(): String {
-        return if (username.isNotEmpty()) {
+        return if (username.isNotBlank() && username.isNotEmpty()) {
             "$prefix$username@$host${if (port == 0) "" else ":$port"}${defaultPath ?: ""}"
         } else {
             "$prefix$host${if (port == 0) "" else ":$port"}${defaultPath ?: ""}"

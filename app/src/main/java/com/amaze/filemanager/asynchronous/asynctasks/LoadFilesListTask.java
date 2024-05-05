@@ -161,6 +161,7 @@ public class LoadFilesListTask
       case SMB:
         list = listSmb(hFile, mainActivityViewModel, mainFragment);
         break;
+      case FTP:
       case SFTP:
         list = listSftp(mainActivityViewModel);
         break;

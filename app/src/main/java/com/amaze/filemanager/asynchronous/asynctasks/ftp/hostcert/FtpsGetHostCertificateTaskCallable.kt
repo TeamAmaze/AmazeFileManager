@@ -21,6 +21,8 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.hostcert
 
 import androidx.annotation.WorkerThread
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.CONNECT_TIMEOUT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
@@ -34,6 +36,7 @@ import javax.net.ssl.HostnameVerifier
 open class FtpsGetHostCertificateTaskCallable(
     private val hostname: String,
     private val port: Int,
+    private val explicitTls: Boolean = false,
 ) : Callable<JSONObject> {
     @WorkerThread
     override fun call(): JSONObject? {
@@ -57,5 +60,12 @@ open class FtpsGetHostCertificateTaskCallable(
         return result
     }
 
-    protected open fun createFTPClient(): FTPSClient = NetCopyClientConnectionPool.ftpClientFactory.create(FTPS_URI_PREFIX) as FTPSClient
+    protected open fun createFTPClient(): FTPSClient =
+        NetCopyClientConnectionPool.ftpClientFactory.create(
+            if (explicitTls) {
+                "$FTPS_URI_PREFIX?$ARG_TLS=$TLS_EXPLICIT"
+            } else {
+                FTPS_URI_PREFIX
+            },
+        ) as FTPSClient
 }

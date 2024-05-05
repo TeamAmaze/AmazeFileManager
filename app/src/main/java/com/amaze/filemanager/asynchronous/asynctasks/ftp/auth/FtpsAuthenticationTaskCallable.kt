@@ -22,6 +22,8 @@ package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.utils.PasswordUtil
@@ -39,6 +41,7 @@ class FtpsAuthenticationTaskCallable(
     private val certInfo: JSONObject,
     username: String,
     password: String,
+    private val explicitTls: Boolean,
 ) : FtpAuthenticationTaskCallable(hostname, port, username, password) {
     override fun call(): FTPClient {
         val ftpClient = createFTPClient() as FTPSClient
@@ -71,8 +74,15 @@ class FtpsAuthenticationTaskCallable(
 
     @Suppress("LabeledExpression")
     override fun createFTPClient(): FTPClient {
+        val uri =
+            buildString {
+                append(FTPS_URI_PREFIX)
+                if (explicitTls) {
+                    append("?$ARG_TLS=$TLS_EXPLICIT")
+                }
+            }
         return (
-            NetCopyClientConnectionPool.ftpClientFactory.create(FTPS_URI_PREFIX)
+            NetCopyClientConnectionPool.ftpClientFactory.create(uri.toString())
                 as FTPSClient
         ).apply {
             this.hostnameVerifier =

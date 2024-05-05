@@ -25,7 +25,10 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.auth.FtpAuthenticationTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairObservable
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.extractBaseUriFrom
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.QUESTION_MARK
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable.create
@@ -131,6 +134,7 @@ object NetCopyClientConnectionPool {
         username: String,
         password: String? = null,
         keyPair: KeyPair? = null,
+        explicitTls: Boolean = false,
     ): NetCopyClient<*>? {
         val url =
             NetCopyClientUtils.deriveUriFrom(
@@ -140,6 +144,7 @@ object NetCopyClientConnectionPool {
                 "",
                 username,
                 password,
+                explicitTls,
             )
         var client = connections[url]
         if (client == null) {
@@ -152,6 +157,7 @@ object NetCopyClientConnectionPool {
                     username,
                     password,
                     keyPair,
+                    explicitTls,
                 )
             if (client != null) connections[url] = client
         } else {
@@ -182,7 +188,8 @@ object NetCopyClientConnectionPool {
         String,
         String?,
         KeyPair?,
-    ) -> NetCopyClient<*>? = { protocol, host, port, hostFingerprint, username, password, keyPair ->
+        Boolean,
+    ) -> NetCopyClient<*>? = { protocol, host, port, hostFingerprint, username, password, keyPair, explicitTls ->
         if (protocol == SSH_URI_PREFIX) {
             createSshClient(host, port, hostFingerprint!!, username, password, keyPair)
         } else {
@@ -193,6 +200,7 @@ object NetCopyClientConnectionPool {
                 hostFingerprint?.let { JSONObject(it) },
                 username,
                 password,
+                explicitTls,
             )
         }
     }
@@ -354,6 +362,8 @@ object NetCopyClientConnectionPool {
                 certInfo?.let { JSONObject(it) },
                 username,
                 password,
+                true == arguments?.containsKey(ARG_TLS) &&
+                    TLS_EXPLICIT == arguments?.get(ARG_TLS),
             )
         }
     }
@@ -366,6 +376,7 @@ object NetCopyClientConnectionPool {
         certInfo: JSONObject?,
         username: String,
         password: String?,
+        explicitTls: Boolean = false,
     ): NetCopyClient<FTPClient>? {
         val task =
             FtpAuthenticationTask(
@@ -375,6 +386,7 @@ object NetCopyClientConnectionPool {
                 certInfo,
                 username,
                 password,
+                explicitTls,
             )
         val latch = CountDownLatch(1)
         var result: FTPClient? = null
@@ -445,7 +457,11 @@ object NetCopyClientConnectionPool {
         override fun create(uri: String): FTPClient {
             return (
                 if (uri.startsWith(FTPS_URI_PREFIX)) {
-                    FTPSClient("TLS", true)
+                    FTPSClient(
+                        "TLS",
+                        !uri.contains(QUESTION_MARK) ||
+                            !uri.substringAfter(QUESTION_MARK).contains("$ARG_TLS=$TLS_EXPLICIT"),
+                    )
                 } else {
                     FTPClient()
                 }

@@ -26,6 +26,8 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.FolderState
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_DEFAULT_PORT
@@ -33,8 +35,10 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AND
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.QUESTION_MARK
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLASH
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
@@ -177,6 +181,10 @@ object NetCopyClientUtils {
                 if (it.port > 0) {
                     append(COLON).append(it.port)
                 }
+                if (!it.arguments.isNullOrEmpty()) {
+                    append(QUESTION_MARK)
+                        .append(it.arguments?.entries?.joinToString(AND.toString()))
+                }
             }
         }
     }
@@ -230,11 +238,13 @@ object NetCopyClientUtils {
         defaultPath: String? = null,
         username: String,
         password: String? = null,
+        explicitTls: Boolean = false,
         edit: Boolean = false,
     ): String {
         // FIXME: should be caller's responsibility
         var pathSuffix = defaultPath
         if (pathSuffix == null) pathSuffix = SLASH.toString()
+        if (explicitTls) pathSuffix = "$pathSuffix?$ARG_TLS=$TLS_EXPLICIT"
         val thisPassword =
             if (password == "" || password == null) {
                 ""
@@ -245,7 +255,7 @@ object NetCopyClientUtils {
                     password.urlEncoded()
                 }}"
             }
-        return if (username == "" && (true == password?.isEmpty())) {
+        return if (username == "") {
             "$prefix$hostname:$port$pathSuffix"
         } else {
             "$prefix$username$thisPassword@$hostname:$port$pathSuffix"
