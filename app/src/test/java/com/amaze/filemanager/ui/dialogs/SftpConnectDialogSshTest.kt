@@ -26,18 +26,14 @@ import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
-import com.amaze.filemanager.ui.activities.AbstractMainActivityTestBase
 import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog.Companion.ARG_PASSWORD
 import com.amaze.filemanager.utils.PasswordUtil
 import org.awaitility.Awaitility.await
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
-import org.mockito.MockedConstruction
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.mockConstruction
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doCallRealMethod
@@ -46,34 +42,11 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 import java.util.concurrent.TimeUnit
 
+/**
+ * Test [SftpConnectDialog] with SSH connections.
+ */
 @Suppress("StringLiteralDuplication")
-class SftpConnectDialogTest : AbstractMainActivityTestBase() {
-    private lateinit var mc: MockedConstruction<SftpConnectDialog>
-
-    /**
-     * Setups before test.
-     */
-    @Before
-    override fun setUp() {
-        super.setUp()
-        mc =
-            mockConstruction(
-                SftpConnectDialog::class.java,
-            ) { mock: SftpConnectDialog, _: MockedConstruction.Context? ->
-                doCallRealMethod().`when`(mock).arguments = any()
-                `when`(mock.arguments).thenCallRealMethod()
-            }
-    }
-
-    /**
-     * Post test cleanups.
-     */
-    @After
-    override fun tearDown() {
-        super.tearDown()
-        mc.close()
-    }
-
+class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
     /**
      * Test invoke [SftpConnectDialog] with arguments including keypair name.
      */
@@ -190,35 +163,20 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
         val mocked = mc.constructed()[0]
         await().atMost(10, TimeUnit.SECONDS).until { mocked.arguments != null }
         for (key in BUNDLE_KEYS) {
-            if (mocked.arguments!![key] != null) {
-                if (key != "password") {
-                    assertEquals(verify[key], mocked.arguments!![key])
-                } else {
+            if (mocked.arguments!!.getString(key) != null) {
+                if (key == ARG_PASSWORD) {
                     assertEquals(
-                        verify[key],
+                        verify.getString(key),
                         PasswordUtil.decryptPassword(
                             ApplicationProvider.getApplicationContext(),
-                            (mocked.arguments!![key] as String?)!!,
+                            mocked.arguments!!.getString(key)!!,
                             Base64.URL_SAFE,
                         ),
                     )
+                } else {
+                    assertEquals(verify.getString(key), mocked.arguments!!.getString(key))
                 }
             }
         }
-    }
-
-    companion object {
-        @JvmStatic
-        private val BUNDLE_KEYS =
-            arrayOf(
-                "address",
-                "port",
-                "keypairName",
-                "name",
-                "username",
-                "password",
-                "edit",
-                "defaultPath",
-            )
     }
 }

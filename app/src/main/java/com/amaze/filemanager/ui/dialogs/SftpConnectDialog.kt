@@ -37,6 +37,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.isDigitsOnly
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -51,8 +52,12 @@ import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.databinding.SftpDialogBinding
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
@@ -89,6 +94,8 @@ class SftpConnectDialog : DialogFragment() {
     companion object {
         @JvmStatic
         private val log: Logger = LoggerFactory.getLogger(SftpConnectDialog::class.java)
+
+        const val TAG = "sftpdialog"
 
         const val ARG_NAME = "name"
         const val ARG_EDIT = "edit"
@@ -152,7 +159,7 @@ class SftpConnectDialog : DialogFragment() {
                 .title(R.string.scp_connection)
                 .autoDismiss(false)
                 .customView(binding.root, true)
-                .theme(utilsProvider.appTheme.getMaterialDialogTheme())
+                .theme(utilsProvider.appTheme.materialDialogTheme)
                 .negativeText(R.string.cancel)
                 .positiveText(if (edit) R.string.update else R.string.create)
                 .positiveColor(accentColor)
@@ -212,7 +219,7 @@ class SftpConnectDialog : DialogFragment() {
             // Otherwise, use given Bundle instance for filling in the blanks
             if (!edit) {
                 connectionET.setText(R.string.scp_connection)
-                portET.setText(NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString())
+                portET.setText(SSH_DEFAULT_PORT.toString())
                 protocolDropDown.onItemSelectedListener =
                     object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(
@@ -223,9 +230,9 @@ class SftpConnectDialog : DialogFragment() {
                         ) {
                             portET.setText(
                                 when (position) {
-                                    1 -> NetCopyClientConnectionPool.FTP_DEFAULT_PORT.toString()
-                                    2 -> NetCopyClientConnectionPool.FTPS_DEFAULT_PORT.toString()
-                                    else -> NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString()
+                                    1 -> FTP_DEFAULT_PORT.toString()
+                                    2 -> FTPS_DEFAULT_PORT.toString()
+                                    else -> SSH_DEFAULT_PORT.toString()
                                 },
                             )
                             chkFtpAnonymous.visibility =
@@ -233,8 +240,14 @@ class SftpConnectDialog : DialogFragment() {
                                     0 -> View.GONE
                                     else -> View.VISIBLE
                                 }
+                            chkFtpExplicitTls.visibility =
+                                when (position) {
+                                    0 -> View.GONE
+                                    else -> View.VISIBLE
+                                }
                             if (position == 0) {
                                 chkFtpAnonymous.isChecked = false
+                                chkFtpExplicitTls.isChecked = false
                             }
                             selectPemBTN.visibility =
                                 when (position) {
@@ -257,12 +270,18 @@ class SftpConnectDialog : DialogFragment() {
                 ipET.setText(requireArguments().getString(ARG_ADDRESS))
                 portET.setText(requireArguments().getInt(ARG_PORT).toString())
                 defaultPathET.setText(requireArguments().getString(ARG_DEFAULT_PATH))
-                usernameET.setText(requireArguments().getString(ARG_USERNAME))
+                usernameET.setText(requireArguments().getString(ARG_USERNAME) ?: "")
+                if ("" == (requireArguments().getString(ARG_USERNAME) ?: "")) {
+                    chkFtpAnonymous.isChecked = true
+                }
                 if (requireArguments().getBoolean(ARG_HAS_PASSWORD)) {
                     passwordET.setHint(R.string.password_unchanged)
                 } else {
                     selectedParsedKeyPairName = requireArguments().getString(ARG_KEYPAIR_NAME)
                     selectPemBTN.text = selectedParsedKeyPairName
+                }
+                if (TLS_EXPLICIT == requireArguments().getString(ARG_TLS)) {
+                    chkFtpExplicitTls.isChecked = true
                 }
                 oldPath =
                     NetCopyClientUtils.deriveUriFrom(
@@ -270,8 +289,9 @@ class SftpConnectDialog : DialogFragment() {
                         requireArguments().getString(ARG_ADDRESS)!!,
                         requireArguments().getInt(ARG_PORT),
                         requireArguments().getString(ARG_DEFAULT_PATH, ""),
-                        requireArguments().getString(ARG_USERNAME)!!,
+                        requireArguments().getString(ARG_USERNAME) ?: "",
                         requireArguments().getString(ARG_PASSWORD),
+                        TLS_EXPLICIT == requireArguments().getString(ARG_TLS),
                         edit,
                     )
             }
@@ -470,13 +490,14 @@ class SftpConnectDialog : DialogFragment() {
             FtpsGetHostCertificateTask(
                 hostname,
                 port,
+                explicitTls,
                 requireContext(),
             ) { hostInfo ->
                 createFirstConnectCallback.invoke(
                     edit,
                     this,
                     StringBuilder(hostname).also {
-                        if (port != NetCopyClientConnectionPool.FTPS_DEFAULT_PORT && port > 0) {
+                        if (port != FTPS_DEFAULT_PORT && port > 0) {
                             it.append(':').append(port)
                         }
                     }.toString(),
@@ -578,6 +599,7 @@ class SftpConnectDialog : DialogFragment() {
                 FtpsGetHostCertificateTask(
                     hostname,
                     port,
+                    explicitTls,
                     requireContext(),
                 ) { hostInfo: JSONObject ->
                     createReconnectSecureServerCallback(
@@ -695,6 +717,7 @@ class SftpConnectDialog : DialogFragment() {
                         password
                     },
                     selectedParsedKeyPair,
+                    explicitTls,
                 )?.run {
                     if (DataUtils.getInstance().containsServer(encryptedPath) == -1) {
                         DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
@@ -784,7 +807,7 @@ class SftpConnectDialog : DialogFragment() {
         }
     }
 
-    private data class ConnectionSettings(
+    internal data class ConnectionSettings(
         val prefix: String,
         val connectionName: String,
         val hostname: String,
@@ -794,6 +817,7 @@ class SftpConnectDialog : DialogFragment() {
         val password: String? = null,
         val selectedParsedKeyPairName: String? = null,
         val selectedParsedKeyPair: KeyPair? = null,
+        val explicitTls: Boolean = false,
     ) {
         fun toUriString() =
             NetCopyClientUtils.deriveUriFrom(
@@ -803,6 +827,7 @@ class SftpConnectDialog : DialogFragment() {
                 defaultPath,
                 username,
                 password,
+                explicitTls,
             )
     }
 
@@ -836,5 +861,8 @@ class SftpConnectDialog : DialogFragment() {
                 },
             selectedParsedKeyPairName = this.selectedParsedKeyPairName,
             selectedParsedKeyPair = selectedParsedKeyPair,
+            explicitTls =
+                binding.chkFtpExplicitTls.isVisible &&
+                    binding.chkFtpExplicitTls.isChecked,
         )
 }

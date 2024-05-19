@@ -38,6 +38,11 @@ import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.NE
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.RENAME;
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.SAVE_FILE;
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.UNDEFINED;
+import static com.amaze.filemanager.filesystem.ftp.FTPClientImpl.ARG_TLS;
+import static com.amaze.filemanager.filesystem.ftp.FTPClientImpl.TLS_EXPLICIT;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_ADDRESS;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_DEFAULT_PATH;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_EDIT;
@@ -2114,16 +2119,28 @@ public class MainActivity extends PermissionsActivity
                         (Function1<String, String>)
                             s -> GenericExtKt.urlDecoded(s, Charsets.UTF_8)));
               }
-              retval.putString(ARG_USERNAME, connectionInfo.getUsername());
+              if (!TextUtils.isEmpty(connectionInfo.getUsername())) {
+                retval.putString(ARG_USERNAME, connectionInfo.getUsername());
+              }
 
               if (connectionInfo.getPassword() == null) {
                 retval.putBoolean(ARG_HAS_PASSWORD, false);
-                retval.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
+                if (SSH_URI_PREFIX.equals(connectionInfo.getPrefix())) {
+                  retval.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
+                }
               } else {
                 retval.putBoolean(ARG_HAS_PASSWORD, true);
                 retval.putString(ARG_PASSWORD, connectionInfo.getPassword());
               }
               retval.putBoolean(ARG_EDIT, edit);
+
+              if ((FTP_URI_PREFIX.equals(connectionInfo.getPrefix())
+                      || FTPS_URI_PREFIX.equals(connectionInfo.getPrefix()))
+                  && connectionInfo.getArguments() != null
+                  && TLS_EXPLICIT.equals(connectionInfo.getArguments().get(ARG_TLS))) {
+                retval.putString(ARG_TLS, TLS_EXPLICIT);
+              }
+
               return Flowable.just(retval);
             })
         .subscribeOn(Schedulers.computation())
@@ -2131,7 +2148,7 @@ public class MainActivity extends PermissionsActivity
             bundle -> {
               sftpConnectDialog.setArguments(bundle);
               sftpConnectDialog.setCancelable(true);
-              sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
+              sftpConnectDialog.show(getSupportFragmentManager(), SftpConnectDialog.TAG);
             });
   }
 

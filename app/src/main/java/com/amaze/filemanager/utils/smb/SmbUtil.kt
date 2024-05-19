@@ -29,6 +29,7 @@ import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.QUESTION_MARK
 import com.amaze.filemanager.filesystem.smb.CifsContexts.createWithDisableIpcSigningCheck
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.urlDecoded
@@ -99,6 +100,9 @@ object SmbUtil {
             }
             connectionInfo.defaultPath?.apply {
                 buffer.append(this)
+            }
+            if (path.contains(QUESTION_MARK)) {
+                buffer.append(QUESTION_MARK).append(path.substringAfter(QUESTION_MARK))
             }
         }
         return buffer.toString().replace("\n", "")

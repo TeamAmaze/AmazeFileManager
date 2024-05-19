@@ -79,6 +79,20 @@ class SmbUtilTest {
     }
 
     /**
+     * Test encrypt/decrypt FTP(S) URIs.
+     */
+    @Test
+    fun testEncryptDecryptFtpsWithExtraParams() {
+        val path = "ftps://root:toor@127.0.0.1?tls=explicit"
+        val encrypted = getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path)
+        assertNotEquals(path, encrypted)
+        assertTrue(encrypted.startsWith("ftps://root:"))
+        assertTrue(encrypted.endsWith("@127.0.0.1?tls=explicit"))
+        val decrypted = getSmbDecryptedPath(ApplicationProvider.getApplicationContext(), encrypted)
+        assertEquals(path, decrypted)
+    }
+
+    /**
      * Test encrypt/decrypt URIs without username and password. It should stay the same.
      */
     @Test
