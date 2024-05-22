@@ -202,8 +202,9 @@ public abstract class CompressedHelper {
    */
   public static String getFileName(String compressedName) {
     compressedName = compressedName.toLowerCase();
-      boolean hasFileName = compressedName.contains(".");
-    if (hasFileName && (isZip(compressedName)
+    boolean hasFileName = compressedName.contains(".");
+    if (hasFileName
+        && (isZip(compressedName)
             || isTar(compressedName)
             || isRar(compressedName)
             || is7zip(compressedName)
@@ -218,9 +219,9 @@ public abstract class CompressedHelper {
             || isXz(compressedName))) {
       return compressedName.substring(0, compressedName.lastIndexOf("."));
     } else if (hasFileName && isGzippedTar(compressedName)
-            || isXzippedTar(compressedName)
-            || isLzippedTar(compressedName)
-            || isBzippedTar(compressedName)) {
+        || isXzippedTar(compressedName)
+        || isLzippedTar(compressedName)
+        || isBzippedTar(compressedName)) {
       return compressedName.substring(0, Utils.nthToLastCharIndex(2, compressedName, '.'));
     } else {
       return compressedName;
