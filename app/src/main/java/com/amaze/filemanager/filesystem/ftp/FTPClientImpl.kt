@@ -34,8 +34,11 @@ class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient>
         @JvmStatic
         private val logger: Logger = LoggerFactory.getLogger(FTPClientImpl::class.java)
 
-        @JvmStatic
-        val ANONYMOUS = "anonymous"
+        const val ANONYMOUS = "anonymous"
+
+        const val ARG_TLS = "tls"
+
+        const val TLS_EXPLICIT = "explicit"
 
         private const val ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890"
 

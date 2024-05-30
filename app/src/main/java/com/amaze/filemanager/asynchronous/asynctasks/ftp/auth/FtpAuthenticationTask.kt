@@ -38,6 +38,7 @@ class FtpAuthenticationTask(
     private val certInfo: JSONObject?,
     private val username: String,
     private val password: String?,
+    private val explicitTls: Boolean = false,
 ) : Task<FTPClient, FtpAuthenticationTaskCallable> {
     override fun getTask(): FtpAuthenticationTaskCallable {
         return if (protocol == FTP_URI_PREFIX) {
@@ -54,6 +55,7 @@ class FtpAuthenticationTask(
                 certInfo!!,
                 username,
                 password ?: "",
+                explicitTls,
             )
         }
     }
