@@ -1444,13 +1444,16 @@ public class HybridFile {
     } else {
       if (getFile().setLastModified(date)) return true;
 
-      try {
-        Files.setLastModifiedTime(getFile().toPath(), FileTime.fromMillis(date));
-        return true;
-      } catch (IOException e) {
-        LOG.error("Files#setLastModifiedTime", e);
-        return false;
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        try {
+          Files.setLastModifiedTime(getFile().toPath(), FileTime.fromMillis(date));
+          return true;
+        } catch (IOException e) {
+          LOG.error("Files#setLastModifiedTime", e);
+          return false;
+        }
       }
+      return false;
     }
   }
 
