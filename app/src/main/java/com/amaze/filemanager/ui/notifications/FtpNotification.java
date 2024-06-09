@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -28,9 +28,9 @@ import java.net.InetAddress;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.utils.NetworkUtil;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +38,7 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -95,16 +96,14 @@ public class FtpNotification {
   }
 
   public static void updateNotification(Context context, boolean noStopButton) {
-    String notificationService = Context.NOTIFICATION_SERVICE;
-    NotificationManager notificationManager =
-        (NotificationManager) context.getSystemService(notificationService);
+    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     int port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
     boolean secureConnection =
         sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
 
-    InetAddress address = FtpService.getLocalInetAddress(context);
+    InetAddress address = NetworkUtil.getLocalInetAddress(context);
 
     String address_text = "Address not found";
 
@@ -128,8 +127,6 @@ public class FtpNotification {
   }
 
   private static void removeNotification(Context context) {
-    String ns = Context.NOTIFICATION_SERVICE;
-    NotificationManager nm = (NotificationManager) context.getSystemService(ns);
-    nm.cancelAll();
+    NotificationManagerCompat.from(context).cancelAll();
   }
 }

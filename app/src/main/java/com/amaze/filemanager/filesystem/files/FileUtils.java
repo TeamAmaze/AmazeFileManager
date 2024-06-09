@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -42,7 +42,6 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
-import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -71,7 +70,6 @@ import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -79,7 +77,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -92,8 +89,6 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -215,76 +210,6 @@ public class FileUtils {
     } else {
       return baseFile.length(context);
     }
-  }
-
-  /**
-   * Triggers media scanner for multiple paths. The paths must all belong to same filesystem. It's
-   * upto the caller to call the mediastore scan on multiple files or only one source/target
-   * directory. Don't use filesystem API directly as files might not be present anymore (eg.
-   * move/rename) which may lead to {@link java.io.FileNotFoundException}
-   *
-   * @param hybridFiles
-   * @param context
-   */
-  @SuppressLint("CheckResult")
-  public static void scanFile(@NonNull Context context, @NonNull HybridFile[] hybridFiles) {
-    Flowable.fromCallable(
-            (Callable<Void>)
-                () -> {
-                  if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
-                    String[] paths = new String[hybridFiles.length];
-                    for (int i = 0; i < hybridFiles.length; i++) {
-                      HybridFile hybridFile = hybridFiles[i];
-                      paths[i] = hybridFile.getPath();
-                    }
-                    MediaScannerConnection.scanFile(context, paths, null, null);
-                  }
-                  for (HybridFile hybridFile : hybridFiles) {
-                    scanFile(hybridFile, context);
-                  }
-                  return null;
-                })
-        .subscribeOn(Schedulers.io());
-  }
-
-  /**
-   * Triggers media store for the file path
-   *
-   * @param hybridFile the file which was changed (directory not supported)
-   * @param context given context
-   */
-  private static void scanFile(@NonNull HybridFile hybridFile, Context context) {
-
-    if ((hybridFile.isLocal() || hybridFile.isOtgFile()) && hybridFile.exists(context)) {
-
-      Uri uri = null;
-      if (Build.VERSION.SDK_INT >= 19) {
-        DocumentFile documentFile =
-            ExternalSdCardOperation.getDocumentFile(
-                hybridFile.getFile(), hybridFile.isDirectory(context), context);
-        // If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
-        if (documentFile == null) documentFile = DocumentFile.fromFile(hybridFile.getFile());
-        uri = documentFile.getUri();
-      } else {
-        if (hybridFile.isLocal()) {
-          uri = Uri.fromFile(hybridFile.getFile());
-        }
-      }
-      if (uri != null) {
-        FileUtils.scanFile(uri, context);
-      }
-    }
-  }
-
-  /**
-   * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
-   *
-   * @param uri File's {@link Uri}
-   * @param c {@link Context}
-   */
-  private static void scanFile(@NonNull Uri uri, @NonNull Context c) {
-    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-    c.sendBroadcast(mediaScanIntent);
   }
 
   public static void crossfade(View buttons, final View pathbar) {
@@ -749,7 +674,7 @@ public class FileUtils {
       mainActivity.startActivity(intent);
     } else {
       try {
-        openFileDialogFragmentFor(f, mainActivity);
+        openFileDialogFragmentFor(f, mainActivity, useNewStack);
       } catch (Exception e) {
         Toast.makeText(
                 mainActivity, mainActivity.getString(R.string.no_app_found), Toast.LENGTH_LONG)
@@ -760,30 +685,42 @@ public class FileUtils {
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull File file, @NonNull MainActivity mainActivity) {
+      @NonNull File file, @NonNull MainActivity mainActivity, @NonNull Boolean useNewStack) {
     openFileDialogFragmentFor(
-        file, mainActivity, MimeTypes.getMimeType(file.getAbsolutePath(), false));
+        file, mainActivity, MimeTypes.getMimeType(file.getAbsolutePath(), false), useNewStack);
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull File file, @NonNull MainActivity mainActivity, @NonNull String mimeType) {
+      @NonNull File file,
+      @NonNull MainActivity mainActivity,
+      @NonNull String mimeType,
+      @NonNull Boolean useNewStack) {
     OpenFileDialogFragment.Companion.openFileOrShow(
         FileProvider.getUriForFile(mainActivity, mainActivity.getPackageName(), file),
         mimeType,
-        false,
+        useNewStack,
         mainActivity,
         false);
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull DocumentFile file, @NonNull MainActivity mainActivity) {
+      @NonNull DocumentFile file,
+      @NonNull MainActivity mainActivity,
+      @NonNull Boolean useNewStack) {
     openFileDialogFragmentFor(
-        file.getUri(), mainActivity, MimeTypes.getMimeType(file.getUri().toString(), false));
+        file.getUri(),
+        mainActivity,
+        MimeTypes.getMimeType(file.getUri().toString(), false),
+        useNewStack);
   }
 
   private static void openFileDialogFragmentFor(
-      @NonNull Uri uri, @NonNull MainActivity mainActivity, @NonNull String mimeType) {
-    OpenFileDialogFragment.Companion.openFileOrShow(uri, mimeType, false, mainActivity, false);
+      @NonNull Uri uri,
+      @NonNull MainActivity mainActivity,
+      @NonNull String mimeType,
+      @NonNull Boolean useNewStack) {
+    OpenFileDialogFragment.Companion.openFileOrShow(
+        uri, mimeType, useNewStack, mainActivity, false);
   }
 
   private static boolean isSelfDefault(File f, Context c) {
@@ -804,7 +741,7 @@ public class FileUtils {
     boolean useNewStack =
         sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
     try {
-      openFileDialogFragmentFor(f, m);
+      openFileDialogFragmentFor(f, m, useNewStack);
     } catch (Exception e) {
       Toast.makeText(m, m.getString(R.string.no_app_found), Toast.LENGTH_LONG).show();
       openWith(f, m, useNewStack);
@@ -929,10 +866,19 @@ public class FileUtils {
       }
       link = new StringBuilder(link.toString().trim());
     }
-    long Size = (size == null || size.trim().length() == 0) ? -1 : Long.parseLong(size);
+    long Size;
+    if (size == null || size.trim().length() == 0) {
+      Size = -1;
+    } else {
+      try {
+        Size = Long.parseLong(size);
+      } catch (NumberFormatException ifItIsNotANumber) {
+        Size = -1;
+      }
+    }
     if (date.trim().length() > 0 && !isStat) {
       ParsePosition pos = new ParsePosition(0);
-      SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
+      SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm", Locale.US);
       Date stringDate = simpledateformat.parse(date, pos);
       if (stringDate == null) {
         LOG.warn("parseName: unable to parse datetime string [" + date + "]");

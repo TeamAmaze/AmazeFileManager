@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -43,7 +43,7 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.SmbUtil;
+import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
@@ -105,7 +105,7 @@ public abstract class FileUtil {
   /** Writes uri stream from external application to the specified path */
   public static final void writeUriToStorage(
       @NonNull final MainActivity mainActivity,
-      @NonNull final ArrayList<Uri> uris,
+      @NonNull final List<Uri> uris,
       @NonNull final ContentResolver contentResolver,
       @NonNull final String currentPath) {
 

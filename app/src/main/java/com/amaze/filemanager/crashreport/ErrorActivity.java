@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -58,13 +58,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 
@@ -109,7 +109,7 @@ public class ErrorActivity extends ThemedActivity {
   private ErrorInfo errorInfo;
   private Class returnActivity;
   private String currentTimeStamp;
-  private EditText userCommentBox;
+  private AppCompatEditText userCommentBox;
 
   public static void reportError(
       final Context context,
@@ -197,14 +197,14 @@ public class ErrorActivity extends ThemedActivity {
       actionBar.setDisplayShowTitleEnabled(true);
     }
 
-    final Button reportEmailButton = findViewById(R.id.errorReportEmailButton);
-    final Button reportTelegramButton = findViewById(R.id.errorReportTelegramButton);
-    final Button copyButton = findViewById(R.id.errorReportCopyButton);
-    final Button reportGithubButton = findViewById(R.id.errorReportGitHubButton);
+    final AppCompatButton reportEmailButton = findViewById(R.id.errorReportEmailButton);
+    final AppCompatButton reportTelegramButton = findViewById(R.id.errorReportTelegramButton);
+    final AppCompatButton copyButton = findViewById(R.id.errorReportCopyButton);
+    final AppCompatButton reportGithubButton = findViewById(R.id.errorReportGitHubButton);
 
     userCommentBox = findViewById(R.id.errorCommentBox);
-    final TextView errorView = findViewById(R.id.errorView);
-    final TextView errorMessageView = findViewById(R.id.errorMessageView);
+    final AppCompatTextView errorView = findViewById(R.id.errorView);
+    final AppCompatTextView errorMessageView = findViewById(R.id.errorMessageView);
 
     returnActivity = MainActivity.class;
     errorInfo = intent.getParcelableExtra(ERROR_INFO);
@@ -306,8 +306,8 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   private void buildInfo(final ErrorInfo info) {
-    final TextView infoLabelView = findViewById(R.id.errorInfoLabelsView);
-    final TextView infoView = findViewById(R.id.errorInfosView);
+    final AppCompatTextView infoLabelView = findViewById(R.id.errorInfoLabelsView);
+    final AppCompatTextView infoView = findViewById(R.id.errorInfosView);
     String text = "";
 
     infoLabelView.setText(getString(R.string.info_labels).replace("\\n", "\n"));
@@ -440,7 +440,7 @@ public class ErrorActivity extends ThemedActivity {
 
   private void addGuruMeditation() {
     // just an easter egg
-    final TextView sorryView = findViewById(R.id.errorSorryView);
+    final AppCompatTextView sorryView = findViewById(R.id.errorSorryView);
     String text = sorryView.getText().toString();
     text += "\n" + getString(R.string.guru_meditation);
     sorryView.setText(text);

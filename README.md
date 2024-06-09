@@ -85,9 +85,10 @@ We strongly recommend using apk signed by us (either Play Store version or from 
 ### License: 
 
     Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>
-    Copyright (C) 2014-2021 Vishal Nehra <vishalmeham2@gmail.com>
-    Copyright (C) 2017-2021 Emmanuel Messulam <emmanuelbendavid@gmail.com>
-    Copyright (C) 2018-2021 Raymond Lai <airwave209gt at gmail.com>
+    Copyright (C) 2014-2024 Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2017-2024 Emmanuel Messulam <emmanuelbendavid@gmail.com>
+    Copyright (C) 2018-2024 Raymond Lai <airwave209gt at gmail.com>
+    Copyright (C) 2019-2024 Vishnu Sanal T <t.v.s10123 at gmail.com>
     This file is part of Amaze File Manager.
     Amaze File Manager is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

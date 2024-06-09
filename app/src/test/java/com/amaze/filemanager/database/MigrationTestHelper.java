@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -477,7 +477,7 @@ public class MigrationTestHelper extends TestWatcher {
     }
 
     @Override
-    protected void createAllTables(SupportSQLiteDatabase database) {
+    public void createAllTables(SupportSQLiteDatabase database) {
       throw new UnsupportedOperationException(
           "Was expecting to migrate but received create."
               + "Make sure you have created the database first.");
@@ -485,7 +485,7 @@ public class MigrationTestHelper extends TestWatcher {
 
     @NonNull
     @Override
-    protected RoomOpenHelper.ValidationResult onValidateSchema(@NonNull SupportSQLiteDatabase db) {
+    public RoomOpenHelper.ValidationResult onValidateSchema(@NonNull SupportSQLiteDatabase db) {
       final Map<String, EntityBundle> tables = mDatabaseBundle.getEntitiesByTableName();
       for (EntityBundle entity : tables.values()) {
         if (entity instanceof FtsEntityBundle) {
@@ -548,7 +548,7 @@ public class MigrationTestHelper extends TestWatcher {
     }
 
     @Override
-    protected void createAllTables(SupportSQLiteDatabase database) {
+    public void createAllTables(SupportSQLiteDatabase database) {
       for (String query : mDatabaseBundle.buildCreateQueries()) {
         database.execSQL(query);
       }
@@ -556,7 +556,7 @@ public class MigrationTestHelper extends TestWatcher {
 
     @NonNull
     @Override
-    protected RoomOpenHelper.ValidationResult onValidateSchema(@NonNull SupportSQLiteDatabase db) {
+    public RoomOpenHelper.ValidationResult onValidateSchema(@NonNull SupportSQLiteDatabase db) {
       throw new UnsupportedOperationException(
           "This open helper just creates the database but" + " it received a migration request.");
     }
@@ -571,14 +571,14 @@ public class MigrationTestHelper extends TestWatcher {
     }
 
     @Override
-    protected void dropAllTables(SupportSQLiteDatabase database) {
+    public void dropAllTables(SupportSQLiteDatabase database) {
       throw new UnsupportedOperationException("cannot drop all tables in the test");
     }
 
     @Override
-    protected void onCreate(SupportSQLiteDatabase database) {}
+    public void onCreate(SupportSQLiteDatabase database) {}
 
     @Override
-    protected void onOpen(SupportSQLiteDatabase database) {}
+    public void onOpen(SupportSQLiteDatabase database) {}
   }
 }

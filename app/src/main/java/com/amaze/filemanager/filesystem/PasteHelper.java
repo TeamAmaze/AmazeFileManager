@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -29,14 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PreparePasteTask;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import android.os.AsyncTask;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Spanned;
@@ -168,14 +167,13 @@ public final class PasteHelper implements Parcelable {
                           ArrayList<HybridFileParcelable> arrayList =
                               new ArrayList<>(Arrays.asList(paths));
                           boolean move = operation == PasteHelper.OPERATION_CUT;
-                          new PrepareCopyTask(
+                          new PreparePasteTask(mainActivity)
+                              .execute(
                                   path,
                                   move,
-                                  mainActivity,
                                   mainActivity.isRootExplorer(),
                                   mainFragment.getMainFragmentViewModel().getOpenMode(),
-                                  arrayList)
-                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                  arrayList);
                           dismissSnackbar(true);
                         },
                         () -> dismissSnackbar(true));

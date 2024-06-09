@@ -32,7 +32,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 object ExternalSdCardOperation {
     private val log: Logger = LoggerFactory.getLogger(UtilsHandler::class.java)
@@ -49,7 +48,7 @@ object ExternalSdCardOperation {
     fun getDocumentFile(
         file: File,
         isDirectory: Boolean,
-        context: Context
+        context: Context,
     ): DocumentFile? {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return DocumentFile.fromFile(file)
         val baseFolder = getExtSdCardFolder(file, context)
@@ -69,8 +68,9 @@ object ExternalSdCardOperation {
             return null
         }
 
-        val preferenceUri = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PreferencesConstants.PREFERENCE_URI, null)
+        val preferenceUri =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(PreferencesConstants.PREFERENCE_URI, null)
         var treeUri: Uri? = null
         if (preferenceUri != null) {
             treeUri = Uri.parse(preferenceUri)
@@ -93,11 +93,12 @@ object ExternalSdCardOperation {
 
             var nextDocument = document.findFile(parts[i])
             if (nextDocument == null) {
-                nextDocument = if (i < parts.size - 1 || isDirectory) {
-                    document.createDirectory(parts[i])
-                } else {
-                    document.createFile("image", parts[i])
-                }
+                nextDocument =
+                    if (i < parts.size - 1 || isDirectory) {
+                        document.createDirectory(parts[i])
+                    } else {
+                        document.createFile("image", parts[i])
+                    }
             }
             document = nextDocument
         }
@@ -167,7 +168,10 @@ object ExternalSdCardOperation {
      */
     @JvmStatic
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public fun getExtSdCardFolder(file: File, context: Context): String? {
+    public fun getExtSdCardFolder(
+        file: File,
+        context: Context,
+    ): String? {
         val extSdPaths = getExtSdCardPaths(context)
         try {
             for (i in extSdPaths.indices) {
@@ -189,7 +193,10 @@ object ExternalSdCardOperation {
      */
     @JvmStatic
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    fun isOnExtSdCard(file: File, c: Context): Boolean {
+    fun isOnExtSdCard(
+        file: File,
+        c: Context,
+    ): Boolean {
         return getExtSdCardFolder(file, c) != null
     }
 }

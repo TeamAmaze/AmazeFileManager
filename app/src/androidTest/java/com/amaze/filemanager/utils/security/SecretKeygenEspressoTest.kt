@@ -37,7 +37,6 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class SecretKeygenEspressoTest {
-
     /**
      * Test [SecretKeygen.getSecretKey].
      *
@@ -51,6 +50,8 @@ class SecretKeygenEspressoTest {
             assertEquals("aes", this.algorithm.lowercase())
         } ?: if (SDK_INT < ICE_CREAM_SANDWICH) {
             fail("Android version not supported")
+        } else {
+            // Do nothing but let it pass
         }
     }
 }

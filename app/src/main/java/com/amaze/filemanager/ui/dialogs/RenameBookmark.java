@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -83,8 +83,7 @@ public class RenameBookmark extends DialogFragment {
       builder.positiveText(R.string.save);
       builder.neutralText(R.string.cancel);
       builder.negativeText(R.string.delete);
-      builder.theme(
-          ((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme(getContext()));
+      builder.theme(((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme());
       builder.autoDismiss(false);
       View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
       builder.customView(v2, true);

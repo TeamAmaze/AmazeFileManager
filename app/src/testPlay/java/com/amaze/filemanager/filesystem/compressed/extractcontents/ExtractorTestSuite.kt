@@ -46,6 +46,6 @@ import org.junit.runners.Suite.SuiteClasses
     PasswordProtected7ZipTest::class,
     ListPasswordProtected7ZipTest::class,
     ListPasswordProtectedRarTest::class,
-    MultipartRarExtractorTest::class
+    MultipartRarExtractorTest::class,
 )
 class ExtractorTestSuite

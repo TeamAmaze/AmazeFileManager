@@ -33,7 +33,6 @@ import java.io.IOException
 // This object is here to not polute the global namespace
 // All functions must be static
 object MakeDirectoryOperation {
-
     private val log: Logger = LoggerFactory.getLogger(MakeDirectoryOperation::class.java)
 
     /**
@@ -44,7 +43,10 @@ object MakeDirectoryOperation {
      */
     @JvmStatic
     @Deprecated("use {@link #mkdirs(Context, HybridFile)}")
-    fun mkdir(file: File?, context: Context): Boolean {
+    fun mkdir(
+        file: File?,
+        context: Context,
+    ): Boolean {
         if (file == null) return false
         if (file.exists()) {
             // nothing to create.
@@ -73,11 +75,22 @@ object MakeDirectoryOperation {
             } catch (e: IOException) {
                 false
             }
-        } else false
+        } else {
+            false
+        }
     }
 
+    /**
+     * Creates the directories on given [file] path, including nonexistent parent directories.
+     * So use proper [HybridFile] constructor as per your need.
+     *
+     * @return true if successfully created directory, otherwise returns false.
+     */
     @JvmStatic
-    fun mkdirs(context: Context, file: HybridFile): Boolean {
+    fun mkdirs(
+        context: Context,
+        file: HybridFile,
+    ): Boolean {
         var isSuccessful = true
         when (file.mode) {
             OpenMode.SMB ->

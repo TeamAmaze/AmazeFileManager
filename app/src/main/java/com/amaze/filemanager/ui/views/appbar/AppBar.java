@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -50,10 +50,9 @@ public class AppBar {
 
   private AppBarLayout appbarLayout;
 
-  public AppBar(
-      MainActivity a, SharedPreferences sharedPref, SearchView.SearchListener searchListener) {
+  public AppBar(MainActivity a, SharedPreferences sharedPref) {
     toolbar = a.findViewById(R.id.action_bar);
-    searchView = new SearchView(this, a, searchListener);
+    searchView = new SearchView(this, a);
     bottomBar = new BottomBar(this, a);
 
     appbarLayout = a.findViewById(R.id.lin);

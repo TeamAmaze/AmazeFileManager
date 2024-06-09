@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -159,7 +159,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
       case R.id.linear_layout_smb:
         dismiss();
         SmbSearchDialog smbDialog = new SmbSearchDialog();
-        smbDialog.show(getActivity().getFragmentManager(), "tab");
+        smbDialog.show(getActivity().getSupportFragmentManager(), "tab");
         return;
       case R.id.linear_layout_scp:
         dismiss();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -50,8 +50,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -62,7 +62,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";
-  private TextView text;
+  private AppCompatEditText text;
 
   @After
   public void tearDown() {
@@ -104,7 +104,7 @@ public class TextEditorActivityTest {
         Robolectric.buildActivity(TextEditorActivity.class, intent).create().start().visible();
 
     TextEditorActivity activity = controller.get();
-    text = activity.findViewById(R.id.fname);
+    text = activity.findViewById(R.id.textEditorMainEditText);
     activity.onDestroy();
   }
 

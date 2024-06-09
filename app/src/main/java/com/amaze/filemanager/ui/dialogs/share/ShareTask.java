@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -123,7 +123,7 @@ public class ShareTask extends AsyncTask<String, String, Void> {
     if (!targetShareIntents.isEmpty()) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
       builder.title(R.string.share);
-      builder.theme(appTheme.getMaterialDialogTheme(contextc));
+      builder.theme(appTheme.getMaterialDialogTheme());
       ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, labels, drawables);
       builder.adapter(shareAdapter, null);
       builder.negativeText(R.string.cancel);

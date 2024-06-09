@@ -32,7 +32,7 @@ import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_EDIT
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_NAME
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_PATH
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import io.mockk.confirmVerified
 import io.mockk.spyk
 import io.mockk.verify
@@ -45,7 +45,6 @@ import org.robolectric.shadows.ShadowLooper
  * Tests [SmbConnectDialog].
  */
 class SmbConnectDialogTest : AbstractMainActivityTestBase() {
-
     /**
      * Test call to [SmbConnectionListener.addConnection] is encrypted path.
      */
@@ -54,16 +53,18 @@ class SmbConnectDialogTest : AbstractMainActivityTestBase() {
         val listener = spyk<SmbConnectionListener>()
         doTestWithDialog(
             listener = listener,
-            arguments = Bundle().also {
-                it.putString(ARG_NAME, "")
-                it.putString(ARG_PATH, "")
-                it.putBoolean(ARG_EDIT, false)
-            },
+            arguments =
+                Bundle().also {
+                    it.putString(ARG_NAME, "")
+                    it.putString(ARG_PATH, "")
+                    it.putBoolean(ARG_EDIT, false)
+                },
             withDialog = { dialog, materialDialog ->
-                val encryptedPath = SmbUtil.getSmbEncryptedPath(
-                    AppConfig.getInstance(),
-                    "smb://user:password@127.0.0.1/"
-                )
+                val encryptedPath =
+                    SmbUtil.getSmbEncryptedPath(
+                        AppConfig.getInstance(),
+                        "smb://user:password@127.0.0.1/",
+                    )
                 dialog.binding.run {
                     this.connectionET.setText("SMB Connection Test")
                     this.usernameET.setText("user")
@@ -77,18 +78,18 @@ class SmbConnectDialogTest : AbstractMainActivityTestBase() {
                         "SMB Connection Test",
                         encryptedPath,
                         "",
-                        ""
+                        "",
                     )
                 }
                 confirmVerified(listener)
-            }
+            },
         )
     }
 
     private fun doTestWithDialog(
         arguments: Bundle,
         listener: SmbConnectionListener,
-        withDialog: (SmbConnectDialog, MaterialDialog) -> Unit
+        withDialog: (SmbConnectDialog, MaterialDialog) -> Unit,
     ) {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         ShadowLooper.idleMainLooper()

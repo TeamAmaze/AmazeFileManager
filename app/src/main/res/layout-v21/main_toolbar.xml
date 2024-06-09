@@ -82,6 +82,16 @@
                 app:sdMainFabOpenedSrc="@drawable/ic_close_white_24dp"
                 app:sdOverlayLayout="@id/fabs_overlay_layout"
                 app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior" />
+        <com.leinardi.android.speeddial.SpeedDialView
+            android:id="@+id/fabs_confirm_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="2dp"
+            android:focusable="true"
+            app:sdMainFabClosedSrc="@drawable/ic_check_white_24dp"
+            app:sdMainFabOpenedSrc="@drawable/ic_check_white_24dp"
+            app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior"/>
 
         <com.amaze.filemanager.ui.views.drawer.GestureExclusionView
             android:id="@+id/placeholder_drag_start"

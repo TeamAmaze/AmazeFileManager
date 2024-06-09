@@ -27,8 +27,8 @@ import android.content.pm.PackageManager
 import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatEditText
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.google.android.material.textfield.TextInputLayout
@@ -68,13 +68,13 @@ fun Context.updateAUAlias(shouldEnable: Boolean) {
         packageManager.setComponentEnabledSetting(
             component,
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP
+            PackageManager.DONT_KILL_APP,
         )
     } else {
         packageManager.setComponentEnabledSetting(
             component,
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
+            PackageManager.DONT_KILL_APP,
         )
     }
 }
@@ -82,7 +82,7 @@ fun Context.updateAUAlias(shouldEnable: Boolean) {
 /**
  * Force keyboard pop up on focus
  */
-fun EditText.openKeyboard(context: Context) {
+fun AppCompatEditText.openKeyboard(context: Context) {
     this.requestFocus()
 
     this.postDelayed(
@@ -90,10 +90,10 @@ fun EditText.openKeyboard(context: Context) {
             (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                 .showSoftInput(
                     this,
-                    InputMethodManager.SHOW_IMPLICIT
+                    InputMethodManager.SHOW_IMPLICIT,
                 )
         },
-        100
+        100,
     )
 }
 
@@ -116,7 +116,10 @@ fun View.showFade(duration: Long) {
 /**
  * Extension function to check for activity in package manager before triggering code
  */
-fun Intent.runIfDocumentsUIExists(context: Context, callback: Runnable) {
+fun Intent.runIfDocumentsUIExists(
+    context: Context,
+    callback: Runnable,
+) {
     if (this.resolveActivity(context.packageManager) != null) {
         callback.run()
     } else {

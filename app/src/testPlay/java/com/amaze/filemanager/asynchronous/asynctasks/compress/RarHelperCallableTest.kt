@@ -23,12 +23,13 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 import android.os.Environment
 import com.github.junrar.exception.UnsupportedRarV5Exception
 import org.apache.commons.compress.archivers.ArchiveException
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.io.File
 
 class RarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive.rar"
 
@@ -37,15 +38,16 @@ class RarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
      */
     @Test
     fun testMultiVolumeRar() {
-        val callable: CompressedHelperCallable = RarHelperCallable(
-            File(
-                Environment.getExternalStorageDirectory(),
-                "test-multipart-archive-v4.part1.rar"
+        val callable: CompressedHelperCallable =
+            RarHelperCallable(
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part1.rar",
+                )
+                    .absolutePath,
+                "",
+                false,
             )
-                .absolutePath,
-            "",
-            false
-        )
         val result = callable.call()
         assertNotNull(result)
         assertNotNull(result)
@@ -60,29 +62,34 @@ class RarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
     @Test
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun testMultiVolumeRarV5() {
-        val callable: CompressedHelperCallable = RarHelperCallable(
-            File(
-                Environment.getExternalStorageDirectory(),
-                "test-multipart-archive-v5.part1.rar"
+        val callable: CompressedHelperCallable =
+            RarHelperCallable(
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v5.part1.rar",
+                )
+                    .absolutePath,
+                "",
+                false,
             )
-                .absolutePath,
-            "",
-            false
-        )
-        val result = try {
-            callable.call()
-        } catch (exception: Throwable) {
-            assertEquals(ArchiveException::class.java, exception.javaClass)
-            assertEquals(UnsupportedRarV5Exception::class.java, exception.cause!!.javaClass)
-            null
-        }
+        val result =
+            try {
+                callable.call()
+            } catch (exception: Throwable) {
+                assertEquals(ArchiveException::class.java, exception.javaClass)
+                assertEquals(UnsupportedRarV5Exception::class.java, exception.cause!!.javaClass)
+                null
+            }
         assertNull(result)
     }
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         RarHelperCallable(
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

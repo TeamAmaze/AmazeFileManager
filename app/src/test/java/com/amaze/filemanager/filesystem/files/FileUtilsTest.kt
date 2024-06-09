@@ -27,19 +27,20 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.files.FileUtils.getPathsInPath
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.util.*
+import java.util.TimeZone
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(sdk = [KITKAT, P, Build.VERSION_CODES.R])
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class FileUtilsTest {
-
     /**
      * Test FileUtils.getPathsInPath() for directory
      *
@@ -56,9 +57,9 @@ class FileUtilsTest {
                     "/etc/default",
                     "/etc/default/grub",
                     "/etc/default/grub/2",
-                    "/etc/default/grub/2/conf.d"
+                    "/etc/default/grub/2/conf.d",
                 ),
-                this
+                this,
             )
         }
     }
@@ -80,9 +81,9 @@ class FileUtilsTest {
                     "/var/log/nginx",
                     "/var/log/nginx/access",
                     "/var/log/nginx/access/2021-01-01",
-                    "/var/log/nginx/access/2021-01-01/error.log"
+                    "/var/log/nginx/access/2021-01-01/error.log",
                 ),
-                this
+                this,
             )
         }
     }
@@ -104,9 +105,9 @@ class FileUtilsTest {
                     "/system/lib/modules",
                     "/system/lib/modules/drivers",
                     "/system/lib/modules/drivers/net",
-                    "/system/lib/modules/drivers/net/broadcom"
+                    "/system/lib/modules/drivers/net/broadcom",
                 ),
-                this
+                this,
             )
         }
     }
@@ -128,9 +129,9 @@ class FileUtilsTest {
                     "/some/nasty/path",
                     "/some/nasty/path/with",
                     "/some/nasty/path/with/space",
-                    "/some/nasty/path/with/space/prefixed"
+                    "/some/nasty/path/with/space/prefixed",
                 ),
-                this
+                this,
             )
         }
     }
@@ -153,9 +154,9 @@ class FileUtilsTest {
                     "/some/nasty/path/with",
                     "/some/nasty/path/with/space  ",
                     "/some/nasty/path/with/space  /  in",
-                    "/some/nasty/path/with/space  /  in/between"
+                    "/some/nasty/path/with/space  /  in/between",
                 ),
-                this
+                this,
             )
         }
     }
@@ -178,9 +179,9 @@ class FileUtilsTest {
                     "/some/nasty/path/without",
                     "/some/nasty/path/without/slash  ",
                     "/some/nasty/path/without/slash  /as",
-                    "/some/nasty/path/without/slash  /as/  prefix"
+                    "/some/nasty/path/without/slash  /as/  prefix",
                 ),
-                this
+                this,
             )
         }
     }
@@ -200,9 +201,9 @@ class FileUtilsTest {
                     "smb://1.2.3.4/some",
                     "smb://1.2.3.4/some/folder",
                     "smb://1.2.3.4/some/folder/on",
-                    "smb://1.2.3.4/some/folder/on/smb"
+                    "smb://1.2.3.4/some/folder/on/smb",
                 ),
-                this
+                this,
             )
         }
     }
@@ -222,9 +223,9 @@ class FileUtilsTest {
                     "smb://user@1.2.3.4/some",
                     "smb://user@1.2.3.4/some/folder",
                     "smb://user@1.2.3.4/some/folder/on",
-                    "smb://user@1.2.3.4/some/folder/on/smb"
+                    "smb://user@1.2.3.4/some/folder/on/smb",
                 ),
-                this
+                this,
             )
         }
     }
@@ -244,9 +245,9 @@ class FileUtilsTest {
                     "smb://user:password@1.2.3.4/some",
                     "smb://user:password@1.2.3.4/some/folder",
                     "smb://user:password@1.2.3.4/some/folder/on",
-                    "smb://user:password@1.2.3.4/some/folder/on/smb"
+                    "smb://user:password@1.2.3.4/some/folder/on/smb",
                 ),
-                this
+                this,
             )
         }
     }
@@ -266,9 +267,9 @@ class FileUtilsTest {
                     "smb://user;workgroup:password@1.2.3.4/some",
                     "smb://user;workgroup:password@1.2.3.4/some/folder",
                     "smb://user;workgroup:password@1.2.3.4/some/folder/on",
-                    "smb://user;workgroup:password@1.2.3.4/some/folder/on/smb"
+                    "smb://user;workgroup:password@1.2.3.4/some/folder/on/smb",
                 ),
-                this
+                this,
             )
         }
     }
@@ -289,9 +290,9 @@ class FileUtilsTest {
                 arrayOf(
                     "smb://user;workgroup:password@1.2.3.4",
                     "smb://user;workgroup:password@1.2.3.4/user",
-                    "smb://user;workgroup:password@1.2.3.4/user/My Documents"
+                    "smb://user;workgroup:password@1.2.3.4/user/My Documents",
                 ),
-                this
+                this,
             )
         }
     }
@@ -311,9 +312,9 @@ class FileUtilsTest {
                     "ftp://user:password@1.2.3.4:3721/some",
                     "ftp://user:password@1.2.3.4:3721/some/folder",
                     "ftp://user:password@1.2.3.4:3721/some/folder/on",
-                    "ftp://user:password@1.2.3.4:3721/some/folder/on/ftp"
+                    "ftp://user:password@1.2.3.4:3721/some/folder/on/ftp",
                 ),
-                this
+                this,
             )
         }
     }
@@ -337,9 +338,9 @@ class FileUtilsTest {
                     "ftp://user:password@1.2.3.4:3721/あ/い",
                     "ftp://user:password@1.2.3.4:3721/あ/い/う",
                     "ftp://user:password@1.2.3.4:3721/あ/い/う/え",
-                    "ftp://user:password@1.2.3.4:3721/あ/い/う/え/お"
+                    "ftp://user:password@1.2.3.4:3721/あ/い/う/え/お",
                 ),
-                this
+                this,
             )
         }
     }
@@ -365,20 +366,41 @@ class FileUtilsTest {
     }
 
     /**
-     * Test [FileUtils.parseName]
+     * Test [FileUtils.parseName] for special cases
      */
     @Test
+    fun testParseStringForSpecialCases() {
+        // Found on TranceLove's GPD XD Gen 1 running LegacyROM (4.4.4) that dirs doesn't even
+        // report default folder node size = 4096 or anything
+        val lsLine = "drwxr-xr-x root     root              2023-10-21 13:57 acct"
+
+        val systemTz = TimeZone.getDefault()
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
+        val result = FileUtils.parseName(lsLine, false)
+        assertNotNull(result)
+        assertEquals("acct", result.name)
+        assertEquals("drwxr-xr-x", result.permission)
+        assertTrue(result.isDirectory)
+        TimeZone.setDefault(systemTz)
+    }
+
+    /**
+     * Test [FileUtils.parseName]
+     */
+    @Suppress("ktlint:standard:max-line-length")
+    @Test
     fun testParseStringForHybridFileParcelable() {
-        /* ktlint-disable max-line-length */
         // ls
-        val lsLines = arrayOf(
-            "-rwxr-x---   1 root   shell    29431 2009-01-01 08:00 init.rc",
-            "lrw-r--r--   1 root   root        15 2009-01-01 08:00 product -> /system/product",
-            "drwxr-xr-x  17 root   root      4096 1970-05-19 08:40 system",
-            "-r--r--r-- 1 root root 10 1970-01-13 07:32 cpu_variant:arm",
-            "lrwxrwxrwx  1 root root 0 2022-10-05 15:39 ac -> ../../devices/platform/GFSH0001:00/power_supply/ac",
-            "lrwxrwxrwx   1 root root 0 2022-10-05 00:16 usb -> ../../devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-02/c440000.qcom,spmi:qcom,pm8150b@2:qcom,qpnp-smb5/power_supply/usb"
-        )
+        val lsLines =
+            arrayOf(
+                "-rwxr-x---   1 root   shell    29431 2009-01-01 08:00 init.rc",
+                "lrw-r--r--   1 root   root        15 2009-01-01 08:00 product -> /system/product",
+                "drwxr-xr-x  17 root   root      4096 1970-05-19 08:40 system",
+                "-r--r--r-- 1 root root 10 1970-01-13 07:32 cpu_variant:arm",
+                "lrwxrwxrwx  1 root root 0 2022-10-05 15:39 ac -> ../../devices/platform/GFSH0001:00/power_supply/ac",
+                "lrwxrwxrwx   1 root root 0 2022-10-05 00:16 usb -> ../../devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-02/c440000.qcom,spmi:qcom,pm8150b@2:qcom,qpnp-smb5/power_supply/usb",
+            )
 
         // stat with old toybox or busybox
         // val a1 = "-rwxr-x--- 1 shell root 512 2009-01-01 08:00:00.000000000 `init.rc'"
@@ -386,15 +408,15 @@ class FileUtilsTest {
         // val c1 = "drwxr-xr-x 17 root root 512 1970-05-19 08:40:27.269999949 `system'"
 
         // stat with new toybox
-        val statLines = arrayOf(
-            "-rwxr-x--- 1 shell root 512 1230796800 `init.rc'",
-            "lrw-r--r-- 1 root root 512 1230796800 `product' -> `/system/product'",
-            "drwxr-xr-x 17 root root 512 11922027 `system'",
-            "-r--r--r-- 1 root root 512 1035141 `cpu_variant:arm'",
-            "lrwxrwxrwx 1 root root 512 1664955558 /sys/class/power_supply/ac -> '../../devices/platform/GFSH0001:00/power_supply/ac'",
-            "lrwxrwxrwx 1 root root 512 1664956626 /sys/class/power_supply/usb -> '../../devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-02/c440000.qcom,spmi:qcom,pm8150b@2:qcom,qpnp-smb5/power_supply/usb'"
-        )
-        /* ktlint-enable max-line-length */
+        val statLines =
+            arrayOf(
+                "-rwxr-x--- 1 shell root 512 1230796800 `init.rc'",
+                "lrw-r--r-- 1 root root 512 1230796800 `product' -> `/system/product'",
+                "drwxr-xr-x 17 root root 512 11922027 `system'",
+                "-r--r--r-- 1 root root 512 1035141 `cpu_variant:arm'",
+                "lrwxrwxrwx 1 root root 512 1664955558 /sys/class/power_supply/ac -> '../../devices/platform/GFSH0001:00/power_supply/ac'",
+                "lrwxrwxrwx 1 root root 512 1664956626 /sys/class/power_supply/usb -> '../../devices/platform/soc/c440000.qcom,spmi/spmi-0/spmi0-02/c440000.qcom,spmi:qcom,pm8150b@2:qcom,qpnp-smb5/power_supply/usb'",
+            )
 
         val systemTz = TimeZone.getDefault()
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
@@ -405,12 +427,12 @@ class FileUtilsTest {
             assertEquals(
                 "Parse error at index $index.\n lsLines=[$s]\n statLines=[${statLines[index]}]\n",
                 result1.name,
-                result2.name
+                result2.name,
             )
             assertEquals(
                 "Parse error at index $index.\n lsLines=[$s]\n statLines=[${statLines[index]}]\n",
                 result1.path,
-                result2.path
+                result2.path,
             )
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -151,5 +151,14 @@ public class CompressedObjectParcelable implements Parcelable {
           && directory == otherObj.directory
           && size == otherObj.size;
     } else return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = (directory ? 1 : 0);
+    result = 31 * result + type;
+    result = 31 * result + name.hashCode();
+    result = 31 * result + (int) (size ^ (size >>> 32));
+    return result;
   }
 }

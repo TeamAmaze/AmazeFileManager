@@ -40,12 +40,13 @@ import com.amaze.filemanager.ui.views.CircularColorsView
  */
 class SelectedColorsPreference(context: Context, attrs: AttributeSet) :
     DialogPreference(context, attrs) {
-    private var colors = intArrayOf(
-        Color.TRANSPARENT,
-        Color.TRANSPARENT,
-        Color.TRANSPARENT,
-        Color.TRANSPARENT
-    )
+    private var colors =
+        intArrayOf(
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+        )
     private var backgroundColor = 0
     private var visibility = View.VISIBLE
     private var selectedIndex = -1
@@ -68,14 +69,18 @@ class SelectedColorsPreference(context: Context, attrs: AttributeSet) :
     }
 
     override fun getSummary(): CharSequence {
-        val colorPickerPref = sharedPreferences?.getInt(
-            PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-            ColorPickerDialog.NO_DATA
-        ) ?: ColorPickerDialog.NO_DATA
+        val colorPickerPref =
+            sharedPreferences?.getInt(
+                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+                ColorPickerDialog.NO_DATA,
+            ) ?: ColorPickerDialog.NO_DATA
         return context.getString(ColorPickerDialog.getTitle(colorPickerPref))
     }
 
-    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
+    override fun onGetDefaultValue(
+        a: TypedArray,
+        index: Int,
+    ): Any {
         return a.getString(index)!!
     }
 
@@ -116,7 +121,12 @@ class SelectedColorsPreference(context: Context, attrs: AttributeSet) :
     /**
      * set colours to specified and notify colour changed.
      */
-    fun setColors(color: Int, color1: Int, color2: Int, color3: Int) {
+    fun setColors(
+        color: Int,
+        color1: Int,
+        color2: Int,
+        color3: Int,
+    ) {
         colors = intArrayOf(color, color1, color2, color3)
         notifyChanged()
     }

@@ -67,4 +67,9 @@
         <item name="spinBars">true</item>
         <item name="color">@android:color/white</item>
     </style>
+
+    <style name="SearchSortButton" parent="Widget.AppCompat.Spinner">
+        <item name="android:gravity">right|end|center_vertical</item>
+        <item name="android:paddingEnd">35dp</item>
+    </style>
 </resources>

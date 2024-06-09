@@ -22,16 +22,14 @@ package com.amaze.filemanager.utils
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Build
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentActivity
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
@@ -43,26 +41,34 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 
 class MainActivityActionMode(private val mainActivityReference: WeakReference<MainActivity>) :
     ActionMode.Callback {
-
     var actionModeView: View? = null
     var actionMode: ActionMode? = null
+    var pasteHelper: PasteHelper? = null
 
-    private fun hideOption(id: Int, menu: Menu) {
+    private fun hideOption(
+        id: Int,
+        menu: Menu,
+    ) {
         val item = menu.findItem(id)
         item.isVisible = false
     }
 
-    private fun showOption(id: Int, menu: Menu) {
+    private fun showOption(
+        id: Int,
+        menu: Menu,
+    ) {
         val item = menu.findItem(id)
         item.isVisible = true
     }
 
     // called when the action mode is created; startActionMode() was called
-    override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+    override fun onCreateActionMode(
+        mode: ActionMode,
+        menu: Menu,
+    ): Boolean {
         // Inflate a menu resource providing context menu items
         val inflater = mode.menuInflater
         mainActivityReference.get()?.let {
@@ -71,6 +77,11 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             mode.customView = actionModeView
             mainActivity.setPagingEnabled(false)
             mainActivity.hideFab()
+            if (mainActivity.mReturnIntent &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+            ) {
+                mainActivity.showFabConfirmSelection()
+            }
 
             // translates the drawable content down
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
@@ -80,15 +91,14 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             hideOption(R.id.addshortcut, menu)
             hideOption(R.id.share, menu)
             hideOption(R.id.openwith, menu)
-            if (mainActivity.mReturnIntent) showOption(R.id.openmulti, menu)
             // hideOption(R.id.setringtone,menu);
             mode.title = mainActivity.resources.getString(R.string.select)
             mainActivity
                 .updateViews(
                     ColorDrawable(
                         mainActivity.resources
-                            .getColor(R.color.holo_dark_action_mode)
-                    )
+                            .getColor(R.color.holo_dark_action_mode),
+                    ),
                 )
 
             // do not allow drawer to open when item gets selected
@@ -103,11 +113,14 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
      * the following method is called each time the action mode is shown. Always called after
      * onCreateActionMode, but may be called multiple times if the mode is invalidated.
      */
-    override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+    override fun onPrepareActionMode(
+        mode: ActionMode,
+        menu: Menu,
+    ): Boolean {
         safeLet(
             mainActivityReference.get(),
             mainActivityReference.get()?.currentMainFragment?.mainFragmentViewModel,
-            mainActivityReference.get()?.currentMainFragment?.adapter
+            mainActivityReference.get()?.currentMainFragment?.adapter,
         ) {
                 mainActivity, mainFragmentViewModel, adapter ->
             val checkedItems: ArrayList<LayoutElementParcelable> =
@@ -117,142 +130,97 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     adapter,
                     actionModeView!!,
                     mainFragmentViewModel.currentPath!!,
-                    mainActivity
+                    mainActivity,
                 )
             }
-            val textView: TextView = actionModeView!!.findViewById(R.id.item_count)
+            val textView: AppCompatTextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
-            hideOption(R.id.openmulti, menu)
-            menu.findItem(R.id.all)
-                .setTitle(
-                    if (checkedItems.size
-                        == mainFragmentViewModel.folderCount +
-                        mainFragmentViewModel.fileCount
-                    ) R.string.deselect_all else R.string.select_all
+
+            if (mainActivity.mReturnIntent &&
+                !mainActivity.intent.getBooleanExtra(
+                    Intent.EXTRA_ALLOW_MULTIPLE,
+                    false,
                 )
-            if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel
-                .getIsCloudOpenMode()
+            ) {
+                // Only one item can be returned, so there should not be a "Select all" button
+                hideOption(R.id.all, menu)
+            } else {
+                menu.findItem(R.id.all)
+                    .setTitle(
+                        if (checkedItems.size
+                            == mainFragmentViewModel.folderCount +
+                            mainFragmentViewModel.fileCount
+                        ) {
+                            R.string.deselect_all
+                        } else {
+                            R.string.select_all
+                        },
+                    )
+            }
+
+            if (mainFragmentViewModel.openMode != OpenMode.FILE &&
+                mainFragmentViewModel.openMode != OpenMode.TRASH_BIN &&
+                !mainFragmentViewModel.getIsCloudOpenMode()
             ) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)
                 return true
             }
-            if (mainActivity.mReturnIntent &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-            ) {
-                showOption(R.id.openmulti, menu)
-            }
             // tv.setText(checkedItems.size());
-            if (!mainFragmentViewModel.results) {
-                hideOption(R.id.openparent, menu)
-                if (checkedItems.size == 1) {
-                    showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openwith, menu)
-                    showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
-                        hideOption(R.id.openwith, menu)
-                        hideOption(R.id.share, menu)
-                        hideOption(R.id.openmulti, menu)
-                    }
-                    if (mainActivity.mReturnIntent) {
-                        if (Build.VERSION.SDK_INT >= 16) showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
-                } else {
-                    showOption(R.id.share, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                        showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
-                    for (e in mainFragmentViewModel.getCheckedItems()) {
-                        if (e.isDirectory) {
-                            hideOption(R.id.share, menu)
-                            hideOption(R.id.openmulti, menu)
-                            break
-                        }
-                    }
+
+            hideOption(R.id.openparent, menu)
+            if (checkedItems.size == 1) {
+                showOption(R.id.addshortcut, menu)
+                showOption(R.id.openwith, menu)
+                showOption(R.id.share, menu)
+                if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
                     hideOption(R.id.openwith, menu)
-                    hideOption(R.id.addshortcut, menu)
+                    hideOption(R.id.share, menu)
                 }
             } else {
-                if (checkedItems.size == 1) {
-                    showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openparent, menu)
-                    showOption(R.id.openwith, menu)
-                    showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
-                        hideOption(R.id.openwith, menu)
+                showOption(R.id.share, menu)
+                for (e in mainFragmentViewModel.getCheckedItems()) {
+                    if (e.isDirectory) {
                         hideOption(R.id.share, menu)
-                        hideOption(R.id.openmulti, menu)
+                        break
                     }
-                    if (mainActivity.mReturnIntent &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                    ) {
-                        showOption(R.id.openmulti, menu)
-                    }
-                } else {
-                    hideOption(R.id.openparent, menu)
-                    hideOption(R.id.addshortcut, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                        showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
-                    for (e in mainFragmentViewModel.getCheckedItems()) {
-                        if (e.isDirectory) {
-                            hideOption(R.id.share, menu)
-                            hideOption(R.id.openmulti, menu)
-                            break
-                        }
-                    }
-                    hideOption(R.id.openwith, menu)
                 }
+                hideOption(R.id.openwith, menu)
+                hideOption(R.id.addshortcut, menu)
             }
             if (mainFragmentViewModel.openMode != OpenMode.FILE) {
                 hideOption(R.id.openwith, menu)
                 hideOption(R.id.compress, menu)
                 hideOption(R.id.hide, menu)
                 hideOption(R.id.addshortcut, menu)
+                if (mainFragmentViewModel.openMode == OpenMode.TRASH_BIN) {
+                    hideOption(R.id.cpy, menu)
+                    hideOption(R.id.cut, menu)
+                    hideOption(R.id.share, menu)
+                    hideOption(R.id.hide, menu)
+                    hideOption(R.id.addshortcut, menu)
+                    hideOption(R.id.ex, menu)
+                    showOption(R.id.delete, menu)
+                    showOption(R.id.restore, menu)
+                }
             }
         }
         return true // Return false if nothing is done
     }
 
     // called when the user selects a contextual menu item
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+    override fun onActionItemClicked(
+        mode: ActionMode,
+        item: MenuItem,
+    ): Boolean {
         mainActivityReference.get()?.currentMainFragment?.computeScroll()
         safeLet(
             mainActivityReference.get(),
             mainActivityReference
-                .get()?.currentMainFragment?.mainFragmentViewModel?.getCheckedItems()
+                .get()?.currentMainFragment?.mainFragmentViewModel?.getCheckedItems(),
         ) {
                 mainActivity, checkedItems ->
             return when (item.itemId) {
-                R.id.openmulti -> {
-                    val intent_result = Intent(Intent.ACTION_SEND_MULTIPLE)
-                    val resulturis = ArrayList<Uri>()
-                    for (element in checkedItems) {
-                        val baseFile = element.generateBaseFile()
-                        val resultUri = Utils.getUriForBaseFile(mainActivity, baseFile)
-                        if (resultUri != null) {
-                            resulturis.add(resultUri)
-                        }
-                    }
-                    intent_result.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    mainActivity.setResult(FragmentActivity.RESULT_OK, intent_result)
-                    intent_result.putParcelableArrayListExtra(
-                        Intent.EXTRA_STREAM,
-                        resulturis
-                    )
-                    mainActivity.finish()
-                    // mode.finish();
-                    true
-                }
                 R.id.about -> {
                     val x = checkedItems[0]
                     mainActivity.currentMainFragment?.also {
@@ -262,7 +230,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                             mainActivity,
                             it,
                             mainActivity.isRootExplorer,
-                            mainActivity.utilsProvider.appTheme
+                            mainActivity.utilsProvider.appTheme,
                         )
                     }
                     mode.finish()
@@ -273,26 +241,38 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainActivity,
                         mainActivity,
                         checkedItems,
-                        mainActivity.utilsProvider.appTheme
+                        mainActivity.utilsProvider.appTheme,
+                    )
+                    true
+                }
+                R.id.restore -> {
+                    GeneralDialogCreation.restoreFilesDialog(
+                        mainActivity,
+                        mainActivity,
+                        checkedItems,
+                        mainActivity.utilsProvider.appTheme,
                     )
                     true
                 }
                 R.id.share -> {
-                    if (checkedItems.size > 100) Toast.makeText(
-                        mainActivity,
-                        mainActivity.resources.getString(R.string.share_limit),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show() else {
+                    if (checkedItems.size > 100) {
+                        Toast.makeText(
+                            mainActivity,
+                            mainActivity.resources.getString(R.string.share_limit),
+                            Toast.LENGTH_SHORT,
+                        )
+                            .show()
+                    } else {
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.also {
                                 mainFragmentViewModel ->
                             when (checkedItems[0].mode) {
                                 OpenMode.DROPBOX, OpenMode.BOX, OpenMode.GDRIVE,
-                                OpenMode.ONEDRIVE ->
+                                OpenMode.ONEDRIVE,
+                                ->
                                     FileUtils.shareCloudFiles(
                                         checkedItems,
                                         checkedItems[0].mode,
-                                        mainActivity
+                                        mainActivity,
                                     )
                                 else -> {
                                     val arrayList = ArrayList<File>()
@@ -303,7 +283,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                                         arrayList,
                                         mainActivity,
                                         mainActivity.utilsProvider.appTheme,
-                                        mainFragmentViewModel.accentColor
+                                        mainFragmentViewModel.accentColor,
                                     )
                                 }
                             }
@@ -316,7 +296,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         File(checkedItems[0].desc).parent,
                         false,
                         OpenMode.FILE,
-                        false
+                        false,
                     )
 
                     true
@@ -324,19 +304,19 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 R.id.all -> {
                     safeLet(
                         mainActivity.currentMainFragment?.mainFragmentViewModel,
-                        mainActivity.currentMainFragment?.adapter
+                        mainActivity.currentMainFragment?.adapter,
                     ) {
                             mainFragmentViewModel, adapter ->
                         if (adapter.areAllChecked(mainFragmentViewModel.currentPath)) {
                             adapter.toggleChecked(
                                 false,
-                                mainFragmentViewModel.currentPath
+                                mainFragmentViewModel.currentPath,
                             )
                             item.setTitle(R.string.select_all)
                         } else {
                             adapter.toggleChecked(
                                 true,
-                                mainFragmentViewModel.currentPath
+                                mainFragmentViewModel.currentPath,
                             )
                             item.setTitle(R.string.deselect_all)
                         }
@@ -373,12 +353,15 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         i++
                     }
                     val op =
-                        if (item.itemId == R.id.cpy) PasteHelper.OPERATION_COPY
-                        else PasteHelper.OPERATION_CUT
+                        if (item.itemId == R.id.cpy) {
+                            PasteHelper.OPERATION_COPY
+                        } else {
+                            PasteHelper.OPERATION_CUT
+                        }
                     // Making sure we don't cause an IllegalArgumentException
                     // when passing copies to PasteHelper
                     if (copies.isNotEmpty()) {
-                        val pasteHelper = PasteHelper(mainActivity, op, copies)
+                        pasteHelper = PasteHelper(mainActivity, op, copies)
                         mainActivity.paste = pasteHelper
                     }
                     mode.finish()
@@ -394,7 +377,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     GeneralDialogCreation.showCompressDialog(
                         mainActivity,
                         copies1,
-                        mainActivity.currentMainFragment?.mainFragmentViewModel?.currentPath
+                        mainActivity.currentMainFragment?.mainFragmentViewModel?.currentPath,
                     )
                     mode.finish()
                     true
@@ -403,7 +386,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     FileUtils.openFile(
                         File(checkedItems[0].desc),
                         mainActivity,
-                        mainActivity.prefs
+                        mainActivity.prefs,
                     )
                     true
                 }
@@ -411,7 +394,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     Utils.addShortcut(
                         mainActivity,
                         mainActivity.componentName,
-                        checkedItems[0]
+                        checkedItems[0],
                     )
                     mode.finish()
                     true
@@ -432,23 +415,24 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             // translates the drawer content up
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(false);
             mainActivity.showFab()
+            mainActivity.hideFabConfirmSelection()
 
             mainActivity.setPagingEnabled(true)
             safeLet(
                 mainActivity.currentMainFragment?.mainFragmentViewModel,
-                mainActivity.currentMainFragment?.adapter
+                mainActivity.currentMainFragment?.adapter,
             ) {
                     mainFragmentViewModel, adapter ->
-                if (!mainFragmentViewModel.results) {
-                    adapter.toggleChecked(false, mainFragmentViewModel.currentPath)
-                } else adapter.toggleChecked(false)
+                adapter.toggleChecked(false, mainFragmentViewModel.currentPath)
                 mainActivity
                     .updateViews(
                         ColorDrawable(
                             if (MainActivity.currentTab == 1) {
                                 mainFragmentViewModel.primaryTwoColor
-                            } else mainFragmentViewModel.primaryColor
-                        )
+                            } else {
+                                mainFragmentViewModel.primaryColor
+                            },
+                        ),
                     )
             }
 
@@ -462,7 +446,10 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
      * Finishes the action mode
      */
     fun disableActionMode() {
-        mainActivityReference.get()?.listItemSelected = false
+        mainActivityReference.get()?.let {
+            it.listItemSelected = false
+            it.hideFabConfirmSelection()
+        }
         actionMode?.finish()
         actionMode = null
     }

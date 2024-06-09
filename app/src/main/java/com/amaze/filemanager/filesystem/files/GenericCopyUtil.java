@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -72,8 +72,6 @@ public class GenericCopyUtil {
   private final DataUtils dataUtils = DataUtils.getInstance();
   private final ProgressHandler progressHandler;
 
-  public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
-
   public static final int DEFAULT_BUFFER_SIZE = 8192;
 
   /*
@@ -82,7 +80,7 @@ public class GenericCopyUtil {
      Cannot modify DEFAULT_BUFFER_SIZE since it's used by other classes, will have undesired
      effect on other functions
   */
-  private static final int DEFAULT_TRANSFER_QUANTUM = 65536;
+  private static final int DEFAULT_TRANSFER_QUANTUM = 1024 * 1024;
 
   public GenericCopyUtil(Context context, ProgressHandler progressHandler) {
     this.mContext = context;
@@ -243,10 +241,10 @@ public class GenericCopyUtil {
 
       doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
-      LOG.debug("I/O Error!", e);
-      throw new IOException();
+      LOG.error("I/O Error copy {} to {}: {}", mSourceFile, mTargetFile, e);
+      throw new IOException(e);
     } catch (OutOfMemoryError e) {
-      LOG.warn("low memory while copying file", e);
+      LOG.warn("low memory while copying {} to {}: {}", mSourceFile, mTargetFile, e);
 
       onLowMemory.onLowMemory();
 
@@ -271,7 +269,7 @@ public class GenericCopyUtil {
       // If target file is copied onto the device and copy was successful, trigger media store
       // rescan
       if (mTargetFile != null) {
-        FileUtils.scanFile(mContext, new HybridFile[] {mTargetFile});
+        MediaConnectionUtils.scanFile(mContext, new HybridFile[] {mTargetFile});
       }
     }
   }

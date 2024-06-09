@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -28,7 +28,6 @@ import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -46,7 +45,8 @@ public class ThemedTextView extends AppCompatTextView {
     setTextViewColor(this, context);
   }
 
-  public static void setTextViewColor(@NotNull TextView textView, @NonNull Context context) {
+  public static void setTextViewColor(
+      @NotNull AppCompatTextView textView, @NonNull Context context) {
     if (((MainActivity) context).getAppTheme().equals(AppTheme.LIGHT)) {
       textView.setTextColor(Utils.getColor(context, android.R.color.black));
     } else if (((MainActivity) context).getAppTheme().equals(AppTheme.DARK)

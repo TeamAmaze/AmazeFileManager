@@ -34,7 +34,6 @@ import org.mockito.Mockito
  * Unit test for [FEAT].
  */
 class FEATCommandTest : AbstractFtpserverCommandTest() {
-
     /**
      * Test command output. Expect AVBL is among list of extensions implemented.
      */
@@ -46,13 +45,13 @@ class FEATCommandTest : AbstractFtpserverCommandTest() {
         command.execute(
             session = ftpSession,
             context = context,
-            request = DefaultFtpRequest("FEAT")
+            request = DefaultFtpRequest("FEAT"),
         )
         assertEquals(1, logger.messages.size)
         assertEquals(211, logger.messages[0].code)
         assertEquals(
             AppConfig.getInstance().getString(R.string.ftp_command_FEAT),
-            logger.messages[0].message
+            logger.messages[0].message,
         )
         assertTrue(logger.messages[0].message.contains("AVBL"))
     }

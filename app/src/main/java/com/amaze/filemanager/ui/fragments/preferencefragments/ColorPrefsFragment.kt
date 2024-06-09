@@ -38,19 +38,24 @@ class ColorPrefsFragment : BasePrefsFragment() {
 
     private var dialog: MaterialDialog? = null
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.color_prefs, rootKey)
 
-        val showColorChangeDialogListener = Preference.OnPreferenceClickListener {
-            showColorChangeDialog(it.key)
+        val showColorChangeDialogListener =
+            Preference.OnPreferenceClickListener {
+                showColorChangeDialog(it.key)
 
-            true
-        }
+                true
+            }
 
-        val colorPickerPref = activity.prefs.getInt(
-            PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-            ColorPickerDialog.NO_DATA
-        )
+        val colorPickerPref =
+            activity.prefs.getInt(
+                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+                ColorPickerDialog.NO_DATA,
+            )
 
         val skin = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN)
         val skinTwo = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN_TWO)
@@ -79,16 +84,18 @@ class ColorPrefsFragment : BasePrefsFragment() {
     }
 
     private fun showPreselectedColorsConfigDialog() {
-        val newDialog = ColorPickerDialog.newInstance(
-            PreferencesConstants.PRESELECTED_CONFIGS,
-            activity.currentColorPreference,
-            activity.appTheme
-        )
-        newDialog.setListener {
-            val colorPickerPref = activity.prefs.getInt(
-                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-                ColorPickerDialog.NO_DATA
+        val newDialog =
+            ColorPickerDialog.newInstance(
+                PreferencesConstants.PRESELECTED_CONFIGS,
+                activity.currentColorPreference,
+                activity.appTheme,
             )
+        newDialog.setListener {
+            val colorPickerPref =
+                activity.prefs.getInt(
+                    PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+                    ColorPickerDialog.NO_DATA,
+                )
             if (colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
                 AppConfig.toast(getActivity(), R.string.set_random)
             }
@@ -102,63 +109,67 @@ class ColorPrefsFragment : BasePrefsFragment() {
     private fun showColorChangeDialog(colorPrefKey: String) {
         val currentColorPreference = activity.currentColorPreference ?: return
 
-        @ColorInt val currentColor = when (colorPrefKey) {
-            PreferencesConstants.PREFERENCE_SKIN -> currentColorPreference.primaryFirstTab
-            PreferencesConstants.PREFERENCE_SKIN_TWO -> currentColorPreference.primarySecondTab
-            PreferencesConstants.PREFERENCE_ACCENT -> currentColorPreference.accent
-            PreferencesConstants.PREFERENCE_ICON_SKIN -> currentColorPreference.iconSkin
-            else -> 0
-        }
-
-        val adapter = ColorAdapter(
-            activity,
-            ColorPreference.availableColors,
-            currentColor
-        ) { selectedColor: Int ->
-            @ColorInt var primaryFirst = currentColorPreference.primaryFirstTab
-
-            @ColorInt var primarySecond = currentColorPreference.primarySecondTab
-
-            @ColorInt var accent = currentColorPreference.accent
-
-            @ColorInt var iconSkin = currentColorPreference.iconSkin
+        @ColorInt val currentColor =
             when (colorPrefKey) {
-                PreferencesConstants.PREFERENCE_SKIN -> primaryFirst = selectedColor
-                PreferencesConstants.PREFERENCE_SKIN_TWO -> primarySecond = selectedColor
-                PreferencesConstants.PREFERENCE_ACCENT -> accent = selectedColor
-                PreferencesConstants.PREFERENCE_ICON_SKIN -> iconSkin = selectedColor
+                PreferencesConstants.PREFERENCE_SKIN -> currentColorPreference.primaryFirstTab
+                PreferencesConstants.PREFERENCE_SKIN_TWO -> currentColorPreference.primarySecondTab
+                PreferencesConstants.PREFERENCE_ACCENT -> currentColorPreference.accent
+                PreferencesConstants.PREFERENCE_ICON_SKIN -> currentColorPreference.iconSkin
+                else -> 0
             }
-            activity
-                .colorPreference
-                .saveColorPreferences(
-                    activity.prefs,
-                    UserColorPreferences(primaryFirst, primarySecond, accent, iconSkin)
-                )
-            dialog?.dismiss()
-            activity.recreate()
-        }
 
-        val v = DialogGridBinding.inflate(LayoutInflater.from(requireContext())).root.also {
-            it.adapter = adapter
-            it.onItemClickListener = adapter
-        }
+        val adapter =
+            ColorAdapter(
+                activity,
+                ColorPreference.availableColors,
+                currentColor,
+            ) { selectedColor: Int ->
+                @ColorInt var primaryFirst = currentColorPreference.primaryFirstTab
+
+                @ColorInt var primarySecond = currentColorPreference.primarySecondTab
+
+                @ColorInt var accent = currentColorPreference.accent
+
+                @ColorInt var iconSkin = currentColorPreference.iconSkin
+                when (colorPrefKey) {
+                    PreferencesConstants.PREFERENCE_SKIN -> primaryFirst = selectedColor
+                    PreferencesConstants.PREFERENCE_SKIN_TWO -> primarySecond = selectedColor
+                    PreferencesConstants.PREFERENCE_ACCENT -> accent = selectedColor
+                    PreferencesConstants.PREFERENCE_ICON_SKIN -> iconSkin = selectedColor
+                }
+                activity
+                    .colorPreference
+                    .saveColorPreferences(
+                        activity.prefs,
+                        UserColorPreferences(primaryFirst, primarySecond, accent, iconSkin),
+                    )
+                dialog?.dismiss()
+                activity.recreate()
+            }
+
+        val v =
+            DialogGridBinding.inflate(LayoutInflater.from(requireContext())).root.also {
+                it.adapter = adapter
+                it.onItemClickListener = adapter
+            }
 
         val fabSkin = activity.accent
 
-        dialog = MaterialDialog.Builder(activity)
-            .positiveText(com.amaze.filemanager.R.string.cancel)
-            .title(com.amaze.filemanager.R.string.choose_color)
-            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
-            .autoDismiss(true)
-            .positiveColor(fabSkin)
-            .neutralColor(fabSkin)
-            .neutralText(com.amaze.filemanager.R.string.default_string)
-            .onNeutral { _, _ ->
-                activity
-                    .colorPreference
-                    .saveColorPreferences(activity.prefs, currentColorPreference)
-                activity.recreate()
-            }.customView(v, false)
-            .show()
+        dialog =
+            MaterialDialog.Builder(activity)
+                .positiveText(com.amaze.filemanager.R.string.cancel)
+                .title(com.amaze.filemanager.R.string.choose_color)
+                .theme(activity.appTheme.getMaterialDialogTheme())
+                .autoDismiss(true)
+                .positiveColor(fabSkin)
+                .neutralColor(fabSkin)
+                .neutralText(com.amaze.filemanager.R.string.default_string)
+                .onNeutral { _, _ ->
+                    activity
+                        .colorPreference
+                        .saveColorPreferences(activity.prefs, currentColorPreference)
+                    activity.recreate()
+                }.customView(v, false)
+                .show()
     }
 }

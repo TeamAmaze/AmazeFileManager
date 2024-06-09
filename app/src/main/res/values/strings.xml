@@ -77,11 +77,14 @@
     <string name="dialog_delete_category_directories">Directories</string>
     <string name="dialog_delete_category_files">Files</string>
     <string name="dialog_delete_disclaimer">Deleting the items below will permanently remove them from your device and they cannot be recovered.</string>
+    <string name="dialog_delete_temporarily_disclaimer">Are you sure you want to delete following items?</string>
+    <string name="dialog_restore_disclaimer">Are you sure you want to restore following items?</string>
     <string name="dialog_delete_title">Delete items permanently?</string>
     <string name="deleting">Deleting</string>
     <string name="question_set_path_as_home">Do you want to set current path as home for this tab?</string>
     <string name="directorysort">Directory Sort Mode</string>
     <string name="sort_by">Sort By</string>
+    <string name="sort_by_colon">Sort By:</string>
     <string name="sort_only_this">Only this folder</string>
     <string name="theme">Theme</string>
     <string name="random">Random Skin</string>
@@ -119,9 +122,11 @@
     <string name="sort_name">Name</string>
     <string name="lastModified">Last Modified</string>
     <string name="sort_size">Size</string>
+    <string name="sort_relevance">Relevance</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>
+    <string name="pick_files">Pick one or more files</string>
     <string name="process_viewer">Process Viewer</string>
     <string name="in_safe">Insufficient space</string>
     <string name="no_file_overwrite">No File Overwritten</string>
@@ -182,6 +187,8 @@
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
     <string name="circular_images">Use circular icons for images and videos</string>
     <string name="circular_icons">Use circular icons</string>
+    <string name="follow_battery_saver_title">Follow battery saver</string>
+    <string name="follow_battery_saver_desc">If selected and the battery saver mode is turned on, the theme changes to dark theme</string>
     <string name="back_title">Back navigation</string>
     <string name="back_summary">Enables custom back navigation at top of the list</string>
     <string name="details">Details</string>
@@ -586,6 +593,7 @@
 	<string name="scp_connection">SCP/SFTP Connection</string>
     <string name="ftp_connection">FTP Connection</string>
     <string name="ftps_connection">FTP over SSL Connection</string>
+    <string name="ftps_enable_explicit_tls">Explicit TLS</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">The authenticity of host \'%1$s\' can\'t be established.\n\n%2$s key fingerprint is %3$s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
@@ -749,6 +757,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
     <string name="select_similar">Select similar</string>
+    <string name="select_fill">Select fill</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
         \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
@@ -808,5 +817,36 @@ You only need to do this once, until the next time you select a new location for
     <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
     <string name="cloud_connection_credentials_cleared">Cloud Connection credentials cleared</string>
     <string name="cloud_connection_credentials_cleared_msg">Unfortunately, we were unable to migrate your cloud connection credentials to the new database schema, and we had to remove them from the app. Please create the cloud connection again.</string>
+    <string name="not_finding_what_you_re_looking_for">Not finding what you\'re looking for?</string>
+    <string name="try_deep_search">Try Deep Search!</string>
+    <string name="try_indexed_search">Try Indexed Search!</string>
+    <string name="search_recent">Recent</string>
+    <string name="results">Results</string>
+    <string name="grant_notification_permission">Amaze needs notification permission to display file operation progress, as well as a handy panel to start/stop the FTP server.</string>
+    <string name="error_unsupported_or_null_uri">Invalid, unsupported, or no URI was provided</string>
+    <string name="complete_paste_warning">Please complete paste operation first</string>
+    <string name="same_dir_move_error">Destination and source folder shouldn\'t match to move.</string>
+    <string name="checking_conflicts">Checking for conflicts</string>
+    <string name="same_dir_overwrite_error">Destination and source folder shouldn\'t match to overwrite.</string>
+    <string name="not_found_enabled_webview">No available browser</string>
+    <string name="preference_language_title">App Language</string>
+    <string name="preference_language_dialog_title">Select Language</string>
+    <string name="preference_language_system_default">System Default</string>
+    <string name="error.listfile.smb.title">Unable to load SMB file list</string>
+    <string name="error.listfile.smb">Error listing files at %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Error listing files at %s - probably the SMB server does not allow anonymous access to the IPC$ share. You may try specifying the share name directly in connection settings.</string>
+    <string name="trash_bin">Trash Bin</string>
+    <string name="delete_permanently_checkbox">Delete Permanently</string>
+    <string name="restore">Restore</string>
+    <string name="restore_files">Restore Files</string>
+    <string name="restoring">Restoring…</string>
+    <string name="trash_bin_retention_num_of_files_title">Retention by number of files</string>
+    <string name="trash_bin_retention_num_of_files_summary">Maximum files trash bin can store</string>
+    <string name="trash_bin_retention_days_title">Retention by days</string>
+    <string name="trash_bin_retention_days_summary">Maximum days for which trash bin can store a file</string>
+    <string name="trash_bin_retention_bytes_title">Retention by data size</string>
+    <string name="trash_bin_retention_bytes_summary">Maximum data (in MBs) trash bin can store</string>
+    <string name="trash_bin_cleanup_interval_title">Cleanup interval</string>
+    <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
 </resources>
 

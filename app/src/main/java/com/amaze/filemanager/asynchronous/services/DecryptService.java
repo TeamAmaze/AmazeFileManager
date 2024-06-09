@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -34,7 +34,6 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.Task;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -113,8 +112,6 @@ public class DecryptService extends AbstractProgressiveService {
             .getCurrentUserColorPreferences(this, sharedPreferences)
             .getAccent();
 
-    OpenMode openMode =
-        OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
     notificationManager = NotificationManagerCompat.from(getApplicationContext());
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -267,7 +264,7 @@ public class DecryptService extends AbstractProgressiveService {
           // and the cache directory in case we're here because of the viewer
           try {
             new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps, password);
-          } catch (AESCrypt.DecryptFailureException e) {
+          } catch (AESCrypt.DecryptFailureException ignored) {
 
           } catch (Exception e) {
             LOG.error("Error decrypting " + baseFile.getPath(), e);
@@ -295,7 +292,7 @@ public class DecryptService extends AbstractProgressiveService {
     this.unregisterReceiver(cancelReceiver);
   }
 
-  private BroadcastReceiver cancelReceiver =
+  private final BroadcastReceiver cancelReceiver =
       new BroadcastReceiver() {
 
         @Override

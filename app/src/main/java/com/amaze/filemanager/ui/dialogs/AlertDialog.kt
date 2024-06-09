@@ -29,7 +29,6 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
  * Alert Dialog.
  */
 object AlertDialog {
-
     /**
      * Display an alert dialog. Optionally accepts a [MaterialDialog.SingleButtonCallback] to
      * provide additional behaviour when dialog button is pressed.
@@ -43,20 +42,21 @@ object AlertDialog {
         @StringRes title: Int,
         @StringRes positiveButtonText: Int = android.R.string.ok,
         @Nullable onPositive: MaterialDialog.SingleButtonCallback? = null,
-        contentIsHtml: Boolean = false
+        contentIsHtml: Boolean = false,
     ) {
         val accentColor: Int = activity.accent
-        val a = MaterialDialog.Builder(activity)
-            .content(content, contentIsHtml)
-            .widgetColor(accentColor)
-            .theme(
-                activity
-                    .appTheme
-                    .getMaterialDialogTheme(activity.applicationContext)
-            )
-            .title(title)
-            .positiveText(positiveButtonText)
-            .positiveColor(accentColor)
+        val a =
+            MaterialDialog.Builder(activity)
+                .content(content, contentIsHtml)
+                .widgetColor(accentColor)
+                .theme(
+                    activity
+                        .appTheme
+                        .getMaterialDialogTheme(),
+                )
+                .title(title)
+                .positiveText(positiveButtonText)
+                .positiveColor(accentColor)
 
         if (onPositive != null) {
             a.onPositive(onPositive)

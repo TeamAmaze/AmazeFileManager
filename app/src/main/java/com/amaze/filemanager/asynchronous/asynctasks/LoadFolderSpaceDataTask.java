@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -137,7 +137,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
   }
 
   private void updateChart(String totalSpace, List<PieEntry> entries) {
-    boolean isDarkTheme = appTheme.getMaterialDialogTheme(context) == Theme.DARK;
+    boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
 
     PieDataSet set = new PieDataSet(entries, null);
     set.setColors(COLORS);

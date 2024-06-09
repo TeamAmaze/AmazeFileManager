@@ -26,7 +26,6 @@ import java.io.File
  * For non Google Play variant, this class does nothing. Just a stub.
  */
 object PackageInstallValidation {
-
     /**
      * Do nothing.
      */

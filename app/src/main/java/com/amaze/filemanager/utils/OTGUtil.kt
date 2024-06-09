@@ -41,7 +41,6 @@ import java.net.URLDecoder
 
 /** Created by Vishal on 27-04-2017.  */
 object OTGUtil {
-
     const val PREFIX_OTG = "otg:/"
     private const val PREFIX_DOCUMENT_FILE = "content:/"
     const val PREFIX_MEDIA_REMOVABLE = "/mnt/media_rw"
@@ -63,7 +62,10 @@ object OTGUtil {
      */
     @Deprecated("use getDocumentFiles()")
     @JvmStatic
-    fun getDocumentFilesList(path: String, context: Context): ArrayList<HybridFileParcelable> {
+    fun getDocumentFilesList(
+        path: String,
+        context: Context,
+    ): ArrayList<HybridFileParcelable> {
         val files = ArrayList<HybridFileParcelable>()
         getDocumentFiles(
             path,
@@ -72,7 +74,7 @@ object OTGUtil {
                 override fun onFileFound(file: HybridFileParcelable) {
                     files.add(file)
                 }
-            }
+            },
         )
         return files
     }
@@ -85,9 +87,14 @@ object OTGUtil {
      * @param context context for loading
      */
     @JvmStatic
-    fun getDocumentFiles(path: String, context: Context, fileFound: OnFileFound) {
-        val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
-            ?: throw NullPointerException("USB OTG root not set!")
+    fun getDocumentFiles(
+        path: String,
+        context: Context,
+        fileFound: OnFileFound,
+    ) {
+        val rootUriString =
+            SingletonUsbOtg.getInstance().usbOtgRoot
+                ?: throw NullPointerException("USB OTG root not set!")
         return getDocumentFiles(rootUriString, path, context, OpenMode.OTG, fileFound)
     }
 
@@ -97,16 +104,17 @@ object OTGUtil {
         path: String,
         context: Context,
         openMode: OpenMode,
-        fileFound: OnFileFound
+        fileFound: OnFileFound,
     ) {
         var rootUri = DocumentFile.fromTreeUri(context, rootUriString)
 
-        val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
-            path.substringAfter(rootUriString.toString())
-                .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
-        } else {
-            path.split("/").toTypedArray()
-        }
+        val parts: Array<String> =
+            if (openMode == OpenMode.DOCUMENT_FILE) {
+                path.substringAfter(rootUriString.toString())
+                    .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
+            } else {
+                path.split("/").toTypedArray()
+            }
         for (part in parts.filterNot { it.isEmpty() or it.isBlank() }) {
             // first omit 'otg:/' before iterating through DocumentFile
             if (path == "$PREFIX_OTG/" || path == "$PREFIX_DOCUMENT_FILE/") break
@@ -126,13 +134,14 @@ object OTGUtil {
                 var size: Long = 0
                 if (!file.isDirectory) size = file.length()
                 Log.d(context.javaClass.simpleName, "Found file: ${file.name}")
-                val baseFile = HybridFileParcelable(
-                    path + "/" + file.name,
-                    RootHelper.parseDocumentFilePermission(file),
-                    file.lastModified(),
-                    size,
-                    file.isDirectory
-                )
+                val baseFile =
+                    HybridFileParcelable(
+                        path + "/" + file.name,
+                        RootHelper.parseDocumentFilePermission(file),
+                        file.lastModified(),
+                        size,
+                        file.isDirectory,
+                    )
                 baseFile.name = file.name
                 baseFile.mode = openMode
                 baseFile.fullUri = file.uri
@@ -151,10 +160,11 @@ object OTGUtil {
     fun getDocumentFile(
         path: String,
         context: Context,
-        createRecursive: Boolean
+        createRecursive: Boolean,
     ): DocumentFile? {
-        val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
-            ?: throw NullPointerException("USB OTG root not set!")
+        val rootUriString =
+            SingletonUsbOtg.getInstance().usbOtgRoot
+                ?: throw NullPointerException("USB OTG root not set!")
 
         return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
     }
@@ -165,17 +175,21 @@ object OTGUtil {
         rootUri: Uri,
         context: Context,
         openMode: OpenMode,
-        createRecursive: Boolean
+        createRecursive: Boolean,
     ): DocumentFile? {
         // start with root of SD card and then parse through document tree.
-        var retval: DocumentFile? = DocumentFile.fromTreeUri(context, rootUri)
-            ?: throw DocumentFileNotFoundException(rootUri, path)
-        val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
-            path.substringAfter(URLDecoder.decode(rootUri.toString(), Charsets.UTF_8.name()))
-                .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
-        } else {
-            path.split("/").toTypedArray()
-        }
+        var retval: DocumentFile? =
+            DocumentFile.fromTreeUri(context, rootUri)
+                ?: throw DocumentFileNotFoundException(rootUri, path)
+        val parts: Array<String> =
+            if (openMode == OpenMode.DOCUMENT_FILE) {
+                URLDecoder.decode(path, Charsets.UTF_8.name()).substringAfter(
+                    URLDecoder.decode(rootUri.toString(), Charsets.UTF_8.name()),
+                )
+                    .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
+            } else {
+                path.split("/").toTypedArray()
+            }
         for (part in parts.filterNot { it.isEmpty() or it.isBlank() }) {
             if (path == "otg:/" || path == "content:/") break
             if (part == "otg:" || part == "" || part == "content:") continue
@@ -200,13 +214,11 @@ object OTGUtil {
 
     /** Checks if there is at least one USB device connected with class MASS STORAGE.  */
     @JvmStatic
-    fun getMassStorageDevicesConnected(
-        context: Context
-    ): List<UsbOtgRepresentation> {
+    fun getMassStorageDevicesConnected(context: Context): List<UsbOtgRepresentation> {
         val usbManager = context.getSystemService(Context.USB_SERVICE) as? UsbManager
         val devices = usbManager?.deviceList ?: mapOf()
         return devices.mapNotNullTo(
-            ArrayList()
+            ArrayList(),
         ) { entry ->
             val device = entry.value
             var retval: UsbOtgRepresentation? = null
@@ -224,7 +236,7 @@ object OTGUtil {
                                 TAG,
                                 "Permission denied reading serial number of device " +
                                     "${device.vendorId}:${device.productId}",
-                                ifPermissionDenied
+                                ifPermissionDenied,
                             )
                         }
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -47,7 +47,7 @@ import androidx.annotation.WorkerThread;
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
  * in the same filesystem, else starting the copy service. Be advised - do not start this AsyncTask
- * directly but use {@link PrepareCopyTask} instead
+ * directly but use {@link PreparePasteTask} instead
  */
 public class MoveFiles implements Callable<MoveFilesReturn> {
 

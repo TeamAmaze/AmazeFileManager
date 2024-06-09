@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -29,8 +29,8 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.format.Formatter;
-import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.util.Pair;
 
 /**
@@ -39,12 +39,12 @@ import androidx.core.util.Pair;
 public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>, String> {
 
   private Context context;
-  private TextView itemsText;
+  private AppCompatTextView itemsText;
   private HybridFileParcelable file;
   private boolean isStorage;
 
   public CountItemsOrAndSizeTask(
-      Context c, TextView itemsText, HybridFileParcelable f, boolean storage) {
+      Context c, AppCompatTextView itemsText, HybridFileParcelable f, boolean storage) {
     this.context = c;
     this.itemsText = itemsText;
     file = f;

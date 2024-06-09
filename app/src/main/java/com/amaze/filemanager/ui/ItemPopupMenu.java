@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -160,6 +160,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         GeneralDialogCreation.deleteFilesDialog(
             context, mainActivity, positions, utilitiesProvider.getAppTheme());
         return true;
+      case R.id.restore:
+        ArrayList<LayoutElementParcelable> p2 = new ArrayList<>();
+        p2.add(rowItem);
+        GeneralDialogCreation.restoreFilesDialog(
+            context, mainActivity, p2, utilitiesProvider.getAppTheme());
+        return true;
       case R.id.open_with:
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
@@ -241,8 +247,14 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             utilitiesProvider,
             false);
         return true;
+      case R.id.compress:
+        GeneralDialogCreation.showCompressDialog(
+            mainActivity,
+            rowItem.generateBaseFile(),
+            mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
+        return true;
       case R.id.return_select:
-        mainFragment.returnIntentResults(rowItem.generateBaseFile());
+        mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
         return true;
     }
     return false;

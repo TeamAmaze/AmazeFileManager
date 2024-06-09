@@ -22,11 +22,10 @@ package com.amaze.filemanager.asynchronous.asynctasks
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import org.junit.Test
 
 class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
-
     /**
      * Test case to verify delete SMB file success scenario.
      *
@@ -35,12 +34,12 @@ class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
     @Test
     fun testDeleteSmbFileOk() {
         doTestDeleteFileOk(
-            HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt"))
+            HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt")),
         )
     }
 
     /**
-     * Test case to verify delete SSH file failure scenario.
+     * Test case to verify delete SMB file failure scenario.
      *
      * @see AbstractDeleteTaskTestBase.doTestDeleteFileAccessDenied
      */

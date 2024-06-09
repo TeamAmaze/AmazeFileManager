@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -54,15 +54,15 @@ public class ComputerParcelableTest {
 
   /**
    * Purpose: when computerParcelable's address and object's address are not the same, confirm that
-   * the two are different. Input: computerParcelable.equals(object) only ComputerParcelable.name ==
-   * Object.name Expected: result is false
+   * the two are different. Input: computerParcelable.equals(object) only ComputerParcelable.addr ==
+   * Object.name Expected: result is true
    */
   @Test
   public void testObjectNotEqualsAddr() {
     ComputerParcelable computerParcelable = new ComputerParcelable("com1", "1");
     Object object = new ComputerParcelable("com1", "2");
 
-    assertFalse(computerParcelable.equals(object));
+    assertTrue(computerParcelable.equals(object));
   }
 
   /**

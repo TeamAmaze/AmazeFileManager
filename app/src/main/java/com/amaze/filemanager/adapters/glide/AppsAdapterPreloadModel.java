@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -27,19 +27,18 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.R;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -51,12 +50,12 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
   private final Logger LOG = LoggerFactory.getLogger(AppsAdapterPreloadModel.class);
 
   private Context mContext;
-  private GlideRequest<Drawable> request;
+  private RequestBuilder<Drawable> request;
   private List<String> items;
   private boolean isBottomSheet;
 
   public AppsAdapterPreloadModel(Fragment f, boolean isBottomSheet) {
-    request = GlideApp.with(f).asDrawable().fitCenter();
+    request = Glide.with(f).asDrawable().fitCenter();
     this.mContext = f.requireContext();
     this.isBottomSheet = isBottomSheet;
   }
@@ -85,7 +84,7 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
     }
   }
 
-  public void loadApkImage(String item, ImageView v) {
+  public void loadApkImage(String item, AppCompatImageView v) {
     if (isBottomSheet) {
       request.load(getApplicationIconFromPackageName(item)).into(v);
     } else {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -29,6 +29,7 @@ import org.apache.commons.compress.utils.ByteUtils;
 /** Base Codec class. */
 abstract class CoderBase {
   private final Class<?>[] acceptableOptions;
+
   /**
    * @param acceptableOptions types that can be used as options for this codec.
    */

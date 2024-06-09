@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -88,19 +88,6 @@ public class AppConfigTest {
     shadowOf(getMainLooper()).idle();
     await().atMost(5, TimeUnit.SECONDS).until(() -> ShadowToast.getLatestToast() != null);
     assertEquals("Hello world", ShadowToast.getTextOfLatestToast());
-  }
-
-  @Test
-  public void testGetImageLoader() throws Exception {
-    Field requestQueue = AppConfig.class.getDeclaredField("requestQueue");
-    Field imageLoader = AppConfig.class.getDeclaredField("imageLoader");
-    requestQueue.setAccessible(true);
-    imageLoader.setAccessible(true);
-
-    assertNull(requestQueue.get(AppConfig.getInstance()));
-    assertNull(imageLoader.get(AppConfig.getInstance()));
-
-    assertNotNull(AppConfig.getInstance().getImageLoader());
   }
 
   @Test

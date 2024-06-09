@@ -26,7 +26,6 @@ import com.amaze.filemanager.filesystem.root.base.IRootCommand
 import com.topjohnwu.superuser.Shell
 
 object ChangeFilePermissionsCommand : IRootCommand() {
-
     private const val CHMOD_COMMAND = "chmod %s %o \"%s\""
 
     /**
@@ -41,17 +40,18 @@ object ChangeFilePermissionsCommand : IRootCommand() {
         filePath: String,
         updatedPermissions: Int,
         isDirectory: Boolean,
-        onOperationPerform: (Boolean) -> Unit
+        onOperationPerform: (Boolean) -> Unit,
     ) {
         val mountPoint = MountPathCommand.mountPath(filePath, MountPathCommand.READ_WRITE)
 
         val options = if (isDirectory) "-R" else ""
-        val command = String.format(
-            CHMOD_COMMAND,
-            options,
-            updatedPermissions,
-            RootHelper.getCommandLineString(filePath)
-        )
+        val command =
+            String.format(
+                CHMOD_COMMAND,
+                options,
+                updatedPermissions,
+                RootHelper.getCommandLineString(filePath),
+            )
 
         runShellCommand(command).let { result: Shell.Result ->
             if (result.code < 0) {

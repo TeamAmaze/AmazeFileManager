@@ -36,6 +36,7 @@
     <string name="uninstall">卸載</string>
     <string name="play">入 Google Play睇</string>
     <string name="properties">屬性</string>
+    <string name="copyingapks">正复制%d个 APK 文件至%s</string>
     <string name="delbook">刪除書籤</string>
     <string name="add_to_bookmarks">添加到書籤</string>
     <string name="enterpath">輸入路徑</string>
@@ -49,7 +50,7 @@
     <string name="save">保存</string>
     <string name="bookmarks_added">書籤已添加</string>
     <string name="fileexist">存在同樣名稱的檔案 </string>
-    <string name="name">名稱：</string>
+    <string name="name">名稱</string>
     <string name="date">時間戳：</string>
     <string name="location">路徑：</string>
     <string name="size_capitalized">大小</string>
@@ -107,6 +108,7 @@
     <string name="dark">黑暗</string>
     <string name="daytime">隨晝夜變化</string>
     <string name="black">黑色（AMOLED用）</string>
+    <string name="system">系统 (跟随系统主题)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">資料夾排先</string>
@@ -151,7 +153,7 @@
     <string name="thumb_summary">顯示應用程式同圖片嘅縮圖</string>
     <string name="thumb">顯示縮圖</string>
     <string name="hidden">顯示隱藏檔案</string>
-    <string name="lastModifiedSummary">顯示檔案的最後修改時間</string>
+    <string name="lastModifiedSummary">显示文件的最后修改时间</string>
     <string name="lastModifiedPref">顯示修改時間</string>
     <string name="size_pref_summary">顯示檔案大小及資料夾內檔案數量</string>
     <string name="size_pref">顯示大小</string>
@@ -240,6 +242,7 @@
     <string name="needs_access_summary">請選擇根目錄下的 \t</string>
     <string name="needs_access_summary1">\t 以授予寫入的權限</string>
     <string name="smb_connection">SMB 連線</string>
+    <string name="smb_server">伺服器 IP 位址</string>
     <string name="server_address">伺服器 IP 位址</string>
     <string name="username">使用者名稱</string>
     <string name="password">密碼</string>
@@ -319,7 +322,7 @@
     <string name="bookmark_lost">找不到，重新建立書籤......</string>
 
     <string name="smb_instructions">
-<html><body><center>\n<h1>如何存取共用 Windows 資料夾上的 android (SMB)</h1>\n</center> \n <ol>\n <li>\n <b>啟用檔案共用</b> \n <br/> 開啟控制台，點選選擇家用群組和共用選項下網路和網際網怒，並按一下更改進階共用設定。啟用檔案和印表機共用功能 \n</li> <br/> <li/> <b>其他檔案共用設定</b> <br/> 您可能還想配置其他例如進階共用設定這裡 \n，您可以啟用存取您無需密碼的檔案，如果您相信在您的本地網路上的所有裝置。一旦啟用了檔案和印表機共用，則可以開啟檔案資源管理器或 Windows 檔案總管中，按右鍵您想要共用的資料夾並選擇屬性。\n 按一下共用按鈕，使此資料夾可在 \n 網路。 <li><li/> <br/> <b>確保兩個裝置都在相同的 Wi-Fi</b> <br/> \n 此功能使檔可用在本地網路上，因此您的 PC 和行動裝置必須具有相同的本地網路上。您無法無法訪問共用的 Windows 資料夾透過網際網路或您的智慧手機連線至其行動數據時 — — 已連線至 Wi-Fi。</li><li>\n <br/><b>尋找 IP 位址</b> \n <br/> 開啟命令提示字元。輸入 ipconfig，然後按 enter 鍵。尋找根據您為您的路由器的 IP 位址的網路介面卡的預設閘道。尋找 "IPv4 Address" 相同的配接器部分，以查找您的電腦的 IP 位址下。</li> <li/> <br/>\n <b>在 SMB 對話方塊中輸入詳細資訊</b> \n <br/> \n</ol> \n</body> \n</html>    </string>
+<html><body><center>\n<h1>如何存取共用 Windows 資料夾上的 android (SMB)</h1>\n</center> \n <ol>\n <li>\n <b>啟用檔案共用</b> \n <br/> 開啟控制台，點選選擇家用群組和共用選項下網路和網際網怒，並按一下更改進階共用設定。啟用檔案和印表機共用功能 \n</li> <br/> <li/> <b>其他檔案共用設定</b> <br/> 您可能還想配置其他例如進階共用設定這裡 \n，您可以啟用存取您無需密碼的檔案，如果您相信在您的本地網路上的所有裝置。一旦啟用了檔案和印表機共用，則可以開啟檔案資源管理器或 Windows 檔案總管中，按右鍵您想要共用的資料夾並選擇屬性。\n 按一下共用按鈕，使此資料夾可在 \n 網路。 <li><li/> <br/> <b>確保兩個裝置都在相同的 Wi-Fi</b> <br/> \n 此功能使檔可用在本地網路上，因此您的 PC 和行動裝置必須具有相同的本地網路上。您無法無法訪問共用的 Windows 資料夾透過網際網路或您的智慧手機連線至其行動數據時 — — 已連線至 Wi-Fi。</li><li>\n <br/><b>尋找 IP 位址</b> \n <br/> 開啟命令提示字元。輸入 ipconfig，然後按 enter 鍵。尋找根據您為您的路由器的 IP 位址的網路介面卡的預設閘道。尋找 \"IPv4 Address\" 相同的配接器部分，以查找您的電腦的 IP 位址下。</li> <li/> <br/>\n <b>在 SMB 對話方塊中輸入詳細資訊</b> \n <br/> \n</ol> \n</body> \n</html>    </string>
     <string name="share_limit">無法分享超過 100 個檔案</string>
     <string name="otg_access">選擇 OTG 裝置的根目錄。</string>
     <string name="information">資訊</string>
@@ -404,6 +407,7 @@
     <string name="cloud_connection">雲端連線</string>
     <string name="cloud_connection_new">新增雲端連線</string>
     <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google雲端硬碟&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">取得雲端套件</string>
@@ -471,7 +475,13 @@
     <string name="show_quick_access_pref">快速存取</string>
     <string name="directory">目錄</string>
 
+    <string name="sidebar_bookmarks_title">側欄書籤</string>
+    <string name="show_bookmarks_pref_title">顯示書籤</string>
     <string name="show_bookmarks_pref">書籤</string>
+    <string name="create_bookmark">建立書籤</string>
+    <string name="edit_bookmark">編輯書籤</string>
+    <string name="question_delete_bookmark">刪除書籤？</string>
+
     <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
     <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
     <string name="cloud_remove">您想要移除此雲端連線嗎？</string>
@@ -520,6 +530,8 @@
 
     <string name="update">更新</string>
 	<string name="scp_connection">SCP/SFTP 連線</string>
+    <string name="ftp_connection">FTP 连接</string>
+    <string name="ftps_connection">FTPS 连接</string>
     <string name="scp_port">通訊埠</string>
     <string name="ssh_host_key_verification_prompt">伺服器 \'%1$s\' 嘅身份未被確認。\n\n%2$s 公鑰嘅指紋係 %3$s。\n\n請㩒“是”確認，否則請㩒“否”。</string>
     <string name="ssh_host_key_verification_prompt_title">伺服器確認</string>
@@ -559,20 +571,22 @@
     <string name="no_obtainable_info">無呢個檔案嘅資料</string>
     <string name="reopen_from_source">唔得。麻煩用番頭先個 app開</string>
     <string name="no_file_error">有啲唔妥。無嘢開嘅!?</string>
+    <string name="file_too_long">该文件太长而不能编辑，您仍可以查看前%d个字符</string>
     <string name="file_read_only">檔案以唯讀模式開啟。</string>
     <string name="got_it">明白了！</string>
     <string name="encrypt_file_save_as">將加密檔案儲存為&#8230;</string>
     <string name="encrypt_folder_save_as">將加密檔案夾儲存為&#8230;</string>
-    <string name="encrypt_option_use_aze">使用 Amaze加密格式</string>
+    <string name="encrypt_option_use_aze">使用Amaze加密格式</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
-        <p>AESCrypt係基於 AES加密技術嘅開源檔案加密格式。佢可以喺任何平台上支援 AESCrypt嘅應用程式上解密。</p>
-        <p><a href="https://www.aescrypt.com" target="_blank>AESCrypt 官方網站</a></p>
-]]></string>
+ <p>AESCrypt是一种开源的文件加密格式，并且它基于高级加密标准。它也是可移植的，可以使用其他平台上的AESCrypt程序进行解密</p>
+ <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt网站</a></p>]]>
+</string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
-        <p>Amaze自有加密方式亦都係以 AES加密技術為基礎。但係同 AESCrypt格式唔同，用呢個方法加密嘅檔案只能喺番呢部機上解密。而且你唔可以剷走 Amaze架，甚至連更改 lock screen設定都唔得，否則就算你記得個密碼，個檔案都救唔番架啦。</p>
+        <p>Amaze使用的加密格式也采用了高级加密标准。但是，与AES Crypt格式不同的是，它只能在此设备上解密；除此之外，您不能卸载此设备上的Amaze文件管理器，也不能更改锁屏方式，否则您将无法恢复加密文件。</p>
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">加密檔案一定要用“.aze”做檔案擴展名稱。</string>
-    <string name="encrypt_file_must_end_with_aes">加密檔案一定要用“.aes”做檔案擴展名稱。</string>
+    <string name="encrypt_file_must_end_with_aes">加密文件必须以 aes 作为文件后缀名</string>
+    <string name="error_aescrypt_decrypt_failed">无法解密 \'%s\': \'%s\'</string>
     <string name="cannot_overwrite">覆寫唔到個檔案。</string>
     <string name="saved_single_file">檔案儲存為 \'%s\'.</string>
     <string name="saved_multi_files">儲存咗%d 個檔案。</string>
@@ -654,5 +668,82 @@
     <string name="ftp_prompt_accept_first_start_saf_access">呢次係你第一次開著個 FTP伺服器，咁啱你又用內部儲存空間來做共享檔案夾。請你容許 Amaze用 SAF存取儲存空間。\n\n
 
 你只需要做一次，直至下次你揀過另一個共享檔案夾。</string>
+    <string name="android_data_prompt_saf_access">从安卓10开始，系统限制了某些目录的访问，需要使用存储访问框架才能访问这些目录。
+
+请您点击“允许”，才能让Amaze通过系统文件管理器访问该目录。</string>
+    <string name="android_data_prompt_saf_access_title">获取“存储访问框架”权限</string>
+    <string name="ftp_preference_saf_filesystem_title">使用傳統檔案系統</string>
+    <string name="ftp_preference_saf_filesystem">启用此功能，进而可以在新版本的安卓系统上使用外部存储</string>
+    <string name="ftp_server_fallback_path_reset_prompt">由于您正在切换回旧版的文件系统的实现方式，文件传输协议服务器的共享路径已经被重新设定为内部存储。请您根据自身需求，通过右上角的菜单选择新路径。</string>
+    <string name="ftp_server_reset_notify">FTP服务器的共享路径已被重置为内部存储</string>
+    <string name="ftp_server_root_unavailable">访问当前路径需要根权限。如果您的设备已获取根权限，请在设置中启用根权限浏览器功能</string>
+    <string name="ftp_server_root_filesystem_warning">您当前所选路径需要根权限。授权后，Amaze能够读取和写入您设备上的所有文件。这很危险——粗心大意可以使您的设备变砖！
+您确定要继续吗？</string>
+    <string name="compressed_explorer_fragment_error_open_uri">读取 URI \"%s\" 时发生错误。</string>
+    <string name="error_empty_archive">\"%s\" 是空的压缩文件。</string>
+    <string name="error_bad_archive_without_info">压缩文件 \"%s\" 已损坏。</string>
+    <string name="error_bad_archive_with_info">“%s”是一个已损坏的压缩文件。
+本通知来自于解压缩程序。“%s”</string>
+    <string name="security_error">檔案不能以此 app開啟</string>
+    <string name="cloud_drive_tooltip">建立到 Google雲端硬碟™的連線，以便在 Amaze檔案管理員內管理在雲端硬碟上的檔案。</string>
+    <string name="signin_with_google_title">登入以使用 Google雲端硬碟&#8482;</string>
+    <string name="show_system_apps">顯示系統應用程式</string>
+    <string name="system_apps">系統應用程式</string>
+    <string name="select_inverse">反选</string>
+    <string name="select_by_type">选择同类型</string>
+    <string name="select_by_date">选择同日期</string>
+    <string name="select_similar">选择相似项</string>
+    <string name="error_fetching_google_play_product_list">在谷歌应用商店获取产品列表时出现错误</string>
+    <string name="grant_all_files_permission"><html><body>依照谷歌要求，从安卓11开始，文件管理器应当先经过用户授权，才能管理该设备所有文件。详情<a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">请点击此处</a>。
+Amaze文件管理器也需要该权限才能管理设备的所有文件。在此处按“授权”后，请在下一个界面上选择<b>“允许访问以管理所有文件”选项。</b>
+<font color='#ff6347'><i>取消此对话框将退出应用程序。</i></font></body></html></string>
+    <string name="user_apps">用户应用</string>
+    <string name="appearance">外观</string>
+    <string name="behavior">行为</string>
+    <string name="appearance_summary">定制文件管理器的主题、颜色和外观</string>
+    <string name="ui_summary">控制信息展示，定制侧边栏，以及个性化界面</string>
+    <string name="behavior_summary">修改诸如高级搜索或是否以新任务打开文件等行为</string>
+    <string name="security_summary">设置口令与加密</string>
+    <string name="quick_desc">最近通过 Amaze 访问的文件</string>
+    <string name="recent_desc">最近创建或修改的文件</string>
+    <string name="error_cannot_find_way_open">找不到打开文件的方式</string>
+    <string name="error_cant_decompress_that_file">您请求的压缩文件，无法处理</string>
+    <string name="analyse_storage">存储分析</string>
+    <string name="download">下载</string>
+    <string name="wifip2p">点对点式无线局域网</string>
+    <string name="amaze_utils_installed_alias">感谢您安装Amaze系列文件工具。正将您重定向到指定应用。</string>
+    <string name="image_viewer">Amaze图像查看器</string>
+    <string name="video_player">Amaze视频播放器</string>
+    <string name="amaze_audio_player">Amaze音乐播放器</string>
+    <string name="share_logs">分享日志</string>
+    <string name="share_logs_summary">使用邮件或电报来分享已抓取的日志</string>
+    <string name="open_with_amaze">使用Amaze打开</string>
+    <string name="confirmation">确认</string>
+    <string name="open_file_confirmation">您确定要打开以下文件吗？
+名称：
+%s
+位置：
+%s
+大小：
+%s
+第5版信息提炼算法：
+%s
+256位哈希安全算法：
+%s
+
+</string>
+    <string name="error_google_play_cannot_update_myself">根据谷歌应用市场的强制要求，应用不可自行更新。请您从谷歌应用市场更新应用。</string>
+    <string name="error_cannot_get_package_info">无法从文件“%s”中获取安装包信息。该文件可能不是安卓应用安装包，或者该文件已损坏。</string>
+    <string name="preference_delete_confirmation">确认删除</string>
+    <string name="preference_delete_confirmation_summary">确认删除请求，强烈建议您不要关闭该功能</string>
+    <string name="protocol_ftps">安全型文件传输协议</string>
+    <string name="unavailable">不可用</string>
+
+    <string name="free_of">\"%s
+没有%s的%s</string>
+    <string name="cloud_error_fdroid">在F-Droid版本的Amaze文件管理器上，不支持云插件功能。请使用谷歌应用商店版本的Amaze文件管理器</string>
+    <string name="disable_player_intent_filters">禁止应用来响应与播放器关联的打开方式</string>
+    <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
+    <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
     </resources>
 

@@ -16,49 +16,50 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/textEditorRootView"
     android:layout_width="match_parent"
-    android:id="@+id/texteditor"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:layout_height="match_parent" >
+    android:orientation="vertical">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="12dp"
         android:orientation="vertical"
-        android:elevation="10dp"
-        android:layout_width="match_parent"
-        android:id="@+id/lin"
-        android:layout_height="wrap_content">
-        <include layout="@layout/toolbar"
-            android:layout_height="?actionBarSize"
+        tools:targetApi="lollipop">
+
+        <include
+            layout="@layout/toolbar"
             android:layout_width="match_parent"
-            />
-        <include layout="@layout/actionmode_textviewer"/>
+            android:layout_height="?actionBarSize" />
+
+        <include
+            layout="@layout/text_editor_search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
-    <View
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+
     <ScrollView
+        android:id="@+id/textEditorScrollView"
         android:layout_width="match_parent"
-        android:id="@+id/editscroll"
         android:layout_height="match_parent"
         android:fillViewport="true">
-        <EditText
-            android:id="@+id/fname"
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/textEditorMainEditText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
+            android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
-            android:textSize="14sp"
-            android:ems="10"
-            android:gravity="left|top"
+            android:gravity="start|top"
             android:inputType="textCapSentences|textMultiLine"
-            />
+            android:lineSpacingExtra="1dp"
+            android:padding="16dp"
+            android:textSize="14sp" />
 
     </ScrollView>
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

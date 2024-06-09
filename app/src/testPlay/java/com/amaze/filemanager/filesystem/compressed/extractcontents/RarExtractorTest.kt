@@ -32,7 +32,6 @@ import org.junit.Test
 import java.io.File
 
 class RarExtractorTest : AbstractArchiveExtractorTest() {
-
     override val archiveType: String = "rar"
 
     override fun extractorClass(): Class<out Extractor?> = RarExtractor::class.java
@@ -47,35 +46,43 @@ class RarExtractorTest : AbstractArchiveExtractorTest() {
     @Test
     fun testTryExtractSmallestFileInArchive() {
         val archiveFile = File(Environment.getExternalStorageDirectory(), "test-archive-sizes.rar")
-        val extractor = RarExtractor(
-            ApplicationProvider.getApplicationContext(),
-            archiveFile.absolutePath,
-            Environment.getExternalStorageDirectory().absolutePath,
-            object : Extractor.OnUpdate {
-                override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-                override fun onUpdate(entryPath: String) = Unit
-                override fun isCancelled(): Boolean = false
-                override fun onFinish() = Unit
-            },
-            ServiceWatcherUtil.UPDATE_POSITION
-        )
-        val verify = RarExtractor::class.java.getDeclaredMethod(
-            "tryExtractSmallestFileInArchive",
-            Context::class.java,
-            Archive::class.java
-        ).run {
-            isAccessible = true
-            invoke(
-                extractor,
+        val extractor =
+            RarExtractor(
                 ApplicationProvider.getApplicationContext(),
-                Archive(archiveFile).also {
-                    it.password = "123456"
-                }
+                archiveFile.absolutePath,
+                Environment.getExternalStorageDirectory().absolutePath,
+                object : Extractor.OnUpdate {
+                    override fun onStart(
+                        totalBytes: Long,
+                        firstEntryName: String,
+                    ) = Unit
+
+                    override fun onUpdate(entryPath: String) = Unit
+
+                    override fun isCancelled(): Boolean = false
+
+                    override fun onFinish() = Unit
+                },
+                ServiceWatcherUtil.UPDATE_POSITION,
             )
-        }
+        val verify =
+            RarExtractor::class.java.getDeclaredMethod(
+                "tryExtractSmallestFileInArchive",
+                Context::class.java,
+                Archive::class.java,
+            ).run {
+                isAccessible = true
+                invoke(
+                    extractor,
+                    ApplicationProvider.getApplicationContext(),
+                    Archive(archiveFile).also {
+                        it.password = "123456"
+                    },
+                )
+            }
         File(
             ApplicationProvider.getApplicationContext<Context>().externalCacheDir!!,
-            "test-archive/1"
+            "test-archive/1",
         ).run {
             assertEquals(this.absolutePath, verify)
             assertEquals(2, this.length())

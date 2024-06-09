@@ -49,7 +49,6 @@ import java.util.concurrent.Callable
 class Billing(private val activity: BasicActivity) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     PurchasesUpdatedListener {
-
     private val LOG = LoggerFactory.getLogger(Billing::class.java)
 
     // List of predefined IAP products SKU.
@@ -66,7 +65,10 @@ class Billing(private val activity: BasicActivity) :
 
     private lateinit var donationDialog: MaterialDialog
 
-    override fun onPurchasesUpdated(response: BillingResult, purchases: List<Purchase>?) {
+    override fun onPurchasesUpdated(
+        response: BillingResult,
+        purchases: List<Purchase>?,
+    ) {
         if (response.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 val listener = ConsumeResponseListener { _: BillingResult, _: String -> }
@@ -84,28 +86,28 @@ class Billing(private val activity: BasicActivity) :
 
     /** Start a purchase flow  */
     private fun initiatePurchaseFlow() {
-        val purchaseFlowRequest = Runnable {
-            val params = QueryProductDetailsParams.newBuilder().setProductList(productList)
+        val purchaseFlowRequest =
+            Runnable {
+                val params = QueryProductDetailsParams.newBuilder().setProductList(productList)
 
-            billingClient.queryProductDetailsAsync(
-                params.build()
-            ) { responseCode: BillingResult, queryResult: List<ProductDetails> ->
-                if (queryResult.isNotEmpty()) {
-                    // Successfully fetched product details
-                    productDetails = queryResult
-                    popProductsList(responseCode, queryResult)
-                } else {
-                    AppConfig.toast(activity, R.string.error_fetching_google_play_product_list)
-                    if (BuildConfig.DEBUG) {
-                        /* ktlint-disable max-line-length */
-                        LOG.warn(
-                            "Error fetching product list - looks like you are running a DEBUG build."
-                        )
-                        /* ktlint-enable max-line-length */
+                billingClient.queryProductDetailsAsync(
+                    params.build(),
+                ) { responseCode: BillingResult, queryResult: List<ProductDetails> ->
+                    if (queryResult.isNotEmpty()) {
+                        // Successfully fetched product details
+                        productDetails = queryResult
+                        popProductsList(responseCode, queryResult)
+                    } else {
+                        AppConfig.toast(activity, R.string.error_fetching_google_play_product_list)
+                        @Suppress("ktlint:standard:max-line-length")
+                        if (BuildConfig.DEBUG) {
+                            LOG.warn(
+                                "Error fetching product list - looks like you are running a DEBUG build.",
+                            )
+                        }
                     }
                 }
             }
-        }
         executeServiceRequest(purchaseFlowRequest)
     }
 
@@ -123,7 +125,7 @@ class Billing(private val activity: BasicActivity) :
      */
     private fun popProductsList(
         response: BillingResult,
-        productDetailsQueryResult: List<ProductDetails>
+        productDetailsQueryResult: List<ProductDetails>,
     ) {
         if (response.responseCode == BillingClient.BillingResponseCode.OK &&
             productDetailsQueryResult.isNotEmpty()
@@ -132,29 +134,37 @@ class Billing(private val activity: BasicActivity) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val rootView: View = AdapterDonationBinding.inflate(
-            LayoutInflater.from(
-                activity
-            ),
-            parent,
-            false
-        ).root
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
+        val rootView: View =
+            AdapterDonationBinding.inflate(
+                LayoutInflater.from(
+                    activity,
+                ),
+                parent,
+                false,
+            ).root
         return DonationViewHolder(rootView)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         if (holder is DonationViewHolder && productDetails.isNotEmpty()) {
             val titleRaw: String = productDetails[position].title
-            holder.TITLE.text = titleRaw.subSequence(
-                0,
-                titleRaw.lastIndexOf("(")
-            )
+            holder.TITLE.text =
+                titleRaw.subSequence(
+                    0,
+                    titleRaw.lastIndexOf("("),
+                )
             holder.SUMMARY.text = productDetails[position].description
             holder.PRICE.text = productDetails[position].oneTimePurchaseOfferDetails?.formattedPrice
             holder.ROOT_VIEW.setOnClickListener {
                 purchaseProduct.purchaseItem(
-                    productDetails[position]
+                    productDetails[position],
                 )
             }
         }
@@ -164,34 +174,37 @@ class Billing(private val activity: BasicActivity) :
 
     private interface PurchaseProduct {
         fun purchaseItem(productDetails: ProductDetails)
+
         fun purchaseCancel()
     }
 
-    private val purchaseProduct: PurchaseProduct = object : PurchaseProduct {
-        override fun purchaseItem(productDetailsArg: ProductDetails) {
-            val billingFlowParams: BillingFlowParams =
-                BillingFlowParams.newBuilder().setProductDetailsParamsList(
-                    listOf(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                            .setProductDetails(productDetailsArg)
-                            .build()
-                    )
-                ).build()
-            billingClient.launchBillingFlow(activity, billingFlowParams)
-        }
+    private val purchaseProduct: PurchaseProduct =
+        object : PurchaseProduct {
+            override fun purchaseItem(productDetailsArg: ProductDetails) {
+                val billingFlowParams: BillingFlowParams =
+                    BillingFlowParams.newBuilder().setProductDetailsParamsList(
+                        listOf(
+                            BillingFlowParams.ProductDetailsParams.newBuilder()
+                                .setProductDetails(productDetailsArg)
+                                .build(),
+                        ),
+                    ).build()
+                billingClient.launchBillingFlow(activity, billingFlowParams)
+            }
 
-        override fun purchaseCancel() {
-            destroyBillingInstance()
+            override fun purchaseCancel() {
+                destroyBillingInstance()
+            }
         }
-    }
 
     init {
-        productList = listOf(
-            createProductWith("donations"),
-            createProductWith("donations_2"),
-            createProductWith("donations_3"),
-            createProductWith("donations_4")
-        )
+        productList =
+            listOf(
+                createProductWith("donations"),
+                createProductWith("donations_2"),
+                createProductWith("donations_3"),
+                createProductWith("donations_4"),
+            )
         billingClient =
             BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases().build()
         initiatePurchaseFlow()
@@ -231,7 +244,7 @@ class Billing(private val activity: BasicActivity) :
                 override fun onBillingServiceDisconnected() {
                     isServiceConnected = false
                 }
-            }
+            },
         )
     }
 
@@ -246,22 +259,22 @@ class Billing(private val activity: BasicActivity) :
 
     private fun showPaymentsDialog(context: BasicActivity) {
         /*
-     * As of Billing library 4.0, all callbacks are running on background thread.
-     * Need to use AppConfig.runInApplicationThread() for UI interactions
-     *
-     *
-     */
+         * As of Billing library 4.0, all callbacks are running on background thread.
+         * Need to use AppConfig.runInApplicationThread() for UI interactions
+         *
+         *
+         */
         AppConfig.getInstance()
             .runInApplicationThread(
                 Callable {
                     val builder: MaterialDialog.Builder = MaterialDialog.Builder(context)
                     builder.title(R.string.donate)
                     builder.adapter(this, null)
-                    builder.theme(context.appTheme.getMaterialDialogTheme(context))
+                    builder.theme(context.appTheme.getMaterialDialogTheme())
                     builder.cancelListener { purchaseProduct.purchaseCancel() }
                     donationDialog = builder.show()
                     null
-                }
+                },
             )
     }
 }

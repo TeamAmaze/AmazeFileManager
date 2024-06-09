@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -52,16 +52,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -84,14 +84,14 @@ public class BottomBar implements View.OnTouchListener {
   private LinearLayout pathLayout;
   private LinearLayout buttons;
   private HorizontalScrollView scroll, pathScroll;
-  private TextView pathText, fullPathText, fullPathAnim;
+  private AppCompatTextView pathText, fullPathText, fullPathAnim;
 
   private LinearLayout.LayoutParams buttonParams;
-  private ImageButton buttonRoot;
-  private ImageButton buttonStorage;
-  private ArrayList<ImageView> arrowButtons = new ArrayList<>();
+  private AppCompatImageButton buttonRoot;
+  private AppCompatImageButton buttonStorage;
+  private ArrayList<AppCompatImageView> arrowButtons = new ArrayList<>();
   private int lastUsedArrowButton = 0;
-  private ArrayList<Button> folderButtons = new ArrayList<>();
+  private ArrayList<AppCompatButton> folderButtons = new ArrayList<>();
   private int lastUsedFolderButton = 0;
   private Drawable arrow;
 
@@ -138,11 +138,11 @@ public class BottomBar implements View.OnTouchListener {
             LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     buttonParams.gravity = Gravity.CENTER_VERTICAL;
 
-    buttonRoot = new ImageButton(a);
+    buttonRoot = new AppCompatImageButton(a);
     buttonRoot.setBackgroundColor(Color.TRANSPARENT);
     buttonRoot.setLayoutParams(buttonParams);
 
-    buttonStorage = new ImageButton(a);
+    buttonStorage = new AppCompatImageButton(a);
     buttonStorage.setImageDrawable(
         a.getResources().getDrawable(R.drawable.ic_sd_storage_white_24dp));
     buttonStorage.setBackgroundColor(Color.TRANSPARENT);
@@ -177,7 +177,9 @@ public class BottomBar implements View.OnTouchListener {
                   final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
                   Objects.requireNonNull(mainFragment);
                   if (mainFragment.getMainFragmentViewModel() != null
-                      && OpenMode.CUSTOM != mainFragment.getMainFragmentViewModel().getOpenMode()) {
+                      && OpenMode.CUSTOM != mainFragment.getMainFragmentViewModel().getOpenMode()
+                      && OpenMode.TRASH_BIN
+                          != mainFragment.getMainFragmentViewModel().getOpenMode()) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
@@ -197,8 +199,7 @@ public class BottomBar implements View.OnTouchListener {
                 final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
                 Objects.requireNonNull(mainFragment);
                 if (mainActivity.getBoolean(PREFERENCE_CHANGEPATHS)
-                    && ((mainFragment.getMainFragmentViewModel() != null
-                            && !mainFragment.getMainFragmentViewModel().getResults())
+                    && (mainFragment.getMainFragmentViewModel() != null
                         || buttons.getVisibility() == View.VISIBLE)) {
                   GeneralDialogCreation.showChangePathsDialog(
                       mainActivity, mainActivity.getPrefs());
@@ -281,7 +282,7 @@ public class BottomBar implements View.OnTouchListener {
               });
           buttons.addView(buttonStorage);
         } else {
-          Button button = createFolderButton(names[i]);
+          AppCompatButton button = createFolderButton(names[i]);
           button.setOnClickListener(
               p1 -> {
                 buttonPathInterface.changePath(paths[k]);
@@ -313,11 +314,11 @@ public class BottomBar implements View.OnTouchListener {
     return this.frame;
   }
 
-  private ImageView createArrow() {
-    ImageView buttonArrow;
+  private AppCompatImageView createArrow() {
+    AppCompatImageView buttonArrow;
 
     if (lastUsedArrowButton >= arrowButtons.size()) {
-      buttonArrow = new ImageView(mainActivity);
+      buttonArrow = new AppCompatImageView(mainActivity);
       buttonArrow.setImageDrawable(arrow);
       buttonArrow.setLayoutParams(buttonParams);
       arrowButtons.add(buttonArrow);
@@ -330,11 +331,11 @@ public class BottomBar implements View.OnTouchListener {
     return buttonArrow;
   }
 
-  private Button createFolderButton(String text) {
-    Button button;
+  private AppCompatButton createFolderButton(String text) {
+    AppCompatButton button;
 
     if (lastUsedFolderButton >= folderButtons.size()) {
-      button = new Button(mainActivity);
+      button = new AppCompatButton(mainActivity);
       button.setTextColor(Utils.getColor(mainActivity, android.R.color.white));
       button.setTextSize(13);
       button.setLayoutParams(buttonParams);
@@ -361,8 +362,6 @@ public class BottomBar implements View.OnTouchListener {
 
   public void updatePath(
       @NonNull final String news,
-      boolean results,
-      String query,
       OpenMode openmode,
       int folderCount,
       int fileCount,
@@ -382,6 +381,7 @@ public class BottomBar implements View.OnTouchListener {
         newPath = mainActivityHelper.parseOTGPath(news);
         break;
       case CUSTOM:
+      case TRASH_BIN:
         newPath = mainActivityHelper.getIntegralNames(news);
         break;
       case DROPBOX:
@@ -394,13 +394,7 @@ public class BottomBar implements View.OnTouchListener {
         newPath = news;
     }
 
-    if (!results) {
-      pathText.setText(mainActivity.getString(R.string.folderfilecount, folderCount, fileCount));
-    } else {
-      fullPathText.setText(mainActivity.getString(R.string.search_results, query));
-      pathText.setText("");
-      return;
-    }
+    pathText.setText(mainActivity.getString(R.string.folderfilecount, folderCount, fileCount));
 
     final String oldPath = fullPathText.getText().toString();
 

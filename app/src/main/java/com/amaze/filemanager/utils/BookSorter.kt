@@ -20,11 +20,12 @@
 
 package com.amaze.filemanager.utils
 
-import java.util.*
-
 /** Created by Arpit on 20-11-2015.  */
 class BookSorter : Comparator<Array<String>> {
-    override fun compare(lhs: Array<String>, rhs: Array<String>): Int {
+    override fun compare(
+        lhs: Array<String>,
+        rhs: Array<String>,
+    ): Int {
         var result = lhs[0].compareTo(rhs[0], ignoreCase = true)
         if (result == 0) {
             // the title is same, compare their paths

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -27,15 +27,15 @@ import android.content.Context;
 import android.text.Editable;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatEditText;
 
 public final class WarnableTextInputValidator extends SimpleTextWatcher
     implements View.OnFocusChangeListener, View.OnTouchListener {
   private final Context context;
-  private final EditText editText;
+  private final AppCompatEditText editText;
   private final View button;
   private final WarnableTextInputLayout textInputLayout;
   private final OnTextValidate validator;
@@ -43,7 +43,7 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher
 
   public WarnableTextInputValidator(
       Context context,
-      EditText editText,
+      AppCompatEditText editText,
       WarnableTextInputLayout textInputLayout,
       View positiveButton,
       OnTextValidate validator) {

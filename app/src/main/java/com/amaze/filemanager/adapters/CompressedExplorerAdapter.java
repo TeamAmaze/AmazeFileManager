@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -23,7 +23,6 @@ package com.amaze.filemanager.adapters;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.adapters.holders.CompressedItemViewHolder;
@@ -39,6 +38,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.Utils;
+import com.bumptech.glide.Glide;
 
 import android.app.Activity;
 import android.content.Context;
@@ -53,10 +53,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 /** Created by Arpit on 25-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
@@ -127,7 +127,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
    * @param position the position of the item
    * @param imageView the circular {@link CircleGradientDrawable} that is to be animated
    */
-  private void toggleChecked(int position, ImageView imageView) {
+  private void toggleChecked(int position, AppCompatImageView imageView) {
     compressedExplorerFragment.stopAnim();
     stoppedAnimation = true;
 
@@ -204,7 +204,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     } else if (viewType == TYPE_ITEM) {
       View v = mInflater.inflate(R.layout.rowlayout, parent, false);
       CompressedItemViewHolder vh = new CompressedItemViewHolder(v);
-      ImageButton about = v.findViewById(R.id.properties);
+      AppCompatImageButton about = v.findViewById(R.id.properties);
       about.setVisibility(View.INVISIBLE);
       return vh;
     } else {
@@ -240,7 +240,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
               compressedExplorerFragment.getResources().getDisplayMetrics()));
 
     if (rowItem.type == CompressedObjectParcelable.TYPE_GOBACK) {
-      GlideApp.with(compressedExplorerFragment)
+      Glide.with(compressedExplorerFragment)
           .load(R.drawable.ic_arrow_left_white_24dp)
           .into(holder.genericIcon);
       gradientDrawable.setColor(Utils.getColor(context, R.color.goback_item));
@@ -248,9 +248,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
       holder.txtDesc.setText("");
       holder.date.setText(R.string.goback);
     } else {
-      GlideApp.with(compressedExplorerFragment)
-          .load(rowItem.iconData.image)
-          .into(holder.genericIcon);
+      Glide.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
 
       if (compressedExplorerFragment.showLastModified)
         holder.date.setText(Utils.getDate(context, rowItem.date));

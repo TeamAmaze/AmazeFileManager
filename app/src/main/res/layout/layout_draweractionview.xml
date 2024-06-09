@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.AppCompatImageButton xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/imageButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

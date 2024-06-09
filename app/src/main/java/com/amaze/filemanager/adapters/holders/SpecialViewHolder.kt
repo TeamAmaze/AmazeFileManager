@@ -22,7 +22,7 @@ package com.amaze.filemanager.adapters.holders
 
 import android.content.Context
 import android.view.View
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
@@ -36,10 +36,10 @@ class SpecialViewHolder(
     c: Context,
     view: View,
     utilsProvider: UtilitiesProvider,
-    val type: Int
+    val type: Int,
 ) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
-    private val txtTitle: TextView = view.findViewById(R.id.text)
+    private val txtTitle: AppCompatTextView = view.findViewById(R.id.text)
 
     companion object {
         const val HEADER_FILES = 0

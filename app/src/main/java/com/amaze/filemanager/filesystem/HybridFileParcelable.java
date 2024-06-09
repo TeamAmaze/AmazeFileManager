@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.utils.Utils;
 
@@ -44,7 +45,7 @@ import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 
-public class HybridFileParcelable extends HybridFile implements Parcelable {
+public class HybridFileParcelable extends HybridFile implements Parcelable, ComparableParcelable {
   private final Logger LOG = LoggerFactory.getLogger(HybridFileParcelable.class);
 
   private long date, size;
@@ -99,6 +100,11 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         Integer.toString(FilePermission.toMask(sshFile.getAttributes().getPermissions()), 8));
   }
 
+  @Override
+  public long lastModified() {
+    return date;
+  }
+
   public String getName() {
     if (!Utils.isNullOrEmpty(name)) return name;
     else return super.getSimpleName();
@@ -140,6 +146,12 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   public boolean isDirectory() {
     return isDirectory;
+  }
+
+  @Override
+  public boolean isDirectory(Context context) {
+    if (isSmb() || isSftp()) return isDirectory;
+    else return super.isDirectory(context);
   }
 
   public boolean isHidden() {
@@ -249,5 +261,11 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     result = 37 * result + (int) (size ^ size >>> 32);
     result = 37 * result + (int) (date ^ date >>> 32);
     return result;
+  }
+
+  @NonNull
+  @Override
+  public String getParcelableName() {
+    return getName();
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -49,6 +49,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
@@ -59,6 +60,9 @@ import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
+import com.amaze.filemanager.utils.Utils;
+import com.amaze.trashbin.TrashBin;
+import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
@@ -72,9 +76,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Pair;
 
 import jcifs.smb.SmbAuthException;
@@ -83,7 +89,7 @@ import jcifs.smb.SmbFile;
 import kotlin.collections.CollectionsKt;
 
 public class LoadFilesListTask
-    extends AsyncTask<Void, Void, Pair<OpenMode, List<LayoutElementParcelable>>> {
+    extends AsyncTask<Void, Throwable, Pair<OpenMode, List<LayoutElementParcelable>>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
 
@@ -133,7 +139,9 @@ public class LoadFilesListTask
     MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
     MainActivityViewModel mainActivityViewModel = mainFragment.getMainActivityViewModel();
 
-    if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
+    if (OpenMode.UNKNOWN.equals(openmode)
+        || OpenMode.CUSTOM.equals(openmode)
+        || OpenMode.TRASH_BIN.equals(openmode)) {
       hFile = new HybridFile(openmode, path);
       hFile.generateMode(mainFragment.getActivity());
       openmode = hFile.getMode();
@@ -153,10 +161,12 @@ public class LoadFilesListTask
       case SMB:
         list = listSmb(hFile, mainActivityViewModel, mainFragment);
         break;
+      case FTP:
       case SFTP:
         list = listSftp(mainActivityViewModel);
         break;
       case CUSTOM:
+      case TRASH_BIN:
         list = getCachedMediaList(mainActivityViewModel);
         break;
       case OTG:
@@ -189,7 +199,8 @@ public class LoadFilesListTask
     }
 
     if (list != null
-        && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6")))) {
+        && !(openmode == OpenMode.CUSTOM
+            && (("5").equals(path) || ("6").equals(path) || ("7").equals(path)))) {
       postListCustomPathProcess(list, mainFragment);
     }
 
@@ -199,6 +210,41 @@ public class LoadFilesListTask
   @Override
   protected void onCancelled() {
     listener.onAsyncTaskFinished(null);
+  }
+
+  @Override
+  protected void onProgressUpdate(Throwable... values) {
+    for (Throwable exception : values) {
+      if (exception instanceof SmbException) {
+        if ("/".equals(Uri.parse(path).getPath())) {
+          new AlertDialog.Builder(context.get())
+              .setTitle(R.string.error_listfile_smb_title)
+              .setMessage(
+                  context
+                      .get()
+                      .getString(
+                          R.string.error_listfile_smb_noipcshare,
+                          HybridFile.parseAndFormatUriForDisplay(path)))
+              .setPositiveButton(
+                  android.R.string.ok,
+                  (dialog, which) -> {
+                    dialog.dismiss();
+                  })
+              .show();
+        } else {
+          Toast.makeText(
+                  context.get(),
+                  context
+                      .get()
+                      .getString(
+                          R.string.error_listfile_smb,
+                          HybridFile.parseAndFormatUriForDisplay(path),
+                          exception.getMessage()),
+                  Toast.LENGTH_LONG)
+              .show();
+        }
+      }
+    }
   }
 
   @Override
@@ -212,6 +258,7 @@ public class LoadFilesListTask
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
+        || 7 == mediaType
         || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null
         || forceReload) {
       switch (Integer.parseInt(path)) {
@@ -236,10 +283,13 @@ public class LoadFilesListTask
         case 6:
           list = listRecentFiles();
           break;
+        case 7:
+          list = listTrashBinFiles();
+          break;
         default:
           throw new IllegalStateException();
       }
-      if (5 != mediaType && 6 != mediaType) {
+      if (5 != mediaType && 6 != mediaType && 7 != mediaType) {
         // not saving recent files in cache
         mainActivityViewModel.getMediaCacheHash().set(mediaType, list);
       }
@@ -252,17 +302,7 @@ public class LoadFilesListTask
   private void postListCustomPathProcess(
       @NonNull List<LayoutElementParcelable> list, @NonNull MainFragment mainFragment) {
 
-    int sortType = SortHandler.getSortType(context.get(), path);
-    int sortBy;
-    int isAscending;
-
-    if (sortType <= 3) {
-      sortBy = sortType;
-      isAscending = 1;
-    } else {
-      isAscending = -1;
-      sortBy = sortType - 4;
-    }
+    SortType sortType = SortHandler.getSortType(context.get(), path);
 
     MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
 
@@ -287,7 +327,7 @@ public class LoadFilesListTask
       }
     }
 
-    Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortBy, isAscending));
+    Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortType));
   }
 
   private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
@@ -554,6 +594,40 @@ public class LoadFilesListTask
     return recentFiles;
   }
 
+  private @Nullable List<LayoutElementParcelable> listTrashBinFiles() {
+    final Context context = this.context.get();
+
+    if (context == null) {
+      cancel(true);
+      return null;
+    }
+
+    TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    List<LayoutElementParcelable> deletedFiles = new ArrayList<>();
+    if (trashBin != null) {
+      for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
+        HybridFile hybridFile =
+            new HybridFile(
+                OpenMode.TRASH_BIN,
+                trashBinFile.getDeletedPath(
+                    AppConfig.getInstance().getTrashBinInstance().getConfig()),
+                trashBinFile.getFileName(),
+                trashBinFile.isDirectory());
+        if (trashBinFile.getDeleteTime() != null) {
+          hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
+        }
+        LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
+        element.date = trashBinFile.getDeleteTime();
+        element.longSize = trashBinFile.getSizeBytes();
+        element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
+        element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
+        element.isDirectory = trashBinFile.isDirectory();
+        deletedFiles.add(element);
+      }
+    }
+    return deletedFiles;
+  }
+
   private @NonNull List<LayoutElementParcelable> listAppDataDirectories(@NonNull String basePath) {
     if (!GenericExtKt.containsPath(FileProperties.ANDROID_DEVICE_DATA_DIRS, basePath)) {
       throw new IllegalArgumentException("Invalid base path: [" + basePath + "]");
@@ -613,7 +687,8 @@ public class LoadFilesListTask
         if (!e.getMessage().toLowerCase().contains("denied")) {
           mainFragment.reauthenticateSmb();
         }
-        LOG.warn("failed to load smb list, authentication issue", e);
+        LOG.warn("failed to load smb list, authentication issue: ", e);
+        publishProgress(e);
         return null;
       } catch (SmbException | NullPointerException e) {
         LOG.warn("Failed to load smb files for path: " + path, e);

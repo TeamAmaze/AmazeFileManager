@@ -44,10 +44,9 @@ class SevenZipExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) :
     Extractor(context, filePath, outputPath, listener, updatePosition) {
-
     companion object {
         @JvmStatic
         private val LOG: Logger = LoggerFactory.getLogger(SevenZipExtractor::class.java)
@@ -56,22 +55,23 @@ class SevenZipExtractor(
     @Throws(IOException::class)
     override fun extractWithFilter(filter: Filter) {
         var totalBytes: Long = 0
-        val sevenzFile = runCatching {
-            if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
-                SevenZFile(
-                    File(filePath),
-                    ArchivePasswordCache.getInstance()[filePath]!!.toCharArray()
-                )
-            } else {
-                SevenZFile(File(filePath))
+        val sevenzFile =
+            runCatching {
+                if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
+                    SevenZFile(
+                        File(filePath),
+                        ArchivePasswordCache.getInstance()[filePath]!!.toCharArray(),
+                    )
+                } else {
+                    SevenZFile(File(filePath))
+                }
+            }.getOrElse {
+                if (it is PasswordRequiredException || it is CorruptedInputException) {
+                    throw it
+                } else {
+                    throw BadArchiveNotice(it)
+                }
             }
-        }.getOrElse {
-            if (it is PasswordRequiredException || it is CorruptedInputException) {
-                throw it
-            } else {
-                throw BadArchiveNotice(it)
-            }
-        }
         val arrayList = ArrayList<SevenZArchiveEntry>()
 
         // iterating archive elements to find file names that are to be extracted
@@ -103,7 +103,7 @@ class SevenZipExtractor(
         context: Context,
         sevenzFile: SevenZFile,
         entry: SevenZArchiveEntry,
-        outputDir: String
+        outputDir: String,
     ) {
         val name = entry.name
         if (entry.isDirectory) {
@@ -121,26 +121,28 @@ class SevenZipExtractor(
                 while (progress < entry.size) {
                     var length: Int
                     val bytesLeft = java.lang.Long.valueOf(entry.size - progress).toInt()
-                    length = sevenzFile.read(
-                        content,
-                        0,
-                        if (bytesLeft > GenericCopyUtil.DEFAULT_BUFFER_SIZE) {
-                            GenericCopyUtil.DEFAULT_BUFFER_SIZE
-                        } else {
-                            bytesLeft
-                        }
-                    )
+                    length =
+                        sevenzFile.read(
+                            content,
+                            0,
+                            if (bytesLeft > GenericCopyUtil.DEFAULT_BUFFER_SIZE) {
+                                GenericCopyUtil.DEFAULT_BUFFER_SIZE
+                            } else {
+                                bytesLeft
+                            },
+                        )
                     write(content, 0, length)
                     updatePosition.updatePosition(length.toLong())
                     progress += length.toLong()
                 }
                 close()
-                val lastModifiedDate = try {
-                    entry.lastModifiedDate.time
-                } catch (e: UnsupportedOperationException) {
-                    LOG.warn("Unable to get modified date for 7zip file")
-                    System.currentTimeMillis()
-                }
+                val lastModifiedDate =
+                    try {
+                        entry.lastModifiedDate.time
+                    } catch (e: UnsupportedOperationException) {
+                        LOG.warn("Unable to get modified date for 7zip file")
+                        System.currentTimeMillis()
+                    }
                 outputFile.setLastModified(lastModifiedDate)
             }
         }?.onFailure {
@@ -150,8 +152,8 @@ class SevenZipExtractor(
             context.getString(
                 R.string.error_archive_cannot_extract,
                 entry.name,
-                outputDir
-            )
+                outputDir,
+            ),
         )
     }
 }

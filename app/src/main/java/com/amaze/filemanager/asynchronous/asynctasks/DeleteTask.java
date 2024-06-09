@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -38,7 +38,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
@@ -48,12 +48,9 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.MediaStore;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -71,10 +68,13 @@ public class DeleteTask
   private final Context applicationContext;
   private final boolean rootMode;
   private CompressedExplorerFragment compressedExplorerFragment;
+
+  private boolean doDeletePermanently;
   private final DataUtils dataUtils = DataUtils.getInstance();
 
-  public DeleteTask(@NonNull Context applicationContext) {
+  public DeleteTask(@NonNull Context applicationContext, @NonNull boolean doDeletePermanently) {
     this.applicationContext = applicationContext.getApplicationContext();
+    this.doDeletePermanently = doDeletePermanently;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
@@ -83,6 +83,7 @@ public class DeleteTask
   public DeleteTask(
       @NonNull Context applicationContext, CompressedExplorerFragment compressedExplorerFragment) {
     this.applicationContext = applicationContext.getApplicationContext();
+    this.doDeletePermanently = false;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
@@ -112,13 +113,9 @@ public class DeleteTask
       }
 
       // delete file from media database
-      if (!file.isSmb()) {
-        try {
-          deleteFromMediaDatabase(applicationContext, file.getPath());
-        } catch (Exception e) {
-          FileUtils.scanFile(applicationContext, files.toArray(new HybridFile[files.size()]));
-        }
-      }
+      if (!file.isSmb() && !file.isSftp())
+        MediaConnectionUtils.scanFile(
+            applicationContext, files.toArray(new HybridFile[files.size()]));
 
       // delete file entry from encrypted database
       if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
@@ -187,20 +184,19 @@ public class DeleteTask
         }
       default:
         try {
-          return (file.delete(applicationContext, rootMode));
+          /* SMB and SFTP (or any remote files that may support in the future) should not be
+           * supported by recycle bin. - TranceLove
+           */
+          if (!doDeletePermanently
+              && !OpenMode.SMB.equals(file.getMode())
+              && !OpenMode.SFTP.equals(file.getMode())) {
+            return file.moveToBin(applicationContext);
+          }
+          return file.delete(applicationContext, rootMode);
         } catch (ShellNotRunningException | SmbException e) {
           LOG.warn("failed to delete files", e);
           throw e;
         }
     }
-  }
-
-  private void deleteFromMediaDatabase(final Context context, final String file) {
-    final String where = MediaStore.MediaColumns.DATA + "=?";
-    final String[] selectionArgs = new String[] {file};
-    final ContentResolver contentResolver = context.getContentResolver();
-    final Uri filesUri = MediaStore.Files.getContentUri("external");
-    // Delete the entry from the media database. This will actually delete media files.
-    contentResolver.delete(filesUri, where, selectionArgs);
   }
 }

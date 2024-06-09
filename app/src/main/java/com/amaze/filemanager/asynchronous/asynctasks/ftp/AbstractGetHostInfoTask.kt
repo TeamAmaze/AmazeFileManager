@@ -31,9 +31,8 @@ import java.util.concurrent.Callable
 abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
     private val hostname: String,
     private val port: Int,
-    private val callback: (V) -> Unit
+    private val callback: (V) -> Unit,
 ) : Task<V, T> {
-
     private lateinit var progressDialog: ProgressDialog
 
     /**
@@ -42,11 +41,12 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
     @MainThread
     open fun onPreExecute() {
         AppConfig.getInstance().run {
-            progressDialog = ProgressDialog.show(
-                this.mainActivityContext,
-                "",
-                this.resources.getString(R.string.processing)
-            )
+            progressDialog =
+                ProgressDialog.show(
+                    this.mainActivityContext,
+                    "",
+                    this.resources.getString(R.string.processing),
+                )
         }
     }
 
@@ -63,9 +63,9 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
                     R.string.ssh_connect_failed,
                     hostname,
                     port,
-                    error.localizedMessage
+                    error.localizedMessage,
                 ),
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
         ).show()
     }
 

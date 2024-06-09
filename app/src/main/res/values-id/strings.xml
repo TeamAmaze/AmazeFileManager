@@ -36,8 +36,9 @@
     <string name="uninstall">Copot</string>
     <string name="play">Play store</string>
     <string name="properties">Properti</string>
-    <string name="delbook">Hapus Markah</string>
-    <string name="add_to_bookmarks">Tambah ke Markah</string>
+    <string name="copyingapks">Menyalin %d berkas APK ke %s</string>
+    <string name="delbook">Hapus Marka</string>
+    <string name="add_to_bookmarks">Tambah ke Marka</string>
     <string name="enterpath">Masukkan Jalur</string>
     <string name="cancel">BATAL</string>
     <string name="create">BUAT</string>
@@ -47,7 +48,7 @@
     <string name="search_results">Hasil pencarian dari %s</string>
     <string name="rename">Ubah Nama</string>
     <string name="save">Simpan</string>
-    <string name="bookmarks_added">Markah Ditambahkan</string>
+    <string name="bookmarks_added">Marka Ditambahkan</string>
     <string name="fileexist">Berkas dengan nama sama sudah ada </string>
     <string name="name">Nama</string>
     <string name="date">Tanggal</string>
@@ -80,6 +81,7 @@
     <string name="question_set_path_as_home">Apakah Anda ingin mengatur jalur ini sebagai beranda untuk tab ini?</string>
     <string name="directorysort">Mode Urut Direktori</string>
     <string name="sort_by">Urutkan menurut</string>
+    <string name="sort_by_colon">Urutkan Menurut:</string>
     <string name="sort_only_this">Hanya folder ini</string>
     <string name="theme">Tema</string>
     <string name="random">Tema Acak</string>
@@ -107,6 +109,7 @@
     <string name="dark">Material Gelap</string>
     <string name="daytime">Siang Hari</string>
     <string name="black">Hitam (untuk OLED)</string>
+    <string name="system">Sistem (ikuti tema sistem)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folder di Atas</string>
@@ -116,9 +119,11 @@
     <string name="sort_name">Nama</string>
     <string name="lastModified">Terakhir Diubah</string>
     <string name="sort_size">Ukuran</string>
+    <string name="sort_relevance">Relevansi</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pilih berkas</string>
+    <string name="pick_files">Pilih satu atau lebih berkas</string>
     <string name="process_viewer">Penampil Proses</string>
     <string name="in_safe">Penyimpanan tidak cukup</string>
     <string name="no_file_overwrite">Tidak Ada Berkas yang Ditimpa</string>
@@ -150,11 +155,11 @@
     <string name="general">Umum</string>
     <string name="thumb_summary">Tampilkan thumbnail aplikasi dan gambar</string>
     <string name="thumb">Tampilkan Thumbnail</string>
-    <string name="hidden">Tampilan Berkas dan Folder Tersembunyi</string>
+    <string name="hidden">Tampilkan Berkas dan Folder Tersembunyi</string>
     <string name="lastModifiedSummary">Tampilkan tanggal dan waktu terakhir berkas diubah</string>
-    <string name="lastModifiedPref">Tampilan Tanggal dan Waktu Terakhir Berkas Diubah</string>
+    <string name="lastModifiedPref">Tampilkan Tanggal dan Waktu Terakhir Berkas Diubah</string>
     <string name="size_pref_summary">Tampilkan ukuran berkas dan jumlah item di dalam folder</string>
-    <string name="size_pref">Tampilan Ukuran</string>
+    <string name="size_pref">Tampilkan Ukuran</string>
     <string name="miscellaneous">Lainnya</string>
     <string name="root_pref_summary">Tampilkan Perizinan Berkas dan Folder</string>
     <string name="root_pref">Tampilkan Perizinan</string>
@@ -179,6 +184,8 @@
     <string name="xda_summary">Q&amp;A, Bantuan &amp; Penyelesaian Masalah</string>
     <string name="circular_images">Gunakan ikon bulat untuk gambar dan video</string>
     <string name="circular_icons">Gunakan ikon bulat</string>
+    <string name="follow_battery_saver_title">Ikuti penghemat baterai</string>
+    <string name="follow_battery_saver_desc">Jika dipilih dan mode penghemat baterai diaktifkan, tema akan diubah ke tema gelap</string>
     <string name="back_title">Navigasi kembali</string>
     <string name="back_summary">Aktifkan tombol navigasi kembali khusus di atas daftar item</string>
     <string name="details">Detail</string>
@@ -240,6 +247,7 @@
     <string name="needs_access_summary">Silakan pilih direktori root dari \t</string>
     <string name="needs_access_summary1">\tuntuk memberi akses tulis agar bisa berfungsi </string>
     <string name="smb_connection">Koneksi SMB</string>
+    <string name="smb_server">Alamat IP Server</string>
     <string name="server_address">Alamat IP Server</string>
     <string name="username">Nama Pengguna</string>
     <string name="password">Sandi</string>
@@ -319,56 +327,6 @@
     <string name="use_custom_ip">Gunakan IP khusus</string>
     <string name="bookmark_lost">Markah tidak ditemukan, membuat ulang&#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-                <h1>Bagaimana cara mengakses folder berbagi Windows di android (SMB)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>Aktifkan Berbagi Berkas</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Buka Panel Kontrol, klik Pilih grup rumah dan opsi berbagi di bawah Jaringan
-                        dan Internet, and klik Ubah pengaturan berbagi lanjutan. Aktifkan fitur berbagi
-                        berkas dan printer.\n\n
-                    </p>
-
-                    <li>
-                        <b>Pengaturan Berbagi Berkas Tambahan</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Anda mungkin juga ingin mengubah pengaturan berbagi lanjutan di sini. \n
-                        Contohnya, Anda bisa mengaktifkan akses ke berkas Anda tanpa sandi jika Anda mempercayai
-                        semua perangkat di jaringan lokal Anda. Setelah opsi berbagi berkas dan printer diaktifkan,
-                        Anda bisa membuka File Explorer atau Windows Explorer, klik kanan folder yang ingin Anda
-                        bagikan, dan pilih Properti. \n
-                        Pilih tab Berbagi lalu klik tombol Berbagi dan buat folder tersedia di Jaringan.\n\n
-                        </p>
-
-                    <li>
-                        <b>Pastikan kedua perangkat Anda berada di jaringan Wi-Fi yang sama</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Fitur ini membuat berkas tersedia pada jaringan local, jadi perangkat PC dan seluler Anda
-                        harus berada di jaringan lokal yang sama. Anda tidak bisa mengakses folder berbagi Windows
-                        dari Internet atau ketika telepon seluler Anda tersambung ke jaringan 3G/4G — perangkat
-                        harus tersambung ke jaringan Wi-Fi yang sama.\n\n
-                    </p>
-
-                    <li>
-                        <b>Temukan Alamat IP</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Buka Command Prompt. Ketik \'ipconfig\' dan tekan Enter. Cari Default Gateway
-                        di bawah adapter jaringan untuk router Anda. Cari \\\"IPv4 Address\\\"
-                        di bagian yang sama untuk menemukan alamat IP komputer Anda.\n\n
-                    </p>
-
-                    <b>Masukkan detailnya di kotak dialog SMB</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
     <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas</string>
     <string name="otg_access">Pilih root dari perangkat OTG</string>
     <string name="information">Informasi</string>
@@ -577,6 +535,8 @@
 
     <string name="update">PERBARUI</string>
 	<string name="scp_connection">Koneksi SCP/SFTP</string>
+    <string name="ftp_connection">Koneksi FTP</string>
+    <string name="ftps_connection">Koneksi FTP melalui SSL</string>
     <string name="scp_port">Porta</string>
     <string name="ssh_host_key_verification_prompt">Keaslian host \'%1$s\' tidak bisa diverifikasi.\n\nSidik jari %2$s adalah %3$s.\n\nSilakan ketuk \"Iya\" untuk konfirmasi identitas; jika tidak, silakan ketuk \"Tidak\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verifikasi Host</string>
@@ -609,6 +569,7 @@
     <string name="create_file_suggest_txt_extension">Direkomendasikan untuk menggunakan \".txt\" sebagai ekstensi berkas.</string>
     <string name="ssh_select_pem">Pilih kunci privat untuk autentikasi</string>
     <string name="ssh_key_invalid_passphrase">Frasa sandi tidak valid.</string>
+    <string name="ssh_key_no_decoder_decrypt">Tidak ada dekoder yang valid untuk mendekripsi PEM.</string>
     <string name="encryption_fail_copy">Gagal memperbarui entri enkripsi di dalam basis data</string>
     <string name="extracted">Diekstrak</string>
     <string name="compressed">Dikompres</string>
@@ -616,11 +577,15 @@
     <string name="no_obtainable_info">Tidak ada info tentang berkas ini</string>
     <string name="reopen_from_source">Tidak bisa, silakan buka ulang dari aplikasi sebelumnya</string>
     <string name="no_file_error">Telah terjadi kesalahan, tidak ada berkas yang bisa dibuka</string>
+    <string name="file_too_long">Berkas terlalu panjang dan tidak bisa disunting, namun Anda bisa membaca %d karakter pertama</string>
     <string name="file_read_only">Berkas yang dibuka memiliki atribut baca-saja.</string>
     <string name="got_it">Paham!</string>
     <string name="encrypt_file_save_as">Simpan Berkas yang Dienkripsi Sebagai&#8230;</string>
     <string name="encrypt_folder_save_as">Simpan Folder yang Dienkripsi Sebagai&#8230;</string>
+    <string name="encrypt_option_use_aze">Gunakan Format Enkripsi Amaze</string>
     <string name="encrypt_file_must_end_with_aze">Berkas yang dienkripsi harus menggunakan \".aze\" sebagai ekstensi berkas.</string>
+    <string name="encrypt_file_must_end_with_aes">Berkas yang dienkripsi harus menggunakan \".aes\" sebagai ekstensi berkas.</string>
+    <string name="error_aescrypt_decrypt_failed">Tidak bisa mendekripsi \'%s\': \'%s\'</string>
     <string name="cannot_overwrite">Tidak bisa menimpa berkas.</string>
     <string name="saved_single_file">Berkas disimpan sebagai \'%s\'.</string>
     <string name="saved_multi_files">%d berkas disimpan.</string>
@@ -705,8 +670,11 @@ Anda hanya perlu melakukan ini sekali, sampai nanti jika Anda ingin memilih loka
     <string name="android_data_prompt_saf_access_title">Izinkan akses SAF</string>
     <string name="ftp_preference_saf_filesystem_title">Gunakan sistem berkas lama</string>
     <string name="ftp_preference_saf_filesystem">Aktifkan ini untuk mendukung penggunaan penyimpanan eksternal perangkat pada versi Android terbaru</string>
+    <string name="ftp_server_reset_notify">Jalur berbagi server FTP telah dikembalikan ke penyimpanan internal</string>
     <string name="compressed_explorer_fragment_error_open_uri">Galat membuka URI \"%s\" untuk dibaca.</string>
     <string name="error_empty_archive">\"%s\" adalah arsip kosong.</string>
+    <string name="error_bad_archive_without_info">\"1%s\" adalah arsip rusak</string>
+    <string name="error_bad_archive_with_info">"%s" adalah arsip rusak.\nPesan dari pengekstrak: "%s"</string>
     <string name="security_error">Berkas tidak bisa dibuka menggunakan aplikasi ini</string>
     <string name="cloud_drive_tooltip">Sambungkan Google Drive™ untuk mengelola berkas dari dalam Amaze File Manager.</string>
     <string name="signin_with_google_title">Otentikasi untuk menggunakan Google Drive™</string>
@@ -716,6 +684,64 @@ Anda hanya perlu melakukan ini sekali, sampai nanti jika Anda ingin memilih loka
     <string name="select_by_type">Pilih berdasarkan tipe</string>
     <string name="select_by_date">Pilih berdasarkan tanggal</string>
     <string name="select_similar">Pilih berdasarkan kesamaan</string>
-    <string name="user_apps">Apl pihak ketiga</string>
+    <string name="error_fetching_google_play_product_list">Gagal mengambil daftar produk dari Google Play</string>
+    <string name="grant_all_files_permission"><html><body>Sejak Android 11, Google meminta Manajer File untuk meminta izin pengguna untuk mengelola semua file di perangkat. Detail di sini.
+        \n\nAmaze File Manager juga membutuhkan izin ini. Setelah menekan &quot;Izinkan&quot;di sini, pilih<b>Izinkan akses untuk mengelola semua berkas.</b> opsi pada layar berikutnya.
+        \n\n<font color='#ff6347'><i>Membatalkan dialog ini akan keluar dari aplikasi.</i></font></body></html></string>
+    <string name="user_apps">Apl pengguna</string>
+    <string name="appearance">Tampilan</string>
+    <string name="behavior">Perilaku</string>
+    <string name="appearance_summary">Ubahsuai tema, warna, dan tampilan pengelola berkas</string>
+    <string name="ui_summary">Atur informasi untuk ditampilkan, ubahsuai bilah samping, dan aktif/nonaktifkan preferensi UI</string>
+    <string name="behavior_summary">Ubah perilaku seperti pencarian lanjutan dan apakah akan membuka file sebagai tugas baru</string>
+    <string name="security_summary">Atur sandi dan enkripsi</string>
+    <string name="backup_summary">Ekspor/Impor pengaturan Amaze</string>
+
+    <string name="pref_export">Ekspor</string>
+    <string name="pref_import">Impor</string>
+    <string name="quick_desc">Berkas baru saja diakses melalui Amaze</string>
+    <string name="recent_desc">Berkas yang baru dibuat atau diubah</string>
+    <string name="error_cannot_find_way_open">Tidak menemukan cara untuk membuka berkas</string>
+    <string name="error_cant_decompress_that_file">Tidak bisa memproses arsip yang diminta</string>
+    <string name="analyse_storage">Analisa Penyimpanan</string>
+    <string name="download">Unduh</string>
+    <string name="wifip2p">Wi-Fi P2P</string>
+    <string name="amaze_utils_installed_alias">Terima kasih telah memasang Amaze File Utilities. Anda akan dialihkan ke aplikasi tersebut.</string>
+    <string name="image_viewer">Penilik Gambar Amaze</string>
+    <string name="video_player">Pemutar Video Amaze</string>
+    <string name="amaze_audio_player">Pemutar Musik Amaze</string>
+    <string name="pdf_viewer">Penilik Dokumen Amaze</string>
+    <string name="docx_viewer">Penilik Dokumen Amaze</string>
+    <string name="share_logs">Bagikan log</string>
+    <string name="share_logs_summary">Bagikan catatan log melalui surel / telegram</string>
+    <string name="open_with_amaze">Buka dengan Amaze</string>
+    <string name="confirmation">Konfirmasi</string>
+    <string name="open_file_confirmation">Apakah Anda yakin ingin membuka berkas ini?\n\nNama:\n%s\n\nLokasi:\n%s\n\nUkuran:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="error_google_play_cannot_update_myself">Sesuai mandat kebijakan Google Play, aplikasi tidak diizinkan untuk memperbarui sendiri. Harap perbarui aplikasi dari Google Play.</string>
+    <string name="error_cannot_get_package_info">Paket dari berkas \"1%s\" tidak didapatkan. Mungkin berkas tersebut bukan APK, atau berkas telah rusak.</string>
+    <string name="preference_delete_confirmation">Konfirmasi penghapusan</string>
+    <string name="preference_delete_confirmation_summary">Tanya sebelum menghapus berkas. Tidak direkomendasikan untuk menonaktifkan opsi ini!</string>
+    <string name="protocol_ftps">FTP Aman</string>
+    <string name="unavailable">Tidak tersedia</string>
+
+    <string name="exporting_failed">Gagal mengekspor: tidak bisa menyimpan ke berkas cadangan</string>
+    <string name="importing_failed">Gagal mengimpor: tidak bisa membaca berkas cadangan</string>
+    <string name="importing_completed">Selesai mengimpor</string>
+    <string name="invalid_backup_file">Berkas cadangan tidak valid</string>
+    <string name="import_failed_for">Gagal mengimpor:</string>
+    <string name="free_of">\"%s\n%s bebas dari %s</string>
+    <string name="cloud_error_fdroid">Amaze Cloud Plugin tidak didukung dengan versi F-Droid.
+Silakan gunakan Amaze versi Play Sore</string>
+    <string name="disable_player_intent_filters_summary">Nonaktifkan pemutar media bawaan Amaze dari pemilih berkas</string>
+    <string name="cloud_connection_credentials_cleared">Kredensial Koneksi Awan dihapus</string>
+    <string name="cloud_connection_credentials_cleared_msg">Sayangnya, kami tidak bisa memindahkan kredensial koneksi awan Anda ke skema basisdata yang baru, dan kami harus menghapusnya dari aplikasi. Silakan buat koneksi awan lagi.</string>
+    <string name="not_finding_what_you_re_looking_for">Tidak menemukan apa yang Anda cari?</string>
+    <string name="search_recent">Baru-baru ini</string>
+    <string name="results">Hasil</string>
+    <string name="grant_notification_permission">Amaze membutuhkan izin notifikasi untuk menampilkan laju pemrosesan berkas, juga kontrol mudah untuk memulai/menghentikan server FTP.</string>
+    <string name="error_unsupported_or_null_uri">Tidak valid, tidak didukung, atau URI tidak tersedia</string>
+    <string name="complete_paste_warning">Silakan selesaikan tindakan tempel terlebih dahulu</string>
+    <string name="checking_conflicts">Memeriksa konflik</string>
+    <string name="not_found_enabled_webview">Tidak ada peramban yang tersedia</string>
 </resources>
 

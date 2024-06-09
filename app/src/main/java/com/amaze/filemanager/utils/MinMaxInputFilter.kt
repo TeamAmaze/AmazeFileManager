@@ -24,7 +24,6 @@ import android.text.InputFilter
 import android.text.Spanned
 
 class MinMaxInputFilter(private val min: Int, private val max: Int) : InputFilter {
-
     constructor(range: IntRange) : this(range.first, range.last)
 
     override fun filter(
@@ -33,7 +32,7 @@ class MinMaxInputFilter(private val min: Int, private val max: Int) : InputFilte
         end: Int,
         dest: Spanned?,
         dstart: Int,
-        dend: Int
+        dend: Int,
     ): CharSequence? {
         runCatching {
             val input = (dest.toString() + source.toString()).toInt()
@@ -44,7 +43,11 @@ class MinMaxInputFilter(private val min: Int, private val max: Int) : InputFilte
         return ""
     }
 
-    private fun isInRange(minValue: Int, maxValue: Int, input: Int): Boolean {
+    private fun isInRange(
+        minValue: Int,
+        maxValue: Int,
+        input: Int,
+    ): Boolean {
         return if (maxValue > minValue) {
             input in minValue..maxValue
         } else {

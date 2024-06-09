@@ -26,6 +26,8 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.FolderState
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_DEFAULT_PORT
@@ -33,12 +35,14 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AND
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.QUESTION_MARK
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLASH
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import com.amaze.filemanager.utils.urlEncoded
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
@@ -48,9 +52,12 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 object NetCopyClientUtils {
-
     @JvmStatic
     private val LOG = LoggerFactory.getLogger(NetCopyClientUtils::class.java)
 
@@ -74,33 +81,34 @@ object NetCopyClientUtils {
      * Execute the given NetCopyClientTemplate.
      *
      * This template pattern is borrowed from Spring Framework, to simplify code on operations
-     * using SftpClientTemplate.
+     * using NetCopyClientTemplate.
+     *
+     * FIXME: Over-simplification implementation causing unnecessarily closing SSHClient.
      *
      * @param template [NetCopyClientTemplate] to execute
      * @param <T> Type of return value
      * @return Template execution results
      */
     @WorkerThread
-    fun <ClientType, T> execute(
-        template: NetCopyClientTemplate<ClientType, T>
-    ): T? {
+    fun <ClientType, T> execute(template: NetCopyClientTemplate<ClientType, T>): T? {
         var client = getConnection<ClientType>(extractBaseUriFrom(template.url))
         if (client == null) {
             client = getConnection(template.url)
         }
         var retval: T? = null
         if (client != null) {
-            retval = runCatching {
-                Maybe.fromCallable {
-                    template.execute(client)
-                }.subscribeOn(getScheduler.invoke(client)).blockingGet()
-            }.onFailure {
-                LOG.error("Error executing template method", it)
-            }.also {
-                if (template.closeClientOnFinish) {
-                    tryDisconnect(client)
-                }
-            }.getOrNull()
+            retval =
+                runCatching {
+                    Maybe.fromCallable {
+                        template.execute(client)
+                    }.subscribeOn(getScheduler.invoke(client)).blockingGet()
+                }.onFailure {
+                    LOG.error("Error executing template method", it)
+                }.also {
+                    if (template.closeClientOnFinish) {
+                        tryDisconnect(client)
+                    }
+                }.getOrNull()
         }
         return retval
     }
@@ -117,7 +125,7 @@ object NetCopyClientUtils {
         return if (uriWithoutProtocol.substringBefore(AT).indexOf(COLON) > 0) {
             SmbUtil.getSmbEncryptedPath(
                 AppConfig.getInstance(),
-                fullUri
+                fullUri,
             )
         } else {
             fullUri
@@ -137,7 +145,7 @@ object NetCopyClientUtils {
             if (uriWithoutProtocol.lastIndexOf(COLON) > 0) {
                 SmbUtil.getSmbDecryptedPath(
                     AppConfig.getInstance(),
-                    fullUri
+                    fullUri,
                 )
             } else {
                 fullUri
@@ -173,6 +181,10 @@ object NetCopyClientUtils {
                 if (it.port > 0) {
                     append(COLON).append(it.port)
                 }
+                if (!it.arguments.isNullOrEmpty()) {
+                    append(QUESTION_MARK)
+                        .append(it.arguments?.entries?.joinToString(AND.toString()))
+                }
             }
         }
     }
@@ -187,6 +199,7 @@ object NetCopyClientUtils {
      * @param fullUri Full SSH URL
      * @return The remote path part of the full SSH URL
      */
+    @JvmStatic
     fun extractRemotePathFrom(fullUri: String): String {
         return NetCopyConnectionInfo(fullUri).let { connInfo ->
             if (true == connInfo.defaultPath?.isNotEmpty()) {
@@ -225,21 +238,24 @@ object NetCopyClientUtils {
         defaultPath: String? = null,
         username: String,
         password: String? = null,
-        edit: Boolean = false
+        explicitTls: Boolean = false,
+        edit: Boolean = false,
     ): String {
         // FIXME: should be caller's responsibility
         var pathSuffix = defaultPath
         if (pathSuffix == null) pathSuffix = SLASH.toString()
-        val thisPassword = if (password == "" || password == null) {
-            ""
-        } else {
-            ":${if (edit) {
-                password
+        if (explicitTls) pathSuffix = "$pathSuffix?$ARG_TLS=$TLS_EXPLICIT"
+        val thisPassword =
+            if (password == "" || password == null) {
+                ""
             } else {
-                password.urlEncoded()
-            }}"
-        }
-        return if (username == "" && (true == password?.isEmpty())) {
+                ":${if (edit) {
+                    password
+                } else {
+                    password.urlEncoded()
+                }}"
+            }
+        return if (username == "") {
             "$prefix$hostname:$port$pathSuffix"
         } else {
             "$prefix$username$thisPassword@$hostname:$port$pathSuffix"
@@ -251,31 +267,32 @@ object NetCopyClientUtils {
      */
     @FolderState
     fun checkFolder(path: String): Int {
-        val template: NetCopyClientTemplate<*, Int> = if (path.startsWith(SSH_URI_PREFIX)) {
-            object : SFtpClientTemplate<Int>(extractBaseUriFrom(path), false) {
-                @FolderState
-                @Throws(IOException::class)
-                override fun execute(client: SFTPClient): Int {
-                    return if (client.statExistence(extractRemotePathFrom(path)) == null) {
-                        WRITABLE_ON_REMOTE
-                    } else {
-                        DOESNT_EXIST
+        val template: NetCopyClientTemplate<*, Int> =
+            if (path.startsWith(SSH_URI_PREFIX)) {
+                object : SFtpClientTemplate<Int>(extractBaseUriFrom(path), false) {
+                    @FolderState
+                    @Throws(IOException::class)
+                    override fun execute(client: SFTPClient): Int {
+                        return if (client.statExistence(extractRemotePathFrom(path)) == null) {
+                            WRITABLE_ON_REMOTE
+                        } else {
+                            DOESNT_EXIST
+                        }
+                    }
+                }
+            } else {
+                object : FtpClientTemplate<Int>(extractBaseUriFrom(path), false) {
+                    override fun executeWithFtpClient(ftpClient: FTPClient): Int {
+                        return if (ftpClient.stat(extractRemotePathFrom(path))
+                            == FTPReply.DIRECTORY_STATUS
+                        ) {
+                            WRITABLE_ON_REMOTE
+                        } else {
+                            DOESNT_EXIST
+                        }
                     }
                 }
             }
-        } else {
-            object : FtpClientTemplate<Int>(extractBaseUriFrom(path), false) {
-                override fun executeWithFtpClient(ftpClient: FTPClient): Int {
-                    return if (ftpClient.stat(extractRemotePathFrom(path))
-                        == FTPReply.DIRECTORY_STATUS
-                    ) {
-                        WRITABLE_ON_REMOTE
-                    } else {
-                        DOESNT_EXIST
-                    }
-                }
-            }
-        }
         return execute(template) ?: DOESNT_EXIST
     }
 
@@ -284,11 +301,24 @@ object NetCopyClientUtils {
      *
      * Reserved for future use.
      */
-    fun defaultPort(prefix: String) = when (prefix) {
-        SSH_URI_PREFIX -> SSH_DEFAULT_PORT
-        FTPS_URI_PREFIX -> FTPS_DEFAULT_PORT
-        FTP_URI_PREFIX -> FTP_DEFAULT_PORT
-        SMB_URI_PREFIX -> 0 // SMB never requires explicit port number at URL
-        else -> throw IllegalArgumentException("Cannot derive default port")
+    fun defaultPort(prefix: String) =
+        when (prefix) {
+            SSH_URI_PREFIX -> SSH_DEFAULT_PORT
+            FTPS_URI_PREFIX -> FTPS_DEFAULT_PORT
+            FTP_URI_PREFIX -> FTP_DEFAULT_PORT
+            SMB_URI_PREFIX -> 0 // SMB never requires explicit port number at URL
+            else -> throw IllegalArgumentException("Cannot derive default port")
+        }
+
+    /**
+     * Convenience method to format given UNIX timestamp to yyyyMMddHHmmss format.
+     */
+    @JvmStatic
+    fun getTimestampForTouch(date: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = date
+        val df: DateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.US)
+        df.calendar = calendar
+        return df.format(calendar.time)
     }
 }

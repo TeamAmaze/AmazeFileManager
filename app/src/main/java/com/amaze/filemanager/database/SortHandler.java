@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Sort;
+import com.amaze.filemanager.filesystem.files.sort.SortType;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -60,23 +61,25 @@ public class SortHandler {
     return SortHandlerHolder.INSTANCE;
   }
 
-  public static int getSortType(Context context, String path) {
+  public static SortType getSortType(Context context, String path) {
     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
     final Set<String> onlyThisFloders =
         sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, new HashSet<>());
     final boolean onlyThis = onlyThisFloders.contains(path);
     final int globalSortby = Integer.parseInt(sharedPref.getString("sortby", "0"));
+    SortType globalSortType = SortType.getDirectorySortType(globalSortby);
     if (!onlyThis) {
-      return globalSortby;
+      return globalSortType;
     }
     Sort sort = SortHandler.getInstance().findEntry(path);
     if (sort == null) {
-      return globalSortby;
+      return globalSortType;
     }
-    return sort.type;
+    return SortType.getDirectorySortType(sort.type);
   }
 
-  public void addEntry(Sort sort) {
+  public void addEntry(String path, SortType sortType) {
+    Sort sort = new Sort(path, sortType.toDirectorySortInt());
     database.sortDao().insert(sort).subscribeOn(Schedulers.io()).subscribe();
   }
 
@@ -84,7 +87,8 @@ public class SortHandler {
     database.sortDao().clear(path).subscribeOn(Schedulers.io()).subscribe();
   }
 
-  public void updateEntry(Sort oldSort, Sort newSort) {
+  public void updateEntry(Sort oldSort, String newPath, SortType newSortType) {
+    Sort newSort = new Sort(newPath, newSortType.toDirectorySortInt());
     database.sortDao().update(newSort).subscribeOn(Schedulers.io()).subscribe();
   }
 

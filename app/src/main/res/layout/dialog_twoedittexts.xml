@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         app:errorEnabled="false">
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         app:errorEnabled="true">
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

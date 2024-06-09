@@ -21,7 +21,6 @@
 package com.amaze.filemanager.adapters.data
 
 import com.amaze.filemanager.utils.safeLet
-import java.util.Comparator
 
 class AppDataSorter(var sort: Int, isAscending: Boolean) :
     Comparator<AppDataParcelable?> {
@@ -31,7 +30,10 @@ class AppDataSorter(var sort: Int, isAscending: Boolean) :
      * Compares two elements and return negative, zero and positive integer if first argument is
      * less than, equal to or greater than second
      */
-    override fun compare(file1: AppDataParcelable?, file2: AppDataParcelable?): Int {
+    override fun compare(
+        file1: AppDataParcelable?,
+        file2: AppDataParcelable?,
+    ): Int {
         safeLet(file1, file2) {
                 f1, f2 ->
             if (f1.isSystemApp != f2.isSystemApp) {
@@ -45,8 +47,9 @@ class AppDataSorter(var sort: Int, isAscending: Boolean) :
                 }
                 SORT_MODIF -> {
                     // sort by last modified
-                    return asc * java.lang.Long.valueOf(f1.lastModification)
-                        .compareTo(f2.lastModification)
+                    return asc *
+                        java.lang.Long.valueOf(f1.lastModification)
+                            .compareTo(f2.lastModification)
                 }
                 SORT_SIZE -> {
                     // sort by size
