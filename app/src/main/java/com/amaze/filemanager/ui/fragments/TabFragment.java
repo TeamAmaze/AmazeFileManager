@@ -239,14 +239,15 @@ public class TabFragment extends Fragment {
       sharedPrefs.edit().putInt(PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
     }
 
-    if (fragments.size() != 0) {
-      if (fragmentManager == null) {
-        return;
-      }
+    if (fragmentManager != null
+        && !fragments.isEmpty()
+        && fragments.get(0).isAdded()
+        && fragments.get(1).isAdded()) {
 
       fragmentManager.executePendingTransactions();
       fragmentManager.putFragment(outState, KEY_FRAGMENT_0, fragments.get(0));
       fragmentManager.putFragment(outState, KEY_FRAGMENT_1, fragments.get(1));
+
       outState.putInt(KEY_POSITION, viewPager.getCurrentItem());
     }
     super.onSaveInstanceState(outState);
