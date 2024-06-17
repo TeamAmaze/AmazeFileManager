@@ -117,7 +117,7 @@ public class EncryptDecryptUtils {
           (dialog, which) -> {
             AppCompatEditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
             decryptIntent.putExtra(EncryptService.TAG_PASSWORD, editText.getText().toString());
-            ServiceWatcherUtil.runService(main.getContext(), decryptIntent);
+            ServiceWatcherUtil.runService(c, decryptIntent);
             dialog.dismiss();
           },
           null);
@@ -142,7 +142,7 @@ public class EncryptDecryptUtils {
           new DecryptButtonCallbackInterface() {
             @Override
             public void confirm(Intent intent) {
-              ServiceWatcherUtil.runService(main.getContext(), intent);
+              ServiceWatcherUtil.runService(c, intent);
             }
 
             @Override
