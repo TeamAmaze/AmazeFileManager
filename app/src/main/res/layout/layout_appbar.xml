@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.appbar.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,7 +10,6 @@
 
     <androidx.appcompat.widget.Toolbar
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/action_bar"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
@@ -34,10 +34,10 @@
         >
 
         <HorizontalScrollView
-            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
             android:scrollbars="none"
             android:id="@+id/scroll"
-            android:paddingLeft="72dp"
+            android:paddingStart="72dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:focusable="true">
@@ -53,13 +53,14 @@
         </HorizontalScrollView>
         <LinearLayout
             android:id="@+id/pathbar"
-            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="RtlSymmetry">
 
             <HorizontalScrollView
                 android:scrollbars="none"
@@ -67,9 +68,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:paddingLeft="72dp"
+                android:paddingStart="72dp"
                 android:paddingTop="5dp"
-                android:focusable="true">
+                android:focusable="true"
+                tools:ignore="RtlSymmetry">
 
                 <LinearLayout
                     android:clickable="false"
@@ -99,11 +101,12 @@
                 android:textSize="12sp"
                 android:paddingBottom="8dp"
                 android:paddingTop="5dp"
-                android:paddingLeft="72dp"
+                android:paddingStart="72dp"
                 android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:id="@+id/pathname" />
+                android:id="@+id/pathname"
+                tools:ignore="RtlSymmetry" />
 
         </LinearLayout>
     </FrameLayout>

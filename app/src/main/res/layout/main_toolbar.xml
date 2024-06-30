@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         <com.leinardi.android.speeddial.SpeedDialView
-                android:id="@+id/fabs_menu"
+                android:id="@+id/fabs_menu" 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"

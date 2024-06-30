@@ -29,54 +29,61 @@
      As the main content view, the view below consumes the entire
      space available using match_parent in both dimensions.
     -->
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/activity_main_swipe_refresh_layout"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="false"
-        >
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="@dimen/eight_dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/activity_main_swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:scrollbars="none"
-            android:descendantFocusability="afterDescendants"
-            />
+            android:focusable="false"
+            android:padding="@dimen/eight_dp">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:descendantFocusability="afterDescendants"
+                android:divider="@null"
+                android:scrollbars="none" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <com.amaze.filemanager.ui.views.FastScroller
         android:id="@+id/fastscroll"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="right"
-        android:layout_height="match_parent"/>
+        android:orientation="vertical" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/nofilelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:visibility="gone"
         android:focusable="false"
-        >
+        android:scrollbars="none"
+        android:visibility="gone">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:descendantFocusability="afterDescendants"
-            >
+            android:descendantFocusability="afterDescendants">
 
             <RelativeLayout
                 android:id="@+id/no_files_relative"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:focusable="true"
                 android:background="@drawable/ripple_focusable"
-                >
+                android:focusable="true">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image"
@@ -85,19 +92,19 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/material_generic_medium"
-                    app:srcCompat="@drawable/ic_insert_drive_file_white_36dp"/>
+                    app:srcCompat="@drawable/ic_insert_drive_file_white_36dp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/nofiletext"
                     style="@android:style/TextAppearance.Medium"
                     android:layout_width="wrap_content"
-                    android:textColor="#666666"
-                    android:id="@+id/nofiletext"
-                    android:layout_marginTop="10dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/image"
-                    android:fontFamily="sans-serif-medium"
                     android:layout_centerHorizontal="true"
-                    android:text="@string/no_files"/>
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/no_files"
+                    android:textColor="#666666" />
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

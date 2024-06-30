@@ -69,6 +69,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
                 android:layout_margin="@dimen/material_generic"
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
@@ -199,6 +200,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
                 android:layout_margin="@dimen/material_generic"
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
@@ -497,6 +499,7 @@
             <!-- Support Development -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
+                app:cardCornerRadius="12dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/material_generic"
                 app:cardElevation="@dimen/material_generic_card_elevation"
@@ -817,6 +820,7 @@
             <!-- Translators -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
+                app:cardCornerRadius="12dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/material_generic"
                 app:cardElevation="@dimen/material_generic_card_elevation"
@@ -1307,6 +1311,7 @@
             <!-- Contributors -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
+                app:cardCornerRadius="12dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/material_generic"
                 app:cardElevation="@dimen/material_generic_card_elevation"

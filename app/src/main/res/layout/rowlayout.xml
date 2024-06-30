@@ -103,6 +103,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:padding="8dp"
+        android:rotation="90"
         android:clickable="true"
         app:srcCompat="@drawable/ic_more_vert_black_48dp"
         android:nextFocusLeft="@id/second"
