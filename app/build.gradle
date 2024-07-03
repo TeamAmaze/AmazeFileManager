@@ -34,6 +34,11 @@ android {
                               "room.expandProjection": "true"]
             }
         }
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        buildConfigField "String", "GOOGLE_CLIENT_ID", "\"${properties.getProperty('GOOGLE_CLIENT_ID')}\""
     }
 
     signingConfigs {
@@ -259,6 +264,9 @@ dependencies {
 
     implementation libs.gson
     implementation libs.amaze.trashBin
+
+    implementation(libs.plugin.google.gms)
+    implementation(libs.plugin.google.non.gms)
 }
 
 kotlin {

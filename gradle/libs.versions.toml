@@ -1,6 +1,7 @@
 [versions]
 compileSdk = "33"
 minSdk = "23"
+pluginGoogleGms = "2.0.0"
 targetSdk = "33"
 
 kotlin = "1.9.10"
@@ -118,6 +119,8 @@ kotlin-coroutine-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-tes
 libsu-core = { module = "com.github.topjohnwu.libsu:core", version.ref = "libsu" }
 libsu-io = { module = "com.github.topjohnwu.libsu:io", version.ref = "libsu" }
 
+plugin-google-gms = { module = "com.openmobilehub.android.auth:plugin-google-gms", version.ref = "pluginGoogleGms" }
+plugin-google-non-gms = { module = "com.openmobilehub.android.auth:plugin-google-non-gms", version.ref = "pluginGoogleGms" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroid" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
