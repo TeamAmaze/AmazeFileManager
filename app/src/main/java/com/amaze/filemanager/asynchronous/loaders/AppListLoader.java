@@ -84,7 +84,7 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
     try {
       androidInfo = packageManager.getPackageInfo("android", PackageManager.GET_SIGNATURES);
     } catch (PackageManager.NameNotFoundException e) {
-      LOG.warn("faield to find android package name while loading apps list", e);
+      LOG.warn("failed to find android package name while loading apps list", e);
     }
 
     for (ApplicationInfo object : apps) {
@@ -99,7 +99,7 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
       try {
         info = packageManager.getPackageInfo(object.packageName, PackageManager.GET_SIGNATURES);
       } catch (PackageManager.NameNotFoundException e) {
-        LOG.warn("faield to find package name {} while loading apps list", object.packageName, e);
+        LOG.warn("failed to find package name {} while loading apps list", object.packageName, e);
         info = null;
       }
       boolean isSystemApp = isAppInSystemPartition(object) || isSignedBySystem(info, androidInfo);
