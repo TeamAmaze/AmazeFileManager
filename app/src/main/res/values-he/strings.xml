@@ -772,6 +772,7 @@
     <string name="error_cannot_find_way_open">לא נמצאה דרך לפתוח את הקובץ</string>
     <string name="error_cant_decompress_that_file">לא ניתן לעבד את הארכיון המבוקש</string>
     <string name="analyse_storage">ניתוח האחסון</string>
+    <string name="download_amaze_utils_text">כעת תתבצע הפניה לכלי עזר לקבצים של Amaze. זה יישומון שלנו בקוד פתוח עם אפשרות לפתוח שמע/וידאו/תמונות/מסמכים, מאפשר לך לנתח קובצי פסולת לפינוי אחסון, העברה מהירה עם Wi-Fi נק׳ לנק׳ ועוד.\n אפשר לתמוך בנו על ידי התנסות בהם.</string>
     <string name="download">הורדה</string>
     <string name="wifip2p">נקודה לנקודה אלחוטית</string>
     <string name="amaze_utils_installed_alias">תודה שהתקנת את כלי הקבצים של Amaze. מיד תתבצע העברה ליישומון.</string>
