@@ -1781,11 +1781,11 @@ public class MainActivity extends PermissionsActivity
         if (getAppTheme().equals(AppTheme.LIGHT)) {
           mainActivity
               .getWindow()
-              .setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+              .setNavigationBarColor(Utils.getColor(this, android.R.color.black));
         } else if (getAppTheme().equals(AppTheme.BLACK)) {
           mainActivity
               .getWindow()
-              .setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+              .setNavigationBarColor(Utils.getColor(this, android.R.color.white));
         } else {
           mainActivity
               .getWindow()
