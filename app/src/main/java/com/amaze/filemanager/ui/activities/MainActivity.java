@@ -91,6 +91,7 @@ import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.StorageNaming;
@@ -181,7 +182,6 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -350,11 +350,26 @@ public class MainActivity extends PermissionsActivity
             if (result.getResultCode() == RESULT_CANCELED) {
               LOG.error("auth failed: {}", result.getData().getStringExtra("errorMessage"));
             } else {
-              // only because #getCredentials cannot be callede from the main thread
+              // cuz #getCredentials cannot be callede from the main thread
               AsyncTask.execute(
                   () -> {
-                    Log.i("vishnu", "token: " + authClient.getCredentials().getAccessToken());
-                    //                    cloudHandler.addEntry();
+                    CloudEntry cloudEntry =
+                        new CloudEntry(
+                            OpenMode.GDRIVE, authClient.getCredentials().getAccessToken());
+
+                    try {
+                      cloudHandler.addEntry(cloudEntry);
+                      //            dataUtils.addAccount(cloudEntry);
+                    } catch (CloudPluginException e) {
+                      runOnUiThread(
+                          () -> {
+                            Toast.makeText(
+                                    this,
+                                    getString(R.string.failed_cloud_new_connection),
+                                    Toast.LENGTH_SHORT)
+                                .show();
+                          });
+                    }
                   });
             }
           });
@@ -2286,13 +2301,7 @@ public class MainActivity extends PermissionsActivity
                 Toast.LENGTH_LONG)
             .show();
 
-        // only because #getCredentials cannot be callede from the main thread
-        AsyncTask.execute(
-            () -> {
-              if (authClient.getCredentials().getAccessToken() == null)
-                loginLauncher.launch(authClient.getLoginIntent());
-              else Log.e("vishnu", "token: " + authClient.getCredentials().getAccessToken());
-            });
+        loginLauncher.launch(authClient.getLoginIntent());
       }
     } catch (CloudPluginException e) {
       LOG.warn("failure when adding cloud plugin connections", e);
