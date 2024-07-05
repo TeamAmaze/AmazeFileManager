@@ -2,6 +2,8 @@
 compileSdk = "33"
 minSdk = "23"
 pluginGoogleGms = "2.0.0"
+storageApiDriveGms = "1.0.7-beta"
+storageApiDriveNongmsVersion = "1.0.8-beta"
 targetSdk = "33"
 
 kotlin = "1.9.10"
@@ -155,6 +157,8 @@ robolectric-shadows-httpclient = { module = "org.robolectric:shadows-httpclient"
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-recyclerView = { module = "com.github.bumptech.glide:recyclerview-integration", version.ref = "glide" }
 glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glide" }
+storage-api-drive-gms = { module = "com.openmobilehub.android:storage-api-drive-gms", version.ref = "storageApiDriveGms" }
+storage-api-drive-nongms-v108beta = { module = "com.openmobilehub.android:storage-api-drive-nongms", version.ref = "storageApiDriveNongmsVersion" }
 systembarTint = { module = "com.readystatesoftware.systembartint:systembartint", version.ref = "systembartint" }
 
 rxandroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxAndroid" }

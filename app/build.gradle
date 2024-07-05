@@ -267,6 +267,9 @@ dependencies {
 
     implementation(libs.plugin.google.gms)
     implementation(libs.plugin.google.non.gms)
+
+    implementation(libs.storage.api.drive.gms)
+    implementation(libs.storage.api.drive.nongms.v108beta)
 }
 
 kotlin {
