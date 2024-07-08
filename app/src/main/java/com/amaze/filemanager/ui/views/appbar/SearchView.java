@@ -510,7 +510,9 @@ public class SearchView {
 
     orderDrawable.setColorFilter(
         new PorterDuffColorFilter(
-            mainActivity.getResources().getColor(R.color.accent_material_light),
+            mainActivity
+                .getResources()
+                .getColor(com.google.android.material.R.color.accent_material_light),
             PorterDuff.Mode.SRC_ATOP));
     searchResultsSortButton.setCompoundDrawablesWithIntrinsicBounds(
         null, null, orderDrawable, null);

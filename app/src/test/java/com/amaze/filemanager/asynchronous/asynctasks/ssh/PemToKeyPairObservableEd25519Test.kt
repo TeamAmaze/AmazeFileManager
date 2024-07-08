@@ -21,9 +21,10 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
 import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.shadows.ShadowFileUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowTabHandler
 import io.reactivex.Observable
@@ -43,8 +44,8 @@ import org.robolectric.annotation.Config
  */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowTabHandler::class],
-    sdk = [KITKAT, P, VERSION_CODES.R],
+    shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFileUtils::class],
+    sdk = [LOLLIPOP, P, VERSION_CODES.R],
 )
 class PemToKeyPairObservableEd25519Test {
     companion object {

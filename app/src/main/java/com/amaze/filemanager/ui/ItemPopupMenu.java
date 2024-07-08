@@ -94,168 +94,163 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
 
   @Override
   public boolean onMenuItemClick(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.about:
-        GeneralDialogCreation.showPropertiesDialogWithPermissions(
-            (rowItem).generateBaseFile(),
-            rowItem.permissions,
-            mainActivity,
-            mainFragment,
-            mainActivity.isRootExplorer(),
-            utilitiesProvider.getAppTheme());
-        return true;
-      case R.id.share:
-        switch (rowItem.getMode()) {
-          case DROPBOX:
-          case BOX:
-          case GDRIVE:
-          case ONEDRIVE:
-            FileUtils.shareCloudFile(rowItem.desc, rowItem.getMode(), context);
-            break;
-          default:
-            ArrayList<File> arrayList = new ArrayList<>();
-            arrayList.add(new File(rowItem.desc));
-            FileUtils.shareFiles(
-                arrayList, mainActivity, utilitiesProvider.getAppTheme(), accentColor);
-            break;
-        }
-        return true;
-      case R.id.rename:
-        mainFragment.rename(rowItem.generateBaseFile());
-        return true;
-      case R.id.cpy:
-      case R.id.cut:
-        {
-          int op =
-              item.getItemId() == R.id.cpy ? PasteHelper.OPERATION_COPY : PasteHelper.OPERATION_CUT;
-          PasteHelper pasteHelper =
-              new PasteHelper(
-                  mainActivity, op, new HybridFileParcelable[] {rowItem.generateBaseFile()});
-          mainActivity.setPaste(pasteHelper);
-          return true;
-        }
-      case R.id.ex:
-        mainActivity.mainActivityHelper.extractFile(new File(rowItem.desc));
-        return true;
-      case R.id.book:
-        DataUtils dataUtils = DataUtils.getInstance();
-        if (dataUtils.addBook(new String[] {rowItem.title, rowItem.desc}, true)) {
-          mainActivity.getDrawer().refreshDrawer();
-          Toast.makeText(
-                  mainFragment.getActivity(),
-                  mainFragment.getString(R.string.bookmarks_added),
-                  Toast.LENGTH_LONG)
-              .show();
-        } else {
-          Toast.makeText(
-                  mainFragment.getActivity(),
-                  mainFragment.getString(R.string.bookmark_exists),
-                  Toast.LENGTH_LONG)
-              .show();
-        }
-        return true;
-      case R.id.delete:
-        ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
-        positions.add(rowItem);
-        GeneralDialogCreation.deleteFilesDialog(
-            context, mainActivity, positions, utilitiesProvider.getAppTheme());
-        return true;
-      case R.id.restore:
-        ArrayList<LayoutElementParcelable> p2 = new ArrayList<>();
-        p2.add(rowItem);
-        GeneralDialogCreation.restoreFilesDialog(
-            context, mainActivity, p2, utilitiesProvider.getAppTheme());
-        return true;
-      case R.id.open_with:
-        boolean useNewStack =
-            sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
+    if (item.getItemId() == R.id.about) {
+      GeneralDialogCreation.showPropertiesDialogWithPermissions(
+          (rowItem).generateBaseFile(),
+          rowItem.permissions,
+          mainActivity,
+          mainFragment,
+          mainActivity.isRootExplorer(),
+          utilitiesProvider.getAppTheme());
+      return true;
+    } else if (item.getItemId() == R.id.share) {
+      switch (rowItem.getMode()) {
+        case DROPBOX:
+        case BOX:
+        case GDRIVE:
+        case ONEDRIVE:
+          FileUtils.shareCloudFile(rowItem.desc, rowItem.getMode(), context);
+          break;
+        default:
+          ArrayList<File> arrayList = new ArrayList<>();
+          arrayList.add(new File(rowItem.desc));
+          FileUtils.shareFiles(
+              arrayList, mainActivity, utilitiesProvider.getAppTheme(), accentColor);
+          break;
+      }
+      return true;
+    } else if (item.getItemId() == R.id.rename) {
+      mainFragment.rename(rowItem.generateBaseFile());
+      return true;
+    } else if (item.getItemId() == R.id.cpy || item.getItemId() == R.id.cut) {
+      int op =
+          item.getItemId() == R.id.cpy ? PasteHelper.OPERATION_COPY : PasteHelper.OPERATION_CUT;
+      PasteHelper pasteHelper =
+          new PasteHelper(
+              mainActivity, op, new HybridFileParcelable[] {rowItem.generateBaseFile()});
+      mainActivity.setPaste(pasteHelper);
+      return true;
+    } else if (item.getItemId() == R.id.ex) {
+      mainActivity.mainActivityHelper.extractFile(new File(rowItem.desc));
+      return true;
+    } else if (item.getItemId() == R.id.book) {
+      DataUtils dataUtils = DataUtils.getInstance();
+      if (dataUtils.addBook(new String[] {rowItem.title, rowItem.desc}, true)) {
+        mainActivity.getDrawer().refreshDrawer();
+        Toast.makeText(
+                mainFragment.getActivity(),
+                mainFragment.getString(R.string.bookmarks_added),
+                Toast.LENGTH_LONG)
+            .show();
+      } else {
+        Toast.makeText(
+                mainFragment.getActivity(),
+                mainFragment.getString(R.string.bookmark_exists),
+                Toast.LENGTH_LONG)
+            .show();
+      }
+      return true;
+    } else if (item.getItemId() == R.id.delete) {
+      ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
+      positions.add(rowItem);
+      GeneralDialogCreation.deleteFilesDialog(
+          context, mainActivity, positions, utilitiesProvider.getAppTheme());
+      return true;
+    } else if (item.getItemId() == R.id.restore) {
+      ArrayList<LayoutElementParcelable> p2 = new ArrayList<>();
+      p2.add(rowItem);
+      GeneralDialogCreation.restoreFilesDialog(
+          context, mainActivity, p2, utilitiesProvider.getAppTheme());
+      return true;
+    } else if (item.getItemId() == R.id.open_with) {
+      boolean useNewStack =
+          sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
 
-        if (OpenMode.DOCUMENT_FILE.equals(rowItem.getMode())) {
+      if (OpenMode.DOCUMENT_FILE.equals(rowItem.getMode())) {
 
-          @Nullable Uri fullUri = rowItem.generateBaseFile().getFullUri();
+        @Nullable Uri fullUri = rowItem.generateBaseFile().getFullUri();
 
-          if (fullUri != null) {
+        if (fullUri != null) {
 
-            DocumentFile documentFile = DocumentFile.fromSingleUri(context, fullUri);
+          DocumentFile documentFile = DocumentFile.fromSingleUri(context, fullUri);
 
-            if (documentFile != null) {
-              FileUtils.openWith(documentFile, mainActivity, useNewStack);
-              return true;
-            }
+          if (documentFile != null) {
+            FileUtils.openWith(documentFile, mainActivity, useNewStack);
+            return true;
           }
         }
+      }
 
-        FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+      FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
 
-        return true;
-      case R.id.encrypt:
-        final Intent encryptIntent = new Intent(context, EncryptService.class);
-        encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
-        encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
+      return true;
+    } else if (item.getItemId() == R.id.encrypt) {
+      final Intent encryptIntent = new Intent(context, EncryptService.class);
+      encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
+      encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
 
-        final EncryptDecryptUtils.EncryptButtonCallbackInterface
-            encryptButtonCallbackInterfaceAuthenticate =
-                new EncryptDecryptUtils.EncryptButtonCallbackInterface() {
-                  @Override
-                  public void onButtonPressed(Intent intent, String password)
-                      throws GeneralSecurityException, IOException {
-                    EncryptDecryptUtils.startEncryption(
-                        context, rowItem.generateBaseFile().getPath(), password, intent);
-                  }
-                };
+      final EncryptDecryptUtils.EncryptButtonCallbackInterface
+          encryptButtonCallbackInterfaceAuthenticate =
+              new EncryptDecryptUtils.EncryptButtonCallbackInterface() {
+                @Override
+                public void onButtonPressed(Intent intent, String password)
+                    throws GeneralSecurityException, IOException {
+                  EncryptDecryptUtils.startEncryption(
+                      context, rowItem.generateBaseFile().getPath(), password, intent);
+                }
+              };
 
-        final SharedPreferences preferences =
-            PreferenceManager.getDefaultSharedPreferences(context);
+      final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if (!preferences
-            .getString(
-                PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
-            .equals("")) {
-          EncryptWithPresetPasswordSaveAsDialog.show(
-              context,
-              encryptIntent,
-              mainActivity,
-              PreferencesConstants.ENCRYPT_PASSWORD_MASTER,
-              encryptButtonCallbackInterfaceAuthenticate);
-        } else if (preferences.getBoolean(
-            PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
-            PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
-          EncryptWithPresetPasswordSaveAsDialog.show(
-              context,
-              encryptIntent,
-              mainActivity,
-              PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT,
-              encryptButtonCallbackInterfaceAuthenticate);
-        } else {
-          EncryptAuthenticateDialog.show(
-              context,
-              encryptIntent,
-              mainActivity,
-              utilitiesProvider.getAppTheme(),
-              encryptButtonCallbackInterfaceAuthenticate);
-        }
-        return true;
-      case R.id.decrypt:
-        EncryptDecryptUtils.decryptFile(
+      if (!preferences
+          .getString(
+              PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+              PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
+          .equals("")) {
+        EncryptWithPresetPasswordSaveAsDialog.show(
             context,
+            encryptIntent,
             mainActivity,
-            mainFragment,
-            mainFragment.getMainFragmentViewModel().getOpenMode(),
-            rowItem.generateBaseFile(),
-            rowItem.generateBaseFile().getParent(context),
-            utilitiesProvider,
-            false);
-        return true;
-      case R.id.compress:
-        GeneralDialogCreation.showCompressDialog(
+            PreferencesConstants.ENCRYPT_PASSWORD_MASTER,
+            encryptButtonCallbackInterfaceAuthenticate);
+      } else if (preferences.getBoolean(
+          PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
+          PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+        EncryptWithPresetPasswordSaveAsDialog.show(
+            context,
+            encryptIntent,
             mainActivity,
-            rowItem.generateBaseFile(),
-            mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
-        return true;
-      case R.id.return_select:
-        mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
-        return true;
+            PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT,
+            encryptButtonCallbackInterfaceAuthenticate);
+      } else {
+        EncryptAuthenticateDialog.show(
+            context,
+            encryptIntent,
+            mainActivity,
+            utilitiesProvider.getAppTheme(),
+            encryptButtonCallbackInterfaceAuthenticate);
+      }
+      return true;
+    } else if (item.getItemId() == R.id.decrypt) {
+      EncryptDecryptUtils.decryptFile(
+          context,
+          mainActivity,
+          mainFragment,
+          mainFragment.getMainFragmentViewModel().getOpenMode(),
+          rowItem.generateBaseFile(),
+          rowItem.generateBaseFile().getParent(context),
+          utilitiesProvider,
+          false);
+      return true;
+    } else if (item.getItemId() == R.id.compress) {
+      GeneralDialogCreation.showCompressDialog(
+          mainActivity,
+          rowItem.generateBaseFile(),
+          mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
+      return true;
+    } else if (item.getItemId() == R.id.return_select) {
+      mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
+      return true;
     }
     return false;
   }

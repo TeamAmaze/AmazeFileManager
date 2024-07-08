@@ -23,7 +23,7 @@ package com.amaze.filemanager.asynchronous.asynctasks
 import android.Manifest
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import android.os.Looper
 import android.os.storage.StorageManager
@@ -35,6 +35,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.shadows.ShadowFileUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.test.ShadowPasswordUtil
@@ -66,9 +67,10 @@ import org.robolectric.shadows.ShadowToast
         ShadowMultiDex::class,
         ShadowSmbUtil::class,
         ShadowTabHandler::class,
+        ShadowFileUtils::class,
         ShadowPasswordUtil::class,
     ],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractDeleteTaskTestBase {
     private var ctx: Context? = null

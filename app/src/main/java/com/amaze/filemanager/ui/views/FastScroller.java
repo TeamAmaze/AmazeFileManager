@@ -111,7 +111,7 @@ public class FastScroller extends FrameLayout {
 
   private void setUpBarBackground() {
     InsetDrawable insetDrawable;
-    int resolveColor = resolveColor(getContext(), R.attr.colorControlNormal);
+    int resolveColor = resolveColor(getContext(), android.R.attr.colorControlNormal);
     insetDrawable =
         new InsetDrawable(
             new ColorDrawable(resolveColor),

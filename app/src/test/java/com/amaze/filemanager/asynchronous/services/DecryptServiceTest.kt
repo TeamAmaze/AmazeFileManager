@@ -25,7 +25,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
 @Suppress("StringLiteralDuplication")
 class DecryptServiceTest {
     private lateinit var source: ByteArray

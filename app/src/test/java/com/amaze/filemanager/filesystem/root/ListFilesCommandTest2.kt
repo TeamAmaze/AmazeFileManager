@@ -22,29 +22,24 @@ package com.amaze.filemanager.filesystem.root
 
 import android.content.SharedPreferences
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode
-import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
-import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.topjohnwu.superuser.Shell
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyBoolean
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import org.mockito.kotlin.argumentCaptor
 import org.robolectric.annotation.Config
 import java.io.InputStreamReader
 
@@ -59,12 +54,12 @@ import java.io.InputStreamReader
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 class ListFilesCommandTest2 {
-    val sharedPreferences: SharedPreferences =
+    private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-    val lsLines =
+    private val lsLines =
         InputStreamReader(javaClass.getResourceAsStream("/rootCommands/ls-bin.txt"))
             .readLines()
 
@@ -73,39 +68,27 @@ class ListFilesCommandTest2 {
      */
     @Before
     fun setUp() {
-        val mockCommand = mock(ListFilesCommand.javaClass)
-        `when`(
-            mockCommand.listFiles(
-                anyString(),
-                anyBoolean(),
-                anyBoolean(),
-                argumentCaptor<(OpenMode) -> Unit>().capture(),
-                argumentCaptor<(HybridFileParcelable) -> Unit>().capture(),
-            ),
-        ).thenCallRealMethod()
-        `when`(
-            mockCommand.executeRootCommand(
-                anyString(),
-                anyBoolean(),
-                anyBoolean(),
-            ),
-        ).thenCallRealMethod()
-        `when`(mockCommand.runShellCommand("pwd")).thenReturn(
+        mockkObject(ListFilesCommand)
+        every {
+            ListFilesCommand.listFiles(any(), any(), any(), any(), any())
+        } answers { callOriginal() }
+        every {
+            ListFilesCommand.executeRootCommand(any(), any(), any())
+        } answers { callOriginal() }
+        every { ListFilesCommand.runShellCommand("pwd") } returns
             object : Shell.Result() {
                 override fun getOut(): MutableList<String> = listOf("/").toMutableList()
 
                 override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
 
                 override fun getCode(): Int = 0
-            },
-        )
-        `when`(mockCommand.runShellCommandToList("ls -l \"/bin\"")).thenReturn(lsLines)
-        `when`(
-            mockCommand.runShellCommandToList(
+            }
+        every { ListFilesCommand.runShellCommandToList("ls -l \"/bin\"") } returns lsLines
+        every {
+            ListFilesCommand.runShellCommandToList(
                 "stat -c '%A %h %G %U %B %Y %N' /bin/*",
-            ),
-        ).thenThrow(ShellCommandInvalidException("Intentional exception"))
-        TestUtils.replaceObjectInstance(ListFilesCommand.javaClass, mockCommand)
+            )
+        } throws ShellCommandInvalidException("Intentional exception")
     }
 
     /**
@@ -113,7 +96,7 @@ class ListFilesCommandTest2 {
      */
     @After
     fun tearDown() {
-        TestUtils.replaceObjectInstance(ListFilesCommand.javaClass, null)
+        unmockkObject(ListFilesCommand)
     }
 
     /**

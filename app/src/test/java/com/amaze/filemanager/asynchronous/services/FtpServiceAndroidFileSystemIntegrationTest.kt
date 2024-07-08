@@ -26,7 +26,7 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Environment
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
@@ -62,7 +62,7 @@ import java.net.InetAddress
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [KITKAT], shadows = [ShadowMultiDex::class])
+@Config(sdk = [LOLLIPOP], shadows = [ShadowMultiDex::class])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("StringLiteralDuplication")
 class FtpServiceAndroidFileSystemIntegrationTest {

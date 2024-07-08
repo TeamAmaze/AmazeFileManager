@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.hiya.jacoco-android'
+apply plugin: "com.mxalbert.gradle.jacoco-android"
 apply plugin: "com.starter.easylauncher"
 apply plugin: 'com.google.devtools.ksp'
 
@@ -14,7 +14,6 @@ android {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
         }
     }
-
 
     defaultConfig {
         applicationId "com.amaze.filemanager"
@@ -95,12 +94,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 
     testOptions {
@@ -262,7 +261,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 configurations.configureEach {
@@ -291,6 +290,8 @@ tasks.register('supportOldLangCodes')
         include('strings.xml')
     }
     supportOldLangCodes.dependsOn copyTask
+    rootProject.tasks.named('spotlessJava').configure { dependsOn copyTask }
+    rootProject.tasks.named('spotlessKotlin').configure { dependsOn copyTask }
 }
 
 project.afterEvaluate {
@@ -302,14 +303,6 @@ clean.mustRunAfter supportOldLangCodes
 
 jacoco {
     toolVersion = libs.versions.jacoco.get()
-}
-
-tasks.withType(JacocoReport).configureEach {
-    reports {
-        csv.required.set(false)
-        html.required.set(true)
-        xml.required.set(true)
-    }
 }
 
 tasks.withType(Test).configureEach {
