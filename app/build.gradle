@@ -145,6 +145,7 @@ dependencies {
     implementation libs.androidX.cardview
     implementation libs.androidX.constraintLayout
     implementation libs.androidX.multidex //Multiple dex files
+    implementation libs.androidX.biometric
     implementation libs.room.runtime
     implementation libs.room.rxjava2
 
