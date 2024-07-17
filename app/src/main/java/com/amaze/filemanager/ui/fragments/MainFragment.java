@@ -494,8 +494,8 @@ public class MainFragment extends Fragment
                       .replace(CryptUtil.AESCRYPT_EXTENSION, ""));
 
           EncryptDecryptUtils.decryptFile(
-              getContext(),
-              getMainActivity(),
+              requireContext(),
+              requireMainActivity(),
               this,
               mainFragmentViewModel.getOpenMode(),
               layoutElementParcelable.generateBaseFile(),

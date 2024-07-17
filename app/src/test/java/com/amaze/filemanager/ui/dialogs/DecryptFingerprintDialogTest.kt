@@ -26,7 +26,7 @@ import android.hardware.fingerprint.FingerprintManager
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
-import androidx.annotation.RequiresApi
+import androidx.test.filters.SdkSuppress
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.services.DecryptService.TAG_DECRYPT_PATH
@@ -86,7 +86,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
      * Test fingerprint authentication success scenario.
      */
     @Test
-    @RequiresApi(M)
+    @SdkSuppress(minSdkVersion = M)
     fun testDecryptFingerprintDialogSuccess() {
         performTest(
             testContent = {
@@ -111,7 +111,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
      * Test fingerprint authentication failure scenario.
      */
     @Test
-    @RequiresApi(M)
+    @SdkSuppress(minSdkVersion = M)
     fun testDecryptFingerprintDialogFailed() {
         performTest(
             testContent = {
@@ -147,7 +147,6 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
                         TAG_DECRYPT_PATH,
                         Environment.getExternalStorageDirectory().absolutePath,
                     ),
-                activity.appTheme,
                 callback,
             )
             ShadowDialog.getLatestDialog()?.run {
