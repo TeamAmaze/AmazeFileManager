@@ -1066,7 +1066,12 @@ public class MainFragment extends Fragment
   }
 
   public void computeScroll() {
-    View vi = listView.getChildAt(0);
+    View vi = null;
+
+    if (listView != null) {
+      vi = listView.getChildAt(0);
+    }
+
     int top = (vi == null) ? 0 : vi.getTop();
     int index;
     if (mainFragmentViewModel.isList()) index = mLayoutManager.findFirstVisibleItemPosition();
