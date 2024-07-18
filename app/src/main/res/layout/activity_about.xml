@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -73,7 +74,113 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView"
+                        app:layout_constraintTop_toTopOf="@id/text_view_version_title"
+                        app:srcCompat="@drawable/ic_info_outline_gray_24dp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_version_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/version"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/image_version" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_view_version_title"
+                        android:text="@string/app_version"
+                        android:layout_marginBottom="16dp"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintStart_toStartOf="@id/text_view_version_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_version_title"
+                        tools:layout_editor_absoluteX="40dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_view_changelog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/click_layout_changelog"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/click_layout_changelog"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:srcCompat="@drawable/ic_history_grey_24dp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/changelog"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintTop_toTopOf="@id/image_view_changelog"
+                        app:layout_constraintBottom_toBottomOf="@id/image_view_changelog"
+                        app:layout_constraintStart_toEndOf="@id/image_view_changelog"
+                        android:textSize="@dimen/material_generic_title"
+                        />
+
+                    <View
+                        android:id="@+id/click_layout_changelog"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:onClick="onClick"
+                        android:layout_marginTop="20dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        app:layout_constraintTop_toBottomOf="@id/image_version"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_view_license"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/click_layout_licenses"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/click_layout_licenses"
+                        app:srcCompat="@drawable/ic_library_code_white_24dp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/material_generic_medium"
+                        app:layout_constraintTop_toTopOf="@id/image_view_license"
+                        app:layout_constraintBottom_toBottomOf="@id/image_view_license"
+                        app:layout_constraintStart_toEndOf="@id/image_view_license"
+                        android:text="@string/libraries"
+                        android:textSize="@dimen/material_generic_title"
+                        />
+
+                    <View
+                        android:id="@+id/click_layout_licenses"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:onClick="onClick"
+                        android:background="?android:attr/selectableItemBackground"
+                        app:layout_constraintTop_toBottomOf="@id/click_layout_changelog"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+              <!--  <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -81,8 +188,8 @@
                     android:paddingBottom="@dimen/material_generic"
                     >
 
-                    <!-- version -->
-                    <RelativeLayout
+                    &lt;!&ndash; version &ndash;&gt;
+                 &lt;!&ndash;   <RelativeLayout
                         android:id="@+id/relative_layout_version"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/material_generic_list_item"
@@ -122,10 +229,10 @@
                                 android:textSize="@dimen/material_generic_title_summary"
                                 />
                         </RelativeLayout>
-                    </RelativeLayout>
+                    </RelativeLayout>&ndash;&gt;
 
-                    <!-- changelog -->
-                    <RelativeLayout
+                    &lt;!&ndash; changelog &ndash;&gt;
+                   &lt;!&ndash; <RelativeLayout
                         android:id="@+id/relative_layout_changelog"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/material_generic_list_item"
@@ -157,9 +264,9 @@
                                 android:textSize="@dimen/material_generic_title"
                                 />
                         </RelativeLayout>
-                    </RelativeLayout>
+                    </RelativeLayout>&ndash;&gt;
 
-                    <!-- licenses -->
+                    &lt;!&ndash; licenses &ndash;&gt;
                     <RelativeLayout
                         android:id="@+id/relative_layout_licenses"
                         android:layout_width="match_parent"
@@ -192,7 +299,7 @@
                                 />
                         </RelativeLayout>
                     </RelativeLayout>
-                </LinearLayout>
+                </LinearLayout>-->
             </androidx.cardview.widget.CardView>
 
             <!-- authors -->
@@ -203,6 +310,37 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/authors"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginLeft="16dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="@android:color/darker_gray"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_person"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        android:layout_marginRight="@dimen/material_generic_medium"
+                        app:layout_constraintTop_toBottomOf="@id/tvAuthor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/ic_account_circle_grey_24dp"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -212,7 +350,7 @@
                     >
 
                     <!-- title -->
-                    <RelativeLayout
+                    <!--<RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/material_generic_large"
                         android:paddingLeft="@dimen/material_generic"
@@ -224,7 +362,7 @@
                             android:text="@string/authors"
                             android:textColor="@android:color/darker_gray"
                             />
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
                     <!-- author 1 -->
                     <RelativeLayout
@@ -1301,8 +1439,6 @@
                     </RelativeLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-
 
             <!-- Contributors -->
             <androidx.cardview.widget.CardView

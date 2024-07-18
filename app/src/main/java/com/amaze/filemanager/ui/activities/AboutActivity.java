@@ -233,11 +233,11 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
         }
         break;
 
-      case R.id.relative_layout_changelog:
+      case R.id.click_layout_changelog:
         openURL(URL_REPO_CHANGELOG, this);
         break;
 
-      case R.id.relative_layout_licenses:
+      case R.id.click_layout_licenses:
         LibsBuilder libsBuilder =
             new LibsBuilder()
                 .withLibraries("apachemina") // Not auto-detected for some reason
