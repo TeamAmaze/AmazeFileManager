@@ -28,9 +28,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.models.LanguageModel;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -42,6 +44,7 @@ import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -82,6 +85,54 @@ public class DataUtils {
 
   private static class DataUtilsHolder {
     private static final DataUtils INSTANCE = new DataUtils();
+  }
+
+  public static List<LanguageModel> getLanguages(Context context){
+
+    var data = new ArrayList<LanguageModel>();
+
+    var lang1 = new LanguageModel(context.getString(R.string.german_translation_title),context.getString(R.string.german_translation_summary));
+    var lang2 = new LanguageModel(context.getString(R.string.italian_translation_title),context.getString(R.string.italian_translation_summary));
+    var lang3 = new LanguageModel(context.getString(R.string.french_translation_title),context.getString(R.string.french_translation_summary));
+    var lang4 = new LanguageModel(context.getString(R.string.russian_translation_title),context.getString(R.string.russian_translation_summary));
+    var lang5 = new LanguageModel(context.getString(R.string.spanish_translation_title),context.getString(R.string.spanish_translation_summary));
+    var lang6 = new LanguageModel(context.getString(R.string.basque_translation_title),context.getString(R.string.basque_translation_summary));
+    var lang7 = new LanguageModel(context.getString(R.string.chinese_translation_title),context.getString(R.string.chinese_translation_summary));
+    var lang8 = new LanguageModel(context.getString(R.string.serbian_translation_title),context.getString(R.string.serbian_translation_summary));
+    var lang9 = new LanguageModel(context.getString(R.string.turkish_translation_title),context.getString(R.string.turkish_translation_summary));
+    var lang10 = new LanguageModel(context.getString(R.string.ukrainian_translation_title),context.getString(R.string.ukrainian_translation_summary));
+    var lang11 = new LanguageModel(context.getString(R.string.portuguese_translation_title),context.getString(R.string.portuguese_translation_summary));
+    var lang12 = new LanguageModel(context.getString(R.string.polish_translation_title),context.getString(R.string.polish_translation_summary));
+    var lang13 = new LanguageModel(context.getString(R.string.korean_translation_title),context.getString(R.string.korean_translation_summary));
+    var lang14 = new LanguageModel(context.getString(R.string.greek_translation_title),context.getString(R.string.greek_translation_summary));
+    var lang15 = new LanguageModel(context.getString(R.string.dutch_translation_title),context.getString(R.string.dutch_translation_summary));
+    var lang16 = new LanguageModel(context.getString(R.string.romanian_translation_title),context.getString(R.string.romanian_translation_summary));
+    var lang17 = new LanguageModel(context.getString(R.string.vietnamese_translation_title),context.getString(R.string.vietnamese_translation_summary));
+    var lang18 = new LanguageModel(context.getString(R.string.japanese_translation_title),context.getString(R.string.japanese_translation_summary));
+    var lang19 = new LanguageModel(context.getString(R.string.tamil_translation_title),context.getString(R.string.tamil_translation_summary));
+
+    data.add(lang1);
+    data.add(lang2);
+    data.add(lang3);
+    data.add(lang4);
+    data.add(lang5);
+    data.add(lang6);
+    data.add(lang7);
+    data.add(lang8);
+    data.add(lang9);
+    data.add(lang10);
+    data.add(lang11);
+    data.add(lang12);
+    data.add(lang13);
+    data.add(lang14);
+    data.add(lang15);
+    data.add(lang16);
+    data.add(lang17);
+    data.add(lang18);
+    data.add(lang19);
+
+    return data;
+
   }
 
   public static DataUtils getInstance() {
