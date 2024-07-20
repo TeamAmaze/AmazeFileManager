@@ -172,14 +172,11 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     }
   }
 
-  private void initAdapter(){
-
-
+  private void initAdapter() {
 
     languageAdapter = new LanguageAdapter(DataUtils.getLanguages(this));
     recyclerView.setAdapter(languageAdapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
   }
 
   /**
