@@ -265,11 +265,14 @@ dependencies {
     implementation libs.gson
     implementation libs.amaze.trashBin
 
-    implementation(libs.plugin.google.gms)
-    implementation(libs.plugin.google.non.gms)
+    implementation("com.openmobilehub.android.auth:plugin-google-gms:2.0.0")
+    implementation("com.openmobilehub.android.auth:plugin-google-non-gms:2.0.0")
 
-    implementation(libs.storage.api.drive.gms)
-    implementation(libs.storage.api.drive.nongms.v108beta)
+//    implementation("com.openmobilehub.android.storage:core:2.0.0")
+//    implementation("com.openmobilehub.android.auth:core:2.0.2")
+
+    implementation("com.openmobilehub.android.storage:plugin-googledrive-gms:2.0.0")
+    implementation("com.openmobilehub.android.storage:plugin-googledrive-non-gms:2.0.0")
 }
 
 kotlin {
