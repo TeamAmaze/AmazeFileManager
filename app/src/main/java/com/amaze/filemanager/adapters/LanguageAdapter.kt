@@ -28,13 +28,19 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.models.LanguageModel
 
 class LanguageAdapter(private val dataList: List<LanguageModel>) : RecyclerView.Adapter<LanguageAdapter.ViewHolder?>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.language_item, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ViewHolder,
+        position: Int,
+    ) {
         val dataModel = dataList[position]
         holder.title.text = dataModel.title
         holder.description.text = dataModel.description

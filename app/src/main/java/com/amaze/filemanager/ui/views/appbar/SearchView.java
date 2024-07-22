@@ -374,13 +374,13 @@ public class SearchView {
    * @param searchTerm The search term that resulted in the search results
    */
   private void updateResultList(List<SearchResult> newResults, String searchTerm) {
-    if (newResults==null){
-      Toast.makeText(mainActivity, "No data found",Toast.LENGTH_SHORT).show();
-    }else {
+    if (newResults == null) {
+      Toast.makeText(mainActivity, "No data found", Toast.LENGTH_SHORT).show();
+    } else {
       Log.e("TAG", "updateResultList: " + newResults + " " + searchTerm);
       ArrayList<SearchResult> items = new ArrayList<>(newResults);
       Collections.sort(
-              items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+          items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
       searchRecyclerViewAdapter.submitList(items);
       searchRecyclerViewAdapter.notifyDataSetChanged();
     }

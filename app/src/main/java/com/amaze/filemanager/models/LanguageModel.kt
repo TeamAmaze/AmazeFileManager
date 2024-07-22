@@ -19,4 +19,4 @@
  */
 package com.amaze.filemanager.models
 
-data class LanguageModel(var title: String,var description: String)
+data class LanguageModel(var title: String, var description: String)
