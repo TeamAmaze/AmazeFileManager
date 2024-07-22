@@ -61,12 +61,14 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -372,11 +374,16 @@ public class SearchView {
    * @param searchTerm The search term that resulted in the search results
    */
   private void updateResultList(List<SearchResult> newResults, String searchTerm) {
-    ArrayList<SearchResult> items = new ArrayList<>(newResults);
-    Collections.sort(
-        items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
-    searchRecyclerViewAdapter.submitList(items);
-    searchRecyclerViewAdapter.notifyDataSetChanged();
+    if (newResults==null){
+      Toast.makeText(mainActivity, "No data found",Toast.LENGTH_SHORT).show();
+    }else {
+      Log.e("TAG", "updateResultList: " + newResults + " " + searchTerm);
+      ArrayList<SearchResult> items = new ArrayList<>(newResults);
+      Collections.sort(
+              items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+      searchRecyclerViewAdapter.submitList(items);
+      searchRecyclerViewAdapter.notifyDataSetChanged();
+    }
   }
 
   /** show search view with a circular reveal animation */
@@ -478,6 +485,7 @@ public class SearchView {
     updateSearchResultsSortButtonDisplay();
     LiveData<List<SearchResult>> lastSearchLiveData =
         mainActivity.getCurrentMainFragment().getMainActivityViewModel().getLastSearchLiveData();
+    Log.e("TAG", "onSortTypeSelected: " + lastSearchLiveData.getValue());
     updateResultList(lastSearchLiveData.getValue(), getSearchTerm());
   }
 

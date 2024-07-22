@@ -17,32 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.models
 
-package com.amaze.filemanager.models;
-
-// DataModel.java
-public class LanguageModel {
-  private String title;
-  private String description;
-
-  public LanguageModel(String text, String description) {
-    this.title = text;
-    this.description = description;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String text) {
-    this.title = text;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String text) {
-    this.description = text;
-  }
-}
+data class LanguageModel(var title: String,var description: String)

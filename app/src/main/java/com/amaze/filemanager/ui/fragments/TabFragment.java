@@ -54,6 +54,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,6 +106,12 @@ public class TabFragment extends Fragment {
 
   private final ArgbEvaluator evaluator = new ArgbEvaluator();
   private ConstraintLayout dragPlaceholder;
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    LOG.error("onResume called");
+  }
 
   @Override
   public View onCreateView(
@@ -169,6 +176,8 @@ public class TabFragment extends Fragment {
       viewPager.setCurrentItem(pos1);
       sectionsPagerAdapter.notifyDataSetChanged();
     }
+
+
 
     if (indicator != null) indicator.setViewPager(viewPager);
 
