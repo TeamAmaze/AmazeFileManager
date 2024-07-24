@@ -171,6 +171,42 @@ public class DataUtils {
     return data;
   }
 
+  public static List<LanguageModel> getContributors(Context context) {
+
+    var data = new ArrayList<LanguageModel>();
+
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_1_title),
+            context.getString(R.string.contributors_1_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_2_title),
+            context.getString(R.string.contributors_2_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_3_title),
+            context.getString(R.string.contributors_3_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_4_title),
+            context.getString(R.string.contributors_4_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_5_title),
+            context.getString(R.string.contributors_5_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_6_title),
+            context.getString(R.string.contributors_6_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_7_title),
+            context.getString(R.string.contributors_7_summary)));
+
+    return data;
+  }
+
   public static DataUtils getInstance() {
     return DataUtilsHolder.INSTANCE;
   }

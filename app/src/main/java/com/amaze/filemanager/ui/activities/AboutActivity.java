@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.ContributorAdapter;
 import com.amaze.filemanager.adapters.LanguageAdapter;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
@@ -69,7 +70,9 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private static final int HEADER_WIDTH = 500;
 
   private LanguageAdapter languageAdapter;
+  private ContributorAdapter contributorAdapter;
   private RecyclerView recyclerView;
+  private RecyclerView contributorRecyclerView;
   private AppBarLayout mAppBarLayout;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
   private AppCompatTextView mTitleTextView;
@@ -111,6 +114,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     setContentView(R.layout.activity_about);
 
     recyclerView = findViewById(R.id.rvLanguage);
+    contributorRecyclerView = findViewById(R.id.rvContributors);
     mAppBarLayout = findViewById(R.id.appBarLayout);
     mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
     mTitleTextView = findViewById(R.id.text_view_title);
@@ -177,6 +181,10 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     languageAdapter = new LanguageAdapter(DataUtils.getLanguages(this));
     recyclerView.setAdapter(languageAdapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    contributorAdapter = new ContributorAdapter(DataUtils.getContributors(this));
+    contributorRecyclerView.setAdapter(contributorAdapter);
+    contributorRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   /**
