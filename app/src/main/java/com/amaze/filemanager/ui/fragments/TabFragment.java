@@ -107,12 +107,6 @@ public class TabFragment extends Fragment {
   private ConstraintLayout dragPlaceholder;
 
   @Override
-  public void onResume() {
-    super.onResume();
-    LOG.error("onResume called");
-  }
-
-  @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
