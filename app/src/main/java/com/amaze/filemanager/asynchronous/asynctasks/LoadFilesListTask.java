@@ -23,23 +23,17 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.Q;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.format.Formatter;
-import android.widget.Toast;
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -71,17 +65,23 @@ import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.format.Formatter;
+import android.widget.Toast;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.util.Pair;
 
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
@@ -613,12 +613,12 @@ public class LoadFilesListTask
 
     for (TrashBinFile trashBinFile : filesInBin) {
       HybridFile hybridFile =
-              new HybridFile(
-                      OpenMode.TRASH_BIN,
-                      trashBinFile.getDeletedPath(
-                              AppConfig.getInstance().getTrashBinInstance().getConfig()),
-                      trashBinFile.getFileName(),
-                      trashBinFile.isDirectory());
+          new HybridFile(
+              OpenMode.TRASH_BIN,
+              trashBinFile.getDeletedPath(
+                  AppConfig.getInstance().getTrashBinInstance().getConfig()),
+              trashBinFile.getFileName(),
+              trashBinFile.isDirectory());
       if (trashBinFile.getDeleteTime() != null) {
         hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
       }
