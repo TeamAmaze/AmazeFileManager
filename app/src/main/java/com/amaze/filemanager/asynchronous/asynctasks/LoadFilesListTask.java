@@ -23,17 +23,23 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.Q;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.text.format.Formatter;
+import android.widget.Toast;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.util.Pair;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -65,23 +71,17 @@ import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.format.Formatter;
-import android.widget.Toast;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.util.Pair;
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
@@ -604,31 +604,31 @@ public class LoadFilesListTask
 
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     List<LayoutElementParcelable> deletedFiles = new ArrayList<>();
-    if (trashBin != null) {
 
-      List<TrashBinFile> filesInBin = trashBin.listFilesInBin();
+    if (trashBin == null) return deletedFiles;
 
-      if (filesInBin != null) {
-        for (TrashBinFile trashBinFile : filesInBin) {
-          HybridFile hybridFile =
+    List<TrashBinFile> filesInBin = trashBin.listFilesInBin();
+
+    if (filesInBin == null) return deletedFiles;
+
+    for (TrashBinFile trashBinFile : filesInBin) {
+      HybridFile hybridFile =
               new HybridFile(
-                  OpenMode.TRASH_BIN,
-                  trashBinFile.getDeletedPath(
-                      AppConfig.getInstance().getTrashBinInstance().getConfig()),
-                  trashBinFile.getFileName(),
-                  trashBinFile.isDirectory());
-          if (trashBinFile.getDeleteTime() != null) {
-            hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
-          }
-          LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
-          element.date = trashBinFile.getDeleteTime();
-          element.longSize = trashBinFile.getSizeBytes();
-          element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
-          element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
-          element.isDirectory = trashBinFile.isDirectory();
-          deletedFiles.add(element);
-        }
+                      OpenMode.TRASH_BIN,
+                      trashBinFile.getDeletedPath(
+                              AppConfig.getInstance().getTrashBinInstance().getConfig()),
+                      trashBinFile.getFileName(),
+                      trashBinFile.isDirectory());
+      if (trashBinFile.getDeleteTime() != null) {
+        hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
       }
+      LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
+      element.date = trashBinFile.getDeleteTime();
+      element.longSize = trashBinFile.getSizeBytes();
+      element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
+      element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
+      element.isDirectory = trashBinFile.isDirectory();
+      deletedFiles.add(element);
     }
     return deletedFiles;
   }
