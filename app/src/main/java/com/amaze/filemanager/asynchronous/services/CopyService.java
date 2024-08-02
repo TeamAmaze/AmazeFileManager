@@ -501,6 +501,7 @@ public class CopyService extends AbstractProgressiveService {
                         file.isDirectory());
                 try {
                   copyFiles(file, destFile, progressHandler);
+                  destFile.setLastModified(file.lastModified());
                 } catch (IOException e) {
                   throw new IllegalStateException(e); // throw unchecked exception, no throws needed
                 }
@@ -522,6 +523,7 @@ public class CopyService extends AbstractProgressiveService {
                 AppConfig.toast(c, c.getString(R.string.copy_low_memory));
               },
               ServiceWatcherUtil.UPDATE_POSITION);
+          targetFile.setLastModified(sourceFile.lastModified());
         }
       }
     }

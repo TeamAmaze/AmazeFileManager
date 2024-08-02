@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.fragments.preferencefragments
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -114,27 +115,48 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         disableButtonIfNotPath(txtShortcutPath, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
-                val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
-                p.title = txtShortcutName.text
-                p.summary = txtShortcutPath.text
-                position[p] = dataUtils.books.size
-                bookmarksList?.addPreference(p)
-                val values =
-                    arrayOf(
-                        txtShortcutName.text.toString(),
-                        txtShortcutPath.text.toString(),
+                val result = isValidBookmark(txtShortcutName.text.toString(), txtShortcutPath.text.toString())
+                if (!result.first) {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(result.second),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                } else {
+                    val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
+                    p.title = txtShortcutName.text
+                    p.summary = txtShortcutPath.text
+                    position[p] = dataUtils.books.size
+                    bookmarksList?.addPreference(p)
+                    val values =
+                        arrayOf(
+                            txtShortcutName.text.toString(),
+                            txtShortcutPath.text.toString(),
+                        )
+                    dataUtils.addBook(values)
+                    utilsHandler.saveToDatabase(
+                        OperationData(
+                            UtilsHandler.Operation.BOOKMARKS,
+                            txtShortcutName.text.toString(),
+                            txtShortcutPath.text.toString(),
+                        ),
                     )
-                dataUtils.addBook(values)
-                utilsHandler.saveToDatabase(
-                    OperationData(
-                        UtilsHandler.Operation.BOOKMARKS,
-                        txtShortcutName.text.toString(),
-                        txtShortcutPath.text.toString(),
-                    ),
-                )
-                dialog.dismiss()
+                    dialog.dismiss()
+                }
             }
         dialog.show()
+    }
+
+    private fun isValidBookmark(
+        name: String,
+        path: String,
+    ): Pair<Boolean, Int> {
+        return when {
+            name.isEmpty() -> Pair(false, R.string.invalid_name)
+            dataUtils.containsBooks(arrayOf(name, path)) != -1 -> Pair(false, R.string.bookmark_exists)
+            !FileUtils.isPathAccessible(path, activity.prefs) -> Pair(false, R.string.ftp_path_change_error_invalid)
+            else -> Pair(true, 0)
+        }
     }
 
     private fun showEditDialog(p: PathSwitchPreference) {
