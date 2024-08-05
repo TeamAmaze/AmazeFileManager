@@ -31,6 +31,7 @@ allprojects {
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url "https://jcenter.bintray.com" }
+        maven { url "https://repository.liferay.com/nexus/content/repositories/public/"}
     }
     tasks.withType(Test).tap {
         configureEach {
@@ -149,7 +150,7 @@ subprojects {
             }
         }
         dependencies {
-            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
+//            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
 
             if (project.hasProperty('kapt')) {
                 kapt 'javax.xml.bind:jaxb-api:2.3.1'

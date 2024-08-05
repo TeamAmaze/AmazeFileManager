@@ -48,7 +48,6 @@ import java.util.concurrent.TimeUnit
 
 @Suppress("StringLiteralDuplication")
 class SftpConnectDialogTest : AbstractMainActivityTestBase() {
-
     private lateinit var mc: MockedConstruction<SftpConnectDialog>
 
     /**
@@ -57,12 +56,13 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
     @Before
     override fun setUp() {
         super.setUp()
-        mc = mockConstruction(
-            SftpConnectDialog::class.java
-        ) { mock: SftpConnectDialog, _: MockedConstruction.Context? ->
-            doCallRealMethod().`when`(mock).arguments = any()
-            `when`(mock.arguments).thenCallRealMethod()
-        }
+        mc =
+            mockConstruction(
+                SftpConnectDialog::class.java
+            ) { mock: SftpConnectDialog, _: MockedConstruction.Context? ->
+                doCallRealMethod().`when`(mock).arguments = any()
+                `when`(mock.arguments).thenCallRealMethod()
+            }
     }
 
     /**
@@ -116,9 +116,10 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
      */
     @Test
     fun testInvokeSftpConnectionDialogWithPasswordAndDefaultPath() {
-        val uri = NetCopyClientUtils.encryptFtpPathAsNecessary(
-            "ssh://root:12345678@127.0.0.1:22/data/incoming"
-        )
+        val uri =
+            NetCopyClientUtils.encryptFtpPathAsNecessary(
+                "ssh://root:12345678@127.0.0.1:22/data/incoming"
+            )
         val verify = Bundle()
         verify.putString("address", "127.0.0.1")
         verify.putInt("port", 22)
@@ -138,13 +139,15 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
     /**
      * Test invoke [SftpConnectDialog] with arguments including password and URL encoded path.
      */
+    @Suppress("ktlint:standard:max-line-length", "ktlint:standard:no-single-line-block-comment")
     @Test
     @Throws(GeneralSecurityException::class, IOException::class)
     fun testInvokeSftpConnectionDialogWithPasswordAndEncodedDefaultPath() {
         /* ktlint-disable max-line-length */
-        val uri = NetCopyClientUtils.encryptFtpPathAsNecessary(
-            "ssh://root:12345678@127.0.0.1:22/Users/TranceLove/My+Documents/%7BReference%7D%20Zobius%20Facro%20%24%24%20%23RFII1"
-        )
+        val uri =
+            NetCopyClientUtils.encryptFtpPathAsNecessary(
+                "ssh://root:12345678@127.0.0.1:22/Users/TranceLove/My+Documents/%7BReference%7D%20Zobius%20Facro%20%24%24%20%23RFII1"
+            )
         /* ktlint-enable max-line-length */
         val verify = Bundle()
         verify.putString("address", "127.0.0.1")
@@ -166,7 +169,10 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
     }
 
     @Throws(GeneralSecurityException::class, IOException::class)
-    private fun testOpenSftpConnectDialog(uri: String, verify: Bundle) {
+    private fun testOpenSftpConnectDialog(
+        uri: String,
+        verify: Bundle
+    ) {
         val activity = mock(MainActivity::class.java)
         val utilsHandler = mock(UtilsHandler::class.java)
         `when`(utilsHandler.getSshAuthPrivateKeyName("ssh://root@127.0.0.1:22"))
@@ -186,15 +192,15 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
         val mocked = mc.constructed()[0]
         await().atMost(10, TimeUnit.SECONDS).until { mocked.arguments != null }
         for (key in BUNDLE_KEYS) {
-            if (mocked.arguments!![key] != null) {
+            if (mocked.arguments?.getString(key) != null) {
                 if (key != "password") {
-                    assertEquals(verify[key], mocked.arguments!![key])
+                    assertEquals(verify.getString(key), mocked.arguments?.getString(key))
                 } else {
                     assertEquals(
-                        verify[key],
+                        verify.getString(key),
                         PasswordUtil.decryptPassword(
                             ApplicationProvider.getApplicationContext(),
-                            (mocked.arguments!![key] as String?)!!,
+                            requireNotNull(mocked.arguments?.getString(key)),
                             Base64.URL_SAFE
                         )
                     )
@@ -205,15 +211,16 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
 
     companion object {
         @JvmStatic
-        private val BUNDLE_KEYS = arrayOf(
-            "address",
-            "port",
-            "keypairName",
-            "name",
-            "username",
-            "password",
-            "edit",
-            "defaultPath"
-        )
+        private val BUNDLE_KEYS =
+            arrayOf(
+                "address",
+                "port",
+                "keypairName",
+                "name",
+                "username",
+                "password",
+                "edit",
+                "defaultPath"
+            )
     }
 }
