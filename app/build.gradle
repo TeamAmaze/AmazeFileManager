@@ -268,11 +268,8 @@ dependencies {
     implementation("com.openmobilehub.android.auth:plugin-google-gms:2.0.0")
     implementation("com.openmobilehub.android.auth:plugin-google-non-gms:2.0.0")
 
-//    implementation("com.openmobilehub.android.storage:core:2.0.0")
-//    implementation("com.openmobilehub.android.auth:core:2.0.2")
-
-    implementation("com.openmobilehub.android.storage:plugin-googledrive-gms:2.0.0")
-    implementation("com.openmobilehub.android.storage:plugin-googledrive-non-gms:2.0.0")
+    implementation("com.openmobilehub.android.storage:plugin-googledrive-gms:2.0.0-alpha")
+    implementation("com.openmobilehub.android.storage:plugin-googledrive-non-gms:2.0.0-alpha")
 }
 
 kotlin {
