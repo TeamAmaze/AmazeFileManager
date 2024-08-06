@@ -1,3 +1,18 @@
+// https://stackoverflow.com/a/76954759/9652621
+pluginManagement {
+    buildscript {
+        repositories {
+            mavenCentral()
+            maven {
+                url = uri("https://storage.googleapis.com/r8-releases/raw")
+            }
+        }
+        dependencies {
+            classpath("com.android.tools:r8:8.2.24")
+        }
+    }
+}
+
 include ':file_operations'
 include ':portscanner'
 include ':app', ':commons_compress_7z'
