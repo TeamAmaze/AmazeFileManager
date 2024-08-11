@@ -47,6 +47,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.format.Formatter;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class ServiceWatcherUtil {
@@ -194,15 +195,15 @@ public class ServiceWatcherUtil {
    * closed as there are higher chances for android system to GC the thread when it is running low
    * on memory
    */
-  public static synchronized void runService(final Context context, final Intent intent) {
+  public static synchronized void runService(@Nullable final Context context, final Intent intent) {
     switch (pendingIntents.size()) {
       case 0:
-        context.startService(intent);
+        if (context != null) context.startService(intent);
         break;
       case 1:
         // initialize waiting handlers
         pendingIntents.add(intent);
-        postWaiting(context);
+        if (context != null) postWaiting(context);
         break;
       case 2:
         // to avoid notifying repeatedly
