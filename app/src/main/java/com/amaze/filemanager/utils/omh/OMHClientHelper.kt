@@ -1,15 +1,13 @@
 package com.amaze.filemanager.utils.omh
 
 import android.content.Context
-import android.content.Intent
 import com.amaze.filemanager.BuildConfig
 import com.openmobilehub.android.auth.core.OmhAuthClient
 import com.openmobilehub.android.auth.core.OmhAuthProvider
-import com.openmobilehub.android.auth.core.async.OmhCancellable
-import com.openmobilehub.android.auth.core.async.OmhTask
-import com.openmobilehub.android.auth.core.models.OmhUserProfile
 import com.openmobilehub.android.storage.core.OmhStorageClient
 import com.openmobilehub.android.storage.core.OmhStorageProvider
+import com.openmobilehub.android.storage.plugin.googledrive.gms.GoogleDriveGmsConstants
+import com.openmobilehub.android.storage.plugin.googledrive.nongms.GoogleDriveNonGmsConstants
 
 class OMHClientHelper {
     companion object {
@@ -63,8 +61,8 @@ class OMHClientHelper {
 
                     storageClientInstance =
                         OmhStorageProvider.Builder()
-                            .addGmsPath("com.omh.android.storage.api.drive.gms.OmhGmsStorageFactoryImpl")
-                            .addNonGmsPath("com.omh.android.storage.api.drive.nongms.OmhGmsStorageFactoryImpl")
+                            .addGmsPath(GoogleDriveGmsConstants.IMPLEMENTATION_PATH)
+                            .addNonGmsPath(GoogleDriveNonGmsConstants.IMPLEMENTATION_PATH)
                             .build()
                             .provideStorageClient(authClient, context)
                 }

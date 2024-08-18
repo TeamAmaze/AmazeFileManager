@@ -182,7 +182,6 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -384,15 +383,6 @@ public class MainActivity extends PermissionsActivity
     intent = getIntent();
 
     authClient = OMHClientHelper.getGoogleAuthClient(getApplication());
-
-    OMHClientHelper.getGoogleStorageClient(this)
-        .listFiles("/")
-        .addOnSuccess(
-            result -> {
-              Log.i("vishnu", "onCreate: " + result);
-            })
-        .addOnFailure(Throwable::printStackTrace)
-        .execute();
 
     dataUtils = DataUtils.getInstance();
     if (savedInstanceState != null) {

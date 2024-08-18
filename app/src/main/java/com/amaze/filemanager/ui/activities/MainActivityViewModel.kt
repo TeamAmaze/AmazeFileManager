@@ -46,6 +46,8 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES
 import com.amaze.trashbin.MoveFilesCallback
 import com.amaze.trashbin.TrashBinFile
+import com.openmobilehub.android.storage.core.OmhStorageClient
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -327,5 +329,18 @@ class MainActivityViewModel(val applicationContext: Application) :
             }
         }
         return trashBinFilesLiveData!!
+    }
+
+    fun listFiles(
+        omhStorageClient: OmhStorageClient,
+        parentId: String,
+    ): MutableLiveData<List<OmhStorageEntity>> {
+        val fileList = MutableLiveData<List<OmhStorageEntity>>()
+
+        viewModelScope.launch(Dispatchers.Default) {
+            fileList.postValue(omhStorageClient.listFiles(parentId))
+        }
+
+        return fileList
     }
 }

@@ -83,7 +83,9 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
 import com.google.android.material.appbar.AppBarLayout;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
 
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -101,6 +103,7 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,6 +174,8 @@ public class MainFragment extends Fragment
   private MainFragmentViewModel mainFragmentViewModel;
   private MainActivityViewModel mainActivityViewModel;
 
+  private OmhStorageClient storageClient;
+
   private boolean hideFab = false;
 
   private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
@@ -199,6 +204,16 @@ public class MainFragment extends Fragment
     mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
     mainActivityViewModel =
         new ViewModelProvider(requireMainActivity()).get(MainActivityViewModel.class);
+
+    storageClient = OMHClientHelper.getGoogleStorageClient(requireContext());
+
+    mainActivityViewModel
+        .listFiles(storageClient, "root")
+        .observe(
+            this,
+            omhStorageEntities -> {
+              Log.e("vishnu", "onCreate: " + omhStorageEntities);
+            });
 
     utilsProvider = requireMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
