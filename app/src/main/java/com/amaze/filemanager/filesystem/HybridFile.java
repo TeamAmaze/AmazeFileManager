@@ -1863,7 +1863,7 @@ public class HybridFile {
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
       if (trashBinFile.getDeletedPath(trashBin.getConfig()).equals(path)) {
-        // finding path to restore to
+        // finding path to restore tof
         return new TrashBinFile(
             getName(context), isDirectory(context), trashBinFile.getPath(), length(context), null);
       }
