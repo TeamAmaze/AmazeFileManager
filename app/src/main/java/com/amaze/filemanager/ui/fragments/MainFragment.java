@@ -103,7 +103,6 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -206,14 +205,6 @@ public class MainFragment extends Fragment
         new ViewModelProvider(requireMainActivity()).get(MainActivityViewModel.class);
 
     storageClient = OMHClientHelper.getGoogleStorageClient(requireContext());
-
-    mainActivityViewModel
-        .listFiles(storageClient, "root")
-        .observe(
-            this,
-            omhStorageEntities -> {
-              Log.e("vishnu", "onCreate: " + omhStorageEntities);
-            });
 
     utilsProvider = requireMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());

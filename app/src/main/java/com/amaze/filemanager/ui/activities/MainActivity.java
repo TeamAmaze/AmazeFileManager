@@ -145,6 +145,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.omh.CoroutineCallback;
 import com.amaze.filemanager.utils.omh.OMHClientHelper;
 import com.cloudrail.si.CloudRail;
 import com.google.android.material.appbar.AppBarLayout;
@@ -155,6 +156,9 @@ import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.openmobilehub.android.auth.core.OmhAuthClient;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
+import com.openmobilehub.android.storage.core.model.OmhStorageMetadata;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
@@ -182,6 +186,7 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -342,6 +347,7 @@ public class MainActivity extends PermissionsActivity
       "com.amaze.filemanager.openAppManager";
 
   private OmhAuthClient authClient;
+  private OmhStorageClient storageClient;
 
   private final ActivityResultLauncher<Intent> loginLauncher =
       registerForActivityResult(
@@ -383,6 +389,34 @@ public class MainActivity extends PermissionsActivity
     intent = getIntent();
 
     authClient = OMHClientHelper.getGoogleAuthClient(getApplication());
+    storageClient = OMHClientHelper.getGoogleStorageClient(MainActivity.this);
+
+
+    AsyncTask.execute(
+        new Runnable() {
+          @Override
+          @SuppressWarnings("unchecked")
+          public void run() {
+
+            List<OmhStorageEntity> rootFileList =
+                (List<OmhStorageEntity>)
+                    storageClient.listFiles(
+                        "root", CoroutineCallback.Companion.call((result, error) -> {}));
+
+            for (OmhStorageEntity omhStorageEntity : rootFileList) {
+
+              OmhStorageMetadata fileMetadata = (OmhStorageMetadata) storageClient.getFileMetadata(
+                      omhStorageEntity.getId(),
+                      CoroutineCallback.Companion.call((result, error) -> {
+                      }));
+
+              Log.e(
+                  "vishnu",
+                  "run: "
+                      + fileMetadata);
+            }
+          }
+        });
 
     dataUtils = DataUtils.getInstance();
     if (savedInstanceState != null) {
