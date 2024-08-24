@@ -82,6 +82,7 @@
     <string name="question_set_path_as_home">Geçerli yolu bu sekme için ana sayfa olarak ayarlamak istiyor musunuz?</string>
     <string name="directorysort">Dizin Sıralama Modu</string>
     <string name="sort_by">Sırala</string>
+    <string name="sort_by_colon">Sırala:</string>
     <string name="sort_only_this">Sadece bu klasör</string>
     <string name="theme">Tema</string>
     <string name="random">Rastgele arayüz</string>
