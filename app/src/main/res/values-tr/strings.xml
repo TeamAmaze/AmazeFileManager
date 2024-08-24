@@ -124,6 +124,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Bir dosyayı seç</string>
+    <string name="pick_files">Bir veya daha fazla dosya seç</string>
     <string name="process_viewer">İşlem görüntüleyici</string>
     <string name="in_safe">Yetersiz alan</string>
     <string name="no_file_overwrite">Dosyanın Üzerine Yazılmadı</string>
