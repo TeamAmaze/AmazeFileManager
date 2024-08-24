@@ -120,6 +120,7 @@
     <string name="sort_name">Ad</string>
     <string name="lastModified">Son değiştirilme</string>
     <string name="sort_size">Boyut</string>
+    <string name="sort_relevance">Alaka düzeyi</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Bir dosyayı seç</string>
