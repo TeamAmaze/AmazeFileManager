@@ -29,13 +29,6 @@ jobs:
           echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).head.repo.full_name }}"
           echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).head.repo.clone_url }}"
           echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
-#      - name: Generate temporary output
-#        run: |
-#          mkdir -p app/build/outputs/apk/fdroid/debug/
-#          echo "app-fdroid-debug" >> app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
-#
-#          mkdir -p app/build/outputs/apk/play/debug/
-#          echo "app-play-debug" >> app/build/outputs/apk/play/debug/app-play-debug.apk
       - name: Checkout PR Branch
         uses: actions/checkout@v4
         with:
