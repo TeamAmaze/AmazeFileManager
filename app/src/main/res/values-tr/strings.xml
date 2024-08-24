@@ -186,6 +186,7 @@
     <string name="circular_images">Görüntüler ve videolar için dairesel simgeleri kullan</string>
     <string name="circular_icons">Dairesel simgeleri kullan</string>
     <string name="follow_battery_saver_title">Pil tasarrufuna uy</string>
+    <string name="follow_battery_saver_desc">Seçildiğinde pil tasarrufu aktifse koyu temaya geçilir</string>
     <string name="back_title">\'Geri git\' tuşu</string>
     <string name="back_summary">Listenin en üstünde \'Geri git\' tuşu görünür</string>
     <string name="details">Detaylar</string>
