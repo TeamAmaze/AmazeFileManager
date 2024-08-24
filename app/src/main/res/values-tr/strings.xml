@@ -629,6 +629,7 @@ Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı aya
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD kart</string>
     <string name="choose_folder">Bu Klasörü Seç</string>
+    <string name="some_files_failed_invalid_operation">Geçersiz işlem nedeniyle bazı dosyalar başarısız oldu</string>
     <string name="ftp_server_prompt_connect_to_network">Bir ağa bağlanın veya AP\'yi etkinleştirin</string>
     <string name="ftp_server_open_settings">Ayarları aç</string>
     <string name="move">Taşı</string>
