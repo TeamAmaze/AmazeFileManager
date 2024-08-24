@@ -572,6 +572,7 @@ Sunucuya bağlanmaya devam etmek için lütfen sistem yöneticinize başvurun ve
     <string name="create_file_suggest_txt_extension">Dosya uzantısı olarak \".txt\" kullanılması önerilir.</string>
     <string name="ssh_select_pem">Doğrulama için anahtarınızı seçin.</string>
     <string name="ssh_key_invalid_passphrase">Geçersiz anahtar parolası.</string>
+    <string name="ssh_key_no_decoder_decrypt">PEM\'in şifresini çözecek geçerli kod çözücü yok.</string>
     <string name="encryption_fail_copy">Veritabanındaki şifreleme girişi güncellenemedi</string>
     <string name="extracted">Çıkartıldı</string>
     <string name="compressed">Sıkıştırıldı</string>
