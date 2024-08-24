@@ -29,6 +29,13 @@ jobs:
           echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).head.repo.full_name }}"
           echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).head.repo.clone_url }}"
           echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
+#      - name: Generate temporary output
+#        run: |
+#          mkdir -p app/build/outputs/apk/fdroid/debug/
+#          echo "app-fdroid-debug" >> app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
+#
+#          mkdir -p app/build/outputs/apk/play/debug/
+#          echo "app-play-debug" >> app/build/outputs/apk/play/debug/app-play-debug.apk
       - name: Checkout PR Branch
         uses: actions/checkout@v4
         with:
@@ -46,17 +53,33 @@ jobs:
           arguments: assembleDebug --stacktrace
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v4
+        id: artifact-upload-fdroid
         with:
           name: Amaze-Fdroid-debug
           path: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
+          if-no-files-found: error
       - name: Upload play artifact
         uses: actions/upload-artifact@v4
+        id: artifact-upload-play
         with:
           name: Amaze-Play-debug
           path: app/build/outputs/apk/play/debug/app-play-debug.apk
-      - name: Notify the user with a comment once the APK is uploaded # TODO: update this with the link to the artifacts
+          if-no-files-found: error
+      - name: Get the PR number
+        id: find-pr-id
+        run: |
+          PR_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
+
+          echo "PR_Number: $PR_NUMBER"
+          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+      - name: Notify the user with a comment once the APK is uploaded
         uses: peter-evans/create-or-update-comment@v2
         with:
-          issue-number: ${{ github.event.issue.number }}
+          issue-number: ${{ steps.find-pr-id.outputs.PR_NUMBER }}
           body: |
-            The requested APKs has been built. Please find them from the artifacts section of this PR.
+            Requested APKs have been built. Please find them from the links below.
+            
+            FDroid Flavour: ${{ steps.artifact-upload-fdroid.outputs.artifact-url }}
+            Play Flavour: ${{ steps.artifact-upload-play.outputs.artifact-url }}
+            
+            PS: you should be logged in to access the artifacts.
