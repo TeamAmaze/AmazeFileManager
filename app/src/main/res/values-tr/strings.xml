@@ -75,6 +75,7 @@
     <string name="dialog_delete_category_directories">Dizinler</string>
     <string name="dialog_delete_category_files">Dosyalar</string>
     <string name="dialog_delete_disclaimer">Aşağıdaki öğeler silindiğinde cihazınızdan kalıcı olarak kaldırılacaktır ve bu işlem geri alınamaz.</string>
+    <string name="dialog_delete_temporarily_disclaimer">Öğeleri silmek istediğinizden emin misin?</string>
     <string name="dialog_delete_title">Öğeler kalıcı olarak silinsin mi?</string>
     <string name="deleting">Siliniyor</string>
     <string name="question_set_path_as_home">Geçerli yolu bu sekme için ana sayfa olarak ayarlamak istiyor musunuz?</string>
