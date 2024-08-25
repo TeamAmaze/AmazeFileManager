@@ -391,7 +391,6 @@ public class MainActivity extends PermissionsActivity
     authClient = OMHClientHelper.getGoogleAuthClient(getApplication());
     storageClient = OMHClientHelper.getGoogleStorageClient(MainActivity.this);
 
-
     AsyncTask.execute(
         new Runnable() {
           @Override
@@ -405,15 +404,13 @@ public class MainActivity extends PermissionsActivity
 
             for (OmhStorageEntity omhStorageEntity : rootFileList) {
 
-              OmhStorageMetadata fileMetadata = (OmhStorageMetadata) storageClient.getFileMetadata(
-                      omhStorageEntity.getId(),
-                      CoroutineCallback.Companion.call((result, error) -> {
-                      }));
+              OmhStorageMetadata fileMetadata =
+                  (OmhStorageMetadata)
+                      storageClient.getFileMetadata(
+                          omhStorageEntity.getId(),
+                          CoroutineCallback.Companion.call((result, error) -> {}));
 
-              Log.e(
-                  "vishnu",
-                  "run: "
-                      + fileMetadata);
+              Log.e("vishnu", "run: " + fileMetadata);
             }
           }
         });

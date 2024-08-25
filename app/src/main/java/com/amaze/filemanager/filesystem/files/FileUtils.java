@@ -66,6 +66,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+import com.openmobilehub.android.storage.core.model.OmhStorageMetadata;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -169,7 +170,7 @@ public class FileUtils {
     }
   }
 
-  public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
+  public static long folderSizeCloud(OpenMode openMode, OmhStorageMetadata sourceFileMeta) {
 
     DataUtils dataUtils = DataUtils.getInstance();
     long length = 0;

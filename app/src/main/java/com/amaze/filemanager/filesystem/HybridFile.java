@@ -91,11 +91,15 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.omh.CoroutineCallback;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
 import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinFile;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
+import com.openmobilehub.android.storage.core.model.OmhStorageMetadata;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -414,11 +418,20 @@ public class HybridFile {
       case GDRIVE:
         s =
             Single.fromCallable(
-                    () ->
-                        dataUtils
-                            .getAccount(mode)
-                            .getMetadata(CloudUtil.stripPath(mode, path))
-                            .getSize())
+                    () -> {
+                      OmhStorageMetadata metadata =
+                          (OmhStorageMetadata)
+                              OMHClientHelper.getGoogleStorageClient(context)
+                                  .getFileMetadata(
+                                      dataUtils.getAccount(mode).getOmhStorageEntity().getId(),
+                                      CoroutineCallback.Companion.call((result, error) -> {}));
+
+                      OmhStorageEntity entity = metadata.getEntity();
+
+                      if (entity instanceof OmhStorageEntity.OmhFile)
+                        return ((OmhStorageEntity.OmhFile) entity).getSize().longValue();
+                      else return 0L;
+                    })
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
         return s;
@@ -609,6 +622,7 @@ public class HybridFile {
    *
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
+  @Deprecated
   public boolean isDirectory() {
     boolean isDirectory;
     switch (mode) {
@@ -686,11 +700,18 @@ public class HybridFile {
       case GDRIVE:
       case ONEDRIVE:
         return Single.fromCallable(
-                () ->
-                    dataUtils
-                        .getAccount(mode)
-                        .getMetadata(CloudUtil.stripPath(mode, path))
-                        .getFolder())
+                () -> {
+                  OmhStorageMetadata metadata =
+                      (OmhStorageMetadata)
+                          OMHClientHelper.getGoogleStorageClient(context)
+                              .getFileMetadata(
+                                  dataUtils.getAccount(mode).getOmhStorageEntity().getId(),
+                                  CoroutineCallback.Companion.call((result, error) -> {}));
+
+                  OmhStorageEntity entity = metadata.getEntity();
+
+                  return entity instanceof OmhStorageEntity.OmhFolder;
+                })
             .subscribeOn(Schedulers.io())
             .blockingGet();
       case TRASH_BIN:
@@ -703,6 +724,7 @@ public class HybridFile {
   /**
    * @deprecated use {@link #folderSize(Context)}
    */
+  @Deprecated
   public long folderSize() {
     long size = 0L;
 
@@ -783,7 +805,12 @@ public class HybridFile {
       case ONEDRIVE:
         size =
             FileUtils.folderSizeCloud(
-                mode, dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
+                mode,
+                (OmhStorageMetadata)
+                    OMHClientHelper.getGoogleStorageClient(context)
+                        .getFileMetadata(
+                            dataUtils.getAccount(mode).getOmhStorageEntity().getId(),
+                            CoroutineCallback.Companion.call((resultValue, error) -> {})));
         break;
       case FTP:
       default:
@@ -821,7 +848,9 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
+        SpaceAllocation spaceAllocation =
+            ((OmhStorageEntity.OmhFolder) dataUtils.getAccount(mode).getOmhStorageEntity())
+                .get.getAllocation();
         size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
         break;
       case SFTP:
