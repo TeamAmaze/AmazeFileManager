@@ -52,4 +52,24 @@ object MediaConnectionUtils {
             LOG.info("MediaConnectionUtils#scanFile finished scanning path$path")
         }
     }
+
+    /**
+     * Invokes MediaScannerConnection#scanFile for a given file
+     *
+     * @param context the context
+     * @param filePath the path of the file to be scanned
+     */
+    @JvmStatic
+    fun scanFile(
+        context: Context,
+        filePath: String,
+    ) {
+        MediaScannerConnection.scanFile(
+            context,
+            arrayOf(filePath),
+            null,
+        ) { path: String, _: Uri? ->
+            LOG.info("MediaConnectionUtils#scanFile finished scanning path$path")
+        }
+    }
 }

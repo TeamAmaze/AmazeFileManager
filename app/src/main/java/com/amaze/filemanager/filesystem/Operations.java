@@ -442,6 +442,17 @@ public class Operations {
         }
         return null;
       }
+
+      @Override
+      protected void onPostExecute(Void unused) {
+        super.onPostExecute(unused);
+
+        // TODO: run this only when the operation gets completed successfully
+        MediaConnectionUtils.scanFile(context, file.path);
+
+        if (file.name.equals(FileUtils.NOMEDIA_FILE))
+          MediaConnectionUtils.scanFile(context, file.getParent(context));
+      }
     }.executeOnExecutor(executor);
   }
 
