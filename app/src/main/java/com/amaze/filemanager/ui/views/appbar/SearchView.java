@@ -49,7 +49,6 @@ import com.google.gson.reflect.TypeToken;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -103,7 +102,6 @@ public class SearchView {
   private final AppCompatTextView deepSearchTV;
 
   private final ChipGroup recentChipGroup;
-  private final RecyclerView recyclerView;
 
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
@@ -132,7 +130,6 @@ public class SearchView {
   private SortType sortType = defaultSortType;
 
   @SuppressWarnings("ConstantConditions")
-  @SuppressLint("NotifyDataSetChanged")
   public SearchView(final AppBar appbar, MainActivity mainActivity) {
 
     this.mainActivity = mainActivity;
@@ -146,7 +143,7 @@ public class SearchView {
     recentHintTV = mainActivity.findViewById(R.id.searchRecentHintTV);
     searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
     deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
-    recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
+    RecyclerView recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
     searchResultsSortHintTV = mainActivity.findViewById(R.id.searchResultsSortHintTV);
     searchResultsSortButton = mainActivity.findViewById(R.id.searchResultsSortButton);
     searchResultsSortAscDrawable =
@@ -378,7 +375,6 @@ public class SearchView {
       Collections.sort(
           items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
       searchRecyclerViewAdapter.submitList(items);
-      searchRecyclerViewAdapter.notifyDataSetChanged();
     } else {
       Toast.makeText(mainActivity, "No search result found", Toast.LENGTH_SHORT).show();
     }
@@ -614,10 +610,8 @@ public class SearchView {
     }
   }
 
-  @SuppressLint("NotifyDataSetChanged")
   private void clearRecyclerView() {
-    searchRecyclerViewAdapter.submitList(new ArrayList<>());
-    searchRecyclerViewAdapter.notifyDataSetChanged();
+    searchRecyclerViewAdapter.submitList(Collections.emptyList());
 
     deepSearchTV.setVisibility(View.GONE);
 
