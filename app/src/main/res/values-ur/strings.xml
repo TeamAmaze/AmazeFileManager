@@ -39,7 +39,7 @@
     <string name="copyingapks">%s میں APK 1%d فائلوں کو کاپی کیا جا رہا ہے </string>
     <string name="delbook">بک مارک کو حذف کریں</string>
     <string name="add_to_bookmarks">بک مارکس میں شامل کریں</string>
-    <string name="enterpath">Enter Path</string>
+    <string name="enterpath">راستہ داخل کریں</string>
     <string name="cancel">CANCEL</string>
     <string name="create">CREATE</string>
     <string name="loading">Loading&#8230;</string>
