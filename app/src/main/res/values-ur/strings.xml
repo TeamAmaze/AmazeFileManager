@@ -59,7 +59,7 @@
     <string name="no_app_found">اس فائل کو کھولنے کے لیے کوئی ایپ نہیں ملی</string>
     <string name="copying">نقل کرنا</string>
     <string name="moving">حرکت پذیر</string>
-    <string name="file">File</string>
+    <string name="file">فائل</string>
     <string name="folder">Folder</string>
     <string name="newfolder">New Folder</string>
     <string name="entername">Enter Name</string>
