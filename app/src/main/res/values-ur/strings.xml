@@ -72,7 +72,7 @@
     <string name="extract">نکالنا</string>
     <string name="compress">کمپریس</string>
     <string name="yes">جی ہاں</string>
-    <string name="no">No</string>
+    <string name="no">نہیں</string>
     <string name="dialog_delete_category_directories">Directories</string>
     <string name="dialog_delete_category_files">Files</string>
     <string name="dialog_delete_disclaimer">Deleting the items below will permanently remove them from your device and they cannot be recovered.</string>
