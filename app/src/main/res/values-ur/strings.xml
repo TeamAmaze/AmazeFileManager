@@ -54,7 +54,7 @@
     <string name="date">تاریخ</string>
     <string name="location">مقام</string>
     <string name="size_capitalized">سائز</string>
-    <string name="size">size of folder</string>
+    <string name="size">فولڈر کا سائز</string>
     <string name="enterzipname">Enter Zip Name</string>
     <string name="no_app_found">No App found to open this file</string>
     <string name="copying">Copying</string>
