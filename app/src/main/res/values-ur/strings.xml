@@ -56,7 +56,7 @@
     <string name="size_capitalized">سائز</string>
     <string name="size">فولڈر کا سائز</string>
     <string name="enterzipname">زپ کا نام درج کریں</string>
-    <string name="no_app_found">No App found to open this file</string>
+    <string name="no_app_found">اس فائل کو کھولنے کے لیے کوئی ایپ نہیں ملی</string>
     <string name="copying">Copying</string>
     <string name="moving">Moving</string>
     <string name="file">File</string>
