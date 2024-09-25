@@ -43,7 +43,7 @@
     <string name="cancel">منسوخ کریں</string>
     <string name="create">تخلیق کریں</string>
     <string name="loading">لوڈ ہو رہا ہے&#8230;</string>
-    <string name="file_empty">File is empty</string>
+    <string name="file_empty">فائل خالی ہے</string>
     <string name="error">Error</string>
     <string name="search_results">Search results of %s</string>
     <string name="rename">Rename</string>
