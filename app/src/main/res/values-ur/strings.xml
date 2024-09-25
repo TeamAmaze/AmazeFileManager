@@ -49,7 +49,7 @@
     <string name="rename">نام تبدیل کریں</string>
     <string name="save">محفوظ کریں</string>
     <string name="bookmarks_added">بُک مارکس شامل کیے گئے</string>
-    <string name="fileexist">File with same name already exists </string>
+    <string name="fileexist">اسی نام کی فائل پہلے سے موجود ہے </string>
     <string name="name">Name</string>
     <string name="date">Date</string>
     <string name="location">Location</string>
