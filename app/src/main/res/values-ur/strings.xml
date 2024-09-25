@@ -52,7 +52,7 @@
     <string name="fileexist">اسی نام کی فائل پہلے سے موجود ہے </string>
     <string name="name">نام</string>
     <string name="date">تاریخ</string>
-    <string name="location">Location</string>
+    <string name="location">مقام</string>
     <string name="size_capitalized">Size</string>
     <string name="size">size of folder</string>
     <string name="enterzipname">Enter Zip Name</string>
