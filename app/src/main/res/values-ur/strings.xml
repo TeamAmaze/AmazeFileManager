@@ -36,7 +36,7 @@
     <string name="uninstall">ان انسٹال کریں</string>
     <string name="play">پلے اسٹور</string>
     <string name="properties">پراپرٹیز</string>
-    <string name="copyingapks">Copying %d APK files to %s</string>
+    <string name="copyingapks">%s میں APK 1%d فائلوں کو کاپی کیا جا رہا ہے </string>
     <string name="delbook">Delete Bookmark</string>
     <string name="add_to_bookmarks">Add to Bookmarks</string>
     <string name="enterpath">Enter Path</string>
