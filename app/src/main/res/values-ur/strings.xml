@@ -45,7 +45,7 @@
     <string name="loading">لوڈ ہو رہا ہے&#8230;</string>
     <string name="file_empty">فائل خالی ہے</string>
     <string name="error">خرابی</string>
-    <string name="search_results">Search results of %s</string>
+    <string name="search_results">کے تلاش کے نتائج %s</string>
     <string name="rename">Rename</string>
     <string name="save">Save</string>
     <string name="bookmarks_added">Bookmarks Added</string>
