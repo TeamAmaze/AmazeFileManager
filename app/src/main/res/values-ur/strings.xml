@@ -220,7 +220,7 @@
     <string name="archive_summary">آرکائیو فائلوں کو اس فولڈر میں نکالا جائے گا۔ ڈیفالٹ ویلیو وہ ڈائریکٹری ہے جس میں آرکائیو موجود ہے</string>
     <string name="open_as">اس طرح کھولیں</string>
     <string name="text">متن</string>
-    <string name="audio">Audio</string>
+    <string name="audio">آڈیو</string>
     <string name="video">Video</string>
     <string name="other">Other</string>
     <string name="image">Image</string>
