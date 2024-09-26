@@ -232,7 +232,7 @@
     <string name="colored_navigation">رنگین نیویگیشن بار</string>
     <string name="colored_navigvation_sum">سسٹم نیویگیشن بار جلد کے ساتھ رنگین ہے یا نہیں</string>
 
-    <string name="color_title">Color</string>
+    <string name="color_title">رنگ</string>
     <string name="color_summary">Set color to various UI components</string>
     <string name="primary_color_title">Primary Color (Left Tab)</string>
     <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
