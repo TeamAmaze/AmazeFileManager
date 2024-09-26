@@ -162,7 +162,7 @@
     <string name="lastModifiedPref">آخری ترمیم شدہ تاریخ اور وقت دکھائیں</string>
     <string name="size_pref_summary">فولڈرز میں فائلوں کا سائز اور آئٹمز کی تعداد دکھائیں</string>
     <string name="size_pref">سائز دکھائیں</string>
-    <string name="miscellaneous">Miscellaneous</string>
+    <string name="miscellaneous">متفرق</string>
     <string name="root_pref_summary">Show Permissions of Files and Folders</string>
     <string name="root_pref">Show Permissions</string>
     <string name="about_amaze_file_manager_label">About Amaze File Manager</string>
