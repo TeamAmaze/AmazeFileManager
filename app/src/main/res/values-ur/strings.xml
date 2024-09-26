@@ -179,7 +179,7 @@
     <string name="package_installer">پیکیج انسٹالر</string>
     <string name="view">دیکھیں</string>
     <string name="install">انسٹال کریں</string>
-    <string name="archive">Archive</string>
+    <string name="archive">محفوظ شدہ دستاویزات</string>
     <string name="archive_text">This is an archive. What action would you like to perform?</string>
     <string name="package_installer_text">This is a package installer. What action would you like to perform?</string>
     <string name="xda_title">XDA thread</string>
