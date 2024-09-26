@@ -109,7 +109,7 @@
     <!-- Theme -->
     <string name="light">مٹیریل لائٹ</string>
     <string name="dark">مٹیریل ڈارک</string>
-    <string name="daytime">Daytime</string>
+    <string name="daytime">دن کا وقت</string>
     <string name="black">Black (for OLED)</string>
     <string name="system">System (follow system theme)</string>
     <!--Skin-->
