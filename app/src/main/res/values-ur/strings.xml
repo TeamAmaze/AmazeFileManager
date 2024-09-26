@@ -173,7 +173,7 @@
     <string name="type">قسم</string>
     <string name="root_directory">روٹ</string>
     <string name="add_shortcut">شارٹ کٹ شامل کریں</string>
-    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="unsaved_changes">غیر محفوظ شدہ تبدیلیاں</string>
     <string name="unsaved_changes_description">You have unsaved changes, do you want to save them before exiting?</string>
     <string name="saving">Saving</string>
     <string name="package_installer">Package Installer</string>
