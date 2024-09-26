@@ -149,7 +149,7 @@
     <string name="exit">باہر نکلیں</string>
     <string name="doforall">تمام اشیاء کے لئے کرو</string>
     <string name="gridcolumnno">گرڈ ویو میں کالموں کی تعداد</string>
-    <string name="set_random">Changes will take place after you restart the app</string>
+    <string name="set_random">آپ کے ایپ کو دوبارہ شروع کرنے کے بعد تبدیلیاں رونما ہوں گی</string>
     <string name="authors">Authors</string>
     <string name="changelog">Changelog</string>
     <string name="ok">OK</string>
