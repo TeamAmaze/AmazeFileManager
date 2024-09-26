@@ -87,7 +87,7 @@
     <string name="sort_only_this">صرف یہ فولڈر</string>
     <string name="theme">تھیم</string>
     <string name="random">Random Skin</string>
-    <string name="random_summary">Sets random primary color at startup</string>
+    <string name="random_summary">آغاز پر بے ترتیب بنیادی رنگ سیٹ کرتا ہے</string>
     <string name="colorize">Colorize Icons</string>
     <string name="colorize_summary">Sets static icon color. Doesn\'t override directory icon color preference.</string>
     <string name="home">Home</string>
