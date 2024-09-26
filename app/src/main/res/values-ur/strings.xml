@@ -226,7 +226,7 @@
     <string name="image">تصویر</string>
     <string name="contributors">تعاون کرنے والے</string>
     <string name="save_paths">راستے یاد رکھیں</string>
-    <string name="save_path_summary">When starting up, the most recently viewed folder for each tab will be displayed</string>
+    <string name="save_path_summary">شروع ہونے پر، ہر ٹیب کے لیے حال ہی میں دیکھا گیا فولڈر ظاہر ہوگا</string>
     <string name="select_intent">Select</string>
     <string name="database">Database</string>
     <string name="colored_navigation">Colored Navigation bar</string>
