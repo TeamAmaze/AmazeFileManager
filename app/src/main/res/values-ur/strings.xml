@@ -125,7 +125,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">ایک فائل چنیں</string>
-    <string name="pick_files">Pick one or more files</string>
+    <string name="pick_files">ایک یا زیادہ فائلیں چنیں</string>
     <string name="process_viewer">Process Viewer</string>
     <string name="in_safe">Insufficient space</string>
     <string name="no_file_overwrite">No File Overwritten</string>
