@@ -146,7 +146,7 @@
     <string name="gridview">گرڈ ویو</string>
     <string name="permission">اجازتیں</string>
     <string name="hide">چھپائیں</string>
-    <string name="exit">Exit</string>
+    <string name="exit">باہر نکلیں</string>
     <string name="doforall">Do for all items</string>
     <string name="gridcolumnno">Number of columns in grid view</string>
     <string name="set_random">Changes will take place after you restart the app</string>
