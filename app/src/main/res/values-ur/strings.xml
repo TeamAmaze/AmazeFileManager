@@ -188,7 +188,7 @@
     <string name="circular_icons">سرکلر شبیہیں استعمال کریں</string>
     <string name="follow_battery_saver_title">بیٹری سیور کی پیروی کریں</string>
     <string name="follow_battery_saver_desc">اگر منتخب ہو اور بیٹری سیور موڈ آن ہو تو تھیم ڈارک تھیم میں بدل جاتی ہے</string>
-    <string name="back_title">Back navigation</string>
+    <string name="back_title">پیچھے کی نیویگیشن</string>
     <string name="back_summary">Enables custom back navigation at top of the list</string>
     <string name="details">Details</string>
     <string name="translators">Translators</string>
