@@ -228,7 +228,7 @@
     <string name="save_paths">راستے یاد رکھیں</string>
     <string name="save_path_summary">شروع ہونے پر، ہر ٹیب کے لیے حال ہی میں دیکھا گیا فولڈر ظاہر ہوگا</string>
     <string name="select_intent">منتخب کریں</string>
-    <string name="database">Database</string>
+    <string name="database">ڈیٹا بیس</string>
     <string name="colored_navigation">Colored Navigation bar</string>
     <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
 
