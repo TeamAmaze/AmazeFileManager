@@ -132,7 +132,7 @@
     <string name="skip">چھوڑیں</string>
     <string name="overwrite">اوور رائٹ کریں</string>
     <string name="not_allowed">اجازت نہیں ہے</string>
-    <string name="searching">Searching %s</string>
+    <string name="searching">تلاش کر رہا ہے%s</string>
     <string name="done">Done</string>
     <string name="set">Set</string>
     <string name="enablerootmde">Enable Root Mode</string>
