@@ -218,7 +218,7 @@
     <string name="donate">عطیہ کریں</string>
     <string name="archive_extract_folder">آرکائیو ایکسٹریکٹ فولڈر</string>
     <string name="archive_summary">آرکائیو فائلوں کو اس فولڈر میں نکالا جائے گا۔ ڈیفالٹ ویلیو وہ ڈائریکٹری ہے جس میں آرکائیو موجود ہے</string>
-    <string name="open_as">Open As</string>
+    <string name="open_as">اس طرح کھولیں</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
