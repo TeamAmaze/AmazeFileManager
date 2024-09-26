@@ -214,7 +214,7 @@
 
     <string name="zip_viewer">زپ ناظر</string>
     <string name="unin_system_apk">یہ ایک سسٹم ایپ ہے، اسے حذف کرنے سے سسٹم غیر مستحکم ہو سکتا ہے۔\nآگے بڑھیں؟</string>
-    <string name="warning">Warning</string>
+    <string name="warning">وارننگ</string>
     <string name="donate">Donate</string>
     <string name="archive_extract_folder">Archive Extract Folder</string>
     <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present.</string>
