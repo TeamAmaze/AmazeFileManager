@@ -145,7 +145,7 @@
     <string name="listview">فہرست دیکھیں</string>
     <string name="gridview">گرڈ ویو</string>
     <string name="permission">اجازتیں</string>
-    <string name="hide">Hide</string>
+    <string name="hide">چھپائیں</string>
     <string name="exit">Exit</string>
     <string name="doforall">Do for all items</string>
     <string name="gridcolumnno">Number of columns in grid view</string>
