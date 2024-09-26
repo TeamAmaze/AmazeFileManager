@@ -164,7 +164,7 @@
     <string name="size_pref">سائز دکھائیں</string>
     <string name="miscellaneous">متفرق</string>
     <string name="root_pref_summary">فائلوں اور فولڈرز کی اجازت دکھائیں</string>
-    <string name="root_pref">Show Permissions</string>
+    <string name="root_pref">اجازتیں دکھائیں</string>
     <string name="about_amaze_file_manager_label">About Amaze File Manager</string>
     <string name="version">Version</string>
     <string name="rate">Rate the app</string>
