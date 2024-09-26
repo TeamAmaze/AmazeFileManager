@@ -114,7 +114,7 @@
     <string name="system">سسٹم (سسٹم تھیم کی پیروی کریں)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
-    <string name="foldersOnTop">Folders On Top</string>
+    <string name="foldersOnTop">اوپر فولڈرز</string>
     <string name="filesOnTop">Files On Top</string>
     <string name="none_on_top">None On Top</string>
     <!--SortBy-->
