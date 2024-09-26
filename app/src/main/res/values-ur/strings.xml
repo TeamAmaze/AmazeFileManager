@@ -93,7 +93,7 @@
     <string name="home">گھر</string>
     <string name="paste">چسپاں کریں</string>
     <string name="history">تاریخ</string>
-    <string name="copy">Copy</string>
+    <string name="copy">کاپی</string>
     <string name="root_mode">Root Explorer</string>
     <string name="root_mode_summary">For rooted device only. Check it only if you are sure about it.</string>
     <string name="root_failure">Root Access not granted</string>
