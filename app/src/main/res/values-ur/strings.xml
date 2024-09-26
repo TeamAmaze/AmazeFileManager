@@ -111,7 +111,7 @@
     <string name="dark">مٹیریل ڈارک</string>
     <string name="daytime">دن کا وقت</string>
     <string name="black">سیاہ (OLED کے لیے)</string>
-    <string name="system">System (follow system theme)</string>
+    <string name="system">سسٹم (سسٹم تھیم کی پیروی کریں)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folders On Top</string>
