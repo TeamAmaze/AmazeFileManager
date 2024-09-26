@@ -177,7 +177,7 @@
     <string name="unsaved_changes_description">آپ کے پاس غیر محفوظ شدہ تبدیلیاں ہیں، کیا آپ باہر نکلنے سے پہلے انہیں محفوظ کرنا چاہتے ہیں؟</string>
     <string name="saving">محفوظ کرنا</string>
     <string name="package_installer">پیکیج انسٹالر</string>
-    <string name="view">View</string>
+    <string name="view">دیکھیں</string>
     <string name="install">Install</string>
     <string name="archive">Archive</string>
     <string name="archive_text">This is an archive. What action would you like to perform?</string>
