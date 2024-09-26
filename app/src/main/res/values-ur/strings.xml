@@ -217,7 +217,7 @@
     <string name="warning">وارننگ</string>
     <string name="donate">عطیہ کریں</string>
     <string name="archive_extract_folder">آرکائیو ایکسٹریکٹ فولڈر</string>
-    <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present.</string>
+    <string name="archive_summary">آرکائیو فائلوں کو اس فولڈر میں نکالا جائے گا۔ ڈیفالٹ ویلیو وہ ڈائریکٹری ہے جس میں آرکائیو موجود ہے</string>
     <string name="open_as">Open As</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>
