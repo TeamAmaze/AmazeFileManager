@@ -175,7 +175,7 @@
     <string name="add_shortcut">شارٹ کٹ شامل کریں</string>
     <string name="unsaved_changes">غیر محفوظ شدہ تبدیلیاں</string>
     <string name="unsaved_changes_description">آپ کے پاس غیر محفوظ شدہ تبدیلیاں ہیں، کیا آپ باہر نکلنے سے پہلے انہیں محفوظ کرنا چاہتے ہیں؟</string>
-    <string name="saving">Saving</string>
+    <string name="saving">محفوظ کرنا</string>
     <string name="package_installer">Package Installer</string>
     <string name="view">View</string>
     <string name="install">Install</string>
