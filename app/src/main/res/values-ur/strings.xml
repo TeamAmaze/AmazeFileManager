@@ -118,7 +118,7 @@
     <string name="filesOnTop">فائلیں اوپر</string>
     <string name="none_on_top">اوپر کوئی نہیں</string>
     <!--SortBy-->
-    <string name="sort_name">Name</string>
+    <string name="sort_name">نام</string>
     <string name="lastModified">Last Modified</string>
     <string name="sort_size">Size</string>
     <string name="sort_relevance">Relevance</string>
