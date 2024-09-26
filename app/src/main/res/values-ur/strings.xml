@@ -225,7 +225,7 @@
     <string name="other">دیگر</string>
     <string name="image">تصویر</string>
     <string name="contributors">تعاون کرنے والے</string>
-    <string name="save_paths">Remember paths</string>
+    <string name="save_paths">راستے یاد رکھیں</string>
     <string name="save_path_summary">When starting up, the most recently viewed folder for each tab will be displayed</string>
     <string name="select_intent">Select</string>
     <string name="database">Database</string>
