@@ -116,7 +116,7 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">اوپر فولڈرز</string>
     <string name="filesOnTop">فائلیں اوپر</string>
-    <string name="none_on_top">None On Top</string>
+    <string name="none_on_top">اوپر کوئی نہیں</string>
     <!--SortBy-->
     <string name="sort_name">Name</string>
     <string name="lastModified">Last Modified</string>
