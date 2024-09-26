@@ -99,7 +99,7 @@
     <string name="root_failure">روٹ تک رسائی نہیں دی گئی</string>
     <string name="select_all">سبھی کو منتخب کریں</string>
     <string name="delete">حذف کریں</string>
-    <string name="set_as_home">Set As Home</string>
+    <string name="set_as_home">گھر کے طور پر سیٹ کریں</string>
     <string name="operation_not_supported">Operation not supported</string>
 
     <!-- New -->
