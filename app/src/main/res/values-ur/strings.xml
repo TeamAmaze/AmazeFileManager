@@ -126,8 +126,7 @@
     <!--Folder-->
     <string name="pick_a_file">ایک فائل چنیں</string>
     <string name="pick_files">ایک یا زیادہ فائلیں چنیں</string>
-    <string name="process_viewer">عمل دیکھنے والا
-</string>
+    <string name="process_viewer">عمل دیکھنے والا</string>
     <string name="in_safe">Insufficient space</string>
     <string name="no_file_overwrite">No File Overwritten</string>
     <string name="skip">Skip</string>
