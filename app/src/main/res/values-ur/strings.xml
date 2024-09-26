@@ -213,7 +213,7 @@
     <string name="tamil_translation_title">تامل</string>
 
     <string name="zip_viewer">زپ ناظر</string>
-    <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
+    <string name="unin_system_apk">یہ ایک سسٹم ایپ ہے، اسے حذف کرنے سے سسٹم غیر مستحکم ہو سکتا ہے۔\nآگے بڑھیں؟</string>
     <string name="warning">Warning</string>
     <string name="donate">Donate</string>
     <string name="archive_extract_folder">Archive Extract Folder</string>
