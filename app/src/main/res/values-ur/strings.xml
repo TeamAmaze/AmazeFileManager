@@ -128,7 +128,7 @@
     <string name="pick_files">ایک یا زیادہ فائلیں چنیں</string>
     <string name="process_viewer">عمل دیکھنے والا</string>
     <string name="in_safe">ناکافی جگہ</string>
-    <string name="no_file_overwrite">No File Overwritten</string>
+    <string name="no_file_overwrite">کوئی فائل اوور رائٹ نہیں ہے</string>
     <string name="skip">Skip</string>
     <string name="overwrite">Overwrite</string>
     <string name="not_allowed">Not Allowed</string>
