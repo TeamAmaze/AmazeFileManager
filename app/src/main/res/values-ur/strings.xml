@@ -115,7 +115,7 @@
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">اوپر فولڈرز</string>
-    <string name="filesOnTop">Files On Top</string>
+    <string name="filesOnTop">فائلیں اوپر</string>
     <string name="none_on_top">None On Top</string>
     <!--SortBy-->
     <string name="sort_name">Name</string>
