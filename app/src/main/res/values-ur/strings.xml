@@ -98,7 +98,7 @@
     <string name="root_mode_summary">صرف روٹ والے ڈیوائس کے لیے۔ اسے صرف اس صورت میں چیک کریں جب آپ کو اس کے بارے میں یقین ہو</string>
     <string name="root_failure">روٹ تک رسائی نہیں دی گئی</string>
     <string name="select_all">سبھی کو منتخب کریں</string>
-    <string name="delete">Delete</string>
+    <string name="delete">حذف کریں</string>
     <string name="set_as_home">Set As Home</string>
     <string name="operation_not_supported">Operation not supported</string>
 
