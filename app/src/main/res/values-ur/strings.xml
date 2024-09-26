@@ -171,7 +171,7 @@
     <string name="feedback">تاثرات بھیجیں</string>
     <string name="hiddenfiles">پوشیدہ فائلیں</string>
     <string name="type">قسم</string>
-    <string name="root_directory">Root</string>
+    <string name="root_directory">روٹ</string>
     <string name="add_shortcut">Add Shortcut</string>
     <string name="unsaved_changes">Unsaved Changes</string>
     <string name="unsaved_changes_description">You have unsaved changes, do you want to save them before exiting?</string>
