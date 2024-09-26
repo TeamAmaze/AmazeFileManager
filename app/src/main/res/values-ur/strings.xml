@@ -230,7 +230,7 @@
     <string name="select_intent">منتخب کریں</string>
     <string name="database">ڈیٹا بیس</string>
     <string name="colored_navigation">رنگین نیویگیشن بار</string>
-    <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
+    <string name="colored_navigvation_sum">سسٹم نیویگیشن بار جلد کے ساتھ رنگین ہے یا نہیں</string>
 
     <string name="color_title">Color</string>
     <string name="color_summary">Set color to various UI components</string>
