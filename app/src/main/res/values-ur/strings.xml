@@ -223,7 +223,7 @@
     <string name="audio">آڈیو</string>
     <string name="video">ویڈیو</string>
     <string name="other">دیگر</string>
-    <string name="image">Image</string>
+    <string name="image">تصویر</string>
     <string name="contributors">Contributors</string>
     <string name="save_paths">Remember paths</string>
     <string name="save_path_summary">When starting up, the most recently viewed folder for each tab will be displayed</string>
