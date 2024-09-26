@@ -158,7 +158,7 @@
     <string name="thumb_summary">یپس اور امیجز کے تھمب نیلز دکھائیں</string>
     <string name="thumb">تھمب نیلز دکھائیں</string>
     <string name="hidden">پوشیدہ فائلیں اور فولڈر دکھائیں</string>
-    <string name="lastModifiedSummary">Show the date and time of last modification</string>
+    <string name="lastModifiedSummary">آخری ترمیم کی تاریخ اور وقت دکھائیں</string>
     <string name="lastModifiedPref">Show Last Modified Date and Time</string>
     <string name="size_pref_summary">Show size of files and number of items in folders</string>
     <string name="size_pref">Show Sizes</string>
