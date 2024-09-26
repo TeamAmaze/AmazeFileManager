@@ -233,7 +233,7 @@
     <string name="colored_navigvation_sum">سسٹم نیویگیشن بار جلد کے ساتھ رنگین ہے یا نہیں</string>
 
     <string name="color_title">رنگ</string>
-    <string name="color_summary">Set color to various UI components</string>
+    <string name="color_summary">مختلف UI اجزاء پر رنگ سیٹ کریں</string>
     <string name="primary_color_title">Primary Color (Left Tab)</string>
     <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
     <string name="accent_color_title">Accent Color</string>
