@@ -120,7 +120,7 @@
     <!--SortBy-->
     <string name="sort_name">نام</string>
     <string name="lastModified">آخری بار ترمیم کی گئی</string>
-    <string name="sort_size">Size</string>
+    <string name="sort_size">سائز</string>
     <string name="sort_relevance">Relevance</string>
     <!--ListMode-->
     <!--Folder-->
