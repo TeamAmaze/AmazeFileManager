@@ -121,7 +121,7 @@
     <string name="sort_name">نام</string>
     <string name="lastModified">آخری بار ترمیم کی گئی</string>
     <string name="sort_size">سائز</string>
-    <string name="sort_relevance">Relevance</string>
+    <string name="sort_relevance">مطابقت</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>
