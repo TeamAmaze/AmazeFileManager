@@ -190,7 +190,7 @@
     <string name="follow_battery_saver_desc">اگر منتخب ہو اور بیٹری سیور موڈ آن ہو تو تھیم ڈارک تھیم میں بدل جاتی ہے</string>
     <string name="back_title">پیچھے کی نیویگیشن</string>
     <string name="back_summary">فہرست کے اوپری حصے میں حسب ضرورت بیک نیویگیشن کو فعال کرتا ہے</string>
-    <string name="details">Details</string>
+    <string name="details">تفصیلات</string>
     <string name="translators">Translators</string>
     <string name="german_translation_title">German</string>
     <string name="italian_translation_title">Italian</string>
