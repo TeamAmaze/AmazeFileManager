@@ -102,6 +102,7 @@ public class SearchView {
   private final AppCompatTextView deepSearchTV;
 
   private final ChipGroup recentChipGroup;
+  private final RecyclerView recyclerView;
 
   private final SearchRecyclerViewAdapter searchRecyclerViewAdapter;
 
@@ -143,7 +144,7 @@ public class SearchView {
     recentHintTV = mainActivity.findViewById(R.id.searchRecentHintTV);
     searchResultsHintTV = mainActivity.findViewById(R.id.searchResultsHintTV);
     deepSearchTV = mainActivity.findViewById(R.id.searchDeepSearchTV);
-    RecyclerView recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
+    recyclerView = mainActivity.findViewById(R.id.searchRecyclerView);
     searchResultsSortHintTV = mainActivity.findViewById(R.id.searchResultsSortHintTV);
     searchResultsSortButton = mainActivity.findViewById(R.id.searchResultsSortButton);
     searchResultsSortAscDrawable =
