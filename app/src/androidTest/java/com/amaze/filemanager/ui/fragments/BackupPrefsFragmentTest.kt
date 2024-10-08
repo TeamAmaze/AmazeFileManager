@@ -34,12 +34,16 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.PreferencesActivity
 import com.amaze.filemanager.ui.fragments.preferencefragments.BackupPrefsFragment
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
@@ -48,6 +52,12 @@ import java.io.File
 class BackupPrefsFragmentTest {
     var storagePath = "/storage/emulated/0"
     var fileName = "amaze_backup.json"
+
+    @Rule
+    @JvmField
+    val storagePermissionRule: GrantPermissionRule =
+        GrantPermissionRule
+            .grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     /** Test exporting */
     @Test
@@ -146,7 +156,7 @@ class BackupPrefsFragmentTest {
                     mapValue = (mapValue as Double).toInt() // since Gson parses Integer as Double
                 }
 
-                Assert.assertEquals(value, mapValue)
+                assertEquals("Difference found at key $key", value, mapValue)
             }
         }
     }
@@ -209,7 +219,7 @@ class BackupPrefsFragmentTest {
             val preferenceMap: Map<String?, *> = preferences.all
 
             for ((key, value) in preferenceMap) {
-                Assert.assertTrue(checkPrefEqual(preferences, importMap, key, value))
+                assertTrue("checkPrefEqual($key) failed", checkPrefEqual(preferences, importMap, key, value))
             }
         }
     }

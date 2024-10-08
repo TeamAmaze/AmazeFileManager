@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.test;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.P;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -56,7 +56,7 @@ import io.reactivex.schedulers.Schedulers;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowPasswordUtil.class},
-    sdk = {KITKAT, P, Build.VERSION_CODES.R})
+    sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
 public class ShadowPasswordUtilTest {
 
   @Before

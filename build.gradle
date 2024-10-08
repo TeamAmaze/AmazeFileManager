@@ -1,9 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    ext {
-        kotlin_version = "1.9.10"
-    }
     repositories {
         google()
         maven {
@@ -11,10 +7,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.hiya:jacoco-android:0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.project.starter:easylauncher:6.1.0"
+        classpath libs.gradle
+        classpath libs.kotlin.gradle.plugin
+        classpath libs.easylauncher
+        classpath libs.jacoco.android.plugin
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -34,9 +30,9 @@ allprojects {
     }
     tasks.withType(Test).tap {
         configureEach {
-            maxParallelForks = 8
+            maxParallelForks = 16
             maxHeapSize = "2g"
-            forkEvery = 4
+            forkEvery = 8
             failFast = true
         }
     }
@@ -55,17 +51,11 @@ spotless {
     kotlin {
         licenseHeaderFile 'amaze.license.spotless.txt'
         target '*/src/**/*.kt'
-        ktlint("1.1.1")
-                .setEditorConfigPath("$projectDir/.editorconfig")
-
+        ktlint("1.1.1").setEditorConfigPath("$projectDir/.editorconfig")
     }
 }
 
 configurations {
-    robo16
-    robo17
-    robo18
-    robo19
     robo21
     robo22
     robo23
@@ -79,13 +69,10 @@ configurations {
     robo31
     robo32
     robo33
+    robo34
 }
 
 dependencies {
-    robo16 "org.robolectric:android-all-instrumented:4.1.2_r1-robolectric-r1-i4"
-    robo17 "org.robolectric:android-all-instrumented:4.2.2_r1.2-robolectric-r1-i4"
-    robo18 "org.robolectric:android-all-instrumented:4.3_r2-robolectric-r1-i4"
-    robo19 "org.robolectric:android-all-instrumented:4.4_r1-robolectric-r2-i4"
     robo21 "org.robolectric:android-all-instrumented:5.0.2_r3-robolectric-r0-i4"
     robo22 "org.robolectric:android-all-instrumented:5.1.1_r9-robolectric-r2-i4"
     robo23 "org.robolectric:android-all-instrumented:6.0.1_r3-robolectric-r1-i4"
@@ -99,15 +86,12 @@ dependencies {
     robo31 "org.robolectric:android-all-instrumented:12-robolectric-7732740-i4"
     robo32 "org.robolectric:android-all-instrumented:12.1-robolectric-8229987-i4"
     robo33 "org.robolectric:android-all-instrumented:13-robolectric-9030017-i4"
+    robo34 "org.robolectric:android-all-instrumented:14-robolectric-10818077-i4"
 }
 
-def robolectricDependencies = "${rootProject.buildDir.path}/robolectric"
+def robolectricDependencies = "${rootProject.layout.buildDirectory.get().asFile}/robolectric"
 
 tasks.register('fetchRobolectricDependencies', Copy) {
-    from configurations.robo16
-    from configurations.robo17
-    from configurations.robo18
-    from configurations.robo19
     from configurations.robo21
     from configurations.robo22
     from configurations.robo23
@@ -121,6 +105,7 @@ tasks.register('fetchRobolectricDependencies', Copy) {
     from configurations.robo31
     from configurations.robo32
     from configurations.robo33
+    from configurations.robo34
     into robolectricDependencies
 }
 
@@ -133,18 +118,8 @@ subprojects {
                     systemProperty 'robolectric.dependency.dir', robolectricDependencies
                 }
             }
-
             tasks.withType(Test).configureEach {
                 it.dependsOn fetchRobolectricDependencies
-            }
-        }
-        if (project.plugins.hasPlugin("jacoco-android")) {
-            android {
-                testOptions.unitTests.all {
-                    jacoco {
-                        excludes = ['jdk.internal.*']
-                    }
-                }
             }
         }
         dependencies {

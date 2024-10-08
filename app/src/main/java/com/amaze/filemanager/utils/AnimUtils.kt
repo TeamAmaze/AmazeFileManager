@@ -24,7 +24,6 @@ import android.content.Context
 import android.os.Handler
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
-import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.views.ThemedTextView
 
 /** Utility methods for working with animations.  */
@@ -35,7 +34,7 @@ object AnimUtils {
     fun getFastOutSlowInInterpolator(context: Context?): Interpolator? {
         if (fastOutSlowIn == null) {
             fastOutSlowIn =
-                AnimationUtils.loadInterpolator(context, R.interpolator.fast_out_slow_in)
+                AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in)
         }
         return fastOutSlowIn
     }

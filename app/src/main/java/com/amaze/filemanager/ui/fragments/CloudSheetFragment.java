@@ -155,45 +155,35 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
   @Override
   public void onClick(View v) {
-    switch (v.getId()) {
-      case R.id.linear_layout_smb:
-        dismiss();
-        SmbSearchDialog smbDialog = new SmbSearchDialog();
-        smbDialog.show(getActivity().getSupportFragmentManager(), "tab");
-        return;
-      case R.id.linear_layout_scp:
-        dismiss();
-        SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-        Bundle args = new Bundle();
-        args.putBoolean("edit", false);
-        sftpConnectDialog.setArguments(args);
-        sftpConnectDialog.show(getFragmentManager(), "tab");
-        return;
-      case R.id.linear_layout_box:
-        ((MainActivity) getActivity()).addConnection(OpenMode.BOX);
-        break;
-      case R.id.linear_layout_dropbox:
-        ((MainActivity) getActivity()).addConnection(OpenMode.DROPBOX);
-        break;
-      case R.id.linear_layout_google_drive:
-        GeneralDialogCreation.showSignInWithGoogleDialog((MainActivity) getActivity());
-        break;
-      case R.id.linear_layout_onedrive:
-        ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
-        break;
-      case R.id.linear_layout_get_cloud:
-        Intent cloudPluginIntent = new Intent(Intent.ACTION_VIEW);
-        cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_uri)));
-        try {
-          startActivity(cloudPluginIntent);
-        } catch (ActivityNotFoundException ifGooglePlayIsNotInstalled) {
-          cloudPluginIntent.setData(
-              Uri.parse(getString(R.string.cloud_plugin_google_play_web_uri)));
-          startActivity(cloudPluginIntent);
-        }
-        break;
+    if (v.getId() == R.id.linear_layout_smb) {
+      dismiss();
+      SmbSearchDialog smbDialog = new SmbSearchDialog();
+      smbDialog.show(requireActivity().getSupportFragmentManager(), "tab");
+    } else if (v.getId() == R.id.linear_layout_scp) {
+      dismiss();
+      SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+      Bundle args = new Bundle();
+      args.putBoolean("edit", false);
+      sftpConnectDialog.setArguments(args);
+      sftpConnectDialog.show(getFragmentManager(), "tab");
+    } else if (v.getId() == R.id.linear_layout_box) {
+      ((MainActivity) requireActivity()).addConnection(OpenMode.BOX);
+    } else if (v.getId() == R.id.linear_layout_dropbox) {
+      ((MainActivity) requireActivity()).addConnection(OpenMode.DROPBOX);
+    } else if (v.getId() == R.id.linear_layout_google_drive) {
+      GeneralDialogCreation.showSignInWithGoogleDialog((MainActivity) requireActivity());
+    } else if (v.getId() == R.id.linear_layout_onedrive) {
+      ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
+    } else if (v.getId() == R.id.linear_layout_get_cloud) {
+      Intent cloudPluginIntent = new Intent(Intent.ACTION_VIEW);
+      cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_uri)));
+      try {
+        startActivity(cloudPluginIntent);
+      } catch (ActivityNotFoundException ifGooglePlayIsNotInstalled) {
+        cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_web_uri)));
+        startActivity(cloudPluginIntent);
+      }
     }
-
     // dismiss this sheet dialog
     dismiss();
   }

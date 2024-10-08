@@ -1,10 +1,13 @@
 [versions]
-compileSdk = "33"
-minSdk = "19"
-targetSdk = "33"
-
+compileSdk = "34"
+minSdk = "21"
+targetSdk = "34"
 kotlin = "1.9.10"
 
+jacocoAndroid = "0.2.1"
+gradle = "8.5.1"
+
+easylauncher = "6.1.0"
 legacySupportV13 = "1.0.0"
 systembartint = "1.0.3"
 robolectric = "4.9"
@@ -14,7 +17,7 @@ jcifs = "2.1.9"
 eventbus = "3.3.1"
 fabSpeedDial = "3.1.1"
 room = "2.5.2"
-bouncyCastle = "1.76"
+bouncyCastle = "1.77"
 awaitility = "3.1.6"
 androidXCore = "1.7.0"
 androidMaterial = "1.5.0" # Upgrade to 1.5 requires targetSdk 31
@@ -34,7 +37,7 @@ androidXMultidex = "2.0.1"
 autoService = "1.0-rc4"
 kotlinxCoroutineTest = "1.7.3"
 kotlinStdlibJdk8 = "1.9.20"
-uiAutomator = "2.2.0"
+uiAutomator = "2.3.0"
 junit = "4.13.2"
 slf4j = "2.0.7"
 apacheSshd = "1.7.0"
@@ -48,17 +51,17 @@ junrar = "7.4.0"
 vectordrawableAnimated = "1.1.0"
 xz = "1.9"
 zip4j = "2.6.4"
-espresso = "3.5.1"
+espresso = "3.6.1"
 materialDialogs = "0.9.6.0"
 jacoco = "0.8.11"
 commonsCompress = "1.22"
 libsu = "3.2.1"
-mockk = "1.12.2"
+mockk = "1.13.4"
 logbackAndroid = "3.0.0"
 logbackClassic = "1.2.11"
 commonsNet = "3.8.0"
 ftpserver = "1.1.1"
-jsoup = "1.13.1"
+jsoup = "1.16.1"
 gson = "2.9.1"
 rxAndroid = "2.1.1"
 rxJava = "2.2.9"
@@ -71,6 +74,10 @@ aboutLibraries = "6.1.1"
 amazeTrashBin = "1.0.10"
 
 [libraries]
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+jacoco-android-plugin = { module = "com.mxalbert.gradle:jacoco-android", version.ref = "jacocoAndroid" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
 androidX-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidXAppCompat" }
 androidX-constraintLayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidXConstraintLayout" }
 androidX-core = { module = "androidx.core:core-ktx", version.ref = "androidXCore" }
@@ -132,6 +139,7 @@ room-migration = { module = "androidx.room:room-migration", version.ref = "room"
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 commons-net = { module = "commons-net:commons-net", version.ref = "commonsNet" }
 
+easylauncher = { module = "com.project.starter:easylauncher", version.ref = "easylauncher" }
 materialdialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "materialDialogs" }
 materialdialogs-commons = { module = "com.afollestad.material-dialogs:commons", version.ref = "materialDialogs" }
 mpAndroidChart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpAndroidChart" }
