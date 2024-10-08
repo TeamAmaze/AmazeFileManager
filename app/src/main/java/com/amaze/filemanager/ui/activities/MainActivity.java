@@ -138,6 +138,7 @@ import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.MainActivityActionMode;
@@ -198,6 +199,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.arch.core.util.Function;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -1362,8 +1364,14 @@ public class MainActivity extends PermissionsActivity
     newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
     newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
     newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
-    registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
-    registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
+    // This receiver is responsible for receiving media mount events, should be exported
+    ContextCompatExtKt.registerReceiverCompat(
+        this, mainActivityHelper.mNotificationReceiver, newFilter, ContextCompat.RECEIVER_EXPORTED);
+    ContextCompatExtKt.registerReceiverCompat(
+        this,
+        receiver2,
+        new IntentFilter(TAG_INTENT_FILTER_GENERAL),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
 
     if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       updateUsbInformation();
@@ -1406,7 +1414,7 @@ public class MainActivity extends PermissionsActivity
     IntentFilter otgFilter = new IntentFilter();
     otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
     otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-    registerReceiver(mOtgReceiver, otgFilter);
+    ContextCompat.registerReceiver(this, mOtgReceiver, otgFilter, ContextCompat.RECEIVER_EXPORTED);
   }
 
   /** Receiver to check if a USB device is connected at the runtime of application */

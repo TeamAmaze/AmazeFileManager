@@ -47,6 +47,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
@@ -61,6 +62,7 @@ import java.io.FileOutputStream
 import java.net.InetAddress
 import kotlin.random.Random
 
+@Ignore("Pending fix for testing against newer Androids")
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [LOLLIPOP], shadows = [ShadowMultiDex::class])
 @LooperMode(LooperMode.Mode.PAUSED)

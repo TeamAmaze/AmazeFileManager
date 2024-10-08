@@ -56,6 +56,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.fragment.app.Fragment
@@ -542,7 +543,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         super.onResume()
         val wifiFilter = IntentFilter()
         wifiFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
-        requireContext().registerReceiver(mWifiReceiver, wifiFilter)
+        requireContext().registerReceiver(
+            mWifiReceiver,
+            wifiFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         EventBus.getDefault().register(this)
         updateStatus()
     }

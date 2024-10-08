@@ -39,6 +39,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -57,6 +58,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
@@ -95,7 +97,11 @@ public class EncryptService extends AbstractProgressiveService {
     super.onCreate();
 
     context = getApplicationContext();
-    registerReceiver(cancelReceiver, new IntentFilter(TAG_BROADCAST_CRYPT_CANCEL));
+    ContextCompatExtKt.registerReceiverCompat(
+        this,
+        cancelReceiver,
+        new IntentFilter(TAG_BROADCAST_CRYPT_CANCEL),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   @Override

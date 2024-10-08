@@ -30,11 +30,13 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.O
+import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -48,6 +50,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.DatapointParcelable
 import com.amaze.filemanager.utils.ObtainableServiceBinder
 import com.amaze.filemanager.utils.ProgressHandler
+import com.amaze.filemanager.utils.registerReceiverCompat
 import io.reactivex.Completable
 import io.reactivex.CompletableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -89,7 +92,11 @@ class ZipService : AbstractProgressiveService() {
 
     override fun onCreate() {
         super.onCreate()
-        registerReceiver(receiver1, IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL))
+        registerReceiverCompat(
+            receiver1,
+            IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
     }
 
     override fun onStartCommand(
@@ -99,7 +106,14 @@ class ZipService : AbstractProgressiveService() {
     ): Int {
         val mZipPath = intent.getStringExtra(KEY_COMPRESS_PATH)
         val baseFiles: ArrayList<HybridFileParcelable> =
-            intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES)!!
+            if (SDK_INT >= TIRAMISU) {
+                intent.getParcelableArrayListExtra(
+                    KEY_COMPRESS_FILES,
+                    HybridFileParcelable::class.java,
+                )!!
+            } else {
+                intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES)!!
+            }
         val zipFile = File(mZipPath)
         mNotifyManager = NotificationManagerCompat.from(applicationContext)
         if (!zipFile.exists()) {

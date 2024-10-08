@@ -48,6 +48,7 @@ import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.filesystem.root.MoveFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -67,6 +68,7 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 public class CopyService extends AbstractProgressiveService {
@@ -96,7 +98,11 @@ public class CopyService extends AbstractProgressiveService {
   public void onCreate() {
     super.onCreate();
     c = getApplicationContext();
-    registerReceiver(receiver3, new IntentFilter(TAG_BROADCAST_COPY_CANCEL));
+    ContextCompatExtKt.registerReceiverCompat(
+        this,
+        cancelReceiver,
+        new IntentFilter(TAG_BROADCAST_COPY_CANCEL),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   @Override
@@ -226,7 +232,7 @@ public class CopyService extends AbstractProgressiveService {
 
   public void onDestroy() {
     super.onDestroy();
-    unregisterReceiver(receiver3);
+    unregisterReceiver(cancelReceiver);
   }
 
   private class DoInBackground extends AsyncTask<Bundle, Void, Void> {
@@ -529,7 +535,7 @@ public class CopyService extends AbstractProgressiveService {
     }
   }
 
-  private final BroadcastReceiver receiver3 =
+  private final BroadcastReceiver cancelReceiver =
       new BroadcastReceiver() {
 
         @Override
