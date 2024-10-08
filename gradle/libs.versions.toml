@@ -1,5 +1,7 @@
 [versions]
 compileSdk = "34"
+jdk9Deps = "1.0"
+jdk9DepsVersion = "1.0"
 minSdk = "21"
 targetSdk = "34"
 kotlin = "1.9.10"
@@ -15,7 +17,7 @@ glide = "4.14.2"
 sshj = "0.35.0"
 jcifs = "2.1.9"
 eventbus = "3.3.1"
-fabSpeedDial = "3.1.1"
+fabSpeedDial = "3.3.0"
 room = "2.5.2"
 bouncyCastle = "1.77"
 awaitility = "3.1.6"
@@ -75,6 +77,8 @@ amazeTrashBin = "1.0.10"
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 jacoco-android-plugin = { module = "com.mxalbert.gradle:jacoco-android", version.ref = "jacocoAndroid" }
+#jdk9-deps = { module = "com.github.pengrad:jdk9-deps", version.ref = "jdk9Deps" }
+jdk9-deps = { module = "com.github.pengrad:jdk9-deps", version.ref = "jdk9DepsVersion" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 androidX-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidXAppCompat" }
