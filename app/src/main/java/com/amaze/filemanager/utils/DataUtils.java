@@ -28,9 +28,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.models.LanguageModel;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -42,6 +44,7 @@ import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
@@ -82,6 +85,126 @@ public class DataUtils {
 
   private static class DataUtilsHolder {
     private static final DataUtils INSTANCE = new DataUtils();
+  }
+
+  public static List<LanguageModel> getLanguages(Context context) {
+
+    var data = new ArrayList<LanguageModel>();
+
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.german_translation_title),
+            context.getString(R.string.german_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.italian_translation_title),
+            context.getString(R.string.italian_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.french_translation_title),
+            context.getString(R.string.french_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.russian_translation_title),
+            context.getString(R.string.russian_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.spanish_translation_title),
+            context.getString(R.string.spanish_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.basque_translation_title),
+            context.getString(R.string.basque_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.chinese_translation_title),
+            context.getString(R.string.chinese_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.serbian_translation_title),
+            context.getString(R.string.serbian_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.turkish_translation_title),
+            context.getString(R.string.turkish_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.ukrainian_translation_title),
+            context.getString(R.string.ukrainian_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.portuguese_translation_title),
+            context.getString(R.string.portuguese_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.polish_translation_title),
+            context.getString(R.string.polish_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.korean_translation_title),
+            context.getString(R.string.korean_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.greek_translation_title),
+            context.getString(R.string.greek_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.dutch_translation_title),
+            context.getString(R.string.dutch_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.romanian_translation_title),
+            context.getString(R.string.romanian_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.vietnamese_translation_title),
+            context.getString(R.string.vietnamese_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.japanese_translation_title),
+            context.getString(R.string.japanese_translation_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.tamil_translation_title),
+            context.getString(R.string.tamil_translation_summary)));
+
+    return data;
+  }
+
+  public static List<LanguageModel> getContributors(Context context) {
+
+    var data = new ArrayList<LanguageModel>();
+
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_1_title),
+            context.getString(R.string.contributors_1_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_2_title),
+            context.getString(R.string.contributors_2_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_3_title),
+            context.getString(R.string.contributors_3_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_4_title),
+            context.getString(R.string.contributors_4_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_5_title),
+            context.getString(R.string.contributors_5_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_6_title),
+            context.getString(R.string.contributors_6_summary)));
+    data.add(
+        new LanguageModel(
+            context.getString(R.string.contributor_7_title),
+            context.getString(R.string.contributors_7_summary)));
+
+    return data;
   }
 
   public static DataUtils getInstance() {
