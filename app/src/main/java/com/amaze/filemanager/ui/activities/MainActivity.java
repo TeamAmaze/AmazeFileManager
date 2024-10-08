@@ -1906,7 +1906,8 @@ public class MainActivity extends PermissionsActivity
     SpeedDialActionItem.Builder builder =
         new SpeedDialActionItem.Builder(id, icon)
             .setLabel(fabTitle)
-            .setFabBackgroundColor(iconSkin);
+            .setFabBackgroundColor(iconSkin)
+            .setFabImageTintColor(Color.WHITE);
 
     switch (getAppTheme()) {
       case LIGHT:
