@@ -256,7 +256,7 @@
     <string name="anonymous">گمنام</string>
     <string name="bluetooth">بلوٹوتھ</string>
     <string name="folders">فولڈرز</string>
-    <string name="folderfilecount">%1$d folders and %2$d files</string>
+    <string name="folderfilecount">%1$dفولڈرز اور %2$d فائلیں</string>
     <string name="videos">Videos</string>
     <string name="apks">APKs</string>
     <string name="documents">Documents</string>
