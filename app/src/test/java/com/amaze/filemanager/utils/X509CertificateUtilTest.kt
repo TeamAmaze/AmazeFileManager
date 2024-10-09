@@ -21,7 +21,7 @@
 package com.amaze.filemanager.utils
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -29,21 +29,19 @@ import com.amaze.filemanager.utils.X509CertificateUtil.FINGERPRINT
 import com.amaze.filemanager.utils.X509CertificateUtil.ISSUER
 import com.amaze.filemanager.utils.X509CertificateUtil.SERIAL
 import com.amaze.filemanager.utils.X509CertificateUtil.SUBJECT
-import org.bouncycastle.cert.X509CertificateHolder
-import org.bouncycastle.openssl.PEMParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
-import java.io.StringReader
-import javax.security.cert.X509Certificate
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 class X509CertificateUtilTest {
     private lateinit var cert: X509Certificate
@@ -53,16 +51,8 @@ class X509CertificateUtilTest {
      */
     @Before
     fun setUp() {
-        val parser =
-            PEMParser(
-                StringReader(
-                    String(
-                        javaClass.getResourceAsStream("/test.pem").readBytes(),
-                    ),
-                ),
-            )
-        val a = parser.readObject()
-        cert = X509Certificate.getInstance((a as X509CertificateHolder).encoded)
+        val certFactory = CertificateFactory.getInstance("X.509")
+        cert = certFactory.generateCertificate(javaClass.getResourceAsStream("/test.pem")) as X509Certificate
     }
 
     /**

@@ -79,6 +79,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -116,6 +117,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -962,9 +964,11 @@ public class MainFragment extends Fragment
    */
   private void resumeDecryptOperations() {
     if (SDK_INT >= JELLY_BEAN_MR2) {
-      (requireMainActivity())
-          .registerReceiver(
-              decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
+      ContextCompatExtKt.registerReceiverCompat(
+          requireMainActivity(),
+          decryptReceiver,
+          new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST),
+          ContextCompat.RECEIVER_NOT_EXPORTED);
       if (!mainFragmentViewModel.isEncryptOpen()
           && !Utils.isNullOrEmpty(mainFragmentViewModel.getEncryptBaseFiles())) {
         // we've opened the file and are ready to delete it
@@ -1232,8 +1236,11 @@ public class MainFragment extends Fragment
   @Override
   public void onResume() {
     super.onResume();
-    (requireActivity())
-        .registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
+    ContextCompatExtKt.registerReceiverCompat(
+        requireMainActivity(),
+        receiver2,
+        new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
 
     resumeDecryptOperations();
     startFileObserver();

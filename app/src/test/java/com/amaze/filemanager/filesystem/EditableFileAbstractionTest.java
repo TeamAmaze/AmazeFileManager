@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
@@ -49,7 +49,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P, Build.VERSION_CODES.R})
+    sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
 public class EditableFileAbstractionTest {
 
   @Test(expected = IllegalArgumentException.class)

@@ -33,9 +33,10 @@ import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration
 import org.json.JSONObject
 import org.junit.Ignore
 import java.security.KeyStore
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
-import javax.security.cert.X509Certificate
 
 @Ignore
 open class FtpsHybridFileTest : FtpHybridFileTest() {
@@ -62,7 +63,11 @@ open class FtpsHybridFileTest : FtpHybridFileTest() {
         certInfo =
             JSONObject(
                 X509CertificateUtil.parse(
-                    X509Certificate.getInstance(keyStore.getCertificate("ftpserver").encoded),
+                    CertificateFactory.getInstance(
+                        "X.509",
+                    ).generateCertificate(
+                        keyStore.getCertificate("ftpserver").encoded.inputStream(),
+                    ) as X509Certificate,
                 ),
             )
         super.setUp()

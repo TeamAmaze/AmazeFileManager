@@ -138,6 +138,7 @@ import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.MainActivityActionMode;
@@ -198,6 +199,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.arch.core.util.Function;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -1172,124 +1174,111 @@ public class MainActivity extends PermissionsActivity
     // Handle action buttons
     executeWithMainFragment(
         mainFragment -> {
-          switch (item.getItemId()) {
-            case R.id.home:
-              mainFragment.home();
-              break;
-            case R.id.history:
-              HistoryDialog.showHistoryDialog(this, mainFragment);
-              break;
-            case R.id.sethome:
-              if (mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.FILE
-                  && mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.ROOT) {
-                Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
-                break;
-              }
-              final MaterialDialog dialog =
-                  GeneralDialogCreation.showBasicDialog(
-                      mainActivity,
-                      R.string.question_set_path_as_home,
-                      R.string.set_as_home,
-                      R.string.yes,
-                      R.string.no);
-              dialog
-                  .getActionButton(DialogAction.POSITIVE)
-                  .setOnClickListener(
-                      (v) -> {
-                        mainFragment
-                            .getMainFragmentViewModel()
-                            .setHome(mainFragment.getCurrentPath());
-                        updatePaths(mainFragment.getMainFragmentViewModel().getNo());
-                        dialog.dismiss();
-                      });
-              dialog.show();
-              break;
-            case R.id.exit:
-              finish();
-              break;
-            case R.id.sortby:
-              GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
-              break;
-            case R.id.dsort:
-              String[] sort = getResources().getStringArray(R.array.directorysortmode);
-              MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(getAppTheme().getMaterialDialogTheme());
-              builder.title(R.string.directorysort);
-              int current =
-                  Integer.parseInt(
+          if (item.getItemId() == R.id.home) {
+            mainFragment.home();
+          } else if (item.getItemId() == R.id.history) {
+            HistoryDialog.showHistoryDialog(mainActivity, mainFragment);
+          } else if (item.getItemId() == R.id.sethome) {
+            if (mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.FILE
+                && mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.ROOT) {
+              Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+            }
+            final MaterialDialog dialog =
+                GeneralDialogCreation.showBasicDialog(
+                    mainActivity,
+                    R.string.question_set_path_as_home,
+                    R.string.set_as_home,
+                    R.string.yes,
+                    R.string.no);
+            dialog
+                .getActionButton(DialogAction.POSITIVE)
+                .setOnClickListener(
+                    (v) -> {
+                      mainFragment
+                          .getMainFragmentViewModel()
+                          .setHome(mainFragment.getCurrentPath());
+                      updatePaths(mainFragment.getMainFragmentViewModel().getNo());
+                      dialog.dismiss();
+                    });
+            dialog.show();
+          } else if (item.getItemId() == R.id.exit) {
+            finish();
+          } else if (item.getItemId() == R.id.sortby) {
+            GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
+          } else if (item.getItemId() == R.id.dsort) {
+            String[] sort = getResources().getStringArray(R.array.directorysortmode);
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+            builder.theme(getAppTheme().getMaterialDialogTheme());
+            builder.title(R.string.directorysort);
+            int current =
+                Integer.parseInt(
+                    getPrefs().getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
+
+            builder
+                .items(sort)
+                .itemsCallbackSingleChoice(
+                    current,
+                    (dialog1, view, which, text) -> {
                       getPrefs()
-                          .getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
-
-              builder
-                  .items(sort)
-                  .itemsCallbackSingleChoice(
-                      current,
-                      (dialog1, view, which, text) -> {
-                        getPrefs()
-                            .edit()
-                            .putString(
-                                PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
-                            .commit();
-                        mainFragment
-                            .getMainFragmentViewModel()
-                            .initSortModes(
-                                SortHandler.getSortType(
-                                    this, mainFragment.getMainFragmentViewModel().getCurrentPath()),
-                                getPrefs());
-                        mainFragment.updateList(false);
-                        dialog1.dismiss();
-                        return true;
-                      });
-              builder.build().show();
-              break;
-            case R.id.hiddenitems:
-              HiddenFilesDialog.showHiddenDialog(this, mainFragment);
-              break;
-            case R.id.view:
-              int pathLayout =
-                  dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
-              if (mainFragment.getMainFragmentViewModel().isList()) {
-                if (pathLayout == DataUtils.LIST) {
-                  AppConfig.getInstance()
-                      .runInBackground(
-                          () -> {
-                            utilsHandler.removeFromDatabase(
-                                new OperationData(
-                                    UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
-                          });
-                }
-                utilsHandler.saveToDatabase(
-                    new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
-
-                dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.GRID);
-              } else {
-                if (pathLayout == DataUtils.GRID) {
-                  AppConfig.getInstance()
-                      .runInBackground(
-                          () -> {
-                            utilsHandler.removeFromDatabase(
-                                new OperationData(
-                                    UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
-                          });
-                }
-
-                utilsHandler.saveToDatabase(
-                    new OperationData(UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
-
-                dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.LIST);
+                          .edit()
+                          .putString(
+                              PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
+                          .commit();
+                      mainFragment
+                          .getMainFragmentViewModel()
+                          .initSortModes(
+                              SortHandler.getSortType(
+                                  this, mainFragment.getMainFragmentViewModel().getCurrentPath()),
+                              getPrefs());
+                      mainFragment.updateList(false);
+                      dialog1.dismiss();
+                      return true;
+                    });
+            builder.build().show();
+          } else if (item.getItemId() == R.id.hiddenitems) {
+            HiddenFilesDialog.showHiddenDialog(mainActivity, mainFragment);
+          } else if (item.getItemId() == R.id.view) {
+            int pathLayout =
+                dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
+            if (mainFragment.getMainFragmentViewModel().isList()) {
+              if (pathLayout == DataUtils.LIST) {
+                AppConfig.getInstance()
+                    .runInBackground(
+                        () -> {
+                          utilsHandler.removeFromDatabase(
+                              new OperationData(
+                                  UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
+                        });
               }
-              mainFragment.switchView();
-              break;
-            case R.id.extract:
-              Fragment fragment1 = getFragmentAtFrame();
-              if (fragment1 instanceof CompressedExplorerFragment) {
-                mainActivityHelper.extractFile(
-                    ((CompressedExplorerFragment) fragment1).compressedFile);
+              utilsHandler.saveToDatabase(
+                  new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
+
+              dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.GRID);
+            } else {
+              if (pathLayout == DataUtils.GRID) {
+                AppConfig.getInstance()
+                    .runInBackground(
+                        () -> {
+                          utilsHandler.removeFromDatabase(
+                              new OperationData(
+                                  UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
+                        });
               }
-              break;
-            case R.id.search:
-              getAppbar().getSearchView().revealSearchView();
-              break;
+
+              utilsHandler.saveToDatabase(
+                  new OperationData(UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
+
+              dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.LIST);
+            }
+            mainFragment.switchView();
+          } else if (item.getItemId() == R.id.extract) {
+            Fragment fragment1 = getFragmentAtFrame();
+            if (fragment1 instanceof CompressedExplorerFragment) {
+              mainActivityHelper.extractFile(
+                  ((CompressedExplorerFragment) fragment1).compressedFile);
+            }
+          } else if (item.getItemId() == R.id.search) {
+            getAppbar().getSearchView().revealSearchView();
           }
           return null;
         },
@@ -1373,8 +1362,14 @@ public class MainActivity extends PermissionsActivity
     newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
     newFilter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
     newFilter.addDataScheme(ContentResolver.SCHEME_FILE);
-    registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
-    registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
+    // This receiver is responsible for receiving media mount events, should be exported
+    ContextCompatExtKt.registerReceiverCompat(
+        this, mainActivityHelper.mNotificationReceiver, newFilter, ContextCompat.RECEIVER_EXPORTED);
+    ContextCompatExtKt.registerReceiverCompat(
+        this,
+        receiver2,
+        new IntentFilter(TAG_INTENT_FILTER_GENERAL),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
 
     if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       updateUsbInformation();
@@ -1417,7 +1412,7 @@ public class MainActivity extends PermissionsActivity
     IntentFilter otgFilter = new IntentFilter();
     otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
     otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-    registerReceiver(mOtgReceiver, otgFilter);
+    ContextCompat.registerReceiver(this, mOtgReceiver, otgFilter, ContextCompat.RECEIVER_EXPORTED);
   }
 
   /** Receiver to check if a USB device is connected at the runtime of application */

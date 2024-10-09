@@ -37,6 +37,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import com.amaze.filemanager.filesystem.files.CryptUtil.CRYPT_EXTENSION
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils
+import com.amaze.filemanager.shadows.ShadowFileUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.utils.security.SecretKeygen
@@ -58,7 +59,12 @@ import kotlin.random.Random
  * Unit test for [DecryptFingerprintDialog].
  */
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFingerprintManager::class],
+    shadows = [
+        ShadowMultiDex::class,
+        ShadowTabHandler::class,
+        ShadowFileUtils::class,
+        ShadowFingerprintManager::class,
+    ],
     sdk = [P],
 )
 class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
