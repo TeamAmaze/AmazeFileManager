@@ -239,7 +239,7 @@
     <string name="accent_color_title">Accent Color</string>
     <string name="accent_color_summary">FAB اور دیگر چھوٹے UI عناصر پر رنگ سیٹ کریں</string>
     <string name="icon_color_title">آئیکن کا رنگ</string>
-    <string name="icon_color_summary">Set color to icons</string>
+    <string name="icon_color_summary">شبیہیں پر رنگ سیٹ کریں</string>
     <string name="choose_color">Choose color</string>
     <string name="files">Files</string>
     <string name="textreader">Text Reader</string>
