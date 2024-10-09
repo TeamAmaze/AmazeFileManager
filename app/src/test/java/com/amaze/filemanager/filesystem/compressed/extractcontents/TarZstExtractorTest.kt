@@ -20,34 +20,10 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
-import org.junit.runner.RunWith
-import org.junit.runners.Suite
-import org.junit.runners.Suite.SuiteClasses
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarZstExtractor
 
-@RunWith(Suite::class)
-@SuiteClasses(
-    GzipExtractorTest::class,
-    Bzip2ExtractorTest::class,
-    LzmaExtractorTest::class,
-    XzExtractorTest::class,
-    ZstdExtractorTest::class,
-    TarGzExtractorTest::class,
-    TgzExtractorTest::class,
-    ZipExtractorTest::class,
-    TarExtractorTest::class,
-    RarExtractorTest::class,
-    TarBzip2ExtractorTest::class,
-    TarBzip2ExtractorTest2::class,
-    TarLzmaExtractorTest::class,
-    TarXzExtractorTest::class,
-    TarZstExtractorTest::class,
-    SevenZipExtractorTest::class,
-    SevenZipWithoutTimestampTest::class,
-    PasswordProtectedRarTest::class,
-    PasswordProtectedZipTest::class,
-    PasswordProtected7ZipTest::class,
-    ListPasswordProtected7ZipTest::class,
-    ListPasswordProtectedRarTest::class,
-    MultipartRarExtractorTest::class,
-)
-class ExtractorTestSuite
+class TarZstExtractorTest : AbstractArchiveExtractorTest() {
+    override val archiveType: String = "tar.zst"
+
+    override fun extractorClass(): Class<out Extractor?> = TarZstExtractor::class.java
+}

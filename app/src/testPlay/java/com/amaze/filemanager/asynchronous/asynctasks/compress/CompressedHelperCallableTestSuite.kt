@@ -34,6 +34,7 @@ import org.junit.runners.Suite.SuiteClasses
     TarLzmaHelperCallableTest::class,
     TarXzHelperCallableTest::class,
     TarXzHelperCallableTest2::class,
+    TarZstHelperCallableTest::class,
     SevenZipHelperCallableTest::class,
     SevenZipHelperCallableTest2::class,
     SevenZipHelperCallableTest3::class,

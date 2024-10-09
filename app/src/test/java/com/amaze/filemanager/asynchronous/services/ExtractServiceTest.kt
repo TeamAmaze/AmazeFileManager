@@ -48,7 +48,6 @@ import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -446,11 +445,6 @@ class ExtractServiceTest {
             performTest(badArchive)
             ShadowLooper.idleMainLooper()
             await()
-                .conditionEvaluationListener { condition ->
-                    if (condition.remainingTimeInMS <= 0 && !condition.isSatisfied) {
-                        fail("Extractor unable to handle bad archive for $archiveType")
-                    }
-                }
                 .atMost(10, TimeUnit.SECONDS)
                 .until {
                     ShadowToast.getLatestToast() != null

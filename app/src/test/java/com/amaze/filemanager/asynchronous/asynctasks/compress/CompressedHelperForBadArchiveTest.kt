@@ -30,7 +30,10 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.randomBytes
 import com.amaze.filemanager.test.supportedArchiveExtensions
 import org.apache.commons.compress.archivers.ArchiveException
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -75,14 +78,20 @@ class CompressedHelperForBadArchiveTest {
                     ApplicationProvider.getApplicationContext(),
                     badArchive,
                 )
-            Assert.assertNotNull(task)
+            assertNotNull(task)
             task!!
             try {
                 val result = task.changePath("", false).call()
-                Assert.assertNull("Thrown from ${task.javaClass}", result)
+                // FIXME: Quirk. ZStdCompressorInputStream behaves differently that it cannot throw
+                // if encountering corrupt/zero byte tar.zst archives
+                if (archiveType in arrayOf("tar.zst", "iso")) {
+                    assertEquals(0, result.size)
+                } else {
+                    assertNull("Thrown from ${task.javaClass}", result)
+                }
             } catch (exception: ArchiveException) {
-                Assert.assertNotNull(exception)
-                Assert.assertTrue(
+                assertNotNull(exception)
+                assertTrue(
                     "Thrown from ${task.javaClass}: ${exception.javaClass} was thrown",
                     ArchiveException::class.java.isAssignableFrom(exception.javaClass),
                 )
@@ -97,6 +106,6 @@ class CompressedHelperForBadArchiveTest {
          * = filename without compressed extension. They won't throw exceptions, so excluded from
          * list
          */
-        private val excludedArchiveTypes = listOf("tar", "rar", "bz2", "lzma", "gz", "xz")
+        private val excludedArchiveTypes = listOf("tar", "rar", "bz2", "lzma", "gz", "xz", "zst")
     }
 }

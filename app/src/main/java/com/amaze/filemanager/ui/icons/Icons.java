@@ -131,7 +131,8 @@ public class Icons {
         "application/x-rar-compressed",
         "application/x-lzma",
         "application/x-xz",
-        "application/x-bzip2");
+        "application/x-bzip2",
+        "application/zst");
     putKeys(CONTACT, "text/x-vcard", "text/vcard");
     putKeys(EVENTS, "text/calendar", "text/x-vcalendar");
     putKeys(

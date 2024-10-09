@@ -30,6 +30,7 @@ import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Iso9660Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.LzmaExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
@@ -38,9 +39,12 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarEx
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarGzExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarLzmaExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarXzExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarZstExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.XzExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZstdExtractor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.Iso9660Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarBzip2Decompressor;
@@ -48,6 +52,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecom
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarGzDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarLzmaDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarXzDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarZstDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.UnknownCompressedFileDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 import com.amaze.filemanager.utils.Utils;
@@ -80,10 +85,14 @@ public abstract class CompressedHelper {
   public static final String fileExtension7zip = "7z";
   public static final String fileExtensionTarLzma = "tar.lzma";
   public static final String fileExtensionTarXz = "tar.xz";
+  public static final String fileExtensionTarZst = "tar.zst";
   public static final String fileExtensionXz = "xz";
   public static final String fileExtensionLzma = "lzma";
   public static final String fileExtensionGz = "gz";
   public static final String fileExtensionBzip2 = "bz2";
+  public static final String fileExtensionZst = "zst";
+
+  public static final String fileExtensionIso = "iso";
 
   private static final String TAG = CompressedHelper.class.getSimpleName();
 
@@ -114,6 +123,9 @@ public abstract class CompressedHelper {
     } else if (isLzippedTar(type)) {
       extractor =
           new TarLzmaExtractor(context, file.getPath(), outputPath, listener, updatePosition);
+    } else if (isZstdTar(type)) {
+      extractor =
+          new TarZstExtractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else if (is7zip(type)) {
       extractor =
           new SevenZipExtractor(context, file.getPath(), outputPath, listener, updatePosition);
@@ -125,6 +137,11 @@ public abstract class CompressedHelper {
       extractor = new GzipExtractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else if (isBzip2(type)) {
       extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, updatePosition);
+    } else if (isZst(type)) {
+      extractor = new ZstdExtractor(context, file.getPath(), outputPath, listener, updatePosition);
+    } else if (isIso(type)) {
+      extractor =
+          new Iso9660Extractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else {
       if (BuildConfig.DEBUG) {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
@@ -156,9 +173,13 @@ public abstract class CompressedHelper {
       decompressor = new TarXzDecompressor(context);
     } else if (isLzippedTar(type)) {
       decompressor = new TarLzmaDecompressor(context);
+    } else if (isZstdTar(type)) {
+      decompressor = new TarZstDecompressor(context);
     } else if (is7zip(type)) {
       decompressor = new SevenZipDecompressor(context);
-    } else if (isXz(type) || isLzma(type) || isGzip(type) || isBzip2(type)) {
+    } else if (isIso(type)) {
+      decompressor = new Iso9660Decompressor(context);
+    } else if (isXz(type) || isLzma(type) || isGzip(type) || isBzip2(type) || isZst(type)) {
       // These 4 types are only compressing one single file.
       // Hence invoking this UnknownCompressedFileDecompressor which only returns the filename
       // without the compression extension
@@ -190,10 +211,13 @@ public abstract class CompressedHelper {
         || isBzippedTar(type)
         || isXzippedTar(type)
         || isLzippedTar(type)
+        || isZstdTar(type)
         || isBzip2(type)
         || isGzip(type)
         || isLzma(type)
-        || isXz(type);
+        || isXz(type)
+        || isZst(type)
+        || isIso(type);
   }
 
   /**
@@ -216,12 +240,15 @@ public abstract class CompressedHelper {
             || isGzip(compressedName)
             || isBzip2(compressedName)
             || isLzma(compressedName)
-            || isXz(compressedName))) {
+            || isXz(compressedName)
+            || isZst(compressedName)
+            || isIso(compressedName))) {
       return compressedName.substring(0, compressedName.lastIndexOf("."));
     } else if (hasFileName && isGzippedTar(compressedName)
         || isXzippedTar(compressedName)
         || isLzippedTar(compressedName)
-        || isBzippedTar(compressedName)) {
+        || isBzippedTar(compressedName)
+        || isZstdTar(compressedName)) {
       return compressedName.substring(0, Utils.nthToLastCharIndex(2, compressedName, '.'));
     } else {
       return compressedName;
@@ -267,6 +294,10 @@ public abstract class CompressedHelper {
     return type.endsWith(fileExtensionTarLzma);
   }
 
+  private static boolean isZstdTar(String type) {
+    return type.endsWith(fileExtensionTarZst);
+  }
+
   private static boolean isXz(String type) {
     return type.endsWith(fileExtensionXz) && !isXzippedTar(type);
   }
@@ -281,6 +312,14 @@ public abstract class CompressedHelper {
 
   private static boolean isBzip2(String type) {
     return type.endsWith(fileExtensionBzip2) && !isBzippedTar(type);
+  }
+
+  private static boolean isZst(String type) {
+    return type.endsWith(fileExtensionZst) && !isZstdTar(type);
+  }
+
+  private static boolean isIso(String type) {
+    return type.endsWith(fileExtensionIso);
   }
 
   private static String getExtension(String path) {

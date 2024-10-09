@@ -72,7 +72,11 @@ abstract class AbstractCompressedHelperCallableArchiveTest :
     open fun testSublevels() {
         var task = createCallable("test-archive")
         var result = task.call()
-        assertEquals("Thrown from $javaClass.name", 5, result.size.toLong())
+        assertEquals(
+            "Thrown from $javaClass.name; Entries saw ${result.joinToString { "${it.path}\n" }}",
+            5,
+            result.size.toLong(),
+        )
         assertEquals("1", result[0].name)
         assertEntryTimestampCorrect(result[0])
         assertEquals("2", result[1].name)
