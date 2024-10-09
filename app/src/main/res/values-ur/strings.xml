@@ -276,7 +276,7 @@
     <string name="edit">ترمیم کریں</string>
     <string name="find">صفحہ میں تلاش کریں</string>
     <string name="grant">گرانٹ</string>
-    <string name="grantper">Grant permission</string>
+    <string name="grantper">اجازت دیں</string>
     <string name="grantfailed">Permission not granted</string>
     <string name="grant_storage_permission">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
     <string name="operation_unsuccesful">Operation Unsuccessful</string>
