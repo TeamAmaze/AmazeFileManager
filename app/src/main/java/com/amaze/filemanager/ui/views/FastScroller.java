@@ -70,11 +70,12 @@ public class FastScroller extends FrameLayout {
   }
 
   private float computeHandlePosition() {
+    if (recyclerView == null) return -1;
     View firstVisibleView = recyclerView.getChildAt(0);
+    if (firstVisibleView == null) return -1;
     handle.setVisibility(VISIBLE);
     float recyclerViewOversize; // how much is recyclerView bigger than fastScroller
     int recyclerViewAbsoluteScroll;
-    if (firstVisibleView == null || recyclerView == null) return -1;
     recyclerViewOversize =
         firstVisibleView.getHeight() / columns * recyclerView.getAdapter().getItemCount()
             - getHeightMinusPadding();
