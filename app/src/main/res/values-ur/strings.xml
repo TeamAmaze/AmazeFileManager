@@ -251,7 +251,7 @@
     <string name="smb_connection">ایس ایم بی کنکشن</string>
     <string name="smb_server">سرور IP ایڈریس</string>
     <string name="server_address">سرور IP ایڈریس</string>
-    <string name="username">Username</string>
+    <string name="username">صارف نام</string>
     <string name="password">Password</string>
     <string name="anonymous">Anonymous</string>
     <string name="bluetooth">Bluetooth</string>
