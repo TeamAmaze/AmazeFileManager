@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.movecopy
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -43,6 +44,7 @@ import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.files.FileUtils
+import com.amaze.filemanager.filesystem.files.MediaConnectionUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.utils.OnFileFound
 import com.amaze.filemanager.utils.Utils
@@ -140,6 +142,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             filesToCopy[0].getParent(context.get()) == targetPath
         ) {
             Toast.makeText(context.get(), R.string.same_dir_move_error, Toast.LENGTH_SHORT).show()
+            MediaConnectionUtils.scanFile(context.get() as Context, filesToCopy.toTypedArray())
             return
         }
 

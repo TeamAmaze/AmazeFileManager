@@ -38,6 +38,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
@@ -113,9 +114,13 @@ public class DeleteTask
       }
 
       // delete file from media database
-      if (!file.isSmb() && !file.isSftp())
+      if (!file.isSmb() && !file.isSftp()) {
         MediaConnectionUtils.scanFile(
             applicationContext, files.toArray(new HybridFile[files.size()]));
+
+        if (FileUtils.NOMEDIA_FILE.equals(file.getName()))
+          MediaConnectionUtils.scanFile(applicationContext, file.getParent(applicationContext));
+      }
 
       // delete file entry from encrypted database
       if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
