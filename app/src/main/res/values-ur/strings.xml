@@ -235,7 +235,7 @@
     <string name="color_title">رنگ</string>
     <string name="color_summary">مختلف UI اجزاء پر رنگ سیٹ کریں</string>
     <string name="primary_color_title">بنیادی رنگ (بائیں ٹیب)</string>
-    <string name="primary_color_summary">Set color to large UI elements for the left tab</string>
+    <string name="primary_color_summary">بائیں ٹیب کے لیے بڑے UI عناصر پر رنگ سیٹ کریں</string>
     <string name="accent_color_title">Accent Color</string>
     <string name="accent_color_summary">Set color to FAB and other small UI elements</string>
     <string name="icon_color_title">Icon Color</string>
