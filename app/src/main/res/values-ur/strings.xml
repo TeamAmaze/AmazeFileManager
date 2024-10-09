@@ -250,7 +250,7 @@
     <string name="needs_access_summary1">کام کرنے کے لیے تحریری رسائی فراہم کرنے کے لیے </string>
     <string name="smb_connection">ایس ایم بی کنکشن</string>
     <string name="smb_server">سرور IP ایڈریس</string>
-    <string name="server_address">Server IP Address</string>
+    <string name="server_address">سرور IP ایڈریس</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="anonymous">Anonymous</string>
