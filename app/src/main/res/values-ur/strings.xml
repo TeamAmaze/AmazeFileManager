@@ -241,7 +241,7 @@
     <string name="icon_color_title">آئیکن کا رنگ</string>
     <string name="icon_color_summary">شبیہیں پر رنگ سیٹ کریں</string>
     <string name="choose_color">رنگ کا انتخاب کریں</string>
-    <string name="files">Files</string>
+    <string name="files">فائلیں</string>
     <string name="textreader">Text Reader</string>
     <string name="databasereader">Database Reader</string>
     <string name="show_dividers">Show Dividers</string>
