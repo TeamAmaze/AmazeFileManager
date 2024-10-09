@@ -118,7 +118,7 @@ public class DeleteTask
         MediaConnectionUtils.scanFile(
             applicationContext, files.toArray(new HybridFile[files.size()]));
 
-        if (file.getName().equals(FileUtils.NOMEDIA_FILE))
+        if (FileUtils.NOMEDIA_FILE.equals(file.getName()))
           MediaConnectionUtils.scanFile(applicationContext, file.getParent(applicationContext));
       }
 
