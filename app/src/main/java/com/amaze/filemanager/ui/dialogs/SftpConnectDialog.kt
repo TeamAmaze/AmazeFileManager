@@ -144,13 +144,15 @@ class SftpConnectDialog : DialogFragment() {
 
         val accentColor = (activity as ThemedActivity).accent
 
-        // Use system provided action to get Uri to PEM.
+        // Use system provided action to get Uri to PEM (mostly via DocumentsUI).
         binding.selectPemBTN.setOnClickListener {
             val intent =
                 Intent()
                     .setType(MimeTypes.ALL_MIME_TYPES)
                     .setAction(Intent.ACTION_GET_CONTENT)
-            activityResultHandlerForPemSelection.launch(intent)
+            activityResultHandlerForPemSelection.launch(
+                Intent.createChooser(intent, getString(R.string.ssh_select_pem)),
+            )
         }
 
         // Define action for buttons

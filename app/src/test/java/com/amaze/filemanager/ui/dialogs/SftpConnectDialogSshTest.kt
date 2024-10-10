@@ -112,7 +112,7 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
     /**
      * Test invoke [SftpConnectDialog] with arguments including password and URL encoded path.
      */
-    @Suppress("ktlint:standard:max-line-length")
+    @Suppress("ktlint:standard:max-line-length", "ktlint:standard:no-single-line-block-comment")
     @Test
     @Throws(GeneralSecurityException::class, IOException::class)
     fun testInvokeSftpConnectionDialogWithPasswordAndEncodedDefaultPath() {
@@ -163,7 +163,7 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
         val mocked = mc.constructed()[0]
         await().atMost(10, TimeUnit.SECONDS).until { mocked.arguments != null }
         for (key in BUNDLE_KEYS) {
-            if (mocked.arguments!!.getString(key) != null) {
+            if (mocked.arguments?.getString(key) != null) {
                 if (key == ARG_PASSWORD) {
                     assertEquals(
                         verify.getString(key),
@@ -178,5 +178,20 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
                 }
             }
         }
+    }
+
+    companion object {
+        @JvmStatic
+        private val BUNDLE_KEYS =
+            arrayOf(
+                "address",
+                "port",
+                "keypairName",
+                "name",
+                "username",
+                "password",
+                "edit",
+                "defaultPath",
+            )
     }
 }
