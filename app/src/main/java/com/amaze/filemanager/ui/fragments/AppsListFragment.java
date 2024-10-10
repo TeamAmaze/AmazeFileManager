@@ -263,7 +263,7 @@ public class AppsListFragment extends Fragment
         }
         adapterList.add(appDataParcelable);
       }
-      adapter = new AppsRecyclerAdapter(this, modelProvider, false, this, adapterList);
+      adapter = new AppsRecyclerAdapter(this, modelProvider, false, this, adapterList, null);
       getRecyclerView().setVisibility(View.VISIBLE);
       getRecyclerView().setAdapter(adapter);
     }

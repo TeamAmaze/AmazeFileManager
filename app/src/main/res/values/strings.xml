@@ -71,6 +71,7 @@
     <string name="about">About</string>
     <string name="extract">Extract</string>
     <string name="compress">Compress</string>
+    <string name="open_in_terminal">Open in Terminal</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="info_glyph" translatable="false">&#9432;</string>
@@ -655,6 +656,7 @@
     <string name="saved_multi_files">%d files saved.</string>
     <string name="create_hidden_file_warn">The created file will be hidden in the file list.</string>
     <string name="grant_apkinstall_permission">App needs permission to install apps continue.</string>
+    <string name="grant_terminal_permission">App needs permission to execute commands with the selected Terminal app.</string>
     <string name="time_remaining">Time remaining</string>
     <string name="transfer_rate">Transfer rate</string>
     <string name="unknown">unknown</string>

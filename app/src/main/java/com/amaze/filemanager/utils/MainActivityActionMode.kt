@@ -38,6 +38,7 @@ import com.amaze.filemanager.filesystem.PasteHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
+import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
 import java.io.File
 import java.lang.ref.WeakReference
@@ -397,6 +398,10 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         checkedItems[0],
                     )
                     mode.finish()
+                    true
+                }
+                R.id.open_in_terminal -> {
+                    OpenFolderInTerminalFragment.openTerminalOrShow(checkedItems[0].desc, mainActivity)
                     true
                 }
                 else -> false

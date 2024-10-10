@@ -17,14 +17,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.utils
 
-package com.amaze.filemanager.utils;
+import android.content.pm.PackageManager.MATCH_DEFAULT_ONLY
+import com.amaze.filemanager.ui.activities.MainActivity
+
+const val TERMONE_PLUS = "com.termoneplus"
+const val ANDROID_TERM = "jackpal.androidterm"
+const val TERMUX = "com.termux"
 
 /**
- * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 8/12/2017, at 16:33.
+ * Extension function to detect installed Terminal apps.
+ *
+ * Termux, Termone plus (Android terminal) and its predecessor by Jack Palovich are supported.
  */
-public class GlideConstants {
-
-  public static final int MAX_PRELOAD_FILES = 50;
-  public static final int MAX_PRELOAD_APPSADAPTER = 100;
+fun MainActivity.detectInstalledTerminalApps(): Array<String> {
+    val retval = ArrayList<String>()
+    for (pkg in arrayOf(TERMONE_PLUS, ANDROID_TERM, TERMUX)) {
+        packageManager.getLaunchIntentForPackage(pkg)?.run {
+            val resolveInfos = packageManager.queryIntentActivitiesCompat(this, MATCH_DEFAULT_ONLY)
+            if (resolveInfos.isNotEmpty()
+            ) {
+                retval.add(pkg)
+            }
+        }
+    }
+    return retval.toTypedArray()
 }

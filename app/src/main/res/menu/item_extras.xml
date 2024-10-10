@@ -57,4 +57,7 @@
     <item
         android:id="@+id/book"
         android:title="@string/add_to_bookmarks" />
+    <item
+        android:id="@+id/open_in_terminal"
+        android:title="@string/open_in_terminal" />
 </menu>
