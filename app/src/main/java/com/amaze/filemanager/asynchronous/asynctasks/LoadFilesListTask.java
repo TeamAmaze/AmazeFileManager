@@ -536,28 +536,26 @@ public class LoadFilesListTask
   }
 
   private @Nullable List<LayoutElementParcelable> listRecentFiles() {
-    final Context context = this.context.get();
-    final MainFragment mainFragment = this.mainFragmentReference.get();
+    final Context c = context.get();
 
-    if (context == null) {
+    if (c == null) {
       cancel(true);
       return null;
     }
-    MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
+
     List<LayoutElementParcelable> recentFiles = new ArrayList<>(40);
 
-    Cursor cursor = getCursor(context);
+    Cursor cursor = getRecentFilesCursor(c);
     if (cursor == null) return recentFiles;
     if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        File f = new File(path);
+        String filePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+        File f = new File(filePath);
         if (f.isDirectory()) {
           List<File> files = getFilesFromDirectory(f);
-          for (File file : files) {
-            compareFileAndAddToList(viewModel, recentFiles, file);
-          }
-        }
+          for (File file : files)
+            compareFileAndAddToList(recentFiles, file);
+        } else compareFileAndAddToList(recentFiles, f);
       } while (cursor.moveToNext());
     }
     cursor.close();
@@ -565,39 +563,41 @@ public class LoadFilesListTask
   }
 
   @Nullable
-  private Cursor getCursor(Context context) {
+  private Cursor getRecentFilesCursor(Context c) {
     final String[] projection = {
-      MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
+            MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED
     };
     Cursor cursor;
     if (SDK_INT >= Q) {
       Bundle queryArgs = new Bundle();
       queryArgs.putStringArray(
           ContentResolver.QUERY_ARG_SORT_COLUMNS,
-          new String[] {MediaStore.Files.FileColumns.DATE_MODIFIED});
+          new String[] {MediaStore.MediaColumns.DATE_MODIFIED});
       queryArgs.putInt(
           ContentResolver.QUERY_ARG_SORT_DIRECTION,
           ContentResolver.QUERY_SORT_DIRECTION_DESCENDING);
+      queryArgs.putInt(
+          ContentResolver.QUERY_ARG_LIMIT,
+          100);
       cursor =
-          context
+          c
               .getContentResolver()
               .query(MediaStore.Files.getContentUri("external"), projection, queryArgs, null);
     } else {
       cursor =
-          context
+          c
               .getContentResolver()
               .query(
                   MediaStore.Files.getContentUri("external"),
                   projection,
                   null,
                   null,
-                  MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
+                  MediaStore.MediaColumns.DATE_MODIFIED + " DESC LIMIT 100");
     }
     return cursor;
   }
 
-  private void compareFileAndAddToList(
-      MainFragmentViewModel viewModel, List<LayoutElementParcelable> recentFiles, File file) {
+  private void compareFileAndAddToList(List<LayoutElementParcelable> recentFiles, File file) {
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
@@ -608,7 +608,6 @@ public class LoadFilesListTask
         LayoutElementParcelable parcelable = createListParcelables(strings);
         if (parcelable != null) {
           recentFiles.add(parcelable);
-          viewModel.incrementFileCount();
         }
       }
     }
