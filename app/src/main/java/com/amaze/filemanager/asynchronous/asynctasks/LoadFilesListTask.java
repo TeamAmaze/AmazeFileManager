@@ -543,6 +543,9 @@ public class LoadFilesListTask
       return null;
     }
 
+    final MainFragment mainFragment = mainFragmentReference.get();
+    MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
+
     List<LayoutElementParcelable> recentFiles = new ArrayList<>(40);
 
     Cursor cursor = getRecentFilesCursor(c);
@@ -552,10 +555,10 @@ public class LoadFilesListTask
         String filePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
         File f = new File(filePath);
         if (f.isDirectory()) {
-          List<File> files = getFilesFromDirectory(f);
+          List<File> files = getFilesFromDirectory(mainFragment, filePath);
           for (File file : files)
-            compareFileAndAddToList(recentFiles, file);
-        } else compareFileAndAddToList(recentFiles, f);
+            compareFileAndAddToList(viewModel, recentFiles, file);
+        } else compareFileAndAddToList(viewModel, recentFiles, f);
       } while (cursor.moveToNext());
     }
     cursor.close();
@@ -597,7 +600,7 @@ public class LoadFilesListTask
     return cursor;
   }
 
-  private void compareFileAndAddToList(List<LayoutElementParcelable> recentFiles, File file) {
+  private void compareFileAndAddToList(MainFragmentViewModel viewModel, List<LayoutElementParcelable> recentFiles, File file) {
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
@@ -608,32 +611,34 @@ public class LoadFilesListTask
         LayoutElementParcelable parcelable = createListParcelables(strings);
         if (parcelable != null) {
           recentFiles.add(parcelable);
+          viewModel.incrementFileCount();
         }
       }
     }
   }
 
   /**
-   * Recursively fetches the files from directory tree and adds all the files in a list
+   * fetches the files from directory tree and adds all the files in a list
    *
-   * @param f: File
+   * @param mainFragment: the main fragment reference
+   * @param filePath: the file filePath
    * @return List of files in directory tree.
    */
-  private List<File> getFilesFromDirectory(File f) {
-    List<File> allFilesInDir = new ArrayList<>();
-    try {
-      File[] files = f.listFiles();
-      for (File file : files) {
-        if (file.isDirectory()) {
-          getFilesFromDirectory(file);
-        } else {
-          allFilesInDir.add(file);
-        }
-      }
-    } catch (Exception exception) {
-      LOG.error(exception.getLocalizedMessage());
-    }
-    return allFilesInDir;
+  private List<File> getFilesFromDirectory(MainFragment mainFragment, String filePath) {
+
+    List<File> files = new ArrayList<>();
+
+    ListFilesCommand.INSTANCE.listFiles(
+            filePath,
+          mainFragment.requireMainActivity().isRootExplorer(),
+          showHiddenFiles,
+          mode -> { return null; },
+          hybridFileParcelable -> {
+            files.add(hybridFileParcelable.getFile());
+            return null;
+          });
+
+    return files;
   }
 
   private @Nullable List<LayoutElementParcelable> listTrashBinFiles() {
