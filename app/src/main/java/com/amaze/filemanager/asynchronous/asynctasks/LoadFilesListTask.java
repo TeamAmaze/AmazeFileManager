@@ -556,8 +556,7 @@ public class LoadFilesListTask
         File f = new File(filePath);
         if (f.isDirectory()) {
           List<File> files = getFilesFromDirectory(mainFragment, filePath);
-          for (File file : files)
-            compareFileAndAddToList(viewModel, recentFiles, file);
+          for (File file : files) compareFileAndAddToList(viewModel, recentFiles, file);
         } else compareFileAndAddToList(viewModel, recentFiles, f);
       } while (cursor.moveToNext());
     }
@@ -568,7 +567,7 @@ public class LoadFilesListTask
   @Nullable
   private Cursor getRecentFilesCursor(Context c) {
     final String[] projection = {
-            MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED
+      MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED
     };
     Cursor cursor;
     if (SDK_INT >= Q) {
@@ -579,17 +578,13 @@ public class LoadFilesListTask
       queryArgs.putInt(
           ContentResolver.QUERY_ARG_SORT_DIRECTION,
           ContentResolver.QUERY_SORT_DIRECTION_DESCENDING);
-      queryArgs.putInt(
-          ContentResolver.QUERY_ARG_LIMIT,
-          100);
+      queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 100);
       cursor =
-          c
-              .getContentResolver()
+          c.getContentResolver()
               .query(MediaStore.Files.getContentUri("external"), projection, queryArgs, null);
     } else {
       cursor =
-          c
-              .getContentResolver()
+          c.getContentResolver()
               .query(
                   MediaStore.Files.getContentUri("external"),
                   projection,
@@ -600,7 +595,8 @@ public class LoadFilesListTask
     return cursor;
   }
 
-  private void compareFileAndAddToList(MainFragmentViewModel viewModel, List<LayoutElementParcelable> recentFiles, File file) {
+  private void compareFileAndAddToList(
+      MainFragmentViewModel viewModel, List<LayoutElementParcelable> recentFiles, File file) {
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
@@ -629,14 +625,16 @@ public class LoadFilesListTask
     List<File> files = new ArrayList<>();
 
     ListFilesCommand.INSTANCE.listFiles(
-            filePath,
-          mainFragment.requireMainActivity().isRootExplorer(),
-          showHiddenFiles,
-          mode -> { return null; },
-          hybridFileParcelable -> {
-            files.add(hybridFileParcelable.getFile());
-            return null;
-          });
+        filePath,
+        mainFragment.requireMainActivity().isRootExplorer(),
+        showHiddenFiles,
+        mode -> {
+          return null;
+        },
+        hybridFileParcelable -> {
+          files.add(hybridFileParcelable.getFile());
+          return null;
+        });
 
     return files;
   }
