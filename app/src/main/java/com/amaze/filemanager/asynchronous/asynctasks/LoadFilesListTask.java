@@ -536,62 +536,107 @@ public class LoadFilesListTask
   }
 
   private @Nullable List<LayoutElementParcelable> listRecentFiles() {
-    final Context context = this.context.get();
+    final Context c = context.get();
 
-    if (context == null) {
+    if (c == null) {
       cancel(true);
       return null;
     }
 
-    List<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
+    final MainFragment mainFragment = mainFragmentReference.get();
+    MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
+
+    List<LayoutElementParcelable> recentFiles = new ArrayList<>(40);
+
+    Cursor cursor = getRecentFilesCursor(c);
+    if (cursor == null) return recentFiles;
+    if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+      do {
+        String filePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+        File f = new File(filePath);
+        if (f.isDirectory()) {
+          List<File> files = getFilesFromDirectory(mainFragment, filePath);
+          for (File file : files) compareFileAndAddToList(viewModel, recentFiles, file);
+        } else compareFileAndAddToList(viewModel, recentFiles, f);
+      } while (cursor.moveToNext());
+    }
+    cursor.close();
+    return recentFiles;
+  }
+
+  @Nullable
+  private Cursor getRecentFilesCursor(Context c) {
     final String[] projection = {
-      MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
+      MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DATE_MODIFIED
     };
-    Calendar c = Calendar.getInstance();
-    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
-    Date d = c.getTime();
     Cursor cursor;
     if (SDK_INT >= Q) {
       Bundle queryArgs = new Bundle();
-      queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 20);
       queryArgs.putStringArray(
           ContentResolver.QUERY_ARG_SORT_COLUMNS,
-          new String[] {MediaStore.Files.FileColumns.DATE_MODIFIED});
+          new String[] {MediaStore.MediaColumns.DATE_MODIFIED});
       queryArgs.putInt(
           ContentResolver.QUERY_ARG_SORT_DIRECTION,
           ContentResolver.QUERY_SORT_DIRECTION_DESCENDING);
+      queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 100);
       cursor =
-          context
-              .getContentResolver()
+          c.getContentResolver()
               .query(MediaStore.Files.getContentUri("external"), projection, queryArgs, null);
     } else {
       cursor =
-          context
-              .getContentResolver()
+          c.getContentResolver()
               .query(
                   MediaStore.Files.getContentUri("external"),
                   projection,
                   null,
                   null,
-                  MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
+                  MediaStore.MediaColumns.DATE_MODIFIED + " DESC LIMIT 100");
     }
-    if (cursor == null) return recentFiles;
-    if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        File f = new File(path);
-        if (d.compareTo(new Date(f.lastModified())) != 1 && !f.isDirectory()) {
-          HybridFileParcelable strings =
-              RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-          if (strings != null) {
-            LayoutElementParcelable parcelable = createListParcelables(strings);
-            if (parcelable != null) recentFiles.add(parcelable);
-          }
+    return cursor;
+  }
+
+  private void compareFileAndAddToList(
+      MainFragmentViewModel viewModel, List<LayoutElementParcelable> recentFiles, File file) {
+    Calendar c = Calendar.getInstance();
+    c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
+    Date d = c.getTime();
+
+    if (d.compareTo(new Date(file.lastModified())) != 1 && !file.isDirectory()) {
+      HybridFileParcelable strings = RootHelper.generateBaseFile(file, showHiddenFiles);
+      if (strings != null) {
+        LayoutElementParcelable parcelable = createListParcelables(strings);
+        if (parcelable != null) {
+          recentFiles.add(parcelable);
+          viewModel.incrementFileCount();
         }
-      } while (cursor.moveToNext());
+      }
     }
-    cursor.close();
-    return recentFiles;
+  }
+
+  /**
+   * fetches the files from directory tree and adds all the files in a list
+   *
+   * @param mainFragment: the main fragment reference
+   * @param filePath: the file filePath
+   * @return List of files in directory tree.
+   */
+  private List<File> getFilesFromDirectory(MainFragment mainFragment, String filePath) {
+
+    List<File> files = new ArrayList<>();
+
+    ListFilesCommand.INSTANCE.listFiles(
+        filePath,
+        mainFragment.requireMainActivity().isRootExplorer(),
+        showHiddenFiles,
+        mode -> {
+          return null;
+        },
+        hybridFileParcelable -> {
+          files.add(hybridFileParcelable.getFile());
+          return null;
+        });
+
+    return files;
   }
 
   private @Nullable List<LayoutElementParcelable> listTrashBinFiles() {
