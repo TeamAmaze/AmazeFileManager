@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory
 
 /** Created by vishal on 15/4/17.  */
 object CryptHandler {
-
     private val log: Logger = LoggerFactory.getLogger(CryptHandler::class.java)
     private val database: ExplorerDatabase = AppConfig.getInstance().explorerDatabase
 
@@ -49,7 +48,10 @@ object CryptHandler {
     /**
      * Update specified new [EncryptedEntry] in database.
      */
-    fun updateEntry(oldEncryptedEntry: EncryptedEntry, newEncryptedEntry: EncryptedEntry) {
+    fun updateEntry(
+        oldEncryptedEntry: EncryptedEntry,
+        newEncryptedEntry: EncryptedEntry,
+    ) {
         database.encryptedEntryDao().update(newEncryptedEntry).subscribeOn(Schedulers.io())
             .subscribe()
     }

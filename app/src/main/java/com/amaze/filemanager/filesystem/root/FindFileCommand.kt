@@ -25,7 +25,6 @@ import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object FindFileCommand : IRootCommand() {
-
     /**
      * find file at given path in root
      *
@@ -33,9 +32,10 @@ object FindFileCommand : IRootCommand() {
      */
     @Throws(ShellNotRunningException::class)
     fun findFile(path: String): Boolean {
-        val result = runShellCommandToList(
-            "find \"${RootHelper.getCommandLineString(path)}\""
-        )
+        val result =
+            runShellCommandToList(
+                "find \"${RootHelper.getCommandLineString(path)}\"",
+            )
         return result.isNotEmpty()
     }
 }

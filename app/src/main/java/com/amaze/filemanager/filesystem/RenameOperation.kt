@@ -26,7 +26,11 @@ import android.util.Log
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation.mkdir
 import com.amaze.filemanager.filesystem.root.RenameFileCommand.renameFile
-import java.io.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.nio.channels.FileChannel
 
 object RenameOperation {
@@ -40,14 +44,17 @@ object RenameOperation {
      * @return true if the copying was successful.
      */
     @JvmStatic
-    private fun copyFile(source: File, target: File, context: Context): Boolean {
+    private fun copyFile(
+        source: File,
+        target: File,
+        context: Context,
+    ): Boolean {
         var inStream: FileInputStream? = null
         var outStream: OutputStream? = null
         var inChannel: FileChannel? = null
         var outChannel: FileChannel? = null
         try {
             inStream = FileInputStream(source)
-
             // First try the normal way
             if (FileProperties.isWritable(target)) {
                 // standard way
@@ -56,20 +63,21 @@ object RenameOperation {
                 outChannel = outStream.channel
                 inChannel.transferTo(0, inChannel.size(), outChannel)
             } else {
-                outStream = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    // Storage Access Framework
-                    val targetDocument =
-                        ExternalSdCardOperation.getDocumentFile(target, false, context)
-                    targetDocument ?: throw IOException("Couldn't get DocumentFile")
-                    context.contentResolver.openOutputStream(targetDocument.uri)
-                } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                    // Workaround for Kitkat ext SD card
-                    val uri = MediaStoreHack.getUriFromFile(target.absolutePath, context)
-                    uri ?: return false
-                    context.contentResolver.openOutputStream(uri)
-                } else {
-                    return false
-                }
+                outStream =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        // Storage Access Framework
+                        val targetDocument =
+                            ExternalSdCardOperation.getDocumentFile(target, false, context)
+                        targetDocument ?: throw IOException("Couldn't get DocumentFile")
+                        context.contentResolver.openOutputStream(targetDocument.uri)
+                    } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                        // Workaround for Kitkat ext SD card
+                        val uri = MediaStoreHack.getUriFromFile(target.absolutePath, context)
+                        uri ?: return false
+                        context.contentResolver.openOutputStream(uri)
+                    } else {
+                        return false
+                    }
                 if (outStream != null) {
                     // Both for SAF and for Kitkat, write to output stream.
                     val buffer = ByteArray(16384) // MAGIC_NUMBER
@@ -83,7 +91,7 @@ object RenameOperation {
             Log.e(
                 LOG,
                 "Error when copying file from ${source.absolutePath} to ${target.absolutePath}",
-                e
+                e,
             )
             return false
         } finally {
@@ -113,7 +121,11 @@ object RenameOperation {
 
     @JvmStatic
     @Throws(ShellNotRunningException::class)
-    private fun rename(f: File, name: String, root: Boolean): Boolean {
+    private fun rename(
+        f: File,
+        name: String,
+        root: Boolean,
+    ): Boolean {
         val parentName = f.parent ?: return false
         val parentFile = f.parentFile ?: return false
 
@@ -140,7 +152,7 @@ object RenameOperation {
     fun renameFolder(
         source: File,
         target: File,
-        context: Context
+        context: Context,
     ): Boolean {
         // First try the normal rename.
         if (rename(source, target.name, false)) {

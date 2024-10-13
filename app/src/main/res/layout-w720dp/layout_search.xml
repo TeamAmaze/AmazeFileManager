@@ -8,6 +8,7 @@
     android:layout_margin="@dimen/search_view_margin"
     android:background="@drawable/search_view_shape"
     android:clickable="true"
+    android:elevation="8dp"
     android:focusable="true"
     android:visibility="gone">
 

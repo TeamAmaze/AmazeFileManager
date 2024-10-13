@@ -29,6 +29,7 @@ import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.QUESTION_MARK
 import com.amaze.filemanager.filesystem.smb.CifsContexts.createWithDisableIpcSigningCheck
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.urlDecoded
@@ -47,7 +48,6 @@ import java.net.MalformedURLException
  * Class provides various utility methods for SMB client
  */
 object SmbUtil {
-
     @JvmStatic
     private val LOG = LoggerFactory.getLogger(SmbUtil::class.java)
 
@@ -55,7 +55,10 @@ object SmbUtil {
 
     /** Parse path to decrypt smb password  */
     @JvmStatic
-    fun getSmbDecryptedPath(context: Context, path: String): String {
+    fun getSmbDecryptedPath(
+        context: Context,
+        path: String,
+    ): String {
         return buildPath(path, withPassword = {
             PasswordUtil.decryptPassword(context, it.urlDecoded())
         })
@@ -63,7 +66,10 @@ object SmbUtil {
 
     /** Parse path to encrypt smb password  */
     @JvmStatic
-    fun getSmbEncryptedPath(context: Context, path: String): String {
+    fun getSmbEncryptedPath(
+        context: Context,
+        path: String,
+    ): String {
         return buildPath(path, withPassword = {
             PasswordUtil.encryptPassword(context, it)
         })
@@ -71,7 +77,10 @@ object SmbUtil {
 
     // At this point, credential is URL encoded to be safe from special chars.
     // No need to call URLEncoder.encode() again
-    private fun buildPath(path: String, withPassword: (String) -> String?): String {
+    private fun buildPath(
+        path: String,
+        withPassword: (String) -> String?,
+    ): String {
         if (!(path.contains(COLON) && path.contains(AT))) {
             // smb path doesn't have any credentials
             return path
@@ -79,7 +88,7 @@ object SmbUtil {
         val buffer = StringBuilder()
         NetCopyConnectionInfo(path).let { connectionInfo ->
             buffer.append(connectionInfo.prefix).append(
-                connectionInfo.username.ifEmpty { "" }
+                connectionInfo.username.ifEmpty { "" },
             )
             if (false == connectionInfo.password?.isEmpty()) {
                 val password = withPassword.invoke(connectionInfo.password)
@@ -92,6 +101,9 @@ object SmbUtil {
             connectionInfo.defaultPath?.apply {
                 buffer.append(this)
             }
+            if (path.contains(QUESTION_MARK)) {
+                buffer.append(QUESTION_MARK).append(path.substringAfter(QUESTION_MARK))
+            }
         }
         return buffer.toString().replace("\n", "")
     }
@@ -103,15 +115,16 @@ object SmbUtil {
     @Throws(MalformedURLException::class)
     fun create(path: String): SmbFile {
         val uri = Uri.parse(getSmbDecryptedPath(AppConfig.getInstance(), path))
-        val disableIpcSigningCheck = uri.getQueryParameter(
-            PARAM_DISABLE_IPC_SIGNING_CHECK
-        ).toBoolean()
+        val disableIpcSigningCheck =
+            uri.getQueryParameter(
+                PARAM_DISABLE_IPC_SIGNING_CHECK,
+            ).toBoolean()
 
         val userInfo = uri.userInfo
         return SmbFile(
             if (path.indexOf('?') < 0) path else path.substring(0, path.indexOf('?')),
             createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-                .withCredentials(createFrom(userInfo))
+                .withCredentials(createFrom(userInfo)),
         )
     }
 

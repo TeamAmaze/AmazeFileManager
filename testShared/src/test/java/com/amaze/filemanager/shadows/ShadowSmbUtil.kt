@@ -25,7 +25,10 @@ import com.amaze.filemanager.utils.smb.SmbUtil
 import jcifs.context.SingletonContext
 import jcifs.smb.SmbException
 import jcifs.smb.SmbFile
-import org.mockito.Mockito.*
+import org.mockito.Mockito.any
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 import org.robolectric.shadow.api.Shadow
@@ -34,10 +37,7 @@ import org.robolectric.util.ReflectionHelpers
 @Implements(SmbUtil::class)
 @Suppress()
 class ShadowSmbUtil {
-
     companion object {
-
-        /* ktlint-disable max-line-length */
         const val PATH_CANNOT_DELETE_FILE = "smb://user:password@1.2.3.4/access/denied.file"
         const val PATH_CANNOT_MOVE_FILE = "smb://user:password@1.2.3.4/cannot/move.file"
         const val PATH_CANNOT_RENAME_OLDFILE = "smb://user:password@1.2.3.4/cannot/rename.file.old"
@@ -61,60 +61,70 @@ class ShadowSmbUtil {
         var mockSmbExceptionOnIsFolder: SmbFile? = null
 
         init {
-            mockDeleteAccessDenied = createInternal(PATH_CANNOT_DELETE_FILE).also {
-                `when`(it.delete()).thenThrow(SmbException("Access is denied."))
-                `when`(it.exists()).thenReturn(true)
-            }
+            mockDeleteAccessDenied =
+                createInternal(PATH_CANNOT_DELETE_FILE).also {
+                    `when`(it.delete()).thenThrow(SmbException("Access is denied."))
+                    `when`(it.exists()).thenReturn(true)
+                }
 
-            mockDeleteDifferentNetwork = createInternal(PATH_CANNOT_MOVE_FILE).also {
-                `when`(it.delete()).thenThrow(SmbException("Cannot rename between different trees"))
-                `when`(it.exists()).thenReturn(true)
-            }
+            mockDeleteDifferentNetwork =
+                createInternal(PATH_CANNOT_MOVE_FILE).also {
+                    `when`(it.delete()).thenThrow(SmbException("Cannot rename between different trees"))
+                    `when`(it.exists()).thenReturn(true)
+                }
 
-            mockCanRename = createInternal(PATH_CAN_RENAME_OLDFILE).also {
-                doNothing().`when`(it).renameTo(any())
-            }
+            mockCanRename =
+                createInternal(PATH_CAN_RENAME_OLDFILE).also {
+                    doNothing().`when`(it).renameTo(any())
+                }
 
             mockCannotRenameOld = createInternal(PATH_CANNOT_RENAME_OLDFILE)
             `when`(mockCannotRenameOld!!.renameTo(any()))
                 .thenThrow(SmbException("Access is denied."))
             `when`(mockCannotRenameOld!!.exists()).thenReturn(true)
 
-            mockPathDoesNotExist = createInternal(PATH_DOESNT_EXIST).also {
-                `when`(it.exists()).thenReturn(false)
-            }
+            mockPathDoesNotExist =
+                createInternal(PATH_DOESNT_EXIST).also {
+                    `when`(it.exists()).thenReturn(false)
+                }
 
-            mockPathNotAFolder = createInternal(PATH_NOT_A_FOLDER).also {
-                `when`(it.exists()).thenReturn(true)
-                `when`(it.isDirectory).thenReturn(false)
-            }
+            mockPathNotAFolder =
+                createInternal(PATH_NOT_A_FOLDER).also {
+                    `when`(it.exists()).thenReturn(true)
+                    `when`(it.isDirectory).thenReturn(false)
+                }
 
-            mockPathExist = createInternal(PATH_EXIST).also {
-                `when`(it.exists()).thenReturn(true)
-                `when`(it.isDirectory).thenReturn(true)
-            }
+            mockPathExist =
+                createInternal(PATH_EXIST).also {
+                    `when`(it.exists()).thenReturn(true)
+                    `when`(it.isDirectory).thenReturn(true)
+                }
 
-            mockSmbExceptionOnExists = createInternal(PATH_INVOKE_SMBEXCEPTION_ON_EXISTS).also {
-                `when`(it.exists()).thenThrow(SmbException())
-            }
+            mockSmbExceptionOnExists =
+                createInternal(PATH_INVOKE_SMBEXCEPTION_ON_EXISTS).also {
+                    `when`(it.exists()).thenThrow(SmbException())
+                }
 
-            mockSmbExceptionOnIsFolder = createInternal(PATH_INVOKE_SMBEXCEPTION_ON_ISFOLDER).also {
-                `when`(it.exists()).thenReturn(true)
-                `when`(it.isDirectory).thenThrow(SmbException())
-            }
+            mockSmbExceptionOnIsFolder =
+                createInternal(PATH_INVOKE_SMBEXCEPTION_ON_ISFOLDER).also {
+                    `when`(it.exists()).thenReturn(true)
+                    `when`(it.isDirectory).thenThrow(SmbException())
+                }
         }
-        /* ktlint-enable max-line-length */
 
         /**
          * Delegate to [SmbUtil.getSmbEncryptedPath].
          */
         @JvmStatic @Implementation
-        fun getSmbEncryptedPath(context: Context, path: String): String {
+        fun getSmbEncryptedPath(
+            context: Context,
+            path: String,
+        ): String {
             return Shadow.directlyOn(
                 SmbUtil::class.java,
                 "getSmbEncryptedPath",
                 ReflectionHelpers.ClassParameter(Context::class.java, context),
-                ReflectionHelpers.ClassParameter(String::class.java, path)
+                ReflectionHelpers.ClassParameter(String::class.java, path),
             )
         }
 
@@ -122,12 +132,15 @@ class ShadowSmbUtil {
          * Delegate to [SmbUtil.getSmbDecryptedPath].
          */
         @JvmStatic @Implementation
-        fun getSmbDecryptedPath(context: Context, path: String): String {
+        fun getSmbDecryptedPath(
+            context: Context,
+            path: String,
+        ): String {
             return Shadow.directlyOn(
                 SmbUtil::class.java,
                 "getSmbDecryptedPath",
                 ReflectionHelpers.ClassParameter(Context::class.java, context),
-                ReflectionHelpers.ClassParameter(String::class.java, path)
+                ReflectionHelpers.ClassParameter(String::class.java, path),
             )
         }
 
@@ -139,7 +152,7 @@ class ShadowSmbUtil {
             return Shadow.directlyOn(
                 SmbUtil::class.java,
                 "checkFolder",
-                ReflectionHelpers.ClassParameter(String::class.java, path)
+                ReflectionHelpers.ClassParameter(String::class.java, path),
             )
         }
 
@@ -160,10 +173,11 @@ class ShadowSmbUtil {
                 PATH_EXIST -> mockPathExist!!
                 PATH_INVOKE_SMBEXCEPTION_ON_EXISTS -> mockSmbExceptionOnExists!!
                 PATH_INVOKE_SMBEXCEPTION_ON_ISFOLDER -> mockSmbExceptionOnIsFolder!!
-                else -> createInternal(path).also {
-                    doNothing().`when`(it).delete()
-                    `when`(it.exists()).thenReturn(false)
-                }
+                else ->
+                    createInternal(path).also {
+                        doNothing().`when`(it).delete()
+                        `when`(it.exists()).thenReturn(false)
+                    }
             }
         }
 

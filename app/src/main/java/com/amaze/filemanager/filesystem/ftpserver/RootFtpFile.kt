@@ -34,9 +34,8 @@ import java.io.OutputStream
 class RootFtpFile(
     private val fileName: String,
     private val backingFile: SuFile,
-    private val user: User
+    private val user: User,
 ) : FtpFile {
-
     companion object {
         @JvmStatic
         private val logger: Logger = LoggerFactory.getLogger(RootFtpFile::class.java)
@@ -86,18 +85,19 @@ class RootFtpFile(
         }
         // In order to maintain consistency, when possible we delete the last '/' character in the String
         val indexOfSlash = fullName.lastIndexOf('/')
-        val parentFullName: String = if (indexOfSlash == 0) {
-            "/"
-        } else {
-            fullName.substring(0, indexOfSlash)
-        }
+        val parentFullName: String =
+            if (indexOfSlash == 0) {
+                "/"
+            } else {
+                fullName.substring(0, indexOfSlash)
+            }
 
         // we check if the parent FileObject is writable.
         return backingFile.absoluteFile.parentFile?.run {
             RootFtpFile(
                 parentFullName,
                 this,
-                user
+                user,
             ).isWritable
         } ?: false
     }
@@ -120,16 +120,14 @@ class RootFtpFile(
 
     override fun delete(): Boolean = backingFile.delete()
 
-    override fun move(destination: FtpFile): Boolean =
-        backingFile.renameTo(destination.physicalFile as SuFile)
+    override fun move(destination: FtpFile): Boolean = backingFile.renameTo(destination.physicalFile as SuFile)
 
-    override fun listFiles(): MutableList<out FtpFile> = backingFile.listFiles()?.map {
-        RootFtpFile(it.name, it, user)
-    }?.toMutableList() ?: emptyList<FtpFile>().toMutableList()
+    override fun listFiles(): MutableList<out FtpFile> =
+        backingFile.listFiles()?.map {
+            RootFtpFile(it.name, it, user)
+        }?.toMutableList() ?: emptyList<FtpFile>().toMutableList()
 
-    override fun createOutputStream(offset: Long): OutputStream =
-        SuFileOutputStream.open(backingFile.absolutePath)
+    override fun createOutputStream(offset: Long): OutputStream = SuFileOutputStream.open(backingFile.absolutePath)
 
-    override fun createInputStream(offset: Long): InputStream =
-        SuFileInputStream.open(backingFile.absolutePath)
+    override fun createInputStream(offset: Long): InputStream = SuFileInputStream.open(backingFile.absolutePath)
 }

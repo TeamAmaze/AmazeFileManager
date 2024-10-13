@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -161,6 +161,7 @@ public class LoadFilesListTask
       case SMB:
         list = listSmb(hFile, mainActivityViewModel, mainFragment);
         break;
+      case FTP:
       case SFTP:
         list = listSftp(mainActivityViewModel);
         break;
@@ -646,26 +647,31 @@ public class LoadFilesListTask
 
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     List<LayoutElementParcelable> deletedFiles = new ArrayList<>();
-    if (trashBin != null) {
-      for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
-        HybridFile hybridFile =
-            new HybridFile(
-                OpenMode.TRASH_BIN,
-                trashBinFile.getDeletedPath(
-                    AppConfig.getInstance().getTrashBinInstance().getConfig()),
-                trashBinFile.getFileName(),
-                trashBinFile.isDirectory());
-        if (trashBinFile.getDeleteTime() != null) {
-          hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
-        }
-        LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
-        element.date = trashBinFile.getDeleteTime();
-        element.longSize = trashBinFile.getSizeBytes();
-        element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
-        element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
-        element.isDirectory = trashBinFile.isDirectory();
-        deletedFiles.add(element);
+
+    if (trashBin == null) return deletedFiles;
+
+    List<TrashBinFile> filesInBin = trashBin.listFilesInBin();
+
+    if (filesInBin == null) return deletedFiles;
+
+    for (TrashBinFile trashBinFile : filesInBin) {
+      HybridFile hybridFile =
+          new HybridFile(
+              OpenMode.TRASH_BIN,
+              trashBinFile.getDeletedPath(
+                  AppConfig.getInstance().getTrashBinInstance().getConfig()),
+              trashBinFile.getFileName(),
+              trashBinFile.isDirectory());
+      if (trashBinFile.getDeleteTime() != null) {
+        hybridFile.setLastModified(trashBinFile.getDeleteTime() * 1000);
       }
+      LayoutElementParcelable element = hybridFile.generateLayoutElement(context, true);
+      element.date = trashBinFile.getDeleteTime();
+      element.longSize = trashBinFile.getSizeBytes();
+      element.size = Formatter.formatFileSize(context, trashBinFile.getSizeBytes());
+      element.dateModification = Utils.getDate(context, trashBinFile.getDeleteTime() * 1000);
+      element.isDirectory = trashBinFile.isDirectory();
+      deletedFiles.add(element);
     }
     return deletedFiles;
   }

@@ -35,7 +35,7 @@ class LogMessageFilter : IoFilterAdapter() {
     override fun messageSent(
         nextFilter: IoFilter.NextFilter,
         session: IoSession,
-        writeRequest: WriteRequest
+        writeRequest: WriteRequest,
     ) {
         writeRequest.message.run {
             messages.add(this as FtpReply)

@@ -43,7 +43,6 @@ import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
  * occur. No validation is made at this point, so proceed at your own risk.
  */
 class NetCopyConnectionInfo(url: String) {
-
     val prefix: String
     val host: String
     val port: Int
@@ -62,10 +61,8 @@ class NetCopyConnectionInfo(url: String) {
         // Regex taken from https://blog.stevenlevithan.com/archives/parseuri
         // (No, don't break it down to lines)
 
-        /* ktlint-disable max-line-length */
+        @Suppress("ktlint:standard:max-line-length")
         private const val URI_REGEX = "^(?:(?![^:@]+:[^:@/]*@)([^:/?#.]+):)?(?://)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:/?#]*)(?::(\\d*))?)(((/(?:[^?#](?![^?#/]*\\.[^?#/.]+(?:[?#]|$)))*/?)?([^?#/]*))(?:\\?([^#]*))?(?:#(.*))?)"
-
-        /* ktlint-enable max-line-length */
 
         const val MULTI_SLASH = "(?<=[^:])(//+)"
 
@@ -73,6 +70,7 @@ class NetCopyConnectionInfo(url: String) {
         const val AT = '@'
         const val SLASH = '/'
         const val COLON = ':'
+        const val QUESTION_MARK = '?'
     }
 
     init {
@@ -80,7 +78,7 @@ class NetCopyConnectionInfo(url: String) {
             url.startsWith(SSH_URI_PREFIX) or
                 url.startsWith(FTP_URI_PREFIX) or
                 url.startsWith(FTPS_URI_PREFIX) or
-                url.startsWith(SMB_URI_PREFIX)
+                url.startsWith(SMB_URI_PREFIX),
         ) {
             "Argument is not a supported remote URI: $url"
         }
@@ -100,43 +98,46 @@ class NetCopyConnectionInfo(url: String) {
                     username = credential.substringBefore(COLON)
                     password = credential.substringAfter(COLON)
                 }
-                port = if (it[7].isNotEmpty()) {
+                port =
+                    if (it[7].isNotEmpty()) {
                     /*
                      * Invalid string would have been trapped to other branches. Strings fell into
                      * this branch must be integer
                      */
-                    it[7].toInt()
-                } else {
-                    0
-                }
-                queryString = it[12].ifEmpty { null }
-                arguments = if (it[12].isNotEmpty()) {
-                    it[12].split(AND).associate { valuePair ->
-                        val pair = valuePair.split('=')
-                        Pair(
-                            pair[0],
-                            pair[1].ifEmpty {
-                                ""
-                            }
-                        )
+                        it[7].toInt()
+                    } else {
+                        0
                     }
-                } else {
-                    null
-                }
-                defaultPath = (
-                    if (it[9].isEmpty()) {
-                        null
-                    } else if (it[9] == SLASH.toString()) {
-                        SLASH.toString()
-                    } else if (!it[9].endsWith(SLASH)) {
-                        if (it[11].isEmpty()) {
-                            it[10]
-                        } else {
-                            it[10].substringBeforeLast(SLASH)
+                queryString = it[12].ifEmpty { null }
+                arguments =
+                    if (it[12].isNotEmpty()) {
+                        it[12].split(AND).associate { valuePair ->
+                            val pair = valuePair.split('=')
+                            Pair(
+                                pair[0],
+                                pair[1].ifEmpty {
+                                    ""
+                                },
+                            )
                         }
                     } else {
-                        it[9]
+                        null
                     }
+                defaultPath =
+                    (
+                        if (it[9].isEmpty()) {
+                            null
+                        } else if (it[9] == SLASH.toString()) {
+                            SLASH.toString()
+                        } else if (!it[9].endsWith(SLASH)) {
+                            if (it[11].isEmpty()) {
+                                it[10]
+                            } else {
+                                it[10].substringBeforeLast(SLASH)
+                            }
+                        } else {
+                            it[9]
+                        }
                     )?.replace(Regex(MULTI_SLASH), SLASH.toString())
                 filename = it[11].ifEmpty { null }
             }
@@ -157,7 +158,7 @@ class NetCopyConnectionInfo(url: String) {
     }
 
     override fun toString(): String {
-        return if (username.isNotEmpty()) {
+        return if (username.isNotBlank() && username.isNotEmpty()) {
             "$prefix$username@$host${if (port == 0) "" else ":$port"}${defaultPath ?: ""}"
         } else {
             "$prefix$host${if (port == 0) "" else ":$port"}${defaultPath ?: ""}"

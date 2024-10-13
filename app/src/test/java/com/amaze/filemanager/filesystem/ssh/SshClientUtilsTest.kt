@@ -39,7 +39,6 @@ import java.io.IOException
  * Unit tests for [SshClientUtils].
  */
 class SshClientUtilsTest {
-
     companion object {
         private const val SYSROOT_ETC = "/sysroot/etc"
     }
@@ -57,8 +56,8 @@ class SshClientUtilsTest {
                 22,
                 null,
                 "root",
-                "toor"
-            )
+                "toor",
+            ),
         )
         assertEquals(
             "ssh://root:toor@127.0.0.1:22",
@@ -68,8 +67,8 @@ class SshClientUtilsTest {
                 22,
                 "",
                 "root",
-                "toor"
-            )
+                "toor",
+            ),
         )
     }
 
@@ -135,7 +134,7 @@ class SshClientUtilsTest {
         assertThrows(IOException::class.java) {
             SshClientUtils.isDirectory(
                 mockClient,
-                mock
+                mock,
             )
         }
     }
@@ -157,7 +156,7 @@ class SshClientUtilsTest {
         assertThrows(IOException::class.java) {
             SshClientUtils.isDirectory(
                 mockClient,
-                mock
+                mock,
             )
         }
     }

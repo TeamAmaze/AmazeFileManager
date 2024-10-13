@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -1017,9 +1017,9 @@ public class FileUtils {
     }
     File pathFile = new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
     if (!pathFile.exists()) {
-      LOG.warn("failed to navigate to path {}", pathFile.getPath());
+      LOG.warn("Failed to navigate to the initial path: {}", pathFile.getPath());
       pathFile = new File(uri.getPath());
-      LOG.warn("trying to navigate to path {}", pathFile.getPath());
+      LOG.warn("Attempting to navigate to the fallback path: {}", pathFile.getPath());
     }
     return pathFile;
   }

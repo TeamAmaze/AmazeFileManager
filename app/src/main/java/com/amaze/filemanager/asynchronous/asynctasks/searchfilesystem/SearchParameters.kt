@@ -27,10 +27,11 @@ typealias SearchParameters = EnumSet<SearchParameter>
 /**
  * Returns [SearchParameters] extended by [other]
  */
-infix fun SearchParameters.and(other: SearchParameter): SearchParameters = SearchParameters.of(
-    other,
-    *this.toTypedArray()
-)
+infix fun SearchParameters.and(other: SearchParameter): SearchParameters =
+    SearchParameters.of(
+        other,
+        *this.toTypedArray(),
+    )
 
 /**
  * Returns [SearchParameters] extended by [other]
@@ -44,7 +45,7 @@ fun searchParametersFromBoolean(
     showHiddenFiles: Boolean = false,
     isRegexEnabled: Boolean = false,
     isRegexMatchesEnabled: Boolean = false,
-    isRoot: Boolean = false
+    isRoot: Boolean = false,
 ): SearchParameters {
     val searchParameterList = mutableListOf<SearchParameter>()
 

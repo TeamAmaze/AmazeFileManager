@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -38,6 +38,11 @@ import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.NE
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.RENAME;
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.SAVE_FILE;
 import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.UNDEFINED;
+import static com.amaze.filemanager.filesystem.ftp.FTPClientImpl.ARG_TLS;
+import static com.amaze.filemanager.filesystem.ftp.FTPClientImpl.TLS_EXPLICIT;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_ADDRESS;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_DEFAULT_PATH;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_EDIT;
@@ -277,6 +282,7 @@ public class MainActivity extends PermissionsActivity
   private UtilsHandler utilsHandler;
   private CloudHandler cloudHandler;
   private CloudLoaderAsyncTask cloudLoaderAsyncTask;
+
   /**
    * This is for a hack.
    *
@@ -538,7 +544,7 @@ public class MainActivity extends PermissionsActivity
           .subscribe(
               () -> {
                 if (tabFragment != null) {
-                  tabFragment.refactorDrawerStorages(false);
+                  tabFragment.refactorDrawerStorages(false, false);
                   Fragment main = tabFragment.getFragmentAtIndex(0);
                   if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
                   Fragment main1 = tabFragment.getFragmentAtIndex(1);
@@ -637,16 +643,14 @@ public class MainActivity extends PermissionsActivity
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
       if ("text/plain".equals(type)) {
-        initFabToSave(null);
+        showSaveSnackbar(null);
       } else {
         // save a single file to filesystem
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (uri != null
-            && uri.getScheme() != null
-            && uri.getScheme().startsWith(ContentResolver.SCHEME_FILE)) {
-          ArrayList<Uri> uris = new ArrayList<>();
+        if (uri != null && uri.getScheme() != null) {
+          List<Uri> uris = new ArrayList<>();
           uris.add(uri);
-          initFabToSave(uris);
+          showSaveSnackbar(uris);
         } else {
           Toast.makeText(this, R.string.error_unsupported_or_null_uri, Toast.LENGTH_LONG).show();
         }
@@ -659,7 +663,7 @@ public class MainActivity extends PermissionsActivity
       // save multiple files to filesystem
 
       ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-      initFabToSave(arrayList);
+      showSaveSnackbar(arrayList);
 
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
@@ -668,7 +672,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
-  private void initFabToSave(final List<Uri> uris) {
+  private void showSaveSnackbar(final List<Uri> uris) {
     Utils.showThemedSnackbar(
         this,
         getString(R.string.select_save_location),
@@ -948,7 +952,7 @@ public class MainActivity extends PermissionsActivity
           fragmentTransaction.remove(compressedExplorerFragment);
           fragmentTransaction.commit();
           supportInvalidateOptionsMenu();
-          floatingActionButton.show();
+          showFab();
         }
       } else {
         compressedExplorerFragment.mActionMode.finish();
@@ -999,6 +1003,16 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void goToMain(String path) {
+    goToMain(path, false);
+  }
+
+  /**
+   * Sets up the main view with a {@link MainFragment}
+   *
+   * @param path The path to which to go in the {@link MainFragment}
+   * @param hideFab Whether the FAB should be hidden in the new created {@link MainFragment} or not
+   */
+  public void goToMain(String path, boolean hideFab) {
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
     TabFragment tabFragment = new TabFragment();
@@ -1009,17 +1023,19 @@ public class MainActivity extends PermissionsActivity
         path = "6";
       }
     }
+    Bundle b = new Bundle();
     if (path != null && path.length() > 0) {
-      Bundle b = new Bundle();
       b.putString("path", path);
-      tabFragment.setArguments(b);
     }
+    // This boolean will be given to the newly created MainFragment
+    b.putBoolean(MainFragment.BUNDLE_HIDE_FAB, hideFab);
+    tabFragment.setArguments(b);
     transaction.replace(R.id.content_frame, tabFragment);
     // Commit the transaction
     transaction.addToBackStack("tabt" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
-    floatingActionButton.show();
+
     if (isCompressedOpen && pathInCompressedArchive != null) {
       openCompressed(pathInCompressedArchive);
       pathInCompressedArchive = null;
@@ -1527,7 +1543,11 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void showFab() {
-    showFab(getFAB());
+    if (getCurrentMainFragment() != null && getCurrentMainFragment().getHideFab()) {
+      hideFab();
+    } else {
+      showFab(getFAB());
+    }
   }
 
   private void showFab(SpeedDialView fab) {
@@ -1886,7 +1906,8 @@ public class MainActivity extends PermissionsActivity
     SpeedDialActionItem.Builder builder =
         new SpeedDialActionItem.Builder(id, icon)
             .setLabel(fabTitle)
-            .setFabBackgroundColor(iconSkin);
+            .setFabBackgroundColor(iconSkin)
+            .setFabImageTintColor(Color.WHITE);
 
     switch (getAppTheme()) {
       case LIGHT:
@@ -2097,16 +2118,28 @@ public class MainActivity extends PermissionsActivity
                         (Function1<String, String>)
                             s -> GenericExtKt.urlDecoded(s, Charsets.UTF_8)));
               }
-              retval.putString(ARG_USERNAME, connectionInfo.getUsername());
+              if (!TextUtils.isEmpty(connectionInfo.getUsername())) {
+                retval.putString(ARG_USERNAME, connectionInfo.getUsername());
+              }
 
               if (connectionInfo.getPassword() == null) {
                 retval.putBoolean(ARG_HAS_PASSWORD, false);
-                retval.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
+                if (SSH_URI_PREFIX.equals(connectionInfo.getPrefix())) {
+                  retval.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
+                }
               } else {
                 retval.putBoolean(ARG_HAS_PASSWORD, true);
                 retval.putString(ARG_PASSWORD, connectionInfo.getPassword());
               }
               retval.putBoolean(ARG_EDIT, edit);
+
+              if ((FTP_URI_PREFIX.equals(connectionInfo.getPrefix())
+                      || FTPS_URI_PREFIX.equals(connectionInfo.getPrefix()))
+                  && connectionInfo.getArguments() != null
+                  && TLS_EXPLICIT.equals(connectionInfo.getArguments().get(ARG_TLS))) {
+                retval.putString(ARG_TLS, TLS_EXPLICIT);
+              }
+
               return Flowable.just(retval);
             })
         .subscribeOn(Schedulers.computation())
@@ -2114,7 +2147,7 @@ public class MainActivity extends PermissionsActivity
             bundle -> {
               sftpConnectDialog.setArguments(bundle);
               sftpConnectDialog.setCancelable(true);
-              sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
+              sftpConnectDialog.show(getSupportFragmentManager(), SftpConnectDialog.TAG);
             });
   }
 

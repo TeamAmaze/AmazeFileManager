@@ -81,6 +81,7 @@
     <string name="question_set_path_as_home">Möchten Sie den aktuellen Pfad als Standard für dieses Tab setzen?</string>
     <string name="directorysort">Sortierungsmodus der Verzeichnisse</string>
     <string name="sort_by">Sortieren nach</string>
+    <string name="sort_by_colon">Sortieren nach</string>
     <string name="sort_only_this">Nur diesen Ordner</string>
     <string name="theme">Thema</string>
     <string name="random">Zufälliger Skin</string>
@@ -118,9 +119,11 @@
     <string name="sort_name">Name: </string>
     <string name="lastModified">Änderungsdatum</string>
     <string name="sort_size">Größe</string>
+    <string name="sort_relevance">Relevanz</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Datei auswählen</string>
+    <string name="pick_files">Eine oder mehrere Dateien auswählen</string>
     <string name="process_viewer">Prozessanzeige</string>
     <string name="in_safe">Nicht genügend Speicherplatz</string>
     <string name="no_file_overwrite">Keine Datei überschrieben</string>
@@ -181,6 +184,8 @@
     <string name="xda_summary">Q&amp;A, Help &amp; Fehlerbehebung</string>
     <string name="circular_images">Runde Icons für Bilder und Videos verwenden</string>
     <string name="circular_icons">Runde Icons verwenden</string>
+    <string name="follow_battery_saver_title">Batteriesparmodus folgen</string>
+    <string name="follow_battery_saver_desc">Wenn diese Option ausgewählt und der Batteriesparmodus aktiviert ist, ändert sich das Design in das dunkle Design</string>
     <string name="back_title">Zurück-Schaltfläche</string>
     <string name="back_summary">Schalte Zurück-Schaltfläche am Listenkopf ein</string>
     <string name="details">Details</string>

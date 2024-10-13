@@ -441,6 +441,56 @@
                             </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
+
+                    <!-- divider -->
+                    <View
+                        android:id="@+id/view_divider_developers_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider"
+                        android:layout_marginLeft="@dimen/material_generic_large"
+                        android:layout_marginTop="@dimen/material_generic"
+                        android:layout_marginBottom="@dimen/material_generic"
+                        />
+
+                    <!-- dev 3 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_list_item"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="72dp"
+                        android:layout_marginLeft="72dp">
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/text_view_developer_3_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/developer_3"
+                                android:textSize="@dimen/material_generic_title"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_developer_3_title"
+                                android:layout_marginTop="@dimen/material_generic">
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/text_view_developer_3_github"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/github"
+                                    android:textColor="@color/accent_red"
+                                    android:layout_alignParentLeft="true"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
+                            </RelativeLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

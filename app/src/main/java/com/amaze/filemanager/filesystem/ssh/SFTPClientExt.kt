@@ -39,13 +39,14 @@ const val READ_AHEAD_MAX_UNCONFIRMED_READS: Int = 16
 fun SFTPEngine.openWithReadAheadSupport(
     path: String,
     modes: Set<OpenMode>,
-    fa: FileAttributes
+    fa: FileAttributes,
 ): RemoteFile {
-    val handle: ByteArray = request(
-        newRequest(PacketType.OPEN).putString(path, subsystem.remoteCharset)
-            .putUInt32(OpenMode.toMask(modes).toLong()).putFileAttributes(fa)
-    ).retrieve(timeoutMs.toLong(), TimeUnit.MILLISECONDS)
-        .ensurePacketTypeIs(PacketType.HANDLE).readBytes()
+    val handle: ByteArray =
+        request(
+            newRequest(PacketType.OPEN).putString(path, subsystem.remoteCharset)
+                .putUInt32(OpenMode.toMask(modes).toLong()).putFileAttributes(fa),
+        ).retrieve(timeoutMs.toLong(), TimeUnit.MILLISECONDS)
+            .ensurePacketTypeIs(PacketType.HANDLE).readBytes()
     return RemoteFile(this, path, handle)
 }
 
@@ -56,6 +57,6 @@ fun SFTPClient.openWithReadAheadSupport(path: String): RemoteFile {
     return sftpEngine.openWithReadAheadSupport(
         path,
         EnumSet.of(OpenMode.READ),
-        FileAttributes.EMPTY
+        FileAttributes.EMPTY,
     )
 }

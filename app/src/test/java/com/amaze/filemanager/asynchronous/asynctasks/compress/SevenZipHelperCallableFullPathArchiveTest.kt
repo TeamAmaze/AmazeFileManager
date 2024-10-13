@@ -26,7 +26,6 @@ import org.junit.Assert.assertTrue
 import java.io.File
 
 class SevenZipHelperCallableFullPathArchiveTest : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-direct-paths.7z"
 
@@ -37,17 +36,17 @@ class SevenZipHelperCallableFullPathArchiveTest : AbstractCompressedHelperCallab
         assertNotNull(
             result.find {
                 it.name == "1" && it.directory
-            }
+            },
         )
         assertNotNull(
             result.find {
                 it.name == "testdir" && it.directory
-            }
+            },
         )
         assertNotNull(
             result.find {
                 it.name == "test.jpg" && !it.directory
-            }
+            },
         )
     }
 
@@ -58,17 +57,17 @@ class SevenZipHelperCallableFullPathArchiveTest : AbstractCompressedHelperCallab
         assertNotNull(
             result.find {
                 it.name == "1" && it.directory
-            }
+            },
         )
         assertNotNull(
             result.find {
                 it.name == "testdir" && it.directory
-            }
+            },
         )
         assertNotNull(
             result.find {
                 it.name == "test.jpg" && !it.directory
-            }
+            },
         )
         task = createCallable("1")
         result = task.call()
@@ -77,10 +76,13 @@ class SevenZipHelperCallableFullPathArchiveTest : AbstractCompressedHelperCallab
         assertTrue(result[0].directory)
     }
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         SevenZipHelperCallable(
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

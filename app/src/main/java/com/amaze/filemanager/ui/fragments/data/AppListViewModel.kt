@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModel
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 
 class AppListViewModel : ViewModel() {
-
     var recyclerViewState: Parcelable? = null
     val isAscending = false
     val sortby = 0

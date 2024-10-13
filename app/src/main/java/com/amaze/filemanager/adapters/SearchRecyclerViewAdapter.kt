@@ -21,6 +21,9 @@
 package com.amaze.filemanager.adapters
 
 import android.content.Context
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,48 +34,65 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.colors.ColorPreference
 import java.util.Random
 
 class SearchRecyclerViewAdapter :
-    ListAdapter<HybridFileParcelable, SearchRecyclerViewAdapter.ViewHolder>(
-
-        object : DiffUtil.ItemCallback<HybridFileParcelable>() {
+    ListAdapter<SearchResult, SearchRecyclerViewAdapter.ViewHolder>(
+        object : DiffUtil.ItemCallback<SearchResult>() {
             override fun areItemsTheSame(
-                oldItem: HybridFileParcelable,
-                newItem: HybridFileParcelable
+                oldItem: SearchResult,
+                newItem: SearchResult,
             ): Boolean {
-                return oldItem.path == newItem.path && oldItem.name == newItem.name
+                return oldItem.file.path == newItem.file.path &&
+                    oldItem.file.name == newItem.file.name
             }
 
             override fun areContentsTheSame(
-                oldItem: HybridFileParcelable,
-                newItem: HybridFileParcelable
+                oldItem: SearchResult,
+                newItem: SearchResult,
             ): Boolean {
-                return oldItem.path == newItem.path && oldItem.name == newItem.name
+                return oldItem.file.path == newItem.file.path &&
+                    oldItem.file.name == newItem.file.name &&
+                    oldItem.matchRange == newItem.matchRange
             }
-        }
+        },
     ) {
-    override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.search_row_item, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        type: Int,
+    ): ViewHolder {
+        val v: View =
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.search_row_item, parent, false)
         return ViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: SearchRecyclerViewAdapter.ViewHolder, position: Int) {
-        val item = getItem(position)
-
-        holder.fileNameTV.text = item.name
-        holder.filePathTV.text = item.path.substring(0, item.path.lastIndexOf("/"))
-
-        holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
+    override fun onBindViewHolder(
+        holder: SearchRecyclerViewAdapter.ViewHolder,
+        position: Int,
+    ) {
+        val (file, matchResult) = getItem(position)
 
         val colorPreference =
             (AppConfig.getInstance().mainActivityContext as MainActivity).currentColorPreference
 
-        if (item.isDirectory) {
+        val fileName = SpannableString(file.name)
+        fileName.setSpan(
+            ForegroundColorSpan(colorPreference.accent),
+            matchResult.first,
+            matchResult.last + 1,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+
+        holder.fileNameTV.text = fileName
+        holder.filePathTV.text = file.path.substring(0, file.path.lastIndexOf("/"))
+
+        holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
+
+        if (file.isDirectory) {
             holder.colorView.setBackgroundColor(colorPreference.primaryFirstTab)
         } else {
             holder.colorView.setBackgroundColor(colorPreference.accent)
@@ -80,7 +100,6 @@ class SearchRecyclerViewAdapter :
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         val fileNameTV: AppCompatTextView
         val filePathTV: AppCompatTextView
         val colorView: View
@@ -93,16 +112,16 @@ class SearchRecyclerViewAdapter :
 
             view.setOnClickListener {
 
-                val item = getItem(adapterPosition)
+                val (file, _) = getItem(adapterPosition)
 
-                if (!item.isDirectory) {
-                    item.openFile(
+                if (!file.isDirectory) {
+                    file.openFile(
                         AppConfig.getInstance().mainActivityContext as MainActivity?,
-                        false
+                        false,
                     )
                 } else {
                     (AppConfig.getInstance().mainActivityContext as MainActivity?)
-                        ?.goToMain(item.path)
+                        ?.goToMain(file.path)
                 }
 
                 (AppConfig.getInstance().mainActivityContext as MainActivity?)
@@ -116,9 +135,9 @@ class SearchRecyclerViewAdapter :
             context,
             ColorPreference.availableColors[
                 Random().nextInt(
-                    ColorPreference.availableColors.size - 1
-                )
-            ]
+                    ColorPreference.availableColors.size - 1,
+                ),
+            ],
         )
     }
 }

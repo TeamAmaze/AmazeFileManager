@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -143,6 +143,9 @@ public class MainFragment extends Fragment
   private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
   private static final String KEY_FRAGMENT_MAIN = "main";
 
+  /** Key for boolean in arguments whether to hide the FAB if this {@link MainFragment} is shown */
+  public static final String BUNDLE_HIDE_FAB = "hideFab";
+
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -167,6 +170,8 @@ public class MainFragment extends Fragment
 
   private MainFragmentViewModel mainFragmentViewModel;
   private MainActivityViewModel mainActivityViewModel;
+
+  private boolean hideFab = false;
 
   private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
@@ -207,6 +212,9 @@ public class MainFragment extends Fragment
         requireMainActivity().getCurrentColorPreference().getPrimaryFirstTab());
     mainFragmentViewModel.setPrimaryTwoColor(
         requireMainActivity().getCurrentColorPreference().getPrimarySecondTab());
+    if (getArguments() != null) {
+      hideFab = getArguments().getBoolean(BUNDLE_HIDE_FAB, false);
+    }
   }
 
   @Override
@@ -486,8 +494,8 @@ public class MainFragment extends Fragment
                       .replace(CryptUtil.AESCRYPT_EXTENSION, ""));
 
           EncryptDecryptUtils.decryptFile(
-              getContext(),
-              getMainActivity(),
+              requireContext(),
+              requireMainActivity(),
               this,
               mainFragmentViewModel.getOpenMode(),
               layoutElementParcelable.generateBaseFile(),
@@ -1058,7 +1066,12 @@ public class MainFragment extends Fragment
   }
 
   public void computeScroll() {
-    View vi = listView.getChildAt(0);
+    View vi = null;
+
+    if (listView != null) {
+      vi = listView.getChildAt(0);
+    }
+
     int top = (vi == null) ? 0 : vi.getTop();
     int index;
     if (mainFragmentViewModel.isList()) index = mLayoutManager.findFirstVisibleItemPosition();
@@ -1073,6 +1086,7 @@ public class MainFragment extends Fragment
     if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM
         || mainFragmentViewModel.getOpenMode() == OpenMode.TRASH_BIN) {
       loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+      setHideFab(false);
       return;
     }
 
@@ -1081,6 +1095,7 @@ public class MainFragment extends Fragment
     if (requireMainActivity().getListItemSelected()) {
       adapter.toggleChecked(false);
     } else {
+      setHideFab(false);
       if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
         if (mainFragmentViewModel.getSmbPath() != null
             && !mainFragmentViewModel.getSmbPath().equals(mainFragmentViewModel.getCurrentPath())) {
@@ -1526,5 +1541,15 @@ public class MainFragment extends Fragment
     } catch (IndexOutOfBoundsException e) {
       LOG.warn("Failed to adjust scrollview for tv", e);
     }
+  }
+
+  /** Whether the FAB should be hidden when this MainFragment is shown */
+  public boolean getHideFab() {
+    return this.hideFab;
+  }
+
+  /** Set whether the FAB should be hidden when this MainFragment is shown */
+  public void setHideFab(boolean hideFab) {
+    this.hideFab = hideFab;
   }
 }

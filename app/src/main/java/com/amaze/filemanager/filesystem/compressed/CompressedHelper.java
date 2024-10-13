@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -202,21 +202,23 @@ public abstract class CompressedHelper {
    */
   public static String getFileName(String compressedName) {
     compressedName = compressedName.toLowerCase();
-    if (isZip(compressedName)
-        || isTar(compressedName)
-        || isRar(compressedName)
-        || is7zip(compressedName)
-        || isXz(compressedName)
-        || isLzma(compressedName)
-        || isGzip(compressedName)
-        || compressedName.endsWith(fileExtensionGzipTarShort)
-        || compressedName.endsWith(fileExtensionBzip2TarShort)
-        || isGzip(compressedName)
-        || isBzip2(compressedName)
-        || isLzma(compressedName)
-        || isXz(compressedName)) {
+    boolean hasFileName = compressedName.contains(".");
+    if (hasFileName
+        && (isZip(compressedName)
+            || isTar(compressedName)
+            || isRar(compressedName)
+            || is7zip(compressedName)
+            || isXz(compressedName)
+            || isLzma(compressedName)
+            || isGzip(compressedName)
+            || compressedName.endsWith(fileExtensionGzipTarShort)
+            || compressedName.endsWith(fileExtensionBzip2TarShort)
+            || isGzip(compressedName)
+            || isBzip2(compressedName)
+            || isLzma(compressedName)
+            || isXz(compressedName))) {
       return compressedName.substring(0, compressedName.lastIndexOf("."));
-    } else if (isGzippedTar(compressedName)
+    } else if (hasFileName && isGzippedTar(compressedName)
         || isXzippedTar(compressedName)
         || isLzippedTar(compressedName)
         || isBzippedTar(compressedName)) {

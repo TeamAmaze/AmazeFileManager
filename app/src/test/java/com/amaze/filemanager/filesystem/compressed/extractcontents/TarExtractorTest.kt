@@ -25,7 +25,6 @@ import org.junit.Ignore
 import org.junit.Test
 
 class TarExtractorTest : AbstractArchiveExtractorTest() {
-
     override val archiveType: String = "tar"
 
     override fun extractorClass(): Class<out Extractor?> = TarExtractor::class.java

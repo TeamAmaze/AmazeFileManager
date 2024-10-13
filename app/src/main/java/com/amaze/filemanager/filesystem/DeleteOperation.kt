@@ -37,7 +37,10 @@ object DeleteOperation {
      * @return true if successful.
      */
     @JvmStatic
-    private fun rmdir(file: File, context: Context): Boolean {
+    private fun rmdir(
+        file: File,
+        context: Context,
+    ): Boolean {
         if (!file.exists()) return true
         val files = file.listFiles()
         if (files != null && files.size > 0) {
@@ -70,7 +73,7 @@ object DeleteOperation {
             resolver.delete(
                 MediaStore.Files.getContentUri("external"),
                 MediaStore.MediaColumns.DATA + "=?",
-                arrayOf(file.absolutePath)
+                arrayOf(file.absolutePath),
             )
         }
         return !file.exists()
@@ -83,7 +86,10 @@ object DeleteOperation {
      * @return True if successfully deleted.
      */
     @JvmStatic
-    fun deleteFile(file: File, context: Context): Boolean {
+    fun deleteFile(
+        file: File,
+        context: Context,
+    ): Boolean {
         // First try the normal deletion.
         val fileDelete = rmdir(file, context)
         if (file.delete() || fileDelete) return true

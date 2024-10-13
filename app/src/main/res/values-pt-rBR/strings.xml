@@ -215,7 +215,7 @@
     <string name="text">Texto</string>
     <string name="audio">Áudio</string>
     <string name="video">Vídeo</string>
-    <string name="other">Outros</string>
+    <string name="other">Outro</string>
     <string name="image">Imagem</string>
     <string name="contributors">Colaboradores</string>
     <string name="save_paths">Memorizar caminhos</string>
@@ -321,46 +321,6 @@
     <string name="use_custom_ip">Usar IP personalizado</string>
     <string name="bookmark_lost">Favorito não encontrado, recriando&#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-                <h1>Como acessar a pasta compartilhada do Windows no android (smb)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>Ativar compartilhamento de arquivos</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Abra o Painel de Controle, clique em Escolher o grupo doméstico e as opções de compartilhamento em Rede e Internet e clique em Alterar configurações de compartilhamento avançadas. Ative o recurso de compartilhamento de arquivos e impressoras.\n\n
-                    </p>
-
-                    <li>
-                        <b>Configurações adicionais de compartilhamento de arquivos</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Você também pode querer configurar as outras configurações de compartilhamento avançadas aqui. \n
-                        Por exemplo, você pode habilitar o acesso aos seus arquivos sem uma senha se confiar em todos os dispositivos da sua rede local. Uma vez que o compartilhamento de arquivos e impressoras estiver ativado, abra o File Explorer ou Windows Explorer, clique com o botão direito do mouse na pasta que deseja compartilhar e selecione Propriedades. \n
-                        Clique no botão Compartilhar e disponibilize a pasta na rede.\n\n
-                        </p>
-                        
-                    <li>
-                        <b>Certifique-se de que ambos os dispositivos estejam na mesma rede Wi-Fi</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Esta funcionalidade torna os arquivos disponíveis na rede local, por isso o seu PC e os dispositivos móveis têm de estar na mesma rede local. Você não pode acessar uma pasta compartilhada do Windows pela Internet ou quando o smartphone estiver utilizando dados móveis - ele precisa estar conectado ao Wi-Fi.\n\n
-                    </p>
-                    
-                    <li>
-                        <b>Localizar endereço IP</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        Abra o Prompt de Comando. Digite \'ipconfig\' e pressione Enter. Procure por Gateway Padrão em seu adaptador de rede para o endereço IP do seu roteador. Procure por \\\"Endereço IPv4\\\" na mesma seção do adaptador para encontrar o endereço IP do seu computador.\n\n
-                    </p>
-                    
-                    <b>Insira os detalhes na caixa de diálogo smb</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
     <string name="share_limit">Não é possível compartilhar mais que 100 arquivos</string>
     <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
     <string name="information">Informação</string>
@@ -719,7 +679,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="compressed_explorer_fragment_error_open_uri">Erro abrindo URI \"%s\" para leitura.</string>
     <string name="error_empty_archive">\"%s\" está vazio.</string>
     <string name="error_bad_archive_without_info">\"%s\" está corrompido.</string>
-    <string name="error_bad_archive_with_info">\"%s\" está corrompido.\nMensagem do extrator de arquivos:\"%s\"</string>
+    <string name="error_bad_archive_with_info">"%s" está corrompido.\nMensagem do extrator de arquivos:"%s"</string>
     <string name="security_error">Arquivo não pôde ser aberto por esse aplicativo</string>
     <string name="cloud_drive_tooltip">Criar uma nova conexão Google Drive™ para gerenciar arquivos de dentro do gerenciador de arquivos Amaze</string>
     <string name="signin_with_google_title">Autenticar para usar o Google Drive™</string>
@@ -740,22 +700,17 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="ui_summary">Controlar quais informações mostrar, personalizar a barra lateral e alterar preferência da interface.</string>
     <string name="behavior_summary">Modificar comportamentos como pesquisa avançada e abrir arquivos como uma nova tarefa</string>
     <string name="security_summary">Configurar senha e criptografia</string>
-
     <string name="quick_desc">Arquivos acessados através do Amaze recentemente</string>
     <string name="recent_desc">Arquivos criados ou modificados recentemente</string>
     <string name="error_cannot_find_way_open">Não foi encontrada forma de abrir arquivo</string>
     <string name="error_cant_decompress_that_file">Não foi possível processar o arquivo</string>
     <string name="analyse_storage">Analizar Armazenamento</string>
-    <string name="download_amaze_utils_text">Você está sendo redirecionado para Amaze File Utilities. É a nossa oferta que tem visualizador audio/vídeo/documentos, que permite analizar armazenamento por imagens escuras/borradas, arquivos duplicados, e transferência por Wifi P2P e mais.\nNos apoie ao experimentar.</string>
     <string name="download">Baixar</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Obrigado por instalar Amaze File Utilities. Você está sendo redirecionado para o app.</string>
     <string name="image_viewer">Visualizador de Imagens Amaze</string>
     <string name="video_player">Leitor de Vídeo Amaze</string>
     <string name="amaze_audio_player">Leitor de Música Amaze</string>
-    <string name="pdf_viewer">Visualizador de Pdf Amaze</string>
-    <string name="epub_viewer">Visualizador de Epub Amaze</string>
-    <string name="docx_viewer">Visualizador de Doc Amaze</string>
     <string name="share_logs">Compartilhar logs</string>
     <string name="share_logs_summary">Compartilhar logs capturados via email / telegram</string>
     <string name="open_with_amaze">Abrir com Amaze</string>
@@ -767,7 +722,7 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="preference_delete_confirmation_summary">Pedir confirmação antes de apagar arquivos. Desabilitar essa opção é perigoso!</string>
     <string name="protocol_ftps">FTP com segurança</string>
     <string name="unavailable">Não disponível</string>
+
     <string name="cloud_error_fdroid">Amaze Cloud Plugin não é compatível com a versão F-Droid. Por favor, use a versão da Play Store do Amaze.</string>
-    <string name="not_found_enabled_webview">Nenhum navegador encontrado</string>
-</resources>
+    </resources>
 

@@ -28,7 +28,6 @@ import java.io.File
 import java.io.IOException
 
 abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractArchiveExtractorTest() {
-
     /**
      * Test extract files without password.
      */
@@ -92,10 +91,11 @@ abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractArchiveE
     }
 
     override val archiveFile: File
-        get() = File(
-            Environment.getExternalStorageDirectory(),
-            "test-archive-encrypted.$archiveType"
-        )
+        get() =
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test-archive-encrypted.$archiveType",
+            )
 
     protected abstract fun expectedRootExceptionClass(): Array<Class<*>>
 
@@ -108,7 +108,9 @@ abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractArchiveE
                 } else {
                     c.isAssignableFrom(e.javaClass)
                 }
-            ) return
+            ) {
+                return
+            }
         }
         Assert.fail("Exception verification failed.")
         throw e

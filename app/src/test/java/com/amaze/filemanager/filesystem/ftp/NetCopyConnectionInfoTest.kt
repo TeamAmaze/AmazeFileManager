@@ -18,27 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.amaze.filemanager.filesystem.ftp
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.utils.urlDecoded
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.net.URLDecoder.decode
 import java.net.URLEncoder.encode
 
-/* ktlint-disable max-line-length */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class]
+    shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class],
 )
 @Suppress("StringLiteralDuplication")
 class NetCopyConnectionInfoTest {
-
     /**
      * Test unsupported URL prefixes should throw IllegalArgumentException.
      */
@@ -71,7 +73,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testSimple() {
         NetCopyConnectionInfo(
-            "ftp://testuser:testpassword@127.0.0.1:22222"
+            "ftp://testuser:testpassword@127.0.0.1:22222",
         ).run {
             assertEquals("ftp://", prefix)
             assertEquals("testuser", username)
@@ -91,7 +93,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testQueryString() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222?tls=implicit&passive=false"
+            "ftps://testuser:testpassword@127.0.0.1:22222?tls=implicit&passive=false",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -115,7 +117,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDefaultPath() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222/srv/tomopet-service"
+            "ftps://testuser:testpassword@127.0.0.1:22222/srv/tomopet-service",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -135,7 +137,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDefaultPathWithFilename() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222/srv/tomopet-service/history.txt"
+            "ftps://testuser:testpassword@127.0.0.1:22222/srv/tomopet-service/history.txt",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -155,7 +157,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDefaultPathWithQueryString() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222/srv/tomopet-service?tls=explicit&passive=true"
+            "ftps://testuser:testpassword@127.0.0.1:22222/srv/tomopet-service?tls=explicit&passive=true",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -179,7 +181,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDefaultPathURLEncoded() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222/Users/TranceLove/My+Documents/%40TranceLove%231433%261434"
+            "ftps://testuser:testpassword@127.0.0.1:22222/Users/TranceLove/My+Documents/%40TranceLove%231433%261434",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -189,7 +191,7 @@ class NetCopyConnectionInfoTest {
             assertEquals("/Users/TranceLove/My+Documents/%40TranceLove%231433%261434", defaultPath)
             assertEquals(
                 "/Users/TranceLove/My Documents/@TranceLove#1433&1434",
-                defaultPath?.urlDecoded()
+                defaultPath?.urlDecoded(),
             )
             assertEquals("%40TranceLove%231433%261434", lastPathSegment())
             assertEquals("@TranceLove#1433&1434", lastPathSegment()?.urlDecoded())
@@ -204,7 +206,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDefaultPathWithFilenameURLEncoded() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222/home/trancelove/My+Web+Sites/Test/Awesome-stars/%7BMaruell+Horbis%7D+Tris%2BSurplus+40%25+off+%40rugio.txt"
+            "ftps://testuser:testpassword@127.0.0.1:22222/home/trancelove/My+Web+Sites/Test/Awesome-stars/%7BMaruell+Horbis%7D+Tris%2BSurplus+40%25+off+%40rugio.txt",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -214,15 +216,15 @@ class NetCopyConnectionInfoTest {
             assertEquals("/home/trancelove/My+Web+Sites/Test/Awesome-stars", defaultPath)
             assertEquals(
                 "/home/trancelove/My Web Sites/Test/Awesome-stars",
-                defaultPath?.urlDecoded()
+                defaultPath?.urlDecoded(),
             )
             assertEquals(
                 "%7BMaruell+Horbis%7D+Tris%2BSurplus+40%25+off+%40rugio.txt",
-                lastPathSegment()
+                lastPathSegment(),
             )
             assertEquals(
                 "{Maruell Horbis} Tris+Surplus 40% off @rugio.txt",
-                lastPathSegment()?.urlDecoded()
+                lastPathSegment()?.urlDecoded(),
             )
             assertNull(queryString)
             assertNull(arguments)
@@ -235,7 +237,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDefaultPathWithQueryStringURLEncoded() {
         NetCopyConnectionInfo(
-            "ftps://testuser:testpassword@127.0.0.1:22222/home/trancelove/My+Web+Sites/Test/Awesome-stars/%7BMaruell+Horbis%7D+Tris%2BSurplus+40%25+off+%40rugio.txt?easter_egg=%7B%7D%28%29%26%5E%25*%3C%3E%21%40%23%24%25%3F%3A%22%3B%27"
+            "ftps://testuser:testpassword@127.0.0.1:22222/home/trancelove/My+Web+Sites/Test/Awesome-stars/%7BMaruell+Horbis%7D+Tris%2BSurplus+40%25+off+%40rugio.txt?easter_egg=%7B%7D%28%29%26%5E%25*%3C%3E%21%40%23%24%25%3F%3A%22%3B%27",
         ).run {
             assertEquals("ftps://", prefix)
             assertEquals("testuser", username)
@@ -245,25 +247,25 @@ class NetCopyConnectionInfoTest {
             assertEquals("/home/trancelove/My+Web+Sites/Test/Awesome-stars", defaultPath)
             assertEquals(
                 "/home/trancelove/My Web Sites/Test/Awesome-stars",
-                defaultPath?.urlDecoded()
+                defaultPath?.urlDecoded(),
             )
             assertEquals(
                 "%7BMaruell+Horbis%7D+Tris%2BSurplus+40%25+off+%40rugio.txt",
-                lastPathSegment()
+                lastPathSegment(),
             )
             assertEquals(
                 "{Maruell Horbis} Tris+Surplus 40% off @rugio.txt",
-                lastPathSegment()?.urlDecoded()
+                lastPathSegment()?.urlDecoded(),
             )
             assertEquals(
                 "easter_egg=%7B%7D%28%29%26%5E%25*%3C%3E%21%40%23%24%25%3F%3A%22%3B%27",
-                queryString
+                queryString,
             )
             assertNotNull(arguments)
             arguments?.run {
                 assertEquals(
                     "%7B%7D%28%29%26%5E%25*%3C%3E%21%40%23%24%25%3F%3A%22%3B%27",
-                    this["easter_egg"]
+                    this["easter_egg"],
                 )
                 assertEquals("{}()&^%*<>!@#\$%?:\";'", this["easter_egg"]?.urlDecoded())
             }
@@ -276,7 +278,7 @@ class NetCopyConnectionInfoTest {
     @Test
     fun testDifficultCredentials() {
         NetCopyConnectionInfo(
-            "ftp://testuser:${encode("testP@##word", Charsets.UTF_8.name())}@127.0.0.1:22222"
+            "ftp://testuser:${encode("testP@##word", Charsets.UTF_8.name())}@127.0.0.1:22222",
         ).run {
             assertEquals("ftp://", prefix)
             assertEquals("testuser", username)
@@ -326,11 +328,10 @@ class NetCopyConnectionInfoTest {
             assertNotNull(this.lastPathSegment())
         }
         NetCopyConnectionInfo(
-            "ftp://127.0.0.1////a/bunch///of///slash//folders////////////test.log"
+            "ftp://127.0.0.1////a/bunch///of///slash//folders////////////test.log",
         ).run {
 //            assertEquals("ftp://127.0.0.1/a/bunch/of/slash/folders", this.toString())
             assertEquals("test.log", this.lastPathSegment())
         }
     }
 }
-/* ktlint-disable max-line-length */

@@ -40,7 +40,8 @@ import java.io.StringReader
 import java.net.DatagramPacket
 import java.net.InetAddress
 import java.net.MulticastSocket
-import java.util.*
+import java.util.UUID
+import java.util.WeakHashMap
 
 /**
  * [SmbDeviceScannerObservable.DiscoverDeviceStrategy] implementation to discover SMB devices using
@@ -66,20 +67,22 @@ import java.util.*
  * @author TranceLove <airwave209gt at gmail.com>
  */
 class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStrategy {
+    private val multicastRequestTemplate =
+        AppConfig.getInstance()
+            .resources.openRawResource(R.raw.wsdd_discovery)
+            .reader(Charsets.UTF_8).readText()
 
-    private val multicastRequestTemplate = AppConfig.getInstance()
-        .resources.openRawResource(R.raw.wsdd_discovery)
-        .reader(Charsets.UTF_8).readText()
+    private val wsdRequestTemplate =
+        AppConfig.getInstance()
+            .resources.openRawResource(R.raw.wsd_request)
+            .reader(Charsets.UTF_8).readText()
 
-    private val wsdRequestTemplate = AppConfig.getInstance()
-        .resources.openRawResource(R.raw.wsd_request)
-        .reader(Charsets.UTF_8).readText()
-
-    private val wsdRequestHeaders = mutableMapOf(
-        Pair("Accept-Encoding", "Identity"),
-        Pair("Connection", "Close"),
-        Pair("User-Agent", "wsd")
-    )
+    private val wsdRequestHeaders =
+        mutableMapOf(
+            Pair("Accept-Encoding", "Identity"),
+            Pair("Connection", "Close"),
+            Pair("User-Agent", "wsd"),
+        )
 
     var multicastSocketFactory: () -> MulticastSocket = DEFAULT_MULTICAST_SOCKET_FACTORY
         @VisibleForTesting
@@ -115,16 +118,18 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
                 // Specification said UUIDv5 which is device dependent. But random-based UUID should
                 // also work here
                 val tempDeviceUuid = UUID.randomUUID()
-                val request = multicastRequestTemplate
-                    .replace("##MY_UUID##", tempDeviceUuid.toString())
-                    .toByteArray(Charsets.UTF_8)
+                val request =
+                    multicastRequestTemplate
+                        .replace("##MY_UUID##", tempDeviceUuid.toString())
+                        .toByteArray(Charsets.UTF_8)
 
-                val requestPacket = DatagramPacket(
-                    request,
-                    request.size,
-                    multicastAddressV4,
-                    UDP_PORT
-                )
+                val requestPacket =
+                    DatagramPacket(
+                        request,
+                        request.size,
+                        multicastAddressV4,
+                        UDP_PORT,
+                    )
                 socket.send(requestPacket)
 
                 runCatching {
@@ -138,7 +143,7 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
                                 sentFromAddress,
                                 tempDeviceUuid.toString(),
                                 replyPacket.data,
-                                callback
+                                callback,
                             )
                         }
                     }
@@ -154,7 +159,7 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
         sourceAddress: InetAddress,
         tempDeviceId: String,
         response: ByteArray,
-        callback: (ComputerParcelable) -> Unit
+        callback: (ComputerParcelable) -> Unit,
     ) {
         val values = parseXmlForResponse(response, arrayOf(WSD_TYPES, WSA_ADDRESS))
         val type = values[WSD_TYPES]
@@ -170,7 +175,7 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
         sourceAddress: InetAddress,
         urn: String,
         tempDeviceId: String,
-        callback: (ComputerParcelable) -> Unit
+        callback: (ComputerParcelable) -> Unit,
     ) {
         if (type.endsWith(PUB_COMPUTER)) {
             val messageId = UUID.randomUUID().toString()
@@ -178,36 +183,39 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
             val endpoint = urn.substringAfter(URN_UUID)
             val dest =
                 "http://${sourceAddress.hostAddress}:$TCP_PORT/$endpoint"
-            val requestBody = wsdRequestTemplate
-                .replace("##MESSAGE_ID##", "$URN_UUID$messageId")
-                .replace("##DEST_UUID##", urn)
-                .replace("##MY_UUID##", "$URN_UUID$tempDeviceId")
-                .toRequestBody("application/soap+xml".toMediaType())
+            val requestBody =
+                wsdRequestTemplate
+                    .replace("##MESSAGE_ID##", "$URN_UUID$messageId")
+                    .replace("##DEST_UUID##", urn)
+                    .replace("##MY_UUID##", "$URN_UUID$tempDeviceId")
+                    .toRequestBody("application/soap+xml".toMediaType())
             queue.newCall(
                 Request.Builder()
                     .url(dest)
                     .post(requestBody)
                     .headers(wsdRequestHeaders.toHeaders())
-                    .build()
+                    .build(),
             ).execute().use { resp ->
                 if (resp.isSuccessful && resp.body != null) {
                     resp.body?.run {
                         if (log.isTraceEnabled) log.trace("Response: $resp")
-                        val values = parseXmlForResponse(
-                            this.string(),
-                            arrayOf(WSDP_TYPES, WSA_ADDRESS, PUB_COMPUTER)
-                        )
+                        val values =
+                            parseXmlForResponse(
+                                this.string(),
+                                arrayOf(WSDP_TYPES, WSA_ADDRESS, PUB_COMPUTER),
+                            )
                         if (PUB_COMPUTER == values[WSDP_TYPES] && urn == values[WSA_ADDRESS]) {
                             if (true == values[PUB_COMPUTER]?.isNotEmpty()) {
-                                val computerName: String = values[PUB_COMPUTER].let {
-                                    if (it!!.contains(SLASH)) {
-                                        it.substringBefore(SLASH)
-                                    } else {
-                                        it
+                                val computerName: String =
+                                    values[PUB_COMPUTER].let {
+                                        if (it!!.contains(SLASH)) {
+                                            it.substringBefore(SLASH)
+                                        } else {
+                                            it
+                                        }
                                     }
-                                }
                                 callback(
-                                    ComputerParcelable(sourceAddress.hostAddress, computerName)
+                                    ComputerParcelable(sourceAddress.hostAddress, computerName),
                                 )
                             }
                         }
@@ -223,19 +231,25 @@ class WsddDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDeviceStra
         cancelled = true
     }
 
-    private fun parseXmlForResponse(xml: ByteArray, tags: Array<String>) =
-        parseXmlForResponse(xml.toString(Charsets.UTF_8), tags)
+    private fun parseXmlForResponse(
+        xml: ByteArray,
+        tags: Array<String>,
+    ) = parseXmlForResponse(xml.toString(Charsets.UTF_8), tags)
 
-    private fun parseXmlForResponse(xml: String, tags: Array<String>): Map<String, String> {
+    private fun parseXmlForResponse(
+        xml: String,
+        tags: Array<String>,
+    ): Map<String, String> {
         if (xml.isEmpty()) {
             return emptyMap()
         } else {
-            val xmlParser = XmlPullParserFactory.newInstance().also {
-                it.isNamespaceAware = false
-                it.isValidating = false
-            }.newPullParser().also {
-                it.setInput(StringReader(xml))
-            }
+            val xmlParser =
+                XmlPullParserFactory.newInstance().also {
+                    it.isNamespaceAware = false
+                    it.isValidating = false
+                }.newPullParser().also {
+                    it.setInput(StringReader(xml))
+                }
             val retval = WeakHashMap<String, String>()
             var currentTag: String = ""
             var currentValue: String = ""

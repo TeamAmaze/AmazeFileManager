@@ -34,7 +34,6 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [KITKAT, P, Build.VERSION_CODES.R])
 class MinMaxInputFilterTest {
-
     /**
      * Test MinMaxInputFilter functioning
      */

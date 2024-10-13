@@ -33,14 +33,13 @@ import com.amaze.filemanager.ui.theme.AppTheme
  * This dialog is to warn users of the caveat of using Amaze's own encryption format.
  */
 object EncryptWarningDialog {
-
     /**
      * Display warning dialog on use of Amaze's own encryption format.
      */
     @JvmStatic
     fun show(
         main: MainActivity,
-        appTheme: AppTheme
+        appTheme: AppTheme,
     ) {
         val accentColor: Int = main.accent
         val preferences = PreferenceManager.getDefaultSharedPreferences(main)

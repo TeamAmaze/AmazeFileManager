@@ -27,7 +27,6 @@ import java.io.File
 
 @Ignore("Test skipped due to problem at upstream library.")
 class SevenZipHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "compress.7z"
 
@@ -42,10 +41,13 @@ class SevenZipHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest(
     @Ignore("Not testing this one")
     override fun testSublevels() = Unit
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         SevenZipHelperCallable(
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

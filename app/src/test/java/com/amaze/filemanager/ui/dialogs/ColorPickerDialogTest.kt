@@ -41,20 +41,20 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class],
-    sdk = [KITKAT, P, VERSION_CODES.R]
+    sdk = [KITKAT, P, VERSION_CODES.R],
 )
 class ColorPickerDialogTest {
-
     /**
      * Tests [ColorPickerDialog.onCreateDialog] as sanity check.
      */
     @Test
     fun testCreateDialog() {
-        val dialog = ColorPickerDialog.newInstance(
-            PreferencesConstants.PRESELECTED_CONFIGS,
-            ColorPreferenceHelper.randomize(AppConfig.getInstance()),
-            AppTheme.LIGHT
-        )
+        val dialog =
+            ColorPickerDialog.newInstance(
+                PreferencesConstants.PRESELECTED_CONFIGS,
+                ColorPreferenceHelper.randomize(AppConfig.getInstance()),
+                AppTheme.LIGHT,
+            )
         assertNotNull(dialog)
     }
 }

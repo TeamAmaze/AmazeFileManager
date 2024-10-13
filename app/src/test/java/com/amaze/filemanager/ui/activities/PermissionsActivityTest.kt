@@ -63,10 +63,9 @@ import org.robolectric.shadows.ShadowStorageManager
 @RunWith(AndroidJUnit4::class)
 @Config(
     sdk = [KITKAT, P, Build.VERSION_CODES.R],
-    shadows = [ShadowMultiDex::class, ShadowStorageManager::class]
+    shadows = [ShadowMultiDex::class, ShadowStorageManager::class],
 )
 class PermissionsActivityTest {
-
     private lateinit var scenario: ActivityScenario<MainActivity>
 
     /**
@@ -92,8 +91,8 @@ class PermissionsActivityTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Shadows.shadowOf(
                 ApplicationProvider.getApplicationContext<Context>().getSystemService(
-                    StorageManager::class.java
-                )
+                    StorageManager::class.java,
+                ),
             ).resetStorageVolumeList()
         }
     }
@@ -111,13 +110,13 @@ class PermissionsActivityTest {
             val shadowApplication = shadowOf(RuntimeEnvironment.getApplication())
             shadowOf(
                 activity.getSystemService(
-                    AppOpsManager::class.java
-                )
+                    AppOpsManager::class.java,
+                ),
             ).setMode(
                 92,
                 activity.applicationInfo.uid,
                 activity.packageName,
-                AppOpsManager.MODE_IGNORED
+                AppOpsManager.MODE_IGNORED,
             )
             activity.requestAllFilesAccess { }
             assertNotNull(ShadowDialog.getLatestDialog())
@@ -126,18 +125,18 @@ class PermissionsActivityTest {
                 (this as MaterialDialog).run {
                     assertEquals(
                         activity.getString(com.amaze.filemanager.R.string.grantper),
-                        this.titleView.text
+                        this.titleView.text,
                     )
                     assertEquals(
                         activity.getString(
-                            com.amaze.filemanager.R.string.grant_all_files_permission
+                            com.amaze.filemanager.R.string.grant_all_files_permission,
                         ),
-                        this.contentView?.text.toString()
+                        this.contentView?.text.toString(),
                     )
                     this.getActionButton(DialogAction.POSITIVE).run {
                         assertEquals(
                             activity.getString(com.amaze.filemanager.R.string.grant),
-                            this.text
+                            this.text,
                         )
                         performClick()
                     }
@@ -145,7 +144,7 @@ class PermissionsActivityTest {
                     assertNotNull(intent)
                     assertEquals(
                         Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                        intent.action
+                        intent.action,
                     )
                     assertEquals(Uri.parse("package:${activity.packageName}"), intent.data)
                 }

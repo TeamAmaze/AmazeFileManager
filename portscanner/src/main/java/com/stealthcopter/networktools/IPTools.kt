@@ -32,15 +32,18 @@ object IPTools {
      * https://examples.javacodegeeks.com/core-java/util/regex/regular-expressions-for-ip-v4-and-ip-v6-addresses/
      * note that these patterns will match most but not all valid ips
      */
-    private val IPV4_PATTERN = Pattern.compile(
-        "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$"
-    )
-    private val IPV6_STD_PATTERN = Pattern.compile(
-        "^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$"
-    )
-    private val IPV6_HEX_COMPRESSED_PATTERN = Pattern.compile(
-        "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$"
-    )
+    private val IPV4_PATTERN =
+        Pattern.compile(
+            "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$",
+        )
+    private val IPV6_STD_PATTERN =
+        Pattern.compile(
+            "^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$",
+        )
+    private val IPV6_HEX_COMPRESSED_PATTERN =
+        Pattern.compile(
+            "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$",
+        )
 
     /**
      * Answers if given string is valid IPv4 address.
@@ -88,13 +91,14 @@ object IPTools {
      * Return The list of all IPv4 addresses found
      */
     private val localIPv4Addresses: List<InetAddress>
-        get() = runCatching {
-            NetworkInterface.getNetworkInterfaces().toList().flatMap { iface ->
-                iface.inetAddresses.asSequence().filter { addr ->
-                    addr is Inet4Address && !addr.isLoopbackAddress()
+        get() =
+            runCatching {
+                NetworkInterface.getNetworkInterfaces().toList().flatMap { iface ->
+                    iface.inetAddresses.asSequence().filter { addr ->
+                        addr is Inet4Address && !addr.isLoopbackAddress()
+                    }
                 }
-            }
-        }.getOrDefault(emptyList())
+            }.getOrDefault(emptyList())
 
     /**
      * Check if the provided ip address refers to the localhost
@@ -108,10 +112,14 @@ object IPTools {
     fun isIpAddressLocalhost(addr: InetAddress?): Boolean {
         return addr?.run {
             // Check if the address is a valid special local or loop back
-            if (addr.isAnyLocalAddress || addr.isLoopbackAddress) true else try {
-                NetworkInterface.getByInetAddress(addr) != null
-            } catch (e: SocketException) {
-                false
+            if (addr.isAnyLocalAddress || addr.isLoopbackAddress) {
+                true
+            } else {
+                try {
+                    NetworkInterface.getByInetAddress(addr) != null
+                } catch (e: SocketException) {
+                    false
+                }
             }
         } ?: false
     }
@@ -125,6 +133,5 @@ object IPTools {
      * @return - true if ip address is self
      */
     @JvmStatic
-    fun isIpAddressLocalNetwork(addr: InetAddress?): Boolean =
-        addr != null && addr.isSiteLocalAddress
+    fun isIpAddressLocalNetwork(addr: InetAddress?): Boolean = addr != null && addr.isSiteLocalAddress
 }

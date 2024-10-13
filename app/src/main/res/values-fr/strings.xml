@@ -80,7 +80,8 @@
     <string name="deleting">Suppression</string>
     <string name="question_set_path_as_home">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
     <string name="directorysort">Option de tri des répertoires</string>
-    <string name="sort_by">Trier par :</string>
+    <string name="sort_by">Trier par</string>
+    <string name="sort_by_colon">Trier par :</string>
     <string name="sort_only_this">Uniquement ce dossier</string>
     <string name="theme">Thème</string>
     <string name="random">Apparence aléatoire</string>
@@ -118,6 +119,7 @@
     <string name="sort_name">Nom</string>
     <string name="lastModified">Dernière modification</string>
     <string name="sort_size">Taille</string>
+    <string name="sort_relevance">Pertinence</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Choisir un fichier</string>

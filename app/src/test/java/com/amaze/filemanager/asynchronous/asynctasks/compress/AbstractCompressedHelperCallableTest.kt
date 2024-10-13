@@ -34,12 +34,11 @@ import org.robolectric.shadows.ShadowEnvironment
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.util.*
+import java.util.TimeZone
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
 abstract class AbstractCompressedHelperCallableTest {
-
     private lateinit var systemTz: TimeZone
 
     /**
@@ -67,8 +66,8 @@ abstract class AbstractCompressedHelperCallableTest {
         }?.forEach {
             FileInputStream(it).copyTo(
                 FileOutputStream(
-                    File(Environment.getExternalStorageDirectory(), it.name)
-                )
+                    File(Environment.getExternalStorageDirectory(), it.name),
+                ),
             )
         }
     }

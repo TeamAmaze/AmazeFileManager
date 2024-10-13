@@ -42,6 +42,7 @@ Downloads
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
 [<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.amaze.filemanager/)
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
+[<img alt="Get it on GitHub" height="80" src="https://i.ibb.co/q0mdc4Z/get-it-on-github.png">](https://github.com/TeamAmaze/AmazeFileManager/releases/latest)
 [<img alt="Get it on AFH" height="50px" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
 
 Contribute
@@ -85,9 +86,10 @@ We strongly recommend using apk signed by us (either Play Store version or from 
 ### License: 
 
     Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>
-    Copyright (C) 2014-2021 Vishal Nehra <vishalmeham2@gmail.com>
-    Copyright (C) 2017-2021 Emmanuel Messulam <emmanuelbendavid@gmail.com>
-    Copyright (C) 2018-2021 Raymond Lai <airwave209gt at gmail.com>
+    Copyright (C) 2014-2024 Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2017-2024 Emmanuel Messulam <emmanuelbendavid@gmail.com>
+    Copyright (C) 2018-2024 Raymond Lai <airwave209gt at gmail.com>
+    Copyright (C) 2019-2024 Vishnu Sanal T <t.v.s10123 at gmail.com>
     This file is part of Amaze File Manager.
     Amaze File Manager is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

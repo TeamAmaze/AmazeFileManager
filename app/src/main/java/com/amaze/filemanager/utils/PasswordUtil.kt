@@ -34,7 +34,6 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
 
 object PasswordUtil {
-
     // 12 byte long IV supported by android for GCM
     private const val IV = BuildConfig.CRYPTO_IV
 
@@ -42,9 +41,12 @@ object PasswordUtil {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
-    private fun aesEncryptPassword(plainTextPassword: String, base64Options: Int): String? {
+    private fun aesEncryptPassword(
+        plainTextPassword: String,
+        base64Options: Int,
+    ): String? {
         val cipher = Cipher.getInstance(CryptUtil.ALGO_AES)
         val gcmParameterSpec = GCMParameterSpec(128, IV.toByteArray())
         cipher.init(Cipher.ENCRYPT_MODE, SecretKeygen.getSecretKey(), gcmParameterSpec)
@@ -56,9 +58,12 @@ object PasswordUtil {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
-    private fun aesDecryptPassword(cipherPassword: String, base64Options: Int): String {
+    private fun aesDecryptPassword(
+        cipherPassword: String,
+        base64Options: Int,
+    ): String {
         val cipher = Cipher.getInstance(CryptUtil.ALGO_AES)
         val gcmParameterSpec = GCMParameterSpec(128, IV.toByteArray())
         cipher.init(Cipher.DECRYPT_MODE, SecretKeygen.getSecretKey(), gcmParameterSpec)
@@ -69,12 +74,12 @@ object PasswordUtil {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
     private fun rsaEncryptPassword(
         context: Context,
         password: String,
-        base64Options: Int
+        base64Options: Int,
     ): String? {
         val cipher = Cipher.getInstance(CryptUtil.ALGO_AES)
         val ivParameterSpec = IvParameterSpec(IV.toByteArray())
@@ -85,12 +90,12 @@ object PasswordUtil {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
     private fun rsaDecryptPassword(
         context: Context,
         cipherText: String,
-        base64Options: Int
+        base64Options: Int,
     ): String {
         val cipher = Cipher.getInstance(CryptUtil.ALGO_AES)
         val ivParameterSpec = IvParameterSpec(IV.toByteArray())
@@ -104,13 +109,15 @@ object PasswordUtil {
     fun encryptPassword(
         context: Context,
         plainText: String,
-        base64Options: Int = Base64.URL_SAFE
+        base64Options: Int = Base64.URL_SAFE,
     ): String? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             aesEncryptPassword(plainText, base64Options)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             rsaEncryptPassword(context, plainText, base64Options)
-        } else plainText
+        } else {
+            plainText
+        }
     }
 
     /** Method handles decryption of cipher text on various APIs  */
@@ -118,12 +125,14 @@ object PasswordUtil {
     fun decryptPassword(
         context: Context,
         cipherText: String,
-        base64Options: Int = Base64.URL_SAFE
+        base64Options: Int = Base64.URL_SAFE,
     ): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             aesDecryptPassword(cipherText, base64Options)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             rsaDecryptPassword(context, cipherText, base64Options)
-        } else cipherText
+        } else {
+            cipherText
+        }
     }
 }

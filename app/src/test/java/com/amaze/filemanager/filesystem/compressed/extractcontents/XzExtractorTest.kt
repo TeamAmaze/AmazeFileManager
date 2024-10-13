@@ -23,7 +23,6 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.XzExtractor
 
 class XzExtractorTest : AbstractCompressedFileExtractorTest() {
-
     override fun extractorClass(): Class<out Extractor> = XzExtractor::class.java
 
     override val archiveType: String = "xz"

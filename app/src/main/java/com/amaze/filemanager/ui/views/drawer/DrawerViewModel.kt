@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.views.drawer
 
 import android.view.MenuItem
 import androidx.lifecycle.ViewModel
-import java.util.*
 
 class DrawerViewModel : ViewModel() {
     private val menuMetadataMap = HashMap<HasherOfMenuItem, MenuMetadata>()
@@ -31,7 +30,15 @@ class DrawerViewModel : ViewModel() {
         return requireNotNull(menuMetadataMap[item.toNonLeaking()])
     }
 
-    fun putDrawerMetadata(item: MenuItem, metadata: MenuMetadata) {
+    /**
+     * Put drawer meta data
+     * @param item menu item
+     * @param metadata menu meta data
+     */
+    fun putDrawerMetadata(
+        item: MenuItem,
+        metadata: MenuMetadata,
+    ) {
         menuMetadataMap[item.toNonLeaking()] = metadata
     }
 }

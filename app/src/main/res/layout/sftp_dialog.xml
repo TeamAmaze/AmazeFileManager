@@ -134,11 +134,20 @@
         app:layout_constraintTop_toBottomOf="@id/passwordTIL"
         android:layout_gravity="center_horizontal"/>
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chkFtpExplicitTls"
+        android:text="@string/ftps_enable_explicit_tls"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chkFtpAnonymous"
+        android:layout_gravity="center_horizontal"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/selectPemTIL"
         app:errorEnabled="true"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chkFtpAnonymous"
+        app:layout_constraintTop_toBottomOf="@id/chkFtpExplicitTls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

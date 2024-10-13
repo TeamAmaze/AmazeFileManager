@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -26,17 +26,20 @@ public final class MenuMetadata {
 
   public final int type;
   public final String path;
+  public final boolean hideFabInMainFragment;
   public final OnClickListener onClickListener;
 
-  public MenuMetadata(String path) {
+  public MenuMetadata(String path, boolean hideFabInMainFragment) {
     this.type = ITEM_ENTRY;
     this.path = path;
+    this.hideFabInMainFragment = hideFabInMainFragment;
     this.onClickListener = null;
   }
 
   public MenuMetadata(OnClickListener onClickListener) {
     this.type = ITEM_INTENT;
     this.onClickListener = onClickListener;
+    this.hideFabInMainFragment = false;
     this.path = null;
   }
 

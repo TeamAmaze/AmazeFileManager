@@ -30,17 +30,19 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import org.apache.commons.compress.archivers.ArchiveEntry
 import org.apache.commons.compress.archivers.ArchiveInputStream
-import java.io.*
-import java.util.*
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 
 abstract class AbstractCommonsArchiveExtractor(
     context: Context,
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
-
     /**
      * Subclasses implement this method to create [ArchiveInputStream] instances with given archive
      * as [InputStream].
@@ -92,7 +94,7 @@ abstract class AbstractCommonsArchiveExtractor(
         context: Context,
         inputStream: ArchiveInputStream,
         entry: ArchiveEntry,
-        outputDir: String
+        outputDir: String,
     ) {
         if (entry.isDirectory) {
             MakeDirectoryOperation.mkdir(File(outputDir, entry.name), context)
@@ -118,8 +120,8 @@ abstract class AbstractCommonsArchiveExtractor(
             context.getString(
                 R.string.error_archive_cannot_extract,
                 entry.name,
-                outputDir
-            )
+                outputDir,
+            ),
         )
     }
 }

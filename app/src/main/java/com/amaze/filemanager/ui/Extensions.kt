@@ -68,13 +68,13 @@ fun Context.updateAUAlias(shouldEnable: Boolean) {
         packageManager.setComponentEnabledSetting(
             component,
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP
+            PackageManager.DONT_KILL_APP,
         )
     } else {
         packageManager.setComponentEnabledSetting(
             component,
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
+            PackageManager.DONT_KILL_APP,
         )
     }
 }
@@ -90,10 +90,10 @@ fun AppCompatEditText.openKeyboard(context: Context) {
             (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                 .showSoftInput(
                     this,
-                    InputMethodManager.SHOW_IMPLICIT
+                    InputMethodManager.SHOW_IMPLICIT,
                 )
         },
-        100
+        100,
     )
 }
 
@@ -116,7 +116,10 @@ fun View.showFade(duration: Long) {
 /**
  * Extension function to check for activity in package manager before triggering code
  */
-fun Intent.runIfDocumentsUIExists(context: Context, callback: Runnable) {
+fun Intent.runIfDocumentsUIExists(
+    context: Context,
+    callback: Runnable,
+) {
     if (this.resolveActivity(context.packageManager) != null) {
         callback.run()
     } else {

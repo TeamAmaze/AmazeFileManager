@@ -41,7 +41,7 @@ import java.security.Key
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.SecureRandom
-import java.util.*
+import java.util.Calendar
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
 import javax.crypto.CipherOutputStream
@@ -50,7 +50,6 @@ import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
 
 object SecretKeygen {
-
     private const val PREFERENCE_KEY = "aes_key"
     private const val ALGO_RSA = "RSA/ECB/PKCS1Padding"
 
@@ -76,20 +75,22 @@ object SecretKeygen {
     @RequiresApi(api = M)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
     private fun getAesSecretKey(): Key {
         val keyStore = KeyStore.getInstance(CryptUtil.KEY_STORE_ANDROID)
         keyStore.load(null)
         return if (!keyStore.containsAlias(CryptUtil.KEY_ALIAS_AMAZE)) {
-            val keyGenerator = KeyGenerator.getInstance(
-                KeyProperties.KEY_ALGORITHM_AES,
-                CryptUtil.KEY_STORE_ANDROID
-            )
-            val builder = KeyGenParameterSpec.Builder(
-                CryptUtil.KEY_ALIAS_AMAZE,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-            )
+            val keyGenerator =
+                KeyGenerator.getInstance(
+                    KeyProperties.KEY_ALGORITHM_AES,
+                    CryptUtil.KEY_STORE_ANDROID,
+                )
+            val builder =
+                KeyGenParameterSpec.Builder(
+                    CryptUtil.KEY_ALIAS_AMAZE,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+                )
             builder.setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             builder.setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             builder.setRandomizedEncryptionRequired(false)
@@ -108,7 +109,7 @@ object SecretKeygen {
         return if (encodedString != null) {
             SecretKeySpec(
                 decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)),
-                "AES"
+                "AES",
             )
         } else {
             generateRsaKeyPair(AppConfig.getInstance())
@@ -128,13 +129,14 @@ object SecretKeygen {
             val end = Calendar.getInstance()
             end.add(Calendar.YEAR, 30)
             val keyPairGenerator = KeyPairGenerator.getInstance("RSA", CryptUtil.KEY_STORE_ANDROID)
-            val spec = KeyPairGeneratorSpec.Builder(context)
-                .setAlias(CryptUtil.KEY_ALIAS_AMAZE)
-                .setSubject(X500Principal("CN=" + CryptUtil.KEY_ALIAS_AMAZE))
-                .setSerialNumber(BigInteger.TEN)
-                .setStartDate(start.time)
-                .setEndDate(end.time)
-                .build()
+            val spec =
+                KeyPairGeneratorSpec.Builder(context)
+                    .setAlias(CryptUtil.KEY_ALIAS_AMAZE)
+                    .setSubject(X500Principal("CN=" + CryptUtil.KEY_ALIAS_AMAZE))
+                    .setSerialNumber(BigInteger.TEN)
+                    .setStartDate(start.time)
+                    .setEndDate(end.time)
+                    .build()
             keyPairGenerator.initialize(spec)
             keyPairGenerator.generateKeyPair()
         }
