@@ -24,12 +24,12 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipEx
 import org.apache.commons.compress.PasswordRequiredException
 
 class PasswordProtectedZipTest : AbstractExtractorPasswordProtectedArchivesTest() {
-
     override fun extractorClass(): Class<out Extractor?> = ZipExtractor::class.java
 
-    override fun expectedRootExceptionClass(): Array<Class<*>> = arrayOf(
-        PasswordRequiredException::class.java
-    )
+    override fun expectedRootExceptionClass(): Array<Class<*>> =
+        arrayOf(
+            PasswordRequiredException::class.java,
+        )
 
     override val archiveType: String = "zip"
 }

@@ -4,10 +4,11 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
+apply plugin: 'com.google.devtools.ksp'
 
 android {
     namespace "com.amaze.filemanager"
-    compileSdk 33
+    compileSdk libs.versions.compileSdk.get().toInteger()
     packagingOptions {
         resources {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
@@ -17,8 +18,8 @@ android {
 
     defaultConfig {
         applicationId "com.amaze.filemanager"
-        minSdkVersion 19
-        targetSdkVersion 33
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        targetSdkVersion libs.versions.targetSdk.get().toInteger()
         versionCode 121
         versionName "3.10"
         multiDexEnabled true
@@ -49,6 +50,7 @@ android {
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
             buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
             debuggable true //For "debug" banner on icon
+            enableUnitTestCoverage true
         }
 
         release {
@@ -63,6 +65,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     flavorDimensions = ['static']
@@ -78,6 +81,13 @@ android {
             buildConfigField "boolean", "IS_VERSION_FDROID", "false"
             signingConfig signingConfigs.config
         }
+    }
+
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
     }
 
     sourceSets {
@@ -107,153 +117,149 @@ android {
 dependencies {
 
     modules {
+        module("org.bouncycastle:bcprov-jdk15on") {
+            replacedBy("org.bouncycastle:bcprov-jdk18on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15on") {
+            replacedBy("org.bouncycastle:bcpkix-jdk18on")
+        }
         module("org.bouncycastle:bcprov-jdk15to18") {
-            replacedBy("org.bouncycastle:bcprov-jdk15on")
+            replacedBy("org.bouncycastle:bcprov-jdk18on")
         }
         module("org.bouncycastle:bcpkix-jdk15to18") {
-            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+            replacedBy("org.bouncycastle:bcpkix-jdk18on")
         }
     }
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    implementation libs.systembarTint
 
-    implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
-    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    implementation "com.google.android.material:material:$androidMaterialVersion"
-    implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
-    implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
-    implementation 'androidx.palette:palette-ktx:1.0.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation "androidx.room:room-runtime:$roomVersion"
-    playImplementation "com.android.billingclient:billing:$androidBillingVersion"
-    kapt "androidx.room:room-compiler:$roomVersion"
-    // RxJava support for Room
-    implementation "androidx.room:room-rxjava2:$roomVersion"
-    kapt "androidx.annotation:annotation:$androidXAnnotationVersion"
+    implementation libs.androidX.vectordrawable.animated
+    implementation libs.androidX.legacySupportV13
+    implementation libs.androidX.material
+    implementation libs.androidX.fragment
+    implementation libs.androidX.appcompat
+    implementation libs.androidX.preference
+    implementation libs.androidX.core
+    implementation libs.androidX.palette
+    implementation libs.androidX.cardview
+    implementation libs.androidX.constraintLayout
+    implementation libs.androidX.multidex //Multiple dex files
+    implementation libs.androidX.biometric
+    implementation libs.room.runtime
+    implementation libs.room.rxjava2
 
-    implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
+    ksp libs.room.compiler
+    ksp libs.androidX.annotation
 
     //For tests
-    testImplementation "junit:junit:$junitVersion"//tests the app logic
-    testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
-    testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
-    testImplementation "androidx.test:core:$androidXTestVersion"
-    testImplementation "androidx.test:runner:$androidXTestRunnerVersion"
-    testImplementation "androidx.test:rules:$androidXTestVersion"
-    testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
-    testImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
-    testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "org.mockito:mockito-inline:$mockitoInlineVersion"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
-    testImplementation "org.apache.sshd:sshd-core:1.7.0"
-    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testImplementation "org.jsoup:jsoup:$jsoupVersion"
-    testImplementation "androidx.room:room-migration:$roomVersion"
-    testImplementation "io.mockk:mockk:$mockkVersion"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutineTestVersion"
-    testImplementation "androidx.arch.core:core-testing:$androidXArchCoreTestVersion"
-    kaptTest "com.google.auto.service:auto-service:1.0-rc4"
+    testImplementation libs.junit//tests the app logic
+    testImplementation libs.robolectric//tests android interaction
+    testImplementation libs.robolectric.shadows.httpclient//tests android interaction
+    testImplementation libs.androidX.test.core
+    testImplementation libs.androidX.test.runner
+    testImplementation libs.androidX.test.rules
+    testImplementation libs.androidX.test.ext.junit
+    testImplementation libs.androidX.fragment.testing
+    testImplementation libs.mockito.core
+    testImplementation libs.mockito.inline
+    testImplementation libs.mockito.kotlin
+    testImplementation libs.apache.sshd
+    testImplementation libs.awaitility
+    testImplementation libs.jsoup
+    testImplementation libs.room.migration
+    testImplementation libs.mockk
+    testImplementation libs.kotlin.coroutine.test
+    testImplementation libs.androidX.core.testing
+    kspTest libs.auto.service
+    testImplementation 'ch.qos.logback:logback-classic:1.4.14'
 
-    androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
-    androidTestImplementation "androidx.test:core:$androidXTestVersion"
-    androidTestImplementation "androidx.test:runner:$androidXTestVersion"
-    androidTestImplementation "androidx.test:rules:$androidXTestVersion"
-    androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
-    androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
-    androidTestImplementation "androidx.fragment:fragment-testing:$androidXFragmentVersion"
-    androidTestImplementation "commons-net:commons-net:$commonsNetVersion"
-    androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    androidTestImplementation libs.junit //tests the app logic
+    androidTestImplementation libs.androidX.test.expresso
+    androidTestImplementation libs.androidX.test.core
+    androidTestImplementation libs.androidX.test.runner
+    androidTestImplementation libs.androidX.test.rules
+    androidTestImplementation libs.androidX.test.ext.junit
+    androidTestImplementation libs.androidX.test.uiautomator
+    androidTestImplementation libs.androidX.fragment.testing
+    androidTestImplementation libs.commons.net
+    androidTestImplementation libs.awaitility
 
     //Detect memory leaks
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
+    debugImplementation libs.leakcanary.android
 
-    implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
+    implementation libs.commons.compress
 
-    playImplementation "com.github.junrar:junrar:$junrarVersion"
+    implementation libs.materialdialogs.core
+    implementation libs.materialdialogs.commons
 
-    implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
-    implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
+    implementation libs.apache.mina.core
+    implementation libs.apache.ftpserver.ftplet.api
+    implementation libs.apache.ftpserver.core
 
-    // https://mvnrepository.com/artifact/org.apache.mina/mina-core
-    implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
+    implementation libs.eventbus
 
-    //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
-    // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    implementation "org.apache.ftpserver:ftplet-api:$ftpserverVersion"
+    implementation libs.libsu.core
+    implementation libs.libsu.io
 
-    //implementation files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
-    // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    implementation "org.apache.ftpserver:ftpserver-core:$ftpserverVersion"
+    playImplementation libs.cloudrail.si.android
+    playImplementation libs.junrar
+    playImplementation libs.google.play.billing
 
-    implementation 'org.greenrobot:eventbus:3.3.1'
+    implementation libs.mpAndroidChart//Nice charts and graphs
 
-    implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
-    implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
-
-    playImplementation 'com.cloudrail:cloudrail-si-android:2.22.4'
-
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
-
-    implementation 'com.github.npgall:concurrent-trees:2.6.1'//Concurrent tries
+    implementation libs.concurrent.trees//Concurrent tries
 
     //SFTP
-    implementation "com.hierynomus:sshj:$sshjVersion"
-
+    implementation libs.sshj
     //smb
-    implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
-
+    implementation libs.jcifs.ng
     //FTP
-    implementation "commons-net:commons-net:$commonsNetVersion"
-
+    implementation libs.commons.net
     //OkHttp
-    implementation "com.squareup.okhttp3:okhttp:$okHttpVersion"
+    implementation libs.okhttp
 
-    implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
-    implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
+    implementation libs.bcpkix.jdk18on
+    implementation libs.bcprov.jdk18on
 
     //Glide: loads icons seemlessly
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation ("com.github.bumptech.glide:recyclerview-integration:$glideVersion") {
+    implementation libs.glide
+    implementation (libs.glide.recyclerView) {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    ksp libs.glide.ksp
 
-    implementation "com.leinardi.android:speed-dial:$fabSpeedDialVersion"
+    implementation libs.speedDial
 
     //Simple library show
-    implementation('com.mikepenz:aboutlibraries:6.1.1@aar') {
+    implementation(libs.aboutLibraries) {
         transitive = true
     }
 
-    implementation 'androidx.multidex:multidex:2.0.1'//Multiple dex files
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-
     //zip4j: support password-protected zips
-    implementation "net.lingala.zip4j:zip4j:$zip4jVersion"
+    implementation libs.zip4j
 
-    implementation 'org.tukaani:xz:1.9'
+    implementation libs.xz
 
-    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation libs.rxandroid
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation libs.rxjava
 
     implementation project(':commons_compress_7z')
     implementation project(':file_operations')
     implementation project(':portscanner')
-    implementation "androidx.core:core-ktx:$androidXCoreVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "ch.acra:acra-core:5.7.0"
-    implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation "com.github.tony19:logback-android:$logbackAndroidVersion"
-    testImplementation 'ch.qos.logback:logback-classic:1.2.11'
 
-    implementation 'com.google.code.gson:gson:2.9.1'
-    implementation 'com.github.TeamAmaze:AmazeTrashBin:1.0.10'
+    implementation libs.kotlin.stdlib.jdk8
+    implementation libs.acra.core
+    implementation libs.slf4j.api
+    implementation libs.logback.android
+    testImplementation libs.logback.classic
+
+    implementation libs.gson
+    implementation libs.amaze.trashBin
 }
 
 kotlin {
@@ -296,12 +302,15 @@ clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
 
 jacoco {
-    toolVersion = "${jacocoVersion}"
+    toolVersion = libs.versions.jacoco.get()
 }
 
-jacocoAndroidUnitTestReport {
-    html.enabled true
-    xml.enabled true
+tasks.withType(JacocoReport).configureEach {
+    reports {
+        csv.required.set(false)
+        html.required.set(true)
+        xml.required.set(true)
+    }
 }
 
 tasks.withType(Test).configureEach {

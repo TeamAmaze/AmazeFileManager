@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory
 
 /** Created by arpitkh996 on 16-01-2016 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>  */
 class SmbSearchDialog : DialogFragment() {
-
     private lateinit var utilsProvider: UtilitiesProvider
     private lateinit var listViewAdapter: ListViewAdapter
     private val viewModel = ComputerParcelableViewModel()
@@ -99,38 +98,39 @@ class SmbSearchDialog : DialogFragment() {
         viewModel.valHolder.postValue(ComputerParcelable("-1", "-1"))
         listViewAdapter = ListViewAdapter(requireActivity())
         val observable = SmbDeviceScannerObservable()
-        subnetScannerObserver = observable
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnDispose {
-                observable.stop()
-            }
-            .subscribe(
-                { computer: ComputerParcelable ->
-                    if (!listViewAdapter.contains(computer)) {
-                        viewModel.valHolder.postValue(computer)
-                    }
-                },
-                { err: Throwable ->
-                    LOG.error("Error searching for devices", err)
+        subnetScannerObserver =
+            observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnDispose {
+                    observable.stop()
                 }
-            ) {
-                subnetScannerObserver.dispose()
-                activity?.runOnUiThread {
-                    if (listViewAdapter.dummyOnly()) {
-                        dismiss()
-                        Toast.makeText(
-                            activity,
-                            getString(R.string.no_device_found),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val mainActivity = activity as MainActivity
-                        mainActivity.showSMBDialog("", "", false)
-                        return@runOnUiThread
+                .subscribe(
+                    { computer: ComputerParcelable ->
+                        if (!listViewAdapter.contains(computer)) {
+                            viewModel.valHolder.postValue(computer)
+                        }
+                    },
+                    { err: Throwable ->
+                        LOG.error("Error searching for devices", err)
+                    },
+                ) {
+                    subnetScannerObserver.dispose()
+                    activity?.runOnUiThread {
+                        if (listViewAdapter.dummyOnly()) {
+                            dismiss()
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.no_device_found),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                            val mainActivity = activity as MainActivity
+                            mainActivity.showSMBDialog("", "", false)
+                            return@runOnUiThread
+                        }
+                        listViewAdapter.removeDummy()
                     }
-                    listViewAdapter.removeDummy()
                 }
-            }
         builder.adapter(listViewAdapter, null)
         viewModel.valHolder.observe(this) {
             listViewAdapter.add(it)
@@ -139,7 +139,7 @@ class SmbSearchDialog : DialogFragment() {
     }
 
     private inner class ListViewAdapter(
-        context: Context
+        context: Context,
     ) : RecyclerView.Adapter<ViewHolder>() {
         private val items: MutableList<ComputerParcelable> = ArrayList()
         private val mInflater: LayoutInflater
@@ -168,7 +168,7 @@ class SmbSearchDialog : DialogFragment() {
             items.remove(
                 items.find {
                     it.addr == "-1" && it.name == "-1"
-                }
+                },
             )
             notifyDataSetChanged()
         }
@@ -187,7 +187,10 @@ class SmbSearchDialog : DialogFragment() {
             return items.size == 1 && items.last().addr == "-1"
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int,
+        ): ViewHolder {
             val view: View
             return when (viewType) {
                 VIEW_PROGRESSBAR -> {
@@ -202,7 +205,10 @@ class SmbSearchDialog : DialogFragment() {
             }
         }
 
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        override fun onBindViewHolder(
+            holder: ViewHolder,
+            position: Int,
+        ) {
             val viewType = getItemViewType(position)
             if (viewType == Companion.VIEW_PROGRESSBAR) {
                 return
@@ -215,7 +221,7 @@ class SmbSearchDialog : DialogFragment() {
                     mainActivity.showSMBDialog(
                         listViewAdapter.items[position].name,
                         listViewAdapter.items[position].addr,
-                        false
+                        false,
                     )
                 }
             }

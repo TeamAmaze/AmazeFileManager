@@ -29,6 +29,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.fromTask
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PreparePasteTask.CopyNode
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
 import com.amaze.filemanager.databinding.CopyDialogBinding
@@ -62,7 +63,6 @@ import java.util.LinkedList
  * BFS on this tree.
  */
 class PreparePasteTask(strongRefMain: MainActivity) {
-
     private lateinit var targetPath: String
     private var isMove = false
     private var isRootMode = false
@@ -91,7 +91,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         target: String,
         openMode: OpenMode,
         isMove: Boolean,
-        isRootMode: Boolean
+        isRootMode: Boolean,
     ) {
         val intent = Intent(context.get(), CopyService::class.java)
         intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles)
@@ -110,7 +110,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         isMove: Boolean,
         isRootMode: Boolean,
         openMode: OpenMode,
-        filesToCopy: ArrayList<HybridFileParcelable>
+        filesToCopy: ArrayList<HybridFileParcelable>,
     ) {
         this.targetPath = targetPath
         this.isMove = isMove
@@ -118,12 +118,13 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         this.openMode = openMode
         this.filesToCopy = filesToCopy
 
-        val isCloudOrRootMode = openMode == OpenMode.OTG ||
-            openMode == OpenMode.GDRIVE ||
-            openMode == OpenMode.DROPBOX ||
-            openMode == OpenMode.BOX ||
-            openMode == OpenMode.ONEDRIVE ||
-            openMode == OpenMode.ROOT
+        val isCloudOrRootMode =
+            openMode == OpenMode.OTG ||
+                openMode == OpenMode.GDRIVE ||
+                openMode == OpenMode.DROPBOX ||
+                openMode == OpenMode.BOX ||
+                openMode == OpenMode.ONEDRIVE ||
+                openMode == OpenMode.ROOT
 
         if (isCloudOrRootMode) {
             startService(filesToCopy, targetPath, openMode, isMove, isRootMode)
@@ -142,9 +143,10 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             return
         }
 
-        val isMoveSupported = isMove &&
-            destination.mode == openMode &&
-            MoveFiles.getOperationSupportedFileSystem().contains(openMode)
+        val isMoveSupported =
+            isMove &&
+                destination.mode == openMode &&
+                MoveFiles.getOperationSupportedFileSystem().contains(openMode)
 
         if (destination.usableSpace < totalBytes &&
             !isMoveSupported
@@ -153,17 +155,18 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             return
         }
         @Suppress("DEPRECATION")
-        progressDialog = ProgressDialog.show(
-            context.get(),
-            "",
-            context.get()?.getString(R.string.checking_conflicts)
-        )
+        progressDialog =
+            ProgressDialog.show(
+                context.get(),
+                "",
+                context.get()?.getString(R.string.checking_conflicts),
+            )
         checkConflicts(
             isRootMode,
             filesToCopy,
             destination,
             conflictingFiles,
-            conflictingDirActionMap
+            conflictingDirActionMap,
         )
     }
 
@@ -172,7 +175,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         filesToCopy: ArrayList<HybridFileParcelable>,
         destination: HybridFile,
         conflictingFiles: MutableList<HybridFileParcelable>,
-        conflictingDirActionMap: HashMap<HybridFileParcelable, String>
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
     ) {
         coroutineScope.launch {
             destination.forEachChildrenFile(
@@ -186,7 +189,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                             }
                         }
                     }
-                }
+                },
             )
             withContext(Dispatchers.Main) {
                 prepareDialog(conflictingFiles, conflictingDirActionMap)
@@ -199,7 +202,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     private suspend fun prepareDialog(
         conflictingFiles: MutableList<HybridFileParcelable>,
-        conflictingDirActionMap: HashMap<HybridFileParcelable, String>
+        conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
     ) {
         if (conflictingFiles.isEmpty()) return
 
@@ -226,7 +229,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             conflictingDirActionMap,
             copyDialogBinding,
             dialogBuilder,
-            checkBox
+            checkBox,
         )
     }
 
@@ -235,7 +238,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
         copyDialogBinding: CopyDialogBinding,
         dialogBuilder: MaterialDialog.Builder,
-        checkBox: AppCompatCheckBox
+        checkBox: AppCompatCheckBox,
     ) {
         val iterator = conflictingFiles.iterator()
         while (iterator.hasNext()) {
@@ -287,7 +290,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
     private fun resolveConflict(
         conflictingFiles: MutableList<HybridFileParcelable>,
         conflictingDirActionMap: HashMap<HybridFileParcelable, String>,
-        filesToCopy: ArrayList<HybridFileParcelable>
+        filesToCopy: ArrayList<HybridFileParcelable>,
     ) = coroutineScope.launch {
         var index = conflictingFiles.size - 1
         if (renameAll) {
@@ -332,8 +335,9 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         }
         if (filesToCopyPerFolder.isNotEmpty()) {
             @FolderState
-            val mode: Int = context.get()?.mainActivityHelper!!
-                .checkFolder(targetPath, openMode, context.get())
+            val mode: Int =
+                context.get()?.mainActivityHelper!!
+                    .checkFolder(targetPath, openMode, context.get())
             if (mode == CAN_CREATE_FILES && !targetPath.contains("otg:/")) {
                 // This is used because in newer devices the user has to accept a permission,
                 // see MainActivity.onActivityResult()
@@ -349,7 +353,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                             pathsList[foldersIndex],
                             openMode,
                             isMove,
-                            isRootMode
+                            isRootMode,
                         )
                 } else {
                     fromTask(
@@ -359,8 +363,8 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                             targetPath,
                             context.get()!!,
                             openMode,
-                            pathsList
-                        )
+                            pathsList,
+                        ),
                     )
                 }
             }
@@ -369,7 +373,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                 Toast.makeText(
                     context.get(),
                     context.get()!!.resources.getString(R.string.no_file_overwrite),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
         }
@@ -381,7 +385,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
     private inner class CopyNode(
         val path: String,
-        val filesToCopy: ArrayList<HybridFileParcelable>
+        val filesToCopy: ArrayList<HybridFileParcelable>,
     ) {
         private val nextNodes: MutableList<CopyNode> = mutableListOf()
         private var queue: LinkedList<CopyNode>? = null
@@ -392,12 +396,13 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             while (iterator.hasNext()) {
                 val hybridFileParcelable = iterator.next()
                 if (conflictingDirActionMap.contains(hybridFileParcelable)) {
-                    val fileAtTarget = HybridFile(
-                        hybridFileParcelable.mode,
-                        path,
-                        hybridFileParcelable.name,
-                        hybridFileParcelable.isDirectory
-                    )
+                    val fileAtTarget =
+                        HybridFile(
+                            hybridFileParcelable.mode,
+                            path,
+                            hybridFileParcelable.name,
+                            hybridFileParcelable.isDirectory,
+                        )
                     when (conflictingDirActionMap[hybridFileParcelable]) {
                         Action.RENAME -> {
                             if (hybridFileParcelable.isDirectory) {
@@ -410,14 +415,14 @@ class PreparePasteTask(strongRefMain: MainActivity) {
                                 nextNodes.add(
                                     CopyNode(
                                         newPath,
-                                        hybridFileParcelable.listFiles(context.get(), isRootMode)
-                                    )
+                                        hybridFileParcelable.listFiles(context.get(), isRootMode),
+                                    ),
                                 )
                                 iterator.remove()
                             } else {
                                 filesToCopy[filesToCopy.indexOf(hybridFileParcelable)].name =
                                     FilenameHelper.increment(
-                                        fileAtTarget
+                                        fileAtTarget,
                                     ).getName(context.get())
                             }
                         }
@@ -447,8 +452,9 @@ class PreparePasteTask(strongRefMain: MainActivity) {
          * @return The next unvisited node if available, otherwise returns null.
          */
         fun goToNextNode(): CopyNode? =
-            if (queue.isNullOrEmpty()) null
-            else {
+            if (queue.isNullOrEmpty()) {
+                null
+            } else {
                 val node = queue!!.element()
                 val child = getUnvisitedChildNode(visited!!, node)
                 if (child != null) {
@@ -463,7 +469,7 @@ class PreparePasteTask(strongRefMain: MainActivity) {
 
         private fun getUnvisitedChildNode(
             visited: Set<CopyNode>,
-            node: CopyNode
+            node: CopyNode,
         ): CopyNode? {
             for (currentNode in node.nextNodes) {
                 if (!visited.contains(currentNode)) {

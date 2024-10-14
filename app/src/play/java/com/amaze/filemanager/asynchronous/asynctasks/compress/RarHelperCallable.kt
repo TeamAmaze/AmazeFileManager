@@ -30,7 +30,6 @@ import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.*
 
 /**
  * AsyncTask to load RAR file items.
@@ -41,18 +40,18 @@ import java.util.*
 class RarHelperCallable(
     private val fileLocation: String,
     private val relativeDirectory: String,
-    goBack: Boolean
+    goBack: Boolean,
 ) :
     CompressedHelperCallable(goBack) {
-
     @Throws(ArchiveException::class)
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         try {
             val rarFile = Archive(File(fileLocation))
-            val relativeDirDiffSeparator = relativeDirectory.replace(
-                CompressedHelper.SEPARATOR,
-                "\\"
-            )
+            val relativeDirDiffSeparator =
+                relativeDirectory.replace(
+                    CompressedHelper.SEPARATOR,
+                    "\\",
+                )
             for (rarArchive in rarFile.fileHeaders) {
                 val name = rarArchive.fileName
                 if (!CompressedHelper.isEntryPathValid(name)) {
@@ -61,20 +60,20 @@ class RarHelperCallable(
                 val isInBaseDir = (
                     (relativeDirDiffSeparator == null || relativeDirDiffSeparator == "") &&
                         !name.contains("\\")
-                    )
+                )
                 val isInRelativeDir = (
                     relativeDirDiffSeparator != null && name.contains("\\") &&
                         name.substring(0, name.lastIndexOf("\\"))
                         == relativeDirDiffSeparator
-                    )
+                )
                 if (isInBaseDir || isInRelativeDir) {
                     elements.add(
                         CompressedObjectParcelable(
                             convertName(rarArchive),
                             rarArchive.mTime.time,
                             rarArchive.fullUnpackSize,
-                            rarArchive.isDirectory
-                        )
+                            rarArchive.isDirectory,
+                        ),
                     )
                 }
             }

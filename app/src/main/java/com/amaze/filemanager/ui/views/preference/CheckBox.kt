@@ -29,7 +29,6 @@ import androidx.preference.SwitchPreference
 
 /** Created by Arpit on 10/18/2015 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>  */
 class CheckBox(context: Context, attrs: AttributeSet) : SwitchPreference(context, attrs) {
-
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         clearListenerInViewGroup(holder.itemView as ViewGroup)
         super.onBindViewHolder(holder)

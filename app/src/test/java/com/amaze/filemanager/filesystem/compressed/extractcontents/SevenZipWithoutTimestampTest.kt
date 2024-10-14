@@ -28,12 +28,12 @@ import java.io.File
  * Test for extracting 7z archives without timestamps in entries. See #3035
  */
 class SevenZipWithoutTimestampTest : SevenZipExtractorTest() {
-
     override val archiveFile: File
-        get() = File(
-            Environment.getExternalStorageDirectory(),
-            "test-archive-no-timestamp.$archiveType"
-        )
+        get() =
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test-archive-no-timestamp.$archiveType",
+            )
 
     /**
      * As timestamp is only the time we extract the file, we just check it's created recently.

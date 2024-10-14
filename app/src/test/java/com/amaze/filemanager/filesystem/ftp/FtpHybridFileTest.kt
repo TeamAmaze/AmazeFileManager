@@ -46,8 +46,14 @@ import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.apache.ftpserver.usermanager.impl.WritePermission
 import org.awaitility.Awaitility.await
-import org.junit.*
-import org.junit.Assert.*
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.io.File
@@ -61,12 +67,11 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 @Config(
     sdk = [P],
-    shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class]
+    shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class],
 )
 @Suppress("StringLiteralDuplication")
 @Ignore
 open class FtpHybridFileTest {
-
     protected lateinit var tmpFile: File
     protected lateinit var hybridFile: HybridFile
     protected lateinit var ftpServer: FtpServer
@@ -81,9 +86,10 @@ open class FtpHybridFileTest {
     protected open val ftpPort: Int
         get() = PORT
     protected open val ftpUrl: String
-        get() = NetCopyClientUtils.encryptFtpPathAsNecessary(
-            "${ftpPrefix}$USERNAME:$PASSWORD@127.0.0.1:$ftpPort"
-        )
+        get() =
+            NetCopyClientUtils.encryptFtpPathAsNecessary(
+                "${ftpPrefix}$USERNAME:$PASSWORD@127.0.0.1:$ftpPort",
+            )
 
     companion object {
         const val USERNAME = "ftpuser"
@@ -133,7 +139,7 @@ open class FtpHybridFileTest {
                 "\n" +
                 " Was trying $ftpUrl, FTP server is running at " +
                 getLoopbackAddress().hostAddress +
-                " and port $ftpPort"
+                " and port $ftpPort",
         )
     }
 
@@ -273,13 +279,13 @@ open class FtpHybridFileTest {
     @FlakyTest()
     fun testMkdir() {
         for (
-            dir: String in arrayOf(
+        dir: String in arrayOf(
 //                "newfolder",
 //                "new folder 2",
-                "new%20folder%203",
-                "あいうえお",
-                "multiple/levels/down the pipe"
-            )
+            "new%20folder%203",
+            "あいうえお",
+            "multiple/levels/down the pipe",
+        )
         ) {
             val newFile = HybridFile(OpenMode.FTP, "$ftpUrl/$dir")
             val latch = CountDownLatch(1)
@@ -289,12 +295,15 @@ open class FtpHybridFileTest {
                 AppConfig.getInstance(),
                 false,
                 object : OperationsTest.AbstractErrorCallback() {
-                    override fun done(file: HybridFile?, b: Boolean) {
+                    override fun done(
+                        file: HybridFile?,
+                        b: Boolean,
+                    ) {
                         assertTrue(true == file?.exists())
                         assertEquals(newFile.path, file?.path)
                         latch.countDown()
                     }
-                }
+                },
             )
             latch.await()
         }
@@ -302,8 +311,7 @@ open class FtpHybridFileTest {
 
     protected open fun beforeCreateFtpServer() = Unit
 
-    protected open fun saveConnectionSettings() =
-        TestUtils.saveFtpConnectionSettings(USERNAME, PASSWORD)
+    protected open fun saveConnectionSettings() = TestUtils.saveFtpConnectionSettings(USERNAME, PASSWORD)
 
     protected open fun createConnection(): NetCopyClient<FTPClient>? {
         return NetCopyClientConnectionPool.getConnection(ftpUrl)
@@ -321,7 +329,7 @@ open class FtpHybridFileTest {
             it.connectionConfig = connectionConfigFactory.createConnectionConfig()
             it.addListener(
                 "default",
-                createDefaultFtpServerListener()
+                createDefaultFtpServerListener(),
             )
         }
     }

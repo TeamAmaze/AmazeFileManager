@@ -26,18 +26,14 @@ import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
-import com.amaze.filemanager.ui.activities.AbstractMainActivityTestBase
 import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog.Companion.ARG_PASSWORD
 import com.amaze.filemanager.utils.PasswordUtil
 import org.awaitility.Awaitility.await
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
-import org.mockito.MockedConstruction
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.mockConstruction
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doCallRealMethod
@@ -46,34 +42,11 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 import java.util.concurrent.TimeUnit
 
+/**
+ * Test [SftpConnectDialog] with SSH connections.
+ */
 @Suppress("StringLiteralDuplication")
-class SftpConnectDialogTest : AbstractMainActivityTestBase() {
-
-    private lateinit var mc: MockedConstruction<SftpConnectDialog>
-
-    /**
-     * Setups before test.
-     */
-    @Before
-    override fun setUp() {
-        super.setUp()
-        mc = mockConstruction(
-            SftpConnectDialog::class.java
-        ) { mock: SftpConnectDialog, _: MockedConstruction.Context? ->
-            doCallRealMethod().`when`(mock).arguments = any()
-            `when`(mock.arguments).thenCallRealMethod()
-        }
-    }
-
-    /**
-     * Post test cleanups.
-     */
-    @After
-    override fun tearDown() {
-        super.tearDown()
-        mc.close()
-    }
-
+class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
     /**
      * Test invoke [SftpConnectDialog] with arguments including keypair name.
      */
@@ -106,7 +79,7 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
         verify.putString(
             "password",
             PasswordUtil.encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
-                ?.replace("\n", "")
+                ?.replace("\n", ""),
         )
         testOpenSftpConnectDialog(uri, verify)
     }
@@ -116,9 +89,10 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
      */
     @Test
     fun testInvokeSftpConnectionDialogWithPasswordAndDefaultPath() {
-        val uri = NetCopyClientUtils.encryptFtpPathAsNecessary(
-            "ssh://root:12345678@127.0.0.1:22/data/incoming"
-        )
+        val uri =
+            NetCopyClientUtils.encryptFtpPathAsNecessary(
+                "ssh://root:12345678@127.0.0.1:22/data/incoming",
+            )
         val verify = Bundle()
         verify.putString("address", "127.0.0.1")
         verify.putInt("port", 22)
@@ -130,7 +104,7 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
         verify.putString(
             "password",
             PasswordUtil.encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
-                ?.replace("\n", "")
+                ?.replace("\n", ""),
         )
         testOpenSftpConnectDialog(uri, verify)
     }
@@ -138,14 +112,14 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
     /**
      * Test invoke [SftpConnectDialog] with arguments including password and URL encoded path.
      */
+    @Suppress("ktlint:standard:max-line-length")
     @Test
     @Throws(GeneralSecurityException::class, IOException::class)
     fun testInvokeSftpConnectionDialogWithPasswordAndEncodedDefaultPath() {
-        /* ktlint-disable max-line-length */
-        val uri = NetCopyClientUtils.encryptFtpPathAsNecessary(
-            "ssh://root:12345678@127.0.0.1:22/Users/TranceLove/My+Documents/%7BReference%7D%20Zobius%20Facro%20%24%24%20%23RFII1"
-        )
-        /* ktlint-enable max-line-length */
+        val uri =
+            NetCopyClientUtils.encryptFtpPathAsNecessary(
+                "ssh://root:12345678@127.0.0.1:22/Users/TranceLove/My+Documents/%7BReference%7D%20Zobius%20Facro%20%24%24%20%23RFII1",
+            )
         val verify = Bundle()
         verify.putString("address", "127.0.0.1")
         verify.putInt("port", 22)
@@ -155,18 +129,21 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
         verify.putBoolean("edit", true)
         verify.putString(
             "defaultPath",
-            "/Users/TranceLove/My Documents/{Reference} Zobius Facro $$ #RFII1"
+            "/Users/TranceLove/My Documents/{Reference} Zobius Facro $$ #RFII1",
         )
         verify.putString(
             "password",
             PasswordUtil.encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
-                ?.replace("\n", "")
+                ?.replace("\n", ""),
         )
         testOpenSftpConnectDialog(uri, verify)
     }
 
     @Throws(GeneralSecurityException::class, IOException::class)
-    private fun testOpenSftpConnectDialog(uri: String, verify: Bundle) {
+    private fun testOpenSftpConnectDialog(
+        uri: String,
+        verify: Bundle,
+    ) {
         val activity = mock(MainActivity::class.java)
         val utilsHandler = mock(UtilsHandler::class.java)
         `when`(utilsHandler.getSshAuthPrivateKeyName("ssh://root@127.0.0.1:22"))
@@ -175,45 +152,31 @@ class SftpConnectDialogTest : AbstractMainActivityTestBase() {
         doCallRealMethod().`when`(activity).showSftpDialog(
             any(),
             any(),
-            anyBoolean()
+            anyBoolean(),
         )
         activity.showSftpDialog(
             "SCP/SFTP Connection",
             NetCopyClientUtils.encryptFtpPathAsNecessary(uri),
-            true
+            true,
         )
         assertEquals(1, mc.constructed().size)
         val mocked = mc.constructed()[0]
         await().atMost(10, TimeUnit.SECONDS).until { mocked.arguments != null }
         for (key in BUNDLE_KEYS) {
-            if (mocked.arguments!![key] != null) {
-                if (key != "password") {
-                    assertEquals(verify[key], mocked.arguments!![key])
-                } else {
+            if (mocked.arguments!!.getString(key) != null) {
+                if (key == ARG_PASSWORD) {
                     assertEquals(
-                        verify[key],
+                        verify.getString(key),
                         PasswordUtil.decryptPassword(
                             ApplicationProvider.getApplicationContext(),
-                            (mocked.arguments!![key] as String?)!!,
-                            Base64.URL_SAFE
-                        )
+                            mocked.arguments!!.getString(key)!!,
+                            Base64.URL_SAFE,
+                        ),
                     )
+                } else {
+                    assertEquals(verify.getString(key), mocked.arguments!!.getString(key))
                 }
             }
         }
-    }
-
-    companion object {
-        @JvmStatic
-        private val BUNDLE_KEYS = arrayOf(
-            "address",
-            "port",
-            "keypairName",
-            "name",
-            "username",
-            "password",
-            "edit",
-            "defaultPath"
-        )
     }
 }

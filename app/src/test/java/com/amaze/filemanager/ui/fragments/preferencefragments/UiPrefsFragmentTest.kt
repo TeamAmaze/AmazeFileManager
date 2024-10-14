@@ -51,17 +51,21 @@ import kotlin.random.Random
  * Tests for [UiPrefsFragment].
  */
 @Config(
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
+    sdk = [
+        Build.VERSION_CODES.KITKAT,
+        Build.VERSION_CODES.N,
+        Build.VERSION_CODES.P,
+        Build.VERSION_CODES.R,
+    ],
     shadows = [
         ShadowMultiDex::class,
         ShadowStorageManager::class,
         ShadowPasswordUtil::class,
         ShadowSmbFile::class,
-        ShadowLocaleManager::class
-    ]
+        ShadowLocaleManager::class,
+    ],
 )
 class UiPrefsFragmentTest : PreferencesActivityTestBase() {
-
     /**
      * Test default behaviour. When no language is selected
      * [AppCompatDelegate.getApplicationLocales] should return an empty
@@ -79,7 +83,7 @@ class UiPrefsFragmentTest : PreferencesActivityTestBase() {
                 assertEquals(items?.size, activity.getLocaleListFromXml().size() + 1)
                 assertEquals(
                     getString(R.string.preference_language_system_default),
-                    items?.get(0)
+                    items?.get(0),
                 )
                 assertEquals(0, this.selectedIndex)
             }
@@ -103,13 +107,13 @@ class UiPrefsFragmentTest : PreferencesActivityTestBase() {
                     assertEquals(items.size, activity.getLocaleListFromXml().size() + 1)
                     assertEquals(
                         getString(R.string.preference_language_system_default),
-                        items[0]
+                        items[0],
                     )
                     assertEquals(0, this.selectedIndex)
                     val wantTo = Random.nextInt(items.size - 1)
                     this.selectedIndex = wantTo
                     this.view.findViewById<RecyclerView>(
-                        com.afollestad.materialdialogs.R.id.md_contentRecyclerView
+                        com.afollestad.materialdialogs.R.id.md_contentRecyclerView,
                     ).run {
                         // Span out the RecyclerView as much as possible so all items are displayed.
                         // Trick: https://bterczynski.medium.com/robolectric-tips-testing-recyclerviews-d6e79209a4b
@@ -124,8 +128,8 @@ class UiPrefsFragmentTest : PreferencesActivityTestBase() {
                         wantTo,
                         // System Default is index 0 (top of list), hence index needs to + 1
                         activity.getLocaleListFromXml().indexOf(
-                            AppCompatDelegate.getApplicationLocales()[0]
-                        ) + 1
+                            AppCompatDelegate.getApplicationLocales()[0],
+                        ) + 1,
                     )
                 } ?: fail("Fail parsing locale list XML")
             }

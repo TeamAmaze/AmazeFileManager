@@ -41,11 +41,10 @@ import java.util.Random
 
 class SearchRecyclerViewAdapter :
     ListAdapter<SearchResult, SearchRecyclerViewAdapter.ViewHolder>(
-
         object : DiffUtil.ItemCallback<SearchResult>() {
             override fun areItemsTheSame(
                 oldItem: SearchResult,
-                newItem: SearchResult
+                newItem: SearchResult,
             ): Boolean {
                 return oldItem.file.path == newItem.file.path &&
                     oldItem.file.name == newItem.file.name
@@ -53,21 +52,28 @@ class SearchRecyclerViewAdapter :
 
             override fun areContentsTheSame(
                 oldItem: SearchResult,
-                newItem: SearchResult
+                newItem: SearchResult,
             ): Boolean {
                 return oldItem.file.path == newItem.file.path &&
                     oldItem.file.name == newItem.file.name &&
                     oldItem.matchRange == newItem.matchRange
             }
-        }
+        },
     ) {
-    override fun onCreateViewHolder(parent: ViewGroup, type: Int): ViewHolder {
-        val v: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.search_row_item, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        type: Int,
+    ): ViewHolder {
+        val v: View =
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.search_row_item, parent, false)
         return ViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: SearchRecyclerViewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: SearchRecyclerViewAdapter.ViewHolder,
+        position: Int,
+    ) {
         val (file, matchResult) = getItem(position)
 
         val colorPreference =
@@ -78,7 +84,7 @@ class SearchRecyclerViewAdapter :
             ForegroundColorSpan(colorPreference.accent),
             matchResult.first,
             matchResult.last + 1,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
 
         holder.fileNameTV.text = fileName
@@ -94,7 +100,6 @@ class SearchRecyclerViewAdapter :
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         val fileNameTV: AppCompatTextView
         val filePathTV: AppCompatTextView
         val colorView: View
@@ -112,7 +117,7 @@ class SearchRecyclerViewAdapter :
                 if (!file.isDirectory) {
                     file.openFile(
                         AppConfig.getInstance().mainActivityContext as MainActivity?,
-                        false
+                        false,
                     )
                 } else {
                     (AppConfig.getInstance().mainActivityContext as MainActivity?)
@@ -130,9 +135,9 @@ class SearchRecyclerViewAdapter :
             context,
             ColorPreference.availableColors[
                 Random().nextInt(
-                    ColorPreference.availableColors.size - 1
-                )
-            ]
+                    ColorPreference.availableColors.size - 1,
+                ),
+            ],
         )
     }
 }

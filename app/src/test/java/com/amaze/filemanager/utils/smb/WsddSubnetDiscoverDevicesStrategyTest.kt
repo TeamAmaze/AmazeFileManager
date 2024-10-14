@@ -25,7 +25,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.robolectric.util.ReflectionHelpers
-import java.util.*
+import java.util.UUID
 import kotlin.text.Charsets.UTF_8
 
 /**
@@ -33,27 +33,28 @@ import kotlin.text.Charsets.UTF_8
  */
 @Suppress("StringLiteralDuplication")
 class WsddSubnetDiscoverDevicesStrategyTest : AbstractSubnetDiscoverDevicesStrategyTests() {
+    private val multicastResponseTemplate =
+        javaClass.classLoader!!
+            .getResourceAsStream("wsdd/multicast-response.txt")
+            .reader(UTF_8).readText()
 
-    private val multicastResponseTemplate = javaClass.classLoader!!
-        .getResourceAsStream("wsdd/multicast-response.txt")
-        .reader(UTF_8).readText()
-
-    private val wsdResponseTemplate = javaClass.classLoader!!
-        .getResourceAsStream("wsdd/wsd-response.txt")
-        .reader(UTF_8).readText()
+    private val wsdResponseTemplate =
+        javaClass.classLoader!!
+            .getResourceAsStream("wsdd/wsd-response.txt")
+            .reader(UTF_8).readText()
 
     private val parseXmlForResponse:
         (WsddDiscoverDeviceStrategy, Any, Array<String>) -> Map<String, String> =
-            { instance, xml, tags ->
-                require((xml is ByteArray) or (xml is String))
-                ReflectionHelpers.callInstanceMethod(
-                    WsddDiscoverDeviceStrategy::class.java,
-                    instance,
-                    "parseXmlForResponse",
-                    ReflectionHelpers.ClassParameter(xml.javaClass, xml),
-                    ReflectionHelpers.ClassParameter(Array<String>::class.java, tags)
-                )
-            }
+        { instance, xml, tags ->
+            require((xml is ByteArray) or (xml is String))
+            ReflectionHelpers.callInstanceMethod(
+                WsddDiscoverDeviceStrategy::class.java,
+                instance,
+                "parseXmlForResponse",
+                ReflectionHelpers.ClassParameter(xml.javaClass, xml),
+                ReflectionHelpers.ClassParameter(Array<String>::class.java, tags),
+            )
+        }
 
     private lateinit var wsdMulticastResponseMessageId: String
     private lateinit var deviceId: String
@@ -64,11 +65,12 @@ class WsddSubnetDiscoverDevicesStrategyTest : AbstractSubnetDiscoverDevicesStrat
     @Test
     fun testParseMulticastResponse() {
         val instance = WsddDiscoverDeviceStrategy()
-        val result = parseXmlForResponse.invoke(
-            instance,
-            createMulticastResponse(),
-            arrayOf("wsd:Types", "wsa:Address")
-        )
+        val result =
+            parseXmlForResponse.invoke(
+                instance,
+                createMulticastResponse(),
+                arrayOf("wsd:Types", "wsa:Address"),
+            )
         assertTrue(result.isNotEmpty())
         assertTrue(result.containsKey("wsd:Types"))
         assertTrue(result.containsKey("wsa:Address"))
@@ -89,22 +91,22 @@ class WsddSubnetDiscoverDevicesStrategyTest : AbstractSubnetDiscoverDevicesStrat
             parseXmlForResponse.invoke(
                 instance,
                 ByteArray(0),
-                emptyArray()
-            ).isEmpty()
+                emptyArray(),
+            ).isEmpty(),
         )
         assertTrue(
             parseXmlForResponse.invoke(
                 instance,
                 "foobar".toByteArray(),
-                emptyArray()
-            ).isEmpty()
+                emptyArray(),
+            ).isEmpty(),
         )
         assertTrue(
             parseXmlForResponse.invoke(
                 instance,
                 randomBytes(),
-                emptyArray()
-            ).isEmpty()
+                emptyArray(),
+            ).isEmpty(),
         )
     }
 
@@ -119,38 +121,40 @@ class WsddSubnetDiscoverDevicesStrategyTest : AbstractSubnetDiscoverDevicesStrat
             parseXmlForResponse.invoke(
                 instance,
                 "<test></test>",
-                arrayOf("foobar")
-            ).size
+                arrayOf("foobar"),
+            ).size,
         )
         assertEquals(
             0,
             parseXmlForResponse.invoke(
                 instance,
                 "<foo:bar></foo:bar>",
-                arrayOf("test")
-            ).size
+                arrayOf("test"),
+            ).size,
         )
     }
 
     private fun createMulticastResponse(): String {
         return multicastResponseTemplate.replace(
             "##DEVICE_UUID##",
-            UUID.randomUUID().toString()
+            UUID.randomUUID().toString(),
         ).replace(
             "##MESSAGE_ID##",
-            UUID.randomUUID().toString()
+            UUID.randomUUID().toString(),
         ).replace(
             "##SRC_MESSAGE_ID##",
-            UUID.randomUUID().toString()
+            UUID.randomUUID().toString(),
         )
     }
 
-    private fun generateWsdResponse(deviceName: String, workgroupName: String = "WORKGROUP") =
-        wsdResponseTemplate
-            .replace("##THIS_DEVICE_ID##", deviceId)
-            .replace("##DEVICE_NAME##", deviceName)
-            .replace("##WORKGROUP_NAME##", workgroupName)
-            .replace("##PREV_MESSAGE_ID##", wsdMulticastResponseMessageId)
-            .replace("##THIS_MESSAGE_ID##", UUID.randomUUID().toString())
-            .toByteArray(UTF_8)
+    private fun generateWsdResponse(
+        deviceName: String,
+        workgroupName: String = "WORKGROUP",
+    ) = wsdResponseTemplate
+        .replace("##THIS_DEVICE_ID##", deviceId)
+        .replace("##DEVICE_NAME##", deviceName)
+        .replace("##WORKGROUP_NAME##", workgroupName)
+        .replace("##PREV_MESSAGE_ID##", wsdMulticastResponseMessageId)
+        .replace("##THIS_MESSAGE_ID##", UUID.randomUUID().toString())
+        .toByteArray(UTF_8)
 }

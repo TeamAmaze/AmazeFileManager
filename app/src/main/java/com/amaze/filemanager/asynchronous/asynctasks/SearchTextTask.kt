@@ -30,13 +30,12 @@ import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.io.LineNumberReader
 import java.io.StringReader
-import java.util.ArrayList
 
 class SearchTextTask(
     private val textToSearch: String,
     private val searchedText: String,
     private val updateListener: OnProgressUpdate<SearchResultIndex>,
-    private val listener: OnAsyncTaskFinished<List<SearchResultIndex>>
+    private val listener: OnAsyncTaskFinished<List<SearchResultIndex>>,
 ) : AsyncTask<Unit, SearchResultIndex, List<SearchResultIndex>>() {
     private val lineNumberReader: LineNumberReader
 
@@ -61,11 +60,12 @@ class SearchTextTask(
                 log.warn("failed to search text", e)
             }
             charIndex = nextPosition
-            val index = SearchResultIndex(
-                charIndex,
-                charIndex + searchedText.length,
-                lineNumberReader.lineNumber
-            )
+            val index =
+                SearchResultIndex(
+                    charIndex,
+                    charIndex + searchedText.length,
+                    lineNumberReader.lineNumber,
+                )
             searchResultIndices.add(index)
             publishProgress(index)
             charIndex++

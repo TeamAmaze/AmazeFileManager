@@ -28,7 +28,6 @@ import java.io.File
  * Test for viewing 7z archives without timestamps in entries. See #3035
  */
 class SevenZipHelperCallableTest3 : AbstractCompressedHelperCallableArchiveTest() {
-
     override val archiveFileName: String
         get() = "test-archive-no-timestamp.7z"
 
@@ -36,10 +35,13 @@ class SevenZipHelperCallableTest3 : AbstractCompressedHelperCallableArchiveTest(
         assertEquals(0, entry.date)
     }
 
-    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+    override fun doCreateCallable(
+        archive: File,
+        relativePath: String,
+    ): CompressedHelperCallable =
         SevenZipHelperCallable(
             archive.absolutePath,
             relativePath,
-            false
+            false,
         )
 }

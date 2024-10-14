@@ -85,12 +85,13 @@ class BasicSearchTest {
      */
     @Test
     fun testSimpleSearchMatch() {
-        val basicSearch = BasicSearch(
-            "ab",
-            filePath,
-            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
-            context
-        )
+        val basicSearch =
+            BasicSearch(
+                "ab",
+                filePath,
+                EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
+                context,
+            )
 
         val expectedMatchRanges = listOf(0..1)
 
@@ -111,18 +112,19 @@ class BasicSearchTest {
      */
     @Test
     fun testSimpleSearchNotMatch() {
-        val basicSearch = BasicSearch(
-            "ba",
-            filePath,
-            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
-            context
-        )
+        val basicSearch =
+            BasicSearch(
+                "ba",
+                filePath,
+                EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
+                context,
+            )
 
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
 
@@ -137,18 +139,19 @@ class BasicSearchTest {
      */
     @Test
     fun testSearchWithPathMatchButNameNotMatch() {
-        val basicSearch = BasicSearch(
-            "test",
-            filePath,
-            EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
-            context
-        )
+        val basicSearch =
+            BasicSearch(
+                "test",
+                filePath,
+                EnumSet.of(SearchParameter.SHOW_HIDDEN_FILES),
+                context,
+            )
 
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
 
@@ -163,18 +166,19 @@ class BasicSearchTest {
      */
     @Test
     fun testMatchHiddenFile() {
-        val basicSearch = BasicSearch(
-            "ab",
-            filePath,
-            EnumSet.noneOf(SearchParameter::class.java),
-            context
-        )
+        val basicSearch =
+            BasicSearch(
+                "ab",
+                filePath,
+                EnumSet.noneOf(SearchParameter::class.java),
+                context,
+            )
 
         basicSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
             Assert.assertTrue(
                 listNotEmptyError(actualResults.size),
-                actualResults.isEmpty()
+                actualResults.isEmpty(),
             )
         }
 
@@ -183,6 +187,5 @@ class BasicSearchTest {
         }
     }
 
-    private fun listNotEmptyError(size: Int) =
-        "List was not empty as expected but had $size elements"
+    private fun listNotEmptyError(size: Int) = "List was not empty as expected but had $size elements"
 }

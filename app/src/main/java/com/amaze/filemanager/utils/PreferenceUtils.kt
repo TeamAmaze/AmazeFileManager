@@ -33,6 +33,6 @@ object PreferenceUtils {
             Color.alpha(color),
             (Color.red(color) * 0.6f).toInt().coerceAtLeast(0),
             (Color.green(color) * 0.6f).toInt().coerceAtLeast(0),
-            (Color.blue(color) * 0.6f).toInt().coerceAtLeast(0)
+            (Color.blue(color) * 0.6f).toInt().coerceAtLeast(0),
         )
 }

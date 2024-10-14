@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -49,7 +49,6 @@ import com.google.gson.reflect.TypeToken;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -67,6 +66,7 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -131,7 +131,6 @@ public class SearchView {
   private SortType sortType = defaultSortType;
 
   @SuppressWarnings("ConstantConditions")
-  @SuppressLint("NotifyDataSetChanged")
   public SearchView(final AppBar appbar, MainActivity mainActivity) {
 
     this.mainActivity = mainActivity;
@@ -372,11 +371,14 @@ public class SearchView {
    * @param searchTerm The search term that resulted in the search results
    */
   private void updateResultList(List<SearchResult> newResults, String searchTerm) {
-    ArrayList<SearchResult> items = new ArrayList<>(newResults);
-    Collections.sort(
-        items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
-    searchRecyclerViewAdapter.submitList(items);
-    searchRecyclerViewAdapter.notifyDataSetChanged();
+    if (newResults != null) {
+      ArrayList<SearchResult> items = new ArrayList<>(newResults);
+      Collections.sort(
+          items, new SearchResultListSorter(DirSortBy.NONE_ON_TOP, sortType, searchTerm));
+      searchRecyclerViewAdapter.submitList(items);
+    } else {
+      Toast.makeText(mainActivity, "No search result found", Toast.LENGTH_SHORT).show();
+    }
   }
 
   /** show search view with a circular reveal animation */
@@ -609,10 +611,8 @@ public class SearchView {
     }
   }
 
-  @SuppressLint("NotifyDataSetChanged")
   private void clearRecyclerView() {
-    searchRecyclerViewAdapter.submitList(new ArrayList<>());
-    searchRecyclerViewAdapter.notifyDataSetChanged();
+    searchRecyclerViewAdapter.submitList(Collections.emptyList());
 
     deepSearchTV.setVisibility(View.GONE);
 

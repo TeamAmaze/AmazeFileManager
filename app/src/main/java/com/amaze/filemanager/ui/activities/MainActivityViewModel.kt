@@ -54,7 +54,6 @@ import java.io.File
 
 class MainActivityViewModel(val applicationContext: Application) :
     AndroidViewModel(applicationContext) {
-
     var mediaCacheHash: List<List<LayoutElementParcelable>?> = List(5) { null }
     var listCache: LruCache<String, List<LayoutElementParcelable>> = LruCache(50)
     var trashBinFilesLiveData: MutableLiveData<MutableList<LayoutElementParcelable>?>? = null
@@ -78,7 +77,10 @@ class MainActivityViewModel(val applicationContext: Application) :
     /**
      * Put list for a given path in cache
      */
-    fun putInCache(path: String, listToCache: List<LayoutElementParcelable>) {
+    fun putInCache(
+        path: String,
+        listToCache: List<LayoutElementParcelable>,
+    ) {
         viewModelScope.launch(Dispatchers.Default) {
             listCache.put(path, listToCache)
         }
@@ -110,17 +112,20 @@ class MainActivityViewModel(val applicationContext: Application) :
     /**
      * Perform basic search: searches on the current directory
      */
-    fun basicSearch(mainActivity: MainActivity, query: String):
-        LiveData<List<SearchResult>> {
+    fun basicSearch(
+        mainActivity: MainActivity,
+        query: String,
+    ): LiveData<List<SearchResult>> {
         val searchParameters = createSearchParameters(mainActivity)
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
 
         val basicSearch = BasicSearch(query, path, searchParameters, this.applicationContext)
 
-        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
-            basicSearch.search()
-        }
+        lastSearchJob =
+            viewModelScope.launch(Dispatchers.IO) {
+                basicSearch.search()
+            }
 
         lastSearchLiveData = basicSearch.foundFilesLiveData
         return basicSearch.foundFilesLiveData
@@ -131,16 +136,18 @@ class MainActivityViewModel(val applicationContext: Application) :
      */
     fun indexedSearch(
         mainActivity: MainActivity,
-        query: String
+        query: String,
     ): LiveData<List<SearchResult>> {
-        val projection = arrayOf(
-            MediaStore.Files.FileColumns.DATA,
-            MediaStore.Files.FileColumns.DISPLAY_NAME
-        )
-        val cursor = mainActivity
-            .contentResolver
-            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
-            ?: return MutableLiveData()
+        val projection =
+            arrayOf(
+                MediaStore.Files.FileColumns.DATA,
+                MediaStore.Files.FileColumns.DISPLAY_NAME,
+            )
+        val cursor =
+            mainActivity
+                .contentResolver
+                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
+                ?: return MutableLiveData()
 
         val searchParameters = createSearchParameters(mainActivity)
 
@@ -148,9 +155,10 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val indexedSearch = IndexedSearch(query, path, searchParameters, cursor)
 
-        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
-            indexedSearch.search()
-        }
+        lastSearchJob =
+            viewModelScope.launch(Dispatchers.IO) {
+                indexedSearch.search()
+            }
 
         lastSearchLiveData = indexedSearch.foundFilesLiveData
         return indexedSearch.foundFilesLiveData
@@ -161,7 +169,7 @@ class MainActivityViewModel(val applicationContext: Application) :
      */
     fun deepSearch(
         mainActivity: MainActivity,
-        query: String
+        query: String,
     ): LiveData<List<SearchResult>> {
         val searchParameters = createSearchParameters(mainActivity)
 
@@ -171,17 +179,19 @@ class MainActivityViewModel(val applicationContext: Application) :
 
         val context = this.applicationContext
 
-        val deepSearch = DeepSearch(
-            query,
-            path,
-            searchParameters,
-            context,
-            openMode
-        )
+        val deepSearch =
+            DeepSearch(
+                query,
+                path,
+                searchParameters,
+                context,
+                openMode,
+            )
 
-        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
-            deepSearch.search()
-        }
+        lastSearchJob =
+            viewModelScope.launch(Dispatchers.IO) {
+                deepSearch.search()
+            }
 
         lastSearchLiveData = deepSearch.foundFilesLiveData
         return deepSearch.foundFilesLiveData
@@ -193,7 +203,7 @@ class MainActivityViewModel(val applicationContext: Application) :
             showHiddenFiles = sharedPref.getBoolean(PREFERENCE_SHOW_HIDDENFILES, false),
             isRegexEnabled = sharedPref.getBoolean(PREFERENCE_REGEX, false),
             isRegexMatchesEnabled = sharedPref.getBoolean(PREFERENCE_REGEX_MATCHES, false),
-            isRoot = mainActivity.isRootExplorer
+            isRoot = mainActivity.isRootExplorer,
         )
     }
 
@@ -202,27 +212,29 @@ class MainActivityViewModel(val applicationContext: Application) :
      */
     fun moveToBinLightWeight(mediaFileInfoList: List<LayoutElementParcelable>) {
         viewModelScope.launch(Dispatchers.IO) {
-            val trashBinFilesList = mediaFileInfoList.map {
-                it.generateBaseFile()
-                    .toTrashBinFile(applicationContext)
-            }
+            val trashBinFilesList =
+                mediaFileInfoList.map {
+                    it.generateBaseFile()
+                        .toTrashBinFile(applicationContext)
+                }
             AppConfig.getInstance().trashBinInstance.moveToBin(
                 trashBinFilesList,
                 true,
                 object : MoveFilesCallback {
                     override fun invoke(
                         originalFilePath: String,
-                        trashBinDestination: String
+                        trashBinDestination: String,
                     ): Boolean {
                         val source = File(originalFilePath)
                         val dest = File(trashBinDestination)
                         if (!source.renameTo(dest)) {
                             return false
                         }
-                        val hybridFile = HybridFile(
-                            OpenMode.TRASH_BIN,
-                            originalFilePath
-                        )
+                        val hybridFile =
+                            HybridFile(
+                                OpenMode.TRASH_BIN,
+                                originalFilePath,
+                            )
                         scanFile(applicationContext, arrayOf(hybridFile))
                         val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
                         hybridFile.getParent(applicationContext)?.let {
@@ -231,7 +243,7 @@ class MainActivityViewModel(val applicationContext: Application) :
                         }
                         return true
                     }
-                }
+                },
             )
         }
     }
@@ -244,8 +256,9 @@ class MainActivityViewModel(val applicationContext: Application) :
             LOG.info("Restoring media files from bin $mediaFileInfoList")
             val filesToRestore = mutableListOf<TrashBinFile>()
             for (element in mediaFileInfoList) {
-                val restoreFile = element.generateBaseFile()
-                    .toTrashBinRestoreFile(applicationContext)
+                val restoreFile =
+                    element.generateBaseFile()
+                        .toTrashBinRestoreFile(applicationContext)
                 if (restoreFile != null) {
                     filesToRestore.add(restoreFile)
                 }
@@ -254,13 +267,16 @@ class MainActivityViewModel(val applicationContext: Application) :
                 filesToRestore,
                 true,
                 object : MoveFilesCallback {
-                    override fun invoke(source: String, dest: String): Boolean {
+                    override fun invoke(
+                        source: String,
+                        dest: String,
+                    ): Boolean {
                         val sourceFile = File(source)
                         val destFile = File(dest)
                         if (destFile.exists()) {
                             AppConfig.toast(
                                 applicationContext,
-                                applicationContext.getString(R.string.fileexist)
+                                applicationContext.getString(R.string.fileexist),
                             )
                             return false
                         }
@@ -270,10 +286,11 @@ class MainActivityViewModel(val applicationContext: Application) :
                         if (!sourceFile.renameTo(destFile)) {
                             return false
                         }
-                        val hybridFile = HybridFile(
-                            OpenMode.TRASH_BIN,
-                            source
-                        )
+                        val hybridFile =
+                            HybridFile(
+                                OpenMode.TRASH_BIN,
+                                source,
+                            )
                         scanFile(applicationContext, arrayOf(hybridFile))
                         val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
                         hybridFile.getParent(applicationContext)?.let {
@@ -282,7 +299,7 @@ class MainActivityViewModel(val applicationContext: Application) :
                         }
                         return true
                     }
-                }
+                },
             )
         }
     }
@@ -302,10 +319,10 @@ class MainActivityViewModel(val applicationContext: Application) :
                                 HybridFile(OpenMode.FILE, it.path, it.fileName, it.isDirectory)
                                     .generateLayoutElement(
                                         applicationContext,
-                                        false
+                                        false,
                                     )
-                            }
-                    )
+                            },
+                    ),
                 )
             }
         }

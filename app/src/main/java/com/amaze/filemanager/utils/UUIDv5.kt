@@ -22,14 +22,13 @@ package com.amaze.filemanager.utils
 
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.util.*
+import java.util.UUID
 
 /**
  * UUIDv5 implementation, referenced from
  * https://gist.github.com/icedraco/00118b4d3c91d96d8c58e837a448f1b8
  */
 object UUIDv5 {
-
     // Constants defined in RFC4122 https://www.ietf.org/rfc/rfc4122.txt
     @JvmStatic
     val DNS: UUID = UUID.fromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
@@ -50,7 +49,10 @@ object UUIDv5 {
      */
     @JvmStatic
     @Suppress("TooGenericExceptionThrown")
-    fun fromString(namespaceUUID: UUID, name: String): UUID {
+    fun fromString(
+        namespaceUUID: UUID,
+        name: String,
+    ): UUID {
         val md: MessageDigest
         try {
             md = MessageDigest.getInstance("SHA-1")
@@ -61,9 +63,9 @@ object UUIDv5 {
         md.update(toBytes(namespaceUUID))
         md.update(name.toByteArray())
         val bytes = md.digest()
-        /* clear version; set to version 5 */
+        // clear version; set to version 5
         bytes[6] = ((bytes[6].toInt() and 0x0F) or 0x50).toByte()
-        /* clear variant; set to IETF variant */
+        // clear variant; set to IETF variant
         bytes[8] = ((bytes[8].toInt() and 0x3F) or 0x80).toByte()
         return fromBytes(bytes)
     }

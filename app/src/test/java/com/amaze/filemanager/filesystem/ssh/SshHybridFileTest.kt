@@ -46,10 +46,9 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 class SshHybridFileTest {
-
     private var ctx: Context? = null
 
     private val path: String = "ssh://user:password@127.0.0.1:22222/test.file"

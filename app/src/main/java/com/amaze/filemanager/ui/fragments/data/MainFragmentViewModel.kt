@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 import java.util.Objects
 
 class MainFragmentViewModel : ViewModel() {
-
     var currentPath: String? = null
 
     /** This is not an exact copy of the elements in the adapter  */
@@ -115,11 +114,12 @@ class MainFragmentViewModel : ViewModel() {
                 }
             }
             if (!::openMode.isInitialized) {
-                openMode = if (getInt("openmode", -1) !== -1) {
-                    OpenMode.getOpenMode(getInt("openmode", -1))
-                } else {
-                    OpenMode.FILE
-                }
+                openMode =
+                    if (getInt("openmode", -1) !== -1) {
+                        OpenMode.getOpenMode(getInt("openmode", -1))
+                    } else {
+                        OpenMode.FILE
+                    }
             }
         }
     }
@@ -128,10 +128,11 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize drag drop preference
      */
     fun initDragAndDropPreference(sharedPreferences: SharedPreferences) {
-        dragAndDropPreference = sharedPreferences.getInt(
-            PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-            PreferencesConstants.PREFERENCE_DRAG_DEFAULT
-        )
+        dragAndDropPreference =
+            sharedPreferences.getInt(
+                PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+                PreferencesConstants.PREFERENCE_DRAG_DEFAULT,
+            )
     }
 
     /**
@@ -140,7 +141,7 @@ class MainFragmentViewModel : ViewModel() {
     fun initIsList() {
         isList = DataUtils.getInstance().getListOrGridForPath(
             currentPath,
-            DataUtils.LIST
+            DataUtils.LIST,
         ) == DataUtils.LIST
     }
 
@@ -148,10 +149,11 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize column number from preference
      */
     fun initColumns(sharedPreferences: SharedPreferences) {
-        val columnPreference = sharedPreferences.getString(
-            PREFERENCE_GRID_COLUMNS,
-            PREFERENCE_GRID_COLUMNS_DEFAULT
-        )
+        val columnPreference =
+            sharedPreferences.getString(
+                PREFERENCE_GRID_COLUMNS,
+                PREFERENCE_GRID_COLUMNS_DEFAULT,
+            )
         Objects.requireNonNull(columnPreference)
         columns = columnPreference?.toInt()
     }
@@ -164,11 +166,14 @@ class MainFragmentViewModel : ViewModel() {
      *
      * Final value of [.sortby] varies from 0 to 3
      */
-    fun initSortModes(sortType: SortType, sharedPref: SharedPreferences) {
+    fun initSortModes(
+        sortType: SortType,
+        sharedPref: SharedPreferences,
+    ) {
         this.sortType = sortType
         sharedPref.getString(
             PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE,
-            "0"
+            "0",
         )?.run {
             dsort = DirSortBy.getDirSortBy(Integer.parseInt(this))
         }

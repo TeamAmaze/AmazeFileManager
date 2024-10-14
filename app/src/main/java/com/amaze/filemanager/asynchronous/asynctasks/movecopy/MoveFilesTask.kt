@@ -43,7 +43,7 @@ data class MoveFilesReturn(
     val movedCorrectly: Boolean,
     val invalidOperation: Boolean,
     val destinationSize: Long,
-    val totalSize: Long
+    val totalSize: Long,
 )
 
 class MoveFilesTask(
@@ -52,9 +52,8 @@ class MoveFilesTask(
     val currentPath: String,
     context: Context,
     val mode: OpenMode,
-    val paths: ArrayList<String>
+    val paths: ArrayList<String>,
 ) : Task<MoveFilesReturn, MoveFiles> {
-
     private val log: Logger = LoggerFactory.getLogger(MoveFilesTask::class.java)
 
     private val task: MoveFiles = MoveFiles(files, isRootExplorer, context, mode, paths)
@@ -88,7 +87,7 @@ class MoveFilesTask(
             Toast.makeText(
                 applicationContext,
                 R.string.some_files_failed_invalid_operation,
-                Toast.LENGTH_LONG
+                Toast.LENGTH_LONG,
             )
                 .show()
         }
@@ -97,10 +96,11 @@ class MoveFilesTask(
             val targetFiles: MutableList<HybridFile> = ArrayList()
             val sourcesFiles: MutableList<HybridFileParcelable> = ArrayList()
             for (f in files[i]) {
-                val file = HybridFile(
-                    OpenMode.FILE,
-                    paths[i] + "/" + f.getName(applicationContext)
-                )
+                val file =
+                    HybridFile(
+                        OpenMode.FILE,
+                        paths[i] + "/" + f.getName(applicationContext),
+                    )
                 targetFiles.add(file)
             }
             for (hybridFileParcelables in files) {
@@ -130,13 +130,16 @@ class MoveFilesTask(
             }
     }
 
-    private fun onMovedFail(destinationSize: Long, totalBytes: Long) {
+    private fun onMovedFail(
+        destinationSize: Long,
+        totalBytes: Long,
+    ) {
         if (totalBytes > 0 && destinationSize < totalBytes) {
             // destination don't have enough space; return
             Toast.makeText(
                 applicationContext,
                 applicationContext.resources.getString(R.string.in_safe),
-                Toast.LENGTH_LONG
+                Toast.LENGTH_LONG,
             )
                 .show()
             return

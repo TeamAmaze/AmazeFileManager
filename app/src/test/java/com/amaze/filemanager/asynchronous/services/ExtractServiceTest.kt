@@ -75,7 +75,6 @@ import java.util.concurrent.TimeUnit
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class ExtractServiceTest {
-
     private val zipfile1: File
     private val zipfile2: File
     private val zipfile3: File
@@ -101,8 +100,9 @@ class ExtractServiceTest {
     @Rule
     @JvmField
     @RequiresApi(VERSION_CODES.R)
-    val allFilesPermissionRule = GrantPermissionRule
-        .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
+    val allFilesPermissionRule =
+        GrantPermissionRule
+            .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
     init {
         Environment.getExternalStorageDirectory().run {
@@ -217,7 +217,7 @@ class ExtractServiceTest {
         assertEquals(
             ApplicationProvider.getApplicationContext<Context>()
                 .getString(R.string.multiple_invalid_archive_entries),
-            ShadowToast.getTextOfLatestToast()
+            ShadowToast.getTextOfLatestToast(),
         )
     }
 
@@ -232,7 +232,7 @@ class ExtractServiceTest {
         assertEquals(
             ApplicationProvider.getApplicationContext<Context>()
                 .getString(R.string.multiple_invalid_archive_entries),
-            ShadowToast.getTextOfLatestToast()
+            ShadowToast.getTextOfLatestToast(),
         )
     }
 
@@ -437,10 +437,11 @@ class ExtractServiceTest {
 
     private fun doTestBadArchive(data: ByteArray) {
         for (archiveType in supportedArchiveExtensions()) {
-            val badArchive = File(
-                Environment.getExternalStorageDirectory(),
-                "bad-archive.$archiveType"
-            )
+            val badArchive =
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    "bad-archive.$archiveType",
+                )
             ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
             performTest(badArchive)
             ShadowLooper.idleMainLooper()
@@ -468,7 +469,7 @@ class ExtractServiceTest {
                     .putExtra(
                         ExtractService.KEY_PATH_EXTRACT,
                         File(Environment.getExternalStorageDirectory(), "test-archive")
-                            .absolutePath
+                            .absolutePath,
                     )
             service.onStartCommand(intent, 0, 0)
         }

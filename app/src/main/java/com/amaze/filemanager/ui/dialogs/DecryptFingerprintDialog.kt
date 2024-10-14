@@ -22,17 +22,17 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.content.Context
 import android.content.Intent
-import android.hardware.fingerprint.FingerprintManager
 import android.os.Build
-import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.AppCompatButton
-import com.afollestad.materialdialogs.MaterialDialog
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
+import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
+import androidx.biometric.BiometricPrompt
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils.DecryptButtonCallbackInterface
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.FingerprintHandler
 import java.io.IOException
 import java.security.GeneralSecurityException
@@ -41,7 +41,6 @@ import java.security.GeneralSecurityException
  * Decrypt dialog prompt for user fingerprint.
  */
 object DecryptFingerprintDialog {
-
     /**
      * Display dialog prompting user for fingerprint in order to decrypt file.
      */
@@ -49,31 +48,27 @@ object DecryptFingerprintDialog {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Throws(
         GeneralSecurityException::class,
-        IOException::class
+        IOException::class,
     )
     fun show(
         c: Context,
         main: MainActivity,
         intent: Intent,
-        appTheme: AppTheme,
-        decryptButtonCallbackInterface: DecryptButtonCallbackInterface
+        decryptButtonCallbackInterface: DecryptButtonCallbackInterface,
     ) {
-        val accentColor = main.accent
-        val builder = MaterialDialog.Builder(c)
-        builder.title(c.getString(R.string.crypt_decrypt))
-        val rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null)
-        val cancelButton = rootView.findViewById<AppCompatButton>(
-            R.id.button_decrypt_fingerprint_cancel
-        )
-        cancelButton.setTextColor(accentColor)
-        builder.customView(rootView, true)
-        builder.canceledOnTouchOutside(false)
-        builder.theme(appTheme.getMaterialDialogTheme())
-        val dialog = builder.show()
-        cancelButton.setOnClickListener { v: View? -> dialog.cancel() }
-        val manager = c.getSystemService(FingerprintManager::class.java)
-        val handler = FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface)
-        val `object` = FingerprintManager.CryptoObject(CryptUtil.initCipher())
-        handler.authenticate(manager, `object`)
+        val manager = BiometricManager.from(c)
+        if (manager.canAuthenticate(BIOMETRIC_STRONG or BIOMETRIC_WEAK) == BIOMETRIC_SUCCESS) {
+            val promptInfo =
+                BiometricPrompt.PromptInfo.Builder()
+                    .setTitle(c.getString(R.string.crypt_decrypt))
+                    .setDescription(c.getString(R.string.crypt_fingerprint_authenticate))
+                    .setConfirmationRequired(false)
+                    .setNegativeButtonText(c.getString(android.R.string.cancel))
+                    .build()
+
+            val handler = FingerprintHandler(main, intent, promptInfo, decryptButtonCallbackInterface)
+            val `object` = BiometricPrompt.CryptoObject(CryptUtil.initCipher())
+            handler.authenticate(`object`)
+        }
     }
 }

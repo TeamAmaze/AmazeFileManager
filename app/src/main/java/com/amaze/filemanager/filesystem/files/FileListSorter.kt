@@ -27,13 +27,17 @@ import com.amaze.filemanager.filesystem.files.sort.SortBy
 import com.amaze.filemanager.filesystem.files.sort.SortType
 import java.lang.Long
 import java.util.Locale
+import kotlin.Boolean
+import kotlin.Comparator
+import kotlin.Int
+import kotlin.String
 
 /**
  * [Comparator] implementation to sort [LayoutElementParcelable]s.
  */
 class FileListSorter(
     dirArg: DirSortBy,
-    sortType: SortType
+    sortType: SortType,
 ) : Comparator<ComparableParcelable> {
     private var dirsOnTop = dirArg
     private val asc: Int = sortType.sortOrder.sortFactor
@@ -44,7 +48,10 @@ class FileListSorter(
     }
 
     /** Compares the names of [file1] and [file2] */
-    private fun compareName(file1: ComparableParcelable, file2: ComparableParcelable): Int {
+    private fun compareName(
+        file1: ComparableParcelable,
+        file2: ComparableParcelable,
+    ): Int {
         return file1.getParcelableName().compareTo(file2.getParcelableName(), ignoreCase = true)
     }
 
@@ -52,7 +59,10 @@ class FileListSorter(
      * Compares two elements and return negative, zero and positive integer if first argument is less
      * than, equal to or greater than second
      */
-    override fun compare(file1: ComparableParcelable, file2: ComparableParcelable): Int {
+    override fun compare(
+        file1: ComparableParcelable,
+        file2: ComparableParcelable,
+    ): Int {
         /*File f1;
 
     if(!file1.hasSymlink()) {
@@ -124,7 +134,6 @@ class FileListSorter(
     }
 
     companion object {
-
         /**
          * Convenience method to get the file extension in given path.
          *

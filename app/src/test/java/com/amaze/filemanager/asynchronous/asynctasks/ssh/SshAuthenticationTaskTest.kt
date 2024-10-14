@@ -66,11 +66,10 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R]
+    sdk = [KITKAT, P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication")
 class SshAuthenticationTaskTest {
-
     /**
      * Test setup
      */
@@ -87,22 +86,24 @@ class SshAuthenticationTaskTest {
      */
     @Test
     fun testAuthenticationUsernamePasswordSuccess() {
-        val sshClient = mock(SSHClient::class.java).apply {
-            doNothing().`when`(this).addHostKeyVerifier(anyString())
-            doNothing().`when`(this).connect(anyString(), anyInt())
-            doNothing().`when`(this).authPassword(anyString(), anyString())
-            doNothing().`when`(this).disconnect()
-            `when`(isConnected).thenReturn(true)
-            `when`(isAuthenticated).thenReturn(true)
-        }
+        val sshClient =
+            mock(SSHClient::class.java).apply {
+                doNothing().`when`(this).addHostKeyVerifier(anyString())
+                doNothing().`when`(this).connect(anyString(), anyInt())
+                doNothing().`when`(this).authPassword(anyString(), anyString())
+                doNothing().`when`(this).disconnect()
+                `when`(isConnected).thenReturn(true)
+                `when`(isAuthenticated).thenReturn(true)
+            }
         prepareSshConnectionPool(sshClient)
-        val task = SshAuthenticationTask(
-            hostKey = "",
-            hostname = "127.0.0.1",
-            port = 22222,
-            username = "user",
-            password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password")
-        )
+        val task =
+            SshAuthenticationTask(
+                hostKey = "",
+                hostname = "127.0.0.1",
+                port = 22222,
+                username = "user",
+                password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password"),
+            )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
         var result: SSHClient? = null
@@ -130,23 +131,25 @@ class SshAuthenticationTaskTest {
      */
     @Test
     fun testAuthenticationUsernamePasswordFail() {
-        val sshClient = mock(SSHClient::class.java).apply {
-            doNothing().`when`(this).addHostKeyVerifier(anyString())
-            doNothing().`when`(this).connect(anyString(), anyInt())
-            doThrow(UserAuthException(DisconnectReason.NO_MORE_AUTH_METHODS_AVAILABLE))
-                .`when`(this).authPassword(anyString(), anyString())
-            doNothing().`when`(this).disconnect()
-            `when`(isConnected).thenReturn(true)
-            `when`(isAuthenticated).thenReturn(true)
-        }
+        val sshClient =
+            mock(SSHClient::class.java).apply {
+                doNothing().`when`(this).addHostKeyVerifier(anyString())
+                doNothing().`when`(this).connect(anyString(), anyInt())
+                doThrow(UserAuthException(DisconnectReason.NO_MORE_AUTH_METHODS_AVAILABLE))
+                    .`when`(this).authPassword(anyString(), anyString())
+                doNothing().`when`(this).disconnect()
+                `when`(isConnected).thenReturn(true)
+                `when`(isAuthenticated).thenReturn(true)
+            }
         prepareSshConnectionPool(sshClient)
-        val task = SshAuthenticationTask(
-            hostKey = "",
-            hostname = "127.0.0.1",
-            port = 22222,
-            username = "user",
-            password = "password"
-        )
+        val task =
+            SshAuthenticationTask(
+                hostKey = "",
+                hostname = "127.0.0.1",
+                port = 22222,
+                username = "user",
+                password = "password",
+            )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
         var result: SSHClient? = null
@@ -170,7 +173,7 @@ class SshAuthenticationTaskTest {
             ApplicationProvider
                 .getApplicationContext<Context>()
                 .getString(R.string.ssh_authentication_failure_password),
-            ShadowToast.getTextOfLatestToast()
+            ShadowToast.getTextOfLatestToast(),
         )
     }
 
@@ -180,22 +183,24 @@ class SshAuthenticationTaskTest {
     @Test
     fun testAuthenticationKeyPairSuccess() {
         val keyProvider = TestKeyProvider()
-        val sshClient = mock(SSHClient::class.java).apply {
-            doNothing().`when`(this).addHostKeyVerifier(anyString())
-            doNothing().`when`(this).connect(anyString(), anyInt())
-            doNothing().`when`(this).authPublickey(anyString(), eq(keyProvider))
-            doNothing().`when`(this).disconnect()
-            `when`(isConnected).thenReturn(true)
-            `when`(isAuthenticated).thenReturn(true)
-        }
+        val sshClient =
+            mock(SSHClient::class.java).apply {
+                doNothing().`when`(this).addHostKeyVerifier(anyString())
+                doNothing().`when`(this).connect(anyString(), anyInt())
+                doNothing().`when`(this).authPublickey(anyString(), eq(keyProvider))
+                doNothing().`when`(this).disconnect()
+                `when`(isConnected).thenReturn(true)
+                `when`(isAuthenticated).thenReturn(true)
+            }
         prepareSshConnectionPool(sshClient)
-        val task = SshAuthenticationTask(
-            hostKey = "",
-            hostname = "127.0.0.1",
-            port = 22222,
-            username = "user",
-            privateKey = keyProvider.keyPair
-        )
+        val task =
+            SshAuthenticationTask(
+                hostKey = "",
+                hostname = "127.0.0.1",
+                port = 22222,
+                username = "user",
+                privateKey = keyProvider.keyPair,
+            )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
         var result: SSHClient? = null
@@ -223,24 +228,26 @@ class SshAuthenticationTaskTest {
     @Test
     fun testAuthenticationKeyPairFail() {
         val keyProvider = TestKeyProvider()
-        val sshClient = mock(SSHClient::class.java).apply {
-            doNothing().`when`(this).addHostKeyVerifier(anyString())
-            doNothing().`when`(this).connect(anyString(), anyInt())
-            doThrow(
-                UserAuthException(DisconnectReason.KEY_EXCHANGE_FAILED)
-            ).`when`(this).authPublickey(anyString(), any<KeyProvider>())
-            doNothing().`when`(this).disconnect()
-            `when`(isConnected).thenReturn(true)
-            `when`(isAuthenticated).thenReturn(true)
-        }
+        val sshClient =
+            mock(SSHClient::class.java).apply {
+                doNothing().`when`(this).addHostKeyVerifier(anyString())
+                doNothing().`when`(this).connect(anyString(), anyInt())
+                doThrow(
+                    UserAuthException(DisconnectReason.KEY_EXCHANGE_FAILED),
+                ).`when`(this).authPublickey(anyString(), any<KeyProvider>())
+                doNothing().`when`(this).disconnect()
+                `when`(isConnected).thenReturn(true)
+                `when`(isAuthenticated).thenReturn(true)
+            }
         prepareSshConnectionPool(sshClient)
-        val task = SshAuthenticationTask(
-            hostKey = "",
-            hostname = "127.0.0.1",
-            port = 22222,
-            username = "user",
-            privateKey = keyProvider.keyPair
-        )
+        val task =
+            SshAuthenticationTask(
+                hostKey = "",
+                hostname = "127.0.0.1",
+                port = 22222,
+                username = "user",
+                privateKey = keyProvider.keyPair,
+            )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
         var result: SSHClient? = null
@@ -264,7 +271,7 @@ class SshAuthenticationTaskTest {
             ApplicationProvider
                 .getApplicationContext<Context>()
                 .getString(R.string.ssh_authentication_failure_key),
-            ShadowToast.getTextOfLatestToast()
+            ShadowToast.getTextOfLatestToast(),
         )
     }
 
@@ -273,24 +280,26 @@ class SshAuthenticationTaskTest {
      */
     @Test
     fun testConnectionTimeout() {
-        val sshClient = mock(SSHClient::class.java).apply {
-            doNothing().`when`(this).addHostKeyVerifier(anyString())
-            doThrow(
-                SocketException("Connection timeout")
-            ).`when`(this).connect(anyString(), anyInt())
-            doNothing().`when`(this).authPassword(anyString(), anyString())
-            doNothing().`when`(this).disconnect()
-            `when`(isConnected).thenReturn(true)
-            `when`(isAuthenticated).thenReturn(true)
-        }
+        val sshClient =
+            mock(SSHClient::class.java).apply {
+                doNothing().`when`(this).addHostKeyVerifier(anyString())
+                doThrow(
+                    SocketException("Connection timeout"),
+                ).`when`(this).connect(anyString(), anyInt())
+                doNothing().`when`(this).authPassword(anyString(), anyString())
+                doNothing().`when`(this).disconnect()
+                `when`(isConnected).thenReturn(true)
+                `when`(isAuthenticated).thenReturn(true)
+            }
         prepareSshConnectionPool(sshClient)
-        val task = SshAuthenticationTask(
-            hostKey = "",
-            hostname = "127.0.0.1",
-            port = 22222,
-            username = "user",
-            password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password")
-        )
+        val task =
+            SshAuthenticationTask(
+                hostKey = "",
+                hostname = "127.0.0.1",
+                port = 22222,
+                username = "user",
+                password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password"),
+            )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
         var result: SSHClient? = null
@@ -316,9 +325,9 @@ class SshAuthenticationTaskTest {
                     R.string.ssh_connect_failed,
                     "127.0.0.1",
                     22222,
-                    "Connection timeout"
+                    "Connection timeout",
                 ),
-            ShadowToast.getTextOfLatestToast()
+            ShadowToast.getTextOfLatestToast(),
         )
     }
 
@@ -333,14 +342,15 @@ class SshAuthenticationTaskTest {
             this.set(
                 NetCopyClientConnectionPool,
                 mutableMapOf(
-                    Pair("ssh://user:password@127.0.0.1:22222", sshClient)
-                )
+                    Pair("ssh://user:password@127.0.0.1:22222", sshClient),
+                ),
             )
         }
 
-        NetCopyClientConnectionPool.sshClientFactory = object :
-            NetCopyClientConnectionPool.SSHClientFactory {
-            override fun create(config: net.schmizz.sshj.Config): SSHClient = sshClient
-        }
+        NetCopyClientConnectionPool.sshClientFactory =
+            object :
+                NetCopyClientConnectionPool.SSHClientFactory {
+                override fun create(config: net.schmizz.sshj.Config): SSHClient = sshClient
+            }
     }
 }

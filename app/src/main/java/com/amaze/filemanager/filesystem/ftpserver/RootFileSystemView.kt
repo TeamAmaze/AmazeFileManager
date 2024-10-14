@@ -27,13 +27,12 @@ import org.apache.ftpserver.ftplet.FtpFile
 import org.apache.ftpserver.ftplet.User
 import java.io.File
 import java.net.URI
-import java.util.*
+import java.util.StringTokenizer
 
 class RootFileSystemView(
     private val user: User,
-    private val fileFactory: SuFileFactory
+    private val fileFactory: SuFileFactory,
 ) : FileSystemView {
-
     private var currDir: String
     private var rootDir: String
 
@@ -51,7 +50,7 @@ class RootFileSystemView(
 
         Log.d(
             TAG,
-            "Native filesystem view created for user \"${user.name}\" with root \"${rootDir}\""
+            "Native filesystem view created for user \"${user.name}\" with root \"${rootDir}\"",
         )
 
         this.rootDir = rootDir
@@ -122,7 +121,7 @@ class RootFileSystemView(
     private fun getPhysicalName(
         rootDir: String,
         currDir: String,
-        fileName: String
+        fileName: String,
     ): String {
         // normalize root dir
         var normalizedRootDir: String = normalizeSeparateChar(rootDir)
@@ -134,13 +133,14 @@ class RootFileSystemView(
 
         // if file name is relative, set resArg to root dir + curr dir
         // if file name is absolute, set resArg to root dir
-        result = if (normalizedFileName[0] != '/') {
-            // file name is relative
-            val normalizedCurrDir = normalize(currDir)
-            normalizedRootDir + normalizedCurrDir.substring(1)
-        } else {
-            normalizedRootDir
-        }
+        result =
+            if (normalizedFileName[0] != '/') {
+                // file name is relative
+                val normalizedCurrDir = normalize(currDir)
+                normalizedRootDir + normalizedCurrDir.substring(1)
+            } else {
+                normalizedRootDir
+            }
 
         // strip last '/'
         result = trimTrailingSlash(result)
@@ -253,12 +253,18 @@ class RootFileSystemView(
         /**
          * Create SuFile.
          */
-        fun create(parent: String, child: String): SuFile = SuFile(parent, child)
+        fun create(
+            parent: String,
+            child: String,
+        ): SuFile = SuFile(parent, child)
 
         /**
          * Create SuFile.
          */
-        fun create(parent: File, child: String): SuFile = SuFile(parent, child)
+        fun create(
+            parent: File,
+            child: String,
+        ): SuFile = SuFile(parent, child)
 
         /**
          * Create SuFile.

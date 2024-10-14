@@ -38,7 +38,6 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class])
 class FtpServiceSupportedCiphersTest {
-
     /**
      * Check for enabled ciphers, to ensure no unsupported ciphers on the list.
      *

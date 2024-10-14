@@ -2,48 +2,7 @@
 
 buildscript {
     ext {
-        kotlin_version = "1.8.0"
-        robolectricVersion = '4.9'
-        glideVersion = '4.11.0'
-        sshjVersion = '0.35.0'
-        jcifsVersion = '2.1.9'
-        fabSpeedDialVersion = '3.1.1'
-        roomVersion = '2.5.0'
-        bouncyCastleVersion = '1.70'
-        awaitilityVersion = "3.1.6"
-        androidXCoreVersion = "1.7.0"
-        androidMaterialVersion = "1.5.0" // Upgrade to 1.5 requires targetSdkVersion 31
-        androidXFragmentVersion = "1.5.6"
-        androidXAppCompatVersion = "1.6.1"
-        androidXAnnotationVersion = "1.5.0"
-        androidXPrefVersion = "1.2.1"
-        androidXTestVersion = "1.5.0"
-        androidXTestRunnerVersion = "1.5.2"
-        androidXTestExtVersion = "1.1.5"
-        androidXArchCoreTestVersion = "2.2.0"
-        kotlinxCoroutineTestVersion = "1.7.3"
-        uiAutomatorVersion = "2.2.0"
-        junitVersion = "4.13.2"
-        slf4jVersion = "1.7.25"
-        mockitoVersion = "4.11.0"
-        mockitoInlineVersion = "4.11.0"
-        mockitoKotlinVersion = "4.1.0"
-        androidBillingVersion = "5.0.0"
-        junrarVersion = "7.4.0"
-        zip4jVersion = "2.6.4"
-        espressoVersion = "3.5.1"
-        materialDialogsVersion = "0.9.6.0"
-        jacocoVersion = "0.8.7"
-        commonsCompressVersion = "1.22"
-        libsuVersion = "3.2.1"
-        mockkVersion = "1.12.2"
-        logbackAndroidVersion = "3.0.0"
-        commonsNetVersion = "3.8.0"
-        ftpserverVersion = "1.1.1"
-        jsoupVersion = "1.13.1"
-        rxAndroidVersion = "2.1.1"
-        rxJavaVersion = "2.2.9"
-        okHttpVersion = "4.9.0"
+        kotlin_version = "1.9.10"
     }
     repositories {
         google()
@@ -62,7 +21,8 @@ buildscript {
 }
 
 plugins {
-    id "com.diffplug.spotless" version "6.5.0"
+    id "com.diffplug.spotless" version "6.25.0"
+    id "com.google.devtools.ksp" version "1.9.10-1.0.13" apply false
 }
 
 allprojects {
@@ -83,22 +43,21 @@ allprojects {
 }
 
 spotless {
+    // update license header from first commit
+    // ratchetFrom='78b1a4cf3c0a9519be92ff8445f7dff2cd8722b1'
     java {
-        licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java', 'portscanner/src/**/*.java'
-        googleJavaFormat('1.15.0')
+        licenseHeaderFile 'amaze.license.spotless.txt'
+        target '*/src/**/*.java'
+        googleJavaFormat('1.19.2')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
     kotlin {
-        licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.kt', 'file_operations/src/**/*.kt'
-        ktlint("0.44.0").setUseExperimental(true).userData(['disabled_rules': 'no-wildcard-imports',
-                                   'kotlin_imports_layout': 'idea', 'indent_size': '4',
-                                   'max_line_length': '100'])
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
+        licenseHeaderFile 'amaze.license.spotless.txt'
+        target '*/src/**/*.kt'
+        ktlint("1.1.1")
+                .setEditorConfigPath("$projectDir/.editorconfig")
+
     }
 }
 
@@ -179,7 +138,7 @@ subprojects {
                 it.dependsOn fetchRobolectricDependencies
             }
         }
-        if (project.plugins.hasPlugin("jacoco-android")){
+        if (project.plugins.hasPlugin("jacoco-android")) {
             android {
                 testOptions.unitTests.all {
                     jacoco {
@@ -189,7 +148,7 @@ subprojects {
             }
         }
         dependencies {
-            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
+//            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
 
             if (project.hasProperty('kapt')) {
                 kapt 'javax.xml.bind:jaxb-api:2.3.1'

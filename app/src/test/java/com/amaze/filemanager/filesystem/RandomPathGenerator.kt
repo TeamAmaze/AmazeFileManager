@@ -33,7 +33,10 @@ object RandomPathGenerator {
     /**
      * Generates a valid random path
      */
-    fun generateRandomPath(random: Random, length: Int): String {
+    fun generateRandomPath(
+        random: Random,
+        length: Int,
+    ): String {
         assert(length > 0)
 
         val slashesInPath = random.nextInt(length / 4)
@@ -44,14 +47,19 @@ object RandomPathGenerator {
     /**
      * Generates a valid random path, with a specific amount of directories
      */
-    fun generateRandomPath(random: Random, length: Int, slashesInPath: Int): String {
+    fun generateRandomPath(
+        random: Random,
+        length: Int,
+        slashesInPath: Int,
+    ): String {
         assert(length > slashesInPath * 2)
 
         val namesInPath = slashesInPath + 1
 
-        val filenameLengths = List(namesInPath) {
-            (length - slashesInPath) / namesInPath
-        }
+        val filenameLengths =
+            List(namesInPath) {
+                (length - slashesInPath) / namesInPath
+            }
 
         val pathBuilder = mutableListOf<String>()
 
@@ -83,14 +91,18 @@ object RandomPathGenerator {
         return path
     }
 
-    private fun generateRandomFilename(random: Random, length: Int): String {
+    private fun generateRandomFilename(
+        random: Random,
+        length: Int,
+    ): String {
         assert(length > 0)
 
         var name = ""
 
         while (reservedFileNames.contains(name)) {
-            name = List(length) { generateRandomCharacter(random) }
-                .joinToString("")
+            name =
+                List(length) { generateRandomCharacter(random) }
+                    .joinToString("")
         }
 
         return name

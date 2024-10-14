@@ -35,28 +35,33 @@ object HiddenFilesDialog {
      * Create hidden files dialog, it shows the files hidden from the context view when selecting
      */
     @JvmStatic
-    fun showHiddenDialog(mainActivity: MainActivity, mainFragment: MainFragment) {
+    fun showHiddenDialog(
+        mainActivity: MainActivity,
+        mainFragment: MainFragment,
+    ) {
         val sharedPrefs = mainActivity.prefs
         val appTheme = mainActivity.appTheme
 
-        val adapter = HiddenAdapter(
-            mainActivity,
-            mainFragment,
-            sharedPrefs,
-            FileUtils.toHybridFileConcurrentRadixTree(DataUtils.getInstance().hiddenFiles),
-            null,
-            false
-        )
+        val adapter =
+            HiddenAdapter(
+                mainActivity,
+                mainFragment,
+                sharedPrefs,
+                FileUtils.toHybridFileConcurrentRadixTree(DataUtils.getInstance().hiddenFiles),
+                null,
+                false,
+            )
 
-        val materialDialog = MaterialDialog.Builder(mainActivity).also { builder ->
-            builder.positiveText(R.string.close)
-            builder.positiveColor(mainActivity.accent)
-            builder.title(R.string.hiddenfiles)
-            builder.theme(appTheme.getMaterialDialogTheme())
-            builder.autoDismiss(true)
-            builder.adapter(adapter, null)
-            builder.dividerColor(Color.GRAY)
-        }.build()
+        val materialDialog =
+            MaterialDialog.Builder(mainActivity).also { builder ->
+                builder.positiveText(R.string.close)
+                builder.positiveColor(mainActivity.accent)
+                builder.title(R.string.hiddenfiles)
+                builder.theme(appTheme.getMaterialDialogTheme())
+                builder.autoDismiss(true)
+                builder.adapter(adapter, null)
+                builder.dividerColor(Color.GRAY)
+            }.build()
 
         adapter.materialDialog = materialDialog
         materialDialog.setOnDismissListener {

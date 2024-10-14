@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsRecyclerAdapter;
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
@@ -43,6 +42,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
@@ -113,10 +113,7 @@ public class AppsListFragment extends Fragment
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     preloader =
         new RecyclerViewPreloader<>(
-            GlideApp.with(this),
-            modelProvider,
-            sizeProvider,
-            GlideConstants.MAX_PRELOAD_APPSADAPTER);
+            Glide.with(this), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
     linearLayoutManager = new LinearLayoutManager(getContext());
     updateViews(mainActivity, utilsProvider);
 

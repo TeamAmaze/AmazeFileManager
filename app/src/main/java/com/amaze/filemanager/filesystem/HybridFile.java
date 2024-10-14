@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -39,6 +39,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -1440,8 +1442,18 @@ public class HybridFile {
       // do nothing
       return true;
     } else {
-      File f = getFile();
-      return f.setLastModified(date);
+      if (getFile().setLastModified(date)) return true;
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        try {
+          Files.setLastModifiedTime(getFile().toPath(), FileTime.fromMillis(date));
+          return true;
+        } catch (IOException e) {
+          LOG.error("Files#setLastModifiedTime", e);
+          return false;
+        }
+      }
+      return false;
     }
   }
 
@@ -1851,7 +1863,7 @@ public class HybridFile {
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
       if (trashBinFile.getDeletedPath(trashBin.getConfig()).equals(path)) {
-        // finding path to restore to
+        // finding path to restore tof
         return new TrashBinFile(
             getName(context), isDirectory(context), trashBinFile.getPath(), length(context), null);
       }

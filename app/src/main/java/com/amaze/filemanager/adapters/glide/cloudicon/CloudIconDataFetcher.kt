@@ -35,21 +35,24 @@ class CloudIconDataFetcher(
     private val context: Context,
     private val path: String,
     private val width: Int,
-    private val height: Int
+    private val height: Int,
 ) : DataFetcher<Bitmap> {
-
     companion object {
         private val TAG = CloudIconDataFetcher::class.java.simpleName
     }
 
     private var inputStream: InputStream? = null
 
-    override fun loadData(priority: Priority, callback: DataFetcher.DataCallback<in Bitmap?>) {
+    override fun loadData(
+        priority: Priority,
+        callback: DataFetcher.DataCallback<in Bitmap?>,
+    ) {
         inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path)
-        val options = BitmapFactory.Options().also {
-            it.outWidth = width
-            it.outHeight = height
-        }
+        val options =
+            BitmapFactory.Options().also {
+                it.outWidth = width
+                it.outHeight = height
+            }
         val drawable = BitmapFactory.decodeStream(inputStream, null, options)
         callback.onDataReady(drawable)
     }

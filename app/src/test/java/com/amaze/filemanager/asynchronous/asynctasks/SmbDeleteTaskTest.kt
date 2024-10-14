@@ -26,7 +26,6 @@ import com.amaze.filemanager.utils.smb.SmbUtil
 import org.junit.Test
 
 class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
-
     /**
      * Test case to verify delete SMB file success scenario.
      *
@@ -35,7 +34,7 @@ class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
     @Test
     fun testDeleteSmbFileOk() {
         doTestDeleteFileOk(
-            HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt"))
+            HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt")),
         )
     }
 

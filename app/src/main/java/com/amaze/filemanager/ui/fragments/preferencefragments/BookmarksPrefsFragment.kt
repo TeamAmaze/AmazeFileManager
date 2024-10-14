@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.fragments.preferencefragments
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -56,7 +57,10 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         showDeleteDialog(it)
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         setPreferencesFromResource(R.xml.bookmarks_prefs, rootKey)
 
         findPreference<Preference>("add_bookmarks")?.onPreferenceClickListener =
@@ -96,40 +100,63 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         val txtShortcutName = dialogBinding.text1
         val txtShortcutPath = dialogBinding.text2
 
-        val dialog = MaterialDialog.Builder(requireActivity())
-            .title(R.string.create_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme())
-            .positiveColor(fabSkin)
-            .positiveText(R.string.create)
-            .negativeColor(fabSkin)
-            .negativeText(android.R.string.cancel)
-            .customView(v, false)
-            .build()
+        val dialog =
+            MaterialDialog.Builder(requireActivity())
+                .title(R.string.create_bookmark)
+                .theme(activity.appTheme.getMaterialDialogTheme())
+                .positiveColor(fabSkin)
+                .positiveText(R.string.create)
+                .negativeColor(fabSkin)
+                .negativeText(android.R.string.cancel)
+                .customView(v, false)
+                .build()
         dialog.getActionButton(DialogAction.POSITIVE).isEnabled = false
         disableButtonIfTitleEmpty(txtShortcutName, dialog)
         disableButtonIfNotPath(txtShortcutPath, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
-                val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
-                p.title = txtShortcutName.text
-                p.summary = txtShortcutPath.text
-                position[p] = dataUtils.books.size
-                bookmarksList?.addPreference(p)
-                val values = arrayOf(
-                    txtShortcutName.text.toString(),
-                    txtShortcutPath.text.toString()
-                )
-                dataUtils.addBook(values)
-                utilsHandler.saveToDatabase(
-                    OperationData(
-                        UtilsHandler.Operation.BOOKMARKS,
-                        txtShortcutName.text.toString(),
-                        txtShortcutPath.text.toString()
+                val result = isValidBookmark(txtShortcutName.text.toString(), txtShortcutPath.text.toString())
+                if (!result.first) {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(result.second),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                } else {
+                    val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
+                    p.title = txtShortcutName.text
+                    p.summary = txtShortcutPath.text
+                    position[p] = dataUtils.books.size
+                    bookmarksList?.addPreference(p)
+                    val values =
+                        arrayOf(
+                            txtShortcutName.text.toString(),
+                            txtShortcutPath.text.toString(),
+                        )
+                    dataUtils.addBook(values)
+                    utilsHandler.saveToDatabase(
+                        OperationData(
+                            UtilsHandler.Operation.BOOKMARKS,
+                            txtShortcutName.text.toString(),
+                            txtShortcutPath.text.toString(),
+                        ),
                     )
-                )
-                dialog.dismiss()
+                    dialog.dismiss()
+                }
             }
         dialog.show()
+    }
+
+    private fun isValidBookmark(
+        name: String,
+        path: String,
+    ): Pair<Boolean, Int> {
+        return when {
+            name.isEmpty() -> Pair(false, R.string.invalid_name)
+            dataUtils.containsBooks(arrayOf(name, path)) != -1 -> Pair(false, R.string.bookmark_exists)
+            !FileUtils.isPathAccessible(path, activity.prefs) -> Pair(false, R.string.ftp_path_change_error_invalid)
+            else -> Pair(true, 0)
+        }
     }
 
     private fun showEditDialog(p: PathSwitchPreference) {
@@ -145,15 +172,16 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         editText1.setText(p.title)
         editText2.setText(p.summary)
 
-        val dialog = MaterialDialog.Builder(activity)
-            .title(R.string.edit_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme())
-            .positiveColor(fabSkin)
-            .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
-            .negativeColor(fabSkin)
-            .negativeText(android.R.string.cancel)
-            .customView(v, false)
-            .build()
+        val dialog =
+            MaterialDialog.Builder(activity)
+                .title(R.string.edit_bookmark)
+                .theme(activity.appTheme.getMaterialDialogTheme())
+                .positiveColor(fabSkin)
+                .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
+                .negativeColor(fabSkin)
+                .negativeText(android.R.string.cancel)
+                .customView(v, false)
+                .build()
         dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
             FileUtils.isPathAccessible(editText2.text.toString(), activity.prefs)
         disableButtonIfTitleEmpty(editText1, dialog)
@@ -177,7 +205,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                             oldName,
                             oldPath,
                             editText1.text.toString(),
-                            editText2.text.toString()
+                            editText2.text.toString(),
                         )
                     }
                 dialog.dismiss()
@@ -189,14 +217,15 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         val fabSkin = activity.accent
         val utilsHandler = AppConfig.getInstance().utilsHandler
 
-        val dialog = MaterialDialog.Builder(activity)
-            .title(R.string.question_delete_bookmark)
-            .theme(activity.appTheme.getMaterialDialogTheme())
-            .positiveColor(fabSkin)
-            .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
-            .negativeColor(fabSkin)
-            .negativeText(android.R.string.cancel)
-            .build()
+        val dialog =
+            MaterialDialog.Builder(activity)
+                .title(R.string.question_delete_bookmark)
+                .theme(activity.appTheme.getMaterialDialogTheme())
+                .positiveColor(fabSkin)
+                .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
+                .negativeColor(fabSkin)
+                .negativeText(android.R.string.cancel)
+                .build()
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
                 dataUtils.removeBook(position[p]!!)
@@ -204,8 +233,8 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                     OperationData(
                         UtilsHandler.Operation.BOOKMARKS,
                         p.title.toString(),
-                        p.summary.toString()
-                    )
+                        p.summary.toString(),
+                    ),
                 )
                 bookmarksList?.removePreference(p)
                 position.remove(p)
@@ -214,24 +243,30 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         dialog.show()
     }
 
-    private fun disableButtonIfNotPath(path: AppCompatEditText, dialog: MaterialDialog) {
+    private fun disableButtonIfNotPath(
+        path: AppCompatEditText,
+        dialog: MaterialDialog,
+    ) {
         path.addTextChangedListener(
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
                     dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
                         FileUtils.isPathAccessible(s.toString(), activity.prefs)
                 }
-            }
+            },
         )
     }
 
-    private fun disableButtonIfTitleEmpty(title: AppCompatEditText, dialog: MaterialDialog) {
+    private fun disableButtonIfTitleEmpty(
+        title: AppCompatEditText,
+        dialog: MaterialDialog,
+    ) {
         title.addTextChangedListener(
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
                     dialog.getActionButton(DialogAction.POSITIVE).isEnabled = title.length() > 0
                 }
-            }
+            },
         )
     }
 }

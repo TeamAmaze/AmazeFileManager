@@ -30,7 +30,6 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
 class UnknownCompressedFileDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean
-    ) =
-        UnknownCompressedFileHelperCallable(filePath, addGoBackItem)
+        addGoBackItem: Boolean,
+    ) = UnknownCompressedFileHelperCallable(filePath, addGoBackItem)
 }

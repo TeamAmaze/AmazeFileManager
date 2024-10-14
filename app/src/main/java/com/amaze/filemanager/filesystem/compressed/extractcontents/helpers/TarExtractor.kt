@@ -30,15 +30,14 @@ class TarExtractor(
     filePath: String,
     outputPath: String,
     listener: OnUpdate,
-    updatePosition: UpdatePosition
+    updatePosition: UpdatePosition,
 ) : AbstractCommonsArchiveExtractor(
-    context,
-    filePath,
-    outputPath,
-    listener,
-    updatePosition
-) {
-
+        context,
+        filePath,
+        outputPath,
+        listener,
+        updatePosition,
+    ) {
     override fun createFrom(inputStream: InputStream): TarArchiveInputStream =
         runCatching {
             TarArchiveInputStream(inputStream)

@@ -34,31 +34,36 @@ object HistoryDialog {
      * Create history dialog, it shows the accessed folders from last accessed to first accessed
      */
     @JvmStatic
-    fun showHistoryDialog(mainActivity: MainActivity, mainFragment: MainFragment) {
+    fun showHistoryDialog(
+        mainActivity: MainActivity,
+        mainFragment: MainFragment,
+    ) {
         val sharedPrefs = mainActivity.prefs
         val appTheme = mainActivity.appTheme
 
-        val adapter = HiddenAdapter(
-            mainActivity,
-            mainFragment,
-            sharedPrefs,
-            FileUtils.toHybridFileArrayList(DataUtils.getInstance().history),
-            null,
-            true
-        )
+        val adapter =
+            HiddenAdapter(
+                mainActivity,
+                mainFragment,
+                sharedPrefs,
+                FileUtils.toHybridFileArrayList(DataUtils.getInstance().history),
+                null,
+                true,
+            )
 
-        val materialDialog = MaterialDialog.Builder(mainActivity).also { builder ->
-            builder.positiveText(R.string.cancel)
-            builder.positiveColor(mainActivity.accent)
-            builder.negativeText(R.string.clear)
-            builder.negativeColor(mainActivity.accent)
-            builder.title(R.string.history)
-            builder.onNegative { _: MaterialDialog?, _: DialogAction? ->
-                DataUtils.getInstance().clearHistory()
-            }
-            builder.theme(appTheme.getMaterialDialogTheme())
-            builder.adapter(adapter, null)
-        }.build()
+        val materialDialog =
+            MaterialDialog.Builder(mainActivity).also { builder ->
+                builder.positiveText(R.string.cancel)
+                builder.positiveColor(mainActivity.accent)
+                builder.negativeText(R.string.clear)
+                builder.negativeColor(mainActivity.accent)
+                builder.title(R.string.history)
+                builder.onNegative { _: MaterialDialog?, _: DialogAction? ->
+                    DataUtils.getInstance().clearHistory()
+                }
+                builder.theme(appTheme.getMaterialDialogTheme())
+                builder.adapter(adapter, null)
+            }.build()
         adapter.materialDialog = materialDialog
         materialDialog.show()
     }

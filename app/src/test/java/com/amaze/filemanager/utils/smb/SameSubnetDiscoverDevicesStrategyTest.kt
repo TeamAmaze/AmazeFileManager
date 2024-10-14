@@ -28,12 +28,12 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 class SameSubnetDiscoverDevicesStrategyTest : AbstractSubnetDiscoverDevicesStrategyTests() {
-
     companion object {
         @JvmStatic
-        private val logger = LoggerFactory.getLogger(
-            SameSubnetDiscoverDevicesStrategyTest::class.java
-        )
+        private val logger =
+            LoggerFactory.getLogger(
+                SameSubnetDiscoverDevicesStrategyTest::class.java,
+            )
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,7 +20,23 @@
 
 package com.amaze.filemanager.adapters;
 
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtension7zip;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApk;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApks;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarShort;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarShort;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionJar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionLzma;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionRar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTarLzma;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTarXz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionXz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionZip;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -38,7 +54,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -69,6 +84,7 @@ import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.Utils;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -616,7 +632,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     preloader =
         new RecyclerViewPreloader<>(
-            GlideApp.with(mainFragment),
+            Glide.with(mainFragment),
             modelProvider,
             sizeProvider,
             GlideConstants.MAX_PRELOAD_FILES);
@@ -807,10 +823,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
 
     // clear previously cached icon
-    GlideApp.with(mainFragment).clear(holder.genericIcon);
-    GlideApp.with(mainFragment).clear(holder.pictureIcon);
-    GlideApp.with(mainFragment).clear(holder.apkIcon);
-    GlideApp.with(mainFragment).clear(holder.baseItemView);
+    Glide.with(mainFragment).clear(holder.genericIcon);
+    Glide.with(mainFragment).clear(holder.pictureIcon);
+    Glide.with(mainFragment).clear(holder.apkIcon);
+    Glide.with(mainFragment).clear(holder.baseItemView);
 
     holder.baseItemView.setOnClickListener(
         v -> {
@@ -1023,10 +1039,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     // view is a grid view
     // clear previously cached icon
-    GlideApp.with(mainFragment).clear(holder.genericIcon);
-    GlideApp.with(mainFragment).clear(holder.iconLayout);
-    GlideApp.with(mainFragment).clear(holder.imageView1);
-    GlideApp.with(mainFragment).clear(holder.baseItemView);
+    Glide.with(mainFragment).clear(holder.genericIcon);
+    Glide.with(mainFragment).clear(holder.iconLayout);
+    Glide.with(mainFragment).clear(holder.imageView1);
+    Glide.with(mainFragment).clear(holder.baseItemView);
 
     holder.checkImageViewGrid.setColorFilter(accentColor);
     holder.baseItemView.setOnClickListener(
@@ -1061,7 +1077,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.genericIcon.setImageResource(R.drawable.ic_doc_apk_white);
       }
     } else {
-      GlideApp.with(mainFragment).load(rowItem.iconData.image).into(holder.genericIcon);
+      Glide.with(mainFragment).load(rowItem.iconData.image).into(holder.genericIcon);
     }
 
     if (holder.genericIcon.getVisibility() == View.VISIBLE) {
@@ -1275,7 +1291,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       OnImageProcessed errorListener) {
     if (iconData.isImageBroken()) {
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
-      GlideApp.with(mainFragment)
+      Glide.with(mainFragment)
           .load(R.drawable.ic_broken_image_white_24dp)
           .into(viewHolder.genericIcon);
       GradientDrawable gradientDrawable = (GradientDrawable) viewHolder.genericIcon.getBackground();
@@ -1286,7 +1302,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     viewHolder.genericIcon.setVisibility(View.VISIBLE);
-    GlideApp.with(mainFragment).load(iconData.loadingImage).into(viewHolder.genericIcon);
+    Glide.with(mainFragment).load(iconData.loadingImage).into(viewHolder.genericIcon);
     GradientDrawable gradientDrawable = (GradientDrawable) viewHolder.genericIcon.getBackground();
 
     RequestListener<Drawable> requestListener =
@@ -1298,7 +1314,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             new Handler(
                     msg -> {
                       viewHolder.genericIcon.setVisibility(View.VISIBLE);
-                      GlideApp.with(mainFragment)
+                      Glide.with(mainFragment)
                           .load(R.drawable.ic_broken_image_white_24dp)
                           .into(viewHolder.genericIcon);
                       return false;
@@ -1344,7 +1360,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
       iconBackground.setBackgroundColor(grey_color);
-      GlideApp.with(mainFragment)
+      Glide.with(mainFragment)
           .load(R.drawable.ic_broken_image_white_24dp)
           .into(viewHolder.genericIcon);
       view.setVisibility(View.INVISIBLE);
@@ -1357,7 +1373,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES) ? viewHolder.genericIcon : viewHolder.iconLayout;
 
     viewHolder.genericIcon.setVisibility(View.VISIBLE);
-    GlideApp.with(mainFragment).load(iconData.loadingImage).into(viewHolder.genericIcon);
+    Glide.with(mainFragment).load(iconData.loadingImage).into(viewHolder.genericIcon);
     view.setVisibility(View.INVISIBLE);
 
     RequestListener<Drawable> requestListener =
@@ -1368,7 +1384,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iconBackground.setBackgroundColor(grey_color);
             new Handler(
                     msg -> {
-                      GlideApp.with(mainFragment)
+                      Glide.with(mainFragment)
                           .load(R.drawable.ic_broken_image_white_24dp)
                           .into(viewHolder.genericIcon);
                       return false;

@@ -23,7 +23,6 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor
 
 open class SevenZipExtractorTest : AbstractArchiveExtractorTest() {
-
     override val archiveType: String = "7z"
 
     override fun extractorClass(): Class<out Extractor?> = SevenZipExtractor::class.java

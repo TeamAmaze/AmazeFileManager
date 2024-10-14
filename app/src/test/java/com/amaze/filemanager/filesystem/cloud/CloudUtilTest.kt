@@ -22,7 +22,10 @@ package com.amaze.filemanager.filesystem.cloud
 
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode.*
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.BOX
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.DROPBOX
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.GDRIVE
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.ONEDRIVE
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import org.junit.Assert
 import org.junit.Test
@@ -39,13 +42,14 @@ class CloudUtilTest {
         }
 
         val generatePathForMode = { mode: OpenMode, path: String ->
-            val prefix = when (mode) {
-                DROPBOX -> CloudHandler.CLOUD_PREFIX_DROPBOX
-                BOX -> CloudHandler.CLOUD_PREFIX_BOX
-                GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
-                ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
-                else -> null
-            }
+            val prefix =
+                when (mode) {
+                    DROPBOX -> CloudHandler.CLOUD_PREFIX_DROPBOX
+                    BOX -> CloudHandler.CLOUD_PREFIX_BOX
+                    GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
+                    ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
+                    else -> null
+                }
             requireNotNull(prefix)
             prefix + RandomPathGenerator.separator + path
         }

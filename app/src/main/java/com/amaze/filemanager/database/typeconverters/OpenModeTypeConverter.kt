@@ -25,7 +25,6 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 
 /** [TypeConverter] for [OpenMode] objects to database columns.  */
 object OpenModeTypeConverter {
-
     /**
      * Convert given [OpenMode] to integer constant for database storage.
      */
