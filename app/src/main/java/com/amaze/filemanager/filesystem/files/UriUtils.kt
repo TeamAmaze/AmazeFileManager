@@ -36,7 +36,10 @@ import java.io.File
  *
  * Adapted from: https://github.com/saparkhid/AndroidFileNamePicker/blob/main/javautil/FileUtils.java
  */
-fun fromUri(uri: Uri, context: Context): String? {
+fun fromUri(
+    uri: Uri,
+    context: Context,
+): String? {
     // ExternalStorageProvider
     if (isExternalStorageDocument(uri)) {
         val docId = DocumentsContract.getDocumentId(uri)
@@ -58,25 +61,27 @@ fun fromUri(uri: Uri, context: Context): String? {
     if (isMediaDocument(uri)) {
         val docId = DocumentsContract.getDocumentId(uri)
         val split = docId.split(":")
-        val contentUri = when (split[0]) {
-            "image" -> {
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val contentUri =
+            when (split[0]) {
+                "image" -> {
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                }
+                "video" -> {
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                }
+                "audio" -> {
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+                "document" -> {
+                    MediaStore.Files.getContentUri("external")
+                }
+                else -> return getDataColumn(context, uri, null, null)
             }
-            "video" -> {
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            }
-            "audio" -> {
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-            }
-            "document" -> {
-                MediaStore.Files.getContentUri("external")
-            }
-            else -> return getDataColumn(context, uri, null, null)
-        }
         val selection = "_id=?"
-        val selectionArgs = arrayOf(
-            split[1]
-        )
+        val selectionArgs =
+            arrayOf(
+                split[1],
+            )
         return getDataColumn(context, contentUri, selection, selectionArgs)
     }
     if ("content".equals(uri.scheme, ignoreCase = true)) {
@@ -138,7 +143,10 @@ private fun getPathFromExtSD(pathData: List<String>): String? {
     }
 }
 
-private fun getPathFromDownloads(uri: Uri, context: Context): String? {
+private fun getPathFromDownloads(
+    uri: Uri,
+    context: Context,
+): String? {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         // Try to use ContentResolver to get the file name
         context.contentResolver.query(
@@ -146,14 +154,16 @@ private fun getPathFromDownloads(uri: Uri, context: Context): String? {
             arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
             null,
             null,
-            null
+            null,
         ).use { cursor ->
             if (cursor != null && cursor.moveToFirst()) {
-                val fileName = cursor.getString(
-                    cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
-                )
-                val path = Environment.getExternalStorageDirectory()
-                    .toString() + "/Download/" + fileName
+                val fileName =
+                    cursor.getString(
+                        cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME),
+                    )
+                val path =
+                    Environment.getExternalStorageDirectory()
+                        .toString() + "/Download/" + fileName
                 if (!TextUtils.isEmpty(path)) {
                     return path
                 }
@@ -164,17 +174,19 @@ private fun getPathFromDownloads(uri: Uri, context: Context): String? {
             if (id.startsWith("raw:")) {
                 return id.replaceFirst("raw:", "")
             }
-            val contentUriPrefixesToTry = arrayOf(
-                "content://downloads/public_downloads",
-                "content://downloads/my_downloads"
-            )
+            val contentUriPrefixesToTry =
+                arrayOf(
+                    "content://downloads/public_downloads",
+                    "content://downloads/my_downloads",
+                )
             // Try to guess full path with frequently used download paths
             for (contentUriPrefix in contentUriPrefixesToTry) {
                 return try {
-                    val contentUri = ContentUris.withAppendedId(
-                        Uri.parse(contentUriPrefix),
-                        java.lang.Long.valueOf(id)
-                    )
+                    val contentUri =
+                        ContentUris.withAppendedId(
+                            Uri.parse(contentUriPrefix),
+                            java.lang.Long.valueOf(id),
+                        )
                     getDataColumn(context, contentUri, null, null)
                 } catch (e: NumberFormatException) {
                     // In Android 8 and Android P the id is not a number
@@ -189,10 +201,11 @@ private fun getPathFromDownloads(uri: Uri, context: Context): String? {
             return id.replaceFirst("raw:", "")
         }
         return try {
-            val contentUri = ContentUris.withAppendedId(
-                Uri.parse("content://downloads/public_downloads"),
-                java.lang.Long.valueOf(id)
-            )
+            val contentUri =
+                ContentUris.withAppendedId(
+                    Uri.parse("content://downloads/public_downloads"),
+                    java.lang.Long.valueOf(id),
+                )
             getDataColumn(context, contentUri, null, null)
         } catch (e: NumberFormatException) {
             null
@@ -205,7 +218,7 @@ private fun getDataColumn(
     context: Context,
     uri: Uri,
     selection: String?,
-    selectionArgs: Array<String>?
+    selectionArgs: Array<String>?,
 ): String? {
     val column = MediaStore.Files.FileColumns.DATA
     val projection = arrayOf(column)
@@ -215,7 +228,7 @@ private fun getDataColumn(
         projection,
         selection,
         selectionArgs,
-        null
+        null,
     ).use { cursor ->
         if (cursor != null && cursor.moveToFirst()) {
             val index: Int = cursor.getColumnIndex(column)
@@ -238,7 +251,7 @@ private fun getPathInUri(uri: Uri): String? {
         if (uriPath.contains(prefix)) {
             // make sure path starts with storage
             val pathInUri = "/storage${uriPath.substring(
-                uriPath.indexOf(prefix) + prefix.length
+                uriPath.indexOf(prefix) + prefix.length,
             )}"
             if (fileExists(pathInUri)) {
                 return pathInUri
