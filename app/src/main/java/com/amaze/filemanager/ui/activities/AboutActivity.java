@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.utils.Utils.openURL;
 
 import java.io.File;
@@ -35,7 +34,6 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -148,19 +146,6 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
         (v, hasFocus) -> {
           mAppBarLayout.setExpanded(hasFocus, true);
         });
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
-        getWindow().setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
-      } else {
-        if (getAppTheme().equals(AppTheme.LIGHT)) {
-          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.white));
-        } else if (getAppTheme().equals(AppTheme.BLACK)) {
-          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
-        } else {
-          getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
-        }
-      }
-    }
   }
 
   /**

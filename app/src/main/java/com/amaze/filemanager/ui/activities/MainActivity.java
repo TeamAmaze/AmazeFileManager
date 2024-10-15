@@ -23,7 +23,6 @@ package com.amaze.filemanager.ui.activities;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
 import static android.os.Build.VERSION_CODES.KITKAT;
-import static android.os.Build.VERSION_CODES.KITKAT_WATCH;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.N;
@@ -55,7 +54,6 @@ import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PROTOCOL;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_USERNAME;
 import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
-import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_VIEW;
 
@@ -132,7 +130,6 @@ import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
-import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
@@ -154,7 +151,6 @@ import com.leinardi.android.speeddial.FabWithLabelView;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
 import android.annotation.SuppressLint;
@@ -1767,36 +1763,6 @@ public class MainActivity extends PermissionsActivity
     mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
 
     drawer.setBackgroundColor(colorDrawable.getColor());
-
-    if (SDK_INT >= LOLLIPOP) {
-      // for lollipop devices, the status bar color
-      mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
-        mainActivity
-            .getWindow()
-            .setNavigationBarColor(PreferenceUtils.getStatusColor(colorDrawable.getColor()));
-      } else {
-        if (getAppTheme().equals(AppTheme.LIGHT)) {
-          mainActivity
-              .getWindow()
-              .setNavigationBarColor(Utils.getColor(this, android.R.color.white));
-        } else if (getAppTheme().equals(AppTheme.BLACK)) {
-          mainActivity
-              .getWindow()
-              .setNavigationBarColor(Utils.getColor(this, android.R.color.black));
-        } else {
-          mainActivity
-              .getWindow()
-              .setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
-        }
-      }
-    } else if (SDK_INT == KITKAT_WATCH || SDK_INT == KITKAT) {
-
-      // for kitkat devices, the status bar color
-      SystemBarTintManager tintManager = new SystemBarTintManager(this);
-      tintManager.setStatusBarTintEnabled(true);
-      tintManager.setStatusBarTintColor(colorDrawable.getColor());
-    }
   }
 
   void initialiseFab() {
