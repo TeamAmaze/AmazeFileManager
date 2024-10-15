@@ -643,16 +643,14 @@ public class MainActivity extends PermissionsActivity
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
       if ("text/plain".equals(type)) {
-        initFabToSave(null);
+        showSaveSnackbar(null);
       } else {
         // save a single file to filesystem
         Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (uri != null
-            && uri.getScheme() != null
-            && uri.getScheme().startsWith(ContentResolver.SCHEME_FILE)) {
-          ArrayList<Uri> uris = new ArrayList<>();
+        if (uri != null && uri.getScheme() != null) {
+          List<Uri> uris = new ArrayList<>();
           uris.add(uri);
-          initFabToSave(uris);
+          showSaveSnackbar(uris);
         } else {
           Toast.makeText(this, R.string.error_unsupported_or_null_uri, Toast.LENGTH_LONG).show();
         }
@@ -665,7 +663,7 @@ public class MainActivity extends PermissionsActivity
       // save multiple files to filesystem
 
       ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-      initFabToSave(arrayList);
+      showSaveSnackbar(arrayList);
 
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
@@ -674,7 +672,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
-  private void initFabToSave(final List<Uri> uris) {
+  private void showSaveSnackbar(final List<Uri> uris) {
     Utils.showThemedSnackbar(
         this,
         getString(R.string.select_save_location),
@@ -1908,7 +1906,8 @@ public class MainActivity extends PermissionsActivity
     SpeedDialActionItem.Builder builder =
         new SpeedDialActionItem.Builder(id, icon)
             .setLabel(fabTitle)
-            .setFabBackgroundColor(iconSkin);
+            .setFabBackgroundColor(iconSkin)
+            .setFabImageTintColor(Color.WHITE);
 
     switch (getAppTheme()) {
       case LIGHT:

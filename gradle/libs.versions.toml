@@ -12,7 +12,7 @@ glide = "4.14.2"
 sshj = "0.35.0"
 jcifs = "2.1.9"
 eventbus = "3.3.1"
-fabSpeedDial = "3.1.1"
+fabSpeedDial = "3.3.0"
 room = "2.5.2"
 bouncyCastle = "1.76"
 awaitility = "3.1.6"
@@ -25,6 +25,7 @@ androidXPref = "1.2.1"
 androidXPalette = "1.0.0"
 androidXCardView = "1.0.0"
 androidXConstraintLayout = "1.1.3"
+androidXBiometric = "1.1.0"
 androidXTest = "1.5.0"
 androidXTestRunner = "1.5.2"
 androidXTestExt = "1.1.5"
@@ -84,6 +85,7 @@ androidX-multidex = { module = "androidx.multidex:multidex", version.ref = "andr
 androidX-palette = { module = "androidx.palette:palette-ktx", version.ref = "androidXPalette" }
 androidX-preference = { module = "androidx.preference:preference-ktx", version.ref = "androidXPref" }
 androidX-vectordrawable-animated = { module = "androidx.vectordrawable:vectordrawable-animated", version.ref = "vectordrawableAnimated" }
+androidX-biometric = { module = "androidx.biometric:biometric", version.ref = "androidXBiometric" }
 
 androidX-test-core = { module = "androidx.test:core", version.ref = "androidXTest" }
 androidX-test-runner = { module = "androidx.test:runner", version.ref = "androidXTestRunner" }
