@@ -141,36 +141,6 @@ public class ThemedActivity extends PreferenceActivity {
       }
       if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
         window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
-      } else {
-        if (getAppTheme().equals(AppTheme.LIGHT)) {
-          // do nothing: since the default android colors were better than the ones we set.
-          // setting white led to usability issues too. ref: #4211
-        } else {
-
-          if (SDK_INT >= Build.VERSION_CODES.R) {
-            WindowInsetsController windowInsetController = getWindow().getInsetsController();
-            if (windowInsetController != null)
-              windowInsetController.setSystemBarsAppearance(
-                  WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                  WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
-
-            if (getAppTheme().equals(AppTheme.BLACK)) {
-              getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
-            } else {
-              getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
-            }
-
-          } else if (SDK_INT >= Build.VERSION_CODES.O) {
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-
-            if (getAppTheme().equals(AppTheme.BLACK)) {
-              getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
-            } else {
-              getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
-            }
-          }
-
-        }
       }
     } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
         || SDK_INT == Build.VERSION_CODES.KITKAT) {
