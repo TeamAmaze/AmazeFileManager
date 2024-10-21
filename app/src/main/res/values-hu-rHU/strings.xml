@@ -728,7 +728,7 @@
     <string name="choose_operation">Válassza ki a végrehajtandó műveletet</string>
     <string name="remember">Jegyezze meg a következő alkalomra</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">SAF-hozzáférés engedélyezése az FTP-kiszolgálóhoz</string>
-    <string name="ftp_prompt_accept_first_start_saf_access">Mivel ez az FTP-kiszolgáló első futtatása, és a készülék belső tárhelyét használja megosztott mappaként, kérjük, engedélyezze az Amaze számára, hogy a SAF segítségével hozzáférjen a tárhelyhez..\n\n
+    <string name="ftp_prompt_accept_first_start_saf_access">Mivel ez az FTP-kiszolgáló első futtatása, és a készülék belső tárhelyét használja megosztott mappaként, kérjük, engedélyezze az Amaze számára, hogy a SAF segítségével hozzáférjen a tárhelyhez.\n\n
 
 Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem választ egy új helyet a megosztáshoz.</string>
     <string name="android_data_prompt_saf_access">Az Android 10 bevezetése óta az Android korlátozásokat vezetett be bizonyos könyvtárakra, és azokat a tárhely hozzáférési keretrendszer segítségével lehet elérni.\n\nKérjük, engedélyezze az Amaze számára a könyvtár elérését a rendszer fájlkezelőjéből a \"Hozzáférés engedélyezése\" gomb megnyomásával.</string>
