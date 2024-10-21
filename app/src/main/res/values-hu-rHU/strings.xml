@@ -691,7 +691,7 @@
     <string name="error_report_button_text">Hiba jelentése e-mailben</string>
     <string name="error_report_button_telegram">Hiba jelentése Telegramon keresztül</string>
     <string name="copy_for_github">Formázott jelentés másolása</string>
-    <string name="error_report_open_issue_button_text">Jelentés a GitHub-on</string>
+    <string name="error_report_open_issue_button_text">Jelentés a GitHubon</string>
     <string name="error_report_open_github_notice">Ellenőrizze, hogy nem létezik-e már egy olyan probléma, amely az Ön összeomlási problémáját tárgyalja.</string>
     <string name="error_snackbar_message">Sajnálom, valami rosszul sült el.</string>
     <string name="error_snackbar_action">Jelentés</string>
