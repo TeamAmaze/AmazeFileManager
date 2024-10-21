@@ -490,7 +490,7 @@
     <string name="intellihide_toolbar_summary">Az eszköztár automatikus elrejtése görgetés közben</string>
     <string name="hash_sha256">SHA-256</string>
     <!-- references 'name/size/location/hash' copied to clipboard -->
-    <string name="properties_copied_clipboard">a vágólapra másolva</string>
+    <string name="properties_copied_clipboard">vágólapra másolva</string>
     <string name="contributors_1_summary">Fordítás</string>
     <string name="contributors_2_summary">Ikon és bannerek</string>
     <string name="contributors_3_summary">Téma motor</string>
