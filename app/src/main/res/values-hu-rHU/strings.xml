@@ -784,5 +784,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="trash_bin_retention_days_summary">Maximális napok száma, ameddig a kuka tárolhat egy fájlt</string>
     <string name="trash_bin_retention_bytes_title">Megőrzés adatméret szerint</string>
     <string name="trash_bin_retention_bytes_summary">Maximális adatmennyiség (MB-ban), amelyet a kuka tárolhat</string>
+    <string name="trash_bin_cleanup_interval_title">Törlési időköz</string>
     </resources>
 
