@@ -75,7 +75,7 @@
     <string name="no">Nem</string>
     <string name="dialog_delete_category_directories">Könyvtárak</string>
     <string name="dialog_delete_category_files">fájl</string>
-    <string name="dialog_delete_disclaimer">Az alábbi elemek törlése véglegesen eltávolítja azokat a készülékről, és nem lehet őket visszaállítani.</string>
+    <string name="dialog_delete_disclaimer">Az alábbi elemek törlése véglegesen eltávolítja azokat az eszközről, és nem lehet őket visszaállítani.</string>
     <string name="dialog_delete_temporarily_disclaimer">Törli a következő elemeket?</string>
     <string name="dialog_restore_disclaimer">Valóban visszaállítja a következő elemeket?</string>
     <string name="dialog_delete_title">Véglegesen törli az elemeket?</string>
