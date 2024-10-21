@@ -668,7 +668,7 @@
     <string name="close">Bezárás</string>
     <string name="bookmark_exists">Könyvjelző létezik</string>
     <string name="hide_media">Elrejtés a médiaböngészőkből</string>
-    <string name="ssh_connect_failed_host_key_changed_prompt">LEHETSÉGES, HOGY VALAKI VALAMI ALJAS DOLGOT MŰVEL!\n\nMeglehet, hogy valaki éppen most hallgatja le Önt (man-in-the-middle támadás). Az is lehetséges, hogy a gazdakulcsot éppen most változtatták meg. A távoli kiszolgáló által küldött nyilvános kulcs ujjlenyomata nem egyezik az Amaze-ben tároltal.\n\n\nFolytathatja a gazdagép ujjlenyomatának frissítésével, vagy megszakíthatja az SSH-kapcsolat beállításainak frissítését.</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">LEHETSÉGES, HOGY VALAKI VALAMI ALJAS DOLGOT MŰVEL!\n\nMeglehet, hogy valaki éppen most hallgatja le Önt (man-in-the-middle támadás). Az is lehetséges, hogy a kiszolgálókulcsot éppen most változtatták meg. A távoli kiszolgáló által küldött nyilvános kulcs ujjlenyomata nem egyezik az Amaze-ben tároltal.\n\n\nFolytathatja a kiszolgáló ujjlenyomatának frissítésével, vagy megszakíthatja az SSH-kapcsolat beállításainak frissítését.</string>
     <string name="update_host_key">Kiszolgáló-kulcs frissítése</string>
     <string name="cancel_recommended">Mégse (ajánlott)</string>
     <string name="failed_install_apk">Nem sikerült telepíteni</string>
