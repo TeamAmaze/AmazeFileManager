@@ -599,7 +599,7 @@
     <string name="ssh_authentication_failure_password">Bejelentkezési hiba: Nem lehet hitelesíteni a megadott felhasználónévvel és jelszóval.</string>
     <string name="ssh_authentication_failure_key">Bejelentkezési hiba: Nem lehet hitelesíteni a megadott felhasználónévvel és privát kulccsal.</string>
     <string name="ssh_connect_failed">Nem sikerült csatlakozni a következőhöz: %1$s:%2$d: %3$s</string>
-    <string name="ssh_connect_failed_host_key_changed_title">FIGYELEM: A TÁVOLI ÁLLOMÁS AZONOSÍTÓJA MEGVÁLTOZOTT!</string>
+    <string name="ssh_connect_failed_host_key_changed_title">FIGYELEM: A TÁVOLI KISZOLGÁLÓ AZONOSÍTÓJA MEGVÁLTOZOTT!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         LEHETSÉGES, HOGY VALAKI CSINÁLT VALAMIT!\n\n
         Valaki mostantól lehallgathatja Önt (Közbeékelődéses támadás)! Az is lehetséges, hogy a kiszolgálókulcs éppen megváltozott. A távoli kiszolgáló által küldött nyilvános kulcs ujjlenyomatja nem egyezik meg az Amaze-ben tárolt információval.\n\n
