@@ -471,7 +471,7 @@
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
 
     <string name="no_applications">Nincsenek alkalmazások</string>
-    <string name="ftp_path">Megosztási útvonal</string>
+    <string name="ftp_path">Megosztott útvonal</string>
     <string name="ftp_path_hint">Útvonal a megosztandó könyvtár gyökeréhez</string>
     <string name="change">Módosítás</string>
     <string name="unknown_error">Hoppá, valami hiba törént!</string>
