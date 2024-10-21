@@ -109,7 +109,7 @@
     <!-- Theme -->
     <string name="light">Világos</string>
     <string name="dark">Sötét</string>
-    <string name="daytime">Nappal</string>
+    <string name="daytime">Nappali</string>
     <string name="black">Fekete (OLED kijelzőre)</string>
     <string name="system">Rendszer (kövesse a rendszer témáját)</string>
     <!--Skin-->
