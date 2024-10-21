@@ -687,7 +687,7 @@
     <string name="scp_default_path">Alapértelmezett elérési út (nem kötelező)</string>
 
     <!-- error activity -->
-    <string name="sorry_string">Sajnálom, ennek nem lett volna szabad megtörténnie.</string>
+    <string name="sorry_string">Ennek nem lett volna szabad megtörténnie.</string>
     <string name="error_report_button_text">Hiba jelentése e-mailben</string>
     <string name="error_report_button_telegram">Hiba jelentése telegramon keresztül</string>
     <string name="copy_for_github">Formázott jelentés másolása</string>
