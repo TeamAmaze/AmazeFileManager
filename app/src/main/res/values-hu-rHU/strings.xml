@@ -780,6 +780,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="restoring">Visszaállítás...</string>
     <string name="trash_bin_retention_num_of_files_title">Megőrzés a fájlok száma szerint</string>
     <string name="trash_bin_retention_num_of_files_summary">Maximális fájlok tárolása a kukában</string>
-    <string name="trash_bin_retention_days_title">Megtartás napok szerint</string>
+    <string name="trash_bin_retention_days_title">Megőrzés napok szerint</string>
     </resources>
 
