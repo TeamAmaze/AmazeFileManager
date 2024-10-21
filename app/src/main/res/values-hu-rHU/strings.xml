@@ -808,7 +808,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="disable_player_intent_filters_summary">Az Amaze beépített médialejátszóinak letiltása a fájlválasztóból</string>
     <string name="no_app_found_intent">Nem található alkalmazás, amely kezelné ezt az intentet. Telepítve van a DocumentsUI?</string>
     <string name="cloud_connection_credentials_cleared">A felhőkapcsolat hitelesítő adatai törölve lettek</string>
-    <string name="cloud_connection_credentials_cleared_msg">Sajnos nem tudtuk átvinni a felhőcsatlakozási hitelesítő adatait az új adatbázis-sémába, ezért el kellett távolítanunk azokat az alkalmazásból. Kérjük, hozza létre újra a felhőkapcsolatot.</string>
+    <string name="cloud_connection_credentials_cleared_msg">Nem lehetett átköltöztetni az Ön felhőkapcsolatának hitelesítő adatait az új adatbázis-sémába, ezért el kellett távolítani azokat az alkalmazásból. Hozza létre újra a felhőkapcsolatot.</string>
     <string name="not_finding_what_you_re_looking_for">Nem találja, amit keres?</string>
     <string name="try_deep_search">Próbálja ki a mélykeresést!</string>
     <string name="try_indexed_search">Próbálja ki az indexelt keresést!</string>
