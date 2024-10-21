@@ -467,7 +467,7 @@
     <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
-    <string name="cloud_get">Felhő beépülő letöltése</string>
+    <string name="cloud_get">Cloud bővítmény letöltése</string>
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
 
     <string name="no_applications">Nincsenek alkalmazások</string>
