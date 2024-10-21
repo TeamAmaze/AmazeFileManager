@@ -485,7 +485,7 @@
     <string name="ftp_login">Bejelentkezés</string>
     <string name="field_empty">A mező nem lehet üres</string>
     <string name="ftp_timeout">Üresjárat időkorlátja</string>
-    <string name="ftp_seconds">Mp</string>
+    <string name="ftp_seconds">mp</string>
     <string name="intellihide_toolbar_title">Eszköztár elrejtése</string>
     <string name="intellihide_toolbar_summary">Az eszköztár automatikus elrejtése görgetés közben</string>
     <string name="hash_sha256">SHA-256</string>
