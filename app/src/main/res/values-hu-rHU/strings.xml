@@ -659,7 +659,7 @@
     <string name="transfer_rate">Átviteli sebesség</string>
     <string name="unknown">ismeretlen</string>
     <string name="multiple_invalid_archive_entries">Néhány fájlt az archívumban nem lehet kibontani; lehet, hogy az archívum sérült vagy rosszindulatú forrásból származik.</string>
-    <string name="saf_otg_explanation">Biztonsági okokból most az Android fájlrendszerébe kell lépnie. Kérjük, válassza ki az USB eszközt a bal oldali listából.</string>
+    <string name="saf_otg_explanation">Biztonsági okokból most az Android fájlrendszerébe kell lépnie. Válassza ki az USB-eszközt a bal oldali listából.</string>
     <string name="donation_thanks">Köszönjük az adományt, ez motivál minket! (:</string>
     <string name="enable_marquee_filename">Fényújság hatás engedélyezése a fájlnevekhez</string>
     <string name="archive_password_prompt">Írja be az archívum jelszavát:</string>
