@@ -128,7 +128,7 @@
     <string name="pick_files">Válasszon egy vagy több fájlt</string>
     <string name="process_viewer">Folyamatfigyelő</string>
     <string name="in_safe">Nincs elég hely</string>
-    <string name="no_file_overwrite">Nincs fájl felülírás</string>
+    <string name="no_file_overwrite">Nincs fájlfelülírás</string>
     <string name="skip">Kihagyás</string>
     <string name="overwrite">Felülírás</string>
     <string name="not_allowed">Nincs engedélyezve</string>
