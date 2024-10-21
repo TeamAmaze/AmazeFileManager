@@ -776,7 +776,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="error_cannot_find_way_open">Nem találtam módot a fájl megnyitására</string>
     <string name="error_cant_decompress_that_file">Nem lehet feldolgozni a kért archívumot</string>
     <string name="analyse_storage">Tárhely elemzése</string>
-    <string name="download_amaze_utils_text">Önt átirányítják az Amaze File Utilities oldalra. Ez a mi nyílt forráskódú alkalmazásunk, amely beépített audió/videó/kép/dokumentum megjelenítőkkel rendelkezik, lehetővé teszi a felesleges fájlok elemzését a tárhely felszabadítása érdekében, gyors átvitelt tesz lehetővé Wifi P2P segítségével és még sok egyebet.\nTámogasson minket annak kipróbálásával.</string>
+    <string name="download_amaze_utils_text">Önt átirányítják az Amaze File Utilities oldalra. Ez a mi nyílt forráskódú alkalmazásunk, amely beépített audió/videó/kép/dokumentum megjelenítőkkel rendelkezik, lehetővé teszi a felesleges fájlok elemzését a tárhely felszabadítása érdekében, gyors átvitelt tesz lehetővé Wi-Fi-P2P segítségével és még sok egyebet.\nTámogasson minket annak kipróbálásával.</string>
     <string name="download">Letöltés</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Köszönjük, hogy telepítette az Amaze File Utilities programot. Átirányítjuk az alkalmazásba.</string>
