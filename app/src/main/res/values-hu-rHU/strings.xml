@@ -539,7 +539,7 @@
     <string name="edit_bookmark">Könyvjelző szerkesztése</string>
     <string name="question_delete_bookmark">Törli a könyvjelzőt?</string>
 
-    <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
+    <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Töltse le a Play áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
         Kérjük, először nyissa meg az Amaze Cloud-ot.</string>
     <string name="cloud_remove">Megszünteti a felhő kapcsolatot?</string>
