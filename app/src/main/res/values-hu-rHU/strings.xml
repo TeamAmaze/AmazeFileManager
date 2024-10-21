@@ -541,7 +541,7 @@
 
     <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Töltse le a Play áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
-        Kérjük, először nyissa meg az Amaze Cloud-ot.</string>
+        Először nyissa meg az Amaze Cloudot.</string>
     <string name="cloud_remove">Megszünteti a felhő kapcsolatot?</string>
     <string name="cloud_fail_authenticate">Nem hitelesíthető</string>
     <string name="cloud_share_copied">A megosztható link a vágólapra lett másolva</string>
