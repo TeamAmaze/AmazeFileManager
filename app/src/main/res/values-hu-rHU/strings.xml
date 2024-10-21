@@ -632,7 +632,7 @@
     <string name="compressed">Tömörített</string>
     <string name="processed">Feldolgozott</string>
     <string name="no_obtainable_info">Nincs információ erről a fájlról</string>
-    <string name="reopen_from_source">Nem sikerült, kérjük, nyissa meg újra az utolsó alkalmazást</string>
+    <string name="reopen_from_source">Nem sikerült. Nyissa meg újra az utolsó alkalmazást</string>
     <string name="no_file_error">Valami hiba történt, nincs semmi megnyitva</string>
     <string name="file_too_long">A fájl túl hosszú és nem szerkeszthető, de az első %d karakter olvasható</string>
     <string name="file_read_only">A megnyitott fájl csak olvasható.</string>
