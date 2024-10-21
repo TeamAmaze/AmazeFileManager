@@ -546,7 +546,7 @@
     <string name="cloud_fail_authenticate">Nem hitelesíthető</string>
     <string name="cloud_share_copied">A megosztható link a vágólapra lett másolva</string>
     <string name="copy_low_memory">Elfogy a memória. Szabadítson fel némi memóriát.</string>
-    <string name="cloud_token_lost">A token elveszett. Kérjük, jelentkezzen be újra</string>
+    <string name="cloud_token_lost">A token elveszett. Jelentkezzen be újra</string>
     <string name="monofont">Fix szélességű betű</string>
     <string name="showHeaders">Fejlécek megjelenítése</string>
 	
