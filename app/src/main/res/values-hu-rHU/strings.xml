@@ -818,7 +818,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="error_unsupported_or_null_uri">Érvénytelen, nem támogatott vagy nincs URI megadva</string>
     <string name="complete_paste_warning">Kérjük, először fejezze be a beillesztési műveletet</string>
     <string name="same_dir_move_error">A cél- és a forrásmappának nem kell megegyeznie az áthelyezéshez.</string>
-    <string name="checking_conflicts">Konfliktusok ellenőrzése</string>
+    <string name="checking_conflicts">Ütközések ellenőrzése</string>
     <string name="same_dir_overwrite_error">A cél- és forrásmappa nem kell megegyeznie a felülíráshoz.</string>
     <string name="not_found_enabled_webview">Nincs elérhető böngésző</string>
     <string name="preference_language_title">Alkalmazás nyelve</string>
