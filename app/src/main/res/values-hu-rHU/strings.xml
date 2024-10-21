@@ -684,7 +684,7 @@
     <string name="ftp_server_open_settings">Beállítások megnyitása</string>
     <string name="move">Áthelyezés</string>
     <string name="select_save_location">Válassza ki a mentés helyét</string>
-    <string name="scp_default_path">Alapértelmezett hely (választható)</string>
+    <string name="scp_default_path">Alapértelmezett elérési út (nem kötelező)</string>
 
     <!-- error activity -->
     <string name="sorry_string">Sajnálom, ennek nem lett volna szabad megtörténnie.</string>
