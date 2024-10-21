@@ -182,7 +182,7 @@
     <string name="archive">Archívum</string>
     <string name="archive_text">Ez egy archívum. Milyen műveletet szeretne végrehajtani?</string>
     <string name="package_installer_text">Ez egy csomagtelepítő. Milyen műveletet szeretne végrehajtani?</string>
-    <string name="xda_title">XDA</string>
+    <string name="xda_title">XDA-szál</string>
     <string name="xda_summary">Kérdések/válaszok, súgó és hibaelhárítás</string>
     <string name="circular_images">Kör alakú ikonok használata a képeknél és videóknál</string>
     <string name="circular_icons">Kerek ikonok használata</string>
