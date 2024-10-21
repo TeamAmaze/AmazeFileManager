@@ -563,7 +563,7 @@
     <string name="add_item">Elem hozzáadása</string>
     <string name="failed_smb_decrypt_path">Nem sikerült betölteni az SMB kapcsolatot</string>
     <string name="failed_cloud_new_connection">Nem sikerült hozzáadni új Cloud-kapcsolatot</string>
-    <string name="failed_cloud_api_key">A felhő beépülő hitelesítése sikertelen volt</string>
+    <string name="failed_cloud_api_key">A Cloud bővítmény hitelesítése sikertelen volt</string>
 
     <string name="local_inet_addr_error">Hiba történt a helyi inet cím lekérésekor</string>
     <string name="intent_save_as">Mentés másként&#8230;</string>
