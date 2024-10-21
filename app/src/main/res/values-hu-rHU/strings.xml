@@ -329,6 +329,57 @@
     <string name="use_custom_ip">Egyéni IP használata</string>
     <string name="bookmark_lost">Nem található könyvjelző, létrehozás újra&#8230;</string>
 
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Megosztott Windows mappa elérése Androidon (SMB)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Fájlmegosztás engedélyezése Windowson</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Nyissa meg a Vezérlőpultot, kattintson a Hálózat és internet alatt a Hálózati csoport és megosztási lehetőségek beállítása gombra,
+                        majd kattintson a „Speciális megosztási beállítások módosítása” lehetőségre,
+                        engedélyezze a „Fájl- és nyomtatómegosztás” funkciót.\n\n
+                    </p>
+
+                    <li>
+                        <b>További fájlmegosztási beállítások</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Itt érdemes lehet a többi speciális megosztási beállítást is konfigurálni.\n
+                        Például jelszó nélkül is engedélyezheti a fájljaihoz való hozzáférést, ha megbízik az összes
+                        helyi hálózaton lévő eszközben. Amikor a fájl- és nyomtatómegosztás engedélyezve van, a következőket teheti meg
+                        nyissa meg a Fájlkezelőt vagy a Windows Intézőt, kattintson a jobb gombbal a megosztani kívánt mappára, és
+                        válassza a Tulajdonságok menüpontot.\n
+                        Kattintson a Megosztás gombra, és tegye elérhetővé a mappát a hálózaton.\n\n
+                        </p>
+
+                    <li>
+                        <b>Győződjön meg arról, hogy mind a két eszköz ugyanahhoz a Wi-Fi-hez kapcsolódik</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Ez a funkció elérhetővé teszi a fájlokat a helyi hálózaton, így a számítógépnek és a hordozható eszközöknek
+                        ugyanahhoz a helyi hálózathoz kell kapcsolódnia. Megosztott Windows mappát nem érhet el
+                        az interneten keresztül, vagy amikor a hordozható eszköz kapcsolódik a mobil adatforgalomhoz. —
+                        Wi-Fi-re kell váltani.\n\n
+                    </p>
+
+                    <li>
+                        <b>IP-cím keresése</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Nyissa meg a parancssort. Írja be az \'ipconfig\' szót, és nyomja meg az Entert. Keresse meg az alapértelmezett átjárót
+                        a hálózati adapter alatt az elosztó (router) IP-címét. Keresse meg a
+                        \\\"IPv4-címet\\\" ugyanabban az adapter szekcióban, hogy megtalálja a számítógép
+                        IP-címét.\n\n
+                    </p>
+
+                    <b>Adja meg a részleteket az SMB párbeszédpanelen</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
     <string name="share_limit">Nem oszthat meg 100-nál több fájlt</string>
     <string name="otg_access">Válassza ki az OTG eszköz gyökerét</string>
     <string name="information">Információk</string>
