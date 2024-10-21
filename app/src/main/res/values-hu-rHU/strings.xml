@@ -772,6 +772,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="preference_language_system_default">Rendszer alapértelmezett</string>
     <string name="error.listfile.smb.title">Nem lehet betölteni az SMB fájllistát</string>
     <string name="error.listfile.smb">Hiba a fájlok listázásako ebben: %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Hiba a fájlok listázásakor ebben: %s - valószínűleg az SMB-kiszolgáló nem engedélyezi a névtelen hozzáférést az IPC$-megosztáshoz. Megpróbálhatja a megosztás nevét közvetlenül a kapcsolat beállításaiban megadni.</string>
     <string name="trash_bin">Kuka</string>
     <string name="delete_permanently_checkbox">Végleges törlés</string>
     <string name="restore">Visszaállítás</string>
