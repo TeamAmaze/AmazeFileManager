@@ -188,7 +188,7 @@
     <string name="circular_icons">Kör alakú ikonok használata</string>
     <string name="follow_battery_saver_title">Az akkumulátorkímélő követése</string>
     <string name="follow_battery_saver_desc">Ha ki van jelölve és az akkumulátorkímélő üzemmód be van kapcsolva, a téma sötétre vált.</string>
-    <string name="back_title">Visszaléptetés</string>
+    <string name="back_title">Visszalépés</string>
     <string name="back_summary">Egyéni visszaléptetési lehetőség engedélyezése a lista tetején</string>
     <string name="details">Részletek</string>
     <string name="translators">Fordítók</string>
