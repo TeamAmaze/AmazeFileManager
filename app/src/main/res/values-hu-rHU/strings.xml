@@ -755,7 +755,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="select_fill">Válasszon kitöltést</string>
     <string name="error_fetching_google_play_product_list">Hiba történt a Google Play terméklista lekérésekor.</string>
     <string name="grant_all_files_permission"><html><body>Az Android 11 óta a Google arra utasítja a fájlkezelőket, hogy kérjenek felhasználói engedélyt az eszközön lévő összes fájl kezeléséhez. Részletek <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">itt</a>.
-        \n\nAz Amaze File Manager-nek is szüksége van erre az engedélyre. Az &quot;Engedélyez&quot; gomb megnyomása után, válassza a <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót a következő képernyőn.
+        \n\nAz Amaze File Managernek is szüksége van erre az engedélyre. Az &quot;Engedélyez&quot; gomb megnyomása után, válassza a <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót a következő képernyőn.
         \n\n<font color='#ff6347'><i>A párbeszédpanel megszakításával kilép az alkalmazásból.</i></font></body></html></string>
     <string name="user_apps">Felhasználói alkalmazások</string>
     <string name="appearance">Megjelenés</string>
