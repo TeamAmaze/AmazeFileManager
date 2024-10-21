@@ -370,7 +370,7 @@
                     </li>
                     <p style='margin-left: 40px'>
                         Nyissa meg a parancssort. Írja be az \'ipconfig\' szót, és nyomja meg az Entert. Keresse meg az alapértelmezett átjárót
-                        a hálózati adapter alatt az elosztó (router) IP-címét. Keresse meg a
+                        a hálózati adapter alatt az elosztó IP-címét. Keresse meg a
                         \\\"IPv4-címet\\\" ugyanabban az adapter szekcióban, hogy megtalálja a számítógép
                         IP-címét.\n\n
                     </p>
