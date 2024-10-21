@@ -147,7 +147,7 @@
     <string name="permission">Engedélyek</string>
     <string name="hide">Elrejtés</string>
     <string name="exit">Kilépés</string>
-    <string name="doforall">Alkalmazza az összes elemre</string>
+    <string name="doforall">Alkalmazás az összes elemre</string>
     <string name="gridcolumnno">Oszlopok száma rácsnézetben</string>
     <string name="set_random">A változások az alkalmazás újraindítása után lépnek érvénybe</string>
     <string name="authors">Készítők</string>
