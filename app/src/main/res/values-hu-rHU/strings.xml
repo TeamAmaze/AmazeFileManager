@@ -577,7 +577,7 @@
     <string name="preference_newstack_title">Fájlok megnyitása új feladatként</string>
     <string name="preference_newstack_summary">Lehetővé teszi a fájlok megnyitását különálló feladatokban. Ezeket a rendszer legutóbbi képernyőjéről érheti el.</string>
     <string name="developers">Fejlesztők</string>
-    <string name="no_bitcoin_app">Kérjük, telepítse a Bitcoin pénztárcát</string>
+    <string name="no_bitcoin_app">Telepítse a Bitcoin Wallet alkalmazást</string>
     <string name="channel_name_normal">Amaze értesítések</string>
     <string name="channel_description_normal">Amaze File Manager értesítései</string>
     <string name="channel_name_ftp">Amaze FTP-kiszolgáló</string>
