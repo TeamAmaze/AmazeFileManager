@@ -605,7 +605,7 @@
         Valaki mostantól lehallgathatja Önt (Közbeékelődéses támadás)! Az is lehetséges, hogy a kiszolgálókulcs éppen megváltozott. A távoli kiszolgáló által küldött nyilvános kulcs ujjlenyomatja nem egyezik meg az Amaze-ben tárolt információval.\n\n
         Lépjen kapcsolatba a rendszergazdájával, vagy állítson be új kapcsolatot a kiszolgálóhoz való csatlakozás folytatásához.
     </string>
-    <string name="ssh_key_prompt_passphrase">Kérjük, adja meg a kulcs-jelszót.</string>
+    <string name="ssh_key_prompt_passphrase">Adja meg a kulcs-jelmondatot.</string>
     <string name="add_shortcut_not_supported_by_launcher">Jelenlegi indítóprogramja nem támogatja a parancsikonok létrehozását.</string>
     
     <string name="select_color_config">Válasszon szín konfigurációt</string>
