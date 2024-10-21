@@ -802,6 +802,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="importing_completed">Az importálás befejeződött</string>
     <string name="invalid_backup_file">Érvénytelen mentési fájl</string>
     <string name="import_failed_for">Importálás sikertelen:</string>
+    <string name="free_of">\"%s\n%s szabad ennyiből: %s</string>
     <string name="cloud_error_fdroid">Az Amaze felhőbeépülő nem támogatott az F-Droid verzióval. Kérjük, használja az Amaze Play Store verzióját.</string>
     <string name="disable_player_intent_filters">Játékos szándékszűrők letiltása</string>
     <string name="disable_player_intent_filters_summary">Az Amaze beépített médialejátszóinak letiltása a fájlválasztóból</string>
