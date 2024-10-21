@@ -121,6 +121,7 @@
     <string name="sort_name">Név</string>
     <string name="lastModified">Utoljára módosítva</string>
     <string name="sort_size">Méret</string>
+    <string name="sort_relevance">Fontosság</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Válasszon egy fájlt</string>
