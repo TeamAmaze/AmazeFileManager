@@ -287,7 +287,7 @@
     <string name="ip">Cím</string>
     <string name="connection_name">Kapcsolat neve</string>
     <string name="no_device_found">Nem található eszköz</string>
-    <string name="path">Hely</string>
+    <string name="path">Útvonal</string>
     <string name="rename_bookmark">Könyvjelző módosítása</string>
     <string name="cut">Kivágás</string>
     <string name="search">Keresés</string>
