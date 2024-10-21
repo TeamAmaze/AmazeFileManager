@@ -602,8 +602,8 @@
     <string name="ssh_connect_failed_host_key_changed_title">FIGYELEM: A TÁVOLI ÁLLOMÁS AZONOSÍTÓJA MEGVÁLTOZOTT!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         LEHETSÉGES, HOGY VALAKI CSINÁLT VALAMIT!\n\n
-        Valaki mostantól lehallgathatja Önt (Közbeékelődéses támadás)! Az is lehetséges, hogy a gazda kulcs éppen megváltozott. A távoli állomás által küldött nyilvános kulcs ujjlenyomatja nem egyezik meg az Amaze tárolt információval.\n\n
-        Kérjük, lépjen kapcsolatba a rendszergazdájával, vagy állítson be új kapcsolatot a kiszolgálóhoz való csatlakozás folytatásához.
+        Valaki mostantól lehallgathatja Önt (Közbeékelődéses támadás)! Az is lehetséges, hogy a kiszolgálókulcs éppen megváltozott. A távoli kiszolgáló által küldött nyilvános kulcs ujjlenyomatja nem egyezik meg az Amaze-ben tárolt információval.\n\n
+        Lépjen kapcsolatba a rendszergazdájával, vagy állítson be új kapcsolatot a kiszolgálóhoz való csatlakozás folytatásához.
     </string>
     <string name="ssh_key_prompt_passphrase">Kérjük, adja meg a kulcs-jelszót.</string>
     <string name="add_shortcut_not_supported_by_launcher">Jelenlegi indítóprogramja nem támogatja a parancsikonok létrehozását.</string>
