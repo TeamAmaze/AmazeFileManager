@@ -591,7 +591,7 @@
     <string name="ftp_connection">FTP kapcsolat</string>
     <string name="ftps_connection">FTP SSL kapcsolaton keresztül</string>
     <string name="scp_port">Port</string>
-    <string name="ssh_host_key_verification_prompt">A(z) \'%1$s\' állomás hitelessége nem állapítható meg.\n\n%2$s kulcs ujjlenyomat %3$s.\n\nKérjük, koppintson az \"Igen\"-re az identitás megerősítéséhez; ellenkező esetben koppintson a \"Nem\"-re.</string>
+    <string name="ssh_host_key_verification_prompt">A(z) „%1$s” kiszolgáló hitelessége nem állapítható meg.\n\n%2$s kulcs ujjlenyomat: %3$s.\n\nKoppintson az „Igenre” a személyazonosság megerősítéséhez; ellenkező esetben koppintson a „Nemre”.</string>
     <string name="ssh_host_key_verification_prompt_title">Állomás ellenőrzése</string>
     <string name="ssh_select_pem_button">SSH privát kulcs</string>
     <string name="ssh_pem_key_parse_error">A kiválasztott PEM nem olvasható: %s</string>
