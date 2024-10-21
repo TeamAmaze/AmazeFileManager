@@ -662,7 +662,7 @@
     <string name="saf_otg_explanation">Biztonsági okokból most az Android fájlrendszerébe kell lépnie. Válassza ki az USB-eszközt a bal oldali listából.</string>
     <string name="donation_thanks">Köszönjük az adományt, ez motivál minket! (:</string>
     <string name="enable_marquee_filename">Fényújság hatás engedélyezése a fájlnevekhez</string>
-    <string name="archive_password_prompt">Írja be az archívum jelszavát:</string>
+    <string name="archive_password_prompt">Adja meg az archívum jelszavát:</string>
     <string name="cannot_extract_archive">Nem lehet kibontani az archívumot \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Nem sikerült megnyitni az archívumot \"%s\". Vagy nem nyitható meg az archívum, vagy sérült.</string>
     <string name="close">Bezárás</string>
