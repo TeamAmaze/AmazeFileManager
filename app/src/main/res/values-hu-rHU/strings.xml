@@ -737,7 +737,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="ftp_preference_saf_filesystem">Engedélyezze ezt az eszköz külső tárolójának újabb Android-verziókon való használatának támogatásához</string>
     <string name="ftp_server_fallback_path_reset_prompt">Az FTP-kiszolgáló megosztott elérési útvonala vissza lett állítva a belső tárolóra, mivel a régi fájlrendszer implementációjára váltott. Válasszon új elérési útvonalat a jobb felső sarokban található menü segítségével, ha szükséges.</string>
     <string name="ftp_server_reset_notify">Az FTP-kiszolgáló megosztott elérési útvonala vissza lett állítva a belső tárolóra</string>
-    <string name="ftp_server_root_unavailable">Olyan elérési utat választ, amelyhez root hozzáférés szükséges. Kérjük, engedélyezze a root explorert a beállításokban, ha a készüléke rootolt.</string>
+    <string name="ftp_server_root_unavailable">Olyan elérési utat választ, amelyhez rendszergazdai hozzáférés szükséges. Engedélyezze a root explorert a beállításokban, ha a készüléke rootolt.</string>
     <string name="ftp_server_root_filesystem_warning">Olyan elérési utat választ, amely root hozzáférést igényel, ami lehetővé teszi az eszköz teljes fájlrendszerének írási/olvasási műveleteit, és ez veszélyes - egy óvatlan hiba tönkreteheti készülékét!\n\nBiztos benne?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Hiba a(z) \"%s\" URI olvasásra történő megnyitásakor.</string>
     <string name="error_empty_archive">A(z) \"%s\" egy üres archívum.</string>
