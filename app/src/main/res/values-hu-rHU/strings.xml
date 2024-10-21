@@ -790,7 +790,7 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="open_with_amaze">Megnyitás az Amaze segítségével</string>
     <string name="confirmation">Megerősítés</string>
     <string name="open_file_confirmation">Biztos, hogy meg akarja nyitni a következő fájlt?\n\nNév:\n%s\n\nHely:\n%s\n\nMéret:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
-    <string name="error_google_play_cannot_update_myself">A Google Play irányelvek szerint az alkalmazások nem frissíthetik magukat önállóan. Kérjük, frissítse az alkalmazást a Google Play-ről.</string>
+    <string name="error_google_play_cannot_update_myself">A Google Play irányelvei szerint az alkalmazások nem frissíthetik magukat önállóan. Frissítse az alkalmazást a Google Play-ről.</string>
     <string name="error_cannot_get_package_info">A csomaginformáció nem érhető el a(z) \"%s\" fájlból. Vagy a megadott fájl nem APK, vagy a csomagfájl hibás.</string>
     <string name="preference_delete_confirmation">Megerősítés törlése</string>
     <string name="preference_delete_confirmation_summary">Kérjen megerősítést a fájlok törlése előtt. Ennek kikapcsolása nem javasolt!</string>
