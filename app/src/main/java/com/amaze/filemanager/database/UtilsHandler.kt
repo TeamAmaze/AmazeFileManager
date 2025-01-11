@@ -73,11 +73,14 @@ class UtilsHandler(
      */
     @Suppress("ComplexMethod", "LongMethod")
     fun saveToDatabase(operationData: OperationData) {
-        val hiddenFiles = isHavingHiddenFiles(
-            RootHelper.getFilesList(
-                operationData.path, true, true
+        val hiddenFiles =
+            isHavingHiddenFiles(
+                RootHelper.getFilesList(
+                    operationData.path,
+                    true,
+                    true,
+                ),
             )
-        )
         if (hiddenFiles.isNotEmpty()) {
             for (file in hiddenFiles) {
                 utilitiesDatabase
@@ -151,9 +154,7 @@ class UtilsHandler(
         }
     }
 
-    private fun isHavingHiddenFiles(
-        files: ArrayList<HybridFileParcelable>
-    ): ArrayList<HybridFileParcelable> {
+    private fun isHavingHiddenFiles(files: ArrayList<HybridFileParcelable>): ArrayList<HybridFileParcelable> {
         val hiddenFiles = ArrayList<HybridFileParcelable>()
         if (files.isNotEmpty()) {
             for (file in files) {
@@ -169,11 +170,14 @@ class UtilsHandler(
      * Main delete method.
      */
     fun removeFromDatabase(operationData: OperationData) {
-        val hiddenFiles = isHavingHiddenFiles(
-            RootHelper.getFilesList(
-                operationData.path, true, true
+        val hiddenFiles =
+            isHavingHiddenFiles(
+                RootHelper.getFilesList(
+                    operationData.path,
+                    true,
+                    true,
+                ),
             )
-        )
         if (hiddenFiles.isNotEmpty()) {
             for (file in hiddenFiles) {
                 utilitiesDatabase
