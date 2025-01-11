@@ -32,6 +32,8 @@ import com.amaze.filemanager.database.models.utilities.Hidden
 import com.amaze.filemanager.database.models.utilities.History
 import com.amaze.filemanager.database.models.utilities.SftpEntry
 import com.amaze.filemanager.database.models.utilities.SmbEntry
+import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.filesystem.RootHelper
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue
@@ -71,6 +73,20 @@ class UtilsHandler(
      */
     @Suppress("ComplexMethod", "LongMethod")
     fun saveToDatabase(operationData: OperationData) {
+        val hiddenFiles = isHavingHiddenFiles(
+            RootHelper.getFilesList(
+                operationData.path, true, true
+            )
+        )
+        if (hiddenFiles.isNotEmpty()) {
+            for (file in hiddenFiles) {
+                utilitiesDatabase
+                    .hiddenEntryDao()
+                    .insert(Hidden(file.path))
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
+            }
+        }
         when (operationData.type) {
             Operation.HIDDEN ->
                 utilitiesDatabase
@@ -135,10 +151,38 @@ class UtilsHandler(
         }
     }
 
+    private fun isHavingHiddenFiles(
+        files: ArrayList<HybridFileParcelable>
+    ): ArrayList<HybridFileParcelable> {
+        val hiddenFiles = ArrayList<HybridFileParcelable>()
+        if (files.isNotEmpty()) {
+            for (file in files) {
+                if (file.name.startsWith(".")) {
+                    hiddenFiles.add(file)
+                }
+            }
+        }
+        return hiddenFiles
+    }
+
     /**
      * Main delete method.
      */
     fun removeFromDatabase(operationData: OperationData) {
+        val hiddenFiles = isHavingHiddenFiles(
+            RootHelper.getFilesList(
+                operationData.path, true, true
+            )
+        )
+        if (hiddenFiles.isNotEmpty()) {
+            for (file in hiddenFiles) {
+                utilitiesDatabase
+                    .hiddenEntryDao()
+                    .deleteByPath(file.path)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
+            }
+        }
         when (operationData.type) {
             Operation.HIDDEN ->
                 utilitiesDatabase
