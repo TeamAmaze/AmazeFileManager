@@ -338,9 +338,6 @@ public class MainActivityHelper {
       final boolean isDirectory,
       final Activity context,
       boolean rootmode) {
-    final Toast toast =
-        Toast.makeText(context, context.getString(R.string.renaming), Toast.LENGTH_SHORT);
-    toast.show();
     HybridFile oldFile = new HybridFile(mode, oldPath);
     HybridFile newFile;
     if (Utils.isNullOrEmpty(newName)) {
@@ -348,6 +345,12 @@ public class MainActivityHelper {
     } else {
       newFile = new HybridFile(mode, newPath, newName, isDirectory);
     }
+    if (oldFile.getSimpleName().equals(newFile.getSimpleName())) {
+        return;
+    }
+    final Toast toast =
+            Toast.makeText(context, context.getString(R.string.renaming), Toast.LENGTH_SHORT);
+    toast.show();
     Operations.rename(
         oldFile,
         newFile,
