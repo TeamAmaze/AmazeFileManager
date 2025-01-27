@@ -346,6 +346,9 @@ public class MainActivityHelper {
       newFile = new HybridFile(mode, newPath, newName, isDirectory);
     }
     if (oldFile.getSimpleName().equals(newFile.getSimpleName())) {
+      Toast.makeText(
+              context, context.getString(R.string.no_changes_while_rename), Toast.LENGTH_SHORT)
+          .show();
       return;
     }
     final Toast toast =
