@@ -22,7 +22,6 @@ package com.amaze.filemanager.database.typeconverters
 
 import android.util.Log
 import androidx.room.TypeConverter
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.StringWrapper
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.PasswordUtil.decryptPassword
@@ -47,9 +46,7 @@ object EncryptedStringTypeConverter {
     @TypeConverter
     fun toPassword(encryptedStringEntryInDb: String): StringWrapper {
         return runCatching {
-            StringWrapper(
-                decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb),
-            )
+            StringWrapper(decryptPassword(encryptedStringEntryInDb))
         }.onFailure {
             Log.e(TAG, "Error decrypting password", it)
         }.getOrElse {
@@ -64,10 +61,7 @@ object EncryptedStringTypeConverter {
     @TypeConverter
     fun fromPassword(unencryptedPasswordString: StringWrapper): String? {
         return runCatching {
-            encryptPassword(
-                AppConfig.getInstance(),
-                unencryptedPasswordString.value,
-            )
+            encryptPassword(unencryptedPasswordString.value)
         }.onFailure {
             Log.e(TAG, "Error encrypting password", it)
         }.getOrElse {

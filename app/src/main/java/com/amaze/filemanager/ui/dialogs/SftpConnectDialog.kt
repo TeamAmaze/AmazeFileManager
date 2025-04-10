@@ -21,9 +21,7 @@
 package com.amaze.filemanager.ui.dialogs
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -84,7 +82,6 @@ import org.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
-import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.security.PublicKey
 import java.util.concurrent.Callable
@@ -125,7 +122,6 @@ class SftpConnectDialog : DialogFragment() {
             }
     }
 
-    lateinit var ctx: WeakReference<Context>
     private var selectedPem: Uri? = null
     private var selectedParsedKeyPair: KeyPair? = null
     private var selectedParsedKeyPairName: String? = null
@@ -135,14 +131,13 @@ class SftpConnectDialog : DialogFragment() {
 
     @Suppress("ComplexMethod")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        ctx = WeakReference(activity)
         binding = SftpDialogBinding.inflate(layoutInflater)
         val utilsProvider: UtilitiesProvider = AppConfig.getInstance().utilsProvider
         val edit = requireArguments().getBoolean(ARG_EDIT, false)
 
         initForm(edit)
 
-        val accentColor = (activity as ThemedActivity).accent
+        val accentColor = (requireActivity() as ThemedActivity).accent
 
         // Use system provided action to get Uri to PEM (mostly via DocumentsUI).
         binding.selectPemBTN.setOnClickListener {
@@ -157,7 +152,7 @@ class SftpConnectDialog : DialogFragment() {
 
         // Define action for buttons
         val dialogBuilder =
-            MaterialDialog.Builder(ctx.get()!!)
+            MaterialDialog.Builder(requireActivity())
                 .title(R.string.scp_connection)
                 .autoDismiss(false)
                 .customView(binding.root, true)
@@ -454,7 +449,7 @@ class SftpConnectDialog : DialogFragment() {
                 hostKeyFingerprint,
                 hostInfo,
             ->
-            AlertDialog.Builder(ctx.get())
+            androidx.appcompat.app.AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.ssh_host_key_verification_prompt_title)
                 .setMessage(
                     getString(
@@ -547,7 +542,7 @@ class SftpConnectDialog : DialogFragment() {
                     edit,
                 )
             } else {
-                AlertDialog.Builder(ctx.get())
+                androidx.appcompat.app.AlertDialog.Builder(requireActivity())
                     .setTitle(
                         R.string.ssh_connect_failed_host_key_changed_title,
                     ).setMessage(
@@ -714,7 +709,7 @@ class SftpConnectDialog : DialogFragment() {
                     hostKeyFingerprint,
                     username,
                     if (false == password?.isBlank()) {
-                        PasswordUtil.encryptPassword(requireContext(), password)?.replace("\n", "")
+                        PasswordUtil.encryptPassword(password)?.replace("\n", "")
                     } else {
                         password
                     },
@@ -803,8 +798,8 @@ class SftpConnectDialog : DialogFragment() {
 
     private fun getProtocolPrefixFromDropdownSelection(): String {
         return when (binding.protocolDropDown.selectedItem.toString()) {
-            requireContext().getString(R.string.protocol_ftp) -> FTP_URI_PREFIX
-            requireContext().getString(R.string.protocol_ftps) -> FTPS_URI_PREFIX
+            getString(R.string.protocol_ftp) -> FTP_URI_PREFIX
+            getString(R.string.protocol_ftps) -> FTPS_URI_PREFIX
             else -> SSH_URI_PREFIX
         }
     }
@@ -853,7 +848,7 @@ class SftpConnectDialog : DialogFragment() {
                 if (true == binding.passwordET.text?.isEmpty()) {
                     if (edit) {
                         requireArguments().getString(ARG_PASSWORD, null)?.run {
-                            PasswordUtil.decryptPassword(AppConfig.getInstance(), this)
+                            PasswordUtil.decryptPassword(this)
                         }
                     } else {
                         requireArguments().getString(ARG_PASSWORD, null)

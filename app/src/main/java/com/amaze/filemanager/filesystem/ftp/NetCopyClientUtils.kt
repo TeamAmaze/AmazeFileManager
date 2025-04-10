@@ -22,7 +22,6 @@ package com.amaze.filemanager.filesystem.ftp
 
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.FolderState
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
@@ -43,7 +42,6 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLAS
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
 import com.amaze.filemanager.utils.smb.SmbUtil
-import com.amaze.filemanager.utils.urlEncoded
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.schedulers.Schedulers
@@ -123,10 +121,7 @@ object NetCopyClientUtils {
     fun encryptFtpPathAsNecessary(fullUri: String): String {
         val uriWithoutProtocol: String = fullUri.substringAfter("://")
         return if (uriWithoutProtocol.substringBefore(AT).indexOf(COLON) > 0) {
-            SmbUtil.getSmbEncryptedPath(
-                AppConfig.getInstance(),
-                fullUri,
-            )
+            SmbUtil.getSmbEncryptedPath(fullUri)
         } else {
             fullUri
         }
@@ -143,10 +138,7 @@ object NetCopyClientUtils {
         return runCatching {
             val uriWithoutProtocol: String = fullUri.substringAfter("://")
             if (uriWithoutProtocol.lastIndexOf(COLON) > 0) {
-                SmbUtil.getSmbDecryptedPath(
-                    AppConfig.getInstance(),
-                    fullUri,
-                )
+                SmbUtil.getSmbDecryptedPath(fullUri)
             } else {
                 fullUri
             }
@@ -183,7 +175,11 @@ object NetCopyClientUtils {
                 }
                 if (!it.arguments.isNullOrEmpty()) {
                     append(QUESTION_MARK)
-                        .append(it.arguments?.entries?.joinToString(AND.toString()))
+                        .append(
+                            it.arguments?.entries
+                                ?.sortedBy { entry -> entry.key }
+                                ?.joinToString(AND.toString()) { entry -> "${entry.key}=${entry.value}" },
+                        )
                 }
             }
         }
@@ -246,14 +242,10 @@ object NetCopyClientUtils {
         if (pathSuffix == null) pathSuffix = SLASH.toString()
         if (explicitTls) pathSuffix = "$pathSuffix?$ARG_TLS=$TLS_EXPLICIT"
         val thisPassword =
-            if (password == "" || password == null) {
+            if (password.isNullOrEmpty()) {
                 ""
             } else {
-                ":${if (edit) {
-                    password
-                } else {
-                    password.urlEncoded()
-                }}"
+                ":$password"
             }
         return if (username == "") {
             "$prefix$hostname:$port$pathSuffix"

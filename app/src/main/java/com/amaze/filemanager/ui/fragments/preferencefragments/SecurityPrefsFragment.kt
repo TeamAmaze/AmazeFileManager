@@ -108,7 +108,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                     ) {
 
                         // password is set, try to decrypt
-                        PasswordUtil.decryptPassword(activity, preferencePassword)
+                        PasswordUtil.decryptPassword(preferencePassword)
                     } else {
                         // no password set in preferences, just leave the field empty
                         ""
@@ -141,10 +141,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                         val editor = activity.prefs.edit()
                         editor.putString(
                             PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                            PasswordUtil.encryptPassword(
-                                activity,
-                                dialog.inputEditText!!.text.toString(),
-                            ),
+                            PasswordUtil.encryptPassword(dialog.inputEditText!!.text.toString()),
                         )
                         editor.apply()
                     } else {
