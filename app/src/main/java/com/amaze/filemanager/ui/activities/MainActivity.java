@@ -437,7 +437,7 @@ public class MainActivity extends PermissionsActivity
 
               ExtensionsKt.updateAUAlias(
                   this,
-                  !PackageUtils.Companion.appInstalledOrNot(
+                  !PackageUtils.appInstalledOrNot(
                           AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager())
                       && !getBoolean(
                           PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS));

@@ -30,6 +30,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPoolFtpTest
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.encryptFtpPathAsNecessary
 import com.amaze.filemanager.filesystem.ssh.NetCopyClientConnectionPoolSshTest
+import com.amaze.filemanager.utils.urlEncoded
 import net.schmizz.sshj.common.SecurityUtils
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter
 import org.json.JSONObject
@@ -73,7 +74,7 @@ object TestUtils {
             )
         if (validUsername != "" && validPassword != "") {
             fullUri.append(validUsername)
-            fullUri.append(':').append(validPassword).append("@")
+            fullUri.append(':').append(validPassword.urlEncoded()).append("@")
         }
         fullUri.append("${NetCopyClientConnectionPoolFtpTest.HOST}:$port")
 
@@ -114,7 +115,9 @@ object TestUtils {
         val fullUri: StringBuilder =
             StringBuilder()
                 .append(SSH_URI_PREFIX).append(validUsername)
-        if (validPassword != null) fullUri.append(':').append(validPassword)
+        if (validPassword != null) {
+            fullUri.append(':').append(validPassword)
+        }
         fullUri.append(
             "@${NetCopyClientConnectionPoolSshTest.HOST}:$port",
         )

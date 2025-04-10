@@ -25,7 +25,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.ui.activities.AbstractMainActivityTestBase
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_EDIT
@@ -61,10 +60,7 @@ class SmbConnectDialogTest : AbstractMainActivityTestBase() {
                 },
             withDialog = { dialog, materialDialog ->
                 val encryptedPath =
-                    SmbUtil.getSmbEncryptedPath(
-                        AppConfig.getInstance(),
-                        "smb://user:password@127.0.0.1/",
-                    )
+                    SmbUtil.getSmbEncryptedPath("smb://user:password@127.0.0.1/")
                 dialog.binding.run {
                     this.connectionET.setText("SMB Connection Test")
                     this.usernameET.setText("user")

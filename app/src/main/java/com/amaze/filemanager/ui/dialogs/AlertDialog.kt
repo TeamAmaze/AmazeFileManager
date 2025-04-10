@@ -52,7 +52,7 @@ object AlertDialog {
                 .theme(
                     activity
                         .appTheme
-                        .getMaterialDialogTheme(),
+                        .materialDialogTheme,
                 )
                 .title(title)
                 .positiveText(positiveButtonText)

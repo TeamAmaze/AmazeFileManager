@@ -153,11 +153,11 @@ class NetCopyClientUtilTest {
             NetCopyClientUtils.extractBaseUriFrom("ftps://127.0.0.1:21221/pub/Incoming/shared/test.txt?tls=explicit"),
         )
         assertEquals(
-            "ssh://root@127.0.0.1:22222?foo=bar&timeout=3000&2fa=true",
+            "ssh://root@127.0.0.1:22222?2fa=true&foo=bar&timeout=3000",
             NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1:22222?foo=bar&timeout=3000&2fa=true"),
         )
         assertEquals(
-            "ssh://root@127.0.0.1:22222?foo=bar&timeout=3000&2fa=true",
+            "ssh://root@127.0.0.1:22222?2fa=true&foo=bar&timeout=3000",
             NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1:22222/mnt/data?foo=bar&timeout=3000&2fa=true"),
         )
     }

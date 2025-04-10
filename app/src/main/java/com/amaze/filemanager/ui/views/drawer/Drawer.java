@@ -549,7 +549,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         new MenuMetadata(
             () -> {
               boolean isAUInstalled =
-                  PackageUtils.Companion.appInstalledOrNot(
+                  PackageUtils.appInstalledOrNot(
                       AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager());
               if (isAUInstalled) {
                 try {
@@ -573,7 +573,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         new MenuMetadata(
             () -> {
               boolean isAUInstalled =
-                  PackageUtils.Companion.appInstalledOrNot(
+                  PackageUtils.appInstalledOrNot(
                       AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager());
               if (isAUInstalled) {
                 try {

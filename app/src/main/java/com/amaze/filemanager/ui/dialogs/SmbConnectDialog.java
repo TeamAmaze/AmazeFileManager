@@ -270,7 +270,7 @@ public class SmbConnectDialog extends DialogFragment {
             try {
               passp =
                   PasswordUtil.INSTANCE.decryptPassword(
-                      context, inf.substring(inf.indexOf(COLON) + 1), URL_SAFE);
+                      inf.substring(inf.indexOf(COLON) + 1), URL_SAFE);
               passp = decode(passp, Charsets.UTF_8.name());
             } catch (GeneralSecurityException | IOException e) {
               LOG.warn("Error decrypting password", e);
@@ -365,8 +365,7 @@ public class SmbConnectDialog extends DialogFragment {
           try {
             s =
                 new String[] {
-                  conName.getText().toString(),
-                  SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
+                  conName.getText().toString(), SmbUtil.getSmbEncryptedPath(smbFile.getPath())
                 };
           } catch (Exception e) {
             LOG.warn("failed to load smb dialog info", e);

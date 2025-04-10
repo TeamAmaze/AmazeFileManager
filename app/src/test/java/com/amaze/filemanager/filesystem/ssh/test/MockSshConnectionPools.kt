@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh.test
 
+import android.util.LruCache
 import com.amaze.filemanager.filesystem.ftp.NetCopyClient
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.SSHClientImpl
@@ -105,12 +106,12 @@ object MockSshConnectionPools {
             this.isAccessible = true
             this.set(
                 NetCopyClientConnectionPool,
-                mutableMapOf(
-                    Pair<String, NetCopyClient<SSHClient>>(
+                LruCache<String, NetCopyClient<SSHClient>>(1).also {
+                    it.put(
                         "ssh://user:password@127.0.0.1:22222",
                         SSHClientImpl(sshClient),
-                    ),
-                ),
+                    )
+                },
             )
         }
 
