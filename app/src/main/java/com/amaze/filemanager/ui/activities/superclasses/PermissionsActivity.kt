@@ -23,7 +23,6 @@ import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Environment
@@ -34,11 +33,13 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
+import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment.Companion.TERMINAL_PERMISSIONS
 import com.amaze.filemanager.utils.Utils
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -47,6 +48,7 @@ open class PermissionsActivity :
     ThemedActivity(),
     ActivityCompat.OnRequestPermissionsResultCallback {
     private val permissionCallbacks: Array<(() -> Unit)?> = arrayOfNulls(PERMISSION_LENGTH)
+    private var allFilesAccessDialog: MaterialDialog? = null
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -265,8 +267,9 @@ open class PermissionsActivity :
         isInitialStart: Boolean,
     ) {
         permissionCallbacks[code] = onPermissionGranted
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+        if (TERMINAL_PERMISSIONS.contains(permission) ||
+            ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+        ) {
             rationale
                 .getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener { v: View? ->
@@ -305,7 +308,7 @@ open class PermissionsActivity :
                         startActivity(
                             Intent(
                                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.parse(String.format("package:%s", packageName)),
+                                String.format("package:%s", packageName).toUri(),
                             ),
                         )
                     }
@@ -328,6 +331,7 @@ open class PermissionsActivity :
                     R.string.grantper,
                     R.string.grant,
                     R.string.cancel,
+                    true,
                 )
             materialDialog.getActionButton(DialogAction.NEGATIVE)
                 .setOnClickListener { v: View? -> finish() }
@@ -350,14 +354,14 @@ open class PermissionsActivity :
         try {
             val intent =
                 Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                    .setData(Uri.parse("package:$packageName"))
+                    .setData("package:$packageName".toUri())
             startActivity(intent)
         } catch (anf: ActivityNotFoundException) {
             // fallback
             try {
                 val intent =
                     Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-                        .setData(Uri.parse("package:\$packageName"))
+                        .setData("package:\$packageName".toUri())
                 startActivity(intent)
             } catch (e: Exception) {
                 AppConfig.toast(this, getString(R.string.grantfailed))

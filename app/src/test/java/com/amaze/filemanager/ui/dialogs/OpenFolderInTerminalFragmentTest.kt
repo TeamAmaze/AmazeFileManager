@@ -25,6 +25,8 @@ import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.view.View
 import androidx.test.core.app.ApplicationProvider
+import com.afollestad.materialdialogs.MaterialDialog
+import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.holders.AppHolder
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment.Companion.KEY_PREFERENCES_DEFAULT
@@ -42,6 +44,7 @@ import org.junit.Before
 import org.junit.Test
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
+import org.robolectric.shadows.ShadowDialog
 import org.robolectric.shadows.ShadowToast
 
 /**
@@ -67,7 +70,7 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
      */
     @Test
     fun testClearPreferencesWhenNoKeyIsSet() {
-        doTestWithMainActivity { mainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             mainActivity.prefs.let { prefs ->
                 prefs.edit().putString("FOO", "BAR").apply()
                 assertFalse(prefs.contains(KEY_PREFERENCES_DEFAULT))
@@ -85,7 +88,7 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
      */
     @Test
     fun testClearPreferencesWhenLastKeyIsSet() {
-        doTestWithMainActivity { mainActivity: MainActivity ->
+        doTestWithMainActivity { mainActivity: MainActivity, _ ->
             mainActivity.prefs.let { prefs ->
                 prefs.edit()
                     .putString("FOO", "BAR")
@@ -106,7 +109,7 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
      */
     @Test
     fun testClearPreferencesWhenDefaultKeyIsSet() {
-        doTestWithMainActivity { mainActivity: MainActivity ->
+        doTestWithMainActivity { mainActivity: MainActivity, _ ->
             mainActivity.prefs.let { prefs ->
                 prefs.edit()
                     .putString("FOO", "BAR")
@@ -127,7 +130,7 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
      */
     @Test
     fun testClearPreferencesWhenBothKeysAreSet() {
-        doTestWithMainActivity { mainActivity: MainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             mainActivity.prefs.let { prefs ->
                 prefs.edit()
                     .putString("FOO", "BAR")
@@ -149,10 +152,13 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
      */
     @Test
     fun testOpenOrShowWhenNoTerminalInstalled() {
-        doTestWithMainActivity { mainActivity: MainActivity ->
+        doTestWithMainActivity { _, mainActivity ->
             OpenFolderInTerminalFragment.openTerminalOrShow("/sdcard/tmp", mainActivity)
-            assertTrue(ShadowToast.shownToastCount() == 1)
-            assertEquals("No Terminal App installed", ShadowToast.getTextOfLatestToast())
+            assertTrue(ShadowDialog.getShownDialogs().count() == 1)
+            assertEquals(
+                mainActivity.getString(R.string.no_terminal_apps),
+                (ShadowDialog.getLatestDialog() as MaterialDialog).titleView.text,
+            )
         }
     }
 
@@ -161,7 +167,7 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
         beforeOpen: ((MainActivity, CapturingSlot<Intent>) -> Unit)? = null,
         nextStep: (MainActivity, CapturingSlot<Intent>) -> Unit,
     ) {
-        doTestWithMainActivity { mainActivity: MainActivity ->
+        doTestWithMainActivity { mainActivity: MainActivity, _ ->
             installApp(mainActivity, componentName)
             val capturedIntent = slot<Intent>()
             val capturedCallback = slot<() -> Unit>()
@@ -247,7 +253,7 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
         beforeOpen: ((MainActivity) -> Unit)? = null,
         nextStep: (MainActivity, CapturingSlot<Intent>) -> Unit,
     ) {
-        doTestWithMainActivity { mainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             installApp(mainActivity, ComponentName("com.termoneplus", "com.termoneplus.Activity"))
             installApp(mainActivity, ComponentName("com.termux", "com.termux.Activity"))
             val capturedIntent = slot<Intent>()

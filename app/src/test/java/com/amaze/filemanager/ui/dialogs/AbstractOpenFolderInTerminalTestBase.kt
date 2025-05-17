@@ -51,13 +51,15 @@ abstract class AbstractOpenFolderInTerminalTestBase : AbstractMainActivityTestBa
     /**
      * Note: this method will provide a MainActivity spy for the Lambda to work with
      */
-    protected fun doTestWithMainActivity(withMainActivity: (MainActivity) -> Unit) {
+    protected fun doTestWithMainActivity(withMainActivity: (MainActivity, MainActivity) -> Unit) {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         ShadowLooper.idleMainLooper()
         scenario.moveToState(Lifecycle.State.STARTED)
         scenario.onActivity { activity ->
             val spy = spyk<MainActivity>(activity)
-            withMainActivity.invoke(spy)
+            // Dirty trick to allow both spy and activity to be used. Specific for
+            // OpenFolderInTerminalDialogFragmentTest.testOpenOrShowWhenNoTerminalInstalled
+            withMainActivity.invoke(spy, activity)
             scenario.moveToState(Lifecycle.State.DESTROYED)
             scenario.close()
         }
