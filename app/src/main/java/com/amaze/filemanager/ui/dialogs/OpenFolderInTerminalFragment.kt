@@ -28,6 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.amaze.filemanager.R
@@ -71,6 +72,7 @@ class OpenFolderInTerminalFragment : BaseBottomSheetFragment(), AdjustListViewFo
     private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
+        @JvmStatic
         private val logger = LoggerFactory.getLogger(OpenFileDialogFragment::class.java)
 
         const val KEY_PREFERENCES_DEFAULT = "terminal._DEFAULT"
@@ -79,6 +81,14 @@ class OpenFolderInTerminalFragment : BaseBottomSheetFragment(), AdjustListViewFo
         private const val TERMONE_PLUS_PERMISSION = "com.termoneplus.permission.RUN_SCRIPT"
         private const val ANDROID_TERM_PERMISSION = "jackpal.androidterm.permission.RUN_SCRIPT"
         private const val TERMUX_PERMISSION = "com.termux.permission.RUN_COMMAND"
+
+        @JvmStatic
+        val TERMINAL_PERMISSIONS =
+            arrayOf(
+                TERMONE_PLUS_PERMISSION,
+                ANDROID_TERM_PERMISSION,
+                TERMUX_PERMISSION,
+            )
 
         @SuppressLint("SdCardPath")
         private const val TERMUX_SHELL_LOCATION = "/data/data/com.termux/files/usr/bin/bash"
@@ -196,10 +206,12 @@ class OpenFolderInTerminalFragment : BaseBottomSheetFragment(), AdjustListViewFo
             appDataParcelable: AppDataParcelable,
             sharedPreferences: SharedPreferences,
         ) {
-            sharedPreferences.edit().putString(
-                KEY_PREFERENCES_LAST,
-                appDataParcelable.packageName,
-            ).apply()
+            sharedPreferences.edit {
+                putString(
+                    KEY_PREFERENCES_LAST,
+                    appDataParcelable.packageName,
+                )
+            }
         }
 
         /**
@@ -209,10 +221,12 @@ class OpenFolderInTerminalFragment : BaseBottomSheetFragment(), AdjustListViewFo
             appDataParcelable: AppDataParcelable,
             sharedPreferences: SharedPreferences,
         ) {
-            sharedPreferences.edit().putString(
-                KEY_PREFERENCES_DEFAULT,
-                appDataParcelable.packageName,
-            ).apply()
+            sharedPreferences.edit {
+                putString(
+                    KEY_PREFERENCES_DEFAULT,
+                    appDataParcelable.packageName,
+                )
+            }
         }
 
         /**
@@ -221,7 +235,7 @@ class OpenFolderInTerminalFragment : BaseBottomSheetFragment(), AdjustListViewFo
         fun clearPreferences(sharedPreferences: SharedPreferences) {
             AppConfig.getInstance().runInBackground {
                 arrayOf(KEY_PREFERENCES_DEFAULT, KEY_PREFERENCES_LAST).forEach {
-                    sharedPreferences.edit().remove(it).apply()
+                    sharedPreferences.edit { remove(it) }
                 }
             }
         }
