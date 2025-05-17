@@ -94,7 +94,12 @@ class OpenFolderInTerminalFragment : BaseBottomSheetFragment(), AdjustListViewFo
         ) {
             val installedTerminals = activity.detectInstalledTerminalApps()
             if (installedTerminals.isEmpty()) {
-                AppConfig.toast(activity, "No Terminal App installed")
+                AlertDialog.show(
+                    activity,
+                    title = R.string.no_terminal_apps,
+                    content = R.string.no_terminal_apps_message,
+                    contentIsHtml = true,
+                )
             } else if (installedTerminals.size == 1) {
                 startActivity(activity, buildIntent(installedTerminals.first(), path))
             } else {

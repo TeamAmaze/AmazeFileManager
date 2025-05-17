@@ -878,5 +878,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
     <string name="file_deletion">File Deletion</string>
     <string name="error_mediastore_query_uri">Error querying content URI of selected media file. Refresh the MediaStore and try again.</string>
+    <string name="no_terminal_apps">No Terminal Apps installed</string>
+    <string name="no_terminal_apps_message"><![CDATA[<p>No terminal apps can be found on this device.</p>\n<p>Please install one of the following terminal app first to use this feature:\n<ul>\n<li><a href=\"https://termoneplus.com/\">Termone Plus</a></li>\n<li><a href=\"https://termux.dev\">Termux</a> (You may need <a href=\"https://github.com/termux/termux-tasker#allow-external-apps-property-optional\">additional configuration</a> too)</li>\n<li><a href=\"https://github.com/jackpal/Android-Terminal-Emulator\">Jack Palovich\'s Android Terminal Emulator</a> (no longer in development)</li>\n</ul>\n</p>]]></string>
 </resources>
 
