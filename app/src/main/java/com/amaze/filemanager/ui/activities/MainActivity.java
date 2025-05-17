@@ -113,6 +113,7 @@ import com.amaze.filemanager.ui.dialogs.AlertDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.HiddenFilesDialog;
 import com.amaze.filemanager.ui.dialogs.HistoryDialog;
+import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
@@ -1315,7 +1316,8 @@ public class MainActivity extends PermissionsActivity
           } else if (item.getItemId() == R.id.search) {
             getAppbar().getSearchView().revealSearchView();
           } else if (item.getItemId() == R.id.open_in_terminal) {
-            // do nothing
+            OpenFolderInTerminalFragment.Companion.openTerminalOrShow(
+                mainFragment.getCurrentPath(), this);
           }
           return null;
         },

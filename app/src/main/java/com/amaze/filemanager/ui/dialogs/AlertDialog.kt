@@ -49,11 +49,7 @@ object AlertDialog {
             MaterialDialog.Builder(activity)
                 .content(content, contentIsHtml)
                 .widgetColor(accentColor)
-                .theme(
-                    activity
-                        .appTheme
-                        .getMaterialDialogTheme(),
-                )
+                .theme(activity.appTheme.materialDialogTheme)
                 .title(title)
                 .positiveText(positiveButtonText)
                 .positiveColor(accentColor)

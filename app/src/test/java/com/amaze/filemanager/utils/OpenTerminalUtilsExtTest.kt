@@ -37,7 +37,7 @@ class OpenTerminalUtilsExtTest : AbstractOpenFolderInTerminalTestBase() {
      */
     @Test
     fun `Test when there is no terminal app installed`() {
-        doTestWithMainActivity { mainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             val result = mainActivity.detectInstalledTerminalApps()
             assertNotNull(result)
             assertEquals(0, result.size)
@@ -49,7 +49,7 @@ class OpenTerminalUtilsExtTest : AbstractOpenFolderInTerminalTestBase() {
      */
     @Test
     fun `Test when there is only Termux installed`() {
-        doTestWithMainActivity { mainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             // Package name is important. Class name is not... no need to 100% match
             installApp(mainActivity, ComponentName("com.termux", "com.termux.Activity"))
 
@@ -65,7 +65,7 @@ class OpenTerminalUtilsExtTest : AbstractOpenFolderInTerminalTestBase() {
      */
     @Test
     fun `Test when there are both Termux and Termone plus installed`() {
-        doTestWithMainActivity { mainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             // Package name is important. Class name is not... no need to 100% match
             installApp(mainActivity, ComponentName("com.termux", "com.termux.Activity"))
             installApp(mainActivity, ComponentName("com.termoneplus", "com.termoneplus.Activity"))
@@ -83,7 +83,7 @@ class OpenTerminalUtilsExtTest : AbstractOpenFolderInTerminalTestBase() {
      */
     @Test
     fun `Test when there are other apps installed, method should filter them out`() {
-        doTestWithMainActivity { mainActivity ->
+        doTestWithMainActivity { mainActivity, _ ->
             // Package name is important. Class name is not... no need to 100% match
             installApp(mainActivity, ComponentName("com.termux", "com.termux.Activity"))
             installApp(mainActivity, ComponentName("com.termoneplus", "com.termoneplus.Activity"))
