@@ -58,6 +58,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.apache.ftpserver.ConnectionConfigFactory
+import org.apache.ftpserver.DataConnectionConfigurationFactory
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.filesystem.nativefs.NativeFileSystemFactory
@@ -227,7 +228,7 @@ class FtpService : Service(), Runnable {
                         TrustManagerFactory
                             .getInstance(TrustManagerFactory.getDefaultAlgorithm())
                     trustManagerFactory.init(keyStore)
-                    fac.sslConfiguration =
+                    val sslConfiguration =
                         DefaultSslConfiguration(
                             keyManagerFactory,
                             trustManagerFactory,
@@ -236,7 +237,13 @@ class FtpService : Service(), Runnable {
                             enabledCipherSuites,
                             "ftpserver",
                         )
+                    fac.sslConfiguration = sslConfiguration
                     fac.isImplicitSsl = true
+                    fac.dataConnectionConfiguration =
+                        DataConnectionConfigurationFactory().apply {
+                            this.isImplicitSsl = true
+                            this.sslConfiguration = sslConfiguration
+                        }.createDataConnectionConfiguration()
                 } catch (e: GeneralSecurityException) {
                     preferences.edit { putBoolean(KEY_PREFERENCE_SECURE, false) }
                 } catch (e: IOException) {
