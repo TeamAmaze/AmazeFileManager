@@ -7,7 +7,7 @@ buildscript {
         glideVersion = '4.11.0'
         sshjVersion = '0.34.0'
         jcifsVersion = '2.1.6'
-        fabSpeedDialVersion = '3.1.1'
+        fabSpeedDialVersion = '3.3.0'
         roomVersion = '2.4.3'
         bouncyCastleVersion = '1.70'
         awaitilityVersion = "3.1.6"
@@ -62,6 +62,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+	maven { url 'https://repository.liferay.com/nexus/content/repositories/public/' }
         maven { url "https://jitpack.io" }
         maven { url "https://jcenter.bintray.com" }
     }
