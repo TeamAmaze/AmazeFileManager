@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.theme
 
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import android.os.PowerManager
 import androidx.preference.PreferenceManager
@@ -41,7 +41,7 @@ import java.util.Calendar
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [KITKAT, P, Build.VERSION_CODES.R],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
     shadows = [ShadowMultiDex::class],
 )
 class AppThemeTest {

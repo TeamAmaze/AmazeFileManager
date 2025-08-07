@@ -21,11 +21,14 @@
 package com.amaze.filemanager.asynchronous.broadcast_receivers;
 
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by vishal on 23/2/17.
@@ -35,7 +38,7 @@ import android.content.IntentFilter;
  */
 public class PackageReceiver extends BroadcastReceiver {
 
-  private AppListLoader listLoader;
+  private final AppListLoader listLoader;
 
   public PackageReceiver(AppListLoader listLoader) {
 
@@ -45,12 +48,14 @@ public class PackageReceiver extends BroadcastReceiver {
     filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
     filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
     filter.addDataScheme("package");
-    listLoader.getContext().registerReceiver(this, filter);
+    ContextCompatExtKt.registerReceiverCompat(
+        listLoader.getContext(), this, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
 
     // Register for events related to SD card installation
     IntentFilter sdcardFilter = new IntentFilter(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE);
     sdcardFilter.addAction(Intent.ACTION_EXTERNAL_APPLICATIONS_UNAVAILABLE);
-    listLoader.getContext().registerReceiver(this, sdcardFilter);
+    ContextCompatExtKt.registerReceiverCompat(
+        listLoader.getContext(), this, sdcardFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   @Override

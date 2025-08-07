@@ -79,6 +79,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -116,6 +117,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -382,7 +384,9 @@ public class MainFragment extends Fragment
     reloadListElements(false, isPathLayoutGrid);
   }
 
-  private void loadViews() {
+  void loadViews() {
+    if (!isAdded() || getView() == null) return;
+
     if (mainFragmentViewModel.getCurrentPath() != null) {
       if (mainFragmentViewModel.getListElements().size() == 0) {
         loadlist(
@@ -811,137 +815,147 @@ public class MainFragment extends Fragment
   }
 
   public void reloadListElements(boolean back, boolean grid) {
-    if (isAdded()) {
-      boolean isOtg = (OTGUtil.PREFIX_OTG + "/").equals(mainFragmentViewModel.getCurrentPath());
+    if (!isAdded() || getView() == null) return;
 
-      if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
-          && !"/".equals(mainFragmentViewModel.getCurrentPath())
-          && (mainFragmentViewModel.getOpenMode() == OpenMode.FILE
-              || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT
-              || (mainFragmentViewModel.getIsCloudOpenMode()
-                  && !mainFragmentViewModel.getIsOnCloudRoot()))
-          && !isOtg
-          && (mainFragmentViewModel.getListElements().size() == 0
-              || !mainFragmentViewModel
-                  .getListElements()
-                  .get(0)
-                  .size
-                  .equals(getString(R.string.goback)))) {
-        mainFragmentViewModel.getListElements().add(0, getBackElement());
-      }
-
-      if (mainFragmentViewModel.getListElements().size() == 0) {
-        nofilesview.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setEnabled(false);
-      } else {
-        mSwipeRefreshLayout.setEnabled(true);
-        nofilesview.setVisibility(View.GONE);
-        listView.setVisibility(View.VISIBLE);
-      }
-
-      if (grid && mainFragmentViewModel.isList()) {
-        switchToGrid();
-      } else if (!grid && !mainFragmentViewModel.isList()) {
-        switchToList();
-      }
-
-      if (adapter == null) {
-        final List<LayoutElementParcelable> listElements = mainFragmentViewModel.getListElements();
-
-        adapter =
-            new RecyclerAdapter(
-                requireMainActivity(),
-                this,
-                utilsProvider,
-                sharedPref,
-                listView,
-                listElements,
-                requireContext(),
-                grid);
-      } else {
-        adapter.setItems(listView, mainFragmentViewModel.getListElements());
-      }
-
-      mainFragmentViewModel.setStopAnims(true);
-
-      if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM
-          && mainFragmentViewModel.getOpenMode() != OpenMode.TRASH_BIN) {
-        DataUtils.getInstance().addHistoryFile(mainFragmentViewModel.getCurrentPath());
-      }
-
-      listView.setAdapter(adapter);
-
-      if (!mainFragmentViewModel.getAddHeader()) {
-        listView.removeItemDecoration(dividerItemDecoration);
-        mainFragmentViewModel.setAddHeader(true);
-      }
-
-      if (mainFragmentViewModel.getAddHeader() && mainFragmentViewModel.isList()) {
-        dividerItemDecoration =
-            new DividerItemDecoration(
-                requireMainActivity(), true, getBoolean(PREFERENCE_SHOW_DIVIDERS));
-        listView.addItemDecoration(dividerItemDecoration);
-        mainFragmentViewModel.setAddHeader(false);
-      }
-
-      if (back && scrolls.containsKey(mainFragmentViewModel.getCurrentPath())) {
-        Bundle b = scrolls.get(mainFragmentViewModel.getCurrentPath());
-        int index = b.getInt("index"), top = b.getInt("top");
-        if (mainFragmentViewModel.isList()) {
-          mLayoutManager.scrollToPositionWithOffset(index, top);
-        } else {
-          mLayoutManagerGrid.scrollToPositionWithOffset(index, top);
-        }
-      }
-
-      requireMainActivity().updatePaths(mainFragmentViewModel.getNo());
-      requireMainActivity().showFab();
-      requireMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
-      listView.stopScroll();
-      fastScroller.setRecyclerView(
-          listView,
-          mainFragmentViewModel.isList()
-              ? 1
-              : (mainFragmentViewModel.getColumns() == 0
-                      || mainFragmentViewModel.getColumns() == -1)
-                  ? 3
-                  : mainFragmentViewModel.getColumns());
-      mToolbarContainer.addOnOffsetChangedListener(
-          (appBarLayout, verticalOffset) -> {
-            fastScroller.updateHandlePosition(verticalOffset, 112);
-          });
-      fastScroller.registerOnTouchListener(
-          () -> {
-            if (mainFragmentViewModel.getStopAnims() && adapter != null) {
-              stopAnimation();
-              mainFragmentViewModel.setStopAnims(false);
-            }
-          });
-
-      startFileObserver();
-
-      listView.post(
-          () -> {
-            String fileName = requireMainActivity().getScrollToFileName();
-
-            if (fileName != null)
-              mainFragmentViewModel
-                  .getScrollPosition(fileName)
-                  .observe(
-                      getViewLifecycleOwner(),
-                      scrollPosition -> {
-                        if (scrollPosition != -1)
-                          listView.scrollToPosition(
-                              Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
-                        adapter.notifyItemChanged(scrollPosition);
-                      });
-          });
-
-    } else {
-      // fragment not added
-      initNoFileLayout();
+    if (listView != null) {
+      listView.removeCallbacks(null);
     }
+
+    // Initialize views if they're null
+    if (mSwipeRefreshLayout == null || listView == null) {
+      initViews();
+      if (mSwipeRefreshLayout == null || listView == null) {
+        LOG.warn("Failed to initialize views in reloadListElements");
+        return;
+      }
+    }
+
+    if (mainFragmentViewModel.getListElements().size() == 0) {
+      if (nofilesview != null) nofilesview.setVisibility(View.VISIBLE);
+      if (listView != null) listView.setVisibility(View.GONE);
+      if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(false);
+    } else {
+      if (nofilesview != null) nofilesview.setVisibility(View.GONE);
+      if (listView != null) listView.setVisibility(View.VISIBLE);
+      if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(true);
+    }
+
+    boolean isOtg = (OTGUtil.PREFIX_OTG + "/").equals(mainFragmentViewModel.getCurrentPath());
+
+    if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
+        && !"/".equals(mainFragmentViewModel.getCurrentPath())
+        && (mainFragmentViewModel.getOpenMode() == OpenMode.FILE
+            || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT
+            || (mainFragmentViewModel.getIsCloudOpenMode()
+                && !mainFragmentViewModel.getIsOnCloudRoot()))
+        && !isOtg
+        && (mainFragmentViewModel.getListElements().size() == 0
+            || !mainFragmentViewModel
+                .getListElements()
+                .get(0)
+                .size
+                .equals(getString(R.string.goback)))) {
+      mainFragmentViewModel.getListElements().add(0, getBackElement());
+    }
+
+    if (grid && mainFragmentViewModel.isList()) {
+      switchToGrid();
+    } else if (!grid && !mainFragmentViewModel.isList()) {
+      switchToList();
+    }
+
+    if (adapter == null) {
+      final List<LayoutElementParcelable> listElements = mainFragmentViewModel.getListElements();
+
+      adapter =
+          new RecyclerAdapter(
+              requireMainActivity(),
+              this,
+              utilsProvider,
+              sharedPref,
+              listView,
+              listElements,
+              requireContext(),
+              grid);
+    } else {
+      adapter.setItems(listView, mainFragmentViewModel.getListElements());
+    }
+
+    mainFragmentViewModel.setStopAnims(true);
+
+    if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM
+        && mainFragmentViewModel.getOpenMode() != OpenMode.TRASH_BIN) {
+      DataUtils.getInstance().addHistoryFile(mainFragmentViewModel.getCurrentPath());
+    }
+
+    listView.setAdapter(adapter);
+
+    if (!mainFragmentViewModel.getAddHeader()) {
+      listView.removeItemDecoration(dividerItemDecoration);
+      mainFragmentViewModel.setAddHeader(true);
+    }
+
+    if (mainFragmentViewModel.getAddHeader() && mainFragmentViewModel.isList()) {
+      dividerItemDecoration =
+          new DividerItemDecoration(
+              requireMainActivity(), true, getBoolean(PREFERENCE_SHOW_DIVIDERS));
+      listView.addItemDecoration(dividerItemDecoration);
+      mainFragmentViewModel.setAddHeader(false);
+    }
+
+    if (back && scrolls.containsKey(mainFragmentViewModel.getCurrentPath())) {
+      Bundle b = scrolls.get(mainFragmentViewModel.getCurrentPath());
+      int index = b.getInt("index"), top = b.getInt("top");
+      if (mainFragmentViewModel.isList()) {
+        mLayoutManager.scrollToPositionWithOffset(index, top);
+      } else {
+        mLayoutManagerGrid.scrollToPositionWithOffset(index, top);
+      }
+    }
+
+    requireMainActivity().updatePaths(mainFragmentViewModel.getNo());
+    requireMainActivity().showFab();
+    requireMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
+    listView.stopScroll();
+    fastScroller.setRecyclerView(
+        listView,
+        mainFragmentViewModel.isList()
+            ? 1
+            : (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1)
+                ? 3
+                : mainFragmentViewModel.getColumns());
+    mToolbarContainer.addOnOffsetChangedListener(
+        (appBarLayout, verticalOffset) -> {
+          fastScroller.updateHandlePosition(verticalOffset, 112);
+        });
+    fastScroller.registerOnTouchListener(
+        () -> {
+          if (mainFragmentViewModel.getStopAnims() && adapter != null) {
+            stopAnimation();
+            mainFragmentViewModel.setStopAnims(false);
+          }
+        });
+
+    startFileObserver();
+
+    listView.post(
+        () -> {
+          if (!isAdded()) return;
+
+          String fileName = requireMainActivity().getScrollToFileName();
+
+          if (fileName != null)
+            mainFragmentViewModel
+                .getScrollPosition(fileName)
+                .observe(
+                    getViewLifecycleOwner(),
+                    scrollPosition -> {
+                      if (scrollPosition != -1)
+                        listView.scrollToPosition(
+                            Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
+                      adapter.notifyItemChanged(scrollPosition);
+                    });
+        });
   }
 
   private LayoutElementParcelable getBackElement() {
@@ -962,9 +976,11 @@ public class MainFragment extends Fragment
    */
   private void resumeDecryptOperations() {
     if (SDK_INT >= JELLY_BEAN_MR2) {
-      (requireMainActivity())
-          .registerReceiver(
-              decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
+      ContextCompatExtKt.registerReceiverCompat(
+          requireMainActivity(),
+          decryptReceiver,
+          new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST),
+          ContextCompat.RECEIVER_NOT_EXPORTED);
       if (!mainFragmentViewModel.isEncryptOpen()
           && !Utils.isNullOrEmpty(mainFragmentViewModel.getEncryptBaseFiles())) {
         // we've opened the file and are ready to delete it
@@ -1232,8 +1248,11 @@ public class MainFragment extends Fragment
   @Override
   public void onResume() {
     super.onResume();
-    (requireActivity())
-        .registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
+    ContextCompatExtKt.registerReceiverCompat(
+        requireMainActivity(),
+        receiver2,
+        new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
 
     resumeDecryptOperations();
     startFileObserver();
@@ -1551,5 +1570,23 @@ public class MainFragment extends Fragment
   /** Set whether the FAB should be hidden when this MainFragment is shown */
   public void setHideFab(boolean hideFab) {
     this.hideFab = hideFab;
+  }
+
+  public void initViews() {
+    if (getView() == null) return;
+
+    if (mSwipeRefreshLayout == null) {
+      mSwipeRefreshLayout = getView().findViewById(R.id.activity_main_swipe_refresh_layout);
+    }
+
+    if (listView == null) {
+      listView = getView().findViewById(R.id.listView);
+    }
+
+    if (mToolbarContainer == null) {
+      mToolbarContainer = requireMainActivity().getAppbar().getAppbarLayout();
+    }
+
+    loadViews();
   }
 }

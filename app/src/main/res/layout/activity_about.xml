@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -73,126 +74,112 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/material_generic"
-                    android:paddingBottom="@dimen/material_generic"
-                    >
+                    android:layout_height="wrap_content">
 
-                    <!-- version -->
-                    <RelativeLayout
-                        android:id="@+id/relative_layout_version"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView"
+                        app:layout_constraintTop_toTopOf="@id/text_view_version_title"
+                        app:srcCompat="@drawable/ic_info_outline_gray_24dp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_version_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/version"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/image_version" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_view_version_title"
+                        android:text="@string/app_version"
+                        android:layout_marginBottom="16dp"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintStart_toStartOf="@id/text_view_version_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_version_title"
+                        tools:layout_editor_absoluteX="40dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_view_changelog"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/click_layout_changelog"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/click_layout_changelog"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:srcCompat="@drawable/ic_history_grey_24dp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/changelog"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintTop_toTopOf="@id/image_view_changelog"
+                        app:layout_constraintBottom_toBottomOf="@id/image_view_changelog"
+                        app:layout_constraintStart_toEndOf="@id/image_view_changelog"
+                        android:textSize="@dimen/material_generic_title"
+                        />
+
+                    <View
+                        android:id="@+id/click_layout_changelog"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:nextFocusUp="@id/appBarLayout"
-                        >
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_version"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_info_outline_gray_24dp"
-                            android:layout_centerVertical="true"
-                            />
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_version"
-                            android:gravity="center_vertical"
-                            >
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_version_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/version"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_version_title"
-                                android:text="@string/app_version"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <!-- changelog -->
-                    <RelativeLayout
-                        android:id="@+id/relative_layout_changelog"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
+                        android:layout_height="72dp"
                         android:onClick="onClick"
-                        >
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_view_changelog"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_history_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_view_changelog"
-                            android:gravity="center_vertical"
-                            >
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/changelog"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <!-- licenses -->
-                    <RelativeLayout
-                        android:id="@+id/relative_layout_licenses"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_marginTop="20dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toBottomOf="@id/image_version"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_view_license"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/click_layout_licenses"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/click_layout_licenses"
+                        app:srcCompat="@drawable/ic_library_code_white_24dp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/material_generic_medium"
+                        app:layout_constraintTop_toTopOf="@id/image_view_license"
+                        app:layout_constraintBottom_toBottomOf="@id/image_view_license"
+                        app:layout_constraintStart_toEndOf="@id/image_view_license"
+                        android:text="@string/libraries"
+                        android:textSize="@dimen/material_generic_title"
+                        />
+
+                    <View
+                        android:id="@+id/click_layout_licenses"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
                         android:onClick="onClick"
-                        >
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_view_license"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_library_code_white_24dp"
-                            android:layout_centerVertical="true"
-                            />
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_view_license"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/libraries"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
-                </LinearLayout>
+                        android:background="?android:attr/selectableItemBackground"
+                        app:layout_constraintTop_toBottomOf="@id/click_layout_changelog"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.cardview.widget.CardView>
 
             <!-- authors -->
@@ -203,295 +190,223 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingRight="@dimen/material_generic"
-                    android:paddingBottom="@dimen/material_generic"
+                    android:paddingEnd="16dp"
                     >
 
-                    <!-- title -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_large"
-                        android:paddingLeft="@dimen/material_generic"
-                        >
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="@string/authors"
-                            android:textColor="@android:color/darker_gray"
-                            />
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvAuthor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/authors"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginLeft="16dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="@android:color/darker_gray"
+                        />
 
-                    <!-- author 1 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_person"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintTop_toTopOf="@id/text_view_author_1_title"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/text_view_author_1_github"
+                        app:srcCompat="@drawable/ic_account_circle_grey_24dp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_author_1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/author_1"
+                        android:layout_marginTop="@dimen/material_generic_medium"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_person"
+                        app:layout_constraintTop_toBottomOf="@id/tvAuthor"
+                        android:textSize="@dimen/material_generic_title"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_author_1_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        >
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_person"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_account_circle_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                        android:text="@string/github"
+                        android:textColor="@color/accent_red"
+                        android:layout_marginTop="@dimen/material_generic"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintStart_toStartOf="@id/text_view_author_1_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_author_1_title"
+                        android:onClick="onClick"/>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_person"
-                            android:gravity="center_vertical"
-                            >
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_author_1_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/author_1"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_author_1_title"
-                                android:layout_marginTop="@dimen/material_generic">
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/text_view_author_1_github"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/github"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"/>
-                            </RelativeLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <!-- divider -->
                     <View
                         android:id="@+id/view_divider_authors"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:background="@color/divider"
-                        android:layout_marginLeft="@dimen/material_generic_large"
-                        android:layout_marginTop="@dimen/material_generic"
-                        android:layout_marginBottom="@dimen/material_generic"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/text_view_author_1_github"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_author_1_github"
+                        android:layout_marginTop="20dp"
                         />
 
-                    <!-- author 2 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_person_author_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/text_view_author_2_github"
+                        app:layout_constraintTop_toTopOf="@id/text_view_author_2_title"
+                        app:srcCompat="@drawable/ic_account_circle_grey_24dp"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_author_2_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_person_author_2"
+                        app:layout_constraintTop_toBottomOf="@id/view_divider_authors"
+                        android:text="@string/author_2"
+                        android:textSize="@dimen/material_generic_title"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_author_2_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        >
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_person_author_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_account_circle_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                        android:text="@string/github"
+                        android:textColor="@color/accent_red"
+                        android:textSize="@dimen/material_generic_title"
+                        android:onClick="onClick"
+                        android:layout_marginTop="@dimen/material_generic"
+                        app:layout_constraintStart_toStartOf="@id/text_view_author_2_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_author_2_title"
+                        />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_person_author_2"
-                            android:gravity="center_vertical"
-                            >
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDevelopers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/developers"
+                        android:textColor="@android:color/darker_gray"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_author_2_github"
+                        />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_author_2_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/author_2"
-                                android:textSize="@dimen/material_generic_title"
-                                />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_developer_1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/developer_1"
+                        android:textSize="@dimen/material_generic_title"
+                        android:layout_marginTop="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toStartOf="@id/text_view_author_2_github"
+                        app:layout_constraintTop_toBottomOf="@id/tvDevelopers"
+                        />
 
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_author_2_title"
-                                android:layout_marginTop="@dimen/material_generic">
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/text_view_author_2_github"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/github"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"/>
-                            </RelativeLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_large"
-                        android:paddingLeft="@dimen/material_generic">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="@string/developers"
-                            android:textColor="@android:color/darker_gray"/>
-                    </RelativeLayout>
-                    <!-- dev 1 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_developer_1_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="72dp"
-                        android:layout_marginLeft="72dp">
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical">
+                        android:text="@string/github"
+                        android:textColor="@color/accent_red"
+                        android:textSize="@dimen/material_generic_title"
+                        android:onClick="onClick"
+                        android:layout_marginTop="@dimen/material_generic"
+                        app:layout_constraintStart_toStartOf="@id/text_view_developer_1_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_developer_1_title"
+                        />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_developer_1_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/developer_1"
-                                android:textSize="@dimen/material_generic_title"/>
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_developer_1_title"
-                                android:layout_marginTop="@dimen/material_generic">
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/text_view_developer_1_github"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/github"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"/>
-                            </RelativeLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <!-- divider -->
                     <View
                         android:id="@+id/view_divider_developers_1"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:background="@color/divider"
-                        android:layout_marginLeft="@dimen/material_generic_large"
-                        android:layout_marginTop="@dimen/material_generic"
-                        android:layout_marginBottom="@dimen/material_generic"
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintStart_toStartOf="@id/text_view_developer_1_github"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_developer_1_github"
+                        app:layout_constraintEnd_toEndOf="parent"
                         />
 
-                    <!-- dev 2 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_developer_2_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/developer_2"
+                        android:textSize="@dimen/material_generic_title"
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintStart_toStartOf="@id/view_divider_developers_1"
+                        app:layout_constraintTop_toBottomOf="@id/view_divider_developers_1"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_developer_2_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="72dp"
-                        android:layout_marginLeft="72dp">
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical">
+                        android:text="@string/github"
+                        android:textColor="@color/accent_red"
+                        android:textSize="@dimen/material_generic_title"
+                        android:onClick="onClick"
+                        android:layout_marginTop="@dimen/material_generic"
+                        app:layout_constraintStart_toStartOf="@id/text_view_developer_2_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_developer_2_title"
+                        />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_developer_2_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/developer_2"
-                                android:textSize="@dimen/material_generic_title"/>
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_developer_2_title"
-                                android:layout_marginTop="@dimen/material_generic">
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/text_view_developer_2_github"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/github"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"/>
-                            </RelativeLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <!-- divider -->
                     <View
                         android:id="@+id/view_divider_developers_2"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:background="@color/divider"
-                        android:layout_marginLeft="@dimen/material_generic_large"
-                        android:layout_marginTop="@dimen/material_generic"
-                        android:layout_marginBottom="@dimen/material_generic"
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/text_view_developer_2_github"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_developer_2_github"
                         />
 
-                    <!-- dev 3 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_developer_3_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/developer_3"
+                        android:textSize="@dimen/material_generic_title"
+                        android:layout_marginTop="20dp"
+                        app:layout_constraintStart_toStartOf="@id/view_divider_developers_2"
+                        app:layout_constraintTop_toBottomOf="@id/view_divider_developers_2"
+                        />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_developer_3_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="72dp"
-                        android:layout_marginLeft="72dp">
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical">
+                        android:text="@string/github"
+                        android:textColor="@color/accent_red"
+                        android:textSize="@dimen/material_generic_title"
+                        android:onClick="onClick"
+                        android:layout_marginTop="@dimen/material_generic"
+                        android:layout_marginBottom="25dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/text_view_developer_3_title"
+                        app:layout_constraintTop_toBottomOf="@id/text_view_developer_3_title"
+                        />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_developer_3_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/developer_3"
-                                android:textSize="@dimen/material_generic_title"/>
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_developer_3_title"
-                                android:layout_marginTop="@dimen/material_generic">
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/text_view_developer_3_github"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/github"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"/>
-                            </RelativeLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Support Development -->
@@ -502,316 +417,315 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/material_generic"
-                    android:paddingRight="@dimen/material_generic"
-                    >
+                    android:layout_height="wrap_content">
 
-                    <!-- title -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_large"
-                        android:paddingLeft="@dimen/material_generic"
-                        >
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvSDevelopment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="25dp"
+                        android:text="@string/support_development"
+                        android:textColor="@android:color/darker_gray"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="@string/support_development"
-                            android:textColor="@android:color/darker_gray"
-                            />
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/text_view_source"
+                        app:srcCompat="@drawable/ic_library_code_white_24dp" />
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_source"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/source_title"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView1"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_source"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_source"
+                        tools:layout_editor_absoluteX="72dp" />
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/source_summary"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_source"
+                        app:layout_constraintTop_toBottomOf="@+id/text_view_source"
+                        app:layout_constraintStart_toStartOf="@id/text_view_source"
+                        tools:layout_editor_absoluteX="72dp" />
 
-                    <RelativeLayout
+                    <View
                         android:id="@+id/relative_layout_source"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
+                        android:layout_marginTop="20dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
                         android:onClick="onClick"
-                        >
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvSDevelopment" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_source"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_library_code_white_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_dev_1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/text_view_dev_1_title"
+                        app:srcCompat="@drawable/ic_bug_report_grey_24dp"
+                        />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_source"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_source"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/source_title"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_source"
-                                android:text="@string/source_summary"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_dev_1_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/report_bugs_title"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView2"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_issues"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_dev_1_title"
+                        tools:layout_editor_absoluteX="72dp" />
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/report_bugs_summary"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_issues"
+                        app:layout_constraintTop_toBottomOf="@+id/text_view_dev_1_title"
+                        app:layout_constraintStart_toStartOf="@id/text_view_dev_1_title"
+                        tools:layout_editor_absoluteX="72dp" />
+
+                    <View
                         android:id="@+id/relative_layout_issues"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
                         android:onClick="onClick"
-                        >
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_source" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_dev_1_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_bug_report_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_share_logs_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/text_view_share_logs_title"
+                        app:srcCompat="@drawable/ic_bug_report_grey_24dp"
+                        />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_dev_1_title"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_dev_1_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/report_bugs_title"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_dev_1_title"
-                                android:text="@string/report_bugs_summary"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_share_logs_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_logs"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView3"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_share_logs"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_share_logs_title"
+                        tools:layout_editor_absoluteX="72dp" />
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_logs_summary"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_share_logs"
+                        app:layout_constraintTop_toBottomOf="@+id/text_view_share_logs_title"
+                        app:layout_constraintStart_toStartOf="@id/text_view_share_logs_title"
+                        tools:layout_editor_absoluteX="72dp" />
+
+                    <View
                         android:id="@+id/relative_layout_share_logs"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
                         android:onClick="onClick"
-                        >
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_issues" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_share_logs_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_bug_report_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_dev_2_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/text_view_dev_2_title"
+                        app:srcCompat="@drawable/ic_flag_grey_24dp"
+                        />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_share_logs_title"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_share_logs_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/share_logs"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_share_logs_title"
-                                android:text="@string/share_logs_summary"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_dev_2_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/translate_title"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView4"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_translate"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_dev_2_title"
+                        tools:layout_editor_absoluteX="72dp" />
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/translate_summary"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_translate"
+                        app:layout_constraintTop_toBottomOf="@+id/text_view_dev_2_title"
+                        app:layout_constraintStart_toStartOf="@id/text_view_dev_2_title"
+                        tools:layout_editor_absoluteX="72dp" />
+
+                    <View
                         android:id="@+id/relative_layout_translate"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
                         android:onClick="onClick"
-                        >
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_share_logs" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_dev_2_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_flag_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_dev_4_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/text_view_dev_4_title"
+                        android:src="@drawable/ic_xda_grey600_24dp"
+                        />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_dev_2_title"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_dev_2_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/translate_title"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_dev_2_title"
-                                android:text="@string/translate_summary"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/text_view_dev_4_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/xda_title"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toTopOf="@+id/appCompatTextView5"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_xda"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_dev_4_title"
+                        tools:layout_editor_absoluteX="72dp" />
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/xda_summary"
+                        android:textSize="@dimen/material_generic_title_summary"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_xda"
+                        app:layout_constraintTop_toBottomOf="@+id/text_view_dev_4_title"
+                        app:layout_constraintStart_toStartOf="@id/text_view_dev_4_title"
+                        tools:layout_editor_absoluteX="72dp" />
+
+                    <View
                         android:id="@+id/relative_layout_xda"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
                         android:onClick="onClick"
-                        >
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_translate" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_dev_4_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            android:src="@drawable/ic_xda_grey600_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_dev_5_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/relative_layout_rate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/relative_layout_rate"
+                        app:srcCompat="@drawable/ic_rate_review_grey_24dp"
+                        />
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_dev_4_title"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/text_view_dev_4_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/xda_title"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_dev_4_title"
-                                android:text="@string/xda_summary"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rate"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_rate"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_rate"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_dev_4_title"
+                        tools:layout_editor_absoluteX="72dp" />
 
-                    <RelativeLayout
+                    <View
                         android:id="@+id/relative_layout_rate"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:onClick="onClick">
+                        android:onClick="onClick"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_xda" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_dev_5_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_rate_review_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/image_dev_6_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_generic"
+                        app:layout_constraintBottom_toBottomOf="@id/relative_layout_donate"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/relative_layout_donate"
+                        app:srcCompat="@drawable/ic_payment_black_24dp"
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_dev_5_title"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/rate"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
+                        />
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/donate"
+                        android:textSize="@dimen/material_generic_title"
+                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_donate"
+                        app:layout_constraintTop_toTopOf="@+id/relative_layout_donate"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        android:layout_marginLeft="@dimen/material_generic_medium"
+                        app:layout_constraintStart_toEndOf="@id/image_dev_4_title"
+                        tools:layout_editor_absoluteX="72dp" />
+
+                    <View
                         android:id="@+id/relative_layout_donate"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
+                        android:layout_height="72dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
                         android:onClick="onClick"
-                        >
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_rate" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/image_dev_6_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_payment_black_24dp"
-                            android:layout_centerVertical="true"
-                            />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_dev_6_title"
-                            android:gravity="center_vertical"
-                            >
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/donate"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
-                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Translators -->
@@ -822,487 +736,35 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/material_generic"
-                    android:paddingRight="@dimen/material_generic"
-                    >
+                    android:layout_height="wrap_content">
 
-                    <!-- title -->
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvTranslator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/translators"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="@android:color/darker_gray"
+                        />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvLanguage"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_large"
-                        android:paddingLeft="@dimen/material_generic"
-                        >
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvTranslator"
+                        />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="@string/translators"
-                            android:textColor="@android:color/darker_gray"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_1_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/german_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_1_title"
-                            android:text="@string/german_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_2_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/italian_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_2_title"
-                            android:text="@string/italian_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_3_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/french_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_3_title"
-                            android:text="@string/french_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_4_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/russian_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_4_title"
-                            android:text="@string/russian_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_5_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/spanish_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_5_title"
-                            android:text="@string/spanish_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_6_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/basque_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_6_title"
-                            android:text="@string/basque_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_7_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/chinese_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_7_title"
-                            android:text="@string/chinese_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_8_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/serbian_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_8_title"
-                            android:text="@string/serbian_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_9_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/turkish_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_9_title"
-                            android:text="@string/turkish_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_10_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/ukrainian_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_10_title"
-                            android:text="@string/ukrainian_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_11_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/portuguese_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_11_title"
-                            android:text="@string/portuguese_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_12_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/polish_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_12_title"
-                            android:text="@string/polish_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_13_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/korean_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_13_title"
-                            android:text="@string/korean_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_14_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/greek_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_14_title"
-                            android:text="@string/greek_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_15_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/dutch_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_15_title"
-                            android:text="@string/dutch_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_16_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/romanian_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_16_title"
-                            android:text="@string/romanian_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_17_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/vietnamese_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_17_title"
-                            android:text="@string/vietnamese_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_18_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/japanese_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_18_title"
-                            android:text="@string/japanese_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_translator_19_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/tamil_translation_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_translator_19_title"
-                            android:text="@string/tamil_translation_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
-
-
 
             <!-- Contributors -->
             <androidx.cardview.widget.CardView
@@ -1312,197 +774,35 @@
                 app:cardElevation="@dimen/material_generic_card_elevation"
                 >
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/material_generic"
-                    android:paddingRight="@dimen/material_generic"
-                    >
+                    android:layout_height="wrap_content">
 
-                    <!-- title -->
-                    <RelativeLayout
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvContributor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/contributors"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="@android:color/darker_gray"
+                        />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvContributors"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_large"
-                        android:paddingLeft="@dimen/material_generic"
-                        >
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvContributor"
+                        />
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="@string/contributors"
-                            android:textColor="@android:color/darker_gray"
-                            />
-                    </RelativeLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_1_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_1_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_1_title"
-                            android:text="@string/contributors_1_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_2_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_2_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_2_title"
-                            android:text="@string/contributors_2_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_3_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_3_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_3_title"
-                            android:text="@string/contributors_3_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_4_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_4_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_4_title"
-                            android:text="@string/contributors_4_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_5_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_5_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_5_title"
-                            android:text="@string/contributors_5_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_6_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_6_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_6_title"
-                            android:text="@string/contributors_6_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginLeft="@dimen/material_generic"
-                        android:gravity="center_vertical"
-                        >
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/text_view_contributor_7_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/contributor_7_title"
-                            android:textSize="@dimen/material_generic_title"
-                            />
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_view_contributor_7_title"
-                            android:text="@string/contributors_7_summary"
-                            android:textSize="@dimen/material_generic_title_summary"
-                            />
-                    </RelativeLayout>
-                </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

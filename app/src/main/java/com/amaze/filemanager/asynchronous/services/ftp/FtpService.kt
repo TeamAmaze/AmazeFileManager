@@ -27,6 +27,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ServiceInfo
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.LOLLIPOP
@@ -38,6 +39,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.DocumentsContract
+import androidx.core.app.ServiceCompat
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
@@ -114,7 +116,16 @@ class FtpService : Service(), Runnable {
 
         serverThread = thread(block = this::run)
         val notification = FtpNotification.startNotification(applicationContext, isStartedByTile)
-        startForeground(NotificationConstants.FTP_ID, notification)
+        if (SDK_INT >= Q) {
+            ServiceCompat.startForeground(
+                this,
+                NotificationConstants.FTP_ID,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
+            )
+        } else {
+            startForeground(NotificationConstants.FTP_ID, notification)
+        }
         return START_NOT_STICKY
     }
 

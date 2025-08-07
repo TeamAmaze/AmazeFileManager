@@ -41,7 +41,7 @@ import java.util.regex.Pattern
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
+    sdk = [Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod", "LargeClass")
 class SearchResultListSorterTest {

@@ -1,3 +1,7 @@
+Light and smooth file manager following the Material Design guidelines.
+
+Features:
+
 - Basic features like cut, copy, delete, compress, extract
 - Multiple tabs for enhancing productivity
 - Support for multiple themes

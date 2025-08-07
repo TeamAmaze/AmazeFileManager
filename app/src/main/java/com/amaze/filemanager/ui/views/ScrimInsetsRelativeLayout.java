@@ -20,8 +20,6 @@
 
 package com.amaze.filemanager.ui.views;
 
-import com.amaze.filemanager.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -30,6 +28,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
 /*
@@ -60,13 +59,12 @@ public class ScrimInsetsRelativeLayout extends RelativeLayout {
 
   private void init(Context context, AttributeSet attrs, int defStyle) {
     final TypedArray a =
-        context.obtainStyledAttributes(attrs, R.styleable.ScrimInsetsFrameLayout, defStyle, 0);
-    if (a == null) {
-      return;
-    }
-    mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsFrameLayout_insetForeground);
+        context.obtainStyledAttributes(
+            attrs, com.google.android.material.R.styleable.ScrimInsetsFrameLayout, defStyle, 0);
+    mInsetForeground =
+        a.getDrawable(
+            com.google.android.material.R.styleable.ScrimInsetsFrameLayout_insetForeground);
     a.recycle();
-
     setWillNotDraw(true);
   }
 
@@ -82,7 +80,7 @@ public class ScrimInsetsRelativeLayout extends RelativeLayout {
   }
 
   @Override
-  public void draw(Canvas canvas) {
+  public void draw(@NonNull Canvas canvas) {
     super.draw(canvas);
 
     int width = getWidth();

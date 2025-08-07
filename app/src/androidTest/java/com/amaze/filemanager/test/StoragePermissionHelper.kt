@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2025 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,50 +20,54 @@
 
 package com.amaze.filemanager.test
 
-// import android.content.Intent
-// import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-// import android.net.Uri
-// import android.os.Build
-// import android.os.Build.VERSION.SDK_INT
-// import android.os.Environment
-// import android.provider.Settings
-// import android.widget.Switch
-// import androidx.test.platform.app.InstrumentationRegistry
-// import androidx.test.uiautomator.UiDevice
-// import androidx.test.uiautomator.UiSelector
-// import org.junit.Assert.assertTrue
+import android.content.Context
+import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
+import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.activities.MainActivity
 
 object StoragePermissionHelper {
     /**
-     * This method is intended for Android R or above devices to obtain MANAGE_EXTERNAL_STORAGE
-     * permission via UI Automator framework when running relevant Espresso tests.
-     *
-     * This method is flat commented out because UI Automator requires Android SDK 18, while
-     * currently we still want to support SDK 14.
+     * From https://github.com/android/android-test/issues/1658#issue-1551755250
+     * HACK this grants access to external storage "manually" because other solutions don't seem
+     * to set the permission.
      */
     @JvmStatic
-    fun obtainManageAppAllFileAccessPermissionAutomatically() {
-//        if (!Environment.isExternalStorageManager() && SDK_INT > Build.VERSION_CODES.R) {
-//            InstrumentationRegistry.getInstrumentation().run {
-//                val device = androidx.test.uiautomator.UiDevice.getInstance(this)
-//                val context = this.targetContext
-//                device.pressHome()
-//                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-//                    .setData(Uri.parse("package:${context.packageName}"))
-//                    .addFlags(FLAG_ACTIVITY_NEW_TASK)
-//                context.startActivity(intent)
-//                val switch = device.findObject(
-//                    androidx.test.uiautomator.UiSelector()
-//                        .packageName("com.android.settings")
-//                        .className(Switch::class.java.name)
-//                        .resourceId("android:id/switch_widget")
-//                )
-//                switch.click()
-//                assertTrue(switch.isChecked)
-//                device.pressHome()
-//            }
-//        }
-//        assertTrue(Environment.isExternalStorageManager())
-        return // Try to get codacy happy if they ever check me... pretend I am doing something
+    fun grantManageStoragePermission() {
+        // Ensure that an activity that has the dialog is launched
+        ActivityScenario.launch(MainActivity::class.java)
+
+        val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+        val amazeResources = context.packageManager.getResourcesForApplication(context.packageName)
+        val grantPermissionExplanation = amazeResources.getString(R.string.grant_all_files_permission)
+
+        if (device.hasObject(By.text(grantPermissionExplanation))) {
+            // First press Amaze's grant button
+            onView(withText(R.string.grant)).perform(click())
+
+            // Identifier names are taken here:
+            // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
+            val resources = context.packageManager.getResourcesForApplication("com.android.settings")
+            val resId =
+                resources.getIdentifier(
+                    "permit_manage_external_storage",
+                    "string",
+                    "com.android.settings",
+                )
+            val permitManageExternalStorage = resources.getString(resId)
+
+            val grantToggle =
+                device.findObject(UiSelector().textMatches("(?i)$permitManageExternalStorage"))
+            grantToggle.click()
+            device.pressBack()
+        }
     }
 }

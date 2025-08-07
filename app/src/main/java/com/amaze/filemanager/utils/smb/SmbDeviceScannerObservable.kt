@@ -26,6 +26,7 @@ import com.amaze.filemanager.utils.smb.SmbDeviceScannerObservable.DiscoverDevice
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
 import java.net.InetAddress
 
@@ -50,7 +51,7 @@ class SmbDeviceScannerObservable : Observable<ComputerParcelable>() {
         fun onCancel()
     }
 
-    var discoverDeviceStrategies: Array<DiscoverDeviceStrategy> =
+    private var discoverDeviceStrategies: Array<DiscoverDeviceStrategy> =
         arrayOf(
             WsddDiscoverDeviceStrategy(),
             SameSubnetDiscoverDeviceStrategy(),
@@ -61,7 +62,7 @@ class SmbDeviceScannerObservable : Observable<ComputerParcelable>() {
 
     private lateinit var observer: Observer<in ComputerParcelable>
 
-    private lateinit var disposable: Disposable
+    private var disposable: Disposable = Disposables.empty()
 
     /**
      * Stop discovering hosts. Notify containing strategies to stop, then stop the created
@@ -70,6 +71,9 @@ class SmbDeviceScannerObservable : Observable<ComputerParcelable>() {
     fun stop() {
         if (!disposable.isDisposed) {
             disposable.dispose()
+        }
+        discoverDeviceStrategies.forEach { strategy ->
+            strategy.onCancel()
         }
         observer.onComplete()
     }

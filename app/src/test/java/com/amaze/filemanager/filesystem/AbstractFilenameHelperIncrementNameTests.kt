@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
@@ -42,7 +42,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication")
 abstract class AbstractFilenameHelperIncrementNameTests {

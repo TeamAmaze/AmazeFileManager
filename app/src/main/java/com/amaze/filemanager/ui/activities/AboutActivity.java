@@ -31,10 +31,13 @@ import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.ContributorAdapter;
+import com.amaze.filemanager.adapters.LanguageAdapter;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
@@ -55,7 +58,10 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.palette.graphics.Palette;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /** Created by vishal on 27/7/16. */
 public class AboutActivity extends ThemedActivity implements View.OnClickListener {
@@ -64,6 +70,10 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private static final int HEADER_HEIGHT = 1024;
   private static final int HEADER_WIDTH = 500;
 
+  private LanguageAdapter languageAdapter;
+  private ContributorAdapter contributorAdapter;
+  private RecyclerView recyclerView;
+  private RecyclerView contributorRecyclerView;
   private AppBarLayout mAppBarLayout;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
   private AppCompatTextView mTitleTextView;
@@ -104,6 +114,8 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     }
     setContentView(R.layout.activity_about);
 
+    recyclerView = findViewById(R.id.rvLanguage);
+    contributorRecyclerView = findViewById(R.id.rvContributors);
     mAppBarLayout = findViewById(R.id.appBarLayout);
     mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
     mTitleTextView = findViewById(R.id.text_view_title);
@@ -116,12 +128,17 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     Toolbar mToolbar = findViewById(R.id.toolBar);
     setSupportActionBar(mToolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.md_nav_back));
+    getSupportActionBar()
+        .setHomeAsUpIndicator(
+            ResourcesCompat.getDrawable(
+                getResources(), com.afollestad.materialdialogs.R.drawable.md_nav_back, getTheme()));
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     switchIcons();
 
     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.about_header);
+
+    initAdapter();
 
     // It will generate colors based on the image in an AsyncTask.
     Palette.from(bitmap)
@@ -163,6 +180,17 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     }
   }
 
+  private void initAdapter() {
+
+    languageAdapter = new LanguageAdapter(DataUtils.getLanguages(this));
+    recyclerView.setAdapter(languageAdapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    contributorAdapter = new ContributorAdapter(DataUtils.getContributors(this));
+    contributorRecyclerView.setAdapter(contributorAdapter);
+    contributorRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+  }
+
   /**
    * Calculates aspect ratio for the Amaze header
    *
@@ -188,10 +216,8 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        onBackPressed();
-        break;
+    if (item.getItemId() == android.R.id.home) {
+      onBackPressed();
     }
     return super.onOptionsItemSelected(item);
   }
@@ -208,100 +234,72 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
   @Override
   public void onClick(View v) {
-    switch (v.getId()) {
-      case R.id.relative_layout_source:
-        openURL(URL_REPO, this);
-        break;
+    if (v.getId() == R.id.relative_layout_source) {
+      openURL(URL_REPO, this);
+    } else if (v.getId() == R.id.relative_layout_issues) {
+      openURL(URL_REPO_ISSUES, this);
+    } else if (v.getId() == R.id.relative_layout_share_logs) {
+      try {
+        File logFile =
+            new File("/data/data/" + getApplicationContext().getPackageName() + "/cache/logs.txt");
+        Uri logUri =
+            FileProvider.getUriForFile(
+                getApplicationContext(), getApplicationContext().getPackageName(), logFile);
+        ArrayList<Uri> logUriList = new ArrayList<>();
+        logUriList.add(logUri);
+        new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
+      } catch (Exception e) {
+        LOG.warn("failed to share logs", e);
+      }
+    } else if (v.getId() == R.id.click_layout_changelog) {
+      openURL(URL_REPO_CHANGELOG, this);
+    } else if (v.getId() == R.id.click_layout_licenses) {
+      LibsBuilder libsBuilder =
+          new LibsBuilder()
+              .withLibraries("apachemina") // Not auto-detected for some reason
+              .withActivityTitle(getString(R.string.libraries))
+              .withAboutIconShown(true)
+              .withAboutVersionShownName(true)
+              .withAboutVersionShownCode(false)
+              .withAboutDescription(getString(R.string.about_amaze))
+              .withAboutSpecial1(getString(R.string.license))
+              .withAboutSpecial1Description(getString(R.string.amaze_license))
+              .withLicenseShown(true);
 
-      case R.id.relative_layout_issues:
-        openURL(URL_REPO_ISSUES, this);
-        break;
+      switch (getAppTheme()) {
+        case LIGHT:
+          libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
+          break;
+        case DARK:
+          libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK);
+          break;
+        case BLACK:
+          libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
+          break;
+        default:
+          LogHelper.logOnProductionOrCrash("Incorrect value for switch");
+      }
 
-      case R.id.relative_layout_share_logs:
-        try {
-          File logFile =
-              new File(
-                  "/data/data/" + getApplicationContext().getPackageName() + "/cache/logs.txt");
-          Uri logUri =
-              FileProvider.getUriForFile(
-                  getApplicationContext(), getApplicationContext().getPackageName(), logFile);
-          ArrayList<Uri> logUriList = new ArrayList<>();
-          logUriList.add(logUri);
-          new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
-        } catch (Exception e) {
-          LOG.warn("failed to share logs", e);
-        }
-        break;
+      libsBuilder.start(this);
 
-      case R.id.relative_layout_changelog:
-        openURL(URL_REPO_CHANGELOG, this);
-        break;
-
-      case R.id.relative_layout_licenses:
-        LibsBuilder libsBuilder =
-            new LibsBuilder()
-                .withLibraries("apachemina") // Not auto-detected for some reason
-                .withActivityTitle(getString(R.string.libraries))
-                .withAboutIconShown(true)
-                .withAboutVersionShownName(true)
-                .withAboutVersionShownCode(false)
-                .withAboutDescription(getString(R.string.about_amaze))
-                .withAboutSpecial1(getString(R.string.license))
-                .withAboutSpecial1Description(getString(R.string.amaze_license))
-                .withLicenseShown(true);
-
-        switch (getAppTheme()) {
-          case LIGHT:
-            libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
-            break;
-          case DARK:
-            libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK);
-            break;
-          case BLACK:
-            libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
-            break;
-          default:
-            LogHelper.logOnProductionOrCrash("Incorrect value for switch");
-        }
-
-        libsBuilder.start(this);
-
-        break;
-
-      case R.id.text_view_author_1_github:
-        openURL(URL_AUTHOR1_GITHUB, this);
-        break;
-
-      case R.id.text_view_author_2_github:
-        openURL(URL_AUTHOR2_GITHUB, this);
-        break;
-
-      case R.id.text_view_developer_1_github:
-        openURL(URL_DEVELOPER1_GITHUB, this);
-        break;
-
-      case R.id.text_view_developer_2_github:
-        openURL(URL_DEVELOPER2_GITHUB, this);
-        break;
-
-      case R.id.text_view_developer_3_github:
-        openURL(URL_DEVELOPER3_GITHUB, this);
-        break;
-
-      case R.id.relative_layout_translate:
-        openURL(URL_REPO_TRANSLATE, this);
-        break;
-
-      case R.id.relative_layout_xda:
-        openURL(URL_REPO_XDA, this);
-        break;
-
-      case R.id.relative_layout_rate:
-        openURL(URL_REPO_RATE, this);
-        break;
-      case R.id.relative_layout_donate:
-        billing = new Billing(this);
-        break;
+    } else if (v.getId() == R.id.text_view_author_1_github) {
+      openURL(URL_AUTHOR1_GITHUB, this);
+    } else if (v.getId() == R.id.text_view_author_2_github) {
+      openURL(URL_AUTHOR2_GITHUB, this);
+    } else if (v.getId() == R.id.text_view_developer_1_github) {
+      openURL(URL_DEVELOPER1_GITHUB, this);
+    } else if (v.getId() == R.id.text_view_developer_2_github) {
+      openURL(URL_DEVELOPER2_GITHUB, this);
+    } else if (v.getId() == R.id.text_view_developer_3_github) {
+      openURL(URL_DEVELOPER3_GITHUB, this);
+    } else if (v.getId() == R.id.relative_layout_translate) {
+      openURL(URL_REPO_TRANSLATE, this);
+    } else if (v.getId() == R.id.relative_layout_xda) {
+      openURL(URL_REPO_XDA, this);
+    } else if (v.getId() == R.id.relative_layout_rate) {
+      openURL(URL_REPO_RATE, this);
+    } else if (v.getId() == R.id.relative_layout_donate) {
+      billing = new Billing(this);
     }
   }
 

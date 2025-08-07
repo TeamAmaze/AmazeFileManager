@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.amaze.filemanager.fileoperations.**
+-keep interface com.amaze.filemanager.fileoperations.**
+-keep enum com.amaze.filemanager.fileoperations.**

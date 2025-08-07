@@ -40,6 +40,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -255,35 +256,32 @@
             </intent-filter>
         </activity-alias>
 
-        <service
-            android:name = ".asynchronous.services.ExtractService"
-            android:label = "Extracting"
-            >
-        </service>
-        <service
-            android:name = ".asynchronous.services.ZipService"
-            android:label = "Compressing"
-            >
-        </service>
-        <service
-            android:name = ".asynchronous.services.CopyService"
-            android:label = "Copying"
-            >
-        </service>
+        <service android:name=".asynchronous.services.ExtractService"
+            android:label="Extracting"
+            android:foregroundServiceType="dataSync" />
+
+        <service android:name=".asynchronous.services.ZipService"
+            android:label="Compressing"
+            android:foregroundServiceType="dataSync" />
+
+        <service android:name=".asynchronous.services.CopyService"
+            android:label="Copying"
+            android:foregroundServiceType="dataSync" />
 
         <service android:name=".asynchronous.services.EncryptService"
             android:label="@string/crypt_encrypting"
-            />
+            android:foregroundServiceType="dataSync" />
 
         <service android:name=".asynchronous.services.DecryptService"
             android:label="@string/crypt_decrypting"
-            />
+            android:foregroundServiceType="dataSync" />
 
         <service
             android:name=".asynchronous.services.ftp.FtpService"
             android:enabled="true"
             android:exported="true"
-            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER"/>
+            android:foregroundServiceType="dataSync"
+            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER" />
 
         <service android:name=".asynchronous.services.ftp.FtpTileService"
             android:exported="true"

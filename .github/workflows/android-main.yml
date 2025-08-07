@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 11
+          java-version: 17
       - name: Check formatting using spotless
         uses: gradle/actions/setup-gradle@v3
         with:
@@ -34,11 +34,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 11
+          java-version: 17
       - name: Build with Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
@@ -63,18 +63,24 @@ jobs:
 
   test_emulator:
     timeout-minutes: 30 # Emulator can get stuck
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        api-level: [ 16, 19, 28 ]
+        api-level: [ 21, 28 ]
     steps:
       - name: checkout
         uses: actions/checkout@v4
-      - name: Java 15
+      - name: Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: 15
+          distribution: "temurin"
+          java-version: 17
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
       - name: AVD cache
@@ -95,7 +101,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           sdcard-path-or-size: 100M
-          arch: x86
+          arch: x86_64
           ram-size: 2048M
           channel: canary
           script: echo "Generated AVD snapshot for caching."
@@ -108,10 +114,11 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           sdcard-path-or-size: 100M
-          arch: x86
+          arch: x86_64
           ram-size: 2048M
           channel: canary
           script: |
             adb logcat -c
             adb logcat *:E &
             ./gradlew :app:connectedCheck
+

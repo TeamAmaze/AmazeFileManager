@@ -293,58 +293,51 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
     final EditableFileAbstraction editableFileAbstraction = viewModel.getFile();
 
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        checkUnsavedChanges();
-        break;
-      case R.id.save:
-        // Make sure EditText is visible before saving!
-        if (mainTextView.getText() != null) {
-          saveFile(this, mainTextView.getText().toString());
+    if (item.getItemId() == android.R.id.home) {
+      checkUnsavedChanges();
+    } else if (item.getItemId() == R.id.save) {
+      // Make sure EditText is visible before saving!
+      if (mainTextView.getText() != null) {
+        saveFile(this, mainTextView.getText().toString());
+      }
+    } else if (item.getItemId() == R.id.details) {
+      if (editableFileAbstraction.scheme.equals(FILE)
+          && editableFileAbstraction.hybridFileParcelable.getFile() != null
+          && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
+        GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
+            editableFileAbstraction.hybridFileParcelable, this, getAppTheme());
+      } else if (editableFileAbstraction.scheme.equals(CONTENT)) {
+        if (getApplicationContext()
+            .getPackageName()
+            .equals(editableFileAbstraction.uri.getAuthority())) {
+          File file = FileUtils.fromContentUri(editableFileAbstraction.uri);
+          HybridFileParcelable p = new HybridFileParcelable(file.getAbsolutePath());
+          if (isRootExplorer()) p.setMode(OpenMode.ROOT);
+          GeneralDialogCreation.showPropertiesDialogWithoutPermissions(p, this, getAppTheme());
         }
-        break;
-      case R.id.details:
-        if (editableFileAbstraction.scheme.equals(FILE)
-            && editableFileAbstraction.hybridFileParcelable.getFile() != null
-            && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
-          GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
-              editableFileAbstraction.hybridFileParcelable, this, getAppTheme());
-        } else if (editableFileAbstraction.scheme.equals(CONTENT)) {
-          if (getApplicationContext()
-              .getPackageName()
-              .equals(editableFileAbstraction.uri.getAuthority())) {
-            File file = FileUtils.fromContentUri(editableFileAbstraction.uri);
-            HybridFileParcelable p = new HybridFileParcelable(file.getAbsolutePath());
-            if (isRootExplorer()) p.setMode(OpenMode.ROOT);
-            GeneralDialogCreation.showPropertiesDialogWithoutPermissions(p, this, getAppTheme());
-          }
+      } else {
+        Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
+      }
+    } else if (item.getItemId() == R.id.openwith) {
+      if (editableFileAbstraction != null && editableFileAbstraction.scheme.equals(FILE)) {
+        File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
+        if (currentFile != null && currentFile.exists()) {
+          boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
+          FileUtils.openWith(currentFile, this, useNewStack);
         } else {
-          Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
+          Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
         }
-        break;
-      case R.id.openwith:
-        if (editableFileAbstraction.scheme.equals(FILE)) {
-          File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
-          if (currentFile != null && currentFile.exists()) {
-            boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
-            FileUtils.openWith(currentFile, this, useNewStack);
-          } else {
-            Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
-          }
-        } else {
-          Toast.makeText(this, R.string.reopen_from_source, Toast.LENGTH_SHORT).show();
-        }
-        break;
-      case R.id.find:
-        if (searchViewLayout.isShown()) hideSearchView();
-        else revealSearchView();
-        break;
-      case R.id.monofont:
-        item.setChecked(!item.isChecked());
-        mainTextView.setTypeface(item.isChecked() ? inputTypefaceMono : inputTypefaceDefault);
-        break;
-      default:
-        return false;
+      } else {
+        Toast.makeText(this, R.string.reopen_from_source, Toast.LENGTH_SHORT).show();
+      }
+    } else if (item.getItemId() == R.id.find) {
+      if (searchViewLayout.isShown()) hideSearchView();
+      else revealSearchView();
+    } else if (item.getItemId() == R.id.monofont) {
+      item.setChecked(!item.isChecked());
+      mainTextView.setTypeface(item.isChecked() ? inputTypefaceMono : inputTypefaceDefault);
+    } else {
+      return false;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -546,30 +539,27 @@ public class TextEditorActivity extends ThemedActivity
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    switch (v.getId()) {
-      case R.id.textEditorSearchPrevButton:
-        // upButton
-        if (viewModel.getCurrent() > 0) {
-          unhighlightCurrentSearchResult(viewModel);
+    if (v.getId() == R.id.textEditorSearchPrevButton) {
+      // upButton
+      if (viewModel.getCurrent() > 0) {
+        unhighlightCurrentSearchResult(viewModel);
 
-          // highlighting previous element in list
-          viewModel.setCurrent(viewModel.getCurrent() - 1);
+        // highlighting previous element in list
+        viewModel.setCurrent(viewModel.getCurrent() - 1);
 
-          highlightCurrentSearchResult(viewModel);
-        }
-        break;
-      case R.id.textEditorSearchNextButton:
-        // downButton
-        if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
-          unhighlightCurrentSearchResult(viewModel);
+        highlightCurrentSearchResult(viewModel);
+      }
+    } else if (v.getId() == R.id.textEditorSearchNextButton) {
+      // downButton
+      if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
+        unhighlightCurrentSearchResult(viewModel);
 
-          viewModel.setCurrent(viewModel.getCurrent() + 1);
+        viewModel.setCurrent(viewModel.getCurrent() + 1);
 
-          highlightCurrentSearchResult(viewModel);
-        }
-        break;
-      default:
-        throw new IllegalStateException();
+        highlightCurrentSearchResult(viewModel);
+      }
+    } else {
+      throw new IllegalStateException();
     }
   }
 

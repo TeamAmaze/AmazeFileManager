@@ -1,0 +1,15 @@
+Leichter und geschmeidiger Dateimanager nach Material Design Guidelines.
+
+Features:
+
+- Grundlegende Funktionen wie Ausschneiden, Kopieren, Löschen, Komprimieren, Extrahieren
+- Mehrere Tabs zur Erhöhung der Produktivität
+- Unterstützung mehrerer Designs
+- Navigationsauszug zur schnellen Steuerung
+- App-Manager, um jede App zu öffnen, sichern oder direkt zu deinstallieren
+- Schneller Zugriff auf den Verlauf, Zugriff auf Lesezeichen oder Suchen für jede Datei
+- Root-Explorer für fortgeschrittene Nutzer
+- AES-Verschlüsselung und -Entschlüsselung von Dateien aus Sicherheitsgründen (Jellybean v4.3+)
+- Unterstützung von Cloud-Diensten namentlich SMB, SSH, FTP und SFTP (Jellybean v4.3+ / erfordert ein zusätzliches Plug-in)
+- Eingebauter Datenbankleser, ZIP/RAR-Leser, APK-Leser und Texteditor
+- Unterstützung eines FTP-Clients

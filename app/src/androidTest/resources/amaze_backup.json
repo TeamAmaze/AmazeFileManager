@@ -28,6 +28,6 @@
   "delete_confirmation": true,
   "apks": true,
   "audio/mpeg_DEFAULT": "phone.vishnu.dialogmusicplayer.MainActivity phone.vishnu.dialogmusicplayer",
-  "acra.lastVersionNr": 117,
+  "acra.lastVersionNr": 121,
   "goBack_checkbox": false
 }

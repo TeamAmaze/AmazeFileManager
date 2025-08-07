@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
@@ -50,7 +50,7 @@ import java.nio.file.Paths
 import java.util.TimeZone
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
 abstract class AbstractExtractorTest {
     protected abstract fun extractorClass(): Class<out Extractor>
 

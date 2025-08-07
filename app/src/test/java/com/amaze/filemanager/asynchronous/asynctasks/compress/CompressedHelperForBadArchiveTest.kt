@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
@@ -42,7 +42,7 @@ import java.io.FileOutputStream
  * Test behaviour of CompressedHelpers in handling corrupt archives.
  */
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P])
 class CompressedHelperForBadArchiveTest {
     /**
      * Test handling of corrupt archive with random junk.

@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.ftp
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
@@ -64,7 +64,7 @@ import kotlin.text.Charsets.UTF_8
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [KITKAT, P, Build.VERSION_CODES.R],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 class NetCopyClientConnectionPoolFtpTest {
     /**

@@ -334,4 +334,29 @@ class NetCopyConnectionInfoTest {
             assertEquals("test.log", this.lastPathSegment())
         }
     }
+
+    /**
+     * Test parsing invalid port number.
+     */
+    @Test
+    fun testParseInvalidPortNumber() {
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1:22/a/b/c/d/e").run {
+            assertEquals(22, this.port)
+        }
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1:21097/a/b/c/d/e").run {
+            assertEquals(21097, this.port)
+        }
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1:99999/a/b/c/d/e").run {
+            assertEquals(0, this.port)
+        }
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1/a/b/c/d/e").run {
+            assertEquals(0, this.port)
+        }
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1:2109775003564/a/b/c/d/e").run {
+            assertEquals(0, this.port)
+        }
+        NetCopyConnectionInfo("ssh://user:pass@127.0.0.1:${Long.MAX_VALUE}/a/b/c/d/e").run {
+            assertEquals(0, this.port)
+        }
+    }
 }

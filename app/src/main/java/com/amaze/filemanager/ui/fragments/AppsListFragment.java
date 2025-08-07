@@ -142,20 +142,19 @@ public class AppsListFragment extends Fragment
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.sort:
-        showSortDialog(((MainActivity) requireActivity()).getAppTheme());
-        return true;
-      case R.id.exit:
-        requireActivity().finish();
-        return true;
-      case R.id.checkbox_system_apps:
-        item.setChecked(!item.isChecked());
-        adapter.setData(appDataParcelableList, item.isChecked());
-        showSystemApps = item.isChecked();
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
+    if (item.getItemId() == R.id.sort) {
+      showSortDialog(((MainActivity) requireActivity()).getAppTheme());
+      return true;
+    } else if (item.getItemId() == R.id.exit) {
+      requireActivity().finish();
+      return true;
+    } else if (item.getItemId() == R.id.checkbox_system_apps) {
+      item.setChecked(!item.isChecked());
+      adapter.setData(appDataParcelableList, item.isChecked());
+      showSystemApps = item.isChecked();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
     }
   }
 

@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.texteditor.write;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -65,7 +65,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowContentResolver.class},
-    sdk = {KITKAT, P, Build.VERSION_CODES.R})
+    sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
 public class WriteTextFileCallableTest {
 
   private static final String contents = "This is modified data";

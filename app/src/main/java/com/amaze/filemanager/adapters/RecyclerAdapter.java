@@ -683,7 +683,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   @Override
   public int getItemCount() {
-    return getItemsDigested().size();
+    return getItemsDigested() != null ? getItemsDigested().size() : 0;
   }
 
   @Override

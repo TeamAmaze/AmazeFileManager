@@ -1,0 +1,1 @@
+Ein Open-source-Dateimanager nach Material-Design-Richtlinien

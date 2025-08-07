@@ -31,6 +31,7 @@ import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.theme.AppThemePreference;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -356,8 +357,11 @@ public class ThemedActivity extends PreferenceActivity {
    */
   private void registerPowerModeReceiver() {
     if (SDK_INT >= LOLLIPOP) {
-      registerReceiver(
-          powerModeReceiver, new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED));
+      ContextCompatExtKt.registerReceiverCompat(
+          this,
+          powerModeReceiver,
+          new IntentFilter(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED),
+          ContextCompat.RECEIVER_EXPORTED);
     }
   }
 

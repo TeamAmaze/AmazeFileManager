@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.application;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.P;
 import static android.os.Looper.getMainLooper;
 import static org.awaitility.Awaitility.await;
@@ -51,7 +51,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
+@Config(sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
 public class AppConfigTest {
 
   @After

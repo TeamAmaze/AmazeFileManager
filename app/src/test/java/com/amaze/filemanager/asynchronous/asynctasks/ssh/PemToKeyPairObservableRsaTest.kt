@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
 import androidx.appcompat.widget.AppCompatEditText
@@ -33,6 +33,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.shadows.ShadowFileUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils
@@ -63,8 +64,8 @@ import java.util.concurrent.TimeUnit
  */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowTabHandler::class],
-    sdk = [KITKAT, P, VERSION_CODES.R],
+    shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFileUtils::class],
+    sdk = [LOLLIPOP, P, VERSION_CODES.R],
 )
 class PemToKeyPairObservableRsaTest {
     companion object {

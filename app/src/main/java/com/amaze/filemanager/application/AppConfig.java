@@ -25,8 +25,7 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 
 import org.acra.ACRA;
-import org.acra.annotation.AcraCore;
-import org.acra.config.ACRAConfigurationException;
+import org.acra.attachment.DefaultAttachmentProvider;
 import org.acra.config.CoreConfiguration;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.data.StringFormat;
@@ -35,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.crashreport.AcraReportSenderFactory;
 import com.amaze.filemanager.crashreport.ErrorActivity;
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.UtilitiesDatabase;
@@ -70,12 +68,9 @@ import io.reactivex.schedulers.Schedulers;
 import jcifs.Config;
 import jcifs.smb.SmbException;
 
-@AcraCore(
-    buildConfigClass = BuildConfig.class,
-    reportSenderFactoryClasses = AcraReportSenderFactory.class)
 public class AppConfig extends GlideApplication {
 
-  private Logger log = null;
+  private static final Logger log = LoggerFactory.getLogger(AppConfig.class);
 
   private UtilitiesProvider utilsProvider;
   private UtilsHandler utilsHandler;
@@ -117,7 +112,6 @@ public class AppConfig extends GlideApplication {
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
-    log = LoggerFactory.getLogger(AppConfig.class);
   }
 
   @Override
@@ -248,17 +242,16 @@ public class AppConfig extends GlideApplication {
 
     try {
       final CoreConfiguration acraConfig =
-          new CoreConfigurationBuilder(this)
-              .setBuildConfigClass(BuildConfig.class)
-              .setReportFormat(StringFormat.JSON)
-              .setSendReportsInDevMode(true)
-              .setEnabled(true)
+          new CoreConfigurationBuilder()
+              .withBuildConfigClass(BuildConfig.class)
+              .withReportFormat(StringFormat.JSON)
+              .withAttachmentUriProvider(DefaultAttachmentProvider.class)
+              .withSendReportsInDevMode(true)
               .build();
       ACRA.init(this, acraConfig);
-    } catch (final ACRAConfigurationException ace) {
-      if (log != null) {
-        log.warn("failed to initialize ACRA", ace);
-      }
+      // Refer to ACRA's constructor for exact exception(s) thrown
+    } catch (IllegalStateException ace) {
+      log.warn("failed to initialize ACRA", ace);
       ErrorActivity.reportError(
           this,
           ace,

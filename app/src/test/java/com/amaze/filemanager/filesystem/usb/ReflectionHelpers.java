@@ -43,7 +43,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
+import androidx.test.filters.SdkSuppress;
 
 class ReflectionHelpers {
 
@@ -77,7 +77,7 @@ class ReflectionHelpers {
     ShadowEnvironment.setExternalStorageState(storageDir1, Environment.MEDIA_MOUNTED);
   }
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static void configureUsbDevice(UsbDevice device)
       throws NoSuchMethodException,
           ClassNotFoundException,
@@ -92,7 +92,7 @@ class ReflectionHelpers {
     configureMethod.invoke(device, (Object) new Parcelable[] {usbConfiguration});
   }
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static void configureUsbConfiguration(UsbConfiguration usbConfiguration)
       throws NoSuchMethodException,
           ClassNotFoundException,
@@ -107,7 +107,7 @@ class ReflectionHelpers {
     configureMethod.invoke(usbConfiguration, (Object) new Parcelable[] {usbInterface});
   }
 
-  @RequiresApi(Build.VERSION_CODES.KITKAT)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static Parcelable[] configureUsbDevice()
       throws ClassNotFoundException,
           NoSuchMethodException,
@@ -120,7 +120,7 @@ class ReflectionHelpers {
     return new Parcelable[] {usbInterface};
   }
 
-  @RequiresApi(Build.VERSION_CODES.M)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.M)
   static UsbDevice callUsbDeviceConstructor(
       @NonNull String name,
       int vendorId,
@@ -165,7 +165,7 @@ class ReflectionHelpers {
         serialNumber);
   }
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static UsbDevice callUsbDeviceConstructor(
       @NonNull String name,
       int vendorId,
@@ -207,7 +207,7 @@ class ReflectionHelpers {
         serialNumber);
   }
 
-  @RequiresApi(Build.VERSION_CODES.KITKAT)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static UsbDevice callUsbDeviceConstructor(
       @NonNull String name,
       int vendorId,
@@ -237,7 +237,7 @@ class ReflectionHelpers {
         name, vendorId, productId, usbClass, subClass, protocol, interfaces);
   }
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static UsbConfiguration callUsbConfigurationConstructor(
       int id, @Nullable String name, int attributes, int maxPower)
       throws ClassNotFoundException,
@@ -254,7 +254,7 @@ class ReflectionHelpers {
     return constructor.newInstance(id, name, attributes, maxPower);
   }
 
-  @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static UsbInterface callUsbInterfaceConstructor(
       int id, int alternateSetting, @Nullable String name, int usbClass, int subClass, int protocol)
       throws ClassNotFoundException,
@@ -271,7 +271,7 @@ class ReflectionHelpers {
     return constructor.newInstance(id, alternateSetting, name, usbClass, subClass, protocol);
   }
 
-  @RequiresApi(Build.VERSION_CODES.KITKAT)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
   static UsbInterface callUsbInterfaceConstructor(
       int id, int usbClass, int subClass, int protocol, @Nullable Parcelable[] endpoints)
       throws ClassNotFoundException,

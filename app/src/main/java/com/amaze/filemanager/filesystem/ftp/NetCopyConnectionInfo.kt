@@ -25,6 +25,8 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Container object for SSH/FTP/FTPS URL, encapsulating logic for splitting information from given
@@ -58,6 +60,9 @@ class NetCopyConnectionInfo(url: String) {
         private set
 
     companion object {
+        @JvmStatic
+        private val LOGGER: Logger = LoggerFactory.getLogger(NetCopyConnectionInfo::class.java)
+
         // Regex taken from https://blog.stevenlevithan.com/archives/parseuri
         // (No, don't break it down to lines)
 
@@ -104,7 +109,18 @@ class NetCopyConnectionInfo(url: String) {
                      * Invalid string would have been trapped to other branches. Strings fell into
                      * this branch must be integer
                      */
-                        it[7].toInt()
+                        try {
+                            // Need to make sure port number is in range
+                            if (it[7].toInt() in 1..65535) {
+                                it[7].toInt()
+                            } else {
+                                LOGGER.warn("Port number is out of range: ${it[7]}")
+                                0
+                            }
+                        } catch (e: NumberFormatException) {
+                            LOGGER.warn("Unable to parse port number: ${it[7]}", e)
+                            0
+                        }
                     } else {
                         0
                     }

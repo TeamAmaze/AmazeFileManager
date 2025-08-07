@@ -62,6 +62,8 @@ import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -83,7 +85,7 @@ public class TabFragment extends Fragment {
   private boolean savePaths;
   private FragmentManager fragmentManager;
 
-  private final List<Fragment> fragments = new ArrayList<>();
+  @VisibleForTesting public final List<Fragment> fragments = new ArrayList<>();
   private ScreenSlidePagerAdapter sectionsPagerAdapter;
   private ViewPager2 viewPager;
   private SharedPreferences sharedPrefs;
@@ -246,9 +248,18 @@ public class TabFragment extends Fragment {
       }
 
       fragmentManager.executePendingTransactions();
-      fragmentManager.putFragment(outState, KEY_FRAGMENT_0, fragments.get(0));
-      fragmentManager.putFragment(outState, KEY_FRAGMENT_1, fragments.get(1));
-      outState.putInt(KEY_POSITION, viewPager.getCurrentItem());
+
+      try {
+        if (fragments.get(0) != null && fragments.get(0).isAdded()) {
+          fragmentManager.putFragment(outState, KEY_FRAGMENT_0, fragments.get(0));
+        }
+        if (fragments.get(1) != null && fragments.get(1).isAdded()) {
+          fragmentManager.putFragment(outState, KEY_FRAGMENT_1, fragments.get(1));
+        }
+        outState.putInt(KEY_POSITION, viewPager.getCurrentItem());
+      } catch (IllegalStateException e) {
+        LOG.warn("Failed to save fragment states", e);
+      }
     }
   }
 
@@ -269,6 +280,11 @@ public class TabFragment extends Fragment {
           || mainFragment.getMainFragmentViewModel() == null
           || mainFragment.getMainActivity().getListItemSelected()) {
         return; // we do not want to update toolbar colors when ActionMode is activated
+      }
+
+      // Ensure adapter and its data are valid before proceeding
+      if (mainFragment.adapter == null || mainFragment.adapter.getCheckedItems() == null) {
+        return;
       }
 
       // during the config change
@@ -298,7 +314,8 @@ public class TabFragment extends Fragment {
       Fragment fragment = fragments.get(p1);
       if (fragment instanceof MainFragment) {
         MainFragment ma = (MainFragment) fragment;
-        if (ma.getCurrentPath() != null) {
+        // Add null check for adapter
+        if (ma.getCurrentPath() != null && ma.adapter != null) {
           requireMainActivity().getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
           updateBottomBar(ma);
           // FAB might be hidden in the previous tab
@@ -314,6 +331,48 @@ public class TabFragment extends Fragment {
     public void onPageScrollStateChanged(int state) {
       // nothing to do
     }
+  }
+
+  @Override
+  public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+    super.onViewStateRestored(savedInstanceState);
+
+    // Post the view restoration to ensure all views are initialized
+    if (viewPager != null) {
+      viewPager.post(
+          () -> {
+            for (Fragment fragment : fragments) {
+              if (fragment instanceof MainFragment) {
+                MainFragment mainFragment = (MainFragment) fragment;
+                if (mainFragment.isAdded()
+                    && mainFragment.getView() != null
+                    && mainFragment.adapter == null
+                    && mainFragment.getMainFragmentViewModel() != null) {
+                  mainFragment.initViews();
+                }
+              }
+            }
+          });
+    }
+  }
+
+  private void initViews() {
+    if (fragments.size() != 0) {
+      for (Fragment fragment : fragments) {
+        if (fragment instanceof MainFragment) {
+          MainFragment mainFragment = (MainFragment) fragment;
+          if (mainFragment.isAdded() && mainFragment.getView() != null) {
+            mainFragment.initViews();
+          }
+        }
+      }
+    }
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    initViews();
   }
 
   private class ScreenSlidePagerAdapter extends FragmentStateAdapter {

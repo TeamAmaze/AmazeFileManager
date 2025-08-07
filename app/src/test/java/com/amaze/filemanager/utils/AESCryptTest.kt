@@ -21,7 +21,7 @@
 package com.amaze.filemanager.utils
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertArrayEquals
@@ -36,7 +36,7 @@ import kotlin.random.Random
  * Unit test for [AESCrypt]
  */
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Config(sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
 class AESCryptTest {
     /**
      * Simple sanity test on [AESCrypt].

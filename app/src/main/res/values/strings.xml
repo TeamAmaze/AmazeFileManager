@@ -760,7 +760,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_fill">Select fill</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
-        \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
+        \n\nAmaze File Manager needs this permission too. After pressing \'Grant\', please select <b>Allow access to manage all files</b> option on the next screen.
         \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
     <string name="user_apps">User apps</string>
     <string name="appearance">Appearance</string>
@@ -770,6 +770,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="behavior_summary">Modify behaviors such as advanced search and whether to open files as a new task</string>
     <string name="security_summary">Set up password and encryption</string>
     <string name="backup_summary">Export/Import Amaze settings</string>
+
 
     <string name="pref_export">Export</string>
     <string name="pref_export_summary">Export settings</string>
@@ -800,6 +801,8 @@ You only need to do this once, until the next time you select a new location for
     <string name="error_cannot_get_package_info">Unable to get package info from file \"%s\". Either the specified file is not an APK, or the package file is corrupt.</string>
     <string name="preference_delete_confirmation">Delete confirmation</string>
     <string name="preference_delete_confirmation_summary">Ask for confirmation before deleting files. Disabling this is highly discouraged!</string>
+    <string name="preference_delete_permanently_without_confirmation">Delete permanently (Disable Trashbin)</string>
+    <string name="preference_delete_permanently_without_confirmation_summary">Delete files permanently without moving to trashbin. Enabling this is highly discouraged!</string>
     <string name="protocol_ssh" translatable="false">SSH/SFTP</string>
     <string name="protocol_ftp" translatable="false">FTP</string>
     <string name="protocol_ftps">Secure FTP</string>
@@ -848,5 +851,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="trash_bin_retention_bytes_summary">Maximum data (in MBs) trash bin can store</string>
     <string name="trash_bin_cleanup_interval_title">Cleanup interval</string>
     <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
+    <string name="file_deletion">File Deletion</string>
 </resources>
 

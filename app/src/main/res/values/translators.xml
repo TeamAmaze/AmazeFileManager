@@ -22,6 +22,7 @@
     tools:ignore="MissingTranslation">
 
     <!-- Non-translatable strings, must not be defined in any other language -->
+    <string name="luri_bakhtiari_translation_summary" translatable="false">Hossein Abaspanah</string>
     <string name="german_translation_summary" translatable="false">Patrick Mertens, Unpublished, Dennis Rüdiger</string>
     <string name="italian_translation_summary" translatable="false">Francesco Credidio, Federico Cappelletti</string>
     <string name="french_translation_summary" translatable="false">Nicolas PIMENTEL, Primokorn, Renaud ROLLAND</string>

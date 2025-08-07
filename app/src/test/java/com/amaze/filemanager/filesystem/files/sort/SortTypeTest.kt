@@ -31,7 +31,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
+    sdk = [Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 class SortTypeTest {
     /** Tests if the Int returned from [SortType.toDirectorySortInt] is as expected */

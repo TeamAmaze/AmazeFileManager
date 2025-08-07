@@ -122,7 +122,7 @@ public class MainActivityHelper {
         @Override
         public void onReceive(Context context, Intent intent) {
           if (intent != null) {
-            if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
+            if (Intent.ACTION_MEDIA_MOUNTED.equals(intent.getAction())) {
               Toast.makeText(mainActivity, "Media Mounted", Toast.LENGTH_SHORT).show();
               String a = intent.getData().getPath();
               if (a != null
@@ -134,8 +134,7 @@ public class MainActivityHelper {
               } else {
                 mainActivity.getDrawer().refreshDrawer();
               }
-            } else if (intent.getAction().equals(Intent.ACTION_MEDIA_UNMOUNTED)) {
-
+            } else if (Intent.ACTION_MEDIA_UNMOUNTED.equals(intent.getAction())) {
               mainActivity.getDrawer().refreshDrawer();
             }
           }

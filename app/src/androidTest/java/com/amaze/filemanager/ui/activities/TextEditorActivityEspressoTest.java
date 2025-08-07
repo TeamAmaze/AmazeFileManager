@@ -26,7 +26,6 @@ import java.io.File;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,21 +35,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 @Suppress
 // Have to rewrite to cope with Android 11 storage access model
 public class TextEditorActivityEspressoTest {
-
-  @Rule
-  public ActivityTestRule<TextEditorActivity> activityRule =
-      new ActivityTestRule<>(TextEditorActivity.class, true, false);
 
   private Context context;
 
@@ -65,22 +60,29 @@ public class TextEditorActivityEspressoTest {
   }
 
   @Test
-  public void testOpenFile() throws Exception {
+  public void testOpenFile() {
     Intent intent =
         new Intent(context, TextEditorActivity.class)
             .setAction(Intent.ACTION_VIEW)
             .addCategory(Intent.CATEGORY_DEFAULT)
             .setType("text/plain")
             .setData(uri);
-    activityRule.launchActivity(intent);
-    CountDownLatch waiter = new CountDownLatch(1);
-    while ("".equals(activityRule.getActivity().mainTextView.getText().toString())) {
-      waiter.await();
+    try (ActivityScenario<TextEditorActivity> scenario = ActivityScenario.launch(intent)) {
+      scenario.onActivity(
+          activity -> {
+            CountDownLatch waiter = new CountDownLatch(1);
+            try {
+              while ("".equals(activity.mainTextView.getText().toString())) {
+                waiter.await();
+              }
+            } catch (InterruptedException ignored) {
+            }
+            waiter.countDown();
+            assertNotEquals("", activity.mainTextView.getText().toString());
+            assertNotEquals("foobar", activity.mainTextView.getText().toString());
+            // Add extra time for you to see the Activity did load, and text is actually there
+            // Thread.sleep(1000);
+          });
     }
-    waiter.countDown();
-    assertNotEquals("", activityRule.getActivity().mainTextView.getText());
-    assertNotEquals("foobar", activityRule.getActivity().mainTextView.getText());
-    // Add extra time for you to see the Activity did load, and text is actually there
-    // Thread.sleep(1000);
   }
 }

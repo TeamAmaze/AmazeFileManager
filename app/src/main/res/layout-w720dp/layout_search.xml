@@ -57,7 +57,7 @@
             app:layout_constraintTop_toTopOf="@id/search_edit_text"
             app:srcCompat="@drawable/ic_close_black_24dp" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/searchRecentHintTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="8dp"
             android:scrollbars="none"
-            app:layout_constraintBottom_toTopOf="@id/searchDeepSearchTV"
+            app:layout_constraintBottom_toTopOf="@+id/deepSearchContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/searchRecentHintTV">
@@ -101,23 +101,46 @@
 
         </HorizontalScrollView>
 
-        <TextView
-            android:id="@+id/searchDeepSearchTV"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/deepSearchContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"
-            android:textSize="16sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/searchResultsHintTV"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
+            android:paddingVertical="16dp"
+            android:paddingHorizontal="12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchRecentItemsScrollView" />
+            app:layout_constraintTop_toBottomOf="@id/searchRecentItemsScrollView">
 
-        <TextView
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/notFindingTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/not_finding_what_you_re_looking_for"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/tryDeepSearchButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:background="@drawable/button_background"
+                android:text="@string/try_indexed_search"
+                android:textColor="@color/primary_pink" />
+
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/searchResultsHintTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -132,9 +155,9 @@
             app:layout_constraintEnd_toStartOf="@+id/searchResultsSortHintTV"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV" />
+            app:layout_constraintTop_toBottomOf="@+id/deepSearchContainer" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/searchResultsSortHintTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -146,27 +169,27 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/searchRecyclerView"
             app:layout_constraintEnd_toStartOf="@+id/searchResultsSortButton"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@+id/searchResultsHintTV"
-            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV"
-            app:layout_constraintHorizontal_bias="1" />
+            app:layout_constraintTop_toBottomOf="@+id/deepSearchContainer" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/searchResultsSortButton"
+            style="@style/SearchSortButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
             android:textColor="@color/accent_material_light"
             android:textSize="12sp"
             android:visibility="gone"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
             app:layout_constraintBottom_toTopOf="@+id/searchRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/searchResultsSortHintTV"
-            app:layout_constraintTop_toBottomOf="@id/searchDeepSearchTV"
             app:layout_constraintHorizontal_bias="1"
-            style="@style/SearchSortButton" />
+            app:layout_constraintStart_toEndOf="@+id/searchResultsSortHintTV"
+            app:layout_constraintTop_toBottomOf="@+id/deepSearchContainer" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchRecyclerView"
@@ -176,7 +199,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchResultsHintTV" />
+            app:layout_constraintTop_toBottomOf="@+id/searchResultsHintTV" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

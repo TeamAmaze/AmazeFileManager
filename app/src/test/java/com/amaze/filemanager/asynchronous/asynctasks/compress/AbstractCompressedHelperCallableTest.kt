@@ -21,7 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -37,7 +37,7 @@ import java.io.FileOutputStream
 import java.util.TimeZone
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [KITKAT, P, Build.VERSION_CODES.R])
+@Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
 abstract class AbstractCompressedHelperCallableTest {
     private lateinit var systemTz: TimeZone
 

@@ -40,6 +40,7 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.ContextCompatExtKt;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -62,6 +63,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 public class ExtractService extends AbstractProgressiveService {
@@ -87,7 +89,11 @@ public class ExtractService extends AbstractProgressiveService {
   @Override
   public void onCreate() {
     super.onCreate();
-    registerReceiver(receiver1, new IntentFilter(TAG_BROADCAST_EXTRACT_CANCEL));
+    ContextCompatExtKt.registerReceiverCompat(
+        this,
+        cancelReceiver,
+        new IntentFilter(TAG_BROADCAST_EXTRACT_CANCEL),
+        ContextCompat.RECEIVER_NOT_EXPORTED);
   }
 
   @Override
@@ -220,7 +226,7 @@ public class ExtractService extends AbstractProgressiveService {
     if (extractingAsyncTask != null) {
       extractingAsyncTask.cancel(true);
     }
-    unregisterReceiver(receiver1);
+    unregisterReceiver(cancelReceiver);
   }
 
   /**
@@ -449,7 +455,7 @@ public class ExtractService extends AbstractProgressiveService {
    * Class used for the client Binder. Because we know this service always runs in the same process
    * as its clients, we don't need to deal with IPC.
    */
-  private final BroadcastReceiver receiver1 =
+  private final BroadcastReceiver cancelReceiver =
       new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

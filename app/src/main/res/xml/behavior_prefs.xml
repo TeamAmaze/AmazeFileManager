@@ -23,13 +23,6 @@
         app:key="texteditor_newstack"
         app:summary="@string/preference_newstack_summary"
         app:title="@string/preference_newstack_title" />
-    <com.amaze.filemanager.ui.views.preference.CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:defaultValue="true"
-        app:key="delete_confirmation"
-        app:summary="@string/preference_delete_confirmation_summary"
-        app:title="@string/preference_delete_confirmation" />
     <Preference
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +41,7 @@
         app:key="extractpath"
         app:summary="@string/archive_summary"
         app:title="@string/archive_extract_folder"></Preference>
-    <PreferenceCategory android:title="@string/trash_bin">
+    <PreferenceCategory android:title="@string/file_deletion">
         <Preference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,6 +66,17 @@
             app:key="cleanup_interval"
             app:summary="@string/trash_bin_cleanup_interval_summary"
             app:title="@string/trash_bin_cleanup_interval_title"></Preference>
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            app:defaultValue="true"
+            app:key="delete_confirmation"
+            app:summary="@string/preference_delete_confirmation_summary"
+            app:title="@string/preference_delete_confirmation" />
+
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            app:defaultValue="false"
+            app:key="delete_permanently_without_confirmation"
+            app:summary="@string/preference_delete_permanently_without_confirmation_summary"
+            app:title="@string/preference_delete_permanently_without_confirmation" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/advanced_search">
 

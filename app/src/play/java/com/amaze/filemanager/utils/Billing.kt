@@ -38,6 +38,7 @@ import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
@@ -206,7 +207,9 @@ class Billing(private val activity: BasicActivity) :
                 createProductWith("donations_4"),
             )
         billingClient =
-            BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases().build()
+            BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases(
+                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
+            ).build()
         initiatePurchaseFlow()
     }
 
@@ -270,7 +273,7 @@ class Billing(private val activity: BasicActivity) :
                     val builder: MaterialDialog.Builder = MaterialDialog.Builder(context)
                     builder.title(R.string.donate)
                     builder.adapter(this, null)
-                    builder.theme(context.appTheme.getMaterialDialogTheme())
+                    builder.theme(context.appTheme.materialDialogTheme)
                     builder.cancelListener { purchaseProduct.purchaseCancel() }
                     donationDialog = builder.show()
                     null

@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.notifications;
 
 import static android.app.NotificationManager.IMPORTANCE_HIGH;
 import static android.app.NotificationManager.IMPORTANCE_MIN;
-import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_FTP_ID;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_NORMAL_ID;
@@ -54,7 +54,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {KITKAT, P, Build.VERSION_CODES.R})
+@Config(sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
 public class NotificationConstantsTest {
 
   private Context context;
@@ -89,7 +89,7 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(sdk = {KITKAT}) // max sdk is N
+  @Config(sdk = {LOLLIPOP}) // max sdk is N
   public void testNormalNotification() {
     NotificationCompat.Builder builder =
         new NotificationCompat.Builder(context, CHANNEL_NORMAL_ID)
@@ -101,7 +101,7 @@ public class NotificationConstantsTest {
 
     NotificationConstants.setMetadata(context, builder, TYPE_NORMAL);
     Notification result = builder.build();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= LOLLIPOP) {
       assertEquals(Notification.CATEGORY_SERVICE, result.category);
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -112,7 +112,7 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(sdk = {KITKAT}) // max sdk is N
+  @Config(sdk = {LOLLIPOP}) // max sdk is N
   public void testFtpNotification() {
     NotificationCompat.Builder builder =
         new NotificationCompat.Builder(context, CHANNEL_FTP_ID)
@@ -124,7 +124,7 @@ public class NotificationConstantsTest {
             .setOnlyAlertOnce(true);
     NotificationConstants.setMetadata(context, builder, TYPE_FTP);
     Notification result = builder.build();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT >= LOLLIPOP) {
       assertEquals(Notification.CATEGORY_SERVICE, result.category);
       assertEquals(Notification.VISIBILITY_PUBLIC, result.visibility);
     }
