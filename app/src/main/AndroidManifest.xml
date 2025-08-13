@@ -22,7 +22,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk tools:overrideLibrary="com.amaze.trashbin,androidx.vectordrawable.animated,androidx.room,com.android.billingclient,androidx.vectordrawable,androidx.core,androidx.fragment,com.topjohnwu.superuser,com.cloudrail.si,okhttp3"/>
+    <uses-sdk tools:overrideLibrary="com.amaze.trashbin,androidx.vectordrawable.animated,androidx.room,com.android.billingclient,androidx.vectordrawable,androidx.core,androidx.fragment,com.topjohnwu.superuser,com.cloudrail.si,okhttp3,androidx.core.ktx"/>
 
     <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
