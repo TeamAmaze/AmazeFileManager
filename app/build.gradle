@@ -267,7 +267,7 @@ kotlin {
 
 configurations.configureEach {
     resolutionStrategy {
-        force 'androidx.core:core-ktx:1.6.0'
+        force 'androidx.core:core:1.7.0'
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") using module("commons-logging:commons-logging:1.1.1")
             substitute module("com.android.support:support-annotations:27.1.1") using module("com.android.support:support-annotations:27.0.2")
