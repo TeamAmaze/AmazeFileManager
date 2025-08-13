@@ -27,9 +27,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="12dp"
-        android:orientation="vertical"
-        tools:targetApi="lollipop">
+        android:orientation="vertical">
 
         <include
             layout="@layout/toolbar"

@@ -181,7 +181,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
-import android.service.quicksettings.TileService;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -468,7 +467,7 @@ public class MainActivity extends PermissionsActivity
         transaction.commit();
         supportInvalidateOptionsMenu();
       } else if (intent.getAction() != null
-          && (intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)
+          && ((SDK_INT >= N && intent.getAction().equals("android.service.quicksettings.action.QS_TILE_PREFERENCES"))
               || INTENT_ACTION_OPEN_FTP_SERVER.equals(intent.getAction()))) {
         // tile preferences, open ftp fragment
 
