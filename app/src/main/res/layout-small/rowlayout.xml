@@ -1,0 +1,198 @@
+<!--
+    Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/second"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/minimal_row_size"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingLeft="8dp"
+    android:paddingStart="8dp"
+    android:paddingRight="8dp"
+    android:paddingEnd="8dp"
+    android:nextFocusRight="@id/properties">
+    <RelativeLayout
+        android:id="@+id/icon_frame_grid"
+        android:layout_width="@dimen/minimal_icon_parent_width"
+        android:layout_height="@dimen/minimal_row_size"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:focusable="false"
+        android:descendantFocusability="blocksDescendants"
+        >
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/icon_margin_top"
+            >
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/minimal_icon_size"
+                android:layout_height="@dimen/minimal_icon_size"
+                android:visibility="gone"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:id="@+id/apk_icon"/>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/picture_icon"
+                android:layout_width="@dimen/minimal_icon_size"
+                android:layout_height="@dimen/minimal_icon_size"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/icon" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:background="@drawable/circle_shape"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/generic_icon"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="@dimen/minimal_icon_size"
+                android:layout_height="@dimen/minimal_icon_size"
+                android:textSize="10sp"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:id="@+id/generictext"
+                android:textColor="@android:color/white"
+                />
+        </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/check_icon"
+            android:layout_width="@dimen/tick_icon_size"
+            android:layout_height="@dimen/tick_icon_size"
+            android:padding="@dimen/check_icon_padding"
+            app:srcCompat="@drawable/ic_checkmark_selected"
+            android:layout_marginBottom="@dimen/check_icon_margin_bottom_right"
+            android:layout_marginRight="@dimen/check_icon_margin_bottom_right"
+            android:layout_marginEnd="@dimen/check_icon_margin_bottom_right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:id="@+id/properties"
+        android:background="@drawable/ripple"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:padding="4dp"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_more_vert_black_48dp"
+        android:nextFocusLeft="@id/second"
+        android:focusable="true"
+        android:contentDescription="@string/properties"
+        />
+
+    <RelativeLayout
+        android:layout_toRightOf="@id/icon_frame_grid"
+        android:layout_toEndOf="@id/icon_frame_grid"
+        android:layout_toLeftOf="@id/properties"
+        android:layout_toStartOf="@id/properties"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <com.amaze.filemanager.ui.views.ThemedTextView
+            android:id="@+id/firstline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:longClickable="false"
+            android:clickable="false"
+            android:textSize="15sp" />
+
+        <RelativeLayout
+            android:id="@+id/summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/firstline"
+            android:layout_marginTop="3dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginRight="8dip"
+                android:layout_marginEnd="8dip"
+                android:textColor="?android:attr/textColorTertiary"
+                />
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:id="@+id/appManagerPackageName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/date"
+                android:layout_alignBottom="@id/date"
+                android:layout_toEndOf="@id/date"
+                android:ellipsize="marquee"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/secondLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/date"
+                android:layout_toEndOf="@id/date"
+                android:textSize="11sp"
+                android:textColor="?android:attr/textColorTertiary"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/permis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textColor="?android:attr/textColorTertiary"
+                android:textSize="11sp"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+    <View
+        android:id="@+id/dummy_view"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="invisible"
+        android:background="@null"
+        />
+</RelativeLayout>

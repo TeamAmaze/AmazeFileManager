@@ -52,13 +52,10 @@
     <application
         android:name=".application.AppConfig"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"
         android:label="@string/appbar_name"
         android:requestLegacyExternalStorage="true"
-        android:banner="@drawable/about_header"
-        android:localeConfig="@xml/locales_config"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:banner="@drawable/about_header">
 
         <activity
             android:exported="true"
@@ -132,8 +129,6 @@
                 <data android:mimeType="*/*" />
             </intent-filter>
 
-            <meta-data android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
@@ -257,42 +252,26 @@
         </activity-alias>
 
         <service android:name=".asynchronous.services.ExtractService"
-            android:label="Extracting"
-            android:foregroundServiceType="dataSync" />
+            android:label="Extracting" />
 
         <service android:name=".asynchronous.services.ZipService"
-            android:label="Compressing"
-            android:foregroundServiceType="dataSync" />
+            android:label="Compressing" />
 
         <service android:name=".asynchronous.services.CopyService"
-            android:label="Copying"
-            android:foregroundServiceType="dataSync" />
+            android:label="Copying" />
 
         <service android:name=".asynchronous.services.EncryptService"
-            android:label="@string/crypt_encrypting"
-            android:foregroundServiceType="dataSync" />
+            android:label="@string/crypt_encrypting" />
 
         <service android:name=".asynchronous.services.DecryptService"
-            android:label="@string/crypt_decrypting"
-            android:foregroundServiceType="dataSync" />
+            android:label="@string/crypt_decrypting" />
 
         <service
             android:name=".asynchronous.services.ftp.FtpService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="dataSync"
             android:permission="${applicationId}.permission.CONTROL_FTP_SERVER" />
 
-        <service android:name=".asynchronous.services.ftp.FtpTileService"
-            android:exported="true"
-            android:icon="@drawable/ic_ftp_dark"
-            android:label="@string/ftp"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
-            <intent-filter>
-                <action
-                    android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
-        </service>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
