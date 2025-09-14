@@ -20,23 +20,24 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static android.os.Build.VERSION_CODES.KITKAT;
 import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_FAILED_OPS;
 import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_GENERAL;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
@@ -49,13 +50,17 @@ import com.amaze.filemanager.filesystem.root.MakeFileCommand;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.cloudrail.si.interfaces.CloudStorage;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
+import com.amaze.filemanager.utils.omh.OmhAuthClientExtKt;
+import com.amaze.filemanager.utils.omh.OmhStorageClientExtKt;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -63,13 +68,17 @@ import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.documentfile.provider.DocumentFile;
 
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.Unit;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlin.text.StringsKt;
+import kotlinx.coroutines.BuildersKt;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public class Operations {
-
-  private static final Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
 
   private static final Logger LOG = LoggerFactory.getLogger(Operations.class);
 
@@ -120,150 +129,131 @@ public class Operations {
       final boolean rootMode,
       @NonNull final ErrorCallBack errorCallBack) {
 
-    new AsyncTask<Void, Void, Void>() {
-
-      private DataUtils dataUtils = DataUtils.getInstance();
-
-      private Function<DocumentFile, Void> safCreateDirectory =
-          input -> {
-            if (input != null && input.isDirectory()) {
-              boolean result = false;
-              try {
-                result = input.createDirectory(file.getName(context)) != null;
-              } catch (Exception e) {
-                LOG.warn("Failed to make directory", e);
-              }
-              errorCallBack.done(file, result);
-            } else errorCallBack.done(file, false);
-            return null;
-          };
-
-      @Override
-      protected Void doInBackground(Void... params) {
-        // checking whether filename is valid or a recursive call possible
-        if (!Operations.isFileNameValid(file.getName(context))) {
-          errorCallBack.invalidName(file);
-          return null;
-        }
-
-        if (file.exists()) {
-          errorCallBack.exists(file);
-          return null;
-        }
-
-        // Android data directory, prohibit create directory
-        if (file.isAndroidDataDir()) {
-          errorCallBack.done(file, false);
-          return null;
-        }
-
-        if (file.isSftp() || file.isFtp()) {
-          file.mkdir(context);
-          /*
-          FIXME: throw Exceptions from HybridFile.mkdir() so errorCallback can throw Exceptions
-           here
-           */
-          errorCallBack.done(file, true);
-          return null;
-        }
-        if (file.isSmb()) {
-          try {
-            file.getSmbFile(2000).mkdirs();
-          } catch (SmbException e) {
-            LOG.warn("failed to make smb directories", e);
-            errorCallBack.done(file, false);
-            return null;
-          }
-          errorCallBack.done(file, file.exists());
-          return null;
-        }
-        if (file.isOtgFile()) {
-          if (checkOtgNewFileExists(file, context)) {
-            errorCallBack.exists(file);
-            return null;
-          }
-          safCreateDirectory.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
-          return null;
-        }
-        if (file.isDocumentFile()) {
-          if (checkDocumentFileNewFileExists(file, context)) {
-            errorCallBack.exists(file);
-            return null;
-          }
-          safCreateDirectory.apply(
-              OTGUtil.getDocumentFile(
-                  parentFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
-          return null;
-        } else if (file.isDropBoxFile()) {
-          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-          try {
-            cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, file.getPath()));
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make directory in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isBoxFile()) {
-          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-          try {
-            cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, file.getPath()));
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make directory in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isOneDriveFile()) {
-          CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-          try {
-            cloudStorageOneDrive.createFolder(
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, file.getPath()));
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make directory in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isGoogleDriveFile()) {
-          CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-          try {
-            cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, file.getPath()));
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make directory in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else {
-          if (file.isLocal() || file.isRoot()) {
-            int mode = checkFolder(new File(file.getParent(context)), context);
-            if (mode == 2) {
-              errorCallBack.launchSAF(file);
-              return null;
+    Function<DocumentFile, Void> safCreateDirectory =
+        input -> {
+          if (input != null && input.isDirectory()) {
+            boolean result = false;
+            try {
+              result = input.createDirectory(file.getName(context)) != null;
+            } catch (Exception e) {
+              LOG.warn("Failed to make directory", e);
             }
-            if (mode == 1 || mode == 0) MakeDirectoryOperation.mkdir(file.getFile(), context);
-            if (!file.exists() && rootMode) {
-              file.setMode(OpenMode.ROOT);
-              if (file.exists()) errorCallBack.exists(file);
-              try {
-                MakeDirectoryCommand.INSTANCE.makeDirectory(
-                    file.getParent(context), file.getName(context));
-              } catch (ShellNotRunningException e) {
-                LOG.warn("failed to make directory in local filesystem", e);
-              }
-              errorCallBack.done(file, file.exists());
-              return null;
-            }
-            errorCallBack.done(file, file.exists());
-            return null;
-          }
+            errorCallBack.done(file, result);
+          } else errorCallBack.done(file, false);
+          return null;
+        };
 
-          errorCallBack.done(file, file.exists());
-        }
-        return null;
-      }
-    }.executeOnExecutor(executor);
+    Flowable.fromCallable(
+            () -> {
+              // checking whether filename is valid or a recursive call possible
+              if (!Operations.isFileNameValid(file.getName(context))) {
+                errorCallBack.invalidName(file);
+                return Unit.INSTANCE;
+              }
+
+              if (file.exists()) {
+                errorCallBack.exists(file);
+                return Unit.INSTANCE;
+              }
+
+              // Android data directory, prohibit create directory
+              if (file.isAndroidDataDir()) {
+                errorCallBack.done(file, false);
+                return Unit.INSTANCE;
+              }
+
+              if (file.isSftp() || file.isFtp()) {
+                file.mkdir(context);
+                /*
+                FIXME: throw Exceptions from HybridFile.mkdir() so errorCallback can throw Exceptions
+                 here
+                 */
+                errorCallBack.done(file, true);
+                return Unit.INSTANCE;
+              }
+              if (file.isSmb()) {
+                try {
+                  file.getSmbFile(2000).mkdirs();
+                } catch (SmbException e) {
+                  LOG.warn("failed to make smb directories", e);
+                  errorCallBack.done(file, false);
+                  return Unit.INSTANCE;
+                }
+                errorCallBack.done(file, file.exists());
+                return Unit.INSTANCE;
+              }
+              if (file.isOtgFile()) {
+                if (checkOtgNewFileExists(file, context)) {
+                  errorCallBack.exists(file);
+                  return Unit.INSTANCE;
+                }
+                safCreateDirectory.apply(
+                    OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
+                return Unit.INSTANCE;
+              }
+              if (file.isDocumentFile()) {
+                if (checkDocumentFileNewFileExists(file, context)) {
+                  errorCallBack.exists(file);
+                  return Unit.INSTANCE;
+                }
+                safCreateDirectory.apply(
+                    OTGUtil.getDocumentFile(
+                        parentFile.getPath(),
+                        SafRootHolder.getUriRoot(),
+                        context,
+                        OpenMode.DOCUMENT_FILE,
+                        false));
+                return Unit.INSTANCE;
+              } else if (file.isCloudDriveFile()) {
+                OmhStorageClient storageClient = OMHClientHelper.getStorageClient(file.getMode());
+                if (storageClient != null) {
+                  OmhStorageEntity result =
+                      OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+                          file.getMode(),
+                          AppConfig.getInstance().getCloudAuthTrigger(),
+                          () -> {
+                            OmhStorageEntity parentFolder =
+                                OmhStorageClientExtKt.resolvePathBlocking(
+                                    storageClient,
+                                    CloudUtil.stripCloudPath(file.getMode(), parentFile.path));
+                            return OmhStorageClientExtKt.createFolderBlocking(
+                                storageClient,
+                                file.getSimpleName(),
+                                parentFolder == null || parentFolder.getId() == null
+                                    ? storageClient.getRootFolder()
+                                    : parentFolder.getId());
+                          });
+                  errorCallBack.done(file, result != null);
+                }
+              } else {
+                if (file.isLocal() || file.isRoot()) {
+                  int mode = checkFolder(new File(file.getParent(context)), context);
+                  if (mode == 2) {
+                    errorCallBack.launchSAF(file);
+                    return Unit.INSTANCE;
+                  }
+                  if (mode == 1 || mode == 0) MakeDirectoryOperation.mkdir(file.getFile(), context);
+                  if (!file.exists() && rootMode) {
+                    file.setMode(OpenMode.ROOT);
+                    if (file.exists()) errorCallBack.exists(file);
+                    try {
+                      MakeDirectoryCommand.INSTANCE.makeDirectory(
+                          file.getParent(context), file.getName(context));
+                    } catch (ShellNotRunningException e) {
+                      LOG.warn("failed to make directory in local filesystem", e);
+                    }
+                    errorCallBack.done(file, file.exists());
+                    return Unit.INSTANCE;
+                  }
+                  errorCallBack.done(file, file.exists());
+                  return Unit.INSTANCE;
+                }
+                errorCallBack.done(file, file.exists());
+              }
+              return Unit.INSTANCE;
+            })
+        .subscribeOn(Schedulers.io())
+        .subscribe();
   }
 
   public static void mkfile(
@@ -273,187 +263,144 @@ public class Operations {
       final boolean rootMode,
       @NonNull final ErrorCallBack errorCallBack) {
 
-    new AsyncTask<Void, Void, Void>() {
-
-      private DataUtils dataUtils = DataUtils.getInstance();
-
-      private Function<DocumentFile, Void> safCreateFile =
-          input -> {
-            if (input != null && input.isDirectory()) {
-              boolean result = false;
-              try {
-                result =
-                    input.createFile(
-                            file.getName(context).substring(file.getName(context).lastIndexOf(".")),
-                            file.getName(context))
-                        != null;
-              } catch (Exception e) {
-                LOG.warn(getClass().getSimpleName(), "Failed to make file", e);
-              }
-              errorCallBack.done(file, result);
-            } else errorCallBack.done(file, false);
-            return null;
-          };
-
-      @Override
-      protected Void doInBackground(Void... params) {
-        // check whether filename is valid or not
-        if (!Operations.isFileNameValid(file.getName(context))) {
-          errorCallBack.invalidName(file);
-          return null;
-        }
-
-        if (file.exists()) {
-          errorCallBack.exists(file);
-          return null;
-        }
-
-        // Android data directory, prohibit create file
-        if (file.isAndroidDataDir()) {
-          errorCallBack.done(file, false);
-          return null;
-        }
-
-        if (file.isSftp() || file.isFtp()) {
-          OutputStream out = file.getOutputStream(context);
-          if (out == null) {
-            errorCallBack.done(file, false);
-            return null;
-          }
-          try {
-            out.close();
-            errorCallBack.done(file, true);
-            return null;
-          } catch (IOException e) {
-            errorCallBack.done(file, false);
-            return null;
-          }
-        }
-        if (file.isSmb()) {
-          try {
-            file.getSmbFile(2000).createNewFile();
-          } catch (SmbException e) {
-            LOG.warn("failed to make file in smb connection", e);
-            errorCallBack.done(file, false);
-            return null;
-          }
-          errorCallBack.done(file, file.exists());
-          return null;
-        } else if (file.isDropBoxFile()) {
-          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-          try {
-            byte[] tempBytes = new byte[0];
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
-            cloudStorageDropbox.upload(
-                CloudUtil.stripPath(OpenMode.DROPBOX, file.getPath()),
-                byteArrayInputStream,
-                0l,
-                true);
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make file in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isBoxFile()) {
-          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-          try {
-            byte[] tempBytes = new byte[0];
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
-            cloudStorageBox.upload(
-                CloudUtil.stripPath(OpenMode.BOX, file.getPath()), byteArrayInputStream, 0l, true);
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make file in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isOneDriveFile()) {
-          CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-          try {
-            byte[] tempBytes = new byte[0];
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
-            cloudStorageOneDrive.upload(
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, file.getPath()),
-                byteArrayInputStream,
-                0l,
-                true);
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make file in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isGoogleDriveFile()) {
-          CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-          try {
-            byte[] tempBytes = new byte[0];
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(tempBytes);
-            cloudStorageGdrive.upload(
-                CloudUtil.stripPath(OpenMode.GDRIVE, file.getPath()),
-                byteArrayInputStream,
-                0l,
-                true);
-            errorCallBack.done(file, true);
-          } catch (Exception e) {
-            LOG.warn("failed to make file in cloud connection", e);
-            errorCallBack.done(file, false);
-          }
-        } else if (file.isOtgFile()) {
-          if (checkOtgNewFileExists(file, context)) {
-            errorCallBack.exists(file);
-            return null;
-          }
-          safCreateFile.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
-          return null;
-        } else if (file.isDocumentFile()) {
-          if (checkDocumentFileNewFileExists(file, context)) {
-            errorCallBack.exists(file);
-            return null;
-          }
-          safCreateFile.apply(
-              OTGUtil.getDocumentFile(
-                  parentFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
-          return null;
-        } else {
-          if (file.isLocal() || file.isRoot()) {
-            int mode = checkFolder(new File(file.getParent(context)), context);
-            if (mode == 2) {
-              errorCallBack.launchSAF(file);
-              return null;
+    Function<DocumentFile, Void> safCreateFile =
+        input -> {
+          if (input != null && input.isDirectory()) {
+            boolean result = false;
+            try {
+              result =
+                  input.createFile(
+                          file.getName(context).substring(file.getName(context).lastIndexOf(".")),
+                          file.getName(context))
+                      != null;
+            } catch (Exception e) {
+              LOG.warn("Failed to make file", e);
             }
-            if (mode == 1 || mode == 0) MakeFileOperation.mkfile(file.getFile(), context);
-            if (!file.exists() && rootMode) {
-              file.setMode(OpenMode.ROOT);
-              if (file.exists()) errorCallBack.exists(file);
-              try {
-                MakeFileCommand.INSTANCE.makeFile(file.getPath());
-              } catch (ShellNotRunningException e) {
-                LOG.warn("failed to make file in local filesystem", e);
+            errorCallBack.done(file, result);
+          } else errorCallBack.done(file, false);
+          return null;
+        };
+
+    Flowable.fromCallable(
+            () -> {
+              // check whether filename is valid or not
+              if (!Operations.isFileNameValid(file.getName(context))) {
+                errorCallBack.invalidName(file);
+                return Unit.INSTANCE;
               }
-              errorCallBack.done(file, file.exists());
-              return null;
-            }
-            errorCallBack.done(file, file.exists());
-            return null;
-          }
-          errorCallBack.done(file, file.exists());
-        }
-        return null;
-      }
 
-      @Override
-      protected void onPostExecute(Void unused) {
-        super.onPostExecute(unused);
+              if (file.exists()) {
+                errorCallBack.exists(file);
+                return Unit.INSTANCE;
+              }
 
-        // TODO: run this only when the operation gets completed successfully
-        MediaConnectionUtils.scanFile(context, file.path);
+              // Android data directory, prohibit create file
+              if (file.isAndroidDataDir()) {
+                errorCallBack.done(file, false);
+                return Unit.INSTANCE;
+              }
 
-        if (file.name.equals(FileUtils.NOMEDIA_FILE))
-          MediaConnectionUtils.scanFile(context, file.getParent(context));
-      }
-    }.executeOnExecutor(executor);
+              if (file.isSftp() || file.isFtp()) {
+                OutputStream out = file.getOutputStream(context);
+                if (out == null) {
+                  errorCallBack.done(file, false);
+                  return Unit.INSTANCE;
+                }
+                try {
+                  out.close();
+                  errorCallBack.done(file, true);
+                  return Unit.INSTANCE;
+                } catch (IOException e) {
+                  errorCallBack.done(file, false);
+                  return Unit.INSTANCE;
+                }
+              }
+              if (file.isSmb()) {
+                try {
+                  file.getSmbFile(2000).createNewFile();
+                } catch (SmbException e) {
+                  LOG.warn("failed to make file in smb connection", e);
+                  errorCallBack.done(file, false);
+                  return Unit.INSTANCE;
+                }
+                errorCallBack.done(file, file.exists());
+                return Unit.INSTANCE;
+              } else if (file.isCloudDriveFile()) {
+                OmhStorageClient storageClient = OMHClientHelper.getStorageClient(file.mode);
+                if (storageClient != null) {
+                  String filename = file.getSimpleName();
+                  String extension = MimeTypes.getExtension(filename);
+                  String filenameWithoutExtension =
+                      StringsKt.substringBeforeLast(filename, ".", filename);
+                  OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+                      file.mode,
+                      AppConfig.getInstance().getCloudAuthTrigger(),
+                      () ->
+                          OmhStorageClientExtKt.createFileWithExtensionBlocking(
+                              storageClient,
+                              filenameWithoutExtension,
+                              extension,
+                              parentFile.cloudFileId == null
+                                  ? storageClient.getRootFolder()
+                                  : parentFile.cloudFileId));
+                  return Unit.INSTANCE;
+                }
+              } else if (file.isOtgFile()) {
+                if (checkOtgNewFileExists(file, context)) {
+                  errorCallBack.exists(file);
+                  return Unit.INSTANCE;
+                }
+                safCreateFile.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
+                return Unit.INSTANCE;
+              } else if (file.isDocumentFile()) {
+                if (checkDocumentFileNewFileExists(file, context)) {
+                  errorCallBack.exists(file);
+                  return Unit.INSTANCE;
+                }
+                safCreateFile.apply(
+                    OTGUtil.getDocumentFile(
+                        parentFile.getPath(),
+                        SafRootHolder.getUriRoot(),
+                        context,
+                        OpenMode.DOCUMENT_FILE,
+                        false));
+                return Unit.INSTANCE;
+              } else {
+                if (file.isLocal() || file.isRoot()) {
+                  int mode = checkFolder(new File(file.getParent(context)), context);
+                  if (mode == 2) {
+                    errorCallBack.launchSAF(file);
+                    return Unit.INSTANCE;
+                  }
+                  if (mode == 1 || mode == 0) MakeFileOperation.mkfile(file.getFile(), context);
+                  if (!file.exists() && rootMode) {
+                    file.setMode(OpenMode.ROOT);
+                    if (file.exists()) errorCallBack.exists(file);
+                    try {
+                      MakeFileCommand.INSTANCE.makeFile(file.getPath());
+                    } catch (ShellNotRunningException e) {
+                      LOG.warn("failed to make file in local filesystem", e);
+                    }
+                    errorCallBack.done(file, file.exists());
+                    return Unit.INSTANCE;
+                  }
+                  errorCallBack.done(file, file.exists());
+                  return Unit.INSTANCE;
+                }
+                errorCallBack.done(file, file.exists());
+              }
+              return Unit.INSTANCE;
+            })
+        .subscribeOn(Schedulers.io())
+        .doOnComplete(
+            () -> {
+              // TODO: run this only when the operation gets completed successfully
+              MediaConnectionUtils.scanFile(context, file.path);
+
+              if (file.name.equals(FileUtils.NOMEDIA_FILE))
+                MediaConnectionUtils.scanFile(context, file.getParent(context));
+            })
+        .subscribe();
   }
 
   public static void rename(
@@ -463,275 +410,263 @@ public class Operations {
       @NonNull final Context context,
       @NonNull final ErrorCallBack errorCallBack) {
 
-    new AsyncTask<Void, Void, Void>() {
+    Flowable.fromCallable(
+            new Callable<Unit>() {
 
-      private final DataUtils dataUtils = DataUtils.getInstance();
+              private final DataUtils dataUtils = DataUtils.INSTANCE;
 
-      /**
-       * Determines whether double rename is required based on original and new file name regardless
-       * of the case-sensitivity of the filesystem
-       */
-      private final boolean isCaseSensitiveRename =
-          oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName())
-              && !oldFile.getSimpleName().equals(newFile.getSimpleName());
+              /**
+               * Determines whether double rename is required based on original and new file name
+               * regardless of the case-sensitivity of the filesystem
+               */
+              private final boolean isCaseSensitiveRename =
+                  oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName())
+                      && !oldFile.getSimpleName().equals(newFile.getSimpleName());
 
-      /**
-       * random string that is appended to file to prevent name collision, max file name is 255
-       * bytes
-       */
-      private static final String TEMP_FILE_EXT = "u0CtHRqWUnvxIaeBQ@nY2umVm9MDyR1P";
+              /**
+               * random string that is appended to file to prevent name collision, max file name is
+               * 255 bytes
+               */
+              private static final String TEMP_FILE_EXT = "u0CtHRqWUnvxIaeBQ@nY2umVm9MDyR1P";
 
-      private boolean localRename(@NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
-        File file = new File(oldFile.getPath());
-        File file1 = new File(newFile.getPath());
-        boolean result = false;
+              private boolean localRename(
+                  @NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
+                File file = new File(oldFile.getPath());
+                File file1 = new File(newFile.getPath());
+                boolean result = false;
 
-        switch (oldFile.getMode()) {
-          case FILE:
-            int mode = checkFolder(file.getParentFile(), context);
-            if (mode == 1 || mode == 0) {
-              try {
-                RenameOperation.renameFolder(file, file1, context);
-              } catch (ShellNotRunningException e) {
-                LOG.warn("failed to rename file in local filesystem", e);
-              }
-              result = !file.exists() && file1.exists();
-              if (!result && rootMode) {
-                try {
-                  RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
-                } catch (ShellNotRunningException e) {
-                  LOG.warn("failed to rename file in local filesystem", e);
+                switch (oldFile.getMode()) {
+                  case FILE:
+                    int mode = checkFolder(file.getParentFile(), context);
+                    if (mode == 1 || mode == 0) {
+                      try {
+                        RenameOperation.renameFolder(file, file1, context);
+                      } catch (ShellNotRunningException e) {
+                        LOG.warn("failed to rename file in local filesystem", e);
+                      }
+                      result = !file.exists() && file1.exists();
+                      if (!result && rootMode) {
+                        try {
+                          RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
+                        } catch (ShellNotRunningException e) {
+                          LOG.warn("failed to rename file in local filesystem", e);
+                        }
+                        oldFile.setMode(OpenMode.ROOT);
+                        newFile.setMode(OpenMode.ROOT);
+                        result = !file.exists() && file1.exists();
+                      }
+                    }
+                    break;
+                  case ROOT:
+                    try {
+                      result =
+                          RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
+                    } catch (ShellNotRunningException e) {
+                      LOG.warn("failed to rename file in root", e);
+                    }
+                    newFile.setMode(OpenMode.ROOT);
+                    break;
                 }
-                oldFile.setMode(OpenMode.ROOT);
-                newFile.setMode(OpenMode.ROOT);
-                result = !file.exists() && file1.exists();
+                return result;
               }
-            }
-            break;
-          case ROOT:
-            try {
-              result = RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
-            } catch (ShellNotRunningException e) {
-              LOG.warn("failed to rename file in root", e);
-            }
-            newFile.setMode(OpenMode.ROOT);
-            break;
-        }
-        return result;
-      }
 
-      private boolean localDoubleRename(@NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
-        HybridFile tempFile = new HybridFile(oldFile.mode, oldFile.getPath().concat(TEMP_FILE_EXT));
-        if (localRename(oldFile, tempFile)) {
-          if (localRename(tempFile, newFile)) {
-            return true;
-          } else {
-            // attempts to rollback
-            // changes the temporary file name back to original file name
-            LOG.warn("reverting temporary file rename");
-            return localRename(tempFile, oldFile);
-          }
-        }
-        return false;
-      }
+              private boolean localDoubleRename(
+                  @NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
+                HybridFile tempFile =
+                    new HybridFile(oldFile.mode, oldFile.getPath().concat(TEMP_FILE_EXT));
+                if (localRename(oldFile, tempFile)) {
+                  if (localRename(tempFile, newFile)) {
+                    return true;
+                  } else {
+                    // attempts to rollback
+                    // changes the temporary file name back to original file name
+                    LOG.warn("reverting temporary file rename");
+                    return localRename(tempFile, oldFile);
+                  }
+                }
+                return false;
+              }
 
-      private Function<DocumentFile, Void> safRenameFile =
-          input -> {
-            boolean result = false;
-            try {
-              result = input.renameTo(newFile.getName(context));
-            } catch (Exception e) {
-              LOG.warn(getClass().getSimpleName(), "Failed to rename", e);
-            }
-            errorCallBack.done(newFile, result);
-            return null;
-          };
+              private Function<DocumentFile, Void> safRenameFile =
+                  input -> {
+                    boolean result = false;
+                    try {
+                      result = input.renameTo(newFile.getName(context));
+                    } catch (Exception e) {
+                      LOG.warn(getClass().getSimpleName(), "Failed to rename", e);
+                    }
+                    errorCallBack.done(newFile, result);
+                    return null;
+                  };
 
-      @Override
-      protected Void doInBackground(Void... params) {
-        // check whether file names for new file are valid or recursion occurs.
-        // If rename is on OTG, we are skipping
-        if (!Operations.isFileNameValid(newFile.getName(context))) {
-          errorCallBack.invalidName(newFile);
-          return null;
-        }
+              @Override
+              public Unit call() throws Exception {
+                // check whether file names for new file are valid or recursion occurs.
+                // If rename is on OTG, we are skipping
+                if (!Operations.isFileNameValid(newFile.getName(context))) {
+                  errorCallBack.invalidName(newFile);
+                  return Unit.INSTANCE;
+                }
 
-        if (newFile.exists() && !isCaseSensitiveRename) {
-          errorCallBack.exists(newFile);
-          return null;
-        }
+                if (newFile.exists() && !isCaseSensitiveRename) {
+                  errorCallBack.exists(newFile);
+                  return Unit.INSTANCE;
+                }
 
-        if (oldFile.isSmb()) {
-          try {
-            SmbFile smbFile = oldFile.getSmbFile();
-            // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
-            SmbFile smbFile1 = new SmbFile(new URL(newFile.getPath()), smbFile.getContext());
-            if (newFile.exists()) {
-              errorCallBack.exists(newFile);
-              return null;
-            }
-            smbFile.renameTo(smbFile1);
-            if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
-          } catch (SmbException | MalformedURLException e) {
-            String errmsg =
-                context.getString(
-                    R.string.cannot_rename_file,
-                    HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
-                    e.getMessage());
-            try {
-              ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
-              failedOps.add(new HybridFileParcelable(oldFile.getSmbFile()));
-              context.sendBroadcast(
-                  new Intent(TAG_INTENT_FILTER_GENERAL)
-                      .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
-            } catch (SmbException exceptionThrownDuringBuildParcelable) {
-              LOG.error(
-                  "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
-            }
-            LOG.error(errmsg, e);
-          }
-          return null;
-        } else if (oldFile.isSftp()) {
-          SshClientUtils.execute(
-              new SFtpClientTemplate<Void>(oldFile.getPath(), true) {
-                @Override
-                public Void execute(@NonNull SFTPClient client) {
+                if (oldFile.isSmb()) {
                   try {
-                    client.rename(
-                        NetCopyClientUtils.extractRemotePathFrom(oldFile.getPath()),
-                        NetCopyClientUtils.extractRemotePathFrom(newFile.getPath()));
-                    errorCallBack.done(newFile, true);
-                  } catch (IOException e) {
+                    SmbFile smbFile = oldFile.getSmbFile();
+                    // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
+                    SmbFile smbFile1 =
+                        new SmbFile(new URL(newFile.getPath()), smbFile.getContext());
+                    if (newFile.exists()) {
+                      errorCallBack.exists(newFile);
+                      return Unit.INSTANCE;
+                    }
+                    smbFile.renameTo(smbFile1);
+                    if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
+                  } catch (SmbException | MalformedURLException e) {
                     String errmsg =
                         context.getString(
                             R.string.cannot_rename_file,
                             HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
                             e.getMessage());
-                    LOG.error(errmsg);
-                    ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
-                    // Nobody care the size or actual permission here. Put a simple "r" and zero
-                    // here
-                    failedOps.add(
-                        new HybridFileParcelable(
-                            oldFile.getPath(),
-                            "r",
-                            oldFile.lastModified(),
-                            0,
-                            oldFile.isDirectory(context)));
-                    context.sendBroadcast(
-                        new Intent(TAG_INTENT_FILTER_GENERAL)
-                            .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
-                    errorCallBack.done(newFile, false);
+                    try {
+                      ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
+                      failedOps.add(new HybridFileParcelable(oldFile.getSmbFile()));
+                      context.sendBroadcast(
+                          new Intent(TAG_INTENT_FILTER_GENERAL)
+                              .putParcelableArrayListExtra(
+                                  TAG_INTENT_FILTER_FAILED_OPS, failedOps));
+                    } catch (SmbException exceptionThrownDuringBuildParcelable) {
+                      LOG.error(
+                          "Error creating HybridFileParcelable",
+                          exceptionThrownDuringBuildParcelable);
+                    }
+                    LOG.error(errmsg, e);
                   }
-                  return null;
-                }
-              });
-        } else if (oldFile.isFtp()) {
-          NetCopyClientUtils.INSTANCE.execute(
-              new FtpClientTemplate<Boolean>(oldFile.getPath(), false) {
-                public Boolean executeWithFtpClient(@NonNull FTPClient ftpClient)
-                    throws IOException {
-                  boolean result =
-                      ftpClient.rename(
-                          NetCopyClientUtils.extractRemotePathFrom(oldFile.getPath()),
-                          NetCopyClientUtils.extractRemotePathFrom(newFile.getPath()));
+                  return Unit.INSTANCE;
+                } else if (oldFile.isSftp()) {
+                  SshClientUtils.execute(
+                      new SFtpClientTemplate<Unit>(oldFile.getPath(), true) {
+                        @Override
+                        public Unit execute(@NonNull SFTPClient client) {
+                          try {
+                            client.rename(
+                                NetCopyClientUtils.extractRemotePathFrom(oldFile.getPath()),
+                                NetCopyClientUtils.extractRemotePathFrom(newFile.getPath()));
+                            errorCallBack.done(newFile, true);
+                          } catch (IOException e) {
+                            String errmsg =
+                                context.getString(
+                                    R.string.cannot_rename_file,
+                                    HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
+                                    e.getMessage());
+                            LOG.error(errmsg);
+                            ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
+                            // Nobody care the size or actual permission here. Put a simple "r" and
+                            // zero
+                            // here
+                            failedOps.add(
+                                new HybridFileParcelable(
+                                    oldFile.getPath(),
+                                    "r",
+                                    oldFile.lastModified(),
+                                    0,
+                                    oldFile.isDirectory(context)));
+                            context.sendBroadcast(
+                                new Intent(TAG_INTENT_FILTER_GENERAL)
+                                    .putParcelableArrayListExtra(
+                                        TAG_INTENT_FILTER_FAILED_OPS, failedOps));
+                            errorCallBack.done(newFile, false);
+                          }
+                          return Unit.INSTANCE;
+                        }
+                      });
+                } else if (oldFile.isFtp()) {
+                  NetCopyClientUtils.INSTANCE.execute(
+                      new FtpClientTemplate<Boolean>(oldFile.getPath(), false) {
+                        public Boolean executeWithFtpClient(@NonNull FTPClient ftpClient)
+                            throws IOException {
+                          boolean result =
+                              ftpClient.rename(
+                                  NetCopyClientUtils.extractRemotePathFrom(oldFile.getPath()),
+                                  NetCopyClientUtils.extractRemotePathFrom(newFile.getPath()));
+                          errorCallBack.done(newFile, result);
+                          return result;
+                        }
+                      });
+                } else if (oldFile.isCloudDriveFile()) {
+                  OmhStorageClient storageClient =
+                      OMHClientHelper.getStorageClient(oldFile.getMode());
+                  if (storageClient != null) {
+                    OmhStorageEntity oldCloudFile =
+                        BuildersKt.runBlocking(
+                            EmptyCoroutineContext.INSTANCE,
+                            (scope, continuation) ->
+                                storageClient.resolvePath(
+                                    CloudUtil.stripCloudPath(oldFile.getMode(), oldFile.path),
+                                    continuation));
+                    if (oldCloudFile != null) {
+                      BuildersKt.runBlocking(
+                          EmptyCoroutineContext.INSTANCE,
+                          (scope, continuation) -> {
+                            //                            storageClient.rename(oldCloudFile.getId(),
+                            // newFile.name, continuation);
+                            return Unit.INSTANCE;
+                          });
+                    }
+                    return Unit.INSTANCE;
+                  }
+                } else if (oldFile.isOtgFile()) {
+                  if (checkOtgNewFileExists(newFile, context)) {
+                    errorCallBack.exists(newFile);
+                    return Unit.INSTANCE;
+                  }
+                  safRenameFile.apply(OTGUtil.getDocumentFile(oldFile.getPath(), context, false));
+                  return Unit.INSTANCE;
+                } else if (oldFile.isDocumentFile()) {
+                  if (checkDocumentFileNewFileExists(newFile, context)) {
+                    errorCallBack.exists(newFile);
+                    return Unit.INSTANCE;
+                  }
+                  safRenameFile.apply(
+                      OTGUtil.getDocumentFile(
+                          oldFile.getPath(),
+                          SafRootHolder.getUriRoot(),
+                          context,
+                          OpenMode.DOCUMENT_FILE,
+                          false));
+                  return Unit.INSTANCE;
+                } else {
+                  File file = new File(oldFile.getPath());
+                  if (oldFile.getMode() == OpenMode.FILE) {
+                    int mode = checkFolder(file.getParentFile(), context);
+                    if (mode == 2) {
+                      errorCallBack.launchSAF(oldFile, newFile);
+                    }
+                  }
+
+                  boolean result;
+                  if (isCaseSensitiveRename) {
+                    result = localDoubleRename(oldFile, newFile);
+                  } else {
+                    result = localRename(oldFile, newFile);
+                  }
                   errorCallBack.done(newFile, result);
-                  return result;
                 }
-              });
-        } else if (oldFile.isDropBoxFile()) {
-          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-          try {
-            cloudStorageDropbox.move(
-                CloudUtil.stripPath(OpenMode.DROPBOX, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.DROPBOX, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            LOG.warn("failed to rename file in cloud connection", e);
-            errorCallBack.done(newFile, false);
-          }
-        } else if (oldFile.isBoxFile()) {
-          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-          try {
-            cloudStorageBox.move(
-                CloudUtil.stripPath(OpenMode.BOX, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.BOX, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            LOG.warn("failed to rename file in cloud connection", e);
-            errorCallBack.done(newFile, false);
-          }
-        } else if (oldFile.isOneDriveFile()) {
-          CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-          try {
-            cloudStorageOneDrive.move(
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            LOG.warn("failed to rename file in cloud connection", e);
-            errorCallBack.done(newFile, false);
-          }
-        } else if (oldFile.isGoogleDriveFile()) {
-          CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-          try {
-            cloudStorageGdrive.move(
-                CloudUtil.stripPath(OpenMode.GDRIVE, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.GDRIVE, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            LOG.warn("failed to rename file in cloud connection", e);
-            errorCallBack.done(newFile, false);
-          }
-        } else if (oldFile.isOtgFile()) {
-          if (checkOtgNewFileExists(newFile, context)) {
-            errorCallBack.exists(newFile);
-            return null;
-          }
-          safRenameFile.apply(OTGUtil.getDocumentFile(oldFile.getPath(), context, false));
-          return null;
-        } else if (oldFile.isDocumentFile()) {
-          if (checkDocumentFileNewFileExists(newFile, context)) {
-            errorCallBack.exists(newFile);
-            return null;
-          }
-          safRenameFile.apply(
-              OTGUtil.getDocumentFile(
-                  oldFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
-          return null;
-        } else {
-          File file = new File(oldFile.getPath());
-          if (oldFile.getMode() == OpenMode.FILE) {
-            int mode = checkFolder(file.getParentFile(), context);
-            if (mode == 2) {
-              errorCallBack.launchSAF(oldFile, newFile);
-            }
-          }
-
-          boolean result;
-          if (isCaseSensitiveRename) {
-            result = localDoubleRename(oldFile, newFile);
-          } else {
-            result = localRename(oldFile, newFile);
-          }
-          errorCallBack.done(newFile, result);
-        }
-        return null;
-      }
-
-      @Override
-      protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        if (newFile != null && oldFile != null) {
-          HybridFile[] hybridFiles = {newFile, oldFile};
-          MediaConnectionUtils.scanFile(context, hybridFiles);
-        }
-      }
-    }.executeOnExecutor(executor);
+                return Unit.INSTANCE;
+              }
+            })
+        .subscribeOn(Schedulers.io())
+        .doOnComplete(
+            () -> {
+              if (newFile.isLocal() || oldFile.isLocal()) {
+                HybridFile[] hybridFiles = {newFile, oldFile};
+                MediaConnectionUtils.scanFile(context, hybridFiles);
+              }
+            })
+        .subscribe();
   }
 
   private static boolean checkOtgNewFileExists(HybridFile newFile, Context context) {
@@ -778,7 +713,7 @@ public class Operations {
         }
         return 1;
       }
-    } else if (Build.VERSION.SDK_INT == 19) {
+    } else if (Build.VERSION.SDK_INT == KITKAT) {
       // Assume that Kitkat workaround works
       if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) return 1;
     }

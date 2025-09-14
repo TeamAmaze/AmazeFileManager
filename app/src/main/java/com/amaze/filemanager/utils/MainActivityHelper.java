@@ -42,7 +42,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.ZipService;
-import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.fileoperations.filesystem.FolderState;
@@ -91,7 +91,7 @@ public class MainActivityHelper {
   private static final Logger LOG = LoggerFactory.getLogger(MainActivityHelper.class);
 
   private MainActivity mainActivity;
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private DataUtils dataUtils = DataUtils.INSTANCE;
   private int accentColor;
   private SpeedDialView.OnActionSelectedListener fabActionListener;
 
@@ -670,7 +670,7 @@ public class MainActivityHelper {
 
   public void deleteFiles(ArrayList<HybridFileParcelable> files, boolean doDeletePermanently) {
     if (files == null || files.size() == 0) return;
-    if (files.get(0).isSmb() || files.get(0).isFtp()) {
+    if (files.get(0).isSmb() || files.get(0).isFtp() || files.get(0).isCloudDriveFile()) {
       new DeleteTask(mainActivity, doDeletePermanently).execute(files);
       return;
     }
@@ -723,17 +723,17 @@ public class MainActivityHelper {
   public String parseCloudPath(OpenMode serviceType, String path) {
     switch (serviceType) {
       case DROPBOX:
-        if (path.contains(CloudHandler.CLOUD_PREFIX_DROPBOX)) return path;
-        else return CloudHandler.CLOUD_PREFIX_DROPBOX + path.substring(path.indexOf(":") + 1);
+        if (path.contains(CloudContract.CLOUD_PREFIX_DROPBOX)) return path;
+        else return CloudContract.CLOUD_PREFIX_DROPBOX + path.substring(path.indexOf(":") + 1);
       case BOX:
-        if (path.contains(CloudHandler.CLOUD_PREFIX_BOX)) return path;
-        else return CloudHandler.CLOUD_PREFIX_BOX + path.substring(path.indexOf(":") + 1);
+        if (path.contains(CloudContract.CLOUD_PREFIX_BOX)) return path;
+        else return CloudContract.CLOUD_PREFIX_BOX + path.substring(path.indexOf(":") + 1);
       case GDRIVE:
-        if (path.contains(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) return path;
-        else return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + path.substring(path.indexOf(":") + 1);
+        if (path.contains(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE)) return path;
+        else return CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE + path.substring(path.indexOf(":") + 1);
       case ONEDRIVE:
-        if (path.contains(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) return path;
-        else return CloudHandler.CLOUD_PREFIX_ONE_DRIVE + path.substring(path.indexOf(":") + 1);
+        if (path.contains(CloudContract.CLOUD_PREFIX_ONE_DRIVE)) return path;
+        else return CloudContract.CLOUD_PREFIX_ONE_DRIVE + path.substring(path.indexOf(":") + 1);
       default:
         return path;
     }

@@ -94,7 +94,7 @@ class HiddenAdapter(
                 val task = DeleteTask(context, false)
                 task.execute(filesToDelete)
             }
-            DataUtils.getInstance().removeHiddenFile(hiddenFiles[position].path)
+            DataUtils.removeHiddenFile(hiddenFiles[position].path)
             hiddenFiles.remove(hiddenFiles[position])
             notifyItemRemoved(position)
         }

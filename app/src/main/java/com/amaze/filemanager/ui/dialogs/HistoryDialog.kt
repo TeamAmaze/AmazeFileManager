@@ -46,7 +46,7 @@ object HistoryDialog {
                 mainActivity,
                 mainFragment,
                 sharedPrefs,
-                FileUtils.toHybridFileArrayList(DataUtils.getInstance().history),
+                FileUtils.toHybridFileArrayList(DataUtils.getHistory()),
                 null,
                 true,
             )
@@ -59,7 +59,7 @@ object HistoryDialog {
                 builder.negativeColor(mainActivity.accent)
                 builder.title(R.string.history)
                 builder.onNegative { _: MaterialDialog?, _: DialogAction? ->
-                    DataUtils.getInstance().clearHistory()
+                    DataUtils.clearHistory()
                 }
                 builder.theme(appTheme.getMaterialDialogTheme())
                 builder.adapter(adapter, null)

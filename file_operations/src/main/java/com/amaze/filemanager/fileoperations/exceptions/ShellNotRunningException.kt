@@ -17,12 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.fileoperations.exceptions
 
-package com.amaze.filemanager.fileoperations.exceptions;
-
-/** Created by vishal on 24/12/16. Exception thrown when root is */
-public class ShellNotRunningException extends Exception {
-  public ShellNotRunningException() {
-    super("Shell stopped running!");
-  }
-}
+/** Created by vishal on 24/12/16. Exception thrown when root is  */
+class ShellNotRunningException : Exception("Shell stopped running!")

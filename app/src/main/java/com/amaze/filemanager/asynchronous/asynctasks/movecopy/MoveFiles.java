@@ -33,11 +33,8 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
-import com.amaze.filemanager.utils.DataUtils;
-import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
 
@@ -133,22 +130,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        DataUtils dataUtils = DataUtils.getInstance();
-
-        CloudStorage cloudStorage = dataUtils.getAccount(mode);
-        if (baseFile.getMode() == mode) {
-          // source and target both in same filesystem, use API method
-          try {
-            cloudStorage.move(
-                CloudUtil.stripPath(mode, baseFile.getPath()), CloudUtil.stripPath(mode, destPath));
-          } catch (RuntimeException e) {
-            LOG.warn("failed to move file in cloud filesystem", e);
-            return new MoveFilesReturn(false, false, destinationSize, totalBytes);
-          }
-        } else {
-          // not in same filesystem, execute service
-          return new MoveFilesReturn(false, false, destinationSize, totalBytes);
-        }
+        // FIXME: OmhStorageClient should support move operation
       default:
         return new MoveFilesReturn(false, false, destinationSize, totalBytes);
     }

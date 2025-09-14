@@ -71,6 +71,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
+import kotlin.Unit;
+
 public class CopyService extends AbstractProgressiveService {
   private static final Logger LOG = LoggerFactory.getLogger(CopyService.class);
   public static final String TAG_IS_ROOT_EXPLORER = "is_root";
@@ -319,6 +321,7 @@ public class CopyService extends AbstractProgressiveService {
               // iterating each file inside source files which were copied to find instance of
               // any copied / moved encrypted file
               findAndReplaceEncryptedEntry(file);
+              return Unit.INSTANCE;
             });
       } else {
 
@@ -512,6 +515,7 @@ public class CopyService extends AbstractProgressiveService {
                 } catch (IOException e) {
                   throw new IllegalStateException(e); // throw unchecked exception, no throws needed
                 }
+                return Unit.INSTANCE;
               });
         } else {
           if (!Operations.isFileNameValid(sourceFile.getName(c))) {

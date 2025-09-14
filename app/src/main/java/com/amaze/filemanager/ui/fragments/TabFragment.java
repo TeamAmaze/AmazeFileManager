@@ -525,7 +525,7 @@ public class TabFragment extends Fragment {
     View leftPlaceholder = rootView.findViewById(R.id.placeholder_drag_left);
     View rightPlaceholder = rootView.findViewById(R.id.placeholder_drag_right);
     AppCompatImageView dragToTrash = rootView.findViewById(R.id.placeholder_trash_bottom);
-    DataUtils dataUtils = DataUtils.getInstance();
+    DataUtils dataUtils = DataUtils.INSTANCE;
     if (destroy) {
       leftPlaceholder.setOnDragListener(null);
       rightPlaceholder.setOnDragListener(null);

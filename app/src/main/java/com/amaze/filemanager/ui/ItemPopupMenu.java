@@ -109,7 +109,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         case BOX:
         case GDRIVE:
         case ONEDRIVE:
-          FileUtils.shareCloudFile(rowItem.desc, rowItem.getMode(), context);
+          FileUtils.shareCloudFile(rowItem.cloudFileId, rowItem.getMode(), context);
           break;
         default:
           ArrayList<File> arrayList = new ArrayList<>();
@@ -134,7 +134,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
       mainActivity.mainActivityHelper.extractFile(new File(rowItem.desc));
       return true;
     } else if (item.getItemId() == R.id.book) {
-      DataUtils dataUtils = DataUtils.getInstance();
+      DataUtils dataUtils = DataUtils.INSTANCE;
       if (dataUtils.addBook(new String[] {rowItem.title, rowItem.desc}, true)) {
         mainActivity.getDrawer().refreshDrawer();
         Toast.makeText(

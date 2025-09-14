@@ -17,180 +17,159 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.fragments
 
-package com.amaze.filemanager.ui.fragments;
-
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.database.CloudContract;
-import com.amaze.filemanager.databinding.FragmentSheetCloudBinding;
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
-import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
-import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.utils.Utils;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import android.app.Dialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.app.Dialog
+import android.content.ActivityNotFoundException
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import com.amaze.filemanager.BuildConfig
+import com.amaze.filemanager.R
+import com.amaze.filemanager.databinding.FragmentSheetCloudBinding
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog
+import com.amaze.filemanager.ui.dialogs.SmbSearchDialog
+import com.amaze.filemanager.ui.theme.AppTheme
+import com.amaze.filemanager.utils.Utils
+import com.amaze.filemanager.utils.cloud.CloudPluginUtil
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 /**
  * Created by vishal on 18/2/17.
  *
- * <p>Class represents implementation of a new cloud connection sheet dialog
+ *
+ * Class represents implementation of a new cloud connection sheet dialog
  */
-public class CloudSheetFragment extends BottomSheetDialogFragment implements View.OnClickListener {
+class CloudSheetFragment : BottomSheetDialogFragment(), View.OnClickListener {
+    private lateinit var rootView: View
+    private lateinit var mSmbLayout: LinearLayout
+    private lateinit var mScpLayout: LinearLayout
+    private lateinit var mDropboxLayout: LinearLayout
+    private lateinit var mBoxLayout: LinearLayout
+    private lateinit var mGoogleDriveLayout: LinearLayout
+    private lateinit var mOnedriveLayout: LinearLayout
+    private lateinit var mGetCloudLayout: LinearLayout
 
-  private View rootView;
-  private LinearLayout mSmbLayout,
-      mScpLayout,
-      mDropboxLayout,
-      mBoxLayout,
-      mGoogleDriveLayout,
-      mOnedriveLayout,
-      mGetCloudLayout;
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        val binding = FragmentSheetCloudBinding.inflate(LayoutInflater.from(requireActivity()))
+        rootView = binding.root
 
-  public static final String TAG_FRAGMENT = "cloud_fragment";
+        val activity = activity as MainActivity?
 
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
+        when (activity?.appTheme) {
+            AppTheme.DARK -> rootView.setBackgroundColor(Utils.getColor(context, R.color.holo_dark_background))
+            AppTheme.BLACK -> rootView.setBackgroundColor(Utils.getColor(context, android.R.color.black))
+            else -> rootView.setBackgroundColor(Utils.getColor(context, android.R.color.white))
+        }
 
-  @NonNull
-  @Override
-  public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-    BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        mSmbLayout = binding.linearLayoutSmb
+        mScpLayout = binding.linearLayoutScp
+        mBoxLayout = binding.linearLayoutBox
+        mDropboxLayout = binding.linearLayoutDropbox
+        mGoogleDriveLayout = binding.linearLayoutGoogleDrive
+        mOnedriveLayout = binding.linearLayoutOnedrive
+        mGetCloudLayout = binding.linearLayoutGetCloud
 
-    dialog.setOnShowListener(
-        dialog1 -> {
-          BottomSheetDialog d = (BottomSheetDialog) dialog1;
+        if (CloudPluginUtil.isCloudProviderAvailable(requireContext())) {
+            mBoxLayout.visibility = View.VISIBLE
+            mDropboxLayout.visibility = View.VISIBLE
+            mGoogleDriveLayout.visibility = View.VISIBLE
+            mOnedriveLayout.visibility = View.VISIBLE
+            mGetCloudLayout.visibility = View.GONE
+        }
 
-          FrameLayout bottomSheet =
-              (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-          BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-        });
-    return dialog;
-  }
+        if (BuildConfig.IS_VERSION_FDROID) {
+            mBoxLayout.visibility = View.GONE
+            mDropboxLayout.visibility = View.GONE
+            mGoogleDriveLayout.visibility = View.GONE
+            mOnedriveLayout.visibility = View.GONE
+            mGetCloudLayout.visibility = View.GONE
+        }
 
-  @Override
-  public void setupDialog(Dialog dialog, int style) {
-    super.setupDialog(dialog, style);
+        mSmbLayout.setOnClickListener(this)
+        mScpLayout.setOnClickListener(this)
+        mBoxLayout.setOnClickListener(this)
+        mDropboxLayout.setOnClickListener(this)
+        mGoogleDriveLayout.setOnClickListener(this)
+        mOnedriveLayout.setOnClickListener(this)
+        mGetCloudLayout.setOnClickListener(this)
 
-    rootView = FragmentSheetCloudBinding.inflate(LayoutInflater.from(requireActivity())).getRoot();
-
-    MainActivity activity = (MainActivity) getActivity();
-
-    if (activity.getAppTheme().equals(AppTheme.DARK)) {
-      rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    } else if (activity.getAppTheme().equals(AppTheme.BLACK)) {
-      rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-    } else {
-      rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
+        dialog.setContentView(binding.root)
+        dialog.setOnShowListener { dialog1: DialogInterface ->
+            val d = dialog1 as BottomSheetDialog
+            val bottomSheet =
+                d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
+            BottomSheetBehavior.from(bottomSheet!!).setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
+        return dialog
     }
 
-    mSmbLayout = rootView.findViewById(R.id.linear_layout_smb);
-    mScpLayout = rootView.findViewById(R.id.linear_layout_scp);
-    mBoxLayout = rootView.findViewById(R.id.linear_layout_box);
-    mDropboxLayout = rootView.findViewById(R.id.linear_layout_dropbox);
-    mGoogleDriveLayout = rootView.findViewById(R.id.linear_layout_google_drive);
-    mOnedriveLayout = rootView.findViewById(R.id.linear_layout_onedrive);
-    mGetCloudLayout = rootView.findViewById(R.id.linear_layout_get_cloud);
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.linear_layout_smb -> {
+                dismiss()
+                val smbDialog = SmbSearchDialog()
+                smbDialog.show(requireActivity().supportFragmentManager, "tab")
+                return
+            }
 
-    if (isCloudProviderAvailable(getContext())) {
+            R.id.linear_layout_scp -> {
+                dismiss()
+                val sftpConnectDialog = SftpConnectDialog()
+                val args = Bundle()
+                args.putBoolean("edit", false)
+                sftpConnectDialog.arguments = args
+                sftpConnectDialog.show(parentFragmentManager, "tab")
+                return
+            }
 
-      mBoxLayout.setVisibility(View.VISIBLE);
-      mDropboxLayout.setVisibility(View.VISIBLE);
-      mGoogleDriveLayout.setVisibility(View.VISIBLE);
-      mOnedriveLayout.setVisibility(View.VISIBLE);
-      mGetCloudLayout.setVisibility(View.GONE);
+            R.id.linear_layout_box -> requireMainActivity().addCloudConnection(OpenMode.BOX)
+            R.id.linear_layout_dropbox -> requireMainActivity().addCloudConnection(OpenMode.DROPBOX)
+            R.id.linear_layout_google_drive -> GeneralDialogCreation.showSignInWithGoogleDialog((activity as MainActivity?)!!)
+            R.id.linear_layout_onedrive -> requireMainActivity().addCloudConnection(OpenMode.ONEDRIVE)
+            R.id.linear_layout_get_cloud -> {
+                val cloudPluginIntent = Intent(Intent.ACTION_VIEW)
+                cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_uri)))
+                try {
+                    startActivity(cloudPluginIntent)
+                } catch (ifGooglePlayIsNotInstalled: ActivityNotFoundException) {
+                    cloudPluginIntent.setData(
+                        Uri.parse(getString(R.string.cloud_plugin_google_play_web_uri)),
+                    )
+                    startActivity(cloudPluginIntent)
+                }
+            }
+        }
+        // dismiss this sheet dialog
+        dismiss()
     }
 
-    if (BuildConfig.IS_VERSION_FDROID) {
-      mBoxLayout.setVisibility(View.GONE);
-      mDropboxLayout.setVisibility(View.GONE);
-      mGoogleDriveLayout.setVisibility(View.GONE);
-      mOnedriveLayout.setVisibility(View.GONE);
-      mGetCloudLayout.setVisibility(View.GONE);
+    private fun requireMainActivity(): MainActivity = requireActivity() as MainActivity
+
+    interface CloudConnectionCallbacks {
+        /**
+         * Callback to add a new cloud connection of type [service]
+         */
+        fun addCloudConnection(service: OpenMode?)
+
+        /**
+         * Callback to delete an existing cloud connection of type [service]
+         */
+        fun deleteCloudConnection(service: OpenMode?)
     }
 
-    mSmbLayout.setOnClickListener(this);
-    mScpLayout.setOnClickListener(this);
-    mBoxLayout.setOnClickListener(this);
-    mDropboxLayout.setOnClickListener(this);
-    mGoogleDriveLayout.setOnClickListener(this);
-    mOnedriveLayout.setOnClickListener(this);
-    mGetCloudLayout.setOnClickListener(this);
-
-    dialog.setContentView(rootView);
-  }
-
-  /** Determines whether cloud provider is installed or not */
-  public static final boolean isCloudProviderAvailable(Context context) {
-
-    PackageManager pm = context.getPackageManager();
-    try {
-      pm.getPackageInfo(CloudContract.APP_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
-      return true;
-    } catch (PackageManager.NameNotFoundException e) {
-      return false;
+    companion object {
+        const val TAG_FRAGMENT: String = "cloud_fragment"
     }
-  }
-
-  @Override
-  public void onClick(View v) {
-    if (v.getId() == R.id.linear_layout_smb) {
-      dismiss();
-      SmbSearchDialog smbDialog = new SmbSearchDialog();
-      smbDialog.show(requireActivity().getSupportFragmentManager(), "tab");
-    } else if (v.getId() == R.id.linear_layout_scp) {
-      dismiss();
-      SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-      Bundle args = new Bundle();
-      args.putBoolean("edit", false);
-      sftpConnectDialog.setArguments(args);
-      sftpConnectDialog.show(getFragmentManager(), "tab");
-    } else if (v.getId() == R.id.linear_layout_box) {
-      ((MainActivity) requireActivity()).addConnection(OpenMode.BOX);
-    } else if (v.getId() == R.id.linear_layout_dropbox) {
-      ((MainActivity) requireActivity()).addConnection(OpenMode.DROPBOX);
-    } else if (v.getId() == R.id.linear_layout_google_drive) {
-      GeneralDialogCreation.showSignInWithGoogleDialog((MainActivity) requireActivity());
-    } else if (v.getId() == R.id.linear_layout_onedrive) {
-      ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
-    } else if (v.getId() == R.id.linear_layout_get_cloud) {
-      Intent cloudPluginIntent = new Intent(Intent.ACTION_VIEW);
-      cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_uri)));
-      try {
-        startActivity(cloudPluginIntent);
-      } catch (ActivityNotFoundException ifGooglePlayIsNotInstalled) {
-        cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_web_uri)));
-        startActivity(cloudPluginIntent);
-      }
-    }
-    // dismiss this sheet dialog
-    dismiss();
-  }
-
-  public interface CloudConnectionCallbacks {
-    void addConnection(OpenMode service);
-
-    void deleteConnection(OpenMode service);
-  }
 }

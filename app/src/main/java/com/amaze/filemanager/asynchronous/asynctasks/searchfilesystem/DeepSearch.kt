@@ -23,6 +23,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 import android.content.Context
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
+import com.amaze.filemanager.filesystem.HybridFileParcelable
 import kotlinx.coroutines.isActive
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.coroutineContext
@@ -60,16 +61,7 @@ class DeepSearch(
                 nextFile.forEachChildrenFile(
                     applicationContext,
                     SearchParameter.ROOT in searchParameters,
-                ) { file ->
-                    if (!file.isHidden || SearchParameter.SHOW_HIDDEN_FILES in searchParameters) {
-                        val resultRange = filter.searchFilter(file.getName(applicationContext))
-                        if (resultRange != null) {
-                            publishProgress(file, resultRange)
-                        }
-                        if (file.isDirectory(applicationContext)) {
-                            worklist.add(file)
-                        }
-                    }
+                ) { file: HybridFileParcelable ->
                 }
             }
         } else {

@@ -30,6 +30,7 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.utils.Utils;
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -77,6 +78,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     setSize(smbFile.isDirectory() ? 0 : smbFile.length());
   }
 
+  /** Constructor for {@link FTPFile}. */
   public HybridFileParcelable(String path, FTPFile ftpFile) {
     super(
         OpenMode.FTP,
@@ -95,14 +97,39 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     setName(sshFile.getName());
     setDirectory(isDirectory);
     setDate(sshFile.getAttributes().getMtime() * 1000);
+    setLastModified(sshFile.getAttributes().getMtime() * 1000);
     setSize(isDirectory ? 0 : sshFile.getAttributes().getSize());
     setPermission(
         Integer.toString(FilePermission.toMask(sshFile.getAttributes().getPermissions()), 8));
   }
 
+  /** Constructor for omh-storage {@link OmhStorageEntity}. */
+  public HybridFileParcelable(String path, OpenMode openMode, OmhStorageEntity cloudFile) {
+    super(openMode, String.format("%s/%s", path, cloudFile.getName()));
+    cloudFileId = cloudFile.getId();
+    setName(cloudFile.getName());
+    setDirectory(cloudFile instanceof OmhStorageEntity.OmhFolder);
+    setDate(cloudFile.getModifiedTime() != null ? cloudFile.getModifiedTime().getTime() : 0L);
+    if (isDirectory) {
+      setSize(0L);
+    } else {
+      OmhStorageEntity.OmhFile file = OmhStorageEntity.OmhFile.class.cast(cloudFile);
+      setSize(file.getSize() != null ? file.getSize().longValue() : 0L);
+    }
+    setPermission("");
+  }
+
   @Override
   public long lastModified() {
     return date;
+  }
+
+  public String getCloudFileId() {
+    return cloudFileId;
+  }
+
+  public void setCloudFileId(String cloudFileId) {
+    this.cloudFileId = cloudFileId;
   }
 
   public String getName() {
@@ -144,13 +171,22 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     this.size = size;
   }
 
+  @Override
+  public long length(Context context) {
+    if (isCloudDriveFile()) {
+      return size;
+    } else {
+      return super.length(context);
+    }
+  }
+
   public boolean isDirectory() {
     return isDirectory;
   }
 
   @Override
   public boolean isDirectory(Context context) {
-    if (isSmb() || isSftp()) return isDirectory;
+    if (isSmb() || isSftp() || isCloudDriveFile()) return isDirectory;
     else return super.isDirectory(context);
   }
 

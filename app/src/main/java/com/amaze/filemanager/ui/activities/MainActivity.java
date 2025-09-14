@@ -65,6 +65,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -80,20 +83,15 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
-import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFilesTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
-import com.amaze.filemanager.database.CloudContract;
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.StorageNaming;
 import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg;
@@ -146,8 +144,12 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.StartActivityForResultWithSourceIntent;
 import com.amaze.filemanager.utils.Utils;
-import com.cloudrail.si.CloudRail;
+import com.amaze.filemanager.utils.cloud.CloudPluginUtil;
+import com.amaze.filemanager.utils.omh.AuthTrigger;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
+import com.amaze.filemanager.utils.omh.OmhCredentialsWrapper;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -155,6 +157,9 @@ import com.leinardi.android.speeddial.FabWithLabelView;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
+import com.openmobilehub.android.auth.core.OmhAuthClient;
+import com.openmobilehub.android.auth.core.OmhCredentials;
+import com.openmobilehub.android.auth.core.utils.EncryptedSharedPreferences;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
@@ -163,18 +168,15 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -191,6 +193,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -202,13 +205,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -220,9 +221,9 @@ public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
         BookmarkCallback,
         CloudConnectionCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor>,
         FolderChooserDialog.FolderCallback,
-        PermissionsActivity.OnPermissionGranted {
+        PermissionsActivity.OnPermissionGranted,
+        AuthTrigger {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
 
@@ -268,6 +269,9 @@ public class MainActivity extends PermissionsActivity
   private static final String KEY_OPERATION = "operation";
   private static final String KEY_SELECTED_LIST_ITEM = "select_list_item";
 
+  private static final String KEY_OPEN_MODE = "OPEN_MODE";
+  private static final String KEY_CLOUD_REAUTHENTICATING = "CLOUD_REAUTHENTICATING";
+
   private AppBar appbar;
   private Drawer drawer;
   // private HistoryManager history, grid;
@@ -284,15 +288,6 @@ public class MainActivity extends PermissionsActivity
 
   private SpeedDialOverlayLayout fabBgView;
   private UtilsHandler utilsHandler;
-  private CloudHandler cloudHandler;
-  private CloudLoaderAsyncTask cloudLoaderAsyncTask;
-
-  /**
-   * This is for a hack.
-   *
-   * @see MainActivity#onLoadFinished(Loader, Cursor)
-   */
-  private Cursor cloudCursorData = null;
 
   public static final int REQUEST_CODE_SAF = 223;
 
@@ -324,15 +319,13 @@ public class MainActivity extends PermissionsActivity
 
   public static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
   public static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/auth";
+  private AuthCallback pendingAuthCallback;
 
   // the current visible tab, either 0 or 1
   public static int currentTab;
   private boolean listItemSelected = false;
 
   private String scrollToFileName = null;
-
-  public static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
-  public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
   public MainActivityActionMode mainActivityActionMode;
@@ -346,6 +339,60 @@ public class MainActivity extends PermissionsActivity
   private static final String INTENT_ACTION_OPEN_APP_MANAGER =
       "com.amaze.filemanager.openAppManager";
 
+  @SuppressLint("CheckResult")
+  private final ActivityResultLauncher<Intent> loginLauncher =
+      registerForActivityResult(
+          new StartActivityForResultWithSourceIntent(),
+          result -> {
+            if (result.getResultCode() == RESULT_CANCELED) {
+              String errorMessage = result.getData().getStringExtra("errorMessage");
+              LOG.error("auth failed: {}", errorMessage);
+              if (pendingAuthCallback != null) {
+                pendingAuthCallback.onAuthFailure(errorMessage);
+                pendingAuthCallback = null;
+              }
+            } else {
+              // cuz #getCredentials cannot be called from the main thread
+              Single.fromCallable(
+                      () -> {
+                        OpenMode openMode =
+                            (OpenMode) result.getData().getSerializableExtra(KEY_OPEN_MODE);
+                        Objects.requireNonNull(openMode);
+                        OmhAuthClient authClient = OMHClientHelper.getAuthClient(openMode);
+                        OmhCredentials credentials = authClient.getCredentials();
+                        if (!result.getData().getBooleanExtra(KEY_CLOUD_REAUTHENTICATING, false)) {
+                          dataUtils.addAccount(new OmhCredentialsWrapper(openMode, credentials));
+                        }
+                        return true;
+                      })
+                  .subscribeOn(Schedulers.io())
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribe(
+                      actionResult -> {
+                        getDrawer().refreshDrawer();
+                        if (pendingAuthCallback != null) {
+                          pendingAuthCallback.onAuthSuccess();
+                          pendingAuthCallback = null;
+                        }
+                      },
+                      throwable -> {
+                        throwable.printStackTrace();
+                        AppConfig.toast(MainActivity.this, R.string.failed_cloud_new_connection);
+                        if (pendingAuthCallback != null) {
+                          pendingAuthCallback.onAuthFailure(throwable.getMessage());
+                          pendingAuthCallback = null;
+                        }
+                      });
+            }
+          });
+
+  /** Interface for callbacks when authentication is completed or fails */
+  public interface AuthCallback {
+    void onAuthSuccess();
+
+    void onAuthFailure(String errorMessage);
+  }
+
   /** Called when the activity is first created. */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -354,7 +401,7 @@ public class MainActivity extends PermissionsActivity
 
     intent = getIntent();
 
-    dataUtils = DataUtils.getInstance();
+    dataUtils = DataUtils.INSTANCE;
     if (savedInstanceState != null) {
       listItemSelected = savedInstanceState.getBoolean(KEY_SELECTED_LIST_ITEM, false);
     }
@@ -365,21 +412,27 @@ public class MainActivity extends PermissionsActivity
     dataUtils.registerOnDataChangedListener(new SaveOnDataUtilsChange(drawer));
 
     AppConfig.getInstance().setMainActivityContext(this);
+    AppConfig.getInstance().setCloudAuthTrigger(this);
 
     initialiseViews();
     utilsHandler = AppConfig.getInstance().getUtilsHandler();
-    cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase());
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
     mainActivityActionMode = new MainActivityActionMode(new WeakReference<>(MainActivity.this));
 
-    if (CloudSheetFragment.isCloudProviderAvailable(this)) {
+    if (CloudPluginUtil.isCloudProviderAvailable(this)) {
       try {
-        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+        OMHClientHelper.initializeClients();
+      } catch (Exception errorRaised) {
+        LOG.error("Error initializing OMH clients", errorRaised);
+        AppConfig.toast(this, R.string.cloud_error_failed_restart);
+      }
+      try {
+        CloudPluginUtil.initializeDataUtils(this);
+        drawer.refreshDrawer();
       } catch (Exception errorRaised) {
         LOG.error("Error initializing cloud connections", errorRaised);
-        cloudHandler.clearAllCloudConnections();
         AlertDialog.show(
             this,
             R.string.cloud_connection_credentials_cleared_msg,
@@ -387,7 +440,6 @@ public class MainActivity extends PermissionsActivity
             android.R.string.ok,
             null,
             false);
-        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
       }
     }
 
@@ -2062,14 +2114,6 @@ public class MainActivity extends PermissionsActivity
       if (failedOps != null) {
         mainActivityHelper.showFailedOperationDialog(failedOps, this);
       }
-    } else if (i.getCategories() != null
-        && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
-      // we used an external authenticator instead of APIs. Probably for Google Drive
-      CloudRail.setAuthenticationResponse(intent);
-      if (intent.getAction() != null) {
-        checkForExternalIntent(intent);
-        invalidateFragmentAndBundle(null, false);
-      }
     } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
       transaction.replace(
@@ -2296,9 +2340,49 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
-  public void addConnection(OpenMode service) {
+  public boolean triggerAuthBlocking(@NonNull OpenMode openMode) {
+    final CountDownLatch latch = new CountDownLatch(1);
+    final AtomicBoolean result = new AtomicBoolean(false);
+
+    runOnUiThread(
+        () -> {
+          OmhAuthClient authClient = OMHClientHelper.getAuthClient(openMode);
+          if (authClient == null) {
+            result.set(false);
+            latch.countDown();
+            return;
+          }
+
+          try {
+            Intent loginIntent = authClient.getLoginIntent();
+            loginIntent.putExtra("OPEN_MODE", openMode);
+            loginLauncher.launch(loginIntent);
+          } catch (Exception e) {
+            LOG.warn("Failed to launch auth intent", e);
+            latch.countDown();
+          }
+        });
+
     try {
-      if (cloudHandler.findEntry(service) != null) {
+      boolean completed = latch.await(120, java.util.concurrent.TimeUnit.SECONDS);
+      if (!completed) {
+        LOG.warn("Auth blocking timed out for {}", openMode);
+        runOnUiThread(() -> pendingAuthCallback = null);
+      }
+      return completed && result.get();
+    } catch (InterruptedException e) {
+      LOG.warn("Auth blocking interrupted", e);
+      return false;
+    }
+  }
+
+  @Override
+  public void addCloudConnection(OpenMode service) {
+    if (CloudPluginUtil.isCloudProviderAvailable(this)) {
+      if (EncryptedSharedPreferences.INSTANCE
+              .getEncryptedSharedPrefs(this, CloudPluginUtil.resolveOmhProviderNameFrom(service))
+              .getString("email", null)
+          != null) {
         // cloud entry already exists
         Toast.makeText(
                 this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG)
@@ -2317,139 +2401,28 @@ public class MainActivity extends PermissionsActivity
         args.putInt(ARGS_KEY_LOADER, service.ordinal());
 
         // check if we already had done some work on the loader
-        Loader loader = getSupportLoaderManager().getLoader(REQUEST_CODE_CLOUD_LIST_KEY);
-        if (loader != null && loader.isStarted()) {
-
-          // making sure that loader is not started
-          getSupportLoaderManager().destroyLoader(REQUEST_CODE_CLOUD_LIST_KEY);
-        }
-
-        getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
+        OmhAuthClient authClient = OMHClientHelper.getAuthClient(service);
+        loginLauncher.launch(
+            authClient
+                .getLoginIntent()
+                .putExtra(KEY_CLOUD_REAUTHENTICATING, true)
+                .putExtra(KEY_OPEN_MODE, service));
       }
-    } catch (CloudPluginException e) {
-      LOG.warn("failure when adding cloud plugin connections", e);
+    } else {
       Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin), Toast.LENGTH_LONG)
           .show();
     }
   }
 
   @Override
-  public void deleteConnection(OpenMode service) {
-    cloudHandler.clear(service);
+  public void deleteCloudConnection(OpenMode service) {
+    EncryptedSharedPreferences.INSTANCE
+        .getEncryptedSharedPrefs(this, CloudPluginUtil.resolveOmhProviderNameFrom(service))
+        .edit()
+        .clear()
+        .apply();
     dataUtils.removeAccount(service);
-
     runOnUiThread(drawer::refreshDrawer);
-  }
-
-  @NonNull
-  @Override
-  public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    Uri uri =
-        Uri.withAppendedPath(
-            Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
-
-    String[] projection =
-        new String[] {
-          CloudContract.COLUMN_ID,
-          CloudContract.COLUMN_CLIENT_ID,
-          CloudContract.COLUMN_CLIENT_SECRET_KEY
-        };
-
-    switch (id) {
-      case REQUEST_CODE_CLOUD_LIST_KEY:
-        Uri uriAppendedPath = uri;
-        switch (OpenMode.getOpenMode(args.getInt(ARGS_KEY_LOADER, 2))) {
-          case GDRIVE:
-            uriAppendedPath = ContentUris.withAppendedId(uri, 2);
-            break;
-          case DROPBOX:
-            uriAppendedPath = ContentUris.withAppendedId(uri, 3);
-            break;
-          case BOX:
-            uriAppendedPath = ContentUris.withAppendedId(uri, 4);
-            break;
-          case ONEDRIVE:
-            uriAppendedPath = ContentUris.withAppendedId(uri, 5);
-            break;
-        }
-        return new CursorLoader(this, uriAppendedPath, projection, null, null, null);
-      case REQUEST_CODE_CLOUD_LIST_KEYS:
-        // we need a list of all secret keys
-
-        try {
-          List<CloudEntry> cloudEntries = cloudHandler.getAllEntries();
-
-          // we want keys for services saved in database, and the cloudrail app key which
-          // is at index 1
-          String ids[] = new String[cloudEntries.size() + 1];
-
-          ids[0] = 1 + "";
-          for (int i = 1; i <= cloudEntries.size(); i++) {
-
-            // we need to get only those cloud details which user wants
-            switch (cloudEntries.get(i - 1).getServiceType()) {
-              case GDRIVE:
-                ids[i] = 2 + "";
-                break;
-              case DROPBOX:
-                ids[i] = 3 + "";
-                break;
-              case BOX:
-                ids[i] = 4 + "";
-                break;
-              case ONEDRIVE:
-                ids[i] = 5 + "";
-                break;
-            }
-          }
-          return new CursorLoader(this, uri, projection, CloudContract.COLUMN_ID, ids, null);
-        } catch (CloudPluginException e) {
-          LOG.warn("failure when fetching cloud connections", e);
-          Toast.makeText(
-                  this, getResources().getString(R.string.cloud_error_plugin), Toast.LENGTH_LONG)
-              .show();
-        }
-      default:
-        Uri undefinedUriAppendedPath = ContentUris.withAppendedId(uri, 7);
-        return new CursorLoader(this, undefinedUriAppendedPath, projection, null, null, null);
-    }
-  }
-
-  @Override
-  public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
-    if (data == null) {
-      Toast.makeText(
-              this,
-              getResources().getString(R.string.cloud_error_failed_restart),
-              Toast.LENGTH_LONG)
-          .show();
-      return;
-    }
-
-    /*
-     * This is hack for repeated calls to onLoadFinished(),
-     * we take the Cursor provided to check if the function
-     * has already been called on it.
-     *
-     * TODO: find a fix for repeated callbacks to onLoadFinished()
-     */
-    if (cloudCursorData == null
-        || cloudCursorData == data
-        || data.isClosed()
-        || cloudCursorData.isClosed()) return;
-    cloudCursorData = data;
-
-    if (cloudLoaderAsyncTask != null
-        && cloudLoaderAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-      return;
-    }
-    cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudHandler, cloudCursorData);
-    cloudLoaderAsyncTask.execute();
-  }
-
-  @Override
-  public void onLoaderReset(Loader<Cursor> loader) {
-    // For passing code check
   }
 
   public void initCornersDragListener(boolean destroy, boolean shouldInvokeLeftAndRight) {

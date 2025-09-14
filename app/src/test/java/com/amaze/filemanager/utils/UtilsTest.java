@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.utils;
 
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.utils.Utils.formatTimer;
 import static com.amaze.filemanager.utils.Utils.sanitizeInput;
@@ -56,7 +56,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
+@Config(sdk = {O, P, Build.VERSION_CODES.R})
 public class UtilsTest {
 
   @Test

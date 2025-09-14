@@ -122,7 +122,7 @@ dependencies {
     testImplementation libs.apache.sshd
     testImplementation libs.awaitility
     testImplementation libs.jsoup
-    kspTest libs.auto.service
+//    kspTest libs.auto.service
 
     androidTestImplementation libs.junit //tests the app logic
     androidTestImplementation libs.androidX.test.expresso

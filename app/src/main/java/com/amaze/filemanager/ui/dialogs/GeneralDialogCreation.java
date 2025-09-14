@@ -970,7 +970,7 @@ public class GeneralDialogCreation {
     builder.negativeText(mainActivity.getString(R.string.no));
     builder.negativeColor(accentColor);
 
-    builder.onPositive((dialog, which) -> mainActivity.deleteConnection(openMode));
+    builder.onPositive((dialog, which) -> mainActivity.deleteCloudConnection(openMode));
 
     builder.onNegative((dialog, which) -> dialog.cancel());
 
@@ -1409,7 +1409,7 @@ public class GeneralDialogCreation {
         .findViewById(R.id.signin_with_google)
         .setOnClickListener(
             v -> {
-              mainActivity.addConnection(OpenMode.GDRIVE);
+              mainActivity.addCloudConnection(OpenMode.GDRIVE);
               dialog.dismiss();
             });
 

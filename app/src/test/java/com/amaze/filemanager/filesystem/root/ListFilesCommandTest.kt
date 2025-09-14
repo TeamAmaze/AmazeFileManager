@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem.root
 
 import android.content.SharedPreferences
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
@@ -54,7 +54,7 @@ import java.io.InputStreamReader
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [O, P, Build.VERSION_CODES.R],
 )
 class ListFilesCommandTest {
     private val sharedPreferences: SharedPreferences =

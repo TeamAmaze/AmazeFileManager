@@ -23,8 +23,8 @@ package com.amaze.filemanager.ui.dialogs
 import android.Manifest
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.N
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
@@ -48,7 +48,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFileUtils::class],
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [O, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractEncryptDialogTests {
     protected lateinit var scenario: ActivityScenario<MainActivity>

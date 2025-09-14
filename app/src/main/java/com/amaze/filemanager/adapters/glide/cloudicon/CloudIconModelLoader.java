@@ -23,7 +23,7 @@ package com.amaze.filemanager.adapters.glide.cloudicon;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 
-import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CloudContract;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.signature.ObjectKey;
@@ -55,10 +55,10 @@ public class CloudIconModelLoader implements ModelLoader<String, Bitmap> {
 
   @Override
   public boolean handles(String s) {
-    return s.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
-        || s.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)
-        || s.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)
-        || s.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)
+    return s.startsWith(CloudContract.CLOUD_PREFIX_BOX)
+        || s.startsWith(CloudContract.CLOUD_PREFIX_DROPBOX)
+        || s.startsWith(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE)
+        || s.startsWith(CloudContract.CLOUD_PREFIX_ONE_DRIVE)
         || s.startsWith(SMB_URI_PREFIX)
         || s.startsWith(SSH_URI_PREFIX);
   }

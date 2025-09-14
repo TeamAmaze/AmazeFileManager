@@ -30,7 +30,6 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.fromTask
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PreparePasteTask.CopyNode
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
 import com.amaze.filemanager.databinding.CopyDialogBinding
@@ -46,7 +45,6 @@ import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.utils.OnFileFound
 import com.amaze.filemanager.utils.Utils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -184,16 +182,13 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             destination.forEachChildrenFile(
                 context.get(),
                 isRootMode,
-                object : OnFileFound {
-                    override fun onFileFound(file: HybridFileParcelable) {
-                        for (fileToCopy in filesToCopy) {
-                            if (file.getName(context.get()) == fileToCopy.getName(context.get())) {
-                                conflictingFiles.add(fileToCopy)
-                            }
-                        }
+            ) { file: HybridFileParcelable ->
+                for (fileToCopy in filesToCopy) {
+                    if (file.getName(context.get()) == fileToCopy.getName(context.get())) {
+                        conflictingFiles.add(fileToCopy)
                     }
-                },
-            )
+                }
+            }
             withContext(Dispatchers.Main) {
                 prepareDialog(conflictingFiles, conflictingDirActionMap)
                 @Suppress("DEPRECATION")

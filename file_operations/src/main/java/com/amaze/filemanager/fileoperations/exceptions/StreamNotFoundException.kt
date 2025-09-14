@@ -17,30 +17,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.amaze.filemanager.fileoperations.exceptions;
+package com.amaze.filemanager.fileoperations.exceptions
 
 /**
  * Created by vishal on 21/1/17.
  *
- * <p>Exception thrown when we can't get stream after trying any specific methods
+ *
+ * Exception thrown when we can't get stream after trying any specific methods
  */
-public class StreamNotFoundException extends Exception {
-  private static final String MESSAGE = "Can't get stream";
+class StreamNotFoundException : Exception {
+    constructor() : super(MESSAGE)
 
-  public StreamNotFoundException() {
-    super(MESSAGE);
-  }
+    constructor(message: String?) : super(message)
 
-  public StreamNotFoundException(String message) {
-    super(message);
-  }
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
 
-  public StreamNotFoundException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    constructor(cause: Throwable?) : super(MESSAGE, cause)
 
-  public StreamNotFoundException(Throwable cause) {
-    super(MESSAGE, cause);
-  }
+    companion object {
+        private const val MESSAGE = "Can't get stream"
+    }
 }

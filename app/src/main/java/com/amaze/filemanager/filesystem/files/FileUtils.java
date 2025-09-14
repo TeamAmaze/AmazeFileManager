@@ -46,7 +46,6 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.ui.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -62,10 +61,11 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.PackageInstallValidation;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.CloudMetaData;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
+import com.openmobilehub.android.storage.core.model.OmhStorageMetadata;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -78,7 +78,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.view.View;
 import android.widget.Toast;
@@ -89,8 +88,16 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbFile;
+import kotlin.Unit;
 import kotlin.collections.ArraysKt;
+import kotlin.collections.CollectionsKt;
+import kotlin.coroutines.EmptyCoroutineContext;
+import kotlinx.coroutines.rx2.RxSingleKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -169,20 +176,20 @@ public class FileUtils {
     }
   }
 
-  public static long folderSizeCloud(OpenMode openMode, CloudMetaData sourceFileMeta) {
+  public static long folderSizeCloud(OpenMode openMode, OmhStorageMetadata sourceFileMeta) {
 
-    DataUtils dataUtils = DataUtils.getInstance();
+    //    DataUtils dataUtils = DataUtils.INSTANCE;
     long length = 0;
-    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
-    for (CloudMetaData metaData :
-        cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
-
-      if (metaData.getFolder()) {
-        length += folderSizeCloud(openMode, metaData);
-      } else {
-        length += metaData.getSize();
-      }
-    }
+    //    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+    //    for (CloudMetaData metaData :
+    //        cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
+    //
+    //      if (metaData.getFolder()) {
+    //        length += folderSizeCloud(openMode, metaData);
+    //      } else {
+    //        length += metaData.getSize();
+    //      }
+    //    }
 
     return length;
   }
@@ -191,7 +198,12 @@ public class FileUtils {
   public static long otgFolderSize(String path, final Context context) {
     final AtomicLong totalBytes = new AtomicLong(0);
     OTGUtil.getDocumentFiles(
-        path, context, file -> totalBytes.addAndGet(getBaseFileSize(file, context)));
+        path,
+        context,
+        file -> {
+          totalBytes.addAndGet(getBaseFileSize(file, context));
+          return Unit.INSTANCE;
+        });
     return totalBytes.longValue();
   }
 
@@ -263,55 +275,55 @@ public class FileUtils {
     // participate in layout passes, etc.)
   }
 
-  public static void shareCloudFile(String path, final OpenMode openMode, final Context context) {
-    new AsyncTask<String, Void, String>() {
-
-      @Override
-      protected String doInBackground(String... params) {
-        String shareFilePath = params[0];
-        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
-        return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
-      }
-
-      @Override
-      protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-
-        FileUtils.copyToClipboard(context, s);
-        Toast.makeText(context, context.getString(R.string.cloud_share_copied), Toast.LENGTH_LONG)
-            .show();
-      }
-    }.execute(path);
+  public static void shareCloudFile(
+      String cloudFileId, final OpenMode openMode, final Context context) {
+    OmhStorageClient storageClient = OMHClientHelper.getStorageClient(openMode);
+    if (storageClient != null) {
+      RxSingleKt.<String>rxSingle(
+              EmptyCoroutineContext.INSTANCE,
+              (scope, continuation) -> storageClient.getWebUrl(cloudFileId, continuation))
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(
+              result -> {
+                FileUtils.copyToClipboard(context, result);
+                AppConfig.toast(context, R.string.cloud_share_copied);
+              });
+    } else {
+      // FIXME: Toast
+    }
   }
 
   public static void shareCloudFiles(
       ArrayList<LayoutElementParcelable> files, final OpenMode openMode, final Context context) {
-    String[] paths = new String[files.size()];
-    for (int i = 0; i < files.size(); i++) {
-      paths[i] = files.get(i).desc;
+    final OmhStorageClient storageClient = OMHClientHelper.getStorageClient(openMode);
+    if (storageClient != null) {
+      List<Single<String>> tasks =
+          CollectionsKt.map(
+              files,
+              layoutElementParcelable ->
+                  RxSingleKt.rxSingle(
+                      EmptyCoroutineContext.INSTANCE,
+                      (scope, continuation) ->
+                          storageClient.getWebUrl(
+                              layoutElementParcelable.cloudFileId, continuation)));
+      Flowable.fromIterable(tasks)
+          .flatMap(Single::toFlowable)
+          .toList()
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(
+              result -> {
+                StringBuilder sb = new StringBuilder();
+                for (String line : result) {
+                  sb.append(line).append('\n');
+                }
+                FileUtils.copyToClipboard(context, sb.toString());
+                AppConfig.toast(context, R.string.cloud_share_copied);
+              });
+    } else {
+      // FIXME: Toast
     }
-    new AsyncTask<String, Void, String>() {
-      @Override
-      protected String doInBackground(String... params) {
-        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
-        StringBuilder links = new StringBuilder();
-        links.append(cloudStorage.createShareLink(CloudUtil.stripPath(openMode, params[0])));
-        for (int i = 1; i < params.length; i++) {
-          links.append('\n');
-          links.append(cloudStorage.createShareLink(CloudUtil.stripPath(openMode, params[i])));
-        }
-        return links.toString();
-      }
-
-      @Override
-      protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-
-        FileUtils.copyToClipboard(context, s);
-        Toast.makeText(context, context.getString(R.string.cloud_share_copied), Toast.LENGTH_LONG)
-            .show();
-      }
-    }.execute(paths);
   }
 
   public static void shareFiles(
@@ -941,7 +953,7 @@ public class FileUtils {
   }
 
   public static boolean isStorage(String path) {
-    for (String s : DataUtils.getInstance().getStorages()) if (s.equals(path)) return true;
+    for (String s : DataUtils.INSTANCE.getStorages()) if (s.equals(path)) return true;
     return false;
   }
 

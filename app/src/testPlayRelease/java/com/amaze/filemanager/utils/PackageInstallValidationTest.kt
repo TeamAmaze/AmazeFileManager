@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import android.os.storage.StorageManager
 import androidx.lifecycle.Lifecycle
@@ -64,7 +65,7 @@ import java.util.concurrent.TimeUnit
 @SuppressLint("SdCardPath")
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [P],
+    sdk = [O, P],
     shadows = [ShadowPackageManager::class, ShadowMultiDex::class, ShadowTabHandler::class],
 )
 class PackageInstallValidationTest {

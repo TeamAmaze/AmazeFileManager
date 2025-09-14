@@ -47,7 +47,7 @@ object HiddenFilesDialog {
                 mainActivity,
                 mainFragment,
                 sharedPrefs,
-                FileUtils.toHybridFileConcurrentRadixTree(DataUtils.getInstance().hiddenFiles),
+                FileUtils.toHybridFileConcurrentRadixTree(DataUtils.hiddenFiles),
                 null,
                 false,
             )

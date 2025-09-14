@@ -875,5 +875,14 @@ You only need to do this once, until the next time you select a new location for
     <string name="trash_bin_cleanup_interval_title">Cleanup interval</string>
     <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
     <string name="file_deletion">File Deletion</string>
+    <string name="com.openmobilehub.android.auth.microsoft.oauth2.redirect.scheme" translatable="false">https</string>
+    <string name="com.openmobilehub.android.auth.microsoft.oauth2.redirect.host" translatable="false">auth.teamamaze.xyz</string>
+    <string name="com.openmobilehub.android.auth.microsoft.oauth2.redirect.pathPrefix" translatable="false">/filemanager/microsoft/oauth2/callback</string>
+    <string name="com.openmobilehub.android.auth.dropbox.oauth2.redirect.scheme" translatable="false">https</string>
+    <string name="com.openmobilehub.android.auth.dropbox.oauth2.redirect.host" translatable="false">auth.teamamaze.xyz</string>
+    <string name="com.openmobilehub.android.auth.dropbox.oauth2.redirect.pathPrefix" translatable="false">/filemanager/dropbox/oauth2/callback</string>
+    <string name="com.openmobilehub.android.auth.google.oauth2.redirect.scheme" translatable="false">https</string>
+    <string name="com.openmobilehub.android.auth.google.oauth2.redirect.host" translatable="false">auth.teamamaze.xyz</string>
+    <string name="com.openmobilehub.android.auth.google.oauth2.redirect.pathPrefix" translatable="false">/filemanager/google/oauth2/callback</string>
 </resources>
 

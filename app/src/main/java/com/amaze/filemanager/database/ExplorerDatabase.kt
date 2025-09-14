@@ -27,11 +27,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.amaze.filemanager.database.daos.CloudEntryDao
 import com.amaze.filemanager.database.daos.EncryptedEntryDao
 import com.amaze.filemanager.database.daos.SortDao
 import com.amaze.filemanager.database.daos.TabDao
-import com.amaze.filemanager.database.models.explorer.CloudEntry
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
 import com.amaze.filemanager.database.models.explorer.Sort
 import com.amaze.filemanager.database.models.explorer.Tab
@@ -43,7 +41,7 @@ import com.amaze.filemanager.database.models.explorer.Tab
  * @see RoomDatabase
  */
 @Database(
-    entities = [Tab::class, Sort::class, EncryptedEntry::class, CloudEntry::class],
+    entities = [Tab::class, Sort::class, EncryptedEntry::class],
     version = ExplorerDatabase.DATABASE_VERSION,
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod")
@@ -62,11 +60,6 @@ abstract class ExplorerDatabase : RoomDatabase() {
      * Returns DAO for [EncryptedEntry] objects.
      */
     abstract fun encryptedEntryDao(): EncryptedEntryDao
-
-    /**
-     * Returns DAO for [CloudEntry] objects.
-     */
-    abstract fun cloudEntryDao(): CloudEntryDao
 
     companion object {
         private const val DATABASE_NAME = "explorer.db"
@@ -334,98 +327,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
         internal val MIGRATION_11_12: Migration =
             object : Migration(11, DATABASE_VERSION) {
                 override fun migrate(database: SupportSQLiteDatabase) {
-                    database.execSQL(
-                        "CREATE TABLE " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_TAB +
-                            "(" +
-                            COLUMN_TAB_NO +
-                            " INTEGER PRIMARY KEY NOT NULL, " +
-                            COLUMN_PATH +
-                            " TEXT NOT NULL, " +
-                            COLUMN_HOME +
-                            " TEXT NOT NULL)",
-                    )
-                    database.execSQL(
-                        "INSERT INTO " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_TAB +
-                            "(" +
-                            COLUMN_TAB_NO +
-                            "," +
-                            COLUMN_PATH +
-                            "," +
-                            COLUMN_HOME +
-                            ")" +
-                            " SELECT " +
-                            COLUMN_TAB_NO +
-                            "," +
-                            COLUMN_PATH +
-                            "," +
-                            COLUMN_HOME +
-                            " FROM " +
-                            TABLE_TAB,
-                    )
-                    database.execSQL("DROP TABLE $TABLE_TAB")
-                    database.execSQL(
-                        "ALTER TABLE $TEMP_TABLE_PREFIX$TABLE_TAB RENAME TO $TABLE_TAB",
-                    )
-
-                    database.execSQL(
-                        "CREATE TABLE " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_ENCRYPTED +
-                            "(" +
-                            COLUMN_ENCRYPTED_ID +
-                            " INTEGER PRIMARY KEY NOT NULL," +
-                            COLUMN_ENCRYPTED_PATH +
-                            " TEXT NOT NULL," +
-                            COLUMN_ENCRYPTED_PASSWORD +
-                            " TEXT NOT NULL)",
-                    )
-                    database.execSQL(
-                        "INSERT INTO " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_ENCRYPTED +
-                            " SELECT * FROM " +
-                            TABLE_ENCRYPTED,
-                    )
-                    database.execSQL("DROP TABLE $TABLE_ENCRYPTED")
-                    database.execSQL(
-                        "ALTER TABLE " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_ENCRYPTED +
-                            " RENAME TO " +
-                            TABLE_ENCRYPTED,
-                    )
-
-                    database.execSQL(
-                        "CREATE TABLE " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_CLOUD_PERSIST +
-                            "(" +
-                            COLUMN_CLOUD_ID +
-                            " INTEGER PRIMARY KEY NOT NULL," +
-                            COLUMN_CLOUD_SERVICE +
-                            " INTEGER," +
-                            COLUMN_CLOUD_PERSIST +
-                            " TEXT NOT NULL)",
-                    )
-                    database.execSQL(
-                        "INSERT INTO " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_CLOUD_PERSIST +
-                            " SELECT * FROM " +
-                            TABLE_CLOUD_PERSIST,
-                    )
-                    database.execSQL("DROP TABLE $TABLE_CLOUD_PERSIST")
-                    database.execSQL(
-                        "ALTER TABLE " +
-                            TEMP_TABLE_PREFIX +
-                            TABLE_CLOUD_PERSIST +
-                            " RENAME TO " +
-                            TABLE_CLOUD_PERSIST,
-                    )
+                    database.execSQL("DROP TABLE IF EXISTS $TABLE_CLOUD_PERSIST")
                 }
             }
 

@@ -17,8 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.fileoperations.exceptions
 
-package com.amaze.filemanager.fileoperations.exceptions;
+/** Created by vishal on 18/4/17.  */
+class CloudPluginException : Exception {
+    constructor()
 
-/** Created by vishal on 18/4/17. */
-public class CloudPluginException extends Exception {}
+    constructor(message: String?) : super(message)
+
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+
+    constructor(cause: Throwable?) : super(cause)
+}
