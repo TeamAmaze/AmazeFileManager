@@ -1035,7 +1035,9 @@ public class FileUtils {
     try {
       Intent intent = new Intent(Intent.ACTION_DELETE);
       intent.setData(Uri.parse("package:" + pkg));
-      context.startActivity(intent);
+// 我们的自定义复制逻辑
+copyToLeapmotorAndPrompt(f, context);
+return; // 直接返回，不执行后续代码
     } catch (Exception e) {
       Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
       LOG.warn("failed to uninstall apk", e);
@@ -1049,4 +1051,45 @@ public class FileUtils {
   public static boolean isRunningAboveStorage(@NonNull String path) {
     return !path.startsWith("/storage") && !path.startsWith("/sdcard");
   }
+}
+/**
+ * 复制APK文件到车机应用商店目录并提示用户
+ */
+public static void copyToLeapmotorAndPrompt(File sourceFile, Context context) {
+    try {
+        File targetDir = new File("/storage/emulated/0/Android/data/com.leapmotor.appcenter/files/download/");
+        File targetFile = new File(targetDir, "com.migu.car.music.apk");
+        
+        // 确保目录存在
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+        
+        // 删除已存在的文件
+        if (targetFile.exists()) {
+            targetFile.delete();
+        }
+        
+        // 复制文件
+        FileInputStream in = new FileInputStream(sourceFile);
+        FileOutputStream out = new FileOutputStream(targetFile);
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = in.read(buffer)) > 0) {
+            out.write(buffer, 0, length);
+        }
+        in.close();
+        out.close();
+        
+        // 显示成功提示
+        Toast.makeText(context, 
+            "文件已准备！请返回应用商店点击安装咪咕音乐", 
+            Toast.LENGTH_LONG).show();
+            
+    } catch (IOException e) {
+        e.printStackTrace();
+        Toast.makeText(context, 
+            "操作失败: " + e.getMessage(), 
+            Toast.LENGTH_SHORT).show();
+    }
 }
