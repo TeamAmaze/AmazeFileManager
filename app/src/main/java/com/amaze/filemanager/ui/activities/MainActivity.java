@@ -639,6 +639,15 @@ public class MainActivity extends PermissionsActivity
          * http://teamamaze.xyz/open_file?path=path-to-file
          */
         path = Utils.sanitizeInput(uri.getQueryParameter("path"));
+      } else if (uri != null && ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+        // save a single file to filesystem
+        List<Uri> uris = new ArrayList<>();
+        uris.add(uri);
+        showSaveSnackbar(uris);
+
+        // disable screen rotation just for convenience purpose
+        // TODO: Support screen rotation when saving a file
+        Utils.disableScreenRotation(this);
       } else {
         LOG.warn(getString(R.string.error_cannot_find_way_open));
       }
