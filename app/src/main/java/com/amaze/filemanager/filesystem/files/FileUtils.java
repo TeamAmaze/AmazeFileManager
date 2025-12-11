@@ -1015,12 +1015,38 @@ public class FileUtils {
     if (!CONTENT.name().equalsIgnoreCase(uri.getScheme())) {
       LOG.warn("URI must start with content://. URI was [" + uri + "]");
     }
-    File pathFile = new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
+
+    String path = uri.getPath();
+    if (path == null) {
+      LOG.warn("Uri.getPath() returned null for uri [{}]", uri);
+      return null;
+    }
+
+    // Expect paths like "/<FILE_PROVIDER_PREFIX>/..." (note leading slash)
+    final String expectedPrefix = "/" + FILE_PROVIDER_PREFIX + "/";
+    File pathFile = null;
+
+    if (path.startsWith(expectedPrefix) && path.length() > expectedPrefix.length()) {
+      // safe substring only when prefix present and there's remaining text
+      String relative = path.substring(expectedPrefix.length());
+      pathFile = new File(relative);
+      LOG.debug("Parsed provider-relative path [{}] from uri [{}]", relative, uri);
+    } else {
+      // unexpected shape — log and fall back to using the full path
+      LOG.warn(
+          "URI path [{}] doesn't start with expected prefix [{}]. Using full path as fallback.",
+          path,
+          expectedPrefix);
+      pathFile = new File(path);
+    }
+
     if (!pathFile.exists()) {
       LOG.warn("Failed to navigate to the initial path: {}", pathFile.getPath());
-      pathFile = new File(uri.getPath());
-      LOG.warn("Attempting to navigate to the fallback path: {}", pathFile.getPath());
+      File fallback = new File(path);
+      LOG.warn("Attempting to navigate to the fallback path: {}", fallback.getPath());
+      return fallback;
     }
+
     return pathFile;
   }
 
