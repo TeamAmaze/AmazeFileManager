@@ -73,6 +73,7 @@ mpAndroidChart = "v3.0.2"
 concurrentTrees = "2.6.1"
 aboutLibraries = "6.1.1"
 amazeTrashBin = "1.0.10"
+zstdJni = "1.5.2-5"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }

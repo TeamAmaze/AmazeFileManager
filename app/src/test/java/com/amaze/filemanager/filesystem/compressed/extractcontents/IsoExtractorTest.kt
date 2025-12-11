@@ -20,34 +20,10 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
-import org.junit.runner.RunWith
-import org.junit.runners.Suite
-import org.junit.runners.Suite.SuiteClasses
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Iso9660Extractor
 
-@RunWith(Suite::class)
-@SuiteClasses(
-    GzipExtractorTest::class,
-    Bzip2ExtractorTest::class,
-    LzmaExtractorTest::class,
-    XzExtractorTest::class,
-    ZstdExtractorTest::class,
-    TarGzExtractorTest::class,
-    TgzExtractorTest::class,
-    ZipExtractorTest::class,
-    TarExtractorTest::class,
-    RarExtractorTest::class,
-    TarBzip2ExtractorTest::class,
-    TarBzip2ExtractorTest2::class,
-    TarLzmaExtractorTest::class,
-    TarXzExtractorTest::class,
-    TarZstExtractorTest::class,
-    SevenZipExtractorTest::class,
-    SevenZipWithoutTimestampTest::class,
-    PasswordProtectedRarTest::class,
-    PasswordProtectedZipTest::class,
-    PasswordProtected7ZipTest::class,
-    ListPasswordProtected7ZipTest::class,
-    ListPasswordProtectedRarTest::class,
-    MultipartRarExtractorTest::class,
-)
-class ExtractorTestSuite
+class IsoExtractorTest : AbstractArchiveExtractorTest() {
+    override val archiveType: String = "iso"
+
+    override fun extractorClass(): Class<out Extractor?> = Iso9660Extractor::class.java
+}

@@ -75,6 +75,7 @@ public final class MimeTypes {
     MIME_TYPES.put("xz", "application/x-xz");
     MIME_TYPES.put("lzma", "application/x-lzma");
     MIME_TYPES.put("Z", "application/x-compress");
+    MIME_TYPES.put("zst", "application/zst");
 
     MIME_TYPES.put("bat", "application/x-msdownload");
     MIME_TYPES.put("ksh", "text/plain");

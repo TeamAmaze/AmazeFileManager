@@ -119,5 +119,9 @@ public abstract class Extractor {
     public BadArchiveNotice(@NonNull Throwable reason) {
       super(reason);
     }
+
+    public BadArchiveNotice(@NonNull String reason) {
+      super(reason);
+    }
   }
 }
