@@ -23,8 +23,7 @@ package com.amaze.filemanager.adapters.glide;
 import java.util.Collections;
 import java.util.List;
 
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.GlideRequest;
+import com.bumptech.glide.Glide;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
@@ -43,12 +42,12 @@ public class RecyclerPreloadModelProvider
     implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 
   private final List<IconDataParcelable> urisToLoad;
-  private final GlideRequest<Drawable> request;
+  private final RequestBuilder<Drawable> request;
 
   public RecyclerPreloadModelProvider(
       @NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris, boolean isCircled) {
     urisToLoad = uris;
-    GlideRequest<Drawable> incompleteRequest = GlideApp.with(fragment).asDrawable();
+    RequestBuilder<Drawable> incompleteRequest = Glide.with(fragment).asDrawable();
 
     if (isCircled) {
       request = incompleteRequest.circleCrop();

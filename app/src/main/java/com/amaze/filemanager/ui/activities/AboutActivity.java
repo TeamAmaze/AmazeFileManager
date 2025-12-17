@@ -37,6 +37,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
+import androidx.core.content.ContextCompat;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.mikepenz.aboutlibraries.Libs;
@@ -116,7 +117,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     Toolbar mToolbar = findViewById(R.id.toolBar);
     setSupportActionBar(mToolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.md_nav_back));
+    getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, android.R.drawable.ic_menu_revert));
     getSupportActionBar().setDisplayShowTitleEnabled(false);
 
     switchIcons();
@@ -188,10 +189,9 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case android.R.id.home:
-        onBackPressed();
-        break;
+    int id = item.getItemId();
+    if (id == android.R.id.home) {
+      onBackPressed();
     }
     return super.onOptionsItemSelected(item);
   }
@@ -208,100 +208,73 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
 
   @Override
   public void onClick(View v) {
-    switch (v.getId()) {
-      case R.id.relative_layout_source:
-        openURL(URL_REPO, this);
-        break;
+    int id = v.getId();
+    if (id == R.id.relative_layout_source) {
+      openURL(URL_REPO, this);
+    } else if (id == R.id.relative_layout_issues) {
+      openURL(URL_REPO_ISSUES, this);
+    } else if (id == R.id.relative_layout_share_logs) {
+      try {
+        File logFile =
+            new File(
+                "/data/data/" + getApplicationContext().getPackageName() + "/cache/logs.txt");
+        Uri logUri =
+            FileProvider.getUriForFile(
+                getApplicationContext(), getApplicationContext().getPackageName(), logFile);
+        ArrayList<Uri> logUriList = new ArrayList<>();
+        logUriList.add(logUri);
+        new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
+      } catch (Exception e) {
+        LOG.warn("failed to share logs", e);
+      }
+    } else if (id == R.id.relative_layout_changelog) {
+      openURL(URL_REPO_CHANGELOG, this);
+    } else if (id == R.id.relative_layout_licenses) {
+      LibsBuilder libsBuilder =
+          new LibsBuilder()
+              .withLibraries("apachemina") // Not auto-detected for some reason
+              .withActivityTitle(getString(R.string.libraries))
+              .withAboutIconShown(true)
+              .withAboutVersionShownName(true)
+              .withAboutVersionShownCode(false)
+              .withAboutDescription(getString(R.string.about_amaze))
+              .withAboutSpecial1(getString(R.string.license))
+              .withAboutSpecial1Description(getString(R.string.amaze_license))
+              .withLicenseShown(true);
 
-      case R.id.relative_layout_issues:
-        openURL(URL_REPO_ISSUES, this);
-        break;
+      switch (getAppTheme()) {
+        case LIGHT:
+          libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
+          break;
+        case DARK:
+          libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK);
+          break;
+        case BLACK:
+          libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
+          break;
+        default:
+          LogHelper.logOnProductionOrCrash("Incorrect value for switch");
+      }
 
-      case R.id.relative_layout_share_logs:
-        try {
-          File logFile =
-              new File(
-                  "/data/data/" + getApplicationContext().getPackageName() + "/cache/logs.txt");
-          Uri logUri =
-              FileProvider.getUriForFile(
-                  getApplicationContext(), getApplicationContext().getPackageName(), logFile);
-          ArrayList<Uri> logUriList = new ArrayList<>();
-          logUriList.add(logUri);
-          new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
-        } catch (Exception e) {
-          LOG.warn("failed to share logs", e);
-        }
-        break;
-
-      case R.id.relative_layout_changelog:
-        openURL(URL_REPO_CHANGELOG, this);
-        break;
-
-      case R.id.relative_layout_licenses:
-        LibsBuilder libsBuilder =
-            new LibsBuilder()
-                .withLibraries("apachemina") // Not auto-detected for some reason
-                .withActivityTitle(getString(R.string.libraries))
-                .withAboutIconShown(true)
-                .withAboutVersionShownName(true)
-                .withAboutVersionShownCode(false)
-                .withAboutDescription(getString(R.string.about_amaze))
-                .withAboutSpecial1(getString(R.string.license))
-                .withAboutSpecial1Description(getString(R.string.amaze_license))
-                .withLicenseShown(true);
-
-        switch (getAppTheme()) {
-          case LIGHT:
-            libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
-            break;
-          case DARK:
-            libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK);
-            break;
-          case BLACK:
-            libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
-            break;
-          default:
-            LogHelper.logOnProductionOrCrash("Incorrect value for switch");
-        }
-
-        libsBuilder.start(this);
-
-        break;
-
-      case R.id.text_view_author_1_github:
-        openURL(URL_AUTHOR1_GITHUB, this);
-        break;
-
-      case R.id.text_view_author_2_github:
-        openURL(URL_AUTHOR2_GITHUB, this);
-        break;
-
-      case R.id.text_view_developer_1_github:
-        openURL(URL_DEVELOPER1_GITHUB, this);
-        break;
-
-      case R.id.text_view_developer_2_github:
-        openURL(URL_DEVELOPER2_GITHUB, this);
-        break;
-
-      case R.id.text_view_developer_3_github:
-        openURL(URL_DEVELOPER3_GITHUB, this);
-        break;
-
-      case R.id.relative_layout_translate:
-        openURL(URL_REPO_TRANSLATE, this);
-        break;
-
-      case R.id.relative_layout_xda:
-        openURL(URL_REPO_XDA, this);
-        break;
-
-      case R.id.relative_layout_rate:
-        openURL(URL_REPO_RATE, this);
-        break;
-      case R.id.relative_layout_donate:
-        billing = new Billing(this);
-        break;
+      libsBuilder.start(this);
+    } else if (id == R.id.text_view_author_1_github) {
+      openURL(URL_AUTHOR1_GITHUB, this);
+    } else if (id == R.id.text_view_author_2_github) {
+      openURL(URL_AUTHOR2_GITHUB, this);
+    } else if (id == R.id.text_view_developer_1_github) {
+      openURL(URL_DEVELOPER1_GITHUB, this);
+    } else if (id == R.id.text_view_developer_2_github) {
+      openURL(URL_DEVELOPER2_GITHUB, this);
+    } else if (id == R.id.text_view_developer_3_github) {
+      openURL(URL_DEVELOPER3_GITHUB, this);
+    } else if (id == R.id.relative_layout_translate) {
+      openURL(URL_REPO_TRANSLATE, this);
+    } else if (id == R.id.relative_layout_xda) {
+      openURL(URL_REPO_XDA, this);
+    } else if (id == R.id.relative_layout_rate) {
+      openURL(URL_REPO_RATE, this);
+    } else if (id == R.id.relative_layout_donate) {
+      billing = new Billing(this);
     }
   }
 

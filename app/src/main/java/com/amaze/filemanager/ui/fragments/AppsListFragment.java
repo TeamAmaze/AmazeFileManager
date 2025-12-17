@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.GlideApp;
+import com.bumptech.glide.Glide;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsRecyclerAdapter;
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
@@ -113,7 +113,7 @@ public class AppsListFragment extends Fragment
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     preloader =
         new RecyclerViewPreloader<>(
-            GlideApp.with(this),
+            Glide.with(this),
             modelProvider,
             sizeProvider,
             GlideConstants.MAX_PRELOAD_APPSADAPTER);
@@ -145,20 +145,20 @@ public class AppsListFragment extends Fragment
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.sort:
-        showSortDialog(((MainActivity) requireActivity()).getAppTheme());
-        return true;
-      case R.id.exit:
-        requireActivity().finish();
-        return true;
-      case R.id.checkbox_system_apps:
-        item.setChecked(!item.isChecked());
-        adapter.setData(appDataParcelableList, item.isChecked());
-        showSystemApps = item.isChecked();
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
+    int id = item.getItemId();
+    if (id == R.id.sort) {
+      showSortDialog(((MainActivity) requireActivity()).getAppTheme());
+      return true;
+    } else if (id == R.id.exit) {
+      requireActivity().finish();
+      return true;
+    } else if (id == R.id.checkbox_system_apps) {
+      item.setChecked(!item.isChecked());
+      adapter.setData(appDataParcelableList, item.isChecked());
+      showSystemApps = item.isChecked();
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
     }
   }
 

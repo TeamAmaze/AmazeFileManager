@@ -128,7 +128,7 @@ public class Utils {
     } else {
       Drawable drawable =
           DrawableCompat.wrap(
-              ContextCompat.getDrawable(box.getContext(), R.drawable.abc_btn_check_material));
+              ContextCompat.getDrawable(box.getContext(), android.R.drawable.checkbox_on_background));
       DrawableCompat.setTintList(drawable, sl);
       box.setButtonDrawable(drawable);
     }

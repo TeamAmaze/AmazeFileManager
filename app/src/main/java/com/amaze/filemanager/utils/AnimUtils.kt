@@ -33,9 +33,11 @@ object AnimUtils {
 
     @JvmStatic
     fun getFastOutSlowInInterpolator(context: Context?): Interpolator? {
+        if (context == null) return null
         if (fastOutSlowIn == null) {
             fastOutSlowIn =
-                AnimationUtils.loadInterpolator(context, R.interpolator.fast_out_slow_in)
+                // Use the framework interpolator to avoid relying on a removed/renamed app resource.
+                AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in)
         }
         return fastOutSlowIn
     }

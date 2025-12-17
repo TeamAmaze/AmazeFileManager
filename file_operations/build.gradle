@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace "com.amaze.filemanager.fileoperations"
     compileSdk 33
 
     defaultConfig {
@@ -32,8 +33,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     testOptions {
@@ -46,17 +47,17 @@ android {
     externalNativeBuild {
         cmake {
             path file('src/main/c/CMakeLists.txt')
-            version '3.18.1'
+            // Don't pin a specific CMake version; use whatever is installed in the Android SDK.
         }
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 dependencies {

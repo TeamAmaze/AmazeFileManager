@@ -94,8 +94,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
 
   @Override
   public boolean onMenuItemClick(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.about:
+    int id = item.getItemId();
+    if (id == R.id.about) {
         GeneralDialogCreation.showPropertiesDialogWithPermissions(
             (rowItem).generateBaseFile(),
             rowItem.permissions,
@@ -104,7 +104,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             mainActivity.isRootExplorer(),
             utilitiesProvider.getAppTheme());
         return true;
-      case R.id.share:
+    } else if (id == R.id.share) {
         switch (rowItem.getMode()) {
           case DROPBOX:
           case BOX:
@@ -120,24 +120,21 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             break;
         }
         return true;
-      case R.id.rename:
+    } else if (id == R.id.rename) {
         mainFragment.rename(rowItem.generateBaseFile());
         return true;
-      case R.id.cpy:
-      case R.id.cut:
-        {
-          int op =
-              item.getItemId() == R.id.cpy ? PasteHelper.OPERATION_COPY : PasteHelper.OPERATION_CUT;
-          PasteHelper pasteHelper =
-              new PasteHelper(
-                  mainActivity, op, new HybridFileParcelable[] {rowItem.generateBaseFile()});
-          mainActivity.setPaste(pasteHelper);
-          return true;
-        }
-      case R.id.ex:
+    } else if (id == R.id.cpy || id == R.id.cut) {
+        int op =
+            item.getItemId() == R.id.cpy ? PasteHelper.OPERATION_COPY : PasteHelper.OPERATION_CUT;
+        PasteHelper pasteHelper =
+            new PasteHelper(
+                mainActivity, op, new HybridFileParcelable[] {rowItem.generateBaseFile()});
+        mainActivity.setPaste(pasteHelper);
+        return true;
+    } else if (id == R.id.ex) {
         mainActivity.mainActivityHelper.extractFile(new File(rowItem.desc));
         return true;
-      case R.id.book:
+    } else if (id == R.id.book) {
         DataUtils dataUtils = DataUtils.getInstance();
         if (dataUtils.addBook(new String[] {rowItem.title, rowItem.desc}, true)) {
           mainActivity.getDrawer().refreshDrawer();
@@ -154,19 +151,19 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
               .show();
         }
         return true;
-      case R.id.delete:
+    } else if (id == R.id.delete) {
         ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
         positions.add(rowItem);
         GeneralDialogCreation.deleteFilesDialog(
             context, mainActivity, positions, utilitiesProvider.getAppTheme());
         return true;
-      case R.id.restore:
+    } else if (id == R.id.restore) {
         ArrayList<LayoutElementParcelable> p2 = new ArrayList<>();
         p2.add(rowItem);
         GeneralDialogCreation.restoreFilesDialog(
             context, mainActivity, p2, utilitiesProvider.getAppTheme());
         return true;
-      case R.id.open_with:
+    } else if (id == R.id.open_with) {
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
 
@@ -188,7 +185,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
 
         return true;
-      case R.id.encrypt:
+    } else if (id == R.id.encrypt) {
         final Intent encryptIntent = new Intent(context, EncryptService.class);
         encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
         encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
@@ -236,7 +233,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
               encryptButtonCallbackInterfaceAuthenticate);
         }
         return true;
-      case R.id.decrypt:
+    } else if (id == R.id.decrypt) {
         EncryptDecryptUtils.decryptFile(
             context,
             mainActivity,
@@ -247,13 +244,13 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             utilitiesProvider,
             false);
         return true;
-      case R.id.compress:
+    } else if (id == R.id.compress) {
         GeneralDialogCreation.showCompressDialog(
             mainActivity,
             rowItem.generateBaseFile(),
             mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getCurrentPath());
         return true;
-      case R.id.return_select:
+    } else if (id == R.id.return_select) {
         mainFragment.returnIntentResults(new HybridFileParcelable[] {rowItem.generateBaseFile()});
         return true;
     }

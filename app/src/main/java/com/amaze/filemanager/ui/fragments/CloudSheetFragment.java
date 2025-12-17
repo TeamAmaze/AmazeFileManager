@@ -155,33 +155,29 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
   @Override
   public void onClick(View v) {
-    switch (v.getId()) {
-      case R.id.linear_layout_smb:
-        dismiss();
-        SmbSearchDialog smbDialog = new SmbSearchDialog();
-        smbDialog.show(getActivity().getSupportFragmentManager(), "tab");
-        return;
-      case R.id.linear_layout_scp:
-        dismiss();
-        SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-        Bundle args = new Bundle();
-        args.putBoolean("edit", false);
-        sftpConnectDialog.setArguments(args);
-        sftpConnectDialog.show(getFragmentManager(), "tab");
-        return;
-      case R.id.linear_layout_box:
-        ((MainActivity) getActivity()).addConnection(OpenMode.BOX);
-        break;
-      case R.id.linear_layout_dropbox:
-        ((MainActivity) getActivity()).addConnection(OpenMode.DROPBOX);
-        break;
-      case R.id.linear_layout_google_drive:
-        GeneralDialogCreation.showSignInWithGoogleDialog((MainActivity) getActivity());
-        break;
-      case R.id.linear_layout_onedrive:
-        ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
-        break;
-      case R.id.linear_layout_get_cloud:
+    int id = v.getId();
+    if (id == R.id.linear_layout_smb) {
+      dismiss();
+      SmbSearchDialog smbDialog = new SmbSearchDialog();
+      smbDialog.show(getActivity().getSupportFragmentManager(), "tab");
+      return;
+    } else if (id == R.id.linear_layout_scp) {
+      dismiss();
+      SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
+      Bundle args = new Bundle();
+      args.putBoolean("edit", false);
+      sftpConnectDialog.setArguments(args);
+      sftpConnectDialog.show(getFragmentManager(), "tab");
+      return;
+    } else if (id == R.id.linear_layout_box) {
+      ((MainActivity) getActivity()).addConnection(OpenMode.BOX);
+    } else if (id == R.id.linear_layout_dropbox) {
+      ((MainActivity) getActivity()).addConnection(OpenMode.DROPBOX);
+    } else if (id == R.id.linear_layout_google_drive) {
+      GeneralDialogCreation.showSignInWithGoogleDialog((MainActivity) getActivity());
+    } else if (id == R.id.linear_layout_onedrive) {
+      ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);
+    } else if (id == R.id.linear_layout_get_cloud) {
         Intent cloudPluginIntent = new Intent(Intent.ACTION_VIEW);
         cloudPluginIntent.setData(Uri.parse(getString(R.string.cloud_plugin_google_play_uri)));
         try {
@@ -191,7 +187,6 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
               Uri.parse(getString(R.string.cloud_plugin_google_play_web_uri)));
           startActivity(cloudPluginIntent);
         }
-        break;
     }
 
     // dismiss this sheet dialog

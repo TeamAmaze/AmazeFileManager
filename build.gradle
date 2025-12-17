@@ -2,17 +2,19 @@
 
 buildscript {
     ext {
-        kotlin_version = "1.8.0"
+        // Kotlin version compatible with AGP 8.5.x
+        kotlin_version = "1.9.24"
         robolectricVersion = '4.9'
-        glideVersion = '4.11.0'
+        glideVersion = '4.16.0'  // Upgraded to support KSP (4.12.0+)
         sshjVersion = '0.35.0'
         jcifsVersion = '2.1.9'
-        fabSpeedDialVersion = '3.1.1'
+        // com.leinardi.android:speed-dial (3.1.1 no longer published on MavenCentral)
+        fabSpeedDialVersion = '3.3.0'
         roomVersion = '2.5.0'
         bouncyCastleVersion = '1.70'
         awaitilityVersion = "3.1.6"
         androidXCoreVersion = "1.7.0"
-        androidMaterialVersion = "1.5.0" // Upgrade to 1.5 requires targetSdkVersion 31
+        androidMaterialVersion = "1.5.0"
         androidXFragmentVersion = "1.5.6"
         androidXAppCompatVersion = "1.6.1"
         androidXAnnotationVersion = "1.5.0"
@@ -45,19 +47,19 @@ buildscript {
         rxJavaVersion = "2.2.9"
         okHttpVersion = "4.9.0"
     }
+
     repositories {
         google()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath 'com.hiya:jacoco-android:0.2'
+        // Keep AGP compatible with Android Studio + Gradle 8.5
+        classpath 'com.android.tools.build:gradle:8.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.project.starter:easylauncher:6.1.0"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // KSP (Kotlin Symbol Processing) - faster alternative to KAPT, avoids Windows native library issues
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.24-1.0.20"
     }
 }
 
@@ -72,30 +74,38 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven { url "https://jcenter.bintray.com" }
     }
-    tasks.withType(Test).tap {
-        configureEach {
-            maxParallelForks = 8
-            maxHeapSize = "2g"
-            forkEvery = 4
-            failFast = true
-        }
+
+    tasks.withType(Test).configureEach {
+        maxParallelForks = 8
+        maxHeapSize = "2g"
+        forkEvery = 4
+        failFast = true
     }
 }
 
 spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
-        target 'app/src/**/*.java', 'commons_compress_7z/src/**/*.java', 'file_operations/src/**/*.java', 'portscanner/src/**/*.java'
+        target 'app/src/**/*.java',
+                'commons_compress_7z/src/**/*.java',
+                'file_operations/src/**/*.java',
+                'portscanner/src/**/*.java'
         googleJavaFormat('1.15.0')
-        removeUnusedImports() // removes any unused imports
+        removeUnusedImports()
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
+
     kotlin {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.kt', 'file_operations/src/**/*.kt'
-        ktlint("0.44.0").setUseExperimental(true).userData(['disabled_rules': 'no-wildcard-imports',
-                                   'kotlin_imports_layout': 'idea', 'indent_size': '4',
-                                   'max_line_length': '100'])
+        ktlint("0.44.0")
+                .setUseExperimental(true)
+                .userData([
+                        'disabled_rules': 'no-wildcard-imports',
+                        'kotlin_imports_layout': 'idea',
+                        'indent_size': '4',
+                        'max_line_length': '100'
+                ])
         trimTrailingWhitespace()
         indentWithSpaces()
         endWithNewline()
@@ -166,41 +176,28 @@ tasks.register('fetchRobolectricDependencies', Copy) {
 }
 
 subprojects {
-    afterEvaluate {
-        if (project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) {
-            android {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application")
+                || project.plugins.hasPlugin("com.android.library")) {
+
+            project.android {
                 testOptions.unitTests.all {
                     systemProperty 'robolectric.offline', 'true'
                     systemProperty 'robolectric.dependency.dir', robolectricDependencies
                 }
             }
 
-            tasks.withType(Test).configureEach {
-                it.dependsOn fetchRobolectricDependencies
+            project.tasks.withType(Test).configureEach {
+                dependsOn rootProject.tasks.fetchRobolectricDependencies
             }
         }
-        if (project.plugins.hasPlugin("jacoco-android")){
-            android {
-                testOptions.unitTests.all {
-                    jacoco {
-                        excludes = ['jdk.internal.*']
-                    }
-                }
-            }
-        }
-        dependencies {
-            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
 
-            if (project.hasProperty('kapt')) {
-                kapt 'javax.xml.bind:jaxb-api:2.3.1'
-                kapt 'com.sun.xml.bind:jaxb-core:2.3.0.1'
-                kapt 'com.sun.xml.bind:jaxb-impl:2.3.2'
-            }
-
+        project.dependencies {
+            // NOTE: Previously we added `com.github.pengrad:jdk9-deps`, but it is not resolvable from our
+            // repositories and is not required for building on modern JDKs (17+).
             annotationProcessor 'javax.xml.bind:jaxb-api:2.3.1'
             annotationProcessor 'com.sun.xml.bind:jaxb-core:2.3.0.1'
             annotationProcessor 'com.sun.xml.bind:jaxb-impl:2.3.2'
         }
     }
-
 }

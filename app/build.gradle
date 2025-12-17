@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
+// KAPT removed - Glide 4.16.0 supports KSP, eliminating the need for KAPT
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.hiya.jacoco-android'
+apply plugin: 'jacoco'
 apply plugin: "com.starter.easylauncher"
 
 android {
@@ -26,13 +27,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation"  : "$projectDir/src/test/resources/schemas".toString(),
-                              "room.incremental"     : "true",
-                              "room.expandProjection": "true"]
-            }
-        }
+        // Room configuration is now handled by KSP (see ksp block below)
+        // javaCompileOptions are kept for any other annotation processors that might need them
     }
 
     signingConfigs {
@@ -63,6 +59,8 @@ android {
 
     buildFeatures {
         viewBinding true
+        // Required on AGP 8+ when using custom BuildConfig fields
+        buildConfig true
     }
 
     flavorDimensions = ['static']
@@ -85,12 +83,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 
     testOptions {
@@ -127,10 +125,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
     playImplementation "com.android.billingclient:billing:$androidBillingVersion"
-    kapt "androidx.room:room-compiler:$roomVersion"
+    ksp "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
-    kapt "androidx.annotation:annotation:$androidXAnnotationVersion"
+    ksp "androidx.annotation:annotation:$androidXAnnotationVersion"
 
     implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
 
@@ -153,7 +151,7 @@ dependencies {
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinxCoroutineTestVersion"
     testImplementation "androidx.arch.core:core-testing:$androidXArchCoreTestVersion"
-    kaptTest "com.google.auto.service:auto-service:1.0-rc4"
+    kspTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
@@ -219,7 +217,10 @@ dependencies {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    // Use KSP for Glide (Glide 4.12.0+ supports KSP)
+    // This eliminates the need for KAPT entirely, avoiding Windows SQLite native library issues
+    // Use the ksp artifact for Glide to generate GlideApp
+    ksp "com.github.bumptech.glide:ksp:$glideVersion"
 
     implementation "com.leinardi.android:speed-dial:$fabSpeedDialVersion"
 
@@ -257,8 +258,21 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
+
+
+// KSP (Kotlin Symbol Processing) configuration
+// KSP is faster than KAPT and doesn't have the Windows native library extraction issues
+// KSP automatically handles task dependencies, so no manual configuration is needed
+ksp {
+    arg("room.schemaLocation", "$projectDir/src/test/resources/schemas")
+    arg("room.incremental", "true")
+    arg("room.expandProjection", "true")
+}
+
+// KAPT has been completely removed - both Room and Glide now use KSP
+// This eliminates Windows SQLite native library issues that occurred with KAPT
 
 configurations.configureEach {
     resolutionStrategy {
@@ -294,15 +308,6 @@ project.afterEvaluate {
 
 clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
-
-jacoco {
-    toolVersion = "${jacocoVersion}"
-}
-
-jacocoAndroidUnitTestReport {
-    html.enabled true
-    xml.enabled true
-}
 
 tasks.withType(Test).configureEach {
     jacoco.includeNoLocationClasses = true

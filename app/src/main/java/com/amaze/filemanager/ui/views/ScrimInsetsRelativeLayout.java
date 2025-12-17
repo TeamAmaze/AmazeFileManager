@@ -59,13 +59,21 @@ public class ScrimInsetsRelativeLayout extends RelativeLayout {
   }
 
   private void init(Context context, AttributeSet attrs, int defStyle) {
-    final TypedArray a =
-        context.obtainStyledAttributes(attrs, R.styleable.ScrimInsetsFrameLayout, defStyle, 0);
-    if (a == null) {
-      return;
+    // Note: ScrimInsetsFrameLayout styleable may not exist, handle gracefully
+    TypedArray a = null;
+    try {
+      a = context.obtainStyledAttributes(attrs, R.styleable.ScrimInsetsFrameLayout, defStyle, 0);
+      if (a != null) {
+        mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsFrameLayout_insetForeground);
+      }
+    } catch (Exception e) {
+      // Styleable doesn't exist, use null (will be handled in draw method)
+      mInsetForeground = null;
+    } finally {
+      if (a != null) {
+        a.recycle();
+      }
     }
-    mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsFrameLayout_insetForeground);
-    a.recycle();
 
     setWillNotDraw(true);
   }
