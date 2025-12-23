@@ -183,6 +183,7 @@
     <string name="archive_text">Dies ist ein Archiv. Was möchten Sie durchführen\?</string>
     <string name="package_installer_text">Dies ist ein Installer für Pakete. Was möchten Sie tun\?</string>
     <string name="xda_title">XDA Thread</string>
+    <string name="xda_summary">F&amp;amp;A, Hilfe &amp;amp; Fehlerlösungen&lt;br data-mce-bogus=\"1\"&gt;</string>
     <string name="circular_images">Runde Icons für Bilder und Videos verwenden</string>
     <string name="circular_icons">Runde Icons verwenden</string>
     <string name="follow_battery_saver_title">Batteriesparmodus folgen</string>
@@ -212,6 +213,7 @@
     <string name="tamil_translation_title">Tamil</string>
 
     <string name="zip_viewer">Zip-Betrachter</string>
+    <string name="unin_system_apk">Dies ist eine System-App, ihre Löschung könnte zu Systeminstabilität führen.Fortsetzen\?</string>
     <string name="warning">Warnung</string>
     <string name="donate">Spenden</string>
     <string name="archive_extract_folder">Verzeichnis zum Entpacken von Archiven</string>
