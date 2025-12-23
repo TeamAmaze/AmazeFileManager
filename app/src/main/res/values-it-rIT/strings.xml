@@ -537,6 +537,7 @@
     <string name="ftps_connection">Connessione FTP su SSL</string>
     <string name="ftps_enable_explicit_tls">TLS esplicito</string>
     <string name="scp_port">Porta</string>
+    <string name="ssh_host_key_verification_prompt">L\'autenticità dell\'host \'%1$s\' non può essere stabilita.%2$s l\'impronta della chiave è %3$s.Premere \"Sì\" per confermare l\'identità, altrimenti premere \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verificare l\'host</string>
     <string name="ssh_select_pem_button">Chiave SSH privata</string>
     <string name="ssh_pem_key_parse_error">Impossibile leggere la PEM selezionata: %s</string>
@@ -545,6 +546,7 @@
     <string name="ssh_authentication_failure_key">Accesso fallito: impossibile autenticarsi con username e chiave privata forniti</string>
     <string name="ssh_connect_failed">Impossibile connettersi a %1$s:%2$d:%3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">ATTENZIONE: L\'IDENTIFICATORE DELL\'HOST REMOTO È CAMBIATO!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">POSSIBILE ATTIVITÀ SOSPETTA!Qualcuno potrebbe stare spiando la tua connessione in questo momento (attacco “man-in-the-middle”)! È anche possibile che la chiave dell’host sia stata modificata. L’impronta della chiave pubblica inviata dall’host remoto non corrisponde a quella memorizzata in Amaze.Contatta l’amministratore di sistema oppure configura una nuova connessione per continuare a collegarti al server.</string>
     <string name="ssh_key_prompt_passphrase">Per favore inserisci la chiave passphrase.</string>
     <string name="add_shortcut_not_supported_by_launcher">La creazione di scorciatoie non è supportata dal tuo launcher.</string>
     
@@ -580,6 +582,7 @@
     <string name="encrypt_file_save_as">Salva il file criptato come&amp;#8230;</string>
     <string name="encrypt_folder_save_as">Salva la cartella criptata come&amp;#8230;</string>
     <string name="encrypt_option_use_aze">Usa il Formato Crittografico di Amaze</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[        <p>AESCrypt è un formato di crittografia dei file open source basato sull’algoritmo AES. È anche portabile e può essere decriptato con i programmi AESCrypt su altre piattaforme.</p>        <p>Sito Web AESCrypt: https://www.aescrypt.com</p>    ]]></string>
     <string name="encrypt_file_must_end_with_aze">I file cifrati devono avere \".aze\" come estensione del file.</string>
     <string name="encrypt_file_must_end_with_aes">I file criptati devono usare \".aes\" come estensione del file.</string>
     <string name="error_aescrypt_decrypt_failed">Impossibile decriptare \'%s\': \'%s\'</string>
@@ -659,6 +662,7 @@
     <string name="choose_operation">Scegli l\'operazione da eseguire</string>
     <string name="remember">Ricorda la prossima volta</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Consenti accesso SAF al server FTP</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Poiché è la prima volta che si utilizza il server FTP, e viene utilizzata la memoria interna come cartella condivisa, consenti ad Amaze di accedere alla memoria utilizzando SAF.Questa operazione verrà richiesta una sola volta, fino alla successiva selezione di una diversa posizione per la condivisione.</string>
     <string name="android_data_prompt_saf_access">A partire da Android 10, sono state imposte restrizioni su alcune cartelle, alle quali è necessario accedere con Storage Access Framework. Per consentire ad Amaze di accedere alla cartella dal file manager del sistema, tocca \"Consenti Accesso\".</string>
     <string name="android_data_prompt_saf_access_title">Consenti accesso SAF</string>
     <string name="ftp_preference_saf_filesystem_title">Usa filesystem legacy</string>
@@ -682,6 +686,7 @@
     <string name="select_similar">Seleziona simili</string>
     <string name="select_fill">Seleziona il riempimento</string>
     <string name="error_fetching_google_play_product_list">Errore durante la ricezione della lista prodotti da Google Play.</string>
+    <string name="grant_all_files_permission"><![CDATA[<html><body>Da Android 11, Google necessita che i File Manager chiedano il permesso dell\'utente per gestire tutti i file del dispositivo. Dettagli <a href=\"https://developer.android.com/training/data-storage/manage-all-files\" target=\"_blank\">qui</a>.        Anche Amaze File Manager necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.        \n\n<font color=\'#ff6347\'><i>Annullando questa richiesta, l\'app terminerà.</i></font></body></html>]]></string>
     <string name="user_apps">App utente</string>
     <string name="appearance">Aspetto</string>
     <string name="behavior">Comportamento</string>
@@ -715,6 +720,7 @@
     <string name="share_logs_summary">Condividi i log acquisiti via email / telegram</string>
     <string name="open_with_amaze">Apri con Amaze</string>
     <string name="confirmation">Conferma</string>
+    <string name="open_file_confirmation">Sicuro di aprire il seguente file\?Nome:%sPercorso:%sDimensione:%sMD5:%sSHA256:%s</string>
     <string name="error_google_play_cannot_update_myself">Secondo la policy di Google Play, alle app non è permesso aggiornarsi automaticamente. Per favore aggiorna l\'app tramite Google Play.</string>
     <string name="error_cannot_get_package_info">Impossibile ottenere le info dal file \"%s\". Il file specificato non è un APK, o il package è corrotto.</string>
     <string name="preference_delete_confirmation">Conferma eliminazione</string>
@@ -729,6 +735,7 @@
     <string name="importing_completed">Importazione completata</string>
     <string name="invalid_backup_file">File di backup non valido</string>
     <string name="import_failed_for">Importazione fallita per:</string>
+    <string name="free_of">%s%s liberi di %s</string>
     <string name="cloud_error_fdroid">Il plugin Amaze Cloud non è supportato dalla versione F-Droid. Si prega di usare la versione di Amaze disponibile sul Play Store.</string>
     <string name="disable_player_intent_filters">Disabilita i filtri intent del player</string>
     <string name="disable_player_intent_filters_summary">Disabilita i filtri intent del player Amaze nel selettore dei file</string>
