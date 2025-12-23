@@ -42,7 +42,7 @@
     <string name="enterpath">輸入路徑</string>
     <string name="cancel">取消</string>
     <string name="create">新增</string>
-    <string name="loading">正在載入&#8230;</string>
+    <string name="loading">正在載入&amp;#8230;</string>
     <string name="file_empty">檔案是空的</string>
     <string name="error">錯誤</string>
     <string name="search_results">%s 的搜尋結果</string>
@@ -76,11 +76,14 @@
     <string name="dialog_delete_category_directories">目錄</string>
     <string name="dialog_delete_category_files">近期檔案</string>
     <string name="dialog_delete_disclaimer">刪除以下項目將永久將其從裝置中刪除，並且無法恢復。</string>
+    <string name="dialog_delete_temporarily_disclaimer">您确定要删除以下项目吗？</string>
+    <string name="dialog_restore_disclaimer">您确定要恢复以下项目吗？</string>
     <string name="dialog_delete_title">永久刪除項目？</string>
     <string name="deleting">正在刪除</string>
     <string name="question_set_path_as_home">您要將此頁籤的目前路徑設為首頁嗎？</string>
     <string name="directorysort">目錄排序方式</string>
     <string name="sort_by">排序方式</string>
+    <string name="sort_by_colon">排列方式：</string>
     <string name="sort_only_this">僅應用於此目錄</string>
     <string name="theme">主題</string>
     <string name="random">隨機色彩</string>
@@ -121,6 +124,7 @@
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">選擇一個檔案</string>
+    <string name="pick_files">选择一个或多个文件</string>
     <string name="process_viewer">處理程序管理員</string>
     <string name="in_safe">空間不足</string>
     <string name="no_file_overwrite">未覆蓋任何檔案</string>
@@ -178,9 +182,9 @@
     <string name="archive_text">這是一個壓縮檔，您要執行哪一項操作？</string>
     <string name="package_installer_text">這是一個套件安裝程式，您要執行哪一項操作？</string>
     <string name="xda_title">XDA 超連結</string>
-    <string name="xda_summary">問與答、説明和疑難排解</string>
     <string name="circular_images">對圖片和影片使用圓形圖示</string>
     <string name="circular_icons">使用圓形圖示</string>
+    <string name="follow_battery_saver_title">跟随省电模式</string>
     <string name="back_title">顯示返回導覽</string>
     <string name="back_summary">在清單的頂部顯示返回導覽</string>
     <string name="details">詳細資料</string>
@@ -206,7 +210,6 @@
     <string name="tamil_translation_title">坦米爾語</string>
 
     <string name="zip_viewer">ZIP 壓縮檔檢視器</string>
-    <string name="unin_system_apk">這是一個系統應用程式，刪除它可能導致系統不穩定。\n是否繼續？</string>
     <string name="warning">警告</string>
     <string name="donate">捐贈</string>
     <string name="archive_extract_folder">壓縮檔解壓縮資料夾</string>
@@ -239,8 +242,6 @@
     <string name="databasereader">資料庫讀取器</string>
     <string name="show_dividers">顯示分隔線</string>
     <string name="needs_access">需要寫入的權限</string>
-    <string name="needs_access_summary">請選擇根目錄下的 \t</string>
-    <string name="needs_access_summary1">\t 以授予寫入的權限</string>
     <string name="smb_connection">SMB 連線</string>
     <string name="smb_server">伺服器 IP 位址</string>
     <string name="server_address">伺服器 IP 位址</string>
@@ -285,7 +286,7 @@
     <string name="cut">剪下</string>
     <string name="search">搜尋</string>
     <string name="invalid_name">無效名稱</string>
-    <string name="search_hint">輸入以搜尋&#8230;</string>
+    <string name="search_hint">輸入以搜尋&amp;#8230;</string>
     <string name="advanced_search">進階搜尋</string>
     <string name="regular_expression">正規運算式</string>
     <string name="regular_expression_summary">使用 BASH 樣式的正規運算式進行搜尋</string>
@@ -405,7 +406,7 @@
     <string name="cloud_connection">雲端連線</string>
     <string name="cloud_connection_new">新增雲端連線</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google雲端硬碟&#8482;</string>
+    <string name="cloud_drive">Google雲端硬碟&amp;#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">取得雲端套件</string>
@@ -450,15 +451,13 @@
     <string name="crypt_decrypt">解密</string>
     <string name="operation_fail_following">以下檔案操作失敗</string>
     <string name="crypt_pref_master_password_title">主密碼</string>
-    <string name="crypt_pref_master_password_summary">設定一組加密的主密碼。
-         留空以刪除。</string>
+    <string name="crypt_pref_master_password_summary">設定一組加密的主密碼。\n         留空以刪除。</string>
     <string name="crypt_pref_fingerprint_title">指紋</string>
     <string name="crypt_pref_fingerprint_summary">使用指紋驗證加密</string>
     <string name="crypt_fingerprint_no_permission">指紋權限遺失</string>
     <string name="crypt_fingerprint_not_enrolled">沒有指紋登記</string>
     <string name="crypt_fingerprint_no_security">沒有找到鎖定畫面安全</string>
-    <string name="crypt_warning_key">當您改變安全模式時，請注意
-         系統設定，您將無法解密此內容。</string>
+    <string name="crypt_warning_key">當您改變安全模式時，請注意\n         系統設定，您將無法解密此內容。</string>
     <string name="warning_never_show">不再通知</string>
     <string name="warning_confirm">明白！</string>
     <string name="crypt_encryption_fail">加密失敗</string>
@@ -506,7 +505,7 @@
     <string name="failed_cloud_api_key">認證雲端硬碟套件失敗</string>
 
     <string name="local_inet_addr_error">無法取得本機 IP位址</string>
-    <string name="intent_save_as">儲存為&#8230;</string>
+    <string name="intent_save_as">儲存為&amp;#8230;</string>
     <string name="go">去</string>
     <string name="advanced">進階</string>
     <string name="typeable_paths_title">自訂路徑</string>
@@ -523,7 +522,7 @@
     <string name="channel_name_ftp">Amaze FTP 伺服器</string>
     <string name="channel_description_ftp">來自 Amaze FTP 伺服器的通知</string>
 
-    <string name="processing">正在處理中&#8230;</string>
+    <string name="processing">正在處理中&amp;#8230;</string>
     <string name="failed_no_connection">無法載入檔案。請檢查網路連線。</string>
 
     <string name="update">更新</string>
@@ -531,7 +530,6 @@
     <string name="ftp_connection">FTP 连接</string>
     <string name="ftps_connection">FTPS 连接</string>
     <string name="scp_port">通訊埠</string>
-    <string name="ssh_host_key_verification_prompt">未能確認遠端主機\'%1$s\'的身份。\n\n%2$s的公鑰指紋碼為 %3$s.\n\n請按「是」以確認其身份；否則請按「否」。</string>
     <string name="ssh_host_key_verification_prompt_title">確認遠端主機</string>
     <string name="ssh_select_pem_button">SSH私鑰</string>
     <string name="ssh_pem_key_parse_error">不能讀取所選擇的 PEM檔： %s</string>
@@ -540,7 +538,6 @@
     <string name="ssh_authentication_failure_key">登入失敗：未能以所設用戶名稱及私鑰登入。</string>
     <string name="ssh_connect_failed">不能連線到 %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">警告：遠端伺服器的公鑰已變更！</string>
-    <string name="ssh_connect_failed_host_key_changed_message">似乎有人有不軌企圖！\n\n可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n請聯絡你的系統管理員，或重新設定連線。</string>
     <string name="ssh_key_prompt_passphrase">請輸入私鑰密碼。</string>
     <string name="add_shortcut_not_supported_by_launcher">你的 Launcher不支援建立捷徑。</string>
     
@@ -562,6 +559,7 @@
     <string name="create_file_suggest_txt_extension">建議以 \".txt\"作為檔案擴展名稱。</string>
     <string name="ssh_select_pem">選擇認證時使用的 SSH私鑰</string>
     <string name="ssh_key_invalid_passphrase">私鑰密碼錯誤。</string>
+    <string name="ssh_key_no_decoder_decrypt">没有有效的解码器来解密 PEM。</string>
     <string name="encryption_fail_copy">不能更新在資料庫內的加密檔案記錄。</string>
     <string name="extracted">已解壓</string>
     <string name="compressed">已壓縮</string>
@@ -575,13 +573,6 @@
     <string name="encrypt_file_save_as">儲存加密檔案為……</string>
     <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
     <string name="encrypt_option_use_aze">使用Amaze加密格式</string>
-    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
- <p>AESCrypt是一种开源的文件加密格式，并且它基于高级加密标准。它也是可移植的，可以使用其他平台上的AESCrypt程序进行解密</p>
- <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt网站</a></p>]]>
-</string>
-    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
-        <p>Amaze使用的加密格式也采用了高级加密标准。但是，与AES Crypt格式不同的是，它只能在此设备上解密；除此之外，您不能卸载此设备上的Amaze文件管理器，也不能更改锁屏方式，否则您将无法恢复加密文件。</p>
-    ]]></string>
     <string name="encrypt_file_must_end_with_aze">加密檔案必須以 .aze為檔案擴展名稱。</string>
     <string name="encrypt_file_must_end_with_aes">加密文件必须以 aes 作为文件后缀名</string>
     <string name="error_aescrypt_decrypt_failed">无法解密 \'%s\': \'%s\'</string>
@@ -603,7 +594,6 @@
     <string name="close">關閉</string>
     <string name="bookmark_exists">書籤已存在</string>
     <string name="hide_media">從媒體瀏覽器中隱藏</string>
-    <string name="ssh_connect_failed_host_key_changed_prompt">好像有人有不軌企圖！\n\n伺服器發出的公鑰指紋跟存在 Amaze的不同。可能有人在截聽你的通訊（中間人攻擊）！但是這也可能只是伺服器的公鑰剛剛更新了。\n\n你可以繼續，讓 Amaze更新伺服器的公鑰指紋，或者取消更新 SSH連線設定。</string>
     <string name="update_host_key">更新主機公鑰</string>
     <string name="cancel_recommended">取消(建議)</string>
     <string name="failed_install_apk">安裝失敗</string>
@@ -632,7 +622,6 @@
     <string name="error_snackbar_action">報告</string>
     <string name="what_device_headline">資料：</string>
     <string name="what_happened_headline">發生了什麼事？</string>
-    <string name="info_labels">什麼事：\\n請求：\\nGMT 時間：\\n應用程序包：\\n版本：\\nOS 版本：\\n設備:\\n型號:\\n代號：</string>
     <string name="your_comment">附加資料（請用英文填寫）：</string>
     <string name="error_details_headline">詳情：</string>
     <string name="app_ui_crash">應用程式/UI崩潰</string>
@@ -663,38 +652,26 @@
     <string name="choose_operation">選擇要執行的動作</string>
     <string name="remember">記住設定</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">容許 FTP伺服器以 SAF存取檔案</string>
-    <string name="ftp_prompt_accept_first_start_saf_access">因為這是你第一次開啟 FTP伺服器，而你正以內部儲存空間共享到 FTP伺服器上，請容許 Amaze以 SAF存取內部儲存空間。
-
-你只需進行這個動作一次，直至你選擇把另一個位置共享到 FTP伺服器上。</string>
-    <string name="android_data_prompt_saf_access">从安卓10开始，系统限制了某些目录的访问，需要使用存储访问框架才能访问这些目录。
-
-请您点击“允许”，才能让Amaze通过系统文件管理器访问该目录。</string>
     <string name="android_data_prompt_saf_access_title">获取“存储访问框架”权限</string>
     <string name="ftp_preference_saf_filesystem_title">使用傳統檔案系統</string>
     <string name="ftp_preference_saf_filesystem">启用此功能，进而可以在新版本的安卓系统上使用外部存储</string>
     <string name="ftp_server_fallback_path_reset_prompt">由于您正在切换回旧版的文件系统的实现方式，文件传输协议服务器的共享路径已经被重新设定为内部存储。请您根据自身需求，通过右上角的菜单选择新路径。</string>
     <string name="ftp_server_reset_notify">FTP服务器的共享路径已被重置为内部存储</string>
     <string name="ftp_server_root_unavailable">访问当前路径需要根权限。如果您的设备已获取根权限，请在设置中启用根权限浏览器功能</string>
-    <string name="ftp_server_root_filesystem_warning">您当前所选路径需要根权限。授权后，Amaze能够读取和写入您设备上的所有文件。这很危险——粗心大意可以使您的设备变砖！
-您确定要继续吗？</string>
     <string name="compressed_explorer_fragment_error_open_uri">读取 URI \"%s\" 时发生错误。</string>
     <string name="error_empty_archive">\"%s\" 是空白的壓縮檔。</string>
     <string name="error_bad_archive_without_info">压缩文件 \"%s\" 已损坏。</string>
-    <string name="error_bad_archive_with_info">“%s”是一个已损坏的压缩文件。
-本通知来自于解压缩程序。“%s”</string>
     <string name="security_error">檔案不能以此 app開啟</string>
     <string name="cloud_drive_tooltip">建立到 Google雲端硬碟™的連線，以便在 Amaze檔案管理員內管理在雲端硬碟上的檔案。</string>
-    <string name="signin_with_google_title">登入以使用 Google雲端硬碟&#8482;</string>
+    <string name="signin_with_google_title">登入以使用 Google雲端硬碟&amp;#8482;</string>
     <string name="show_system_apps">顯示系統應用程式</string>
     <string name="system_apps">系統應用程式</string>
     <string name="select_inverse">反选</string>
     <string name="select_by_type">选择同类型</string>
     <string name="select_by_date">选择同日期</string>
     <string name="select_similar">选择相似项</string>
+    <string name="select_fill">选择填充</string>
     <string name="error_fetching_google_play_product_list">在谷歌应用商店获取产品列表时出现错误</string>
-    <string name="grant_all_files_permission"><html><body>依照谷歌要求，从安卓11开始，文件管理器应当先经过用户授权，才能管理该设备所有文件。详情<a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">请点击此处</a>。
-Amaze文件管理器也需要该权限才能管理设备的所有文件。在此处按“授权”后，请在下一个界面上选择<b>“允许访问以管理所有文件”选项</b>
-<font color='#ff6347'><i>取消此对话框将退出应用程序。</i></font></body></html></string>
     <string name="user_apps">用户应用</string>
     <string name="appearance">外观</string>
     <string name="behavior">行为</string>
@@ -702,6 +679,14 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="ui_summary">控制信息展示，定制侧边栏，以及个性化界面</string>
     <string name="behavior_summary">修改诸如高级搜索或是否以新任务打开文件等行为</string>
     <string name="security_summary">设置口令与加密</string>
+    <string name="backup_summary">导出 / 导入 Amaze 设置</string>
+
+
+    <string name="pref_export">导出</string>
+    <string name="pref_export_summary">到处是隋朝</string>
+    <string name="pref_import">导入</string>
+    <string name="pref_import_summary">导入设置</string>
+
     <string name="quick_desc">最近通过 Amaze 访问的文件</string>
     <string name="recent_desc">最近创建或修改的文件</string>
     <string name="error_cannot_find_way_open">找不到打开文件的方式</string>
@@ -713,23 +698,12 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="image_viewer">Amaze图像查看器</string>
     <string name="video_player">Amaze视频播放器</string>
     <string name="amaze_audio_player">Amaze音乐播放器</string>
+    <string name="pdf_viewer">文档浏览器-Amaze</string>
+    <string name="docx_viewer">文档浏览器-Amaze</string>
     <string name="share_logs">分享日志</string>
     <string name="share_logs_summary">使用邮件或电报来分享已抓取的日志</string>
     <string name="open_with_amaze">使用Amaze打开</string>
     <string name="confirmation">确认</string>
-    <string name="open_file_confirmation">您确定要打开以下文件吗？
-名称：
-%s
-位置：
-%s
-大小：
-%s
-第5版信息提炼算法：
-%s
-256位哈希安全算法：
-%s
-
-</string>
     <string name="error_google_play_cannot_update_myself">根据谷歌应用市场的强制要求，应用不可自行更新。请您从谷歌应用市场更新应用。</string>
     <string name="error_cannot_get_package_info">无法从文件“%s”中获取安装包信息。该文件可能不是安卓应用安装包，或者该文件已损坏。</string>
     <string name="preference_delete_confirmation">确认删除</string>
@@ -737,11 +711,40 @@ Amaze文件管理器也需要该权限才能管理设备的所有文件。在此
     <string name="protocol_ftps">安全型文件传输协议</string>
     <string name="unavailable">不可用</string>
 
-    <string name="free_of">\"%s
-没有%s的%s</string>
+    <string name="exporting_failed">导出失败：无法写入备份文件</string>
+    <string name="importing_failed">导入失败：无法读取备份文件</string>
+    <string name="importing_completed">导入完成</string>
+    <string name="invalid_backup_file">无效的备份文件</string>
+    <string name="import_failed_for">导入失败：</string>
     <string name="cloud_error_fdroid">在F-Droid版本的Amaze文件管理器上，不支持云插件功能。请使用谷歌应用商店版本的Amaze文件管理器</string>
     <string name="disable_player_intent_filters">禁止应用来响应与播放器关联的打开方式</string>
     <string name="disable_player_intent_filters_summary">Amaze内置的媒体播放器，禁止它出现在文件打开方式中</string>
     <string name="no_app_found_intent">未找到应用去处理此目标。您是否有安装安卓系统文件管理器？</string>
+    <string name="not_finding_what_you_re_looking_for">没有找到？</string>
+    <string name="try_deep_search">尝试深度（Deep）搜索！</string>
+    <string name="try_indexed_search">尝试索引（Indexed）搜索！</string>
+    <string name="search_recent">最近的</string>
+    <string name="results">结果</string>
+    <string name="complete_paste_warning">请首先完成粘贴操作</string>
+    <string name="same_dir_move_error">要移动的目标文件夹和源文件夹相同。</string>
+    <string name="checking_conflicts">冲突检查</string>
+    <string name="not_found_enabled_webview">没有可用的浏览器</string>
+    <string name="preference_language_title">APP 语言</string>
+    <string name="preference_language_dialog_title">选择语言</string>
+    <string name="preference_language_system_default">系统默认</string>
+    <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
+    <string name="error.listfile.smb">在 %s : %s 列出文件出错</string>
+    <string name="error.listfile.smb.noipcshare">在 %s 列出文件列表失败——SMB 服务器可能不允许匿名访问 IPC$ 共享。您可以尝试在连接设置中直接指定共享名称。</string>
+    <string name="trash_bin">回收站</string>
+    <string name="delete_permanently_checkbox">永久删除</string>
+    <string name="restore">恢复</string>
+    <string name="restore_files">恢复文件</string>
+    <string name="restoring">正在恢复……</string>
+    <string name="trash_bin_retention_num_of_files_summary">回收站最多可以存储</string>
+    <string name="trash_bin_retention_days_title">保留天数</string>
+    <string name="trash_bin_retention_days_summary">回收站可以存储文件的最大天数</string>
+    <string name="trash_bin_retention_bytes_summary">回收站可存储的最大大小（MB）</string>
+    <string name="trash_bin_cleanup_interval_title">清洁间隔</string>
+    <string name="trash_bin_cleanup_interval_summary">触发自动清洁间隔（小时）</string>
     </resources>
 
