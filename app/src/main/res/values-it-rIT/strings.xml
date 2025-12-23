@@ -183,6 +183,7 @@
     <string name="archive_text">Questo è un archivio. Quale operazione vorresti effettuare\?</string>
     <string name="package_installer_text">Questo è un package installer. Quale operazione vorresti effettuare\?</string>
     <string name="xda_title">Thread XDA</string>
+    <string name="xda_summary">Domande, Aiuto e Risoluzione problemi</string>
     <string name="circular_images">Usa icone circolari per immagini e video</string>
     <string name="circular_icons">Usa icone circolari</string>
     <string name="follow_battery_saver_title">Segui il risparmio batteria</string>
@@ -212,6 +213,7 @@
     <string name="tamil_translation_title">Tamil</string>
 
     <string name="zip_viewer">Visualizzatore file ZIP</string>
+    <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.Procedere\?</string>
     <string name="warning">Attenzione</string>
     <string name="donate">Fai una donazione</string>
     <string name="archive_extract_folder">Cartella estrazione archivio</string>
@@ -654,6 +656,7 @@
     <string name="choose_operation">Scegli l\'operazione da eseguire</string>
     <string name="remember">Ricorda la prossima volta</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Consenti accesso SAF al server FTP</string>
+    <string name="android_data_prompt_saf_access">A partire da Android 10, sono state imposte restrizioni su alcune cartelle, alle quali è necessario accedere con Storage Access Framework.Per consentire ad Amaze di accedere alla cartella dal file manager del sistema, tocca \"Consenti Accesso\".</string>
     <string name="android_data_prompt_saf_access_title">Consenti accesso SAF</string>
     <string name="ftp_preference_saf_filesystem_title">Usa filesystem legacy</string>
     <string name="ftp_preference_saf_filesystem">Abilita questa opzione per usare la memoria esterna del dispositivo sulle versioni più recenti di Android</string>
