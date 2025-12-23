@@ -36,12 +36,13 @@
     <string name="uninstall">Desinstalatu</string>
     <string name="play">Play store</string>
     <string name="properties">Propietateak</string>
+    <string name="copyingapks">%d APK fitxategi kopiatzen hona: %s</string>
     <string name="delbook">Ezabatu laster-marka</string>
     <string name="add_to_bookmarks">Gehitu laster-marka</string>
     <string name="enterpath">Sartu bidea</string>
     <string name="cancel">UTZI</string>
     <string name="create">SORTU</string>
-    <string name="loading">Kargatzen&#8230;</string>
+    <string name="loading">Kargatzen&amp;#8230;</string>
     <string name="file_empty">Fitxategia hutsik dago</string>
     <string name="error">Errorea</string>
     <string name="search_results">%s(r)en bilaketaren emaitzak</string>
@@ -53,7 +54,7 @@
     <string name="date">Data</string>
     <string name="location">Kokapena</string>
     <string name="size_capitalized">Tamaina</string>
-    <string name="size">Karpetaren tamaina</string>
+    <string name="size">karpetaren tamaina</string>
     <string name="enterzipname">Sartu zip fitxategiaren izena</string>
     <string name="no_app_found">Ez da aurkitu fitxategi hau irekitzeko aplikaziorik</string>
     <string name="copying">Kopiatzen</string>
@@ -75,15 +76,18 @@
     <string name="dialog_delete_category_directories">Direktorioak</string>
     <string name="dialog_delete_category_files">Fitxategiak</string>
     <string name="dialog_delete_disclaimer">Beheko elementuak ezabatzean zure gailutik behin betiko kenduko dira eta ezingo dira berreskuratu.</string>
-    <string name="dialog_delete_title">Gailuak behin betiko ezabatu?</string>
+    <string name="dialog_delete_temporarily_disclaimer">Ziur zaude ondorengo elementuak ezabatu nahi dituzula\?</string>
+    <string name="dialog_restore_disclaimer">Ziur zaude ondorengo elementuak leheneratu nahi dituzula\?</string>
+    <string name="dialog_delete_title">Elementuak behin betiko ezabatu\?</string>
     <string name="deleting">Ezabatzen</string>
-    <string name="question_set_path_as_home">Uneko bidea fitxa honen etxe bezala ezarri nahi duzu?</string>
+    <string name="question_set_path_as_home">Uneko bidea fitxa honen etxe bezala ezarri nahi duzu\?</string>
     <string name="directorysort">Direktorioa sailkatzeko modua</string>
     <string name="sort_by">Sailkatu honen arabera</string>
+    <string name="sort_by_colon">Sailkatu honela:</string>
     <string name="sort_only_this">Soilik karpeta hau</string>
     <string name="theme">Gaia</string>
     <string name="random">Ausazko azala</string>
-    <string name="random_summary">Ausazko gaia ezartzen du abioan</string>
+    <string name="random_summary">Ausazko kolore nagusia ezartzen du abioan</string>
     <string name="colorize">Koloreztatu ikonoak</string>
     <string name="colorize_summary">Ikonoentzako kolore estatikoa ezartzen du. Ez du direktorioaren ikono kolorearen hobespena gainidazten.</string>
     <string name="home">Etxea</string>
@@ -96,6 +100,8 @@
     <string name="select_all">Hautatu dena</string>
     <string name="delete">Ezabatu</string>
     <string name="set_as_home">Ezarri etxeko karpeta bezala</string>
+    <string name="operation_not_supported">Eragiketa ez da onartzen</string>
+
     <!-- New -->
     <!-- Array -->
 
@@ -105,6 +111,7 @@
     <string name="dark">Material iluna</string>
     <string name="daytime">Egunekoa</string>
     <string name="black">Beltza (OLEDentzat)</string>
+    <string name="system">Sistema (jarraitu sistemaren gaia)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Karpetak gainean</string>
@@ -114,9 +121,11 @@
     <string name="sort_name">Izena</string>
     <string name="lastModified">Azken aldaketa</string>
     <string name="sort_size">Tamaina</string>
+    <string name="sort_relevance">Egokitasuna</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Hautatu fitxategi bat</string>
+    <string name="pick_files">Hautatu fitxategi bat edo gehiago</string>
     <string name="process_viewer">Prozesu ikustailea</string>
     <string name="in_safe">Ez dago leku nahikorik</string>
     <string name="no_file_overwrite">Ez da fitxategirik gainidatzi</string>
@@ -143,14 +152,14 @@
     <string name="set_random">Aldaketak aplikazioa berrabiarazterakoan gertatuko dira</string>
     <string name="authors">Egileak</string>
     <string name="changelog">Aldaketak</string>
-    <string name="ok">ADOS</string>
+    <string name="ok">Ados</string>
     <string name="ui">Interfazea</string>
     <string name="general">Orokorra</string>
     <string name="thumb_summary">Erakutsi aplikazioen eta irudien koadro txikiak</string>
     <string name="thumb">Erakutsi koadro txikiak</string>
-    <string name="hidden">Ezkutuko fitxategi eta karpetak erakutsi</string>
-    <string name="lastModifiedSummary">Erakutsi fitxategia azken aldiz aldatu zen data eta ordua</string>
-    <string name="lastModifiedPref">Erakutsi azken aldaketa</string>
+    <string name="hidden">Erakutsi ezkutuko fitxategi eta karpetak</string>
+    <string name="lastModifiedSummary">Erakutsi azken aldaketaren data eta ordua</string>
+    <string name="lastModifiedPref">Erakutsi azken aldaketaren data eta ordua</string>
     <string name="size_pref_summary">Erakutsi fitxategien tamaina eta elementu kopurua karpetetan</string>
     <string name="size_pref">Erakutsi tamainak</string>
     <string name="miscellaneous">Beste batzuk</string>
@@ -165,20 +174,21 @@
     <string name="root_directory">Root</string>
     <string name="add_shortcut">Gehitu lasterbidea</string>
     <string name="unsaved_changes">Gorde gabeko aldaketak</string>
-    <string name="unsaved_changes_description">Gorde ez diren aldaketak dituzu, irten baino lehen gorde nahi al dituzu?</string>
+    <string name="unsaved_changes_description">Gorde ez diren aldaketak dituzu, irten baino lehen gorde nahi dituzu\?</string>
     <string name="saving">Gordetzen</string>
     <string name="package_installer">Pakete instalatzailea</string>
     <string name="view">Ikusi</string>
     <string name="install">Instalatu</string>
     <string name="archive">Artxiboa</string>
-    <string name="archive_text">Hau artxibo bat da. Zer egin nahi duzu?</string>
-    <string name="package_installer_text">Hau pakete instalatzaile bat da. Zer egin nahi duzu?</string>
+    <string name="archive_text">Hau artxibo bat da. Zer egin nahi duzu\?</string>
+    <string name="package_installer_text">Hau pakete instalatzaile bat da. Zer egin nahi duzu\?</string>
     <string name="xda_title">XDA haria</string>
-    <string name="xda_summary">G&amp;E, Laguntza &amp; Arazoen konponketa</string>
     <string name="circular_images">Erabili ikono zirkularrak irudi eta bideoetan</string>
     <string name="circular_icons">Erabili ikono zirkularrak</string>
+    <string name="follow_battery_saver_title">Jarraitu bateria aurreztailea</string>
+    <string name="follow_battery_saver_desc">Hautatuz gero, eta bateria aurreztailea gaituta badago, gai ilunera aldatzen da</string>
     <string name="back_title">Atzerako nabigazioa</string>
-    <string name="back_summary">Atzerako nabigazio pertsonalizatua gaitzen du zerrendaren goiko aldera</string>
+    <string name="back_summary">Atzerako nabigazio pertsonalizatua gaitzen du zerrendaren goiko aldean</string>
     <string name="details">Xehetasunak</string>
     <string name="translators">Itzultzaileak</string>
     <string name="german_translation_title">Alemana</string>
@@ -202,7 +212,6 @@
     <string name="tamil_translation_title">Tamilera</string>
 
     <string name="zip_viewer">Zip ikustailea</string>
-    <string name="unin_system_apk">Sistemaren aplikazio bat da hau, ezabatzeak sistemaren ezegonkortasuna ekar lezake.\nJarraitu?</string>
     <string name="warning">Abisua</string>
     <string name="donate">Egin dohaintza</string>
     <string name="archive_extract_folder">Erauzitako artxiboen karpeta</string>
@@ -226,7 +235,7 @@
     <string name="primary_color_title">Lehen kolorea (ezkerreko fitxa)</string>
     <string name="primary_color_summary">Ezarri ezkerreko fitxako UI elementu handien kolorea</string>
     <string name="accent_color_title">Azentu kolorea</string>
-    <string name="accent_color_summary">FAB eta beste UI elementu txikien kolorea ezarri</string>
+    <string name="accent_color_summary">Ezarri FAB eta beste UI elementu txikien kolorea</string>
     <string name="icon_color_title">Ikonoen kolorea</string>
     <string name="icon_color_summary">Ezarri ikonoen kolorea</string>
     <string name="choose_color">Aukeratu kolorea</string>
@@ -235,9 +244,8 @@
     <string name="databasereader">Datu-base irakurlea</string>
     <string name="show_dividers">Erakutsi banatzaileak</string>
     <string name="needs_access">Idazteko baimena behar da</string>
-    <string name="needs_access_summary">Mesedez aukera ezazu honen root direktorioa: \t</string>
-    <string name="needs_access_summary1">\thonekin jarduteko idazteko baimena emateko: </string>
     <string name="smb_connection">SMB konexioa</string>
+    <string name="smb_server">Zerbitzariaren IP helbidea</string>
     <string name="server_address">Zerbitzariaren IP helbidea</string>
     <string name="username">Erabiltzaile-izena</string>
     <string name="password">Pasahitza</string>
@@ -246,7 +254,7 @@
     <string name="folders">Karpetak</string>
     <string name="folderfilecount">%1$d karpeta eta %2$d fitxategi</string>
     <string name="videos">Bideoak</string>
-    <string name="apks">Apk-ak</string>
+    <string name="apks">APK-k</string>
     <string name="documents">Dokumentuak</string>
     <string name="images">Irudiak</string>
     <string name="clear">Garbitu</string>
@@ -280,39 +288,41 @@
     <string name="cut">Moztu</string>
     <string name="search">Bilatu</string>
     <string name="invalid_name">Izen baliogabea</string>
-    <string name="search_hint">Idatzi bilatzeko&#8230;</string>
+    <string name="search_hint">Idatzi bilatzeko&amp;#8230;</string>
     <string name="advanced_search">Bilaketa aurreratua</string>
     <string name="regular_expression">Adierazpen erregularra</string>
-    <string name="regular_expression_summary">Bilatu BASH antzeko adierazpen erregular bat erabiliz</string>
-    <string name="match_content">Edukiarekin bat egin</string>
-    <string name="match_content_summary">Ezartzen bada, espresio erregularra fitxategi-izen osoarekin bat datorren begiratuko da,
-        bestela agertzen den bilatuko da.</string>
+    <string name="regular_expression_summary">Bilatu BASH estiloko adierazpen erregular bat erabiliz</string>
+    <string name="match_content">Egin bat edukiarekin</string>
+    <string name="match_content_summary">Ezartzen bada, espresio erregularra fitxategi-izen osoarekin bat datorren begiratuko da,\n        bestela agertzen den bilatuko da.</string>
     <string name="start_ftp">Hasi</string>
     <string name="stop_ftp">Gelditu</string>
     <string name="ftp_status_running">Exekutatzen</string>
     <string name="ftp_status_not_running">Ez da exekutatzen ari</string>
-    <string name="ftp_no_wifi">Egiaztatu ezazu Wi-Fi ra konektatuta zaudela</string>
+    <string name="ftp_no_wifi">Egiaztatu wifira konektatuta zaudela</string>
     <string name="domain">Domeinua</string>
+    <string name="smb_share">Partekatzearen bidea</string>
     <string name="invalid">%s baliogabea</string>
     <string name="ftp_notif_starting">FTP zerbitzaria hasten ari da</string>
-    <string name="ftp_notif_starting_title">FTP Zerbitzaria</string>
+    <string name="ftp_notif_starting_title">FTP zerbitzaria</string>
     <string name="ftp_notif_title">Amaze FTP zerbitzaria exekutatzen</string>
     <string name="ftp_notif_text">%s(e)n</string>
-    <string name="ftp_notif_stop_server">GELDITU</string>
+    <string name="ftp_notif_stop_server">Gelditu</string>
     <string name="ftp_port_edit_menu_title">FTP ataka</string>
     <string name="ftp_port_change_success">FTP ataka ongi aldatu da</string>
     <string name="ftp_port_change_error_invalid">Ataka zenbaki baliogabea hautatu da</string>
     <string name="primary_two_title">Kolore nagusia (eskuineko fitxa)</string>
     <string name="primary_two_summary">Ezarri eskuineko fitxako UI elementu handien kolorea</string>
-    <string name="support_development">Sostengatu garapena</string>
+    <string name="support_development">Babestu garapena</string>
     <string name="report_bugs_title">Eman erroreen berri</string>
+    <string name="source_title">Iturburu-kodea</string>
+    <string name="source_summary">Ikusi gure iturburu-kodea GitHub-en</string>
     <string name="report_bugs_summary">Eman erroreen berri edo eskatu ezaugarri berri bat</string>
     <string name="translate_title">Itzuli</string>
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
     <string name="searching_devices">Gailuak bilatzen</string>
     <string name="use_custom_ip">Erabili IP pertsonalizatua</string>
-    <string name="bookmark_lost">Ez da laster-marka aurkitu, birsortzen&#8230;</string>
+    <string name="bookmark_lost">Ez da laster-marka aurkitu, birsortzen&amp;#8230;</string>
 
     <string name="share_limit">Ezin dira 100 fitxategi baino gehiago partekatu</string>
     <string name="otg_access">Hautatu OTG gailuaren erroa</string>
@@ -383,6 +393,7 @@
     <string name="smb_launch_error">Fitxategi hau irekitzeko biltegira kopiatu beharko duzu</string>
     <string name="error_file_not_found">Errorea: fitxategia ez da aurkitu</string>
     <string name="error_io">S/I errorea</string>
+    <string name="error_file_too_large">Errorea: fitxategi handiegia</string>
     <string name="medium_text">Testu ertaina</string>
     <string name="permission_read">Irakurri</string>
     <string name="permission_write">Idatzi</string>
@@ -397,6 +408,7 @@
     <string name="cloud_connection">Hodeiko konexioa</string>
     <string name="cloud_connection_new">Hodeiko konexio berria</string>
     <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive&amp;#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Eskuratu hodeiko plugina</string>
@@ -422,7 +434,7 @@
     <string name="intellihide_toolbar_summary">Ezkutatu tresna-barra automatikoki korritzean</string>
     <string name="hash_sha256">SHA-256</string>
     <!-- references 'name/size/location/hash' copied to clipboard -->
-    <string name="properties_copied_clipboard">arbelera kopiatuta</string>
+    <string name="properties_copied_clipboard">arbelean kopiatuta</string>
     <string name="contributors_1_summary">Itzulpena</string>
     <string name="contributors_2_summary">Ikono eta iragarki-bandak</string>
     <string name="contributors_3_summary">Gaiaren motorra</string>
@@ -441,17 +453,15 @@
     <string name="crypt_decrypt">Desenkriptatu</string>
     <string name="operation_fail_following">Eragiketak huts egin du ondorengo fitxategientzat</string>
     <string name="crypt_pref_master_password_title">Pasahitz nagusia</string>
-    <string name="crypt_pref_master_password_summary">Ezarri pasahitz nagusi bat enkriptatzeko.
-        Hutsik utzi kentzeko.</string>
+    <string name="crypt_pref_master_password_summary">Ezarri pasahitz nagusi bat enkriptatzeko.\n        Hutsik utzi kentzeko.</string>
     <string name="crypt_pref_fingerprint_title">Hatz-marka</string>
     <string name="crypt_pref_fingerprint_summary">Erabili hatz-marka enkriptatzea autentifikatzeko</string>
     <string name="crypt_fingerprint_no_permission">Hatz-marka baimenak falta dira</string>
     <string name="crypt_fingerprint_not_enrolled">Hatz-markarik ez da erregistratu</string>
     <string name="crypt_fingerprint_no_security">Ez da blokeatutako pantailako segurtasunik aurkitu</string>
-    <string name="crypt_warning_key">Kontutan izan, Sistemaren ezarpenetan segurtasun eredua
-        aldatzen duzunean, ezingo duzula eduki hau desenkriptatu.</string>
+    <string name="crypt_warning_key">Kontutan izan, Sistemaren ezarpenetan segurtasun eredua\n        aldatzen duzunean, ezingo duzula eduki hau desenkriptatu.</string>
     <string name="warning_never_show">Ez erakutsi berriro</string>
-    <string name="warning_confirm">Ulertu dut!</string>
+    <string name="warning_confirm">Ulertuta!</string>
     <string name="crypt_encryption_fail">Huts egin du enkriptatzean</string>
     <string name="crypt_decryption_fail">Huts egin du desenkriptatzean</string>
     <string name="crypt_decryption_fail_password">Pasahitz okerra!</string>
@@ -464,11 +474,16 @@
     <string name="show_quick_access_pref">Sarbide azkarrak</string>
     <string name="directory">Direktorioa</string>
 
+    <string name="sidebar_bookmarks_title">Alboko barrako laster-markak</string>
+    <string name="show_bookmarks_pref_title">Erakutsi laster-markak</string>
     <string name="show_bookmarks_pref">Laster-markak</string>
+    <string name="create_bookmark">Sortu laster-marka</string>
+    <string name="edit_bookmark">Editatu laster-marka</string>
+    <string name="question_delete_bookmark">Laster-marka ezabatu\?</string>
+
     <string name="cloud_error_plugin">Ez da Amaze Cloud plugina aurkitu. Mesedez, deskargatu Play Store-tik.</string>
-    <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.
-        Mesedez, ireki Amaze Cloud berriz.</string>
-    <string name="cloud_remove">Hodeiko konexioa kendu nahi duzu?</string>
+    <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.\n        Mesedez, ireki Amaze Cloud berriz.</string>
+    <string name="cloud_remove">Hodeiko konexioa kendu nahi duzu\?</string>
     <string name="cloud_fail_authenticate">Huts egin du autentifikatzean</string>
     <string name="cloud_share_copied">Partekatu daitekeen esteka arbelera kopiatu da</string>
     <string name="copy_low_memory">Memoriarik gabe gelditzen, mesedez garbitu RAM pixka bat</string>
@@ -492,7 +507,7 @@
     <string name="failed_cloud_api_key">Huts egin du Cloud plugina autentifikatzean</string>
 
     <string name="local_inet_addr_error">Errorea inet helbide lokala eskuratzean</string>
-    <string name="intent_save_as">Gorde honela&#8230;</string>
+    <string name="intent_save_as">Gorde honela&amp;#8230;</string>
     <string name="go">Joan</string>
     <string name="advanced">Aurreratua</string>
     <string name="typeable_paths_title">Bide pertsonalizatuak</string>
@@ -509,13 +524,14 @@
     <string name="channel_name_ftp">Amaze FTP zerbitzaria</string>
     <string name="channel_description_ftp">Amaze fitxategi-kudeatzailearen FTP zerbitzariaren jakinarazpenak</string>
 
-    <string name="processing">Prozesatzen&#8230;</string>
+    <string name="processing">Prozesatzen&amp;#8230;</string>
     <string name="failed_no_connection">Huts egin du fitxategiak kargatzean. Egiaztatu zure konexioa.</string>
 
     <string name="update">EGUNERATU</string>
 	<string name="scp_connection">SCP/SFTP konexioa</string>
+    <string name="ftp_connection">FTP konexioa</string>
+    <string name="ftps_connection">SSL gaineko FTP konexioa</string>
     <string name="scp_port">Ataka</string>
-    <string name="ssh_host_key_verification_prompt">Ezin da ostalariaren egiazkotasuna ziurtatu %1$s.n\n%2$s gakoaren hatz-marka %3$s da.\n\nSakatu \"Bai\" identitatea berresteko; bestela, sakatu \"Ez\".</string>
     <string name="ssh_host_key_verification_prompt_title">Egiaztatu ostalaria</string>
     <string name="ssh_select_pem_button">SSH gako pribatua</string>
     <string name="ssh_pem_key_parse_error">Ezin da hautatutako PEM irakurri: %s</string>
@@ -524,11 +540,6 @@
     <string name="ssh_authentication_failure_key">Saioa hastean arazoa: Ezin da emandako erabiltzaile-izen eta gako pribatuarekin autentifikatu.</string>
     <string name="ssh_connect_failed">Ezin da konektatu %1$s(e)ra:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">ABISUA: URRUNEKO OSTALARIAREN IDENTIFIKAZIOA ALDATU DA!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">
-        POSIBLE DA NORBAIT MALTZURKERIA BAT EGITEN ARITZEA!\n\n
-        Baliteke norbait ezkutuan entzuten egotea une honetan (man-in-the-middle erasoa)! Baliteke ostalariaren gakoa aldatu izana ere. Urruneko ostalariak bidalitako gako publikoaren hatz-marka ez dator bat Amazen gordetakoarekin.\n\n
-        Jakinarazi zure sistemaren administratzaileari edo konfiguratu konexio berri bat zerbitzarira konektatzeko.
-    </string>
     <string name="ssh_key_prompt_passphrase">Sartu gakoaren pasaesaldia.</string>
     <string name="add_shortcut_not_supported_by_launcher">Zure abiarazleak ez du onartzen lasterbideak sortzea.</string>
     
@@ -550,6 +561,7 @@
     <string name="create_file_suggest_txt_extension">Fitxategiaren luzapen bezala \".txt\" erabiltzea gomendatzen da.</string>
     <string name="ssh_select_pem">Hautatu autentifikaziorako gako pribatua</string>
     <string name="ssh_key_invalid_passphrase">Gakoaren pasaesaldi baliogabea.</string>
+    <string name="ssh_key_no_decoder_decrypt">Ez da baliozko deskodetzaileak PEM deszifratzeko.</string>
     <string name="encryption_fail_copy">Huts egin du datu-basean enkriptatze sarrera eguneratzean</string>
     <string name="extracted">Erauzita</string>
     <string name="compressed">Konprimatua</string>
@@ -557,11 +569,15 @@
     <string name="no_obtainable_info">Ez dago fitxategi honi buruzko informaziorik</string>
     <string name="reopen_from_source">Ezin da, ireki azken aplikaziotik</string>
     <string name="no_file_error">Zerbaitek huts egin du, ez dago zer irekirik</string>
+    <string name="file_too_long">Fitxategia luzeegia da eta ezin da editatu, edonola lehen %d karaktereak irakur ditzakezu</string>
     <string name="file_read_only">Irekitako fitxategia irakurtzeko soilik da.</string>
     <string name="got_it">Ulertuta!</string>
-    <string name="encrypt_file_save_as">Gorde enkriptatutako fitxategia honela&#8230;</string>
-    <string name="encrypt_folder_save_as">Gorde enkriptatutako karpeta honela&#8230;</string>
+    <string name="encrypt_file_save_as">Gorde enkriptatutako fitxategia honela&amp;#8230;</string>
+    <string name="encrypt_folder_save_as">Gorde enkriptatutako karpeta honela&amp;#8230;</string>
+    <string name="encrypt_option_use_aze">Erabili Amaze zifratze-formatua</string>
     <string name="encrypt_file_must_end_with_aze">Enkriptatutako fitxategiek \".aze\" luzapena eduki behar dute.</string>
+    <string name="encrypt_file_must_end_with_aes">Zifratutako fitxategiek \".aes\" luzapena erabili behar dute.</string>
+    <string name="error_aescrypt_decrypt_failed">Ezin izan da \'%s\': \'%s\' deszifratu</string>
     <string name="cannot_overwrite">Ezin da fitxategia gainidatzi.</string>
     <string name="saved_single_file">Fitxategia honela gorde da: \'%s\'.</string>
     <string name="saved_multi_files">%d fitxategi gorde dira.</string>
@@ -572,6 +588,172 @@
     <string name="unknown">ezezaguna</string>
     <string name="multiple_invalid_archive_entries">Artxiboko zenbait fitxategi ezin dira erauzi; artxiboa hondatua egon daiteke edo jatorri maltzurrekoa izan daiteke.</string>
     <string name="saf_otg_explanation">Androiden fitxategi-sistemara joango zara orain segurtasun arrazoiengatik. Hautatu USB gailua ezkerreko zerrendatik.</string>
+    <string name="donation_thanks">Eskerrik asko dohaintzagatik, horrek motibatuta mantentzen gaitu! (:</string>
+    <string name="enable_marquee_filename">Gaitu markesina efektua fitxategi-izenentzat</string>
+    <string name="archive_password_prompt">Sartu artxiboko pasahitza:</string>
+    <string name="cannot_extract_archive">Ezin izan da erauzi \"%s\" artxiboa: %s</string>
+    <string name="archive_unsupported_or_corrupt">Ezin izan da ireki \"%s\" artxiboa. Artxiboa ezin da  ireki, edo hondatu egin da.</string>
     <string name="close">Itxi</string>
+    <string name="bookmark_exists">Laster-marka badago</string>
+    <string name="hide_media">Ezkutatu multimedien arakatzaileetatik</string>
+    <string name="update_host_key">Eguneratu ostalariaren gakoa</string>
+    <string name="cancel_recommended">Utzi (gomendatuta)</string>
+    <string name="failed_install_apk">Instalazioak huts egin du</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Barneko biltegia</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD txartela</string>
+    <string name="choose_folder">Aukeratu karpeta hau</string>
+    <string name="some_files_failed_invalid_operation">Fitxategi batzuek huts egin dute eragiketa baliogabea dela medio</string>
+    <string name="ftp_server_prompt_connect_to_network">Konektatu sare batera edo gaitu atzipen puntua</string>
+    <string name="ftp_server_open_settings">Ireki ezarpenak</string>
+    <string name="move">Mugitu</string>
+    <string name="select_save_location">Hautatu non gorde</string>
+    <string name="scp_default_path">Lehenetsitako bidea (aukerakoa)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Barkatu, hori ez litzateke gertatu behar.</string>
+    <string name="error_report_button_text">Eman errore honen berri posta elektronikoz</string>
+    <string name="error_report_button_telegram">Eman errore honen berri Telegram bidez</string>
+    <string name="copy_for_github">Kopiatu formateatutako txostena</string>
+    <string name="error_report_open_issue_button_text">Eman errore honen berri Githuben</string>
+    <string name="error_report_open_github_notice">Egiaztatu zure istripua eztabaidatzeko arazoa dagoen ala ez.</string>
+    <string name="error_snackbar_message">Barkatu, zerbait oker joan da.</string>
+    <string name="error_snackbar_action">Eman arazo baten berri</string>
+    <string name="what_device_headline">Informazioa:</string>
+    <string name="what_happened_headline">Zer gertatu da:</string>
+    <string name="your_comment">Zure iruzkina (ingelesez)</string>
+    <string name="error_details_headline">Xehetasunak:</string>
+    <string name="app_ui_crash">Aplikazioak/Interfazeak huts egin du</string>
+    <string name="error_report_title">Errore-txostena</string>
+    <string name="crash_report_copied">Errore-txostena arbelean kopiatu da</string>
+    <string name="disableIpcSignature">Desgaitu IPC sinadura egiaztapena (SMBV1 zerbitzari zaharrentzat - ARRISKUTSUA!)</string>
+    <string name="cannot_delete_file">Ezin da fitxategia ezabatu</string>
+    <string name="cannot_delete_file_with_reason">Ezin da fitxategia ezabatu - %s </string>
+    <string name="cannot_rename_file">Ezin da fitxategia berrizendatu %s - %s</string>
+    <string name="cannot_read_directory">Ezin da direktorioa irakurri %s - %s</string>
+    <string name="just_once">Behin bakarrik</string>
+    <string name="always">Beti</string>
+    <string name="choose_different_app">Aukeratu beste aplikazio bat</string>
+    <string name="clear_open_file">Garbitu cachea</string>
+    <string name="clear_open_file_summary">Aukeratutako fitxategiak irekitzeko aplikazioak garbitzen ditu</string>
+    <string name="ftp_readonly">Irakurtzeko soilik sarbidea</string>
+    <string name="legacy_listing_title">Erabili zerrendatze zaharra root-entzat</string>
+    <string name="legacy_listing_summary">Gaituta badago, metodo zaharra erabiltzen du fitxategiak zerrendatzeko</string>
+    <string name="error_unsupported_v5_rar">\"%s\" RAR artxiboa ez da onartzen RAR v5 bertsioan.</string>
+    <string name="ftp_prompt_restart_server">FTP zerbitzaria berrabiarazi beharko duzu aldaketak indarrean jartzeko.</string>
+    <string name="error_permission_denied">Baimena ukatua</string>
+    <string name="error_archive_password_incorrect">Artxiboko pasahitz okerra</string>
+    <string name="error_archive_cannot_extract">Ezin da artxiboa \"%s\"-tik \"%s\"-ra erauzi.</string>
+    <string name="drag_and_drop_preference">Hautatu arrastatu eta jaregin hobespena (esperimentala)</string>
+    <string name="drag_to_move_copy">Sakatu eta arrastatu fitxategiak mugitu edo kopiatzeko</string>
+    <string name="drag_to_select">Sakatu eta arrastatu fitxategiak hautatzeko</string>
+    <string name="disable">Desgaitu</string>
+    <string name="choose_operation">Aukeratu eragiketa</string>
+    <string name="remember">Gogoratu hurrengorako</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">Baimendu SAF sarbidea FTP zerbitzarirako</string>
+    <string name="android_data_prompt_saf_access_title">Baimendu SAF sarbidea</string>
+    <string name="ftp_preference_saf_filesystem_title">Erabili fitxategi-sistema zaharra</string>
+    <string name="ftp_preference_saf_filesystem">Gaitu hau gailuaren kanpoko biltegiratzea Android bertsio berriagoetan erabiltzeko</string>
+    <string name="ftp_server_fallback_path_reset_prompt">FTP zerbitzariak partekatutako bide-izena barne-biltegiratzean berrezarri da, fitxategi-sistema zaharrera itzultzen ari zarelako. Mesedez, hautatu bide-izen berri bat goiko eskuineko menua erabiliz.</string>
+    <string name="ftp_server_reset_notify">FTP zerbitzariak partekatutako bide-izena barne-biltegiratzean berrezarri da</string>
+    <string name="ftp_server_root_unavailable">Root sarbidea behar duen bide-izena aukeratu duzu. Mesedez gaitu root arakatzea ezarpenetan zure gailua rooteatuta badago.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Errorea \"%s\" URLa irakurtzeko irekitzean.</string>
+    <string name="error_empty_archive">\"%s\" hutsa dagoen artxiboa da.</string>
+    <string name="error_bad_archive_without_info">\"%s\" hondatutako artxiboa da.</string>
+    <string name="security_error">Ezin izan da fitxategia ireki aplikazio hau erabiliz</string>
+    <string name="cloud_drive_tooltip">Sortu Google Drive™ konexioa AMAZE fitxategi arakatzailearen bidez fitxategiak kudeatzeko.</string>
+    <string name="signin_with_google_title">Autentifikatu Google Drive™ erabiltzeko</string>
+    <string name="show_system_apps">Erakutsi sistemaren aplikazioak</string>
+    <string name="system_apps">Sistemaren aplikazioak</string>
+    <string name="select_inverse">Hautatu alderantzizkoa</string>
+    <string name="select_by_type">Hautatu motaren arabera</string>
+    <string name="select_by_date">Hautatu dataren arabera</string>
+    <string name="select_similar">Hautatu antzekoak</string>
+    <string name="select_fill">Hautatu betegarria</string>
+    <string name="error_fetching_google_play_product_list">Errorea Google Play-ren produktuaren zerrenda eskuratzean.</string>
+    <string name="user_apps">Erabiltzailearen aplikazioak</string>
+    <string name="appearance">Itxura</string>
+    <string name="behavior">Portaera</string>
+    <string name="appearance_summary">Pertsonalizatu fitxategi-kudeatzailearen gaia, koloreak eta itxura</string>
+    <string name="ui_summary">Kontrolatu zer informazioa erakutsi, pertsonalizatu alboko barra eta aldatu interfazearen hobespenak</string>
+    <string name="behavior_summary">Aldatu zenbait portaera, hala nola bilaketa aurreratua eta fitxategiak zeregin berri gisa ireki behar diren ala ez</string>
+    <string name="security_summary">Konfiguratu pasahitza eta enkriptatzea</string>
+    <string name="backup_summary">Esportatu/Inportatu Amaze ezarpenak</string>
+
+
+    <string name="pref_export">Esportatu</string>
+    <string name="pref_export_summary">Esportatu ezarpenak</string>
+    <string name="pref_import">Inportatu</string>
+    <string name="pref_import_summary">Inportatu ezarpenak</string>
+
+    <string name="quick_desc">Amaze-ren bidez atzitu berri diren fitxategiak</string>
+    <string name="recent_desc">Sortu edo aldatu berri diren fitxategiak</string>
+    <string name="error_cannot_find_way_open">Ezin izan da fitxategia irekitzeko modua aurkitu</string>
+    <string name="error_cant_decompress_that_file">Ezin da eskatutako artxiboa prozesatu</string>
+    <string name="analyse_storage">Aztertu biltegiratzea</string>
+    <string name="download">Deskargatu</string>
+    <string name="wifip2p">P2P Wi-Fia</string>
+    <string name="amaze_utils_installed_alias">Eskerrik asko Amaze File Utilities instalatzeagatik. Aplikaziora bideratzua ari zara.</string>
+    <string name="image_viewer">Amaze irudi-ikustailea</string>
+    <string name="video_player">Amaze bideo-erreproduzigailua</string>
+    <string name="amaze_audio_player">Amaze musika-erreproduzigailua</string>
+    <string name="pdf_viewer">Amaze dokumentu-ikustailea</string>
+    <string name="docx_viewer">Amaze dokumentu-ikustailea</string>
+    <string name="share_logs">Erregistroak partekatu</string>
+    <string name="share_logs_summary">Partekatu erregistroak postaz / Telegramez</string>
+    <string name="open_with_amaze">Ireki Amazerekin</string>
+    <string name="confirmation">Berrespena</string>
+    <string name="error_google_play_cannot_update_myself">Google Play-ren politiken aginduei jarraikiz, aplikazioek ezin dute beren kasa eguneratu. Mesedez, eguneratu aplikazioa Google Play-tik.</string>
+    <string name="error_cannot_get_package_info">Ezin da paketearen informazioa eskuratu \"%s\" fitxategitik. Zehaztutako fitxategia ez da APK, edo pakete-fitxategia hondatuta dago.</string>
+    <string name="preference_delete_confirmation">Ezabaketaren berrespena</string>
+    <string name="preference_delete_confirmation_summary">Eskatu berrespena fitxategiak ezabatu aurretik. Hau desgaitzea ez da komeni!</string>
+    <string name="protocol_ftps">FTP segurua</string>
+    <string name="unavailable">Ez dago erabilgarri</string>
+
+    <string name="exporting_failed">Esportazioak huts egin du: ezin izan da babeskopiaren fitxategia idatzi</string>
+    <string name="importing_failed">Inportazioak huts egin du: ezin izan da babeskopiaren fitxategia irakurri</string>
+    <string name="importing_completed">Inportazioa burutu da</string>
+    <string name="invalid_backup_file">Babeskopia fitxategi baliogabea</string>
+    <string name="import_failed_for">Inportazioak huts egin du:</string>
+    <string name="cloud_error_fdroid">Amaze Cloud Plugin ez dago onartuta F-Droid bertsioarekin. Mesedez, erabili Play Store Amaze-ren bertsioa.</string>
+    <string name="disable_player_intent_filters">Desgaitu erreproduzigailuaren iragazkiak</string>
+    <string name="disable_player_intent_filters_summary">Fitxategi aukeretan Amaze multimedia erreproduzigailuak desgaitzen ditu</string>
+    <string name="no_app_found_intent">Ez da aurkitu hori kudeatzeko aplikaziorik. DocumentsUI instalatuta daukazu\?</string>
+    <string name="cloud_connection_credentials_cleared">Hodeiko konexioaren kredentzialak garbitu dira</string>
+    <string name="cloud_connection_credentials_cleared_msg">Zoritxarrez, ezin izan ditugu zure hodeiko konexio-kredentzialak datu-basearen eskema berrira migratu, eta aplikaziotik kendu behar izan ditugu. Mesedez, sortu berriro hodeiko konexioa.</string>
+    <string name="not_finding_what_you_re_looking_for">Ez duzu aurkitu bilatzen duzuna\?</string>
+    <string name="try_deep_search">Saiatu Deep Search bidez!</string>
+    <string name="try_indexed_search">Saiatu Bilaketa indexatuarekin!</string>
+    <string name="search_recent">Duela gutxikoak</string>
+    <string name="results">Emaitzak</string>
+    <string name="grant_notification_permission">Amaze-k jakinarazpen-baimena behar du fitxategien eragiketen aurrerapena bistaratzeko, baita panel erabilgarri bat ere FTP zerbitzaria abiarazteko/geldiarazteko.</string>
+    <string name="error_unsupported_or_null_uri">Baliogabea, ez da onartzen, edo ez da URIrik eman</string>
+    <string name="complete_paste_warning">Aurrena bukatu itsasten</string>
+    <string name="same_dir_move_error">Helburuko eta iturburuko karpetak ezin dira bera izan mugitzeko.</string>
+    <string name="checking_conflicts">Gatazkak bilatzen</string>
+    <string name="same_dir_overwrite_error">Helburuko eta iturburuko karpetak ezin dira bera izan gainidazteko.</string>
+    <string name="not_found_enabled_webview">Ez dago nabigatzailerik erabilgarri</string>
+    <string name="preference_language_title">Aplikazioaren hizkuntza</string>
+    <string name="preference_language_dialog_title">Hautatu hizkuntza</string>
+    <string name="preference_language_system_default">Sistemaren balio lehenetsia</string>
+    <string name="error.listfile.smb.title">Ezin izan da SMB fitxategi-zerrenda kargatu</string>
+    <string name="error.listfile.smb">Errorea fitxategiak zerrendatzen %s-n: %s</string>
+    <string name="error.listfile.smb.noipcshare">Errorea gertatu da fitxategiak %s-n zerrendatzean - ziurrenik SMB zerbitzariak ez du baimentzen anonimoki IPC$-ren partekatzean sartzea.  Saia zaitezke konexioaren konfigurazioan partekatze-izena zuzenean zehazten.</string>
+    <string name="trash_bin">Zakarrontzia</string>
+    <string name="delete_permanently_checkbox">Ezabatu betiko</string>
+    <string name="restore">Leheneratu</string>
+    <string name="restore_files">Leheneratu fitxategiak</string>
+    <string name="restoring">Leheneratzen...</string>
+    <string name="trash_bin_retention_num_of_files_title"> Fitxategi kopuruagatik gelditua</string>
+    <string name="trash_bin_retention_num_of_files_summary">Zakarrontzian bildu daitekeen gehienezko fitxategi kopurua</string>
+    <string name="trash_bin_retention_days_title">Egunengatik gelditua</string>
+    <string name="trash_bin_retention_days_summary">Zakarrontziak fitxategi bat gorde dezakeen gehienezko egun kopurua</string>
+    <string name="trash_bin_retention_bytes_title">Datuen tamainagatik gelditua</string>
+    <string name="trash_bin_retention_bytes_summary">Zakarrontziak bildu dezakeen gehienezko datu kopura (MBetan)</string>
+    <string name="trash_bin_cleanup_interval_title">Garbiketa maiztasuna</string>
+    <string name="trash_bin_cleanup_interval_summary">Automatikoki garbitzeko maiztasuna (orduak)</string>
     </resources>
 
