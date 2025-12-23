@@ -42,7 +42,7 @@
     <string name="enterpath">נא להקליד נתיב</string>
     <string name="cancel">ביטול</string>
     <string name="create">יצירה</string>
-    <string name="loading">טעינה&#8230;</string>
+    <string name="loading">טעינה&amp;#8230;</string>
     <string name="file_empty">הקובץ ריק</string>
     <string name="error">שגיאה</string>
     <string name="search_results">תוצאות החיפוש אחר %s</string>
@@ -76,9 +76,11 @@
     <string name="dialog_delete_category_directories">תיקיות</string>
     <string name="dialog_delete_category_files">קבצים</string>
     <string name="dialog_delete_disclaimer">מחיקת הפריטים שלהלן תסיר אותם לצמיתות מהמכשיר שלך ולא תהיה אפשרות לשחזר אותם.</string>
-    <string name="dialog_delete_title">למחוק את הפריטים לצמיתות?</string>
+    <string name="dialog_delete_temporarily_disclaimer">למחוק את הפריטים הבאים\?</string>
+    <string name="dialog_restore_disclaimer">לשחזר את הפריטים הבאים\?</string>
+    <string name="dialog_delete_title">למחוק את הפריטים לצמיתות\?</string>
     <string name="deleting">מחיקה</string>
-    <string name="question_set_path_as_home">להגדיר נתיב זה כנתיב הבית ללשונית זו?</string>
+    <string name="question_set_path_as_home">להגדיר נתיב זה כנתיב הבית ללשונית זו\?</string>
     <string name="directorysort">מצב מיון תיקייה</string>
     <string name="sort_by">מיון לפי</string>
     <string name="sort_by_colon">סידור לפי:</string>
@@ -172,19 +174,19 @@
     <string name="root_directory">שורש</string>
     <string name="add_shortcut">הוספת קיצור דרך</string>
     <string name="unsaved_changes">שינויים שלא נשמרו</string>
-    <string name="unsaved_changes_description">קיימים שינויים שלא נשמרו, לשמור אותם טרם היציאה?</string>
+    <string name="unsaved_changes_description">קיימים שינויים שלא נשמרו, לשמור אותם טרם היציאה\?</string>
     <string name="saving">שמירה</string>
     <string name="package_installer">מתקין החבילות</string>
     <string name="view">הצגה</string>
     <string name="install">התקנה</string>
     <string name="archive">ארכיון</string>
-    <string name="archive_text">זהו ארכיון. איזו פעולה לבצע?</string>
-    <string name="package_installer_text">זהו קובץ חבילה. איזו פעולה לבצע?</string>
+    <string name="archive_text">זהו ארכיון. איזו פעולה לבצע\?</string>
+    <string name="package_installer_text">זהו קובץ חבילה. איזו פעולה לבצע\?</string>
     <string name="xda_title">שרשור בפורום XDA</string>
-    <string name="xda_summary">קבלת תשובות לשאלות ועזרה בפתרון בעיות</string>
     <string name="circular_images">להשתמש בסמלים עגולים עבור תמונות וסרטונים</string>
     <string name="circular_icons">להשתמש בסמלים עגולים</string>
     <string name="follow_battery_saver_title">לאפשר חיסכון בסוללה</string>
+    <string name="follow_battery_saver_desc">אם האפשרות נבחרה ומצב חיסכון בסוללה פעיל, ערכת העיצוב תוחלף לכהה</string>
     <string name="back_title">ניווט אחורה</string>
     <string name="back_summary">מפעיל קיצור לחזרה אחורה בראש כל תיקייה</string>
     <string name="details">פרטים</string>
@@ -210,7 +212,6 @@
     <string name="tamil_translation_title">טמילית</string>
 
     <string name="zip_viewer">מציג Zip</string>
-    <string name="unin_system_apk">זה הוא יישומון מערכת, מחיקתו עלולה לערער את היציבות.\nלהמשיך?</string>
     <string name="warning">אזהרה</string>
     <string name="donate">תרומה</string>
     <string name="archive_extract_folder">תיקייה לחילוץ מארכיון</string>
@@ -243,8 +244,6 @@
     <string name="databasereader">קורא מסד נתונים</string>
     <string name="show_dividers">הצגת מפרידים</string>
     <string name="needs_access">נדרשת גישה לכתיבה</string>
-    <string name="needs_access_summary">נא לבחור בתיקיית הבסיס של \t</string>
-    <string name="needs_access_summary1">ֿ\tלהעניק גישת כתיבה כדי להפעיל</string>
     <string name="smb_connection">חיבור SMB</string>
     <string name="smb_server">כתובת IP של השרת</string>
     <string name="server_address">כתובת IP של השרת</string>
@@ -289,13 +288,12 @@
     <string name="cut">גזירה</string>
     <string name="search">חיפוש</string>
     <string name="invalid_name">שם שגוי</string>
-    <string name="search_hint">הקלדה לחיפוש&#8230;</string>
+    <string name="search_hint">הקלדה לחיפוש&amp;#8230;</string>
     <string name="advanced_search">חיפוש מתקדם</string>
     <string name="regular_expression">ביטוי רגולרי</string>
     <string name="regular_expression_summary">חיפוש באמצעות ביטויים רגולריים בסגנון BASH</string>
     <string name="match_content">התאמה לתוכן החיפוש</string>
-    <string name="match_content_summary">אם מופעל, הביטוי הרגולרי יותאם לשם הקובץ כולו,
-        אחרת יוכל להיות רק חלק משם הקובץ.</string>
+    <string name="match_content_summary">אם מופעל, הביטוי הרגולרי יותאם לשם הקובץ כולו,\n        אחרת יוכל להיות רק חלק משם הקובץ.</string>
     <string name="start_ftp">הפעלה</string>
     <string name="stop_ftp">עצירה</string>
     <string name="ftp_status_running">פועל</string>
@@ -324,59 +322,8 @@
     <string name="paypal_copy_message">מזהה ה־PayPal הועתק ללוח הגזירים</string>
     <string name="searching_devices">חיפוש התקנים</string>
     <string name="use_custom_ip">להשתמש בכתובת IP מותאמת אישית</string>
-    <string name="bookmark_lost">הסימניה לא נמצאה, נוצרת מחדש&#8230;</string>
+    <string name="bookmark_lost">הסימניה לא נמצאה, נוצרת מחדש&amp;#8230;</string>
 
-    <string name="smb_instructions">
-        <html>
-            <body>
-                <h1>איך לגשת לתיקיית Windows משותפת דרךAndroid (SMB)</h1>\n\n
-                <ul>
-                    <li>
-                        <b>הפעלת שיתוף קבצים ב־Windows</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        עליך לפתוח את לוח הבקרה, ללחוץ על בחירת קבוצה ביתית ואפשרויות שיתוף תחת רשת
-                        ואינטרנט, וללחוץ על „שינוי הגדרות שיתוף מתקדמות”, להפעיל את התכונה „שיתוף
-                        קבצים ומדפסות”.\n\n
-                    </p>
-
-                    <li>
-                        <b>הגדרות שיתוף קבצים נוספות</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        אולי גם יעניין אותך להגדיר הגדרות שיתוף קבצים נוספות. \n
-                        כמו למשל להפעיל גישה לקבצים שלך ללא סיסמה אם כל המכשירים
-                        ברשת המקומית שלך מהימנים. לאחר ששיתוף קבצים ומדפסות פעיל, ניתן לפתוח
-                        סייר הקבצים או סייר Windows, ללחוץ עם המקש הימני על תיקייה שברצונך לשתף,
-                        לבחור במאפיינים. \n
-                        ללחוץ על כפתור השיתוף ולאפשר את הגישה לתיקייה דרך הרשת..\n\n
-                        </p>
-
-                    <li>
-                        <b>יש לוודא ששני המכשירים באותה הרשת</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        תכונה זו מאפשרת לשתף קבצים דרך רשת מקומית, לכן על המחשב ועל הטלפון הנייד שלך
-                        להיות מחוברים לאותה רשת מקומית. אין לך אפשרות לגשת לתיקיית ה־Windows המשותפת
-                        דרך האינטרנט או כאשר הטלפון שלך מחובר לתקשורת נתונים סלולרית — יש
-                        לחבר אותו לרשת האלחוטית.\n\n
-                    </p>
-
-                    <li>
-                        <b>איתור כתובת ה־IP</b>\n
-                    </li>
-                    <p style='margin-left: 40px'>
-                        יש לפתוח את מסוף הפקודות. להקליד ‚ipconfig’ ואז Enter. להסתכל על שער בררת המחדל
-                        תחת מתאם הרשת של כתובת ה־IP של הנתב שלך. יש לחפש כתובת
-                        \\"IPv4\\" תחת הסעיף של אותו המתאם כדי למצוא את כתובת ה־IP של המחשב
-                        שלך.\n\n
-                    </p>
-
-                    <b>נא למלא את הפרטים בתיבה של ה־SMB</b>\n
-                </ul>
-            </body>
-        </html>
-    </string>
     <string name="share_limit">לא ניתן לשתף יותר מ־100 קבצים</string>
     <string name="otg_access">נא לבחור את שורש התקן ה־OTG</string>
     <string name="information">מידע</string>
@@ -461,7 +408,7 @@
     <string name="cloud_connection">חיבור לענן</string>
     <string name="cloud_connection_new">חיבור חדש לענן</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive&amp;#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">הורדת תוסף ענן</string>
@@ -506,15 +453,13 @@
     <string name="crypt_decrypt">פענוח</string>
     <string name="operation_fail_following">הפעולה כשלה על הקבצים הבאים</string>
     <string name="crypt_pref_master_password_title">סיסמה ראשית</string>
-    <string name="crypt_pref_master_password_summary">כאן ניתן להגדיר סיסמה ראשית להצפנה.
-        שדה ריק ישבית את הסיסמה.</string>
+    <string name="crypt_pref_master_password_summary">כאן ניתן להגדיר סיסמה ראשית להצפנה.\n        שדה ריק ישבית את הסיסמה.</string>
     <string name="crypt_pref_fingerprint_title">טביעת אצבע</string>
     <string name="crypt_pref_fingerprint_summary">שימוש בטביעת אצבע כדי לאמת הצפנה</string>
     <string name="crypt_fingerprint_no_permission">חסרות הרשאות לטביעת אצבע</string>
     <string name="crypt_fingerprint_not_enrolled">לא נרשמה טביעת אצבע</string>
     <string name="crypt_fingerprint_no_security">לא נמצאה אבטחה בצורת מסך נעילה</string>
-    <string name="crypt_warning_key">לתשומת לבך, לאחר שינוי תבנית האבטחה דרך
-        הגדרות המערכת, לא תהיה לך אפשרות לפענח את התוכן הזה.</string>
+    <string name="crypt_warning_key">לתשומת לבך, לאחר שינוי תבנית האבטחה דרך\n        הגדרות המערכת, לא תהיה לך אפשרות לפענח את התוכן הזה.</string>
     <string name="warning_never_show">לא להודיע לי שוב</string>
     <string name="warning_confirm">הבנתי!</string>
     <string name="crypt_encryption_fail">ההצפנה נכשלה</string>
@@ -534,12 +479,11 @@
     <string name="show_bookmarks_pref">סימניות</string>
     <string name="create_bookmark">יצירת סימניה</string>
     <string name="edit_bookmark">עריכת סימניה</string>
-    <string name="question_delete_bookmark">למחוק סימניה?</string>
+    <string name="question_delete_bookmark">למחוק סימניה\?</string>
 
     <string name="cloud_error_plugin">תוסף הענן של Amaze לא נמצא. נא להוריד מהחנות Play.</string>
-    <string name="cloud_error_failed_restart">טעינת החיבור נכשלה.
-        נא לפתוח את Amaze Cloud לפחות פעם אחת.</string>
-    <string name="cloud_remove">להסיר את החיבור לענן?</string>
+    <string name="cloud_error_failed_restart">טעינת החיבור נכשלה.\n        נא לפתוח את Amaze Cloud לפחות פעם אחת.</string>
+    <string name="cloud_remove">להסיר את החיבור לענן\?</string>
     <string name="cloud_fail_authenticate">האימות נכשל</string>
     <string name="cloud_share_copied">קישור לצורכי שיתוף הועתק ללוח הגזירים</string>
     <string name="copy_low_memory">הזיכרון אוזל, נא לפנות קצת</string>
@@ -563,7 +507,7 @@
     <string name="failed_cloud_api_key">אימות תוסף הענן נכשל</string>
 
     <string name="local_inet_addr_error">קבלת כתובת החיבור המקומית נכשלה</string>
-    <string name="intent_save_as">שמירה בשם&#8230;</string>
+    <string name="intent_save_as">שמירה בשם&amp;#8230;</string>
     <string name="go">לגשת</string>
     <string name="advanced">מתקדם</string>
     <string name="typeable_paths_title">נתיבים מותאמים אישית</string>
@@ -580,7 +524,7 @@
     <string name="channel_name_ftp">שרת FTP של Amaze</string>
     <string name="channel_description_ftp">התראות שרת ה־FTP של מנהל הקבצים Amaze</string>
 
-    <string name="processing">בהליכי עיבוד&#8230;</string>
+    <string name="processing">בהליכי עיבוד&amp;#8230;</string>
     <string name="failed_no_connection">טעינת הקבצים נכשלה. נא לבדוק את החיבור שלך</string>
 
     <string name="update">עדכון</string>
@@ -588,7 +532,6 @@
     <string name="ftp_connection">חיבור FTP</string>
     <string name="ftps_connection">FTP על גבי חיבור SSL</string>
     <string name="scp_port">פתחה</string>
-    <string name="ssh_host_key_verification_prompt">לא ניתן לאמת את מהימנות המארח ‚%1$s’.\n\nטביעת האצבע של המפתח ה%2$s היא %3$s.\n\nנא לגעת בכפתור „כן” כדי לאמת זהות, אחרת יש ללחוץ על „לא”.</string>
     <string name="ssh_host_key_verification_prompt_title">אימות מארח</string>
     <string name="ssh_select_pem_button">מפתח SSH פרטי</string>
     <string name="ssh_pem_key_parse_error">לא ניתן לקרוא את ה־PEM הנבחר: %s</string>
@@ -597,7 +540,6 @@
     <string name="ssh_authentication_failure_key">הכניסה נכשלה: לא ניתן לבצע אימות עם שם המשתמש והמפתח הפרטי שסופקו.</string>
     <string name="ssh_connect_failed">לא ניתן להתחבר אל %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">אזהרה: מזהה המארח המרוחק השתנה!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\nיכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\nנא ליצור קשר עם הנהלת המערכת או להקים חיבור חדש כדי להמשיך ולהתחבר לשרת.</string>
     <string name="ssh_key_prompt_passphrase">נא להקליד את מילת הצופן של המפתח.</string>
     <string name="add_shortcut_not_supported_by_launcher">למסך ההפעלה שלך אין תמיכה ביצירת קיצורי דרך.</string>
     
@@ -619,6 +561,7 @@
     <string name="create_file_suggest_txt_extension">מומלץ להשתמש ב־„‎.txt” כסיומת לקובץ.</string>
     <string name="ssh_select_pem">נא לבחור מפתח פרטי לאימות</string>
     <string name="ssh_key_invalid_passphrase">מילת צופן שגויה למפתח.</string>
+    <string name="ssh_key_no_decoder_decrypt">אין מנגנון תקף לפענוח PEM.</string>
     <string name="encryption_fail_copy">עדכון רשומת ההצפנה במסד הנתונים נכשל</string>
     <string name="extracted">חולץ</string>
     <string name="compressed">דחוס</string>
@@ -629,16 +572,9 @@
     <string name="file_too_long">הקובץ ארוך מדי ולא ניתן לערוך אותו, אפשר לקרוא את %d התווים הראשון בכל זאת</string>
     <string name="file_read_only">הקובץ שנפתח הוא לקריאה בלבד.</string>
     <string name="got_it">הבנתי!</string>
-    <string name="encrypt_file_save_as">שמירת קובץ מוצפן בשם&#8230;</string>
-    <string name="encrypt_folder_save_as">שמירת תיקייה מוצפנת בשם&#8230;</string>
+    <string name="encrypt_file_save_as">שמירת קובץ מוצפן בשם&amp;#8230;</string>
+    <string name="encrypt_folder_save_as">שמירת תיקייה מוצפנת בשם&amp;#8230;</string>
     <string name="encrypt_option_use_aze">להשתמש בתצורת הדחיסה של Amaze</string>
-    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
-        <p>AESCrypt היא תצורת הצפנת קבצים המבוססת על הצפנת AES. היא גם ניידת ואפשר לפענח אותה עם תוכניות, AESCrypt במערכות אחרות.</p>
-        <p><a href=\"https://www.aescrypt.com\" target=\"_blank>האתר של AESCrypt</a></p>]]>
-    </string>
-    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
-        <p>תצורת ההצפנה של Amaze מבוססת גם היא על AES אך היא שונה מתצורת AESCrypt, אפשר לפענח אותה רק במכשיר הזה; כמו כן, אסור לך להסיר את מנהל הקבצים Amaze מהמכשיר הזה או לשנות את אופן נעילת המסך, אחרת לא תהיה לך אפשרות לשחזר את הקבצים המוצפנים.</p>
-    ]]></string>
     <string name="encrypt_file_must_end_with_aze">מומלץ להשתמש ב־„‎.ace” כסיומת לקובץ.</string>
     <string name="encrypt_file_must_end_with_aes">הקבצים המוצפנים חייבים להשתמש בסיומת „‎.aes”.</string>
     <string name="error_aescrypt_decrypt_failed">לא ניתן לפענח את ‚%s’: ‚%s’</string>
@@ -660,7 +596,6 @@
     <string name="close">סגירה</string>
     <string name="bookmark_exists">הסימנייה קיימת</string>
     <string name="hide_media">הסתרה מסיירי מדיה</string>
-    <string name="ssh_connect_failed_host_key_changed_prompt">יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\nיכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\nניתן להמשיך ולעדכן את טביעת האצבע של השרת או לבטל את עדכון הגדרות חיבור ה־SSH.</string>
     <string name="update_host_key">עדכון מפתח מארח</string>
     <string name="cancel_recommended">ביטול (עדיף)</string>
     <string name="failed_install_apk">ההתקנה נכשלה</string>
@@ -689,7 +624,6 @@
     <string name="error_snackbar_action">דיווח</string>
     <string name="what_device_headline">מידע:</string>
     <string name="what_happened_headline">מה קרה:</string>
-    <string name="info_labels">מה:\\nבקשה:\\nזמן בגריניץ׳:\\nחבילה:\\nגרסה:\\nגרסת מערכת הפעלה:\\nמכשיר:\\nדגם:\\nמוצר:</string>
     <string name="your_comment">ההערה שלך (באנגלית):</string>
     <string name="error_details_headline">פרטים:</string>
     <string name="app_ui_crash">היישומון/מנשק המשתמש קרס</string>
@@ -720,21 +654,15 @@
     <string name="choose_operation">נא לבחור פעולה לביצוע</string>
     <string name="remember">לזכור לפעם הבאה</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">הענקת גישת SAF לשרת FTP</string>
-    <string name="ftp_prompt_accept_first_start_saf_access">מאחר שזו הפעלת שרת ה־FTP הראשונה שלך והאחסון הפנימי של המכשיר שלך משמש כתיקייה משותפת, נא לאפשר ל־Amaze לגשת לאחסון דרך SAF.\n\n
-
-עליך לבצע זאת פעם אחת בלבד, עד הפעם הבא בה ייבחר מקום חדש לשיתוף.</string>
-    <string name="android_data_prompt_saf_access">מאז Android 10, מערכת Android כופה הגבלות על תיקיות מסוימות ויש לגשת אליהן עם תשתית הגישה לאחסון.\n\nנא לאפשר ל־Amaze גישה לתיקייה ממנהל הקבצים של המערכת על ידי לחיצה על „לאפשר גישה”.</string>
     <string name="android_data_prompt_saf_access_title">הענקת גישת לתשתית גישה לאחסון</string>
     <string name="ftp_preference_saf_filesystem_title">להשתמש במערכת קבצים מיושנת</string>
     <string name="ftp_preference_saf_filesystem">יש להפעיל את זה לקבלת תמיכה בשימוש באחסון החיצוני של המכשיר בגרסאות חדשות של Android</string>
     <string name="ftp_server_fallback_path_reset_prompt">הנתיב המשותף לשרת ה־FTP אופס לאחסון הפנימי עקב בקשתך לחזור להטמעת מערכת קבצים מיושנת. נא לבחור נתיב חדש באמצעות התפריט משמאל למעלה במקרה הצורך.</string>
     <string name="ftp_server_reset_notify">נתיב השיתוף ב־FTP התאפס לאחסון הפנימי</string>
     <string name="ftp_server_root_unavailable">הנתיב הנבחר דורש גישת משתמש על (root). נא להפעיל את סייר משתמש העל בהגדרות אם המכשיר שלך פרוץ (rooted).</string>
-    <string name="ftp_server_root_filesystem_warning">הנתיב הנבחר דורש גישת משתמש על (root), שמאפשרת פעולות קריאה/כתיבה בכל מערכת הקבצים של המכשיר שלך ונחשבת מסוכנת - טעויות תמימות עשויות לפגום בפעולת המכשיר שלך!\n\nלהמשיך?</string>
     <string name="compressed_explorer_fragment_error_open_uri">שגיאה בפתיחת הכתובת „%s” לקריאה.</string>
     <string name="error_empty_archive">„%s” הוא ארכיון ריק.</string>
     <string name="error_bad_archive_without_info">הארכיון „%s” פגום</string>
-    <string name="error_bad_archive_with_info">„%s” הוא ארכיון פגום.\nההודעה מהמחלץ היא: „%s”</string>
     <string name="security_error">אי אפשר לפתוח את הקובץ באמצעות היישום הזה</string>
     <string name="cloud_drive_tooltip">יצירת חיבור ל־Google Drive™‎ לטובת ניהול קבצים מתוך מנהל הקבצים Amaze.</string>
     <string name="signin_with_google_title">יש לעבור אימות כדי להשתמש ב־Google Drive™‎</string>
@@ -744,10 +672,8 @@
     <string name="select_by_type">בחירה לפי סוג</string>
     <string name="select_by_date">בחירה לפי תאריך</string>
     <string name="select_similar">בחירת דומים</string>
+    <string name="select_fill">בחירת המילוי</string>
     <string name="error_fetching_google_play_product_list">שגיאה במשיכת המוצר מ־Google Play.</string>
-    <string name="grant_all_files_permission"><html><body>החל מ Android 11, דורשת Google ממנהלי קבצים לבקש הרשאה מהמשתמש לניהול כל הקבצים במכשיר. פרטים נוספים <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">כאן</a>.
-        \n\nגם מנהל הקבציםAmaze צריך את ההרשאה הזאת. לאחר לחיצה על „הענקה”, נא לבחור באפשרות <b>לאפשר גישה לניהול כל הקבצים</b> במסך העוקב.
-        \n\n<font color='#ff6347'><i>ביטול החלונית הזאת יסגור את היישומון.</i></font></body></html></string>
     <string name="user_apps">יישומוני משתמש</string>
     <string name="appearance">מראה</string>
     <string name="behavior">התנהגות</string>
@@ -756,6 +682,7 @@
     <string name="behavior_summary">שינוי התנהגויות כגון חיפוש מתקדם והאם לפתוח קבצים כמשימה חדשה</string>
     <string name="security_summary">הגדרת סיסמה והצפנה</string>
     <string name="backup_summary">ייצוא/ייבוא הגדרות</string>
+
 
     <string name="pref_export">ייצוא</string>
     <string name="pref_export_summary">הגדרות ייצוא</string>
@@ -773,23 +700,60 @@
     <string name="image_viewer">מציג התמונות של Amaze</string>
     <string name="video_player">נגן הווידאו של Amaze</string>
     <string name="amaze_audio_player">נגן המוזיקה של Amaze</string>
+    <string name="pdf_viewer">מציג המסמכים של Amaze</string>
+    <string name="docx_viewer">מציג המסמכים של Amaze</string>
     <string name="share_logs">שיתוף יומנים</string>
     <string name="share_logs_summary">שיתוף היומנים שנאספו דרך דוא״ל / טלגרם</string>
     <string name="open_with_amaze">פתיחה עם Amaze</string>
     <string name="confirmation">אישור</string>
-    <string name="open_file_confirmation">לפתוח את הקובץ הבא?\n\nשם:\n%s\n\nמיקום:\n%s\n\nגודל:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
     <string name="error_google_play_cannot_update_myself">עקב אילוץ של מדיניות מצד Google Play, ליישומונים אסור לעדכן את עצמם. נא לעדכן את היישומון דרך Google Play.</string>
-    <string name="error_cannot_get_package_info">לא ניתן למשוך את פרטי החבילה מהקובץ „%s”.
-או שזה לא קובץ APK או שקובץ החבילה פגום.</string>
+    <string name="error_cannot_get_package_info">לא ניתן למשוך את פרטי החבילה מהקובץ „%s”.\nאו שזה לא קובץ APK או שקובץ החבילה פגום.</string>
     <string name="preference_delete_confirmation">אישור מחיקה</string>
     <string name="preference_delete_confirmation_summary">לבקש אישור בטרם מחיקת קבצים. השבתת האפשרות לא מומלצת כלל!</string>
     <string name="protocol_ftps">FTP מאובטח</string>
     <string name="unavailable">לא זמין</string>
 
-    <string name="free_of">\"%s\n%s פנויים מתוך %s</string>
+    <string name="exporting_failed">הייצוא נכשל: לא ניתן לכתוב את קובץ הגיבוי</string>
+    <string name="importing_failed">הייבוא נכשל: לא ניתן לקרוא את קובץ הגיבוי</string>
+    <string name="importing_completed">הייבוא הושלם</string>
+    <string name="invalid_backup_file">קובץ הגיבוי שגוי</string>
+    <string name="import_failed_for">הייבוא נכשל עבור:</string>
     <string name="cloud_error_fdroid">אין תמיכה בתוסף Amaze Cloud בגרסת ה־F-Droid. נא להשתמש בגרסת חנות ה־Play של Amaze.</string>
     <string name="disable_player_intent_filters">השבתת מסנני Intent של הנגן</string>
     <string name="disable_player_intent_filters_summary">משבית את נגני המדיה המובנים של Amaze בבוחר הקבצים</string>
-    <string name="no_app_found_intent">לא נמצא יישומון לטיפול ב־Intent הזה. האם מותקן אצלך DocumentsUI?</string>
+    <string name="no_app_found_intent">לא נמצא יישומון לטיפול ב־Intent הזה. האם מותקן אצלך DocumentsUI\?</string>
+    <string name="cloud_connection_credentials_cleared">פרטי הגישה לחיבור לענן נמחקו</string>
+    <string name="cloud_connection_credentials_cleared_msg">לרוע המזל, לא הצלחנו להסב את פרטי חיבור הגישה שלך לענן לתבנית מסד הנתונים החדשה ונאלצנו להסיר אותם מהיישומון. נא ליצור חיבור לענן שוב.</string>
+    <string name="not_finding_what_you_re_looking_for">לא מצאת את מבוקשך\?</string>
+    <string name="try_deep_search">התנסות בחיפוש מעמיק!</string>
+    <string name="try_indexed_search">התנסות בחיפוש במפתח!</string>
+    <string name="search_recent">אחרונים</string>
+    <string name="results">תוצאות</string>
+    <string name="grant_notification_permission">Amaze צריך הרשאה להתראות כדי להציג את תהליך הפעולות על קבצים, לרבות לוח שימושי להפעלת/עצירת שרת FTP.</string>
+    <string name="error_unsupported_or_null_uri">כתובת שגויה, לא נתמכת או שלא סופקה</string>
+    <string name="complete_paste_warning">נא להשלים קודם את פעולת ההדבקה</string>
+    <string name="same_dir_move_error">תיקיות היעד והמקור אמורות להיות לא חופפות כדי להעביר.</string>
+    <string name="checking_conflicts">בדיקת סתירות</string>
+    <string name="same_dir_overwrite_error">תיקיות היעד והמקור אמורות להיות לא חופפות כדי לשכתב.</string>
+    <string name="not_found_enabled_webview">אין דפדפן זמין</string>
+    <string name="preference_language_title">שפת היישומון</string>
+    <string name="preference_language_dialog_title">בחירת שפה</string>
+    <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
+    <string name="error.listfile.smb.title">לא ניתן לטעון את רשימת קובצי ה־SMB</string>
+    <string name="error.listfile.smb">שגיאה בהצגת קבצים מתוך %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">שגיאה בהצגת הקבצים תחת %s - כנראה ששרת ה־SMB לא מרשה גישה אלמונית לשיתוף ‎$IPC. אפשר לנסות לציין את שם השיתוף ישירות בהגדרות החיבור.</string>
+    <string name="trash_bin">סל אשפה</string>
+    <string name="delete_permanently_checkbox">מחיקה לצמיתות</string>
+    <string name="restore">שחזור</string>
+    <string name="restore_files">שחזור קבצים</string>
+    <string name="restoring">מתבצע שחזור…</string>
+    <string name="trash_bin_retention_num_of_files_title">שימור לפי מספר קבצים</string>
+    <string name="trash_bin_retention_num_of_files_summary">כמות הקבצים המרבית שסל האשפה יכול לאחסן</string>
+    <string name="trash_bin_retention_days_title">שימור לפי ימים</string>
+    <string name="trash_bin_retention_days_summary">מספר הימים המרבי שסל האשפה יכול לאחסן בו קובץ</string>
+    <string name="trash_bin_retention_bytes_title">שימור לפי גודל נתונים</string>
+    <string name="trash_bin_retention_bytes_summary">גודל הנתונים המרבי (במגה בתים) שסל האשפה יכול לאחסן</string>
+    <string name="trash_bin_cleanup_interval_title">הפרש בין פינויים</string>
+    <string name="trash_bin_cleanup_interval_summary">הפרשים בין ניקוי אוטומטי למשנהו (בשעות)</string>
     </resources>
 
