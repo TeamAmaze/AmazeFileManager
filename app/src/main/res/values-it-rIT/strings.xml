@@ -213,7 +213,7 @@
     <string name="tamil_translation_title">Tamil</string>
 
     <string name="zip_viewer">Visualizzatore file ZIP</string>
-    <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.Procedere\?</string>
+    <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti. Procedere\?</string>
     <string name="warning">Attenzione</string>
     <string name="donate">Fai una donazione</string>
     <string name="archive_extract_folder">Cartella estrazione archivio</string>
@@ -246,6 +246,8 @@
     <string name="databasereader">Visualizzatore database</string>
     <string name="show_dividers">Mostra divisori</string>
     <string name="needs_access">Permessi di scrittura richiesti</string>
+    <string name="needs_access_summary">Seleziona la cartella principale di \t</string>
+    <string name="needs_access_summary1">\tper consentire l\'accesso in scrittura per operare</string>
     <string name="smb_connection">Connessione SMB</string>
     <string name="smb_server">Indirizzo IP server</string>
     <string name="server_address">Indirizzo IP server</string>
@@ -533,6 +535,7 @@
 	<string name="scp_connection">Connessione SCP/SFTP</string>
     <string name="ftp_connection">Connessione FTP</string>
     <string name="ftps_connection">Connessione FTP su SSL</string>
+    <string name="ftps_enable_explicit_tls">TLS esplicito</string>
     <string name="scp_port">Porta</string>
     <string name="ssh_host_key_verification_prompt_title">Verificare l\'host</string>
     <string name="ssh_select_pem_button">Chiave SSH privata</string>
@@ -656,16 +659,18 @@
     <string name="choose_operation">Scegli l\'operazione da eseguire</string>
     <string name="remember">Ricorda la prossima volta</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Consenti accesso SAF al server FTP</string>
-    <string name="android_data_prompt_saf_access">A partire da Android 10, sono state imposte restrizioni su alcune cartelle, alle quali è necessario accedere con Storage Access Framework.Per consentire ad Amaze di accedere alla cartella dal file manager del sistema, tocca \"Consenti Accesso\".</string>
+    <string name="android_data_prompt_saf_access">A partire da Android 10, sono state imposte restrizioni su alcune cartelle, alle quali è necessario accedere con Storage Access Framework. Per consentire ad Amaze di accedere alla cartella dal file manager del sistema, tocca \"Consenti Accesso\".</string>
     <string name="android_data_prompt_saf_access_title">Consenti accesso SAF</string>
     <string name="ftp_preference_saf_filesystem_title">Usa filesystem legacy</string>
     <string name="ftp_preference_saf_filesystem">Abilita questa opzione per usare la memoria esterna del dispositivo sulle versioni più recenti di Android</string>
     <string name="ftp_server_fallback_path_reset_prompt">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna poiché stai tornando all\'implementazione del filesystem legacy. Seleziona un nuovo percorso usando il menù in alto a destra.</string>
     <string name="ftp_server_reset_notify">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna</string>
     <string name="ftp_server_root_unavailable">Stai scegliendo un percorso che richiede l\'accesso root. Abilita root explorer nelle impostazioni se il tuo dispositivo è abilitato.</string>
+    <string name="ftp_server_root_filesystem_warning">Stai scegliendo un percorso che richiede l\'accesso come root, che consente operazioni di lettura/scrittura nell\'intero filesystem del tuo dispositivo, ed è pericoloso: errori causati da disattenzione potrebbero danneggiare irreparabilmente il tuo dispositivo! Vuoi continuare\?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Errore di apertura URI \"%s\" in lettura.</string>
     <string name="error_empty_archive">\"%s\" è un archivio vuoto.</string>
     <string name="error_bad_archive_without_info">\"%s\" è un archivio corrotto.</string>
+    <string name="error_bad_archive_with_info">\"%s\" è un archivio corrotto. Messaggio dall\'estrattore: \"%s\"</string>
     <string name="security_error">Impossibile aprire il file usando quest\'app</string>
     <string name="cloud_drive_tooltip">Crea una connessione Google Drive™ per gestire i file da Amaze File Manager.</string>
     <string name="signin_with_google_title">Autenticati per usare Google Drive™</string>
@@ -697,6 +702,7 @@
     <string name="error_cannot_find_way_open">Impossibile aprire il file</string>
     <string name="error_cant_decompress_that_file">Impossibile elaborare l\'archivio richiesto</string>
     <string name="analyse_storage">Analizza memoria</string>
+    <string name="download_amaze_utils_text">Stai per essere reindirizzato ad Amaze File Utilities. Si tratta della nostra app open source che integra visualizzatori di file audio/video/immagine/documento, consente di analizzare i file spazzatura per liberare spazio di archiviazione, trasferire rapidamente i dati tramite Wi-Fi P2P e molto altro ancora. Provala e sostienici!</string>
     <string name="download">Scarica</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Grazie per aver installato Amaze File Utilities. Stai per essere reindirizzato all\'app.</string>
@@ -713,6 +719,8 @@
     <string name="error_cannot_get_package_info">Impossibile ottenere le info dal file \"%s\". Il file specificato non è un APK, o il package è corrotto.</string>
     <string name="preference_delete_confirmation">Conferma eliminazione</string>
     <string name="preference_delete_confirmation_summary">Chiede una conferma prima di cancellare file. La disabilitazione di questa funzione è altamente sconsigliata!</string>
+    <string name="preference_delete_permanently_without_confirmation">Elimina definitivamente (Disattiva Cestino)</string>
+    <string name="preference_delete_permanently_without_confirmation_summary">Elimina definitivamente i file senza spostarli nel cestino. Si sconsiglia di abilitare questa opzione!</string>
     <string name="protocol_ftps">FTP sicuro</string>
     <string name="unavailable">Non disponibile</string>
 
@@ -758,5 +766,6 @@
     <string name="trash_bin_retention_bytes_summary">Numero massimo di dati (in MB) che il cestino può conservare</string>
     <string name="trash_bin_cleanup_interval_title">Intervallo di pulizia</string>
     <string name="trash_bin_cleanup_interval_summary">Esegui l\'intervallo di auto-pulizia (ore)</string>
-    </resources>
+    <string name="file_deletion">Eliminazione file</string>
+</resources>
 
