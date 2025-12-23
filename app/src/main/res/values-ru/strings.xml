@@ -42,7 +42,7 @@
     <string name="enterpath">Введите путь</string>
     <string name="cancel">Отмена</string>
     <string name="create">Создать</string>
-    <string name="loading">Загрузка&#8230;</string>
+    <string name="loading">Загрузка&amp;#8230;</string>
     <string name="file_empty">Файл пуст</string>
     <string name="error">Ошибка</string>
     <string name="search_results">результаты поиска 1%s</string>
@@ -75,12 +75,15 @@
     <string name="no">Нет</string>
     <string name="dialog_delete_category_directories">ПАПКИ</string>
     <string name="dialog_delete_category_files">ФАЙЛЫ</string>
-    <string name="dialog_delete_disclaimer">Вы уверены, что хотите удалить выбранные файлы?</string>
-    <string name="dialog_delete_title">Подтвердите</string>
+    <string name="dialog_delete_disclaimer">Вы уверены, что хотите удалить выбранные файлы\?</string>
+    <string name="dialog_delete_temporarily_disclaimer">Вы уверены что хотите удалить их\?</string>
+    <string name="dialog_restore_disclaimer">Вы уверены, что хотите восстановить следующие элементы\?</string>
+    <string name="dialog_delete_title">Вы уверены что хотите удалить навсегда\?</string>
     <string name="deleting">Удаление...</string>
-    <string name="question_set_path_as_home">Вы хотите установить текущий путь как домашний для этой вкладки?</string>
+    <string name="question_set_path_as_home">Вы хотите установить текущий путь как домашний для этой вкладки\?</string>
     <string name="directorysort">Режим сортировки каталога</string>
-    <string name="sort_by">Сортировать</string>
+    <string name="sort_by">Сортировать по</string>
+    <string name="sort_by_colon">Сортировать по:</string>
     <string name="sort_only_this">Только эта папка</string>
     <string name="theme">Темы</string>
     <string name="random">Случайный скин</string>
@@ -118,9 +121,11 @@
     <string name="sort_name">Имя</string>
     <string name="lastModified">Дата последнего изменения</string>
     <string name="sort_size">Размер</string>
+    <string name="sort_relevance">Релевантность</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Выбрать файл</string>
+    <string name="pick_files">Выберите один или несколько файлов</string>
     <string name="process_viewer">Просмотр процессов</string>
     <string name="in_safe">Недостаточно свободного места</string>
     <string name="no_file_overwrite">Не перезаписывать файл</string>
@@ -169,18 +174,19 @@
     <string name="root_directory">Рут</string>
     <string name="add_shortcut">Добавить ярлык</string>
     <string name="unsaved_changes">Несохранённые изменения</string>
-    <string name="unsaved_changes_description">У Вас есть не сохранённые изменения, вы хотите сохранить их перед выходом?</string>
+    <string name="unsaved_changes_description">У Вас есть не сохранённые изменения, вы хотите сохранить их перед выходом\?</string>
     <string name="saving">Сохранение</string>
     <string name="package_installer">Установщик пакетов</string>
     <string name="view">Просмотр</string>
     <string name="install">Установка</string>
     <string name="archive">Архивы</string>
-    <string name="archive_text">Это архив. Какое действие вы хотели бы выполнить?</string>
-    <string name="package_installer_text">Это пакет установщика. Какое действие вы хотели бы выполнить?</string>
+    <string name="archive_text">Это архив. Какое действие вы хотели бы выполнить\?</string>
+    <string name="package_installer_text">Это пакет установщика. Какое действие вы хотели бы выполнить\?</string>
     <string name="xda_title">Тема на XDA</string>
-    <string name="xda_summary">Q&amp;A, Помощь и Устранение неисправностей</string>
     <string name="circular_images">Использовать круглые иконки для изображений и видео</string>
     <string name="circular_icons">Использовать круглые иконки</string>
+    <string name="follow_battery_saver_title">Следовать хранителю батареи</string>
+    <string name="follow_battery_saver_desc">Если выбран режим экономии заряда батареи и он включён, тема изменится на тёмную.</string>
     <string name="back_title">Кнопка назад</string>
     <string name="back_summary">Кнопка назад в верхней части списка</string>
     <string name="details">Подробнее</string>
@@ -206,8 +212,6 @@
     <string name="tamil_translation_title">Тамильский</string>
 
     <string name="zip_viewer">Просмотр ZIP</string>
-    <string name="unin_system_apk">Это системное приложение, удаление может привести к нестабильности системы.
-Продолжить?</string>
     <string name="warning">Предупреждение</string>
     <string name="donate">Пожертвовать</string>
     <string name="archive_extract_folder">Папка для распаковки архивов</string>
@@ -240,8 +244,6 @@
     <string name="databasereader">Просмотрщик баз данных</string>
     <string name="show_dividers">Показать разделители</string>
     <string name="needs_access">Необходим доступ к записи</string>
-    <string name="needs_access_summary">Пожалуйста, выберите корневую папку\t</string>
-    <string name="needs_access_summary1">\tпредоставлять доступ на запись для работы</string>
     <string name="smb_connection">SMB соединение</string>
     <string name="smb_server">IP-адрес сервера</string>
     <string name="server_address">IP-адрес сервера</string>
@@ -286,13 +288,12 @@
     <string name="cut">Вырезать</string>
     <string name="search">Поиск</string>
     <string name="invalid_name">Неправильное имя</string>
-    <string name="search_hint">Введите для поиска&#8230;</string>
+    <string name="search_hint">Введите для поиска&amp;#8230;</string>
     <string name="advanced_search">Расширенный поиск</string>
     <string name="regular_expression">Регулярное выражение</string>
     <string name="regular_expression_summary">Поиск с помощью регулярного выражения BASH</string>
     <string name="match_content">Сопоставить содержание</string>
-    <string name="match_content_summary">В случае установки регулярного выражения, оно будет сопоставлено с полным названием файла,
-        в противном случае подсчитает кол-во совпадений.</string>
+    <string name="match_content_summary">В случае установки регулярного выражения, оно будет сопоставлено с полным названием файла,\n        в противном случае подсчитает кол-во совпадений.</string>
     <string name="start_ftp">Старт</string>
     <string name="stop_ftp">Стоп</string>
     <string name="ftp_status_running">Включен</string>
@@ -321,7 +322,7 @@
     <string name="paypal_copy_message">Paypal id скопирован в буфер обмена</string>
     <string name="searching_devices">Поиск устройств</string>
     <string name="use_custom_ip">Использовать другой IP</string>
-    <string name="bookmark_lost">Закладка не найдена, пересоздание&#8230;</string>
+    <string name="bookmark_lost">Закладка не найдена, пересоздание&amp;#8230;</string>
 
     <string name="share_limit">Нельзя отправить больше 100 файлов</string>
     <string name="otg_access">Выберите корень OTG устройства</string>
@@ -407,7 +408,7 @@
     <string name="cloud_connection">Облачное соединение</string>
     <string name="cloud_connection_new">Новое облачное соединение</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive&amp;#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Ящик</string>
     <string name="cloud_get">Получить Облачный плагин</string>
@@ -417,8 +418,7 @@
     <string name="ftp_path">Общий путь</string>
     <string name="ftp_path_hint">Путь к корневому каталогу для общего доступа</string>
     <string name="change">Изменить</string>
-    <string name="unknown_error">Упс! Что-то пошло не так!
-</string>
+    <string name="unknown_error">Упс! Что-то пошло не так!\n</string>
 
     <string name="ftp_path_change_success">FTP путь успешно изменен</string>
     <string name="ftp_path_change_error_invalid">Неверный путь</string>
@@ -479,11 +479,11 @@
     <string name="show_bookmarks_pref">Закладки</string>
     <string name="create_bookmark">Создать закладку</string>
     <string name="edit_bookmark">Изменить закладку</string>
-    <string name="question_delete_bookmark">Удалить закладку?</string>
+    <string name="question_delete_bookmark">Удалить закладку\?</string>
 
     <string name="cloud_error_plugin">Плагин Amaze Cloud не найден. Пожалуйста загрузите его из Play Маркета.</string>
     <string name="cloud_error_failed_restart">Не удалось установить соединение.        Пожалуйста откройте Amaze Cloud.</string>
-    <string name="cloud_remove">Вы хотите удалить облачное соединение?</string>
+    <string name="cloud_remove">Вы хотите удалить облачное соединение\?</string>
     <string name="cloud_fail_authenticate">Ошибка аутентификации</string>
     <string name="cloud_share_copied">Ссылка скопирована в буфер обмена</string>
     <string name="copy_low_memory">Недостаточно оперативной памяти, пожалуйста освободите больше ОЗУ</string>
@@ -504,7 +504,10 @@
     <string name="add_item">Добавить элемент</string>
     <string name="failed_smb_decrypt_path">Не удалось загрузить SMB-соединение</string>
     <string name="failed_cloud_new_connection">Не удалось добавить новое подключение к облаку</string>
-    <string name="intent_save_as">Сохранить как&#8230;</string>
+    <string name="failed_cloud_api_key">Не удалось аутентифицировать модуль Cloud</string>
+
+    <string name="local_inet_addr_error">Ошибка получения локального сетевого адреса</string>
+    <string name="intent_save_as">Сохранить как&amp;#8230;</string>
     <string name="go">Вперёд</string>
     <string name="advanced">Дополнительно</string>
     <string name="typeable_paths_title">Пользовательские директории</string>
@@ -521,7 +524,7 @@
     <string name="channel_name_ftp">Amaze FTP-сервер</string>
     <string name="channel_description_ftp">Уведомления FTP сервера Файлового Менеджера Amaze</string>
 
-    <string name="processing">Выполнение&#8230;</string>
+    <string name="processing">Выполнение&amp;#8230;</string>
     <string name="failed_no_connection">Не удалось загрузить файлы. Пожалуйста, проверьте подключение.</string>
 
     <string name="update">ОБНОВЛЕНИЕ</string>
@@ -529,10 +532,12 @@
     <string name="ftp_connection">FTP-соединение</string>
     <string name="ftps_connection">FTP через SSL-соединение</string>
     <string name="scp_port">Порт</string>
+    <string name="ssh_host_key_verification_prompt_title">Проверить хост</string>
     <string name="ssh_select_pem_button">Приватный ключ SSH</string>
     <string name="ssh_pem_key_parse_error">Не удалось прочитать выбранный PEM: %s</string>
     <string name="password_unchanged">(без изменений)</string>
     <string name="ssh_authentication_failure_password">Ошибка входа в систему: невозможно выполнить аутентификацию с указанным именем пользователя и паролем.</string>
+    <string name="ssh_authentication_failure_key">Ошибка входа: Невозможно выполнить аутентификацию с указанным именем пользователя и закрытым ключом.</string>
     <string name="ssh_connect_failed">Не удалось подключиться к %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">ВНИМАНИЕ: ИДЕНТИФИКАЦИЯ УДАЛЕННОГО ХОСТА ИЗМЕНИЛАСЬ!</string>
     <string name="ssh_key_prompt_passphrase">Пожалуйста, введите кодовую фразу.</string>
@@ -556,6 +561,7 @@
     <string name="create_file_suggest_txt_extension">В качестве расширения файла рекомендуется использовать \".txt\".</string>
     <string name="ssh_select_pem">Выберите закрытый ключ для аутентификации</string>
     <string name="ssh_key_invalid_passphrase">Неверная кодовая фраза ключа.</string>
+    <string name="ssh_key_no_decoder_decrypt">Не существует подходящего декодера для чтения PEM файла.</string>
     <string name="encryption_fail_copy">Не удалось обновить запись шифрования в базе данных</string>
     <string name="extracted">Извлечено</string>
     <string name="compressed">Сжатый</string>
@@ -566,12 +572,9 @@
     <string name="file_too_long">Имя файлы слишком длинное и не может быть изменено, но вы можете увидеть первые 1%d символа</string>
     <string name="file_read_only">Открытый файл доступен только для чтения.</string>
     <string name="got_it">Понял!</string>
-    <string name="encrypt_file_save_as">Сохранить зашифрованный файл как&#8230;</string>
-    <string name="encrypt_folder_save_as">Сохранить зашифрованную папку как&#8230;</string>
+    <string name="encrypt_file_save_as">Сохранить зашифрованный файл как&amp;#8230;</string>
+    <string name="encrypt_folder_save_as">Сохранить зашифрованную папку как&amp;#8230;</string>
     <string name="encrypt_option_use_aze">Использовать формат шифрования Amaze.</string>
-    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[ 
-        <p>AESCrypt — это формат шифрования файлов с открытым исходным кодом, основанный на шифровании AES.  Он также портативный, его можно расшифровать с помощью программ AESCrypt на других платформах.</p>
-<p><a href=\"https://www.aescrypt.com\" target=\"_blank>Сайт AESCrypt</a></p>]]></string>
     <string name="encrypt_file_must_end_with_aze">Зашифрованные файлы должны иметь расширение \".aze\".</string>
     <string name="encrypt_file_must_end_with_aes">Зашифрованные файлы должны иметь расширение \".aes\".</string>
     <string name="error_aescrypt_decrypt_failed">Невозможно расшифровать \'%s\': \'%s\'</string>
@@ -593,7 +596,6 @@
     <string name="close">Закрыть</string>
     <string name="bookmark_exists">Закладка существует</string>
     <string name="hide_media">Скрыть от медиабраузеров</string>
-    <string name="ssh_connect_failed_host_key_changed_prompt">ВОЗМОЖНО, ЧТО КТО-ТО ДЕЛАЕТ ЧТО-ТО НЕЖЕЛАТЕЛЬНОЕ\n\nКто-то может подслушивать вас прямо сейчас (атака посредника)!  Также возможно, что ключ хоста был только что изменен.  Отпечаток открытого ключа, отправленный удаленным хостом, не совпадает с отпечатком, хранящимся в Amaze.\n\nВы можете продолжить обновление отпечатка хоста или отменить обновление настроек подключения SSH.</string>
     <string name="update_host_key">Обновить ключ хоста</string>
     <string name="cancel_recommended">Отмена (рекомендуется)</string>
     <string name="failed_install_apk">Не удалось установить</string>
@@ -622,7 +624,6 @@
     <string name="error_snackbar_action">Отчёт</string>
     <string name="what_device_headline">Информация:</string>
     <string name="what_happened_headline">Что случилось:</string>
-    <string name="info_labels">Что:\\nЗапрос:\\nВемя по GMT:\\nПакет:\\nВерсия:\\nВерсия OS:\\nУстройство:\\nМодель:\\nПродукт:</string>
     <string name="your_comment">Ваш комментарий (на английском):</string>
     <string name="error_details_headline">Подробности:</string>
     <string name="app_ui_crash">Сбой приложения/интерфейса</string>
@@ -653,19 +654,15 @@
     <string name="choose_operation">Выберите операцию, которую нужно выполнить</string>
     <string name="remember">Помнить в следующий раз</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Предоставить доступ SAF для FTP-сервера</string>
-    <string name="ftp_prompt_accept_first_start_saf_access">Поскольку это ваш первый запуск FTP-сервера, и вы используете внутреннее хранилище устройства в качестве общей папки, разрешите Amaze доступ к хранилищу с помощью SAF.\n\n  Вам нужно сделать это только один раз, пока в следующий раз вы не выберете новое место для обмена.</string>
-    <string name="android_data_prompt_saf_access">Начиная с Android 10, Android наложил ограничения на определенные каталоги, и доступ к ним должен осуществляться с помощью Storage Access Framework.\n\nПожалуйста, разрешите Amaze доступ к каталогу из системного файлового менеджера, нажав «Разрешить доступ».</string>
     <string name="android_data_prompt_saf_access_title">Предоставить доступ ко всем файлам</string>
     <string name="ftp_preference_saf_filesystem_title">Использовать старую файловую систему</string>
     <string name="ftp_preference_saf_filesystem">Включите это для поддержки использования внешнего хранилища устройства в более новых версиях Android.</string>
     <string name="ftp_server_fallback_path_reset_prompt">Общий путь FTP-сервера был сброшен на внутреннее хранилище, поскольку вы возвращаетесь к реализации устаревшей файловой системы. При необходимости выберите новый путь, используя меню в правом верхнем углу.</string>
     <string name="ftp_server_reset_notify">Общий путь FTP-сервера был сброшен во внутреннюю память</string>
     <string name="ftp_server_root_unavailable">Вы выбираете путь, который требует root-доступа. Пожалуйста, включите root explorer в настройках, если ваше устройство рутировано.</string>
-    <string name="ftp_server_root_filesystem_warning">Вы выбираете путь, требующий root-доступа, который позволяет выполнять операции чтения/записи во всей файловой системе вашего устройства, и это опасно — неосторожные ошибки могут привести к поломке вашего устройства!\n\nВы уверены?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Ошибка при открытии URI \"%s\" для чтения.</string>
     <string name="error_empty_archive">\"%s\" - пустой архив.</string>
     <string name="error_bad_archive_without_info">\"%s\" - повреждённый архив.</string>
-    <string name="error_bad_archive_with_info">"%s" — поврежденный архив.\nСообщение от экстрактора: "%s"</string>
     <string name="security_error">Не удалось открыть файл с помощью этого приложения</string>
     <string name="cloud_drive_tooltip">Создайте подключение к Google Drive™ для управления файлами из Amaze File Manager.</string>
     <string name="signin_with_google_title">Авторизация для использования Google Drive™</string>
@@ -675,6 +672,7 @@
     <string name="select_by_type">Выбрать по типу</string>
     <string name="select_by_date">Выбрать по дате</string>
     <string name="select_similar">Выбрать похожие</string>
+    <string name="select_fill">Выбрать заполнение</string>
     <string name="error_fetching_google_play_product_list">Не удалось загрузить список товаров из Google Play.</string>
     <string name="user_apps">Пользовательские приложения</string>
     <string name="appearance">Внешний вид</string>
@@ -683,16 +681,27 @@
     <string name="ui_summary">Контролируйте, какую информацию отображать, настраивайте боковую панель и переключайте настройки пользовательского интерфейса.</string>
     <string name="behavior_summary">Измените поведение, например расширенный поиск и возможность открытия файлов в качестве новой задачи.</string>
     <string name="security_summary">Настроить пароль и шифрование</string>
+    <string name="backup_summary">Экспорт и импорт настроек Amaze</string>
+
+
+    <string name="pref_export">Экспорт</string>
+    <string name="pref_export_summary">Экспортировать настройки</string>
+    <string name="pref_import">Импорт</string>
+    <string name="pref_import_summary">Импортировать настройки</string>
+
     <string name="quick_desc">Файлы, к которым недавно обращались через Amaze</string>
     <string name="recent_desc">Недавно созданные или измененные файлы</string>
     <string name="error_cannot_find_way_open">Не удалось найти способ открыть файл</string>
     <string name="error_cant_decompress_that_file">Не удается обработать запрошенный архив</string>
     <string name="analyse_storage">Анализ хранилища</string>
     <string name="download">Скачать</string>
+    <string name="wifip2p">Передача напрямую по Wi-Fi (P2P)</string>
     <string name="amaze_utils_installed_alias">Спасибо за установку Amaze File Utilities. Вы будете перенаправлены в приложение.</string>
     <string name="image_viewer">Просмотрщик изображений Amaze</string>
     <string name="video_player">Проигрыватель видео Amaze</string>
     <string name="amaze_audio_player">Проигрыватель музыки Amaze</string>
+    <string name="pdf_viewer">Просмотрщик документов Amaze</string>
+    <string name="docx_viewer">Просмотрщик документов Amaze</string>
     <string name="share_logs">Поделиться журналами</string>
     <string name="share_logs_summary">Поделиться захваченными журналами по почте/телеграмм</string>
     <string name="open_with_amaze">Открыть с помощью Amaze</string>
@@ -704,10 +713,47 @@
     <string name="protocol_ftps">Безопасный FTP</string>
     <string name="unavailable">Недоступен</string>
 
-    <string name="free_of">\"%s\n%s свободно из %s</string>
+    <string name="exporting_failed">Экспорт не удался: не удалось записать файл резервной копии</string>
+    <string name="importing_failed">Импорт не удался: не удалось прочитать файл резервной копии</string>
+    <string name="importing_completed">Импортирование завершено</string>
+    <string name="invalid_backup_file">Неправильный файл резервной копии</string>
+    <string name="import_failed_for">Импорт не удался для:</string>
     <string name="cloud_error_fdroid">Плагин Amaze Cloud не поддерживается версией F-Droid. Пожалуйста, используйте версию Amaze из Play Store.</string>
     <string name="disable_player_intent_filters">Отключить фильтры намерений проигрывателя</string>
     <string name="disable_player_intent_filters_summary">Отключить встроенный в Amaze проигрыватель из списка выбора</string>
-    <string name="no_app_found_intent">Не найдено ни одного приложения для обработки этого намерения.  У вас установлен DocumentsUI?</string>
+    <string name="no_app_found_intent">Не найдено ни одного приложения для обработки этого намерения.  У вас установлен DocumentsUI\?</string>
+    <string name="cloud_connection_credentials_cleared">Данные для подключения к облаку были очищены</string>
+    <string name="cloud_connection_credentials_cleared_msg">К сожалению, нам не удалось перенести ваши учётные данные для подключения к облаку в новую схему базы данных, и нам пришлось удалить их из приложения. Пожалуйста, создайте подключение к облаку ещё раз.</string>
+    <string name="not_finding_what_you_re_looking_for">Не нашли что искали\?</string>
+    <string name="try_deep_search">Попробуйте глубокий поиск!</string>
+    <string name="try_indexed_search">Попробуйте индексированный поиск!</string>
+    <string name="search_recent">Недавние</string>
+    <string name="results">Результаты</string>
+    <string name="grant_notification_permission">Amaze необходимо разрешение на уведомления для отображения хода выполнения файловых операций, а также удобная панель для запуска/остановки FTP-сервера.</string>
+    <string name="error_unsupported_or_null_uri">Неверный, неподдерживаемый или не указанный URI</string>
+    <string name="complete_paste_warning">Пожалуйста, сначала завершите операцию вставки.</string>
+    <string name="same_dir_move_error">Для перемещения папка назначения и исходная папка не должны совпадать.</string>
+    <string name="checking_conflicts">Проверять на конфликты</string>
+    <string name="same_dir_overwrite_error">Для перезаписи папка назначения и исходная папка не должны совпадать.</string>
+    <string name="not_found_enabled_webview">Веб-обозреватель недоступен</string>
+    <string name="preference_language_title">Язык приложения</string>
+    <string name="preference_language_dialog_title">Выбрать язык</string>
+    <string name="preference_language_system_default">Как в системе</string>
+    <string name="error.listfile.smb.title">Невозможно загрузить список файлов SMB</string>
+    <string name="error.listfile.smb">Ошибка при чтении списка файлов в %s: %s</string>
+    <string name="error.listfile.smb.noipcshare">Ошибка перечисления файлов в %s - вероятно, сервер SMB не разрешает анонимный доступ к ресурсу IPC$. Вы можете попробовать указать имя ресурса напрямую в настройках подключения.</string>
+    <string name="trash_bin">Корзина</string>
+    <string name="delete_permanently_checkbox">Удалить навсегда</string>
+    <string name="restore">Восстановить</string>
+    <string name="restore_files">Восстановить файлы</string>
+    <string name="restoring">Восстановление…</string>
+    <string name="trash_bin_retention_num_of_files_title">Очистка по количеству файлов</string>
+    <string name="trash_bin_retention_num_of_files_summary">Максимальное количество файлов, которое может храниться в корзине</string>
+    <string name="trash_bin_retention_days_title">Очистка по дням</string>
+    <string name="trash_bin_retention_days_summary">Сколько дней максимум файлы будут храниться в корзине</string>
+    <string name="trash_bin_retention_bytes_title">Очистка по размеру данных</string>
+    <string name="trash_bin_retention_bytes_summary">Максимальный объём данных (в МБ), который может хранить корзина</string>
+    <string name="trash_bin_cleanup_interval_title">Интервал очистки</string>
+    <string name="trash_bin_cleanup_interval_summary">Вызывать авто-очистку по интервалу (часы)</string>
     </resources>
 
