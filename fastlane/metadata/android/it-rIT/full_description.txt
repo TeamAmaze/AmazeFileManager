@@ -1,4 +1,4 @@
-File manager leggero e intuitivo che segue le linee guida Material Design.
+Gestore dei file leggero e intuitivo che segue le linee guida Material Design.
 
 Caratteristiche:
 
@@ -6,7 +6,7 @@ Caratteristiche:
 - Schede multiple per migliorare la produttività
 - Supporto per temi multipli
 - Menu a scomparsa laterale per una navigazione rapida
-- App Manager per aprire, fare il backup o disinstallare direttamente qualsiasi app
+- Gestore delle app per aprire, fare il backup o disinstallare direttamente qualsiasi app
 - Accesso rapido a cronologia, segnalibri o ricerca dei file
 - Gestione root per utenti avanzati
 - Crittografia e decrittografia AES dei file per la sicurezza (Jellybean v4.3+)
