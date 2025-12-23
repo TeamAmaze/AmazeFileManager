@@ -42,7 +42,7 @@
     <string name="enterpath">Wprowadź ścieżkę</string>
     <string name="cancel">Anuluj</string>
     <string name="create">Utwórz</string>
-    <string name="loading">Wczytywanie&#8230;</string>
+    <string name="loading">Wczytywanie&amp;#8230;</string>
     <string name="file_empty">Plik jest pusty</string>
     <string name="error">Błąd</string>
     <string name="search_results">Wyniki wyszukiwania %s</string>
@@ -75,12 +75,15 @@
     <string name="no">Nie</string>
     <string name="dialog_delete_category_directories">Katalogi</string>
     <string name="dialog_delete_category_files">Pliki</string>
-    <string name="dialog_delete_disclaimer">Czy usunąć następujące pliki?</string>
+    <string name="dialog_delete_disclaimer">Czy usunąć następujące pliki\?</string>
+    <string name="dialog_delete_temporarily_disclaimer">Czy na pewno chcesz usunąć następujące elementy\?</string>
+    <string name="dialog_restore_disclaimer">Czy na pewno chcesz przywrócić następujące elementy\?</string>
     <string name="dialog_delete_title">Potwierdź</string>
     <string name="deleting">Usuwanie</string>
-    <string name="question_set_path_as_home">Czy ustawić aktualną ścieżkę jako główną dla tej karty?</string>
+    <string name="question_set_path_as_home">Czy ustawić aktualną ścieżkę jako główną dla tej karty\?</string>
     <string name="directorysort">Tryb sortowania katalogów</string>
     <string name="sort_by">Sortowanie po</string>
+    <string name="sort_by_colon">Sortuj po:</string>
     <string name="sort_only_this">Tylko ten folder</string>
     <string name="theme">Motyw</string>
     <string name="random">Losowy wygląd</string>
@@ -118,9 +121,11 @@
     <string name="sort_name">Nazwa</string>
     <string name="lastModified">Data modyfikacji</string>
     <string name="sort_size">Rozmiar</string>
+    <string name="sort_relevance">Znaczenie</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Wybierz plik</string>
+    <string name="pick_files">Wybierz jeden lub więcej plików</string>
     <string name="process_viewer">Podgląd procesu</string>
     <string name="in_safe">Za mało pamięci</string>
     <string name="no_file_overwrite">Nie zastąpiono pliku</string>
@@ -169,18 +174,19 @@
     <string name="root_directory">Root</string>
     <string name="add_shortcut">Dodaj skrót</string>
     <string name="unsaved_changes">Niezapisane zmiany</string>
-    <string name="unsaved_changes_description">Nie zapisano zmian. Czy zapisać je przed zakończeniem?</string>
+    <string name="unsaved_changes_description">Nie zapisano zmian. Czy zapisać je przed zakończeniem\?</string>
     <string name="saving">Zapisywanie</string>
     <string name="package_installer">Instalator pakietów</string>
     <string name="view">Podgląd</string>
     <string name="install">Zainstaluj</string>
     <string name="archive">Archiwum</string>
-    <string name="archive_text">To jest archiwum. Jaką czynność wykonać?</string>
-    <string name="package_installer_text">To jest instalator pakietów. Jaką czynność wykonać?</string>
+    <string name="archive_text">To jest archiwum. Jaką czynność wykonać\?</string>
+    <string name="package_installer_text">To jest instalator pakietów. Jaką czynność wykonać\?</string>
     <string name="xda_title">Wątek na Forum XDA</string>
-    <string name="xda_summary">Pytania, pomoc i odpowiedzi</string>
     <string name="circular_images">Używa okrągłych ikon dla obrazów i wideo</string>
     <string name="circular_icons">Okrągłe ikony</string>
+    <string name="follow_battery_saver_title">Postępuj zgodnie z oszczędzaniem baterii</string>
+    <string name="follow_battery_saver_desc">Jeśli ta opcja zostanie wybrana i włączony zostanie tryb oszczędzania baterii, motyw zmieni się na ciemny</string>
     <string name="back_title">Przycisk cofania</string>
     <string name="back_summary">Wyświetla przycisk powrotu na górze listy</string>
     <string name="details">Szczegóły</string>
@@ -206,7 +212,6 @@
     <string name="tamil_translation_title">Tamilski</string>
 
     <string name="zip_viewer">Przeglądarka archiwum</string>
-    <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może spowodować niestabilność systemu.\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
     <string name="donate">Dotacja</string>
     <string name="archive_extract_folder">Katalog wypakowywania</string>
@@ -239,8 +244,6 @@
     <string name="databasereader">Czytnik baz danych</string>
     <string name="show_dividers">Separatory elementów</string>
     <string name="needs_access">Wymagane uprawnienia zapisu</string>
-    <string name="needs_access_summary">Proszę wybrać główny katalog dla \t</string>
-    <string name="needs_access_summary1">\taby przyznać dostęp zapisu dla operacji </string>
     <string name="smb_connection">Połączenie SMB</string>
     <string name="smb_server">Adres IP serwera</string>
     <string name="server_address">Adres IP serwera</string>
@@ -285,7 +288,7 @@
     <string name="cut">Wytnij</string>
     <string name="search">Szukaj</string>
     <string name="invalid_name">Nieprawidłowa nazwa</string>
-    <string name="search_hint">Wprowadzanie wyszukiwanej frazy&#8230;</string>
+    <string name="search_hint">Wprowadzanie wyszukiwanej frazy&amp;#8230;</string>
     <string name="advanced_search">Zaawansowane wyszukiwanie</string>
     <string name="regular_expression">Wyrażenia regularne</string>
     <string name="regular_expression_summary">Wyszukuje używając wyrażeń regularnych w stylu BASH</string>
@@ -319,7 +322,7 @@
     <string name="paypal_copy_message">Skopiowano do schowka identyfikator Paypal</string>
     <string name="searching_devices">Szukanie urządzeń</string>
     <string name="use_custom_ip">Własne IP</string>
-    <string name="bookmark_lost">Nie odnaleziono zakładki, ponowne tworzenie&#8230;</string>
+    <string name="bookmark_lost">Nie odnaleziono zakładki, ponowne tworzenie&amp;#8230;</string>
 
     <string name="share_limit">Nie możesz udostępnić więcej niż 100 plików</string>
     <string name="otg_access">Wybierz katalog główny urządzenia OTG</string>
@@ -405,7 +408,7 @@
     <string name="cloud_connection">Połączenie z chmurą</string>
     <string name="cloud_connection_new">Nowe połączenie z chmurą</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Dysk Google&#8482;</string>
+    <string name="cloud_drive">Dysk Google&amp;#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Skrzynka</string>
     <string name="cloud_get">Pobierz wtyczkę do chmury</string>
@@ -476,11 +479,11 @@
     <string name="show_bookmarks_pref">Zakładki</string>
     <string name="create_bookmark">Utwórz zakładkę</string>
     <string name="edit_bookmark">Edytuj zakładkę</string>
-    <string name="question_delete_bookmark">Usunąć zakładkę?</string>
+    <string name="question_delete_bookmark">Usunąć zakładkę\?</string>
 
     <string name="cloud_error_plugin">Nie znaleziono wtyczki Amaze Cloud. Proszę pobrać z Play Store.</string>
     <string name="cloud_error_failed_restart">Nie udało się wczytać połączenia. Proszę otworzyć Amaze Cloud raz.</string>
-    <string name="cloud_remove">Czy chcesz usunąć połączenie z chmurą?</string>
+    <string name="cloud_remove">Czy chcesz usunąć połączenie z chmurą\?</string>
     <string name="cloud_fail_authenticate">Nie udało się uwierzytelnić</string>
     <string name="cloud_share_copied">Link do udostępniania skopiowany do schowka</string>
     <string name="copy_low_memory">Brakuje pamięci, proszę zwolnij trochę pamięci RAM</string>
@@ -504,7 +507,7 @@
     <string name="failed_cloud_api_key">Nie udało się uwierzytelnić wtyczki Cloud</string>
 
     <string name="local_inet_addr_error">Błąd przy uzyskiwaniu lokalnego adresu inet</string>
-    <string name="intent_save_as">Zapisz jako&#8230;</string>
+    <string name="intent_save_as">Zapisz jako&amp;#8230;</string>
     <string name="go">Idź</string>
     <string name="advanced">Zaawansowane</string>
     <string name="typeable_paths_title">Niestandardowe ścieżki</string>
@@ -521,7 +524,7 @@
     <string name="channel_name_ftp">Serwer FTP Amaze</string>
     <string name="channel_description_ftp">Powiadomienia serwera FTP Amaze File Manager</string>
 
-    <string name="processing">Przetwarzanie&#8230;</string>
+    <string name="processing">Przetwarzanie&amp;#8230;</string>
     <string name="failed_no_connection">Nie udało się wczytać plików. Sprawdź swoje połączenie.</string>
 
     <string name="update">AKTUALIZACJA</string>
@@ -529,7 +532,6 @@
     <string name="ftp_connection">Połączenie FTP</string>
     <string name="ftps_connection">Połączenie FTP przez SSL</string>
     <string name="scp_port">Port</string>
-    <string name="ssh_host_key_verification_prompt">Nie można ustalić autentyczności hosta „%1$s”.\n\n%2$s odcisk palca klucza to %3$s.\n\nDotknij „Tak”, aby potwierdzić tożsamość; w przeciwnym razie wybierz „Nie”. </string>
     <string name="ssh_host_key_verification_prompt_title">Zweryfikuj hosta</string>
     <string name="ssh_select_pem_button">Prywatny klucz SSH</string>
     <string name="ssh_pem_key_parse_error">Nie można odczytać wybranego PEM: %s</string>
@@ -538,7 +540,6 @@
     <string name="ssh_authentication_failure_key">Błąd logowania: nie można uwierzytelnić przy użyciu podanej nazwy użytkownika i klucza prywatnego.</string>
     <string name="ssh_connect_failed">Nie można połączyć się z %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">OSTRZEŻENIE: IDENTYFIKACJA ZDALNEGO HOSTA ULEGŁA ZMIANIE!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">MOŻLIWE, ŻE KTOŚ ROBI COŚ ZŁEGO!\n\nKtoś może Cię teraz podsłuchiwać (atak typu man-in-the-middle)! Możliwe też, że właśnie zmieniono klucz hosta. Odcisk palca klucza publicznego wysłany przez zdalnego hosta nie zgadza się z tym, który jest przechowywany w Amaze.\n\nSkontaktuj się z administratorem systemu lub skonfiguruj nowe połączenie, aby kontynuować połączenie z serwerem.</string>
     <string name="ssh_key_prompt_passphrase">Proszę wprowadzić hasło klucza.</string>
     <string name="add_shortcut_not_supported_by_launcher">Twój launcher nie obsługuje tworzenia skrótów.</string>
     
@@ -570,11 +571,9 @@
     <string name="file_too_long">Plik jest za długi i nie można go edytować, ale można odczytać pierwsze %dznaki</string>
     <string name="file_read_only">Otwierany plik jest tylko do odczytu.</string>
     <string name="got_it">Rozumiem!</string>
-    <string name="encrypt_file_save_as">Zapisz zaszyfrowany plik jako&#8230;</string>
-    <string name="encrypt_folder_save_as">Zapisz zaszyfrowany folder jako&#8230;</string>
+    <string name="encrypt_file_save_as">Zapisz zaszyfrowany plik jako&amp;#8230;</string>
+    <string name="encrypt_folder_save_as">Zapisz zaszyfrowany folder jako&amp;#8230;</string>
     <string name="encrypt_option_use_aze">Użyj formatu szyfrowania Amaze</string>
-    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[AESCrypt to format szyfrowania plików typu open source oparty na szyfrowaniu AES. Jest również przenośny, można go odszyfrować za pomocą programów AESCrypt na innych platformach.AESCrypt website32]]></string>
-    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[Format szyfrowania Amaze jest również oparty na szyfrowaniu AES; ale różni się od formatu AESCrypt, może być odszyfrowany tylko przez to urządzenie; nie wolno również odinstalowywać programu Amaze File Manager z tego urządzenia ani zmieniać sposobu blokowania ekranu, w przeciwnym razie nie będzie możliwości odzyskania zaszyfrowanego pliku. ]]></string>
     <string name="encrypt_file_must_end_with_aze">Zaszyfrowane pliki muszą używać \".aze\" jako rozszerzenia pliku.</string>
     <string name="encrypt_file_must_end_with_aes">Zaszyfrowane pliki muszą mieć rozszerzenie „.aes”.</string>
     <string name="error_aescrypt_decrypt_failed">Nie można odszyfrować \'%s\': \'%s\'</string>
@@ -596,7 +595,6 @@
     <string name="close">Zamknij</string>
     <string name="bookmark_exists">Zakładka istnieje</string>
     <string name="hide_media">Ukryj przed przeglądarkami multimediów</string>
-    <string name="ssh_connect_failed_host_key_changed_prompt">MOŻLIWE, ŻE KTOŚ ROBI COŚ ZŁEGO!\n\nKtoś może Cię teraz podsłuchiwać (atak typu man-in-the-middle)! Możliwe też, że właśnie zmieniono klucz hosta. Odcisk palca klucza publicznego wysłanego przez zdalnego hosta nie zgadza się z tym przechowywanym w Amaze.\n\nMożesz kontynuować aktualizację odcisku palca hosta lub anulować aktualizację ustawień połączenia SSH.</string>
     <string name="update_host_key">Aktualizuj klucz hosta</string>
     <string name="cancel_recommended">Anuluj (zalecane)</string>
     <string name="failed_install_apk">Instalacja nie powiodła się</string>
@@ -625,7 +623,6 @@
     <string name="error_snackbar_action">Raport</string>
     <string name="what_device_headline">Info:</string>
     <string name="what_happened_headline">Co się stało:</string>
-    <string name="info_labels">What:\\nRequest:\\nGMT Time:\\nPackage:\\nVersion:\\nOS version:\\nDevice:\\nModel:\\nProduct:</string>
     <string name="your_comment">Twój komentarz (w języku angielskim):</string>
     <string name="error_details_headline">Detale:</string>
     <string name="app_ui_crash">Aplikacja/interfejs uległ awarii</string>
@@ -656,19 +653,15 @@
     <string name="choose_operation">Wybierz operację do wykonania</string>
     <string name="remember">Pamiętaj na następny raz</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Przyznaj dostęp SAF do serwera FTP</string>
-    <string name="ftp_prompt_accept_first_start_saf_access">Ponieważ jest to Twoje pierwsze uruchomienie serwera FTP i używasz pamięci wewnętrznej urządzenia jako folderu współdzielonego, zezwól Amaze na dostęp do pamięci za pomocą SAF.\n\nWystarczy to zrobić tylko raz, aż do następnego wybrania nowej lokalizacji do udostępniania.</string>
-    <string name="android_data_prompt_saf_access">Od Androida 10, Android nałożył ograniczenia na niektóre katalogi i muszą one uzyskać dostęp za pomocą Storage Access Framework.\n\nZezwól Amaze na dostęp do katalogu z systemowego menedżera plików, dotykając „Zezwól na dostęp”.</string>
     <string name="android_data_prompt_saf_access_title">Udzielenie dostępu SAF</string>
     <string name="ftp_preference_saf_filesystem_title">Użyj starszego systemu plików</string>
     <string name="ftp_preference_saf_filesystem">Włącz to, aby uzyskać wsparcie dla korzystania z zewnętrznej pamięci masowej urządzenia w nowszych wersjach systemu Android.</string>
     <string name="ftp_server_fallback_path_reset_prompt">Udostępniona ścieżka serwera FTP została zresetowana do pamięci wewnętrznej podczas przełączania z powrotem na starszą implementację systemu plików. W razie potrzeby wybierz nową ścieżkę, korzystając z menu w prawym górnym rogu.</string>
     <string name="ftp_server_reset_notify">Udostępniona ścieżka serwera FTP została zresetowana do pamięci wewnętrznej</string>
     <string name="ftp_server_root_unavailable">Wybierasz ścieżkę, która wymaga uprawnień administratora. Włącz Eksploratora roota w ustawieniach, jeśli Twoje urządzenie jest zrootowane.</string>
-    <string name="ftp_server_root_filesystem_warning">Wybierasz ścieżkę, która wymaga uprawnień administratora, co umożliwia operacje odczytu/zapisu w całym systemie plików na twoim urządzeniu i jest to niebezpieczne - nieostrożne błędy mogą uszkodzić twoje urządzenie! Czy jesteś pewien?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Błąd przy otwieraniu URI \"%s\" do odczytu.</string>
     <string name="error_empty_archive">\"%s\" jest pustym archiwum.</string>
     <string name="error_bad_archive_without_info">\"%s\" archiwum jest uszkodzone.</string>
-    <string name="error_bad_archive_with_info">"%s" archiwum jest uszkodzone. Wiadomość z wypakowywania: "%s"</string>
     <string name="security_error">Nie można otworzyć pliku za pomocą tej aplikacji</string>
     <string name="cloud_drive_tooltip">Utwórz połączenie z usługą Google Drive™ do zarządzania plikami z poziomu menedżera plików Amaze.  </string>
     <string name="signin_with_google_title">Uwierzytelnij się, aby korzystać z usługi Google Drive™.</string>
@@ -679,9 +672,6 @@
     <string name="select_by_date">Wybierz według daty</string>
     <string name="select_similar">Wybierz podobne</string>
     <string name="error_fetching_google_play_product_list">Błąd podczas pobierania listy produktów z Google Play.</string>
-    <string name="grant_all_files_permission"><html><body>Począwszy od Androida 11 Google wymaga od menedżerów plików zezwolenia od użytkownika na zarządzanie wszystkimi plikami na urządzeniu. Szczegóły <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">tutaj</a>.
-        \n\nMenedżer plików Amaze również potrzebuje tego pozwolenia. Po naciśnięciu &quot;Przyznaj&quot;poniżej, wybierz opcję <b>Zezwól na dostęp do zarządzania wszystkimi plikami</b> na następnym ekranie.
-        \n\n<font color='#ff6347'><i>Anulowanie tego okna dialogowego spowoduje zamknięcie aplikacji.</i></font></body></html></string>
     <string name="user_apps">Aplikacje użytkownika</string>
     <string name="appearance">Wygląd</string>
     <string name="behavior">Zachowanie</string>
@@ -689,6 +679,14 @@
     <string name="ui_summary">Kontroluj, jakie informacje mają być wyświetlane, dostosuj pasek boczny i przełączaj preferencje interfejsu użytkownika</string>
     <string name="behavior_summary">Zmodyfikuj zachowania, takie jak wyszukiwanie zaawansowane i czy otwierać pliki jako nowe zadanie</string>
     <string name="security_summary">Skonfiguruj hasło i szyfrowanie</string>
+    <string name="backup_summary">Eksportuj/Importuj ustawienia Amaze</string>
+
+
+    <string name="pref_export">Eksport</string>
+    <string name="pref_export_summary">Eksportuj ustawienia</string>
+    <string name="pref_import">Import</string>
+    <string name="pref_import_summary">Importuj ustawienia</string>
+
     <string name="quick_desc">Pliki ostatnio otwierane przez Amaze</string>
     <string name="recent_desc">Ostatnio utworzone lub zmodyfikowane pliki</string>
     <string name="error_cannot_find_way_open">Nie można znaleźć sposobu na otwarcie pliku</string>
@@ -700,11 +698,12 @@
     <string name="image_viewer">Przeglądarka obrazów Amaze</string>
     <string name="video_player">Odtwarzacz Video Amaze</string>
     <string name="amaze_audio_player">Odtwarzacz muzyki Amaze</string>
+    <string name="pdf_viewer">Podgląd dokumentów Amaze</string>
+    <string name="docx_viewer">Podgląd dokumentów Amaze</string>
     <string name="share_logs">Udostępnij logi</string>
     <string name="share_logs_summary">Udostępnij przechwycone logi za pośrednictwem emaila / Telegrama</string>
     <string name="open_with_amaze">Otwórz w Amaze</string>
     <string name="confirmation">Potwierdzenie</string>
-    <string name="open_file_confirmation">Czy na pewno chcesz otworzyć następujący plik?\n\nNazwa:\n%s\n\nLokalizacja:\n%s\n\nRozmiar:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
     <string name="error_google_play_cannot_update_myself">Zgodnie z zasadami sklepu Google Play aplikacje nie mogą same się aktualizować. Zaktualizuj aplikację w sklepie Google Play.</string>
     <string name="error_cannot_get_package_info">Nie można uzyskać informacji o pakiecie z pliku \"%s\". Wybrany plik nie jest pakietem APK, albo plik pakietu jest uszkodzony.</string>
     <string name="preference_delete_confirmation">Potwierdzenie usunięcia</string>
@@ -712,10 +711,17 @@
     <string name="protocol_ftps">FTPS</string>
     <string name="unavailable">Niedostępne</string>
 
-    <string name="free_of">\"%s\n%s wolnych z %s</string>
+    <string name="importing_completed">Importowanie zakończone</string>
     <string name="cloud_error_fdroid">Wtyczka Amaze Cloud nie jest obsługiwana w wersji aplikacji ze sklepu F-Droid. Użyj wersji Amaze z Sklepu Play.</string>
     <string name="disable_player_intent_filters">Wyłącz filtry intencji odtwarzacza</string>
     <string name="disable_player_intent_filters_summary">Wyłącza wbudowane odtwarzacze multimedialne Amaze w wyborze plików</string>
-    <string name="no_app_found_intent">Nie znaleziono aplikacji obsługującej tej czynności. Czy masz zainstalowany DocumentsUI?</string>
+    <string name="no_app_found_intent">Nie znaleziono aplikacji obsługującej tej czynności. Czy masz zainstalowany DocumentsUI\?</string>
+    <string name="preference_language_title">Język aplikacji</string>
+    <string name="preference_language_dialog_title">Wybierz język</string>
+    <string name="preference_language_system_default">Domyślne ustawienie systemowe</string>
+    <string name="trash_bin">Kosz</string>
+    <string name="delete_permanently_checkbox">Usuń trwale</string>
+    <string name="restore_files">Przywracanie plików</string>
+    <string name="restoring">Przywracanie...</string>
     </resources>
 
