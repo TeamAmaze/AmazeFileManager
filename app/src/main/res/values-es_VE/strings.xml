@@ -1,0 +1,738 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Administrador de archivos Amaze</string>
+    <string name="drawer_open">Abrir panel de navegación</string>
+    <string name="drawer_close">Cerrar panel de navegación</string>
+    <string name="icon">icono</string>
+    <string name="apps">Administrador de aplicaciones</string>
+    <string name="ftp">Servidor FTP</string>
+    <string name="setting">Ajustes</string>
+    <string name="select">Seleccionar elemento</string>
+    <string name="press_again">Presione nuevamente para salir</string>
+    <string name="open">Abrir</string>
+    <string name="backup">Copia de seguridad</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="play">Play Store</string>
+    <string name="properties">Propiedades</string>
+    <string name="copyingapks">Copiando el apk 1 %d a 2 %s</string>
+    <string name="delbook">Borrar marcador</string>
+    <string name="add_to_bookmarks">Añadir a marcadores</string>
+    <string name="enterpath">Introduzca la ruta</string>
+    <string name="cancel">CANCELAR</string>
+    <string name="create">CREAR</string>
+    <string name="loading">Cargando&amp;#8230;</string>
+    <string name="file_empty">El fichero está vacío</string>
+    <string name="error">Error</string>
+    <string name="search_results">Resultados de la búsqueda para %s</string>
+    <string name="rename">Renombrar</string>
+    <string name="save">Guardar</string>
+    <string name="bookmarks_added">Marcadores añadidos</string>
+    <string name="fileexist">Ya existe un archivo con el mismo nombre </string>
+    <string name="name">Nombre</string>
+    <string name="date">Fecha</string>
+    <string name="location">Ubicación</string>
+    <string name="size_capitalized">Tamaño</string>
+    <string name="size">tamaño de la carpeta</string>
+    <string name="enterzipname">Introducir el nombre del fichero Zip</string>
+    <string name="no_app_found">No se encontró una aplicación para abrir este archivo</string>
+    <string name="copying">Copiando</string>
+    <string name="moving">Moviendo</string>
+    <string name="file">Archivo</string>
+    <string name="folder">Carpeta</string>
+    <string name="newfolder">Nueva carpeta</string>
+    <string name="entername">Introducir nombre</string>
+    <string name="extracting">Extrayendo</string>
+    <string name="stopping">Deteniendo</string>
+    <string name="open_parent">Abrir directorio principal</string>
+    <string name="open_with">Abrir con</string>
+    <string name="share">Compartir</string>
+    <string name="about">Acerca de</string>
+    <string name="extract">Extraer</string>
+    <string name="compress">Comprimir</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="dialog_delete_category_directories">Directorios</string>
+    <string name="dialog_delete_category_files">Archivos</string>
+    <string name="dialog_delete_disclaimer">Si eliminas los elementos que aparecen a continuación, se borrarán permanentemente de tu dispositivo y no se podrán recuperar.</string>
+    <string name="dialog_delete_temporarily_disclaimer">¿Está seguro de que desea eliminar los siguientes elementos\?</string>
+    <string name="dialog_restore_disclaimer">¿Está seguro de que desea restaurar los siguientes elementos\?</string>
+    <string name="dialog_delete_title">¿Borrar elementos permanentemente\?</string>
+    <string name="deleting">Eliminando</string>
+    <string name="question_set_path_as_home">¿Quieres establecer la ruta actual como ruta de inicio para esta pestaña\?</string>
+    <string name="directorysort">Modo de ordenación de los directorios</string>
+    <string name="sort_by">Ordenar por</string>
+    <string name="sort_by_colon">Ordenar por</string>
+    <string name="sort_only_this">Solo esta carpeta</string>
+    <string name="theme">Tema</string>
+    <string name="random">Aspecto aleatorio</string>
+    <string name="random_summary">Usa un esquema de colores al azar al iniciar</string>
+    <string name="colorize">Color de los iconos</string>
+    <string name="colorize_summary">Establecer el color de los iconos fijos. No anula la preferencia de color del icono del directorio.</string>
+    <string name="home">Inicio</string>
+    <string name="paste">Pegar</string>
+    <string name="history">Historial</string>
+    <string name="copy">Copiar</string>
+    <string name="root_mode">Explorador Root</string>
+    <string name="root_mode_summary">Solo para dispositivos rooteados. Compruébalo solo si estás seguro de ello.</string>
+    <string name="root_failure">Acceso root no concedido</string>
+    <string name="select_all">Seleccionar todo</string>
+    <string name="delete">Borrar</string>
+    <string name="set_as_home"> Establecer como directorio de inicio</string>
+    <string name="operation_not_supported">Operación no soportada</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <!-- Theme -->
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
+    <string name="daytime">Durante el día</string>
+    <string name="black">Negro (AMOLED)</string>
+    <string name="system">Sistema (el tema del sistema)</string>
+    <!--Skin-->
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Carpetas primero</string>
+    <string name="filesOnTop">Archivos primero</string>
+    <string name="none_on_top">Ninguno primero</string>
+    <!--SortBy-->
+    <string name="sort_name">Nombre</string>
+    <string name="lastModified">Última modificación</string>
+    <string name="sort_size">Tamaño</string>
+    <string name="sort_relevance">Importancia</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">Escoja un archivo</string>
+    <string name="pick_files">Elija uno o varios archivos</string>
+    <string name="process_viewer">Visor de procesos</string>
+    <string name="in_safe">Espacio insuficiente</string>
+    <string name="no_file_overwrite">No se han sobreescrito archivos</string>
+    <string name="skip">Saltar</string>
+    <string name="overwrite">Sobreescribir</string>
+    <string name="not_allowed">No permitido</string>
+    <string name="searching">Buscando %s</string>
+    <string name="done">Hecho</string>
+    <string name="set">Establecer</string>
+    <string name="enablerootmde">Activar modo Root</string>
+    <string name="goback">Regresar</string>
+    <string name="newfile">Nuevo archivo</string>
+    <string name="no_files">No hay archivos</string>
+    <string name="used">espacio usado</string>
+    <string name="used_by_others">usado por otros</string>
+    <string name="free">espacio libre</string>
+    <string name="listview">Vista de lista</string>
+    <string name="gridview">Vista de cuadrícula</string>
+    <string name="permission">Permisos</string>
+    <string name="hide">Ocultar</string>
+    <string name="exit">Salir</string>
+    <string name="doforall">Aplicar a todos los elementos</string>
+    <string name="gridcolumnno">Número de columnas en la vista de cuadrícula</string>
+    <string name="set_random">Los cambios tendrán lugar después de reiniciar la aplicación</string>
+    <string name="authors">Autores</string>
+    <string name="changelog">Registro de cambios</string>
+    <string name="ok">Aceptar</string>
+    <string name="ui">Interfaz</string>
+    <string name="general">General</string>
+    <string name="thumb_summary">Mostrar miniaturas de aplicaciones e imágenes</string>
+    <string name="thumb">Mostrar miniaturas</string>
+    <string name="hidden">Mostrar archivos y carpetas ocultos</string>
+    <string name="lastModifiedSummary">Mostrar la fecha y hora de la última modificación</string>
+    <string name="lastModifiedPref">Mostrar la última modificación</string>
+    <string name="size_pref_summary">Mostrar tamaño de los archivos y el número de elementos de las carpetas</string>
+    <string name="size_pref">Mostrar Tamaños</string>
+    <string name="miscellaneous">Otros</string>
+    <string name="root_pref_summary">Mostrar sus permisos sobre archivos y carpetas</string>
+    <string name="root_pref">Mostrar permisos</string>
+    <string name="about_amaze_file_manager_label">Acerca de el Administrador de Archivos Amaze</string>
+    <string name="version">Versión</string>
+    <string name="rate">Calificar la aplicacion</string>
+    <string name="feedback">Enviar Comentarios</string>
+    <string name="hiddenfiles">Archivos ocultos</string>
+    <string name="type">Tipo</string>
+    <string name="root_directory">Raíz</string>
+    <string name="add_shortcut">Añadir acceso directo</string>
+    <string name="unsaved_changes">Cambios sin guardar</string>
+    <string name="unsaved_changes_description">Tiene cambios sin guardar ¿quiere guardarlos antes de salir\?</string>
+    <string name="saving">Guardando</string>
+    <string name="package_installer">Instalador de Paquetes</string>
+    <string name="view">Vista</string>
+    <string name="install">Instalar</string>
+    <string name="archive">Archivo de empaquetado</string>
+    <string name="archive_text">Este es un archivo de empaquetado. ¿Qué le gustaría hacer\?</string>
+    <string name="package_installer_text">El archivo es un paquete de instalación. ¿Qué le gustaría hacer\?</string>
+    <string name="xda_title">Hilo en XDA</string>
+    <string name="circular_images">Usar iconos circulares para imágenes y vídeos</string>
+    <string name="circular_icons">Usar iconos circulares</string>
+    <string name="follow_battery_saver_title">Seguir el ahorro de batería</string>
+    <string name="follow_battery_saver_desc">Si se selecciona y se activa el modo de ahorro de batería, el tema cambia a oscuro.</string>
+    <string name="back_title">Navegación hacia atrás</string>
+    <string name="back_summary">Habilitar item para acceder a la carpeta anterior en la lista de archivos</string>
+    <string name="details">Detalles</string>
+    <string name="translators">Traductores</string>
+    <string name="german_translation_title">Alemán</string>
+    <string name="italian_translation_title">Italiano</string>
+    <string name="french_translation_title">Francés</string>
+    <string name="russian_translation_title">Ruso</string>
+    <string name="spanish_translation_title">Español</string>
+    <string name="basque_translation_title">Euskera</string>
+    <string name="chinese_translation_title">Chino</string>
+    <string name="serbian_translation_title">Serbio</string>
+    <string name="turkish_translation_title">Turco</string>
+    <string name="ukrainian_translation_title">Ucraniano</string>
+    <string name="portuguese_translation_title">Portugués</string>
+    <string name="polish_translation_title">Polaco</string>
+    <string name="korean_translation_title">Coreano</string>
+    <string name="greek_translation_title">Griego</string>
+    <string name="dutch_translation_title">Alemán</string>
+    <string name="romanian_translation_title">Rumano</string>
+    <string name="vietnamese_translation_title">Vietnamita</string>
+    <string name="japanese_translation_title">Japones</string>
+    <string name="tamil_translation_title">Tamil</string>
+
+    <string name="zip_viewer">Visor de archivos Zip</string>
+    <string name="warning">Precaución</string>
+    <string name="donate">Donar</string>
+    <string name="archive_extract_folder">Carpeta donde extraer los archivos de empaquetado</string>
+    <string name="archive_summary">Los archivos de almacenamiento se extraerán a esta carpeta. El valor predeterminado es el directorio en el que está presente el archivo.</string>
+    <string name="open_as">Abrir como</string>
+    <string name="text">Texto</string>
+    <string name="audio">Audio</string>
+    <string name="video">Vídeo</string>
+    <string name="other">Otro</string>
+    <string name="image">Imagen</string>
+    <string name="contributors">Colaboradores</string>
+    <string name="save_paths">Recordar rutas</string>
+    <string name="save_path_summary">Al iniciar, se mostrará la carpeta vista más recientemente para cada pestaña</string>
+    <string name="select_intent">Seleccionar</string>
+    <string name="database">Base de datos</string>
+    <string name="colored_navigation">Barra de navegación coloreada</string>
+    <string name="colored_navigvation_sum">Establece si la barra de navegación del sistema se colorea en función del tema</string>
+
+    <string name="color_title">Color</string>
+    <string name="color_summary">Establecer el color de varios componentes gráficos</string>
+    <string name="primary_color_title">Color primario (pestaña izquierda)</string>
+    <string name="primary_color_summary">Establecer color para grande elementos gráficos</string>
+    <string name="accent_color_title">Color de énfasis</string>
+    <string name="accent_color_summary">Establecer color del botón flotante y otros elementos gráficos</string>
+    <string name="icon_color_title">Color de los iconos</string>
+    <string name="icon_color_summary">Establecer color para los iconos</string>
+    <string name="choose_color">Elija el color</string>
+    <string name="files">Archivos</string>
+    <string name="textreader">Lector de texto</string>
+    <string name="databasereader">Lector de base de datos</string>
+    <string name="show_dividers">Mostrar divisores</string>
+    <string name="needs_access">Se requiere acceso de escritura</string>
+    <string name="smb_connection">Conexión SMB</string>
+    <string name="smb_server">Dirección IP del servidor</string>
+    <string name="server_address">Dirección IP del servidor</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="anonymous">Anónimo</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="folders">Carpetas</string>
+    <string name="folderfilecount">%1$d carpetas y %2$d archivos</string>
+    <string name="videos">Vídeos</string>
+    <string name="apks">APKs</string>
+    <string name="documents">Documentos</string>
+    <string name="images">Imágenes</string>
+    <string name="clear">Limpiar</string>
+    <string name="md5">MD5:</string>
+    <string name="total">Total:</string>
+    <string name="calculating">calculando</string>
+    <string name="sort">Ordenar</string>
+    <string name="ascending">Ascendente</string>
+    <string name="descending">Descendente</string>
+    <string name="default_string">Por omisión</string>
+    <string name="doit">Aplicar</string>
+    <string name="want_help"><u>¿Necesitas ayuda?</u></string>
+    <string name="quick">Acceso rápido</string>
+    <string name="recent">Ficheros recientes</string>
+    <string name="edit">Editar</string>
+    <string name="find">Buscar dentro de la página</string>
+    <string name="grant">Conceder</string>
+    <string name="grantper">Conceder permiso</string>
+    <string name="grantfailed">Permiso no concedido</string>
+    <string name="grant_storage_permission">La aplicación necesita permiso para acceder al almacenamiento. Al cancelar este diálogo se cerrará la aplicación.</string>
+    <string name="operation_unsuccesful">Operación fallida</string>
+    <string name="creatingfile">Creando fichero</string>
+    <string name="creatingfolder">Creando carpeta</string>
+    <string name="renaming">Renombrando</string>
+    <string name="cant_be_empty">%s no puede estar vacío</string>
+    <string name="ip">Dirección</string>
+    <string name="connection_name">Nombre de la conexión</string>
+    <string name="no_device_found">No se encuentran dispositivos</string>
+    <string name="path">Ruta</string>
+    <string name="rename_bookmark">Modificar marcador</string>
+    <string name="cut">Cortar</string>
+    <string name="search">Buscar</string>
+    <string name="invalid_name">Nombre no válido</string>
+    <string name="search_hint">Escribe para buscar&amp;#8230;</string>
+    <string name="advanced_search">Búsqueda avanzada</string>
+    <string name="regular_expression">Expresión regular</string>
+    <string name="regular_expression_summary">Buscar usando una expresión regular de BASH</string>
+    <string name="match_content">Buscar contenido identico</string>
+    <string name="match_content_summary">Si se activa, las expresiones regulares se aplicarán al completo del nombre del archivo;\n        si no, se buscarán ocurrencias.</string>
+    <string name="start_ftp">Iniciar</string>
+    <string name="stop_ftp">Parar</string>
+    <string name="ftp_status_running">Funcionando</string>
+    <string name="ftp_status_not_running">No funcionando</string>
+    <string name="ftp_no_wifi">Asegúrese de que está conectado a Wi-Fi</string>
+    <string name="domain">Dominio</string>
+    <string name="smb_share">Compartir ruta</string>
+    <string name="invalid">Inválido%s</string>
+    <string name="ftp_notif_starting">Se está iniciando el servidor FTP</string>
+    <string name="ftp_notif_starting_title">Servidor FTP</string>
+    <string name="ftp_notif_title">Servidor FTP de Amaze funcionando</string>
+    <string name="ftp_notif_text">en %s</string>
+    <string name="ftp_notif_stop_server">PARAR</string>
+    <string name="ftp_port_edit_menu_title">Elija el puerto FTP</string>
+    <string name="ftp_port_change_success">Puerto FTB cambiado con éxito</string>
+    <string name="ftp_port_change_error_invalid">Numero de puerto invalido</string>
+    <string name="primary_two_title">Color primario (pestaña derecha)</string>
+    <string name="primary_two_summary">Establecer el color para los elementos de la interfaz de usuario de la pestaña derecha</string>
+    <string name="support_development">Apoyar el desarrollo</string>
+    <string name="report_bugs_title">Reportar de errores</string>
+    <string name="source_title">Código fuente</string>
+    <string name="source_summary">Ver código fuente en Github</string>
+    <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
+    <string name="translate_title">Traducir</string>
+    <string name="translate_summary">Traducir Amaze a tu idioma</string>
+    <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
+    <string name="searching_devices">Buscando dispositivos</string>
+    <string name="use_custom_ip">Utilizar IP personalizada</string>
+    <string name="bookmark_lost">Marcador no encontrado, recreando&amp;#8230;</string>
+
+    <string name="share_limit">No se pueden compartir más de 100 archivos</string>
+    <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
+    <string name="information">Información</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">Se ingresó</string>
+    <!-- reference to file modified date -->
+    <string name="modified">Modificado</string>
+
+    <string name="title">Título</string>
+    <string name="artist">Artista</string>
+    <string name="album">Álbum</string>
+    <string name="year">Año</string>
+    <string name="duration">Duración</string>
+    <string name="comment">Comentar</string>
+    <!-- reference to audio/video file -->
+    <string name="container">Contenedor</string>
+    <string name="codec">Códec</string>
+    <string name="channels">Canales</string>
+    <string name="sample_rate">Frecuencia de muestreo</string>
+    <string name="bitrate">Tasa de bits</string>
+    <string name="dimensions">Dimensiones</string>
+    <string name="frame_rate">Frecuencia de imagen</string>
+    <string name="image_type">Tipo de imagen</string>
+    <string name="width">Ancho</string>
+    <string name="height">Alto</string>
+    <string name="date_modified">Fecha de modificación</string>
+    <string name="software">Software</string>
+    <string name="creator">Autor</string>
+    <string name="camera_brand">Marca de cámara</string>
+    <string name="camera_model">Modelo de la cámara</string>
+    <string name="date_taken">Fecha de captura</string>
+    <string name="exposure_time">Tiempo de exposición</string>
+    <string name="aperture_value">Valor de la apertura</string>
+    <string name="image_iso">Velocidad ISO máxima</string>
+    <string name="flash_fired">Flash disparado</string>
+    <string name="focal_length">Longitud focal</string>
+    <string name="subject">Asunto</string>
+    <string name="author">Autor(a)</string>
+    <string name="keywords">Palabras clave</string>
+    <string name="producer">Productor</string>
+    <string name="created">Creado</string>
+    <string name="format">Formato</string>
+    <string name="pages">Número de páginas</string>
+    <!-- reference to a document file -->
+    <string name="optimized">Optimizado</string>
+    <string name="security">Seguridad</string>
+    <string name="paper_size">Tamaño del papel</string>
+
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">Algunos archivos no fueron correctamente %s</string>
+    <string name="copied">copiados</string>
+    <string name="moved">movidos</string>
+    <string name="copy_complete">Copia completada</string>
+    <string name="waiting_title">Esperando</string>
+    <string name="waiting_content">Esperando que la operación termine</string>
+    <string name="extract_complete">Extracción completada</string>
+    <string name="compression_complete">Compresión completada</string>
+    <string name="compressing">Comprimiendo</string>
+    <string name="cancelled">Cancelado</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">Escrito</string>
+    <string name="out_of">de</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">de</string>
+    <string name="processing_file">Procesando el archivo</string>
+    <string name="current_speed">Velocidad actual</string>
+    <string name="smb_launch_error">Necesitará copiar este archivo al almacenamiento para abrirlo</string>
+    <string name="error_file_not_found">Error: Archivo no encontrado</string>
+    <string name="error_io">Error de E/S</string>
+    <string name="error_file_too_large">Error: Archivo no encontrado</string>
+    <string name="medium_text">Texto intermedio</string>
+    <string name="permission_read">Leído</string>
+    <string name="permission_write">Escribir</string>
+    <string name="permission_execute">Ejecutar</string>
+    <string name="permission_owner">Propietario</string>
+    <string name="permission_group">Grupo</string>
+    <string name="permission_other">Otro</string>
+    <string name="clipboard_path_copy">Ruta copiada al portapapeles</string>
+    <string name="service_timer">Tiempo transcurrido</string>
+    <string name="please_wait">Por favor, espere</string>
+
+    <string name="cloud_connection">Conexión a la nube</string>
+    <string name="cloud_connection_new">Nueva conexión a la nube</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive&amp;#8482;</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Obtener complemento para conectar a la nube</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">No hay aplicaciones</string>
+    <string name="ftp_path">Directorio compartido</string>
+    <string name="ftp_path_hint">Ruta a la raíz del directorio para compartir</string>
+    <string name="change">Cambio</string>
+    <string name="unknown_error">Uyyy, algo ha salido mal!</string>
+
+    <string name="ftp_path_change_success">Directorio FTP cambiado correctamente</string>
+    <string name="ftp_path_change_error_invalid">Ruta inválida</string>
+    <string name="ftp_status_no_connection">No hay conexión</string>
+    <string name="ftp_status_secure_connection">Conexión segura</string>
+    <string name="ftp_status_title">Estado</string>
+    <string name="ftp_port">Puerto</string>
+    <string name="ftp_login">Iniciar sesión</string>
+    <string name="field_empty">El campo no puede estar vacio</string>
+    <string name="ftp_timeout">Tiempo de inactividad</string>
+    <string name="ftp_seconds">Segundos</string>
+    <string name="intellihide_toolbar_title">Barra de herramientas Intellihide</string>
+    <string name="intellihide_toolbar_summary">Barra de herramientas que se oculta automáticamente al desplaza</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">copiado al portapapeles</string>
+    <string name="contributors_1_summary">Traducción</string>
+    <string name="contributors_2_summary">Iconos y banners</string>
+    <string name="contributors_3_summary">Motor de tema</string>
+    <string name="contributors_4_summary">Sombra detrás de FAB</string>
+    <string name="contributors_5_summary">Transición de color al moverse entre pestañas</string>
+    <string name="contributors_6_summary">Servidor FTP</string>
+    <string name="contributors_7_summary">Pantalla de comandos interactiva</string>
+    <string name="connection_exists">La conexión ya existe</string>
+
+    <string name="crypt_encrypting">Encriptando</string>
+    <string name="crypt_decrypting">Desencriptando</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Encriptado</string>
+    <string name="crypt_decrypted">No encriptado</string>
+    <string name="crypt_encrypt">Encriptar</string>
+    <string name="crypt_decrypt">Desencriptar</string>
+    <string name="operation_fail_following">La operación falló para los siguientes archivos</string>
+    <string name="crypt_pref_master_password_title">Contraseña Maestra</string>
+    <string name="crypt_pref_master_password_summary">Establecer una contraseña maestra para la excriptación\n        Dejar vacio para remover.</string>
+    <string name="crypt_pref_fingerprint_title">Huella dactilar</string>
+    <string name="crypt_pref_fingerprint_summary">Usar huella dactilar para autenticar encriptación.</string>
+    <string name="crypt_fingerprint_no_permission">Permiso de huella dactilar faltante</string>
+    <string name="crypt_fingerprint_not_enrolled">Ninguna hulla dactilar ingresada</string>
+    <string name="crypt_fingerprint_no_security">No se encontró seguridad extra en el bloqueo de pantalla</string>
+    <string name="crypt_warning_key">Sepa que si cambie el patrón de contraseña de los Ajustes\n        no podrá desencriptar este archivo.</string>
+    <string name="warning_never_show">No informarme más</string>
+    <string name="warning_confirm">Entiendo</string>
+    <string name="crypt_encryption_fail">Falló al encriptar</string>
+    <string name="crypt_decryption_fail">Falló al desencriptar</string>
+    <string name="crypt_decryption_fail_password">Contraseña erronea!</string>
+    <string name="crypt_fingerprint_authenticate">Toca el sensor para continuar</string>
+    <string name="authenticate_password">Ingrese contraseña</string>
+
+    <string name="sidebar_preferences">Barra lateral</string>
+    <string name="sidebar_quick_access_title">Accesos rapidos de la barra lateral</string>
+    <string name="show_quick_access_pref_title">Mostrar accesos rapidos</string>
+    <string name="show_quick_access_pref">Accesos rapidos</string>
+    <string name="directory">Directorio</string>
+
+    <string name="sidebar_bookmarks_title">Marcadores laterales</string>
+    <string name="show_bookmarks_pref_title">Mostrar marcadores</string>
+    <string name="show_bookmarks_pref">Marcadores</string>
+    <string name="create_bookmark">Crear marcador</string>
+    <string name="edit_bookmark">Editar marcador</string>
+    <string name="question_delete_bookmark">¿Borrar marcador\?</string>
+
+    <string name="cloud_error_plugin">La app \"Amaze Cloud plug-in\" no pudo ser encontrada. Por favor descargar del Play Store.</string>
+    <string name="cloud_error_failed_restart">Falló al cargar la conexión.\n       Por favor abra \"Amaze Cloud pug-in\" y reintente.</string>
+    <string name="cloud_remove">Desea eliminar esta conexión\?</string>
+    <string name="cloud_fail_authenticate">Falló al autenticar</string>
+    <string name="cloud_share_copied">Link compartible copiado al portapapeles</string>
+    <string name="copy_low_memory">Nos estamos quedando sin memoria, por favor limpia la RAM</string>
+    <string name="cloud_token_lost">Se perdió la información de conexión, porfavor inicie seción de vuelta</string>
+    <string name="monofont">Tipografía monoespaciada</string>
+    <string name="showHeaders">Mostrar Encabezados</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">No hay elemetos</string>
+	<string name="item">elemento</string>
+	<string name="items">elementos</string>
+	
+	<string name="byte_singular">byte</string>
+	<string name="bytes">bytes</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">El archivo deberia tener un nombre</string>
+    <string name="add_item">Añadir Elemento</string>
+    <string name="failed_smb_decrypt_path">Falló al cargar la conexión SMB</string>
+    <string name="failed_cloud_new_connection">Falló al añadir una nueva conexión a la nube</string>
+    <string name="failed_cloud_api_key">Falló al autenticar el Cloud plugin</string>
+
+    <string name="local_inet_addr_error">Error obteniendo la direccion inet local</string>
+    <string name="intent_save_as">Guardar como…</string>
+    <string name="go">Ir</string>
+    <string name="advanced">Avanzado</string>
+    <string name="typeable_paths_title">Ruta personalizada</string>
+    <string name="typeable_paths_summary">Presiona la barra de ruta para insertar una ruta personalizada</string>
+    <string name="send_email_to">Enviar un email a</string>
+
+    <string name="text_editor">Configuración del editor de texto</string>
+    <string name="preference_newstack_title">Abrir archivos como una nueva tarea</string>
+    <string name="preference_newstack_summary">Te permite abrir archivos en tareas independientes. Accede a ellas desde la pantalla recientes del sistema.</string>
+    <string name="developers">Desarrolladores</string>
+    <string name="no_bitcoin_app">Por favor instala un monedero de Bitcoins</string>
+    <string name="channel_name_normal">Notificaciones de Amaze</string>
+    <string name="channel_description_normal">Las notificaciones del explorador de archivos Amaze</string>
+    <string name="channel_name_ftp">Servidor FTP de Amaze</string>
+    <string name="channel_description_ftp">Notificaciones del servidor FTP del administrador de archivos Amaze</string>
+
+    <string name="processing">Procesando&amp;#8230;</string>
+    <string name="failed_no_connection">Falló al cargar archivos. Por favor chequee la conexión</string>
+
+    <string name="update">ACTUALIZAR</string>
+	<string name="scp_connection">Conexión SCP/SFTP</string>
+    <string name="ftp_connection">Conexión FTP</string>
+    <string name="ftps_connection">Conexión FTP sobre SSL</string>
+    <string name="scp_port">Puerto</string>
+    <string name="ssh_host_key_verification_prompt_title">Verificar Host</string>
+    <string name="ssh_select_pem_button">Llave Privada SSH</string>
+    <string name="ssh_pem_key_parse_error">No pude leer el PEM: %s</string>
+    <string name="password_unchanged">(no modificado)</string>
+    <string name="ssh_authentication_failure_password">Falla de inicio de sesión: No se pudo autenticar el nombre de usuario y contraseña.</string>
+    <string name="ssh_authentication_failure_key">Falla de inicio de sesión: No se pudo autenticar el nombre de usuario y la llave de privada.</string>
+    <string name="ssh_connect_failed">No se pudo conectar a %1$s:%2$d: %3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">ADVERTECIA: LA IDENTIFICACIÓN DEL HOST REMOTO A CAMBIADO!</string>
+    <string name="ssh_key_prompt_passphrase">Por favor ingrese la frase de contraseña.</string>
+    <string name="add_shortcut_not_supported_by_launcher">No es posible la creación de accesos directos en su lanzador de apps.</string>
+    
+    <string name="select_color_config">Selccione la configuración de color</string>
+    <string name="customize">Personalizar</string>
+    <string name="custom">Personalizado</string>
+    <string name="preselected_configs_title">Configuraciones preseleccionadas</string>
+    <string name="orange">Naranja</string>
+    <string name="blue">Azul</string>
+    <string name="green">Verde</string>
+    <string name="password_no_match">Las contraceñas no son identicas</string>
+    <string name="deselect_all">Deseleccionar todo</string>
+    <string name="filename">Nombre de archivo</string>
+    <string name="compress_file_suggest_zip_extension">Se recomienda que use .zip como extensión de archivo</string>
+    <string name="about_amaze">Un administrador de archivos que usa Material Design para Andorid</string>
+    <string name="license">Licencia</string>
+    <string name="libraries">Bibliotecas</string>
+    <string name="password_repeat">Repetir contraseña</string>
+    <string name="create_file_suggest_txt_extension">Se recomienda que use .txt como extesión de archivo</string>
+    <string name="ssh_select_pem">Seleccionar una clave privada para autenticación</string>
+    <string name="ssh_key_invalid_passphrase">Frase clave invalida.</string>
+    <string name="ssh_key_no_decoder_decrypt">No hay decodificador válido para descifrar PEM.</string>
+    <string name="encryption_fail_copy">Falló el actualizar la entrada de encriptación en la base de datos</string>
+    <string name="extracted">Extraido</string>
+    <string name="compressed">Comprimido</string>
+    <string name="processed">Procesado</string>
+    <string name="no_obtainable_info">No hay información sobre este archivo</string>
+    <string name="reopen_from_source">No puedo, por favor reabra desde la ultima aplicación</string>
+    <string name="no_file_error">Algo se rompió, no hay nada para abrir</string>
+    <string name="file_too_long">El archivo es demasiado largo y no se puede editar, sin embargo se pueden leer los 1%d primeros caracteres</string>
+    <string name="file_read_only">El archivo que se abrió es de solo lectura</string>
+    <string name="got_it">Entiendo</string>
+    <string name="encrypt_file_save_as">Guardar archivo encriptado como…</string>
+    <string name="encrypt_folder_save_as">Guardar carpeta encriptada como…</string>
+    <string name="encrypt_option_use_aze">Utilice el formato de cifrado Amaze</string>
+    <string name="encrypt_file_must_end_with_aze">Archivos encriptados deben tener .aze como extensión.</string>
+    <string name="encrypt_file_must_end_with_aes">Los archivos cifrados deben tener \".aes\" como extensión.</string>
+    <string name="error_aescrypt_decrypt_failed">No se puede desencriptar \'%s\': \'%s\'</string>
+    <string name="cannot_overwrite">No se puede sobreescribir el archivo.</string>
+    <string name="saved_single_file">Archivo guardado como \'%s\'.</string>
+    <string name="saved_multi_files">%d archivos guardados.</string>
+    <string name="create_hidden_file_warn">El archivo será estara escondido de la lista de archivos.</string>
+    <string name="grant_apkinstall_permission">La aplicación necesita permiso para instalar aplicaciones para continuar.</string>
+    <string name="time_remaining">Tiempo restante</string>
+    <string name="transfer_rate">Razón de transferencia</string>
+    <string name="unknown">desconocido</string>
+    <string name="multiple_invalid_archive_entries">Algunos archivos no pueden ser extraidos; el archivadero puede estar corrupto o provenir de fuente maliciosa.</string>
+    <string name="saf_otg_explanation">Ahora irá al sistema de archivos de Android por razones de seguridad. Por favor seleccione el dispositivo USB de la lista a la izquierda</string>
+    <string name="donation_thanks">¡Gracias por la donación, esto nos mantiene motivados! (:</string>
+    <string name="enable_marquee_filename">Habilitar el efecto de marquesina para los nombres de archivo</string>
+    <string name="archive_password_prompt">Por favor, introduzca la contraseña del archivo:</string>
+    <string name="cannot_extract_archive">No se puede extraer el archivo \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">No se puede abrir el archivo \"%s\". O no podemos abrir el archivo o el archivo está dañado.</string>
+    <string name="close">Cerrar</string>
+    <string name="bookmark_exists">Marcador existe</string>
+    <string name="hide_media">Ocultar de los navegadores de medios</string>
+    <string name="update_host_key">Actualizar Clave de Host</string>
+    <string name="cancel_recommended">Cancelar (Recomendado)</string>
+    <string name="failed_install_apk">Fallo en la instalación</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Almacenamiento Interno</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">Tarjeta SD</string>
+    <string name="choose_folder">Elige Esta Carpeta</string>
+    <string name="some_files_failed_invalid_operation">Algunos archivos fallaron debido a una operación inválida</string>
+    <string name="ftp_server_prompt_connect_to_network">Conéctese a una red o habilite un punto de acceso inalámbrico</string>
+    <string name="ftp_server_open_settings">Abrir ajustes</string>
+    <string name="move">Mover</string>
+    <string name="select_save_location">Seleccionar localización para guardar</string>
+    <string name="scp_default_path">Ruta predeterminada (opcional) </string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Perdón., algo debe de haber ocurrido. </string>
+    <string name="error_report_button_text">Reportar este error vía e-mail</string>
+    <string name="error_report_button_telegram">Reportar este error vía Telegram</string>
+    <string name="copy_for_github">Copiar informe formateado</string>
+    <string name="error_report_open_issue_button_text">Reportar en Github</string>
+    <string name="error_report_open_github_notice">Verifique si ya existe un problema relacionado con su fallo. </string>
+    <string name="error_snackbar_message">Perdón, algo ha ido mal. </string>
+    <string name="error_snackbar_action">Reportar</string>
+    <string name="what_device_headline">Info:</string>
+    <string name="what_happened_headline">Qué ocurrió:</string>
+    <string name="your_comment">Tu comentario (en inglés):</string>
+    <string name="error_details_headline">Detalles:</string>
+    <string name="app_ui_crash">App/IU falló</string>
+    <string name="error_report_title">Reportar error</string>
+    <string name="crash_report_copied">Informe de fallos copiado al portapapeles</string>
+    <string name="disableIpcSignature">Desactive la verificación de firma de IPC (para servidores SMBv1 heredados - ¡INSEGURO!) </string>
+    <string name="cannot_delete_file">No se puede eliminar el archivo</string>
+    <string name="cannot_delete_file_with_reason">No se puede eliminar el archivo - %s</string>
+    <string name="cannot_rename_file">No se puede renombrar el archivo %s - %s</string>
+    <string name="cannot_read_directory">No se puede leer el  directorio %s - %s</string>
+    <string name="just_once">Sólo una vez</string>
+    <string name="always">Siempre</string>
+    <string name="choose_different_app">Elige una aplicación diferente</string>
+    <string name="clear_open_file">Borrar caché </string>
+    <string name="clear_open_file_summary">Borra las aplicaciones predeterminadas seleccionadas de apertura de archivos. </string>
+    <string name="ftp_readonly">Acceso de solo lectura</string>
+    <string name="legacy_listing_title">Usar listado heredado para root</string>
+    <string name="legacy_listing_summary">Si se habilita, usa el método tradicional para listar archivos</string>
+    <string name="error_unsupported_v5_rar">El archivador RAR \"1%s\" es un archivador RAR v5, no soportado</string>
+    <string name="ftp_prompt_restart_server">Necesitas reiniciar el servidor FTP para que los cambios tengan efecto.</string>
+    <string name="error_permission_denied">Permiso denegado</string>
+    <string name="error_archive_password_incorrect">Contraseña del archivador inválida.</string>
+    <string name="error_archive_cannot_extract">No se puede extraer la entrada del archivo \"%s\" en \"%s\".</string>
+    <string name="drag_and_drop_preference">Seleccionar los ajustes de arrastrar y soltar (Experimental)</string>
+    <string name="drag_to_move_copy">Toca y arrastra para mover o copiar archivos</string>
+    <string name="drag_to_select">Toca y arrastra para seleccionar archivos</string>
+    <string name="disable">Deshabilitar</string>
+    <string name="choose_operation">Escoger operación a realizar</string>
+    <string name="remember">Recordar para la siguiente vez</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">Otorgar acceso SAF para el servidor FTP</string>
+    <string name="android_data_prompt_saf_access_title">Otorgar acceso SAF</string>
+    <string name="ftp_preference_saf_filesystem_title">Usar sistema de archivos tradicional</string>
+    <string name="ftp_preference_saf_filesystem">Habilita esto para usar el almacenamiento externo del dispositivo en las ultimas versiones de Android</string>
+    <string name="ftp_server_fallback_path_reset_prompt">La ruta compartida del servidor FTP se ha restablecido al almacenamiento interno, ya que se está volviendo a la implementación del sistema de archivos heredado. Por favor, seleccione una nueva ruta utilizando el menú en la parte superior derecha según sea necesario.</string>
+    <string name="ftp_server_reset_notify">La ruta compartida del servidor FTP se había restablecido en el almacenamiento interno</string>
+    <string name="ftp_server_root_unavailable">Estás eligiendo una ruta que requiere acceso root. Habilita el explorador raíz en la configuración si tu dispositivo está rooteado.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Error abriendo la URI \"%s\" para leer.</string>
+    <string name="error_empty_archive">\"%s\" es un archivo vació.</string>
+    <string name="error_bad_archive_without_info">\"%s\" es un archivo dañado.</string>
+    <string name="security_error">Este archivo no puede abrirse con esta aplicación</string>
+    <string name="cloud_drive_tooltip">Crea una conexión a Google Drive™ para administrar archivos de Drive desde Amaze File Manager.</string>
+    <string name="signin_with_google_title">Autentificarse para usar Google Drive™</string>
+    <string name="show_system_apps">Mostrar aplicaciones del sistema</string>
+    <string name="system_apps">Aplicaciones del sistema</string>
+    <string name="select_inverse">Invertir selección</string>
+    <string name="select_by_type">Seleccionar por tipo</string>
+    <string name="select_by_date">Seleccionar por fecha</string>
+    <string name="select_similar">Seleccionar similares</string>
+    <string name="select_fill">Seleccionar relleno</string>
+    <string name="error_fetching_google_play_product_list">Error obteniendo la lista de productos de Google Play.</string>
+    <string name="user_apps">Aplicaciones del usuario</string>
+    <string name="appearance">Tema</string>
+    <string name="behavior">Comportamiento</string>
+    <string name="appearance_summary">Personaliza el tema, los colores y la apariencia del administrador de archivos.</string>
+    <string name="ui_summary">Controla qué información mostrar, personaliza la barra lateral y activa las preferencias de la interfaz de usuario.</string>
+    <string name="behavior_summary">Modificar comportamientos como la búsqueda avanzada y la posibilidad de abrir archivos como una nueva tarea.</string>
+    <string name="security_summary">Configurar contraseña y cifrado</string>
+    <string name="backup_summary">Exportar/Importar ajustes de Amaze</string>
+
+
+    <string name="pref_export">Exportar</string>
+    <string name="pref_export_summary">Exportar los ajustes</string>
+    <string name="pref_import">Importar</string>
+    <string name="pref_import_summary">Importar los ajustes</string>
+
+    <string name="quick_desc">Archivos a los que se ha accedido recientemente a través de Amaze</string>
+    <string name="recent_desc">Archivos creados o modificados recientemente</string>
+    <string name="error_cannot_find_way_open">No se pudo encontrar la manera de abrir el archivo</string>
+    <string name="error_cant_decompress_that_file">No se puede procesar el archivo</string>
+    <string name="analyse_storage">Analizar almacenamiento</string>
+    <string name="download">Descargar</string>
+    <string name="wifip2p">WiFi Direct</string>
+    <string name="amaze_utils_installed_alias">Gracias por instalar Amaze File Utilities. Está siendo redirigido a la aplicación.</string>
+    <string name="image_viewer">Visor de imágenes Amaze</string>
+    <string name="video_player">Reproductor de vídeo Amaze</string>
+    <string name="amaze_audio_player">Reproductor de música Amaze</string>
+    <string name="pdf_viewer">Visor de documentos Amaze</string>
+    <string name="docx_viewer">Visor de documentos Amaze</string>
+    <string name="share_logs">Compartir los registros</string>
+    <string name="share_logs_summary">Compartir los registros por correo electrónico/ telegrama</string>
+    <string name="open_with_amaze">Abrir con Amaze</string>
+    <string name="confirmation">Confirmación</string>
+    <string name="error_google_play_cannot_update_myself">Según las políticas de Google Play, las aplicaciones no pueden actualizarse automáticamente. Actualiza la aplicación desde Google Play.</string>
+    <string name="error_cannot_get_package_info">No se puede obtener la información del archivo \"%s\". El archivo especificado no es un APK o el archivo del paquete está dañado.</string>
+    <string name="preference_delete_confirmation">Confirmación de eliminación</string>
+    <string name="preference_delete_confirmation_summary">Pedir confirmación antes de borrar archivos. ¡Deshabilitar esto es altamente desaconsejado!</string>
+    <string name="protocol_ftps">FTP seguro</string>
+    <string name="unavailable">No disponible</string>
+
+    <string name="exporting_failed">La exportación falló: no se pudo escribir el archivo de copia de seguridad</string>
+    <string name="importing_failed">La importación falló: no se pudo leer el archivo de copia de seguridad</string>
+    <string name="importing_completed">Importación completada</string>
+    <string name="invalid_backup_file">Copia de seguridad no válida</string>
+    <string name="import_failed_for">Falló la importación para:</string>
+    <string name="cloud_error_fdroid">El complemento Amaze Cloud no es compatible con la versión de F-Droid. Usa la versión de Amaze de la Play Store.</string>
+    <string name="disable_player_intent_filters_summary">Desactiva los reproductores multimedia integrados en Amaze del selector de archivos</string>
+    <string name="no_app_found_intent">No se encontró ninguna aplicación para esta acción. ¿Tienes DocumentsUI instalado\?</string>
+    <string name="cloud_connection_credentials_cleared">Credenciales de conexión a la nube borradas</string>
+    <string name="cloud_connection_credentials_cleared_msg">Desafortunadamente, no pudimos migrar las credenciales de conexión a la nube al nuevo esquema de base de datos y tuvimos que eliminarlas de la aplicación. Vuelva a crear la conexión a la nube.</string>
+    <string name="not_finding_what_you_re_looking_for">¿No encuentras lo que buscas\?</string>
+    <string name="try_deep_search">¡Pruebe la búsqueda exhaustiva!</string>
+    <string name="try_indexed_search">¡Pruebe la búsqueda indexada!</string>
+    <string name="search_recent">Recientes</string>
+    <string name="results">Resultados</string>
+    <string name="grant_notification_permission">Amaze necesita el permiso para acceder a las notificaciones para mostrar el progreso de las operaciones, así como un panel práctico para iniciar/detener el servidor FTP.</string>
+    <string name="error_unsupported_or_null_uri">URI no válido, no compatible o no se proporcionó ninguno.</string>
+    <string name="complete_paste_warning">Por favor, complete primero el pegado</string>
+    <string name="same_dir_move_error">La carpeta de destino y origen no deben ser iguales para mover.</string>
+    <string name="checking_conflicts">Comprobar si hay conflictos</string>
+    <string name="same_dir_overwrite_error">La carpeta de destino y la de origen no deben ser iguales para sobrescribir.</string>
+    </resources>
+
