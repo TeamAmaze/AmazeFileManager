@@ -583,6 +583,7 @@
     <string name="encrypt_folder_save_as">Salva la cartella criptata come&amp;#8230;</string>
     <string name="encrypt_option_use_aze">Usa il Formato Crittografico di Amaze</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[        <p>AESCrypt è un formato di crittografia dei file open source basato sull’algoritmo AES. È anche portabile e può essere decriptato con i programmi AESCrypt su altre piattaforme.</p>        <p>Sito Web AESCrypt: https://www.aescrypt.com</p>    ]]></string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[        <p>Anche il formato crittografico di Amaze è basato sulla crittografia AES; ma diversamente da AESCrypt, può essere decrittato solo da questo dispositivo; inoltre non bisogna disinstallare Amaze File Manager da questo dispositivo né cambiare il blocco schermo, altrimenti il file crittografato non sarà più recuperabile.</p>    ]]></string>
     <string name="encrypt_file_must_end_with_aze">I file cifrati devono avere \".aze\" come estensione del file.</string>
     <string name="encrypt_file_must_end_with_aes">I file criptati devono usare \".aes\" come estensione del file.</string>
     <string name="error_aescrypt_decrypt_failed">Impossibile decriptare \'%s\': \'%s\'</string>
@@ -604,6 +605,7 @@
     <string name="close">Chiudi</string>
     <string name="bookmark_exists">Il segnalibro esiste</string>
     <string name="hide_media">Nascondi dai media del browser</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">POSSIBILE ATTIVITÀ SOSPETTA!Qualcuno potrebbe stare spiando la tua connessione in questo momento (attacco “man-in-the-middle”)! È anche possibile che la chiave dell’host sia stata appena modificata. L’impronta della chiave pubblica inviata dall’host remoto non corrisponde a quella memorizzata in Amaze.Puoi procedere aggiornando l’impronta dell’host oppure annullare l’aggiornamento delle impostazioni della connessione SSH.</string>
     <string name="update_host_key">Aggiorna Chiave Host</string>
     <string name="cancel_recommended">Annulla (Consigliato)</string>
     <string name="failed_install_apk">Installazione fallita</string>
@@ -632,6 +634,7 @@
     <string name="error_snackbar_action">Segnala</string>
     <string name="what_device_headline">Info:</string>
     <string name="what_happened_headline">Cosa è successo:</string>
+    <string name="info_labels">Cosa:\Richiesta:\Data e ora GMT:\Pacchetto:\Versione:\Versione OS:\Dispositivo:\Modello:Produttore:</string>
     <string name="your_comment">Il tuo commento (in inglese):</string>
     <string name="error_details_headline">Dettagli:</string>
     <string name="app_ui_crash">Crash App/UI</string>
