@@ -36,13 +36,15 @@
     <string name="uninstall">Avinstallera</string>
     <string name="play">Play butik</string>
     <string name="properties">Egenskaper</string>
+    <string name="delbook">Ta bort bokmärke</string>
     <string name="add_to_bookmarks">Lägg till till Bokmärke</string>
     <string name="enterpath">Ange sökväg</string>
     <string name="cancel">AVBRYT</string>
     <string name="create">SKAPA</string>
     <string name="loading">Laddar&#8230;</string>
     <string name="file_empty">Filen är tom</string>
-    <string name="error">Error</string>
+    <string name="error">Fel</string>
+    <string name="search_results">Sökresultat för %s</string>
     <string name="rename">Döp om</string>
     <string name="save">Spara</string>
     <string name="bookmarks_added">Bokmärken Tillagda</string>
@@ -50,13 +52,15 @@
     <string name="name">Namn</string>
     <string name="date">Datum</string>
     <string name="location">Plats</string>
+    <string name="size_capitalized">Storlek</string>
+    <string name="size">mappstorlek</string>
     <string name="enterzipname">Ange Zip-namn</string>
     <string name="no_app_found">Ingen App hittades att öppna filen med</string>
     <string name="copying">Kopierar</string>
     <string name="moving">Flyttar</string>
     <string name="file">Fil</string>
-    <string name="folder">Katalog</string>
-    <string name="newfolder">Ny Katalog</string>
+    <string name="folder">Mapp</string>
+    <string name="newfolder">Ny mapp</string>
     <string name="entername">Ange Namn</string>
     <string name="extracting">Packar upp</string>
     <string name="stopping">Avbryter</string>
@@ -68,12 +72,16 @@
     <string name="compress">Packa</string>
     <string name="yes">Ja</string>
     <string name="no">Nej</string>
+    <string name="dialog_delete_category_directories">Kataloger</string>
+    <string name="dialog_delete_category_files">Filer</string>
+    <string name="dialog_delete_disclaimer">Vill du verkligen ta bort följande filer?</string>
     <string name="dialog_delete_title">Bekräfta</string>
     <string name="deleting">Tar bort</string>
     <string name="dialog_delete_disclaimer">Vill du verkligen ta bort dessa filer?</string>
     <string name="question_set_path_as_home">Vill du ange sökvägen som hem för denna flik?</string>
     <string name="directorysort">Katalogernas sorteringssätt</string>
     <string name="sort_by">Sortera efter</string>
+    <string name="sort_only_this">Endast denna mapp</string>
     <string name="theme">Tema</string>
     <string name="random">Slumpmässigt skal</string>
     <string name="random_summary">Sätter slumpmässig huvudfärg vid start</string>
@@ -98,9 +106,10 @@
     <string name="light">Ljusa material</string>
     <string name="dark">Mörka material</string>
     <string name="daytime">Dagtid</string>
+    <string name="black">Svart (för OLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
-    <string name="foldersOnTop">Kataloger överst</string>
+    <string name="foldersOnTop">Mappar överst</string>
     <string name="filesOnTop">Filer överst</string>
     <string name="none_on_top">Ingen överst</string>
     <!--SortBy-->
@@ -116,6 +125,7 @@
     <string name="skip">Hoppa över</string>
     <string name="overwrite">Skriv över</string>
     <string name="not_allowed">Inte Tillåtet</string>
+    <string name="searching">Söker %s</string>
     <string name="done">Klart</string>
     <string name="items">Objekt</string>
     <string name="item">Objekt</string>
@@ -124,6 +134,9 @@
     <string name="goback">Gå Tillbaka</string>
     <string name="newfile">Ny Fil</string>
     <string name="no_files">Inga filer</string>
+    <string name="used">använt utrymme</string>
+    <string name="used_by_others">använd av andra</string>
+    <string name="free">ledigt utrymme</string>
     <string name="listview">Listvy</string>
     <string name="gridview">Rutnätsvy</string>
     <string name="permission">Behörigheter</string>
@@ -235,6 +248,7 @@
     <string name="anonymous">Anonymt</string>
     <string name="bluetooth">Blåtand</string>
     <string name="folders">Kataloger</string>
+    <string name="folderfilecount">%1$d mappar och %2$d filer</string>
     <string name="videos">Filmer</string>
     <string name="apks">Apk:er</string>
     <string name="documents">Dokument</string>
@@ -259,7 +273,7 @@
     <string name="grant_storage_permission">Appen behöver lagringsbehörighet för att fortsätta. Avbrytande av denna dialog kommer att stänga av appen.</string>
     <string name="operation_unsuccesful">Funktionen lyckades inte</string>
     <string name="creatingfile">Skapar Fil</string>
-    <string name="creatingfolder">Skapar Katalog</string>
+    <string name="creatingfolder">Skapar mapp</string>
     <string name="renaming">Döper om</string>
     <string name="cant_be_empty">%s kan inte vara tom</string>
     <string name="ip">Adress</string>
@@ -285,6 +299,7 @@ kommer annars att söka efter förekomster.</string>
     <string name="domain">Domän</string>
     <string name="invalid">Ogiltig %s</string>
     <string name="ftp_notif_starting">FTP-server startar</string>
+    <string name="ftp_notif_starting_title">FTP-server</string>
     <string name="ftp_notif_title">Amaze FTP-server kör</string>
     <string name="ftp_notif_text">vid %s</string>
     <string name="ftp_notif_stop_server">STANNA</string>
@@ -372,5 +387,202 @@ kommer annars att söka efter förekomster.</string>
     <string name="processing_file">Processar fil</string>
     <string name="current_speed">Nuvarande Hastighet</string>
     <string name="smb_launch_error">Du kommer att behöva kopiera den här filen till lagring för att öppna den</string>
+    <string name="error_file_not_found">Fel: Fil hittades inte</string>
+    <string name="error_io">I/O-fel</string>
+    <string name="medium_text">Mellantext</string>
+    <string name="permission_read">Läs</string>
+    <string name="permission_write">Skriv</string>
+    <string name="permission_execute">Utföra</string>
+    <string name="permission_owner">Ägare</string>
+    <string name="permission_group">Grupp</string>
+    <string name="permission_other">Övrigt</string>
+    <string name="clipboard_path_copy">Sökväg kopierad till urklipp</string>
+    <string name="service_timer">Förfluten tid</string>
+    <string name="please_wait">Vänta</string>
+
+    <string name="cloud_connection">Moln-anslutning</string>
+    <string name="cloud_connection_new">Ny Moln-anslutning</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Hämta moln-plugin</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">Inga appar</string>
+    <string name="ftp_path">Delad Sökväg</string>
+    <string name="ftp_path_hint">Sökväg till den katalog som ska delas</string>
+    <string name="change">Ändra</string>
+    <string name="unknown_error">Ojdå, något gick fel!</string>
+
+    <string name="ftp_path_change_success">FTP-sökväg ändrades</string>
+    <string name="ftp_path_change_error_invalid">Ogiltig sökväg</string>
+    <string name="ftp_status_no_connection">Ingen anslutning</string>
+    <string name="ftp_status_secure_connection">Säker anslutning</string>
+    <string name="ftp_status_title">Status</string>
+    <string name="ftp_port">Port</string>
+    <string name="ftp_login">Inloggning</string>
+    <string name="field_empty">Fält kan inte vara tomt</string>
+    <string name="ftp_timeout">Idle timeout</string>
+    <string name="ftp_seconds">Sekunder</string>
+    <string name="intellihide_toolbar_title">Intellihide Verktygsfält</string>
+    <string name="intellihide_toolbar_summary">Dölj automatiskt verktygsfältet vid skrollning</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">Kopierad till klippbordet</string>
+    <string name="contributors_1_summary">Översättning</string>
+    <string name="contributors_2_summary">Ikoner och fält</string>
+    <string name="contributors_3_summary">Temamotor</string>
+    <string name="contributors_4_summary">Skugga bakom FAB</string>
+    <string name="contributors_5_summary">Färgövergång vid svepning av tabbar</string>
+    <string name="contributors_6_summary">FTP-server</string>
+    <string name="contributors_7_summary">Startar ett interaktivt skal</string>
+    <string name="connection_exists">Redan ansluten</string>
+
+    <string name="crypt_encrypting">Krypterar</string>
+    <string name="crypt_decrypting">Dekrypterar</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Krypterad</string>
+    <string name="crypt_decrypted">Dekrypterad</string>
+    <string name="crypt_encrypt">Kryptera</string>
+    <string name="crypt_decrypt">Dekryptera</string>
+    <string name="operation_fail_following">Åtgärden misslyckades för dessa filer</string>
+    <string name="crypt_pref_master_password_title">Huvudlösenord</string>
+    <string name="crypt_pref_master_password_summary">Ange ett huvudlösenord för kryptering.
+Lämna tomt för att ta bort.</string>
+    <string name="crypt_pref_fingerprint_title">Fingeravtryck</string>
+    <string name="crypt_pref_fingerprint_summary">Använd fingeravtryck för att autentisera kryptering</string>
+    <string name="crypt_fingerprint_no_permission">Saknar tillstånd att använda fingeravtryck</string>
+    <string name="crypt_fingerprint_not_enrolled">Inga fingeravtryck angivna</string>
+    <string name="crypt_fingerprint_no_security">Hittade ingen säkerhet för låsskärmen</string>
+    <string name="crypt_warning_key">Notera att, när du ändrar ditt säkerhetsmönster från
+Systeminställning, då kommer du inte längre kunna dekryptera det här innehållet.</string>
+    <string name="warning_never_show">Visa inte igen</string>
+    <string name="warning_confirm">Förstått!</string>
+    <string name="crypt_encryption_fail">Krypteringen misslyckades</string>
+    <string name="crypt_decryption_fail">Dekrypteringen misslyckades</string>
+    <string name="crypt_decryption_fail_password">Fel lösenord!</string>
+    <string name="crypt_fingerprint_authenticate">Rör sensorn för att fortsätta</string>
+    <string name="authenticate_password">Ange lösenord</string>
+
+    <string name="sidebar_preferences">Sidofält</string>
+    <string name="sidebar_quick_access_title">Snabbåtkomst i sidofältet</string>
+    <string name="show_quick_access_pref_title">Visa snabbåtkomst</string>
+    <string name="show_quick_access_pref">Snabbåtkomster</string>
+    <string name="directory">Katalog</string>
+
+    <string name="show_bookmarks_pref">Bokmärken</string>
+    <string name="cloud_error_plugin">Amaze Moln-plug-in kunde inte hittas. Var god ladda ner en från Play Store.</string>
+    <string name="cloud_error_failed_restart">Misslyckades med att ladda anslutningen.
+Var god öppna Amaze Moln en gång.</string>
+    <string name="cloud_remove">Vill du ta bort moln-anslutningen?</string>
+    <string name="cloud_fail_authenticate">Autentiseringen misslyckades</string>
+    <string name="cloud_share_copied">Kopierade delbar länk till klippbordet</string>
+    <string name="copy_low_memory">Minnet börjar ta slut, var god frigör lite RAM</string>
+    <string name="cloud_token_lost">Förlorade token, var god logga in igen</string>
+    <string name="monofont">Jämnbreda typsnitt</string>
+    <string name="showHeaders">Visa Rubriker</string>
+
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">Inga Objekt</string>
+	<string name="item">objekt</string>
+	<string name="items">objekt</string>
+
+	<string name="byte_singular">byte</string>
+	<string name="bytes">byte</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">Filen ska ha ett namn</string>
+    <string name="add_item">Lägg till Objekt</string>
+    <string name="failed_smb_decrypt_path">Misslyckades med att ladda SMB-anslutning</string>
+    <string name="failed_cloud_new_connection">Misslyckades med att lägga till ny Moln-anslutning</string>
+    <string name="failed_cloud_api_key">Misslyckades med att autentisera Moln-plug-in</string>
+
+    <string name="local_inet_addr_error">Fel vid hämtning av lokal inet-adress</string>
+    <string name="intent_save_as">Spara som&#8230;</string>
+    <string name="go">Gå</string>
+    <string name="advanced">Avancerat</string>
+    <string name="typeable_paths_title">Egendefinierade sökvägar</string>
+    <string name="typeable_paths_summary">Långtryck på sökvägsfältet för att ange en egen sökväg</string>
+    <string name="send_email_to">Skicka epost till</string>
+
+    <string name="text_editor">Texteditorinställningar</string>
+    <string name="preference_newstack_title">Öppna filer som nya processer</string>
+    <string name="preference_newstack_summary">Ger dig möjlighet att öppna filer i separata processer. Kom åt dem från systemets tidigare-skärm.</string>
+    <string name="developers">Utvecklare</string>
+    <string name="no_bitcoin_app">Installera en Bitcoin-plånboksapp</string>
+    <string name="channel_name_normal">Amaze Notifieringar</string>
+    <string name="channel_description_normal">Amaze Filhanterares Notifieringar</string>
+    <string name="channel_name_ftp">Amaze FTP-server</string>
+    <string name="channel_description_ftp">Amaze Filhanterares FTP-server Notifieringar</string>
+
+    <string name="processing">Bearbetar&#8230;</string>
+    <string name="failed_no_connection">Misslyckades med att ladda filer. Var god kolla anslutningen.</string>
+
+    <string name="update">UPPDATERA</string>
+	<string name="scp_connection">SCP/SFTP-anslutning</string>
+    <string name="scp_port">Port</string>
+    <string name="ssh_host_key_verification_prompt">Autentiseringen av värd \'%1$s\' kan inte fastställas.\n\n%2$s nyckel-fingeravtryck är %3$s.\n\nVar god tryck \"Ja\" för att bekräfta identitet; annars, tryck \"Nej\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Verifiera Värd</string>
+    <string name="ssh_select_pem_button">SSH Privat Nyckel</string>
+    <string name="ssh_pem_key_parse_error">Kan inte läsa vald PEM: %s</string>
+    <string name="password_unchanged">(oändrad)</string>
+    <string name="ssh_authentication_failure_password">Inloggning misslyckades: Det gick inte att autentisera med användarnamn och lösenord.</string>
+    <string name="ssh_authentication_failure_key">Inloggning misslyckades: Det gick inte att autentisera med användarnamn och privat nyckel.</string>
+    <string name="ssh_connect_failed">Kan inte ansluta till %1$s:%2$d: %3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">VARNING: VÄRDENS IDENTIFIERING HAR ÄNDRATS!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+DET ÄR MÖJLIGT ATT NÅGON GÖR NÅGOT RIKTIGT ELAKT NU!\n\n
+Någon kanske tjuvlyssnar på dig just nu (man-in-the-middle-attack)! Det är också möjligt att värd-nyckeln nyss ändrats. Fingeravtrycket för den publika nyckeln som värden skickat stämmer inte överens med den Amaze har sparad.\n\n
+Var god kontakta din systemadministratör eller skapa upp en ny anslutning för att fortsätta ansluta till servern.</string>
+    <string name="ssh_key_prompt_passphrase">Ange lösenord</string>
+    <string name="add_shortcut_not_supported_by_launcher">Din launcher har inte stöd för att skapa genvägar.</string>
+
+    <string name="select_color_config">Välj färgkonfigurering</string>
+    <string name="customize">Förändra</string>
+    <string name="custom">Omgjord</string>
+    <string name="preselected_configs_title">Förvalda konfigureringar</string>
+    <string name="orange">Orange</string>
+    <string name="blue">Blå</string>
+    <string name="green">Grön</string>
+    <string name="password_no_match">Lösenord stämmer inte</string>
+    <string name="deselect_all">Avmarkera Alla</string>
+    <string name="filename">Filnamn</string>
+    <string name="compress_file_suggest_zip_extension">Det rekommenderas att använda \".zip\" som filändelse.</string>
+    <string name="about_amaze">Filhanterare i Material design för Android</string>
+    <string name="license">Licens</string>
+    <string name="libraries">Bibliotek</string>
+    <string name="password_repeat">Återupprepa lösenord</string>
+    <string name="create_file_suggest_txt_extension">Det rekommenderas att använda \".txt\" som filändelse.</string>
+    <string name="ssh_select_pem">Välj privat nyckel för autentisering</string>
+    <string name="ssh_key_invalid_passphrase">Ogiltig lösenordsfras</string>
+    <string name="encryption_fail_copy">Misslyckades med att uppdatera krypterings-post i databas</string>
+    <string name="extracted">Extraherad</string>
+    <string name="compressed">Komprimerad</string>
+    <string name="processed">Bearbetad</string>
+    <string name="no_obtainable_info">Det finns ingen information om denna fil</string>
+    <string name="reopen_from_source">Kan inte, var god öppna igen från förra appen</string>
+    <string name="no_file_error">Något gick fel, det finns inget att öppna</string>
+    <string name="file_read_only">Den öppnade filen kan bara läsas</string>
+    <string name="got_it">Förstått!</string>
+    <string name="encrypt_file_save_as">Spara Krypterad Fil Som&#8230;</string>
+    <string name="encrypt_folder_save_as">Spara Krypterad Mapp Som&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Krypterade filer måste ha \".aze\" som filändelse.</string>
+    <string name="cannot_overwrite">Kan inte skriva över fil.</string>
+    <string name="saved_single_file">Sparade filen som \'%s\'.</string>
+    <string name="saved_multi_files">%d sparade filer.</string>
+    <string name="create_hidden_file_warn">Den skapade filen kommer att vara dold i fillistan.</string>
+    <string name="grant_apkinstall_permission">För att fortsätta behöver appen tillåtelse att installera appar.</string>
+    <string name="time_remaining">Återstående tid</string>
+    <string name="transfer_rate">Överföringshastighet</string>
+    <string name="unknown">okänd</string>
+    <string name="multiple_invalid_archive_entries">Några filer i arkivet kan inte extraheras; akrivet kan vara skadat eller komma från en illasinnad källa.</string>
+    <string name="saf_otg_explanation">Av säkerhetsanledningar kommer du nu att gå till Androids filsystem. Var god välj USB i listan till vänster.</string>
+    <string name="donation_thanks">Tack så mycket för donationen, det håller oss motiverade! (:</string>
+    <string name="enable_marquee_filename">Tillåt markeringseffekter på filnamn</string>
+    <string name="archive_password_prompt">Var god ange arkivets lösenord:</string>
+    <string name="cannot_extract_archive">Kan inte extrahera arkiv \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Kan inte öppna arkivet \"%s\". Antingen kan vi inte öppna det eller så är det skadat.</string>
+    <string name="close">Stäng</string>
+    <string name="hide_media">Dölj från media-browsers</string>
     </resources>
 

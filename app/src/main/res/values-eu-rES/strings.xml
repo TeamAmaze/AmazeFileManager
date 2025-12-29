@@ -296,6 +296,7 @@
     <string name="domain">Domeinua</string>
     <string name="invalid">%s baliogabea</string>
     <string name="ftp_notif_starting">FTP zerbitzaria hasten ari da</string>
+    <string name="ftp_notif_starting_title">FTP Zerbitzaria</string>
     <string name="ftp_notif_title">Amaze FTP zerbitzaria exekutatzen</string>
     <string name="ftp_notif_text">%s(e)n</string>
     <string name="ftp_notif_stop_server">GELDITU</string>
@@ -467,6 +468,7 @@
     <string name="show_quick_access_pref">Sarbide azkarrak</string>
     <string name="directory">Direktorioa</string>
 
+    <string name="show_bookmarks_pref">Laster-markak</string>
     <string name="cloud_error_plugin">Ez da Amaze Cloud plugina aurkitu. Mesedez, deskargatu Play Store-tik.</string>
     <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.
         Mesedez, ireki Amaze Cloud berriz.</string>
@@ -577,4 +579,5 @@
     <string name="multiple_invalid_archive_entries">Artxiboko zenbait fitxategi ezin dira erauzi; artxiboa hondatua egon daiteke edo jatorri maltzurrekoa izan daiteke.</string>
     <string name="saf_otg_explanation">Androiden fitxategi-sistemara joango zara orain segurtasun arrazoiengatik. Hautatu USB gailua ezkerreko zerrendatik.</string>
     <string name="not_found_enabled_webview">Ez da nabigatzaile erabilgaririk aurkitu</string>
+    <string name="close">Itxi</string>
 </resources>

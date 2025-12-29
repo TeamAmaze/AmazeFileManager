@@ -19,24 +19,43 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="setting">Settings</string>
   <string name="size_capitalized">আকার</string>
-  <string name="about">About</string>
   <string name="yes">হ্যাঁ</string>
   <string name="no">না</string>
   <string name="dialog_delete_title">নিশ্চিত করুন</string>
+  <string name="deleting">মুছে ফেলা হচ্ছে</string>
+  <string name="dialog_delete_disclaimer">অাপনি কি নির্ধারিত ফাইলগুলো মুছে ফেলার ব্যাপারে নিশ্চিত?</string>
+  <string name="theme">থিম</string>
+  <string name="home">হোম</string>
+  <string name="paste">পেস্ট</string>
   <string name="history">ইতিহাস</string>
+  <string name="copy">কপি</string>
+  <string name="root_mode">রুট এক্সপ্লোরার</string>
+  <string name="root_failure">রুট প্রবেশ গ্রহণযোগ্য নয়</string>
+  <string name="select_all">সবগুলো নির্বাচন করুন</string>
+  <string name="delete">বাতিল</string>
+  <string name="set_as_home">হোম হিসাবে নির্ধারণ করুন</string>
+
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
   <!-- Theme -->
+  <string name="light">ম্যাটেরিয়াল লাইট</string>
+  <string name="dark">ম্যাটেরিয়াল ডার্ক</string>
+  <string name="daytime">ডেটাইম</string>
   <!--Skin-->
     <!--DirectorySortMode-->
+  <string name="foldersOnTop">ফোল্ডারগুলো সবার উপরে</string>
+  <string name="filesOnTop">ফাইলগুলো সবার উপরে</string>
+  <string name="none_on_top">কোনো কিছুই সবার উপরে না</string>
   <!--SortBy-->
+  <string name="sort_name">নাম</string>
+  <string name="lastModified">সর্বশেষ পরিবর্তিত হয়েছে</string>
   <string name="sort_size">আকার</string>
   <!--ListMode-->
   <!--Folder-->
-    <string name="skip">Skip</string>
+  <string name="pick_a_file">একটি ফাইল নির্বাচন করুন</string>
+  <string name="in_safe">অপর্যাপ্ত জায়গা</string>
   <string name="done">সম্পন্ন হয়েছে</string>
   <string name="exit">প্রস্থান</string>
   <string name="changelog">Changelog</string>
