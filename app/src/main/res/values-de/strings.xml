@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze Dateimanager</string>
     <string name="drawer_open">Navigationsleiste öffnen</string>
     <string name="drawer_close">Navigationsleiste schließen</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Pfad eingeben</string>
     <string name="cancel">Abbrechen</string>
     <string name="create">Erstellen</string>
-    <string name="loading">Lade&#8230;</string>
+    <string name="loading">Lade…</string>
     <string name="file_empty">Datei ist leer</string>
     <string name="error">Fehler</string>
     <string name="search_results">Suchergebnisse für %s</string>
@@ -99,7 +94,6 @@
     <string name="delete">Löschen</string>
     <string name="set_as_home"> Als Home-Verzeichnis festlegen</string>
     <string name="operation_not_supported">Vorgang nicht unterstützt</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -209,7 +203,6 @@
     <string name="vietnamese_translation_title">Vietnamesisch</string>
     <string name="japanese_translation_title">Japanisch</string>
     <string name="tamil_translation_title">Tamil</string>
-
     <string name="zip_viewer">Zip-Betrachter</string>
     <string name="unin_system_apk">Das ist eine Systemanwendung. Das Löschen könnte zu einer Instabilität des Systems führen. Ausführen?</string>
     <string name="warning">Warnung</string>
@@ -229,7 +222,6 @@
     <string name="database">Datenbank</string>
     <string name="colored_navigation">Farbige Navigationsleiste</string>
     <string name="colored_navigvation_sum">Legt fest, ob die Navigationsleiste mit der Farbe des Skins angezeigt wird oder nicht.</string>
-
     <string name="color_title">Farbe</string>
     <string name="color_summary">Farbe für diverse Elemente setzen</string>
     <string name="primary_color_title">Primärfarbe</string>
@@ -290,7 +282,7 @@
     <string name="cut">Ausschneiden</string>
     <string name="search">Suchen</string>
     <string name="invalid_name">Ungültiger Name</string>
-    <string name="search_hint">Eingeben zum Suchen&#8230;</string>
+    <string name="search_hint">Eingeben zum Suchen…</string>
     <string name="advanced_search">Erweiterte Suche</string>
     <string name="regular_expression">Reguläre Ausdrücke</string>
     <string name="regular_expression_summary">Suche mithilfe eines Regulären Ausdrucks im Stile von BASH </string>
@@ -324,8 +316,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="translate_summary">Amaze in Ihre Sprache übersetzen</string>
     <string name="paypal_copy_message">PayPal-ID in die Zwischenablage kopiert</string>
     <string name="searching_devices">Suche nach Geräten</string>
-    <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
-
+    <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut…</string>
     <string name="share_limit">Es können nicht mehr als 100 Dateien geteilt werden</string>
     <string name="otg_access">Stammverzeichnis des OTG-Geräts wählen</string>
     <string name="information">Informationen</string>
@@ -333,7 +324,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="accessed">Letzter Zugriff</string>
     <!-- reference to file modified date -->
     <string name="modified">Geändert</string>
-
     <string name="title">Titel</string>
     <string name="artist">Künstler</string>
     <string name="album">Album</string>
@@ -373,7 +363,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="optimized">Optimiert</string>
     <string name="security">Sicherheit</string>
     <string name="paper_size">Papiergröße</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Einige Dateien wurden nicht erfolgreich %s</string>
     <string name="copied">kopiert</string>
@@ -406,11 +395,10 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="clipboard_path_copy">Pfad in Zwischenablage kopiert</string>
     <string name="service_timer">Verstrichene Zeit</string>
     <string name="please_wait">Bitte warten</string>
-
     <string name="cloud_connection">Cloud-Verknüpfung</string>
     <string name="cloud_connection_new">Neue Cloud-Verknüpfung</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Suche nach Cloud Plugins</string>
@@ -421,7 +409,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_path_hint">Pfad zum root Verzeichnis teilen</string>
     <string name="change">Ändern</string>
     <string name="unknown_error">Hoppla! Leider ist etwas schiefgegangen.</string>
-
     <string name="ftp_path_change_success">FTP-Pfad wurde erfolgreich geändert</string>
     <string name="ftp_path_change_error_invalid">Ungültiger Pfad</string>
     <string name="ftp_status_no_connection">Keine Verbindung</string>
@@ -445,7 +432,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="contributors_6_summary">FTP-Server</string>
     <string name="contributors_7_summary">Eine interaktive Shell starten</string>
     <string name="connection_exists">Verbindung ist bereits vorhanden</string>
-
     <string name="crypt_encrypting">Verschlüssele</string>
     <string name="crypt_decrypting">Entschlüssele</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -471,20 +457,17 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="crypt_decryption_fail_password">Falsches Passwort!</string>
     <string name="crypt_fingerprint_authenticate">Berühre den Sensor um fortzufahren</string>
     <string name="authenticate_password">Passwort eingeben</string>
-
     <string name="sidebar_preferences">Seitenleiste</string>
     <string name="sidebar_quick_access_title">Seitenleiste Schnellzugriff</string>
     <string name="show_quick_access_pref_title">Schnellzugriffe anzeigen</string>
     <string name="show_quick_access_pref">Schnellzugriff</string>
     <string name="directory">Verzeichnis</string>
-
     <string name="sidebar_bookmarks_title">Lesezeichenleiste</string>
     <string name="show_bookmarks_pref_title">Lesezeichen anzeigen</string>
     <string name="show_bookmarks_pref">Lesezeichen</string>
     <string name="create_bookmark">Lesezeichen erstellen</string>
     <string name="edit_bookmark">Lesezeichen bearbeiten</string>
     <string name="question_delete_bookmark">Lesezeichen löschen?</string>
-
     <string name="cloud_error_plugin">Amaze Cloud-Plugin konnte nicht gefunden werden. Bitte laden Sie es aus dem Play Store herunter.</string>
     <string name="cloud_error_failed_restart">Fehler beim Laden der Verbindung.
          Bitte öffnen Sie Amaze Cloud einmal.</string>
@@ -495,14 +478,12 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="cloud_token_lost">Token verloren, bitte melden Sie sich erneut an</string>
     <string name="monofont">Monospace-Schriftart</string>
     <string name="showHeaders">Header anzeigen</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Keine Elemente</string>
-	<string name="item">Objekt</string>
-	<string name="items">Elemente</string>
-	
-	<string name="byte_singular">byte</string>
-	<string name="bytes">bytes</string>
+    <string name="item">Objekt</string>
+    <string name="items">Elemente</string>
+    <string name="byte_singular">byte</string>
+    <string name="bytes">bytes</string>
     <!-- end of plurals -->
 
     <string name="no_name">Datei sollte einen Namen haben</string>
@@ -510,15 +491,13 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="failed_smb_decrypt_path">SMB-Verbindung fehlgeschlagen</string>
     <string name="failed_cloud_new_connection">Hinzufügen neuer Cloud-Verbindung fehlgeschlagen</string>
     <string name="failed_cloud_api_key">Authentifizierung für Cloud-Plugin fehlgeschlagen</string>
-
     <string name="local_inet_addr_error">Lokale Internetadresse konnte nicht ermittelt werden</string>
-    <string name="intent_save_as">Speichern unter&#8230;</string>
+    <string name="intent_save_as">Speichern unter…</string>
     <string name="go">Los</string>
     <string name="advanced">Fortgeschritten</string>
     <string name="typeable_paths_title">Benutzerdefinierte Pfade</string>
     <string name="typeable_paths_summary">Tippen Sie lange auf die Pfadleiste, um einen benutzerspezifischen Pfad anzugeben</string>
     <string name="send_email_to">Eine E-Mail senden an</string>
-
     <string name="text_editor">Einstellungen für den Texteditor</string>
     <string name="preference_newstack_title">Dateien als neue Aufgabe öffnen</string>
     <string name="preference_newstack_summary">Erlaubt es Ihnen, Dateien in verschiedenen Aufgaben zu öffnen. Greifen Sie über die Anzeige des letzten Bildschirms des Systems zu.</string>
@@ -528,12 +507,10 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="channel_description_normal">Benachrichtigungen von Amaze Dateimanager </string>
     <string name="channel_name_ftp">Amaze FTP-Server</string>
     <string name="channel_description_ftp">Benachrichtigungen für den Amaze Dateimanager FTP-Server</string>
-
-    <string name="processing">Bearbeite&#8230;</string>
+    <string name="processing">Bearbeite…</string>
     <string name="failed_no_connection">Dateien konnten nicht geladen werden. Bitte prüfen Sie Ihre Internetverbindung.</string>
-
     <string name="update">AKTUALISIERUNG</string>
-	<string name="scp_connection">SCP/SFTP-Verbindung</string>
+    <string name="scp_connection">SCP/SFTP-Verbindung</string>
     <string name="ftp_connection">FTP-Verbindung</string>
     <string name="ftps_connection">FTP per SSL-Verbindung</string>
     <string name="scp_port">Port</string>
@@ -549,7 +526,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ssh_connect_failed_host_key_changed_message">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (man-in-the-middle-Angriff)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nBitte kontaktieren Sie Ihren Systemadministrator oder richten Sie eine neue Verbindung ein, um sich weiterhin mit dem Server zu verbinden.</string>
     <string name="ssh_key_prompt_passphrase">Bitte geben Sie die Schlüsselpassphrase ein.</string>
     <string name="add_shortcut_not_supported_by_launcher">Die Erstellung von Verknüpfungen wird von Ihrem Launcher nicht unterstützt.</string>
-    
     <string name="select_color_config">Farbkonfiguration auswählen</string>
     <string name="customize">Anpassen</string>
     <string name="custom">Angepasst</string>
@@ -579,8 +555,8 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="file_too_long">Die Datei ist zu lang und kann nicht bearbeitet werden. Sie können jedoch die ersten %d Zeichen lesen</string>
     <string name="file_read_only">Die Datei wurde als nur lesend geöffnet.</string>
     <string name="got_it">Alles klar!</string>
-    <string name="encrypt_file_save_as">Verschlüsselte Datei speichern als&#8230;</string>
-    <string name="encrypt_folder_save_as">Verschlüsselten Ordner speichern als&#8230;</string>
+    <string name="encrypt_file_save_as">Verschlüsselte Datei speichern als…</string>
+    <string name="encrypt_folder_save_as">Verschlüsselten Ordner speichern als…</string>
     <string name="encrypt_option_use_aze">Amaze-Verschlüsselungsformat verwenden</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>AESCrypt ist ein quelloffenes Verschlüsselungsformat basierend auf AES. Es ist universal und kann mit AESCrypt-Programmen auf anderen Plattformen entschlüsselt werden.</p>
@@ -614,7 +590,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="update_host_key">Geräteschlüssel aktualisieren</string>
     <string name="cancel_recommended">Abbrechen (empfohlen)</string>
     <string name="failed_install_apk">Installation fehlgeschlagen</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Interner Speicher</string>
@@ -627,7 +602,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="move">Verschieben</string>
     <string name="select_save_location">Ort zum Speichern auswählen</string>
     <string name="scp_default_path">Standardpfad (optional)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Entschuldigung. Das sollte nicht passieren.</string>
     <string name="error_report_button_text">Diesen Fehler per E-Mail melden</string>
@@ -697,8 +671,8 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="select_fill">Füllung auswählen</string>
     <string name="error_fetching_google_play_product_list">Fehler beim Abruf der Produktliste von Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Seit Android 11 wird seitens Google verlangt, dass Dateiverwalter Berechtigungen zum Verwalten aller Dateien auf dem Gerät anfordern. Mehr Details dazu <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">hier</a>.
-        \n\nAmaze File Manager benötigt diese Berechtigung ebenfalls. Nach drücken auf &quot;Gewähren&quot; bitte die Option <b>Zugriff zum Verwalten aller Dateien zulassen</b> auf der nächsten Seite auswählen.
-        \n\n<font color='#ff6347'><i>Das Abbrechen dieser Abfrage wird die App beenden.</i></font></body></html></string>
+        \n\nAmaze File Manager benötigt diese Berechtigung ebenfalls. Nach drücken auf "Gewähren" bitte die Option <b>Zugriff zum Verwalten aller Dateien zulassen</b> auf der nächsten Seite auswählen.
+        \n\n<font color="#ff6347"><i>Das Abbrechen dieser Abfrage wird die App beenden.</i></font></body></html></string>
     <string name="user_apps">Benutzer-Apps</string>
     <string name="appearance">Aussehen</string>
     <string name="behavior">Verhalten</string>
@@ -707,12 +681,10 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="behavior_summary">Ändern Sie Verhaltensweisen wie die erweiterte Suche und ob Dateien als neuer Task geöffnet werden sollen</string>
     <string name="security_summary">Passwort und Verschlüsselung festlegen</string>
     <string name="backup_summary">Amaze-Einstellungen exportieren/importieren</string>
-
     <string name="pref_export">Exportieren</string>
     <string name="pref_export_summary">Einstellungen exportieren</string>
     <string name="pref_import">Importieren</string>
     <string name="pref_import_summary">Einstellungen importieren</string>
-
     <string name="quick_desc">Dateien, auf die über Amaze kürzlich zugegriffen wurde</string>
     <string name="recent_desc">Kürzlich erstellte oder geänderte Dateien</string>
     <string name="error_cannot_find_way_open">Keine Möglichkeit gefunden, die Datei zu öffnen</string>
@@ -738,7 +710,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="preference_delete_confirmation_summary">Sicherheitsabfrage vor dem Löschen von Dateien. Dies sollte möglichst nicht deaktiviert werden. </string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Nicht verfügbar</string>
-
     <string name="exporting_failed">Exportieren fehlgeschlagen: die Sicherungsdatei konnte nicht geschrieben werden</string>
     <string name="importing_failed">Importieren fehlgeschlagen: die Sicherungsdatei konnte nicht gelesen werden</string>
     <string name="importing_completed">Importieren abgeschlossen</string>
@@ -764,4 +735,3 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="same_dir_overwrite_error">Ziel- und Quellordner sollten zum Überschreiben nicht übereinstimmen.</string>
     <string name="not_found_enabled_webview">Kein verfügbarer Browser</string>
 </resources>
-
