@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze Dosya Yöneticisi</string>
     <string name="drawer_open">Gezinme çekmecesini aç</string>
     <string name="drawer_close">Gezinme çekmecesini kapat</string>
@@ -41,7 +36,7 @@
     <string name="enterpath">Yolu gir</string>
     <string name="cancel">İPTAL ET</string>
     <string name="create">OLUŞTUR</string>
-    <string name="loading">Yükleniyor&#8230;</string>
+    <string name="loading">Yükleniyor…</string>
     <string name="file_empty">Dosya boş</string>
     <string name="error">Hata</string>
     <string name="search_results">%s için arama sonuçları</string>
@@ -97,7 +92,6 @@
     <string name="delete">Sil</string>
     <string name="set_as_home">Ana klasör olarak ayarla</string>
     <string name="operation_not_supported">İşlem desteklenmiyor</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -203,7 +197,6 @@
     <string name="vietnamese_translation_title">Vietnamca</string>
     <string name="japanese_translation_title">Japonca</string>
     <string name="tamil_translation_title">Tamil dili</string>
-
     <string name="zip_viewer">Zip Görüntüleyici</string>
     <string name="unin_system_apk">Bu bir sistem uygulamasıdır, silinmesi sistem kararsızlığına yol açabilir. Devam etmek istiyor musunuz?</string>
     <string name="warning">Uyarı</string>
@@ -223,7 +216,6 @@
     <string name="database">Veri tabanı</string>
     <string name="colored_navigation">Renkli gezinti çubuğu</string>
     <string name="colored_navigvation_sum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
-
     <string name="color_title">Renk</string>
     <string name="color_summary">Çeşitli sistem bileşenlerinin renklerini ayarlayın</string>
     <string name="primary_color_title">Ana Renk (Sol Sekme)</string>
@@ -284,7 +276,7 @@
     <string name="cut">Kes</string>
     <string name="search">Ara</string>
     <string name="invalid_name">Geçersiz İsim</string>
-    <string name="search_hint">Aramak için yazın&#8230;</string>
+    <string name="search_hint">Aramak için yazın…</string>
     <string name="advanced_search">Gelişmiş Arama</string>
     <string name="regular_expression">Düzenli İfade</string>
     <string name="regular_expression_summary">BASH tarzı düzenli ifade aramayı kullan</string>
@@ -318,8 +310,7 @@
     <string name="translate_summary">Amaze uygulamasını kendi dilinize çevirin</string>
     <string name="paypal_copy_message">Paypal ID panoya kopyalandı</string>
     <string name="searching_devices">Cihazlar aranıyor</string>
-    <string name="bookmark_lost">Yer imi bulunamadı, oluşturuluyor&#8230;</string>
-
+    <string name="bookmark_lost">Yer imi bulunamadı, oluşturuluyor…</string>
     <string name="share_limit">100 dosyadan fazlası paylaşılamaz</string>
     <string name="otg_access">OTG aygıt kökünü seçin</string>
     <string name="information">Bilgi</string>
@@ -327,7 +318,6 @@
     <string name="accessed">Erişim Tarihi</string>
     <!-- reference to file modified date -->
     <string name="modified">Değiştirme tarihi</string>
-
     <string name="title">Başlık</string>
     <string name="artist">Sanatçı</string>
     <string name="album">Albüm</string>
@@ -367,7 +357,6 @@
     <string name="optimized">Optimize edildi</string>
     <string name="security">Güvenlik</string>
     <string name="paper_size">Kağıt boyutu</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Bazı dosyalar başarıyla %s</string>
     <string name="copied">kopyalanamadı</string>
@@ -398,11 +387,10 @@
     <string name="clipboard_path_copy">Yol panoya kopyalandı</string>
     <string name="service_timer">Geçen süre</string>
     <string name="please_wait">Lütfen bekleyin</string>
-
     <string name="cloud_connection">Bulut bağlantısı</string>
     <string name="cloud_connection_new">Yeni bulut bağlantısı</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Bulut eklentisi al</string>
@@ -413,7 +401,6 @@
     <string name="ftp_path_hint">Kök dizin yolunu paylaş</string>
     <string name="change">Değiştir</string>
     <string name="unknown_error">Hoop! Birşeyler yanlış gitti!</string>
-
     <string name="ftp_path_change_success">FTP bağlantı noktası başarıyla değiştirildi</string>
     <string name="ftp_path_change_error_invalid">Yol geçersiz</string>
     <string name="ftp_status_no_connection">Bağlantı Yok</string>
@@ -438,7 +425,6 @@ Kaydırma sırasında araç çubuğunu otomatik olarak gizle</string>
     <string name="contributors_6_summary">FTP Sunucu</string>
     <string name="contributors_7_summary">Etkileşimli bir kabuk hazırlama</string>
     <string name="connection_exists">Bağlantı zaten var</string>
-
     <string name="crypt_encrypting">Şifreleniyor</string>
     <string name="crypt_decrypting">Şifre çözülüyor</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -463,20 +449,17 @@ Kaldırmak için boş bırakın.</string>
     <string name="crypt_decryption_fail_password">Yanlış şifre!</string>
     <string name="crypt_fingerprint_authenticate">Devam etmek için parmak izi sensörüne dokunun</string>
     <string name="authenticate_password">Şifreyi girin</string>
-
     <string name="sidebar_preferences">Kenar çubuğu</string>
     <string name="sidebar_quick_access_title">Kenar çubuğu hızlı erişim</string>
     <string name="show_quick_access_pref_title">Hızlı erişimleri göster</string>
     <string name="show_quick_access_pref">Hızlı erişimler</string>
     <string name="directory">Dizin</string>
-
     <string name="sidebar_bookmarks_title">Kenar çubuğu yer işaretleri</string>
     <string name="show_bookmarks_pref_title">Yer işaretlerini göster</string>
     <string name="show_bookmarks_pref">Yer İşaretleri</string>
     <string name="create_bookmark">Yer işareti oluştur</string>
     <string name="edit_bookmark">Yer işaretini düzenle</string>
     <string name="question_delete_bookmark">Yer işareti silinsin mi?</string>
-
     <string name="cloud_error_plugin">Amaze Cloud eklentisi bulunamadı. Play Store dan indirin.</string>
     <string name="cloud_error_failed_restart">Bağlantı yüklenemedi.
 Önce Amaze Cloud u açın.</string>
@@ -487,14 +470,12 @@ Kaldırmak için boş bırakın.</string>
     <string name="cloud_token_lost">Hatırlatıcı kayıp, lütfen tekrar giriş yapın</string>
     <string name="monofont">Tek aralıklı yazı tipi</string>
     <string name="showHeaders">Başlıkları Göster</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Öğe yok</string>
-	<string name="item">Öğe</string>
-	<string name="items">Öğeler</string>
-	
-	<string name="byte_singular">byte</string>
-	<string name="bytes">Bytes</string>
+    <string name="item">Öğe</string>
+    <string name="items">Öğeler</string>
+    <string name="byte_singular">byte</string>
+    <string name="bytes">Bytes</string>
     <!-- end of plurals -->
 
     <string name="no_name">Dosyanın bir adı olmalı</string>
@@ -502,15 +483,13 @@ Kaldırmak için boş bırakın.</string>
     <string name="failed_smb_decrypt_path">SMB bağlantısını yükleme başarısız oldu</string>
     <string name="failed_cloud_new_connection">Yeni bulut bağlantısını ekleme başarısız oldu</string>
     <string name="failed_cloud_api_key">Cloud eklentisinin kimliği doğrulanamadı</string>
-
     <string name="local_inet_addr_error">Yerel \'\'inet address\'\' alınırken hata oluştu</string>
-    <string name="intent_save_as">Dosyayı &#8230; olarak kaydet.</string>
+    <string name="intent_save_as">Dosyayı … olarak kaydet.</string>
     <string name="go">Git</string>
     <string name="advanced">Gelişmiş</string>
     <string name="typeable_paths_title">Özel yollar</string>
     <string name="typeable_paths_summary">Özel bir yol yazmak için yol çubuğuna uzun basın</string>
     <string name="send_email_to">Şuna e-posta gönder</string>
-
     <string name="text_editor">Text editor ayarları</string>
     <string name="preference_newstack_title">Dosyaları yeni görev olarak aç</string>
     <string name="preference_newstack_summary">Dosyaları ayrı görevler olarak açmanızı sağlar. Onlara son uygulamalarınız gibi erişebilirsiniz.</string>
@@ -520,12 +499,10 @@ Kaldırmak için boş bırakın.</string>
     <string name="channel_description_normal">Amaze Dosya Yöneticisinin bildirimleri</string>
     <string name="channel_name_ftp">Amaze FTP Sunucu</string>
     <string name="channel_description_ftp">Amaze Dosya Yöneticisi FTP Sunucusunun Bildirimleri</string>
-
-    <string name="processing">&#8230;İşleniyor</string>
+    <string name="processing">…İşleniyor</string>
     <string name="failed_no_connection">Dosya yüklemesi başarısız oldu. Lütfen bağlantınızı kontrol edin.</string>
-
     <string name="update">Güncelle</string>
-	<string name="scp_connection">SCP/SFTP Bağlantısı</string>
+    <string name="scp_connection">SCP/SFTP Bağlantısı</string>
     <string name="ftp_connection">FTP Bağlantısı</string>
     <string name="ftps_connection">SSL üzerinden FTP Bağlantısı</string>
     <string name="scp_port">Port</string>
@@ -545,7 +522,6 @@ Kaldırmak için boş bırakın.</string>
 Sunucuya bağlanmaya devam etmek için lütfen sistem yöneticinize başvurun veya yeni bir bağlantı kurun.</string>
     <string name="ssh_key_prompt_passphrase">Lütfen anahtar parolayı girin.</string>
     <string name="add_shortcut_not_supported_by_launcher">Kısayol oluşturma başlatıcınız tarafından desteklenmiyor.</string>
-    
     <string name="select_color_config">Renk yapılandırmasını seçin</string>
     <string name="customize">Özelleştir</string>
     <string name="custom">Özel</string>
@@ -574,8 +550,8 @@ Sunucuya bağlanmaya devam etmek için lütfen sistem yöneticinize başvurun ve
     <string name="file_too_long">Dosya çok uzun ve düzenlenemez, ancak ilk %d karakterlerini okuyabilirsiniz</string>
     <string name="file_read_only">Bu dosya salt okunur.</string>
     <string name="got_it">Anladım!</string>
-    <string name="encrypt_file_save_as">Şifrelenmiş dosyayı &#8230; olarak kaydet.</string>
-    <string name="encrypt_folder_save_as">Şifrelenmiş klasörü &#8230; olarak kaydet.</string>
+    <string name="encrypt_file_save_as">Şifrelenmiş dosyayı … olarak kaydet.</string>
+    <string name="encrypt_folder_save_as">Şifrelenmiş klasörü … olarak kaydet.</string>
     <string name="encrypt_option_use_aze">Amaze Şifreleme Biçimini Kullan</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>AESCrypt, AES şifrelemesine dayalı açık kaynaklı bir dosya şifreleme biçimidir. Aynı zamanda taşınabilir, diğer platformlardaki AESCrypt programları ile deşifre edilebilir.</p>
@@ -613,7 +589,6 @@ Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı aya
     <string name="update_host_key">Sahip Anahtarını Güncelleyin</string>
     <string name="cancel_recommended">İptal Et (Önerilir)</string>
     <string name="failed_install_apk">Yükleme başarısız</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Dahili Depolama</string>
@@ -625,7 +600,6 @@ Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı aya
     <string name="move">Taşı</string>
     <string name="select_save_location">Kaydedilecek yeri seçin</string>
     <string name="scp_default_path">Öntanımlı yol (isteğe bağlı)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Üzgünüz, bunun olmaması gerekiyordu.</string>
     <string name="error_report_button_text">Bu hatayı e-posta ile bildirin</string>
@@ -694,8 +668,8 @@ Bir dahaki sefere paylaşım için yeni bir konum seçene kadar bunu yalnızca b
     <string name="select_similar">Benzerini seç</string>
     <string name="error_fetching_google_play_product_list">Google Play\'den ürün listesi getirilirken hata oluştu.</string>
     <string name="grant_all_files_permission"><html><body>Android 11\'den beri Google, Dosya Yöneticilerinden cihazdaki tüm dosyaları yönetmek için kullanıcı izni talep etmesini ister. Ayrıntılar <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">buradadır</a>.
-        \n\nAmaze Dosya Yöneticisinin de bu izne ihtiyacı var. Burada &quot;İzin Ver&quot;\'e bastıktan sonra, lütfen bir sonraki ekranda <b>Tüm dosyaları yönetmek için erişime izin ver</b>seçeneğini seçin.
-        \n\n<font color='#ff6347'><i>Bu iletişim kutusunun iptal edilmesi uygulamadan çıkılmasına neden olur.</i></font></body></html></string>
+        \n\nAmaze Dosya Yöneticisinin de bu izne ihtiyacı var. Burada "İzin Ver"\'e bastıktan sonra, lütfen bir sonraki ekranda <b>Tüm dosyaları yönetmek için erişime izin ver</b>seçeneğini seçin.
+        \n\n<font color="#ff6347"><i>Bu iletişim kutusunun iptal edilmesi uygulamadan çıkılmasına neden olur.</i></font></body></html></string>
     <string name="user_apps">Kullanıcı uygulamaları</string>
     <string name="appearance">Görünüm</string>
     <string name="behavior">Davranış</string>
@@ -725,9 +699,7 @@ Bir dahaki sefere paylaşım için yeni bir konum seçene kadar bunu yalnızca b
     <string name="preference_delete_confirmation_summary">Dosyaları silmeden önce onay iste. Bunu devre dışı bırakmak kesinlikle önerilmez!</string>
     <string name="protocol_ftps">Güvenli FTP</string>
     <string name="unavailable">Kullanılamıyor</string>
-
     <string name="cloud_error_fdroid">Amaze Cloud Eklentisi, F-Droid sürümüyle desteklenmez. Lütfen Amaze\'in Play Store sürümünü kullanın.</string>
     <string name="disable_player_intent_filters_summary">Amaze dahili medya oynatıcılarını dosya seçiciden devre dışı bırakır</string>
     <string name="no_app_found_intent">Bu eylemi işleyecek uygulama bulunamadı. DocumentsUI yüklü mü?</string>
-    </resources>
-
+</resources>
