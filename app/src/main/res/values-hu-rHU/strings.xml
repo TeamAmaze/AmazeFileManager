@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Navigációs fiók megnyitása</string>
     <string name="drawer_close">Navigációs fiók bezárása</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Adja meg az elérési útvonalat</string>
     <string name="cancel">MÉGSE</string>
     <string name="create">LÉTREHOZÁS</string>
-    <string name="loading">Betöltés&#8230;</string>
+    <string name="loading">Betöltés…</string>
     <string name="file_empty">A fájl üres</string>
     <string name="error">Hiba</string>
     <string name="search_results">A(z) %s keresési eredményei</string>
@@ -98,7 +93,6 @@
     <string name="delete">Törlés</string>
     <string name="set_as_home">Beállítás kezdőkönyvtárként</string>
     <string name="operation_not_supported">A művelet nem támogatott</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -204,7 +198,6 @@
     <string name="vietnamese_translation_title">Vietnámi</string>
     <string name="japanese_translation_title">Japán</string>
     <string name="tamil_translation_title">Tamil</string>
-
     <string name="zip_viewer">Zip-megjelenítő</string>
     <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\nFolytatja?</string>
     <string name="warning">Figyelmeztetés</string>
@@ -224,7 +217,6 @@
     <string name="database">Adatbázis</string>
     <string name="colored_navigation">Színes navigációs sáv</string>
     <string name="colored_navigvation_sum">Függetlenül attól, hogy a felszínben a rendszer navigációs sáv színezett</string>
-
     <string name="color_title">Szín</string>
     <string name="color_summary">Állítsa be a különböző kezelőfelületi elemek színét</string>
     <string name="primary_color_title">Alapszín (bal lap)</string>
@@ -285,7 +277,7 @@
     <string name="cut">Kivágás</string>
     <string name="search">Keresés</string>
     <string name="invalid_name">Érvénytelen név</string>
-    <string name="search_hint">Írja be mit keres&#8230;</string>
+    <string name="search_hint">Írja be mit keres…</string>
     <string name="advanced_search">Részletes keresés</string>
     <string name="regular_expression">Reguláris kifejezés</string>
     <string name="regular_expression_summary">Keresés BASH stílusú reguláris kifejezés használatával</string>
@@ -319,8 +311,7 @@
     <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
     <string name="paypal_copy_message">A Paypal id a vágólapra lett másolva</string>
     <string name="searching_devices">Eszközök keresése</string>
-    <string name="bookmark_lost">Nem található könyvjelző, létrehozás újra&#8230;</string>
-
+    <string name="bookmark_lost">Nem található könyvjelző, létrehozás újra…</string>
     <string name="share_limit">Nem oszthat meg 100-nál több fájlt</string>
     <string name="otg_access">Válassza ki az OTG eszköz gyökerét</string>
     <string name="information">Információk</string>
@@ -328,7 +319,6 @@
     <string name="accessed">Hozzáférés</string>
     <!-- reference to file modified date -->
     <string name="modified">Módosítva</string>
-
     <string name="title">Cím</string>
     <string name="artist">Előadó</string>
     <string name="album">Album</string>
@@ -368,7 +358,6 @@
     <string name="optimized">Optimizálva</string>
     <string name="security">Biztonság</string>
     <string name="paper_size">Papír mérete</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Egyes fájlok másolása sikertelen volt: %s</string>
     <string name="copied">másolva</string>
@@ -401,11 +390,10 @@
     <string name="clipboard_path_copy">Az útvonal a vágólapra került</string>
     <string name="service_timer">Eltelt idő</string>
     <string name="please_wait">Kis türelmet</string>
-
     <string name="cloud_connection">Felhő-kapcsolat</string>
     <string name="cloud_connection_new">Új felhő kapcsolat</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Felhő beépülő letöltése</string>
@@ -416,7 +404,6 @@
     <string name="ftp_path_hint">Útvonal a megosztandó könyvtár gyökeréhez</string>
     <string name="change">Módosítás</string>
     <string name="unknown_error">Hoppá, valami hiba törént!</string>
-
     <string name="ftp_path_change_success">Az FTP elérési útvonala sikeresen módosítva lett</string>
     <string name="ftp_path_change_error_invalid">Érvénytelen elérési útvonal</string>
     <string name="ftp_status_no_connection">Nincs kapcsolat</string>
@@ -440,7 +427,6 @@
     <string name="contributors_6_summary">FTP-kiszolgáló</string>
     <string name="contributors_7_summary">Interaktív héj feltöltése</string>
     <string name="connection_exists">A kapcsolat már létezik</string>
-
     <string name="crypt_encrypting">Titkosítás</string>
     <string name="crypt_decrypting">Visszafejtése</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -466,20 +452,17 @@
     <string name="crypt_decryption_fail_password">Hibás jelszó!</string>
     <string name="crypt_fingerprint_authenticate">Érintse meg a szenzort a folytatáshoz</string>
     <string name="authenticate_password">Adja meg a jelszót</string>
-
     <string name="sidebar_preferences">Oldalsáv</string>
     <string name="sidebar_quick_access_title">Oldalsáv gyorselérés</string>
     <string name="show_quick_access_pref_title">Gyorselérés megjelenítése</string>
     <string name="show_quick_access_pref">Gyorselérés</string>
     <string name="directory">Könyvtár</string>
-
     <string name="sidebar_bookmarks_title">Könyvjelzők oldalsáv</string>
     <string name="show_bookmarks_pref_title">Könyvjelzők megjelenítése</string>
     <string name="show_bookmarks_pref">Könyvjelzők</string>
     <string name="create_bookmark">Könyvjelző létrehozása</string>
     <string name="edit_bookmark">Könyvjelző szerkesztése</string>
     <string name="question_delete_bookmark">Törli a könyvjelzőt?</string>
-
     <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
         Kérjük, először nyissa meg az Amaze Cloud-ot.</string>
@@ -490,14 +473,12 @@
     <string name="cloud_token_lost">A token elveszett. Kérjük, jelentkezzen be újra</string>
     <string name="monofont">Fix szélességű betű</string>
     <string name="showHeaders">Fejlécek megjelenítése</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Nincsenek elemek</string>
-	<string name="item">elem</string>
-	<string name="items">elem</string>
-	
-	<string name="byte_singular">bájt</string>
-	<string name="bytes">bájt</string>
+    <string name="item">elem</string>
+    <string name="items">elem</string>
+    <string name="byte_singular">bájt</string>
+    <string name="bytes">bájt</string>
     <!-- end of plurals -->
 
     <string name="no_name">A fájlnak névvel kell rendelkeznie</string>
@@ -505,15 +486,13 @@
     <string name="failed_smb_decrypt_path">Nem sikerült betölteni az SMB kapcsolatot</string>
     <string name="failed_cloud_new_connection">Nem sikerült hozzáadni új Cloud-kapcsolatot</string>
     <string name="failed_cloud_api_key">A felhő beépülő hitelesítése sikertelen volt</string>
-
     <string name="local_inet_addr_error">Hiba történt a helyi inet cím lekérésekor</string>
-    <string name="intent_save_as">Mentés másként&#8230;</string>
+    <string name="intent_save_as">Mentés másként…</string>
     <string name="go">Go</string>
     <string name="advanced">Speciális</string>
     <string name="typeable_paths_title">Egyéni útvonalak</string>
     <string name="typeable_paths_summary">Nyomja meg hosszan az útvonal sávot az egyéni elérési útvonal beírásához</string>
     <string name="send_email_to">E-mail küldése</string>
-
     <string name="text_editor">Szövegszerkesztő beállításai</string>
     <string name="preference_newstack_title">Fájlok megnyitása új feladatként</string>
     <string name="preference_newstack_summary">Lehetővé teszi a fájlok megnyitását különálló feladatokban. Ezeket a rendszer legutóbbi képernyőjéről érheti el.</string>
@@ -523,12 +502,10 @@
     <string name="channel_description_normal">Amaze File Manager értesítései</string>
     <string name="channel_name_ftp">Amaze FTP-kiszolgáló</string>
     <string name="channel_description_ftp">Amaze File Manager FTP-kiszolgáló értesítései</string>
-
-    <string name="processing">Feldolgozás&#8230;</string>
+    <string name="processing">Feldolgozás…</string>
     <string name="failed_no_connection">Nem sikerült betölteni a fájlokat. Ellenőrizze a kapcsolatot.</string>
-
     <string name="update">FRISSÍTÉS</string>
-	<string name="scp_connection">SCP/SFTP kapcsolat</string>
+    <string name="scp_connection">SCP/SFTP kapcsolat</string>
     <string name="ftp_connection">FTP kapcsolat</string>
     <string name="ftps_connection">FTP SSL kapcsolaton keresztül</string>
     <string name="scp_port">Port</string>
@@ -548,7 +525,6 @@
     </string>
     <string name="ssh_key_prompt_passphrase">Kérjük, adja meg a kulcs-jelszót.</string>
     <string name="add_shortcut_not_supported_by_launcher">Jelenlegi indítóprogramja nem támogatja a parancsikonok létrehozását.</string>
-    
     <string name="select_color_config">Válasszon szín konfigurációt</string>
     <string name="customize">Testreszabás</string>
     <string name="custom">Egyéni</string>
@@ -578,8 +554,8 @@
     <string name="file_too_long">A fájl túl hosszú és nem szerkeszthető, de az első %d karakter olvasható</string>
     <string name="file_read_only">A megnyitott fájl csak olvasható.</string>
     <string name="got_it">Értem!</string>
-    <string name="encrypt_file_save_as">Titkosított fájl mentése mint&#8230;</string>
-    <string name="encrypt_folder_save_as">Titkosított mappa mentése mint&#8230;</string>
+    <string name="encrypt_file_save_as">Titkosított fájl mentése mint…</string>
+    <string name="encrypt_folder_save_as">Titkosított mappa mentése mint…</string>
     <string name="encrypt_option_use_aze">Amaze titkosítási formátum használata</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>Az AESCrypt egy nyílt forráskódú, AES titkosításon alapuló fájltitkosítási formátum. Emellett hordozható, más platformokon is visszafejthető az AESCrypt programokkal.</p>
@@ -613,7 +589,6 @@
     <string name="update_host_key">Gazdagép kulcs frissítése</string>
     <string name="cancel_recommended">Mégse (ajánlott)</string>
     <string name="failed_install_apk">Nem sikerült telepíteni</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Belső tároló</string>
@@ -626,7 +601,6 @@
     <string name="move">Áthelyezés</string>
     <string name="select_save_location">Válassza ki a mentés helyét</string>
     <string name="scp_default_path">Alapértelmezett hely (választható)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Sajnálom, ennek nem lett volna szabad megtörténnie.</string>
     <string name="error_report_button_text">Hiba jelentése e-mailben</string>
@@ -696,8 +670,8 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="select_fill">Válasszon kitöltést</string>
     <string name="error_fetching_google_play_product_list">Hiba történt a Google Play terméklista lekérésekor.</string>
     <string name="grant_all_files_permission"><html><body>Az Android 11 óta a Google arra utasítja a fájlkezelőket, hogy kérjenek felhasználói engedélyt az eszközön lévő összes fájl kezeléséhez. Részletek itt.
-        \n\nAz Amaze File Manager-nek is szüksége van erre az engedélyre. Az &quot;Engedélyez&quot; gomb megnyomása után, válassza a <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót a következő képernyőn.
-        \n\n<font color='#ff6347'><i>A párbeszédpanel megszakításával kilép az alkalmazásból.</i></font></body></html></string>
+        \n\nAz Amaze File Manager-nek is szüksége van erre az engedélyre. Az "Engedélyez" gomb megnyomása után, válassza a <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót a következő képernyőn.
+        \n\n<font color="#ff6347"><i>A párbeszédpanel megszakításával kilép az alkalmazásból.</i></font></body></html></string>
     <string name="user_apps">Felhasználói alkalmazások</string>
     <string name="appearance">Megjelenés</string>
     <string name="behavior">Viselkedés</string>
@@ -706,12 +680,10 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="behavior_summary">Módosíthatja az olyan viselkedési módokat, mint a speciális keresés és a fájlok új feladatként való megnyitása.</string>
     <string name="security_summary">Jelszó és titkosítás beállítása</string>
     <string name="backup_summary">Amaze beállítások exportálása/importálása</string>
-
     <string name="pref_export">Exportálás</string>
     <string name="pref_export_summary">Exportálási beállítások</string>
     <string name="pref_import">Importálás</string>
     <string name="pref_import_summary">Importálási beállítások</string>
-
     <string name="quick_desc">Az Amaze-on keresztül legutóbb megnyitott fájlok</string>
     <string name="recent_desc">Legutóbb létrehozott vagy módosított fájlok</string>
     <string name="error_cannot_find_way_open">Nem találtam módot a fájl megnyitására</string>
@@ -737,7 +709,6 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="preference_delete_confirmation_summary">Kérjen megerősítést a fájlok törlése előtt. Ennek kikapcsolása nem javasolt!</string>
     <string name="protocol_ftps">Biztonságos FTP</string>
     <string name="unavailable">Nem elérhető</string>
-
     <string name="exporting_failed">Az exportálás sikertelen: nem sikerült írni a biztonsági mentési fájlt</string>
     <string name="importing_failed">Az importálás sikertelen: nem lehet olvasni a biztonsági mentési fájlt</string>
     <string name="importing_completed">Az importálás befejeződött</string>
@@ -762,4 +733,3 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="same_dir_overwrite_error">A cél- és forrásmappa nem kell megegyeznie a felülíráshoz.</string>
     <string name="not_found_enabled_webview">Nincs elérhető böngésző</string>
 </resources>
-
