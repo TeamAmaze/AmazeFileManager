@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Файловый менеджер Amazе</string>
     <string name="drawer_open">Открыть меню навигации</string>
     <string name="drawer_close">Закрыть меню навигации</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Введите путь</string>
     <string name="cancel">Отмена</string>
     <string name="create">Создать</string>
-    <string name="loading">Загрузка&#8230;</string>
+    <string name="loading">Загрузка…</string>
     <string name="file_empty">Файл пуст</string>
     <string name="error">Ошибка</string>
     <string name="search_results">результаты поиска 1%s</string>
@@ -98,7 +93,6 @@
     <string name="delete">Удалить</string>
     <string name="set_as_home">Сделать домашней папкой</string>
     <string name="operation_not_supported">Операция не поддерживается</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -204,7 +198,6 @@
     <string name="vietnamese_translation_title">Вьетнамский</string>
     <string name="japanese_translation_title">Японский</string>
     <string name="tamil_translation_title">Тамильский</string>
-
     <string name="zip_viewer">Просмотр ZIP</string>
     <string name="unin_system_apk">Это системное приложение, удаление может привести к нестабильности системы.
 Продолжить?</string>
@@ -225,7 +218,6 @@
     <string name="database">База данных</string>
     <string name="colored_navigation">Цветная панель навигации</string>
     <string name="colored_navigvation_sum">Окраска панели навигации вместе со скином</string>
-
     <string name="color_title">Цвет</string>
     <string name="color_summary">Установить цвет для различных компонентов UI</string>
     <string name="primary_color_title">Основной цвет (Левая вкладка)</string>
@@ -286,7 +278,7 @@
     <string name="cut">Вырезать</string>
     <string name="search">Поиск</string>
     <string name="invalid_name">Неправильное имя</string>
-    <string name="search_hint">Введите для поиска&#8230;</string>
+    <string name="search_hint">Введите для поиска…</string>
     <string name="advanced_search">Расширенный поиск</string>
     <string name="regular_expression">Регулярное выражение</string>
     <string name="regular_expression_summary">Поиск с помощью регулярного выражения BASH</string>
@@ -320,8 +312,7 @@
     <string name="translate_summary">Перевести Amaze на ваш язык</string>
     <string name="paypal_copy_message">Paypal id скопирован в буфер обмена</string>
     <string name="searching_devices">Поиск устройств</string>
-    <string name="bookmark_lost">Закладка не найдена, пересоздание&#8230;</string>
-
+    <string name="bookmark_lost">Закладка не найдена, пересоздание…</string>
     <string name="share_limit">Нельзя отправить больше 100 файлов</string>
     <string name="otg_access">Выберите корень OTG устройства</string>
     <string name="information">Информация</string>
@@ -329,7 +320,6 @@
     <string name="accessed">Доступ</string>
     <!-- reference to file modified date -->
     <string name="modified">Изменено</string>
-
     <string name="title">Название</string>
     <string name="artist">Артист</string>
     <string name="album">Альбом</string>
@@ -369,7 +359,6 @@
     <string name="optimized">Оптимизировано</string>
     <string name="security">Безопасность</string>
     <string name="paper_size">Размер бумаги</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Некоторые файлы не были успешно %s</string>
     <string name="copied">скопированы</string>
@@ -402,11 +391,10 @@
     <string name="clipboard_path_copy">Путь скопирован в буфер обмена</string>
     <string name="service_timer">Прошло времени</string>
     <string name="please_wait">Подождите…</string>
-
     <string name="cloud_connection">Облачное соединение</string>
     <string name="cloud_connection_new">Новое облачное соединение</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Ящик</string>
     <string name="cloud_get">Получить Облачный плагин</string>
@@ -418,7 +406,6 @@
     <string name="change">Изменить</string>
     <string name="unknown_error">Упс! Что-то пошло не так!
 </string>
-
     <string name="ftp_path_change_success">FTP путь успешно изменен</string>
     <string name="ftp_path_change_error_invalid">Неверный путь</string>
     <string name="ftp_status_no_connection">Нет Соединения</string>
@@ -442,7 +429,6 @@
     <string name="contributors_6_summary">FTP сервер</string>
     <string name="contributors_7_summary">Вызов интерактивной оболочки</string>
     <string name="connection_exists">Соединение уже установлено</string>
-
     <string name="crypt_encrypting">Шифрование</string>
     <string name="crypt_decrypting">Расшифровка</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -466,20 +452,17 @@
     <string name="crypt_decryption_fail_password">Неверный пароль!</string>
     <string name="crypt_fingerprint_authenticate">Коснитесь сенсора для продолжения</string>
     <string name="authenticate_password">Введите пароль</string>
-
     <string name="sidebar_preferences">Боковая панель</string>
     <string name="sidebar_quick_access_title">Боковая панель быстрого доступа</string>
     <string name="show_quick_access_pref_title">Показать быстрый доступ</string>
     <string name="show_quick_access_pref">Быстрый доступ</string>
     <string name="directory">Директория</string>
-
     <string name="sidebar_bookmarks_title">Закладки боковой панели</string>
     <string name="show_bookmarks_pref_title">Показать закладки</string>
     <string name="show_bookmarks_pref">Закладки</string>
     <string name="create_bookmark">Создать закладку</string>
     <string name="edit_bookmark">Изменить закладку</string>
     <string name="question_delete_bookmark">Удалить закладку?</string>
-
     <string name="cloud_error_plugin">Плагин Amaze Cloud не найден. Пожалуйста загрузите его из Play Маркета.</string>
     <string name="cloud_error_failed_restart">Не удалось установить соединение.        Пожалуйста откройте Amaze Cloud.</string>
     <string name="cloud_remove">Вы хотите удалить облачное соединение?</string>
@@ -489,27 +472,24 @@
     <string name="cloud_token_lost">Идентификатор потерян, пожалуйста, войдите снова</string>
     <string name="monofont">Моноширинный Шрифт</string>
     <string name="showHeaders">Показывать Заголовки</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Ничего нет</string>
-	<string name="item">Элемент</string>
-	<string name="items">Элементы</string>
-	
-	<string name="byte_singular">Байт</string>
-	<string name="bytes">Байты</string>
+    <string name="item">Элемент</string>
+    <string name="items">Элементы</string>
+    <string name="byte_singular">Байт</string>
+    <string name="bytes">Байты</string>
     <!-- end of plurals -->
 
     <string name="no_name">Файл должен иметь имя</string>
     <string name="add_item">Добавить элемент</string>
     <string name="failed_smb_decrypt_path">Не удалось загрузить SMB-соединение</string>
     <string name="failed_cloud_new_connection">Не удалось добавить новое подключение к облаку</string>
-    <string name="intent_save_as">Сохранить как&#8230;</string>
+    <string name="intent_save_as">Сохранить как…</string>
     <string name="go">Вперёд</string>
     <string name="advanced">Дополнительно</string>
     <string name="typeable_paths_title">Пользовательские директории</string>
     <string name="typeable_paths_summary">Нажмите и удерживайте полосу пути, чтобы ввести собственный путь.</string>
     <string name="send_email_to">Отправить электронное письмо на</string>
-
     <string name="text_editor">Настройки текстового редактора</string>
     <string name="preference_newstack_title">Открыть файлы как новую задачу</string>
     <string name="preference_newstack_summary">Позволяет открывать файлы в отдельных задачах. Доступ к ним с экрана последних системных сообщений.</string>
@@ -519,12 +499,10 @@
     <string name="channel_description_normal">Уведомления Файлового Менеджера Amaze</string>
     <string name="channel_name_ftp">Amaze FTP-сервер</string>
     <string name="channel_description_ftp">Уведомления FTP сервера Файлового Менеджера Amaze</string>
-
-    <string name="processing">Выполнение&#8230;</string>
+    <string name="processing">Выполнение…</string>
     <string name="failed_no_connection">Не удалось загрузить файлы. Пожалуйста, проверьте подключение.</string>
-
     <string name="update">ОБНОВЛЕНИЕ</string>
-	<string name="scp_connection">SCP/SFTP-соединение</string>
+    <string name="scp_connection">SCP/SFTP-соединение</string>
     <string name="ftp_connection">FTP-соединение</string>
     <string name="ftps_connection">FTP через SSL-соединение</string>
     <string name="scp_port">Порт</string>
@@ -536,7 +514,6 @@
     <string name="ssh_connect_failed_host_key_changed_title">ВНИМАНИЕ: ИДЕНТИФИКАЦИЯ УДАЛЕННОГО ХОСТА ИЗМЕНИЛАСЬ!</string>
     <string name="ssh_key_prompt_passphrase">Пожалуйста, введите кодовую фразу.</string>
     <string name="add_shortcut_not_supported_by_launcher">Создание ярлыков не поддерживается Вашим лаунчером.</string>
-    
     <string name="select_color_config">Выберите цветовую конфигурацию</string>
     <string name="customize">Настроить свою схему</string>
     <string name="custom">Своя</string>
@@ -565,8 +542,8 @@
     <string name="file_too_long">Имя файлы слишком длинное и не может быть изменено, но вы можете увидеть первые 1%d символа</string>
     <string name="file_read_only">Открытый файл доступен только для чтения.</string>
     <string name="got_it">Понял!</string>
-    <string name="encrypt_file_save_as">Сохранить зашифрованный файл как&#8230;</string>
-    <string name="encrypt_folder_save_as">Сохранить зашифрованную папку как&#8230;</string>
+    <string name="encrypt_file_save_as">Сохранить зашифрованный файл как…</string>
+    <string name="encrypt_folder_save_as">Сохранить зашифрованную папку как…</string>
     <string name="encrypt_option_use_aze">Использовать формат шифрования Amaze.</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[ 
         <p>AESCrypt — это формат шифрования файлов с открытым исходным кодом, основанный на шифровании AES.  Он также портативный, его можно расшифровать с помощью программ AESCrypt на других платформах.</p>
@@ -596,7 +573,6 @@
     <string name="update_host_key">Обновить ключ хоста</string>
     <string name="cancel_recommended">Отмена (рекомендуется)</string>
     <string name="failed_install_apk">Не удалось установить</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Внутренняя память</string>
@@ -609,7 +585,6 @@
     <string name="move">Переместить</string>
     <string name="select_save_location">Выберите место для сохранения</string>
     <string name="scp_default_path">Путь по умолчанию (необязательно)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Извините, этого не должно было случиться.</string>
     <string name="error_report_button_text">Сообщите об этой ошибке по электронной почте</string>
@@ -702,11 +677,9 @@
     <string name="preference_delete_confirmation_summary">Запрашивать подтверждение перед удалением файлов. Отключать это крайне не рекомендуется!</string>
     <string name="protocol_ftps">Безопасный FTP</string>
     <string name="unavailable">Недоступен</string>
-
     <string name="free_of">\"%s\n%s свободно из %s</string>
     <string name="cloud_error_fdroid">Плагин Amaze Cloud не поддерживается версией F-Droid. Пожалуйста, используйте версию Amaze из Play Store.</string>
     <string name="disable_player_intent_filters">Отключить фильтры намерений проигрывателя</string>
     <string name="disable_player_intent_filters_summary">Отключить встроенный в Amaze проигрыватель из списка выбора</string>
     <string name="no_app_found_intent">Не найдено ни одного приложения для обработки этого намерения.  У вас установлен DocumentsUI?</string>
-    </resources>
-
+</resources>
