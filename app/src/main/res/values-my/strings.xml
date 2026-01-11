@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze ဖိုင်မန်နေဂျာ</string>
     <string name="drawer_open">အညွှန်းကိုဖွင့်ရန်</string>
     <string name="drawer_close">အညွှန်းကိုပိတ်ရန်</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Enter Path</string>
     <string name="cancel">လုပ်ဆောင်ချက်ပြန်ဖျက်ရန်</string>
     <string name="create">CREATE</string>
-    <string name="loading">Loading&#8230;</string>
+    <string name="loading">Loading…</string>
     <string name="file_empty">ဖိုင်သည်အလွတ်ဖြစ်နေသည်</string>
     <string name="error">Error</string>
     <string name="search_results">Search results of %s</string>
@@ -98,7 +93,6 @@
     <string name="delete">Delete</string>
     <string name="set_as_home">Set As Home</string>
     <string name="operation_not_supported">Operation not supported</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -204,7 +198,6 @@
     <string name="vietnamese_translation_title">ဗီယက်နမ်ဘာသာ</string>
     <string name="japanese_translation_title">Japanese</string>
     <string name="tamil_translation_title">Tamil</string>
-
     <string name="zip_viewer">Zip Viewer</string>
     <string name="unin_system_apk">This is a system app, deleting it might lead to system un-stability.\nProceed?</string>
     <string name="warning">Warning</string>
@@ -224,7 +217,6 @@
     <string name="database">Database</string>
     <string name="colored_navigation">Colored Navigation bar</string>
     <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
-
     <string name="color_title">Color</string>
     <string name="color_summary">Set color to various UI components</string>
     <string name="primary_color_title">Primary Color (Left Tab)</string>
@@ -285,7 +277,7 @@
     <string name="cut">Cut</string>
     <string name="search">Search</string>
     <string name="invalid_name">နာမည်ကိုလက်မခံပါ</string>
-    <string name="search_hint">Type to search&#8230;</string>
+    <string name="search_hint">Type to search…</string>
     <string name="advanced_search">Advanced Search</string>
     <string name="regular_expression">Regular Expression</string>
     <string name="regular_expression_summary">Search using a BASH style regular expression</string>
@@ -319,8 +311,7 @@
     <string name="translate_summary">Translate Amaze in your language</string>
     <string name="paypal_copy_message">PayPal ID copied to clipboard</string>
     <string name="searching_devices">Searching for devices</string>
-    <string name="bookmark_lost">Bookmark not found, recreating&#8230;</string>
-
+    <string name="bookmark_lost">Bookmark not found, recreating…</string>
     <string name="share_limit">Can\'t share more than 100 files</string>
     <string name="otg_access">Select the root of OTG device</string>
     <string name="information">Information</string>
@@ -328,7 +319,6 @@
     <string name="accessed">Accessed</string>
     <!-- reference to file modified date -->
     <string name="modified">Modified</string>
-
     <string name="title">Title</string>
     <string name="artist">Artist</string>
     <string name="album">Album</string>
@@ -368,7 +358,6 @@
     <string name="optimized">Optimized</string>
     <string name="security">Security</string>
     <string name="paper_size">Paper Size</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Some files weren\'t successfully %s</string>
     <string name="copied">copied</string>
@@ -401,11 +390,10 @@
     <string name="clipboard_path_copy">Path copied to clipboard</string>
     <string name="service_timer">Time elapsed</string>
     <string name="please_wait">Please Wait</string>
-
     <string name="cloud_connection">Cloud Connection</string>
     <string name="cloud_connection_new">New Cloud Connection</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Get Cloud plugin</string>
@@ -416,7 +404,6 @@
     <string name="ftp_path_hint">Path to the root of directory to share</string>
     <string name="change">Change</string>
     <string name="unknown_error">Oops, something went wrong!</string>
-
     <string name="ftp_path_change_success">FTP path changed successfully</string>
     <string name="ftp_path_change_error_invalid">Invalid path</string>
     <string name="ftp_status_no_connection">No Connection</string>
@@ -440,7 +427,6 @@
     <string name="contributors_6_summary">FTP ဆာဗာ</string>
     <string name="contributors_7_summary">Firing up an interactive shell</string>
     <string name="connection_exists">Connection already exists</string>
-
     <string name="crypt_encrypting">Encrypting</string>
     <string name="crypt_decrypting">Decrypting</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -466,20 +452,17 @@
     <string name="crypt_decryption_fail_password">Wrong password!</string>
     <string name="crypt_fingerprint_authenticate">Touch sensor to continue</string>
     <string name="authenticate_password">Enter password</string>
-
     <string name="sidebar_preferences">Sidebar</string>
     <string name="sidebar_quick_access_title">Sidebar quick access</string>
     <string name="show_quick_access_pref_title">Show quick accesses</string>
     <string name="show_quick_access_pref">Quick accesses</string>
     <string name="directory">Directory</string>
-
     <string name="sidebar_bookmarks_title">Sidebar bookmarks</string>
     <string name="show_bookmarks_pref_title">Show bookmarks</string>
     <string name="show_bookmarks_pref">Bookmarks</string>
     <string name="create_bookmark">Create bookmark</string>
     <string name="edit_bookmark">Edit bookmark</string>
     <string name="question_delete_bookmark">Delete bookmark?</string>
-
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.
         Please open Amaze Cloud once.</string>
@@ -490,14 +473,12 @@
     <string name="cloud_token_lost">Token lost, please sign-in again</string>
     <string name="monofont">Monospace Font</string>
     <string name="showHeaders">Show Headers</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">No items</string>
-	<string name="item">item</string>
-	<string name="items">items</string>
-	
-	<string name="byte_singular">byte</string>
-	<string name="bytes">bytes</string>
+    <string name="item">item</string>
+    <string name="items">items</string>
+    <string name="byte_singular">byte</string>
+    <string name="bytes">bytes</string>
     <!-- end of plurals -->
 
     <string name="no_name">ဖိုင်နာမည်ပါရန်လိုသည်</string>
@@ -505,15 +486,13 @@
     <string name="failed_smb_decrypt_path">Failed to load SMB connection</string>
     <string name="failed_cloud_new_connection">Failed to add new Cloud connection</string>
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
-
     <string name="local_inet_addr_error">Error getting local inet address</string>
-    <string name="intent_save_as">Save as&#8230;</string>
+    <string name="intent_save_as">Save as…</string>
     <string name="go">Go</string>
     <string name="advanced">Advanced</string>
     <string name="typeable_paths_title">Custom paths</string>
     <string name="typeable_paths_summary">Long press path bar to type a custom path</string>
     <string name="send_email_to">Send an e-mail to</string>
-
     <string name="text_editor">Text editor settings</string>
     <string name="preference_newstack_title">Open files as new task</string>
     <string name="preference_newstack_summary">Allows you to open files in separate tasks. Access them from system recents screen.</string>
@@ -523,12 +502,10 @@
     <string name="channel_description_normal">Amaze File Manager\'s Notifications</string>
     <string name="channel_name_ftp">Amaze FTP Server</string>
     <string name="channel_description_ftp">Amaze File Manager FTP Server\'s Notifications</string>
-
-    <string name="processing">Processing&#8230;</string>
+    <string name="processing">Processing…</string>
     <string name="failed_no_connection">Failed to load files. Please check your connection.</string>
-
     <string name="update">UPDATE</string>
-	<string name="scp_connection">SCP/SFTP Connection</string>
+    <string name="scp_connection">SCP/SFTP Connection</string>
     <string name="ftp_connection">FTP Connection</string>
     <string name="ftps_connection">FTP over SSL Connection</string>
     <string name="scp_port">Port</string>
@@ -544,7 +521,6 @@
     <string name="ssh_connect_failed_host_key_changed_message">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\nSomeone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\nPlease contact your system administrator or setup a new connection to continue connecting to the server.</string>
     <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
     <string name="add_shortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
-    
     <string name="select_color_config">Select color config</string>
     <string name="customize">Customize</string>
     <string name="custom">Custom</string>
@@ -573,8 +549,8 @@
     <string name="file_too_long">The file is too long and cannot be edited, however you can read the first %d characters</string>
     <string name="file_read_only">The file opened is a read-only.</string>
     <string name="got_it">Got it!</string>
-    <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>
-    <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
+    <string name="encrypt_file_save_as">Save Encrypted File As…</string>
+    <string name="encrypt_folder_save_as">Save Encrypted Folder As…</string>
     <string name="encrypt_option_use_aze">Use Amaze Encryption Format</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>AESCrypt is an open source file encryption format based on AES encryption. It is also portable, can be decrypted with AESCrypt programs on other platforms.</p>
@@ -608,7 +584,6 @@
     <string name="update_host_key">Update Host Key</string>
     <string name="cancel_recommended">Cancel (Recommended)</string>
     <string name="failed_install_apk">Failed to install</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">ဖုန်း၏မန်မိုရီ</string>
@@ -621,7 +596,6 @@
     <string name="move">Move</string>
     <string name="select_save_location">Select location to save</string>
     <string name="scp_default_path">Default Path (Optional)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Sorry, that should not have happened.</string>
     <string name="error_report_button_text">Report this error via e-mail</string>
@@ -690,8 +664,8 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_similar">Select similar</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
-        \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
-        \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
+        \n\nAmaze File Manager needs this permission too. After pressing "Grant"here, please select <b>Allow access to manage all files</b> option on the next screen.
+        \n\n<font color="#ff6347"><i>Canceling this dialog will exit the app.</i></font></body></html></string>
     <string name="user_apps">User apps</string>
     <string name="appearance">Appearance</string>
     <string name="behavior">Behavior</string>
@@ -721,11 +695,9 @@ You only need to do this once, until the next time you select a new location for
     <string name="preference_delete_confirmation_summary">Ask for confirmation before deleting files. Disabling this is highly discouraged!</string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Unavailable</string>
-
     <string name="free_of">\"%s\n%s free of %s</string>
     <string name="cloud_error_fdroid">Amaze Cloud Plugin not supported with F-Droid version. Please use Play Store version of Amaze.</string>
     <string name="disable_player_intent_filters">Disable player intent filters</string>
     <string name="disable_player_intent_filters_summary">Disables Amaze inbuilt media players from file chooser</string>
     <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
-    </resources>
-
+</resources>
