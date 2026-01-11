@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Abrir menu de navegação</string>
     <string name="drawer_close">Fechar menu de navegação</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Digite o caminho</string>
     <string name="cancel">Cancelar</string>
     <string name="create">Criar</string>
-    <string name="loading">A carregar&#8230;</string>
+    <string name="loading">A carregar…</string>
     <string name="file_empty">O ficheiro está vazio</string>
     <string name="error">Erro</string>
     <string name="search_results">Resultados da pesquisa de %s</string>
@@ -98,7 +93,6 @@
     <string name="delete">Apagar</string>
     <string name="set_as_home"> Definir como pasta pessoal</string>
     <string name="operation_not_supported">Operação não suportada</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -204,7 +198,6 @@
     <string name="vietnamese_translation_title">Vietnamita</string>
     <string name="japanese_translation_title">Japonês</string>
     <string name="tamil_translation_title">Tamil</string>
-
     <string name="zip_viewer">Visualizador zip</string>
     <string name="unin_system_apk">Esta é uma aplicação do sistema. Se a remover, pode afetar a estabilidade do sistema.\\nContinuar?</string>
     <string name="warning">Aviso</string>
@@ -224,7 +217,6 @@
     <string name="database">Base de dados</string>
     <string name="colored_navigation">Barra de navegação colorida</string>
     <string name="colored_navigvation_sum">Ative esta opção para colorir a barra de navegação</string>
-
     <string name="color_title">Cor</string>
     <string name="color_summary">Define a cor dos diversos itens da interface</string>
     <string name="primary_color_title">Cor primária</string>
@@ -285,7 +277,7 @@
     <string name="cut">Cortar</string>
     <string name="search">Pesquisar</string>
     <string name="invalid_name">Nome inválido</string>
-    <string name="search_hint">Digite para pesquisar&#8230;</string>
+    <string name="search_hint">Digite para pesquisar…</string>
     <string name="advanced_search">Pesquisa avançada</string>
     <string name="regular_expression">Expressão regular</string>
     <string name="regular_expression_summary">Pesquisar utilizando expressões regulares ao estilo BASH</string>
@@ -319,8 +311,7 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="translate_summary">Traduza o Amaze para o seu idioma</string>
     <string name="paypal_copy_message">ID Paypal copiada para a área de transferência</string>
     <string name="searching_devices">A pesquisar por dispositivos</string>
-    <string name="bookmark_lost">Marcador não encontrado, a recriar&#8230;</string>
-
+    <string name="bookmark_lost">Marcador não encontrado, a recriar…</string>
     <string name="share_limit">Não é possível partilhar mais de 100 ficheiros.</string>
     <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
     <string name="information">Informações</string>
@@ -328,7 +319,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="accessed">Acedido</string>
     <!-- reference to file modified date -->
     <string name="modified">Modificado</string>
-
     <string name="title">Título</string>
     <string name="artist">Artista</string>
     <string name="album">Álbum</string>
@@ -368,7 +358,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="optimized">Otimizado</string>
     <string name="security">Segurança</string>
     <string name="paper_size">Tamanho do papel</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Alguns ficheiros não foram %s</string>
     <string name="copied">copiados</string>
@@ -401,11 +390,10 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="clipboard_path_copy">Caminho copiado para a área de transferência</string>
     <string name="service_timer">Tempo decorrido</string>
     <string name="please_wait">Por favor, aguarde</string>
-
     <string name="cloud_connection">Conexão em nuvem</string>
     <string name="cloud_connection_new">Nova conexão em nuvem</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Obter plugin para nuvem</string>
@@ -416,7 +404,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="ftp_path_hint">Caminho para a raiz do diretório a compartilhar</string>
     <string name="change">Alterar</string>
     <string name="unknown_error">Ops, algo deu errado!</string>
-
     <string name="ftp_path_change_success">Caminho FTP alterado com sucesso</string>
     <string name="ftp_path_change_error_invalid">Caminho inválido</string>
     <string name="ftp_status_no_connection">Sem conexão</string>
@@ -440,7 +427,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="contributors_6_summary">Servidor FTP</string>
     <string name="contributors_7_summary">Acionar um shell interativo</string>
     <string name="connection_exists">Conexão já existe</string>
-
     <string name="crypt_encrypting">Criptografando</string>
     <string name="crypt_decrypting">Descriptografando</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -464,20 +450,17 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="crypt_decryption_fail_password">Senha incorreta!</string>
     <string name="crypt_fingerprint_authenticate">Toque o sensor para continuar</string>
     <string name="authenticate_password">Digite a senha</string>
-
     <string name="sidebar_preferences">Barra Lateral</string>
     <string name="sidebar_quick_access_title">Acesso rápido à barra lateral</string>
     <string name="show_quick_access_pref_title">Mostrar acessos rápidos</string>
     <string name="show_quick_access_pref">Acessos rápidos</string>
     <string name="directory">Pasta</string>
-
     <string name="sidebar_bookmarks_title">Favoritos da barra lateral</string>
     <string name="show_bookmarks_pref_title">Mostrar favoritos</string>
     <string name="show_bookmarks_pref">Marcadores</string>
     <string name="create_bookmark">Adicionar favorito</string>
     <string name="edit_bookmark">Editar favorito</string>
     <string name="question_delete_bookmark">Excluir favorito?</string>
-
     <string name="cloud_error_plugin">O plugin Amaze Cloud não foi encontrado. Faça download a partir da Play Store.</string>
     <string name="cloud_error_failed_restart">Falha ao carregar a conexão. Por favor, abra o Amaze Cloud uma vez.</string>
     <string name="cloud_remove">Deseja remover a conexão com a nuvem?</string>
@@ -487,14 +470,12 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="cloud_token_lost">Token perdido, autentique-se novamente</string>
     <string name="monofont">Fonte monoespaçada</string>
     <string name="showHeaders">Mostrar cabeçalhos</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Nenhum item</string>
-	<string name="item">item</string>
-	<string name="items">Itens</string>
-	
-	<string name="byte_singular">byte</string>
-	<string name="bytes">bytes</string>
+    <string name="item">item</string>
+    <string name="items">Itens</string>
+    <string name="byte_singular">byte</string>
+    <string name="bytes">bytes</string>
     <!-- end of plurals -->
 
     <string name="no_name">O arquivo deve ter um nome</string>
@@ -502,15 +483,13 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="failed_smb_decrypt_path">Falha ao carregar a conexão SMB</string>
     <string name="failed_cloud_new_connection">Falha ao adicionar a nova conexão em nuvem</string>
     <string name="failed_cloud_api_key">Falha ao autenticar o plugin de conexão em nuvem</string>
-
     <string name="local_inet_addr_error">Erro ao obter o endereço inet local</string>
-    <string name="intent_save_as">Salvar como&#8230;</string>
+    <string name="intent_save_as">Salvar como…</string>
     <string name="go">Ir</string>
     <string name="advanced">Avançado</string>
     <string name="typeable_paths_title">Caminhos personalizados</string>
     <string name="typeable_paths_summary">Pressione e segure na barra de diretório para informar um diretório personalizado</string>
     <string name="send_email_to">Enviar um e-mail para</string>
-
     <string name="text_editor">Configurações do editor de texto</string>
     <string name="preference_newstack_title">Abrir arquivos como nova tarefa</string>
     <string name="preference_newstack_summary">Permite-lhe abrir arquivos em tarefas separadas. Acesse-os a partir da tela de arquivos recentes do sistema.</string>
@@ -520,12 +499,10 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="channel_description_normal">Notificações do Amaze</string>
     <string name="channel_name_ftp">Servidor FTP do Amaze</string>
     <string name="channel_description_ftp">Notificações do servidor FTP do Amaze</string>
-
-    <string name="processing">Processando&#8230;</string>
+    <string name="processing">Processando…</string>
     <string name="failed_no_connection">Ocorreu uma falha ao carregar os arquivos. Verifique sua conexão.</string>
-
     <string name="update">ATUALIZAR</string>
-	<string name="scp_connection">Conexão SCP/SFTP</string>
+    <string name="scp_connection">Conexão SCP/SFTP</string>
     <string name="ftp_connection">Conexão FTP</string>
     <string name="ftps_connection">FTP usando conexão SSL</string>
     <string name="scp_port">Porta</string>
@@ -545,7 +522,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     </string>
     <string name="ssh_key_prompt_passphrase">Digite a senha da chave.</string>
     <string name="add_shortcut_not_supported_by_launcher">Não há suporte a criação de atalhos pelo lançador.</string>
-    
     <string name="select_color_config">Selecione a configuração de cor</string>
     <string name="customize">Personalizar</string>
     <string name="custom">Personalizado</string>
@@ -574,8 +550,8 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="file_too_long">O arquivo é muito longo então não pode ser editado, mas você pode ler os primeiros %d caracteres</string>
     <string name="file_read_only">O arquivo aberto é apenas para leitura.</string>
     <string name="got_it">Entendi!</string>
-    <string name="encrypt_file_save_as">Salvar arquivo criptografado como&#8230;</string>
-    <string name="encrypt_folder_save_as">Salvar pasta criptografada como&#8230;</string>
+    <string name="encrypt_file_save_as">Salvar arquivo criptografado como…</string>
+    <string name="encrypt_folder_save_as">Salvar pasta criptografada como…</string>
     <string name="encrypt_option_use_aze">Usar formato de criptografia Amaze</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
 <p>AESCrypt é um formato de criptografia de arquivo de código aberto baseado na criptografia AES. Também é portátil, pode ser descriptografado com programas AESCrypt em outras plataformas.</p>
@@ -608,7 +584,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="update_host_key">Atualizar Chave de Host</string>
     <string name="cancel_recommended">Cancelar (Recomendado)</string>
     <string name="failed_install_apk">Falha ao instalar</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Memória interna</string>
@@ -621,7 +596,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="move">Mover</string>
     <string name="select_save_location">Selecione local para salvar</string>
     <string name="scp_default_path">Caminho padrão (Opcional)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Desculpe, isso não deveria ter acontecido</string>
     <string name="error_report_button_text">Reportar o erro por email</string>
@@ -690,8 +664,8 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="select_similar">Selecionar similares</string>
     <string name="error_fetching_google_play_product_list">Erro ao adquirir lista de produtos pelo Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Desde o Android 11, o Google requer que Gerenciadores de Arquivos peçam permissão para administrar todos arquivos no dispositivo. Mais detalhes <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">aqui</a>.
- \n\nO Gerenciador de Arquivos Amaze precisa dessa permissão também. Depois de apertar &quot;Grant&quot; aqui, por favor selecione <b>Permitir acesso para acessar todos arquivos</b>na próxima tela.
-\n\n<font color='#ff6347'><i>Cancelar esse diálogo irá fechar o aplicativo.</i></font></body></html></string>
+ \n\nO Gerenciador de Arquivos Amaze precisa dessa permissão também. Depois de apertar "Grant" aqui, por favor selecione <b>Permitir acesso para acessar todos arquivos</b>na próxima tela.
+\n\n<font color="#ff6347"><i>Cancelar esse diálogo irá fechar o aplicativo.</i></font></body></html></string>
     <string name="user_apps">Aplicativos de usuários</string>
     <string name="appearance">Aparência</string>
     <string name="behavior">Comportamento</string>
@@ -721,7 +695,5 @@ Você só precisa fazer isso uma vez, até a próxima vez que você selecionar u
     <string name="preference_delete_confirmation_summary">Pedir confirmação antes de apagar arquivos. Desabilitar essa opção é perigoso!</string>
     <string name="protocol_ftps">FTP com segurança</string>
     <string name="unavailable">Não disponível</string>
-
     <string name="cloud_error_fdroid">Amaze Cloud Plugin não é compatível com a versão F-Droid. Por favor, use a versão da Play Store do Amaze.</string>
-    </resources>
-
+</resources>
