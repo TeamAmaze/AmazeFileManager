@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze</string>
     <string name="drawer_open">Apri il pannello di navigazione</string>
     <string name="drawer_close">Chiudi il pannello di navigazione</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Inserisci percorso</string>
     <string name="cancel">ANNULLA</string>
     <string name="create">CREA</string>
-    <string name="loading">Caricamento in corso&#8230;</string>
+    <string name="loading">Caricamento in corso…</string>
     <string name="file_empty">Il file è vuoto</string>
     <string name="error">Errore</string>
     <string name="search_results">Risultati di ricerca per %s</string>
@@ -99,7 +94,6 @@
     <string name="delete">Elimina</string>
     <string name="set_as_home">Imposta come home</string>
     <string name="operation_not_supported">Operazione non supportata</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -211,7 +205,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="vietnamese_translation_title">Vietnamita</string>
     <string name="japanese_translation_title">Giapponese</string>
     <string name="tamil_translation_title">Tamil</string>
-
     <string name="zip_viewer">Visualizzatore file ZIP</string>
     <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.\\nProcedere?</string>
     <string name="warning">Attenzione</string>
@@ -231,7 +224,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="database">Database</string>
     <string name="colored_navigation">Barra di navigazione colorata</string>
     <string name="colored_navigvation_sum">Specifica se la barra di navigazione di sistema sarà colorata o meno insieme alla ski</string>
-
     <string name="color_title">Colori</string>
     <string name="color_summary">Imposta i colori dei vari componenti dell\'interfaccia utente</string>
     <string name="primary_color_title">Colore primario (scheda di sinistra)</string>
@@ -294,7 +286,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="cut">Taglia</string>
     <string name="search">Cerca</string>
     <string name="invalid_name">Nome non valido</string>
-    <string name="search_hint">Digita per cercare&#8230;</string>
+    <string name="search_hint">Digita per cercare…</string>
     <string name="advanced_search">Ricerca avanzata</string>
     <string name="regular_expression">Espressione regolare</string>
     <string name="regular_expression_summary">Esegui una ricerca utilizzando un\'espressione regolare in stile Bash</string>
@@ -328,8 +320,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="translate_summary">Traduci Amaze nella tua lingua</string>
     <string name="paypal_copy_message">ID PayPal copiato negli Appunti</string>
     <string name="searching_devices">Ricerca dispositivi in corso</string>
-    <string name="bookmark_lost">Segnalibro non trovato, lo sto creando nuovamente&#8230;</string>
-
+    <string name="bookmark_lost">Segnalibro non trovato, lo sto creando nuovamente…</string>
     <string name="share_limit">Impossibile condividere più di 100 file</string>
     <string name="otg_access">Seleziona la radice del dispositivo OTG</string>
     <string name="information">Informazioni</string>
@@ -337,7 +328,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="accessed">Ultimo accesso</string>
     <!-- reference to file modified date -->
     <string name="modified">Ultima modifica</string>
-
     <string name="title">Titol</string>
     <string name="artist">Artista</string>
     <string name="album">Album</string>
@@ -377,7 +367,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="optimized">Ottimizzato</string>
     <string name="security">Sicurezza</string>
     <string name="paper_size">Dimensioni carta</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Alcuni file non sono stati correttamente %s</string>
     <string name="copied">copiato</string>
@@ -410,11 +399,10 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="clipboard_path_copy">Percorso copiato</string>
     <string name="service_timer">Tempo Trascorso</string>
     <string name="please_wait">Attendere, per favore</string>
-
     <string name="cloud_connection">Connessione cloud</string>
     <string name="cloud_connection_new">Nuova connessione Cloud</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_drive">Google Drive™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Scarica Cloud plugin</string>
@@ -425,7 +413,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="ftp_path_hint">Percorso dell\'origine della directory da condividere</string>
     <string name="change">Cambia</string>
     <string name="unknown_error">Oops, qualcosa è andato storto!</string>
-
     <string name="ftp_path_change_success">Percorso FTP modificato con successo</string>
     <string name="ftp_path_change_error_invalid">Percorso invalido</string>
     <string name="ftp_status_no_connection">Nessuna connessione</string>
@@ -449,7 +436,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="contributors_6_summary">Server FTP</string>
     <string name="contributors_7_summary">Avviando una shell interattiva</string>
     <string name="connection_exists">Connessione già esistente</string>
-
     <string name="crypt_encrypting">Crittografia</string>
     <string name="crypt_decrypting">Decrittografia</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -474,20 +460,17 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="crypt_decryption_fail_password">Password errata!</string>
     <string name="crypt_fingerprint_authenticate">Tocca il sensore per continuare</string>
     <string name="authenticate_password">Inserisci la password</string>
-
     <string name="sidebar_preferences">Barra laterale</string>
     <string name="sidebar_quick_access_title">Accesso rapido Sidebar</string>
     <string name="show_quick_access_pref_title">Visualizza gli accessi rapidi</string>
     <string name="show_quick_access_pref">Accessi rapidi</string>
     <string name="directory">Cartella</string>
-
     <string name="sidebar_bookmarks_title">Barra dei segnalibri</string>
     <string name="show_bookmarks_pref_title">Mostra segnalibri</string>
     <string name="show_bookmarks_pref">Segnalibri</string>
     <string name="create_bookmark">Crea segnalibro</string>
     <string name="edit_bookmark">Modifica segnalibro</string>
     <string name="question_delete_bookmark">Eliminare il segnalibro?</string>
-
     <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
     <string name="cloud_error_failed_restart">Impossibile caricare la connessione.         Si prega di aprire una volta Amaze Cloud.</string>
     <string name="cloud_remove">Si desidera rimuovere la connessione cloud?</string>
@@ -497,14 +480,12 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cloud_token_lost">Token perso, accedi nuovamente</string>
     <string name="monofont">Carattere a spaziatura fissa</string>
     <string name="showHeaders">Mostra Header</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Nessun elemento</string>
-	<string name="item">Elemento</string>
-	<string name="items">Elementi</string>
-	
-	<string name="byte_singular">byte</string>
-	<string name="bytes">Bytes</string>
+    <string name="item">Elemento</string>
+    <string name="items">Elementi</string>
+    <string name="byte_singular">byte</string>
+    <string name="bytes">Bytes</string>
     <!-- end of plurals -->
 
     <string name="no_name">Il file deve avere un nome</string>
@@ -512,15 +493,13 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="failed_smb_decrypt_path">Impossibile caricare la connessione SMB</string>
     <string name="failed_cloud_new_connection">Impossibile aggiungere una nuova connessione cloud</string>
     <string name="failed_cloud_api_key">Autenticazione al plug-in Cloud fallita</string>
-
     <string name="local_inet_addr_error">Errore nell\'ottenere l\'indirizzo inet locale</string>
-    <string name="intent_save_as">Salva come&#8230;</string>
+    <string name="intent_save_as">Salva come…</string>
     <string name="go">Vai</string>
     <string name="advanced">Avanzate</string>
     <string name="typeable_paths_title">Percorso personalizzato</string>
     <string name="typeable_paths_summary">Tieni premuta la barra per inserire un percorso personalizzato</string>
     <string name="send_email_to">Invia un messaggio di posta elettronica a</string>
-
     <string name="text_editor">Impostazioni editor di testo</string>
     <string name="preference_newstack_title">Apri file come nuova attività</string>
     <string name="preference_newstack_summary">Ti permette di aprire file in attività separate. Accedi ad esse dalle schermate di sistema recenti</string>
@@ -530,12 +509,10 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="channel_description_normal">Notifiche del file manager Amaze</string>
     <string name="channel_name_ftp">Server FTP di Amaze</string>
     <string name="channel_description_ftp">Notifiche del server FTP del file manager Amaze</string>
-
-    <string name="processing">Elaborazione&#8230;</string>
+    <string name="processing">Elaborazione…</string>
     <string name="failed_no_connection">Errore nel caricamento file. Per favore controlla la tua connessione.</string>
-
     <string name="update">AGGIORNAMENTO</string>
-	<string name="scp_connection">Connessione SCP/SFTP</string>
+    <string name="scp_connection">Connessione SCP/SFTP</string>
     <string name="ftp_connection">Connessione FTP</string>
     <string name="ftps_connection">Connessione FTP su SSL</string>
     <string name="scp_port">Porta</string>
@@ -551,7 +528,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="ssh_connect_failed_host_key_changed_message">È POSSIBILE CHE QUALCUNO STIA MONITORANDO LA CONNESSIONE!\n\nQualcuno potrebbe stare intercettando i tuoi dati (attacco man-in-the-middle)! Potrebbe anche essere possibile che la chiave dell\'host sia cambiata. L\'impronta della chiave pubblica mandata dall\'host remoto non combacia con quella salvata in Amaze.\n\nPer favore contatta il tuo amministratore di rete o crea una nuova connessione per continuare a connetterti al server.</string>
     <string name="ssh_key_prompt_passphrase">Per favore inserisci la chiave passphrase.</string>
     <string name="add_shortcut_not_supported_by_launcher">La creazione di scorciatoie non è supportata dal tuo launcher.</string>
-    
     <string name="select_color_config">Seleziona il colore di configurazione</string>
     <string name="customize">Personalizza</string>
     <string name="custom">Personalizzato</string>
@@ -581,8 +557,8 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="file_too_long">Il file è troppo lungo e non può essere modificato, tuttavia è possibile leggere i primi %d caratteri</string>
     <string name="file_read_only">Il file aperto è di tipo sola scrittura.</string>
     <string name="got_it">Ottenuto!</string>
-    <string name="encrypt_file_save_as">Salva il file criptato come&#8230;</string>
-    <string name="encrypt_folder_save_as">Salva la cartella criptata come&#8230;</string>
+    <string name="encrypt_file_save_as">Salva il file criptato come…</string>
+    <string name="encrypt_folder_save_as">Salva la cartella criptata come…</string>
     <string name="encrypt_option_use_aze">Usa il Formato Crittografico di Amaze</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>AESCrypt è un formato crittografico open source basato su crittografia AES. Inoltre è portabile, può essere decrittato da software AESCrypt su altre piattaforme.</p>
@@ -616,7 +592,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="update_host_key">Aggiorna Chiave Host</string>
     <string name="cancel_recommended">Annulla (Consigliato)</string>
     <string name="failed_install_apk">Installazione fallita</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Memoria Interna</string>
@@ -629,7 +604,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="move">Sposta</string>
     <string name="select_save_location">Scegli percorso dove salvare</string>
     <string name="scp_default_path">Percorso di Default (Opzionale)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Spiacente, errore imprevisto.</string>
     <string name="error_report_button_text">Segnala questo errore via e-mail</string>
@@ -699,8 +673,8 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="select_fill">Seleziona il riempimento</string>
     <string name="error_fetching_google_play_product_list">Errore durante la ricezione della lista prodotti da Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Da Android 11, Google necessita che i File Manager chiedano il permesso dell\'utente per gestire tutti i file del dispositivo. Dettagli <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">qui</a>.
-        \n\nAnche Amaze File Manager necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.
-        \n\n<font color='#ff6347'><i>Annullando questa richiesta, l\'app terminerà.</i></font></body></html></string>
+        \n\nAnche Amaze File Manager necessita di questo permesso. Dopo aver premuto "Consenti", seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.
+        \n\n<font color="#ff6347"><i>Annullando questa richiesta, l\'app terminerà.</i></font></body></html></string>
     <string name="user_apps">App utente</string>
     <string name="appearance">Aspetto</string>
     <string name="behavior">Comportamento</string>
@@ -709,12 +683,10 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="behavior_summary">Modifica comportamenti come la ricerca avanzata e decidi se aprire i file come nuova attività</string>
     <string name="security_summary">Imposta password e crittografia</string>
     <string name="backup_summary">Esporta/Importa impostazioni Amaze</string>
-
     <string name="pref_export">Esporta</string>
     <string name="pref_export_summary">Esporta impostazioni</string>
     <string name="pref_import">Importa</string>
     <string name="pref_import_summary">Importa impostazioni</string>
-
     <string name="quick_desc">File a cui si è acceduto di recente in Amaze</string>
     <string name="recent_desc">File creati o modificati di recente</string>
     <string name="error_cannot_find_way_open">Impossibile aprire il file</string>
@@ -765,4 +737,3 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="same_dir_overwrite_error">La cartella di destinazione e quella di origine non devono corrispondere per la sovrascrittura.</string>
     <string name="not_found_enabled_webview">Nessun browser disponibile</string>
 </resources>
-
