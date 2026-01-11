@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
 
@@ -17,11 +16,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    -->
-
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    --><resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="MissingTranslation">
     <string name="app_name">Amaze</string>
     <string name="drawer_open">Otevřít navigační lištu</string>
     <string name="drawer_close">Zavřít navigační lištu</string>
@@ -42,7 +37,7 @@
     <string name="enterpath">Zadejte cestu</string>
     <string name="cancel">ZRUŠIT</string>
     <string name="create">VYTVOŘIT</string>
-    <string name="loading">Načítání&#8230;</string>
+    <string name="loading">Načítání…</string>
     <string name="file_empty">Soubor je prázdny</string>
     <string name="error">Chyba</string>
     <string name="search_results">Výsledky hledání %s</string>
@@ -98,7 +93,6 @@
     <string name="delete">Smazat</string>
     <string name="set_as_home">Nastavit jako domácí</string>
     <string name="operation_not_supported">Operace není podporována</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -204,7 +198,6 @@
     <string name="vietnamese_translation_title">Vietnamština</string>
     <string name="japanese_translation_title">Japonština</string>
     <string name="tamil_translation_title">Tamilština</string>
-
     <string name="zip_viewer">Zip prohlížeč</string>
     <string name="unin_system_apk">Toto je systémová aplikace, její odstranění může narušit stabilitu systému. \nChcete pokračovat?</string>
     <string name="warning">Varování</string>
@@ -224,7 +217,6 @@
     <string name="database">Databáze</string>
     <string name="colored_navigation">Barevný navigační panel</string>
     <string name="colored_navigvation_sum">Zbarvení navigačního panelu v souladu se skinem</string>
-
     <string name="color_title">Barva</string>
     <string name="color_summary">Nastavit barvu pro různé části uživatelského rozhraní</string>
     <string name="primary_color_title">Primární barva (levá karta)</string>
@@ -285,7 +277,7 @@
     <string name="cut">Vyjmout</string>
     <string name="search">Hledat</string>
     <string name="invalid_name">Neplatný název</string>
-    <string name="search_hint">Zadejte hledaný výraz&#8230;</string>
+    <string name="search_hint">Zadejte hledaný výraz…</string>
     <string name="advanced_search">Rozšířené vyhledávání</string>
     <string name="regular_expression">Regulární výraz</string>
     <string name="regular_expression_summary">Vyhledávání pomocí regulárních výrazů ve stylu BASH</string>
@@ -318,9 +310,7 @@
     <string name="translate_summary">Přeložte Amaze do vašeho jazyka</string>
     <string name="paypal_copy_message">Paypal ID bylo zkopírováno do schránky</string>
     <string name="searching_devices">Vyhledávání zařízení</string>
-    <string name="bookmark_lost">Záložka nebyla nalezena, obnovování&#8230;</string>
-
-
+    <string name="bookmark_lost">Záložka nebyla nalezena, obnovování…</string>
     <string name="share_limit">Nelze sdílet více než 100 souborů</string>
     <string name="otg_access">Vyberte kořenovou složku OTG zařízení</string>
     <string name="information">Informace</string>
@@ -328,7 +318,6 @@
     <string name="accessed">Poslední přístup</string>
     <!-- reference to file modified date -->
     <string name="modified">Upraveno</string>
-
     <string name="title">Název</string>
     <string name="artist">Interpret</string>
     <string name="album">Album</string>
@@ -368,7 +357,6 @@
     <string name="optimized">Optimalizováno</string>
     <string name="security">Zabezpečení</string>
     <string name="paper_size">Velikost papíru</string>
-
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Některé soubory nebyly úspěšné %s</string>
     <string name="copied">zkopírováno</string>
@@ -401,11 +389,10 @@
     <string name="clipboard_path_copy">Cesta byla zkopírována do schránky</string>
     <string name="service_timer">Uplynulý čas</string>
     <string name="please_wait">Čekejte prosím</string>
-
     <string name="cloud_connection">Připojení ke cloudu</string>
     <string name="cloud_connection_new">Nové připojení ke cloudu</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Disk Google&#8482;</string>
+    <string name="cloud_drive">Disk Google™</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Získat Cloud plugin</string>
@@ -416,7 +403,6 @@
     <string name="ftp_path_hint">Cesta ke kořenovému adresáře sdílení</string>
     <string name="change">Změnit</string>
     <string name="unknown_error">Oops, něco se pokazilo!</string>
-
     <string name="ftp_path_change_success">FTP cesta byla úspěšně změněna</string>
     <string name="ftp_path_change_error_invalid">Neplatná cesta</string>
     <string name="ftp_status_no_connection">Žádné připojení</string>
@@ -440,7 +426,6 @@
     <string name="contributors_6_summary">Server FTP</string>
     <string name="contributors_7_summary">Spustit interaktivní shell</string>
     <string name="connection_exists">Připojení již existuje</string>
-
     <string name="crypt_encrypting">Šifrování</string>
     <string name="crypt_decrypting">Dešifrování</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -464,20 +449,17 @@
     <string name="crypt_decryption_fail_password">Špatné heslo!</string>
     <string name="crypt_fingerprint_authenticate">Stiskněte senzor pro pokračování</string>
     <string name="authenticate_password">Zadejte heslo</string>
-
     <string name="sidebar_preferences">Postranní panel</string>
     <string name="sidebar_quick_access_title">Rychlý přístup k postrannímu panelu</string>
     <string name="show_quick_access_pref_title">Zobrazit Rychlý přístup</string>
     <string name="show_quick_access_pref">Rychlý přístup</string>
     <string name="directory">Adresář</string>
-
     <string name="sidebar_bookmarks_title">Záložky postranního panelu</string>
     <string name="show_bookmarks_pref_title">Zobrazit záložky</string>
     <string name="show_bookmarks_pref">Záložky</string>
     <string name="create_bookmark">Vytvořit záložku</string>
     <string name="edit_bookmark">Upravit záložku</string>
     <string name="question_delete_bookmark">Odstranit záložku?</string>
-
     <string name="cloud_error_plugin">Amaze Cloud plugin nebyl nalezen. Stáhněte si ho z Obchodu Play.</string>
     <string name="cloud_error_failed_restart">Nepodařilo se načíst připojení.         Prosím, otevřete jednou Amaze Cloud.</string>
     <string name="cloud_remove">Chcete odstranit připojení ke cloudu?</string>
@@ -487,14 +469,12 @@
     <string name="cloud_token_lost">Token byl ztracen, prosím znovu se přihlaste</string>
     <string name="monofont">Monospace Font</string>
     <string name="showHeaders">Zobrazit záhlaví</string>
-	
-	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Žádné položky</string>
-	<string name="item">položka</string>
-	<string name="items">položky</string>
-	
-	<string name="byte_singular">bajt</string>
-	<string name="bytes">bajtů</string>
+    <string name="item">položka</string>
+    <string name="items">položky</string>
+    <string name="byte_singular">bajt</string>
+    <string name="bytes">bajtů</string>
     <!-- end of plurals -->
 
     <string name="no_name">Soubor by měl mít název</string>
@@ -502,15 +482,13 @@
     <string name="failed_smb_decrypt_path">Pokus o otevření SMB spojení selhal</string>
     <string name="failed_cloud_new_connection">Nepodařilo se přidat cloudové připojení</string>
     <string name="failed_cloud_api_key">Autentizace cloudového pluginu se nezdařila</string>
-
     <string name="local_inet_addr_error">Chyba při získávání místní inet adresy</string>
-    <string name="intent_save_as">Uložit jako&#8230;</string>
+    <string name="intent_save_as">Uložit jako…</string>
     <string name="go">Jít</string>
     <string name="advanced">Pokročilé</string>
     <string name="typeable_paths_title">Vlastní cesty umíštění</string>
     <string name="typeable_paths_summary">Dlouhým stiskem panelu cesty můžete zadat vlastní cestu umíštění</string>
     <string name="send_email_to">Poslat e-mail příjemci</string>
-
     <string name="text_editor">Nastavení textového editoru</string>
     <string name="preference_newstack_title">Otevřít soubory jako novou úlohu</string>
     <string name="preference_newstack_summary">Umožňuje vám otevírat soubory v oddělených úlohách. Přistupte k nim přes systémové menu posledních aplikací.</string>
@@ -520,12 +498,10 @@
     <string name="channel_description_normal">Upozornění Správce souborů Amaze</string>
     <string name="channel_name_ftp">FTP Server Amaze</string>
     <string name="channel_description_ftp">Upozornění FTP Serveru Amaze</string>
-
-    <string name="processing">Zpracovává se&#8230;</string>
+    <string name="processing">Zpracovává se…</string>
     <string name="failed_no_connection">Nepodařilo se načíst soubory. Prosím zkontrolujte vaše připojení.</string>
-
     <string name="update">AKTUALIZOVAT</string>
-	<string name="scp_connection">Připojení SCP/SFTP</string>
+    <string name="scp_connection">Připojení SCP/SFTP</string>
     <string name="ftp_connection">Připojení FTP</string>
     <string name="ftps_connection">Připojení FTP přes SSL</string>
     <string name="scp_port">Port</string>
@@ -541,7 +517,6 @@
     <string name="ssh_connect_failed_host_key_changed_message">JE MOŽNÉ ŽE NĚKDO DĚLÁ NĚCO NEHEZKÉHO!\n\nNěkdo by vás právě teď mohl odposlouchávat (man-in-the-middle útok)! Je také možné že se pouze právě změnil klíč hostitele. Otisk pro veřejný klíč odeslaný hostitelem se neshoduje s tím uloženým v Amaze.\n\nProsím kontaktujte vašeho správce systému nebo vytvořte nové spojení pro pokračování připojování k serveru.</string>
     <string name="ssh_key_prompt_passphrase">Zadejte prosím klíčové heslo.</string>
     <string name="add_shortcut_not_supported_by_launcher">Váš launcher nepodporuje vytváření zástupců.</string>
-    
     <string name="select_color_config">Vyberte prosím barevnou konfiguraci</string>
     <string name="customize">Přizpůsobit</string>
     <string name="custom">Vlastní</string>
@@ -571,8 +546,8 @@
     <string name="file_too_long">Tento soubor je moc dlouhý a nelze upravit, ale můžete číst prvních %d znaků</string>
     <string name="file_read_only">Otevřený soubor je pouze pro čtení.</string>
     <string name="got_it">Jasně!</string>
-    <string name="encrypt_file_save_as">Uložit šifrovaný soubor jako&#8230;</string>
-    <string name="encrypt_folder_save_as">Uložit šifrovanou složku jako&#8230;</string>
+    <string name="encrypt_file_save_as">Uložit šifrovaný soubor jako…</string>
+    <string name="encrypt_folder_save_as">Uložit šifrovanou složku jako…</string>
     <string name="encrypt_option_use_aze">Použít šifrovací formát Amaze</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
 <p>AESCrypt je open source souborový šifrovací formát založený na AES šifrování. Je také přenosný, může být dešifrován s AESCrypt programy na jiných platformách.</p>
@@ -605,7 +580,6 @@
     <string name="update_host_key">Aktualizujte klíč hostitele</string>
     <string name="cancel_recommended">Zrušit (Doporučeno)</string>
     <string name="failed_install_apk">Instalace se nezdařila</string>
-
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
     <string name="storage_internal">Intérní úložiště</string>
@@ -618,7 +592,6 @@
     <string name="move">Přesunout</string>
     <string name="select_save_location">Vyberte místo k uložení</string>
     <string name="scp_default_path">Základní cesta umíštění (Nepovinné)</string>
-
     <!-- error activity -->
     <string name="sorry_string">Omlouvám se, tohle se stát nemělo.</string>
     <string name="error_report_button_text">Nahlásit tuto chybu skrze e-mail</string>
@@ -689,7 +662,7 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="error_fetching_google_play_product_list">Chyba při načítání seznamu produktů z Google Play.</string>
     <string name="grant_all_files_permission"><html><body>Od Android 11, Google vyžaduje Správce souborů zeptat se oprávnění uživatele pro správu všech souborů na zařízení. Detaily <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">zde</a>.
         \n\nSprávce souborů Amaze také vyžaduje tohle oprávnění. Po stisknutí Udělit zde, prosím zvolte možnost <b>Udělit přístup ke správě všech souborů.</b> na následující obrazovce.
-        \n\n<font color='#ff6347'><i>Přerušení této akce ukončí aplikaci.</i></font></body></html></string>
+        \n\n<font color="#ff6347"><i>Přerušení této akce ukončí aplikaci.</i></font></body></html></string>
     <string name="user_apps">Uživatelské aplikace</string>
     <string name="appearance">Vzhled</string>
     <string name="behavior">Chování</string>
@@ -698,12 +671,10 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="behavior_summary">Upravte chování jako pokročilé hledání a jestli otevřít soubory jako novou úlohu</string>
     <string name="security_summary">Nastavte heslo a šifrování</string>
     <string name="backup_summary">Export/Import nastavení Amaze</string>
-
     <string name="pref_export">Exportovat</string>
     <string name="pref_export_summary">Exportovat nastavení</string>
     <string name="pref_import">Importovat</string>
     <string name="pref_import_summary">Importovat nastavení</string>
-
     <string name="quick_desc">Nedávno otevřené soubory pomocí Amaze</string>
     <string name="recent_desc">Nedávno vytvořené nebo změněné soubory</string>
     <string name="error_cannot_find_way_open">Nepodařilo se najít způsob pro otevření souboru</string>
@@ -729,7 +700,6 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="preference_delete_confirmation_summary">Zeptat se na potvrzení před smazáním souborů. Toto nastavení silně doporučujeme nevypínat!</string>
     <string name="protocol_ftps">Zabezpečené FTP</string>
     <string name="unavailable">Nedostupné</string>
-
     <string name="exporting_failed">Exportování selhalo: nelze zapsat záložní soubor</string>
     <string name="importing_failed">Importování selhalo: nelze číst záložní soubor</string>
     <string name="importing_completed">Import dokončen</string>
@@ -755,4 +725,3 @@ Toto musíš udělat pouze jednou, dokud nevybereš novou lokaci pro sdílení.<
     <string name="same_dir_overwrite_error">Cílová a zdrojová složka by se k přepisu neměla shodovat </string>
     <string name="not_found_enabled_webview">Žádný dostupný prohlížeč</string>
 </resources>
-
