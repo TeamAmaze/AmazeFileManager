@@ -40,6 +40,7 @@ import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.DocumentsContract
 import androidx.core.app.ServiceCompat
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
@@ -53,6 +54,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.ObtainableServiceBinder
 import com.amaze.filemanager.utils.PasswordUtil
 import org.apache.ftpserver.ConnectionConfigFactory
+import org.apache.ftpserver.DataConnectionConfigurationFactory
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.filesystem.nativefs.NativeFileSystemFactory
@@ -175,7 +177,7 @@ class FtpService : Service(), Runnable {
                 }.onFailure {
                     log.warn("failed to decrypt password in ftp service", it)
                     AppConfig.toast(applicationContext, R.string.error)
-                    preferences.edit().putString(KEY_PREFERENCE_PASSWORD, "").apply()
+                    preferences.edit { putString(KEY_PREFERENCE_PASSWORD, "") }
                     isPasswordProtected = false
                 }
             }
@@ -223,10 +225,14 @@ class FtpService : Service(), Runnable {
                             "ftpserver",
                         )
                     fac.isImplicitSsl = true
+                    fac.dataConnectionConfiguration =
+                        DataConnectionConfigurationFactory().apply {
+                            isImplicitSsl = true
+                        }.createDataConnectionConfiguration()
                 } catch (e: GeneralSecurityException) {
-                    preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply()
+                    preferences.edit { putBoolean(KEY_PREFERENCE_SECURE, false) }
                 } catch (e: IOException) {
-                    preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply()
+                    preferences.edit { putBoolean(KEY_PREFERENCE_SECURE, false) }
                 }
             }
             fac.port = getPort(preferences)
@@ -312,7 +318,7 @@ class FtpService : Service(), Runnable {
         const val TAG_STARTED_BY_TILE = "started_by_tile"
         // attribute of action_started, used by notification
 
-        private lateinit var _enabledCipherSuites: Array<String>
+        private var _enabledCipherSuites: Array<String>
 
         init {
             _enabledCipherSuites =
