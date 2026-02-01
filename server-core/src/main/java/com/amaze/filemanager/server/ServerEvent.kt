@@ -26,7 +26,6 @@ package com.amaze.filemanager.server
  * These events are posted via EventBus for UI components to react to server state changes.
  */
 sealed class ServerEvent(val serverType: ServerType) {
-
     /**
      * Server has started successfully
      */

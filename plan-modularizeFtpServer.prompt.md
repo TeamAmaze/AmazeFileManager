@@ -48,16 +48,24 @@ The goal is to extract FTP server functionality from the `app` module into a ded
 
 #### 🔄 Remaining Steps
 
-7. **Migration of app module FTP code** — Still need to:
-   - Create concrete implementations in app that extend `FtpServerService` and `FtpReceiver`
-   - Update `FtpServerFragment` in app to extend `BaseFtpServerFragment`
-   - Gradually deprecate duplicate code in app module
-   - Update `MainActivity.java` and `Drawer.java` to use `ServerRegistry` for fragment instantiation
+7. **Migration of app module FTP code** — ✅ Completed:
+   - Created `AppFtpService.kt` - Concrete implementation extending `FtpServerService`
+   - Created `AppFtpReceiver.kt` - Concrete implementation extending `FtpReceiver`
+   - Updated `FtpServerFragment.kt` to use ftpserver module classes (`FtpPreferences`, `FtpServerEngine`, `FtpServerEvent`, `FtpEventBus`)
+   - Updated `FtpTileService.kt` to use ftpserver module classes
+   - Updated `FtpNotification.java` to use ftpserver module classes
+   - Updated `AndroidManifest.xml` to register `AppFtpService` and `AppFtpReceiver`
+   - Added `@JvmStatic` annotations to `FtpPreferences` for Java interop
+   - Old `FtpService.kt` and `FtpReceiver.kt` are now deprecated (can be removed in future)
 
-8. **Move FTP tests to the ftpserver module** — Need to relocate:
-   - `FtpServiceEspressoTest.kt`
-   - `FtpReceiverTest.kt`
-   - Integration tests
+8. **Move FTP tests to the ftpserver module** — ✅ Completed:
+   - Created `commands/LogMessageFilter.kt` - Test utility for capturing FTP responses
+   - Created `commands/AbstractFtpserverCommandTest.kt` - Base test class (plain JUnit)
+   - Created `commands/AVBLCommandTest.kt` - 8 tests for AVBL command
+   - Created `commands/PWDCommandTest.kt` - 3 tests for PWD command  
+   - Created `commands/FEATCommandTest.kt` - 1 test for FEAT command
+   - Total: 12 tests, all passing
+   - Uses mixed mocking approach: MockK for most mocks, Mockito for `java.io.File` (better final class support)
 
 ### Module Structure Created
 
@@ -114,6 +122,15 @@ ftpserver/
 │       └── values/
 │           ├── colors.xml
 │           └── strings.xml
+├── src/test/
+│   ├── java/com/amaze/filemanager/ftpserver/commands/
+│   │   ├── AbstractFtpserverCommandTest.kt
+│   │   ├── AVBLCommandTest.kt
+│   │   ├── FEATCommandTest.kt
+│   │   ├── LogMessageFilter.kt
+│   │   └── PWDCommandTest.kt
+│   └── resources/mockito-extensions/
+│       └── org.mockito.plugins.MockMaker
 ```
 
 ### Further Considerations

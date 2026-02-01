@@ -30,7 +30,7 @@ import org.apache.ftpserver.ftplet.User
 @RequiresApi(KITKAT)
 class AndroidFileSystemFactory(
     private val context: Context,
-    private val defaultPathProvider: () -> String
+    private val defaultPathProvider: () -> String,
 ) : FileSystemFactory {
     override fun createFileSystemView(user: User?): FileSystemView =
         AndroidFtpFileSystemView(context, user?.homeDirectory ?: defaultPathProvider())

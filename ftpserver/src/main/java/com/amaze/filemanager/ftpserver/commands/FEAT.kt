@@ -31,7 +31,7 @@ import org.apache.ftpserver.impl.FtpServerContext
  * Custom FEAT command to add AVBL command to the list.
  */
 class FEAT(
-    private val featResponseProvider: () -> String
+    private val featResponseProvider: () -> String,
 ) : AbstractCommand() {
     override fun execute(
         session: FtpIoSession,

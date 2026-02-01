@@ -87,7 +87,7 @@ class RootFtpFile(
             if (indexOfSlash == 0) {
                 "/"
             } else {
-                fullName.substring(0, indexOfSlash)
+                fullName.take(indexOfSlash)
             }
 
         return backingFile.absoluteFile.parentFile?.run {

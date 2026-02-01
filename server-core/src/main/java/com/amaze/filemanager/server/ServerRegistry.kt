@@ -29,7 +29,6 @@ import androidx.fragment.app.Fragment
  * without direct dependencies on specific server modules.
  */
 object ServerRegistry {
-
     private val servers = mutableMapOf<ServerType, ServerProvider>()
 
     /**
@@ -74,7 +73,6 @@ object ServerRegistry {
  * Each server module should implement this to provide its components.
  */
 interface ServerProvider {
-
     /**
      * The server type this provider handles
      */

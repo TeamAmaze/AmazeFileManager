@@ -75,7 +75,7 @@ object FtpServerEngine {
         val keyStoreInputStream: InputStream? = null,
         val keyStorePassword: String = "",
         val errorMessageProvider: AVBL.ErrorMessageProvider? = null,
-        val featResponseProvider: (() -> String)? = null
+        val featResponseProvider: (() -> String)? = null,
     )
 
     /**
@@ -92,7 +92,7 @@ object FtpServerEngine {
     fun start(
         context: Context,
         config: ServerConfig,
-        onStarted: (Boolean) -> Unit = {}
+        onStarted: (Boolean) -> Unit = {},
     ) {
         if (isRunning()) {
             log.warn("FTP server already running")
@@ -100,15 +100,16 @@ object FtpServerEngine {
             return
         }
 
-        serverThread = Thread {
-            runServer(context, config, onStarted)
-        }.apply { start() }
+        serverThread =
+            Thread {
+                runServer(context, config, onStarted)
+            }.apply { start() }
     }
 
     private fun runServer(
         context: Context,
         config: ServerConfig,
-        onStarted: (Boolean) -> Unit
+        onStarted: (Boolean) -> Unit,
     ) {
         try {
             FtpServerFactory().run {
@@ -125,11 +126,12 @@ object FtpServerEngine {
 
                 // Configure commands
                 if (config.errorMessageProvider != null && config.featResponseProvider != null) {
-                    commandFactory = FtpCommandFactoryFactory.create(
-                        config.useSafFilesystem,
-                        config.errorMessageProvider,
-                        config.featResponseProvider
-                    )
+                    commandFactory =
+                        FtpCommandFactoryFactory.create(
+                            config.useSafFilesystem,
+                            config.errorMessageProvider,
+                            config.featResponseProvider,
+                        )
                 }
 
                 // Configure user
@@ -159,22 +161,25 @@ object FtpServerEngine {
                         val keyStorePassword = config.keyStorePassword.toCharArray()
                         keyStore.load(config.keyStoreInputStream, keyStorePassword)
 
-                        val keyManagerFactory = KeyManagerFactory
-                            .getInstance(KeyManagerFactory.getDefaultAlgorithm())
+                        val keyManagerFactory =
+                            KeyManagerFactory
+                                .getInstance(KeyManagerFactory.getDefaultAlgorithm())
                         keyManagerFactory.init(keyStore, keyStorePassword)
 
-                        val trustManagerFactory = TrustManagerFactory
-                            .getInstance(TrustManagerFactory.getDefaultAlgorithm())
+                        val trustManagerFactory =
+                            TrustManagerFactory
+                                .getInstance(TrustManagerFactory.getDefaultAlgorithm())
                         trustManagerFactory.init(keyStore)
 
-                        listenerFactory.sslConfiguration = DefaultSslConfiguration(
-                            keyManagerFactory,
-                            trustManagerFactory,
-                            ClientAuth.WANT,
-                            "TLS",
-                            FtpCipherSuites.enabledCipherSuites,
-                            "ftpserver"
-                        )
+                        listenerFactory.sslConfiguration =
+                            DefaultSslConfiguration(
+                                keyManagerFactory,
+                                trustManagerFactory,
+                                ClientAuth.WANT,
+                                "TLS",
+                                FtpCipherSuites.enabledCipherSuites,
+                                "ftpserver",
+                            )
                         listenerFactory.isImplicitSsl = true
                     } catch (e: GeneralSecurityException) {
                         log.error("Failed to configure SSL", e)
@@ -188,13 +193,14 @@ object FtpServerEngine {
 
                 addListener("default", listenerFactory.createListener())
 
-                server = createServer().apply {
-                    start()
-                    scope.launch {
-                        FtpEventBus.emit(FtpServerEvent.Started)
+                server =
+                    createServer().apply {
+                        start()
+                        scope.launch {
+                            FtpEventBus.emit(FtpServerEvent.Started)
+                        }
+                        onStarted(true)
                     }
-                    onStarted(true)
-                }
             }
         } catch (e: Exception) {
             log.error("Failed to start FTP server", e)

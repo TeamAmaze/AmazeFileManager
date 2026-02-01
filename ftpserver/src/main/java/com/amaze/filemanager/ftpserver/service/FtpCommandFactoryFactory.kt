@@ -23,7 +23,6 @@ package com.amaze.filemanager.ftpserver.service
 import com.amaze.filemanager.ftpserver.commands.AVBL
 import com.amaze.filemanager.ftpserver.commands.FEAT
 import com.amaze.filemanager.ftpserver.commands.PWD
-import com.amaze.filemanager.ftpserver.filesystem.AndroidFtpFileSystemView
 import org.apache.ftpserver.command.CommandFactory
 import org.apache.ftpserver.command.CommandFactoryFactory
 
@@ -38,7 +37,7 @@ object FtpCommandFactoryFactory {
     fun create(
         useAndroidFileSystem: Boolean,
         errorMessageProvider: AVBL.ErrorMessageProvider,
-        featResponseProvider: () -> String
+        featResponseProvider: () -> String,
     ): CommandFactory {
         val cf = CommandFactoryFactory()
         if (!useAndroidFileSystem) {

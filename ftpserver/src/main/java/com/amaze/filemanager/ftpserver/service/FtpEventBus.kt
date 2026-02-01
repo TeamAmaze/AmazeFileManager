@@ -43,7 +43,10 @@ object FtpEventBus {
  */
 sealed class FtpServerEvent {
     data object Started : FtpServerEvent()
+
     data object StartedFromTile : FtpServerEvent()
+
     data object Stopped : FtpServerEvent()
+
     data object FailedToStart : FtpServerEvent()
 }

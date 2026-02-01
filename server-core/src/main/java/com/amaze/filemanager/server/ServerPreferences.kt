@@ -29,7 +29,6 @@ import android.content.SharedPreferences
  * Each server implementation can have its own preferences for port, path, credentials, etc.
  */
 interface ServerPreferences {
-
     /**
      * Get the shared preferences instance for this server
      */
@@ -43,7 +42,10 @@ interface ServerPreferences {
     /**
      * Set the port
      */
-    fun setPort(context: Context, port: Int)
+    fun setPort(
+        context: Context,
+        port: Int,
+    )
 
     /**
      * Get the configured path to share
@@ -53,7 +55,10 @@ interface ServerPreferences {
     /**
      * Set the path to share
      */
-    fun setPath(context: Context, path: String)
+    fun setPath(
+        context: Context,
+        path: String,
+    )
 
     /**
      * Get the configured username (if authentication is enabled)
@@ -63,7 +68,10 @@ interface ServerPreferences {
     /**
      * Set the username
      */
-    fun setUsername(context: Context, username: String?)
+    fun setUsername(
+        context: Context,
+        username: String?,
+    )
 
     /**
      * Check if the server requires authentication
@@ -78,7 +86,10 @@ interface ServerPreferences {
     /**
      * Set secure connection preference
      */
-    fun setSecureConnection(context: Context, secure: Boolean)
+    fun setSecureConnection(
+        context: Context,
+        secure: Boolean,
+    )
 
     /**
      * Check if the server is read-only
@@ -88,7 +99,10 @@ interface ServerPreferences {
     /**
      * Set read-only preference
      */
-    fun setReadOnly(context: Context, readOnly: Boolean)
+    fun setReadOnly(
+        context: Context,
+        readOnly: Boolean,
+    )
 
     /**
      * Get the idle timeout in seconds
@@ -98,5 +112,8 @@ interface ServerPreferences {
     /**
      * Set the idle timeout
      */
-    fun setTimeout(context: Context, timeout: Int)
+    fun setTimeout(
+        context: Context,
+        timeout: Int,
+    )
 }

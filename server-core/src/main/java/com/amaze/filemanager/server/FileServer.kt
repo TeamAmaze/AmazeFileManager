@@ -20,8 +20,6 @@
 
 package com.amaze.filemanager.server
 
-import android.content.Context
-
 /**
  * Interface for file server implementations (FTP, SSH, WebDAV, etc.)
  *
@@ -29,7 +27,6 @@ import android.content.Context
  * to handle server lifecycle and configuration.
  */
 interface FileServer {
-
     /**
      * Unique identifier for this server type
      */
@@ -69,5 +66,5 @@ enum class ServerType(val id: String) {
     FTP("ftp"),
     SFTP("sftp"),
     SSH("ssh"),
-    WEBDAV("webdav")
+    WEBDAV("webdav"),
 }

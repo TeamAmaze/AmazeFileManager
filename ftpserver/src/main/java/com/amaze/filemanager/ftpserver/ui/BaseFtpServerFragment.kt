@@ -35,6 +35,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -55,7 +56,6 @@ import kotlinx.coroutines.launch
  * by the app module to add app-specific features.
  */
 abstract class BaseFtpServerFragment : Fragment() {
-
     private var _binding: FragmentFtpBinding? = null
     protected val binding get() = _binding!!
 
@@ -133,7 +133,7 @@ abstract class BaseFtpServerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentFtpBinding.inflate(inflater, container, false)
 
@@ -173,7 +173,10 @@ abstract class BaseFtpServerFragment : Fragment() {
     }
 
     @Deprecated("Deprecated in Java")
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(
+        menu: Menu,
+        inflater: MenuInflater,
+    ) {
         inflater.inflate(R.menu.ftp_server_menu, menu)
         menu.findItem(R.id.checkbox_ftp_readonly)?.isChecked =
             FtpPreferences.isReadOnly(requireContext())
@@ -254,11 +257,12 @@ abstract class BaseFtpServerFragment : Fragment() {
         when (event) {
             is FtpServerEvent.Started, is FtpServerEvent.StartedFromTile -> {
                 val isSecure = FtpPreferences.isSecure(requireContext())
-                binding.textViewFtpStatus.text = if (isSecure) {
-                    spannedStatusSecure
-                } else {
-                    spannedStatusConnected
-                }
+                binding.textViewFtpStatus.text =
+                    if (isSecure) {
+                        spannedStatusSecure
+                    } else {
+                        spannedStatusConnected
+                    }
                 binding.textViewFtpUrl.text = spannedStatusUrl
                 binding.startStopButton.text = getString(R.string.ftpmod_stop).uppercase()
             }
@@ -280,29 +284,33 @@ abstract class BaseFtpServerFragment : Fragment() {
     private fun updateSpans() {
         val accentColor = String.format("%06X", 0xFFFFFF and getAccentColor())
 
-        spannedStatusNoConnection = HtmlCompat.fromHtml(
-            "${getString(R.string.ftpmod_status_label)} " +
-                "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_no_connection)}</b></font>",
-            HtmlCompat.FROM_HTML_MODE_COMPACT
-        )
+        spannedStatusNoConnection =
+            HtmlCompat.fromHtml(
+                "${getString(R.string.ftpmod_status_label)} " +
+                    "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_no_connection)}</b></font>",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+            )
 
-        spannedStatusConnected = HtmlCompat.fromHtml(
-            "${getString(R.string.ftpmod_status_label)} " +
-                "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_running)}</b></font>",
-            HtmlCompat.FROM_HTML_MODE_COMPACT
-        )
+        spannedStatusConnected =
+            HtmlCompat.fromHtml(
+                "${getString(R.string.ftpmod_status_label)} " +
+                    "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_running)}</b></font>",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+            )
 
-        spannedStatusSecure = HtmlCompat.fromHtml(
-            "${getString(R.string.ftpmod_status_label)} " +
-                "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_secure_connection)}</b></font>",
-            HtmlCompat.FROM_HTML_MODE_COMPACT
-        )
+        spannedStatusSecure =
+            HtmlCompat.fromHtml(
+                "${getString(R.string.ftpmod_status_label)} " +
+                    "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_secure_connection)}</b></font>",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+            )
 
-        spannedStatusNotRunning = HtmlCompat.fromHtml(
-            "${getString(R.string.ftpmod_status_label)} " +
-                "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_not_running)}</b></font>",
-            HtmlCompat.FROM_HTML_MODE_COMPACT
-        )
+        spannedStatusNotRunning =
+            HtmlCompat.fromHtml(
+                "${getString(R.string.ftpmod_status_label)} " +
+                    "<font color='#$accentColor'><b>${getString(R.string.ftpmod_status_not_running)}</b></font>",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+            )
 
         val address = getLocalAddress()
         val port = FtpPreferences.getPort(requireContext())
@@ -310,11 +318,12 @@ abstract class BaseFtpServerFragment : Fragment() {
         val prefix = if (isSecure) FtpPreferences.INITIALS_HOST_SFTP else FtpPreferences.INITIALS_HOST_FTP
         val urlText = if (address != null) "$prefix$address:$port/" else ""
 
-        spannedStatusUrl = HtmlCompat.fromHtml(
-            "${getString(R.string.ftpmod_url_label)} " +
-                "<font color='#$accentColor'><b>$urlText</b></font>",
-            HtmlCompat.FROM_HTML_MODE_COMPACT
-        )
+        spannedStatusUrl =
+            HtmlCompat.fromHtml(
+                "${getString(R.string.ftpmod_url_label)} " +
+                    "<font color='#$accentColor'><b>$urlText</b></font>",
+                HtmlCompat.FROM_HTML_MODE_COMPACT,
+            )
     }
 
     private fun updateStatus() {
@@ -326,11 +335,12 @@ abstract class BaseFtpServerFragment : Fragment() {
         } else {
             binding.startStopButton.isEnabled = true
             if (FtpServerEngine.isRunning()) {
-                binding.textViewFtpStatus.text = if (FtpPreferences.isSecure(requireContext())) {
-                    spannedStatusSecure
-                } else {
-                    spannedStatusConnected
-                }
+                binding.textViewFtpStatus.text =
+                    if (FtpPreferences.isSecure(requireContext())) {
+                        spannedStatusSecure
+                    } else {
+                        spannedStatusConnected
+                    }
                 binding.textViewFtpUrl.text = spannedStatusUrl
                 binding.startStopButton.text = getString(R.string.ftpmod_stop).uppercase()
             } else {
@@ -350,7 +360,7 @@ abstract class BaseFtpServerFragment : Fragment() {
 
     private fun updateUsernameText() {
         val username = FtpPreferences.getUsername(requireContext())
-        val displayName = if (username.isEmpty()) getString(R.string.ftpmod_anonymous) else username
+        val displayName = username.ifEmpty { getString(R.string.ftpmod_anonymous) }
         binding.textViewFtpUsername.text = "${getString(R.string.ftpmod_username_label)}$displayName"
     }
 
@@ -377,21 +387,21 @@ abstract class BaseFtpServerFragment : Fragment() {
     }
 
     private fun setReadonlyPreference(value: Boolean) {
-        FtpPreferences.getPreferences(requireContext()).edit()
-            .putBoolean(FtpPreferences.KEY_PREFERENCE_READONLY, value)
-            .apply()
+        FtpPreferences.getPreferences(requireContext()).edit {
+            putBoolean(FtpPreferences.KEY_PREFERENCE_READONLY, value)
+        }
     }
 
     private fun setSecurePreference(value: Boolean) {
-        FtpPreferences.getPreferences(requireContext()).edit()
-            .putBoolean(FtpPreferences.KEY_PREFERENCE_SECURE, value)
-            .apply()
+        FtpPreferences.getPreferences(requireContext()).edit {
+            putBoolean(FtpPreferences.KEY_PREFERENCE_SECURE, value)
+        }
     }
 
     private fun setSafFilesystemPreference(value: Boolean) {
-        FtpPreferences.getPreferences(requireContext()).edit()
-            .putBoolean(FtpPreferences.KEY_PREFERENCE_SAF_FILESYSTEM, value)
-            .apply()
+        FtpPreferences.getPreferences(requireContext()).edit {
+            putBoolean(FtpPreferences.KEY_PREFERENCE_SAF_FILESYSTEM, value)
+        }
     }
 
     private fun promptUserToRestartServer() {
@@ -408,20 +418,24 @@ abstract class BaseFtpServerFragment : Fragment() {
         // Override in subclass to show timeout dialog with material-dialogs
     }
 
-    private val wifiReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (isConnectedToLocalNetwork()) {
-                binding.startStopButton.isEnabled = true
-                dismissSnackbar()
-            } else {
-                stopServer()
-                binding.textViewFtpStatus.text = spannedStatusNoConnection
-                binding.startStopButton.isEnabled = false
-                binding.startStopButton.text = getString(R.string.ftpmod_start).uppercase()
-                promptUserToEnableWireless()
+    private val wifiReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context,
+                intent: Intent,
+            ) {
+                if (isConnectedToLocalNetwork()) {
+                    binding.startStopButton.isEnabled = true
+                    dismissSnackbar()
+                } else {
+                    stopServer()
+                    binding.textViewFtpStatus.text = spannedStatusNoConnection
+                    binding.startStopButton.isEnabled = false
+                    binding.startStopButton.text = getString(R.string.ftpmod_start).uppercase()
+                    promptUserToEnableWireless()
+                }
             }
         }
-    }
 
     private fun registerWifiReceiver() {
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
@@ -429,7 +443,7 @@ abstract class BaseFtpServerFragment : Fragment() {
             requireContext(),
             wifiReceiver,
             filter,
-            ContextCompat.RECEIVER_NOT_EXPORTED
+            ContextCompat.RECEIVER_NOT_EXPORTED,
         )
     }
 

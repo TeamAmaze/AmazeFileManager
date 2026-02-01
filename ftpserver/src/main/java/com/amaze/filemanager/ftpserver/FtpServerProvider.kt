@@ -22,11 +22,11 @@ package com.amaze.filemanager.ftpserver
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.ftpserver.service.FtpPreferences
 import com.amaze.filemanager.ftpserver.service.FtpServerEngine
-import com.amaze.filemanager.server.FileServer
 import com.amaze.filemanager.server.ServerNotification
 import com.amaze.filemanager.server.ServerPreferences
 import com.amaze.filemanager.server.ServerProvider
@@ -38,9 +38,8 @@ import com.amaze.filemanager.server.ServerType
 class FtpServerProvider(
     private val context: Context,
     private val fragmentFactory: () -> Fragment,
-    private val notificationHandler: ServerNotification
+    private val notificationHandler: ServerNotification,
 ) : ServerProvider {
-
     override val serverType: ServerType = ServerType.FTP
 
     override val displayName: String = "FTP Server"
@@ -72,56 +71,70 @@ class FtpServerProvider(
 
         override fun getPort(context: Context): Int = FtpPreferences.getPort(context)
 
-        override fun setPort(context: Context, port: Int) {
-            getPreferences(context).edit()
-                .putInt(FtpPreferences.PORT_PREFERENCE_KEY, port)
-                .apply()
+        override fun setPort(
+            context: Context,
+            port: Int,
+        ) {
+            getPreferences(context).edit {
+                putInt(FtpPreferences.PORT_PREFERENCE_KEY, port)
+            }
         }
 
         override fun getPath(context: Context): String = FtpPreferences.getPath(context)
 
-        override fun setPath(context: Context, path: String) {
-            getPreferences(context).edit()
-                .putString(FtpPreferences.KEY_PREFERENCE_PATH, path)
-                .apply()
+        override fun setPath(
+            context: Context,
+            path: String,
+        ) {
+            getPreferences(context).edit {
+                putString(FtpPreferences.KEY_PREFERENCE_PATH, path)
+            }
         }
 
-        override fun getUsername(context: Context): String? =
-            FtpPreferences.getUsername(context).takeIf { it.isNotEmpty() }
+        override fun getUsername(context: Context): String? = FtpPreferences.getUsername(context).takeIf { it.isNotEmpty() }
 
-        override fun setUsername(context: Context, username: String?) {
-            getPreferences(context).edit()
-                .putString(FtpPreferences.KEY_PREFERENCE_USERNAME, username ?: "")
-                .apply()
+        override fun setUsername(
+            context: Context,
+            username: String?,
+        ) {
+            getPreferences(context).edit {
+                putString(FtpPreferences.KEY_PREFERENCE_USERNAME, username ?: "")
+            }
         }
 
-        override fun isAuthenticationEnabled(context: Context): Boolean =
-            getUsername(context) != null
+        override fun isAuthenticationEnabled(context: Context): Boolean = getUsername(context) != null
 
-        override fun isSecureConnection(context: Context): Boolean =
-            FtpPreferences.isSecure(context)
+        override fun isSecureConnection(context: Context): Boolean = FtpPreferences.isSecure(context)
 
-        override fun setSecureConnection(context: Context, secure: Boolean) {
-            getPreferences(context).edit()
-                .putBoolean(FtpPreferences.KEY_PREFERENCE_SECURE, secure)
-                .apply()
+        override fun setSecureConnection(
+            context: Context,
+            secure: Boolean,
+        ) {
+            getPreferences(context).edit {
+                putBoolean(FtpPreferences.KEY_PREFERENCE_SECURE, secure)
+            }
         }
 
-        override fun isReadOnly(context: Context): Boolean =
-            FtpPreferences.isReadOnly(context)
+        override fun isReadOnly(context: Context): Boolean = FtpPreferences.isReadOnly(context)
 
-        override fun setReadOnly(context: Context, readOnly: Boolean) {
-            getPreferences(context).edit()
-                .putBoolean(FtpPreferences.KEY_PREFERENCE_READONLY, readOnly)
-                .apply()
+        override fun setReadOnly(
+            context: Context,
+            readOnly: Boolean,
+        ) {
+            getPreferences(context).edit {
+                putBoolean(FtpPreferences.KEY_PREFERENCE_READONLY, readOnly)
+            }
         }
 
         override fun getTimeout(context: Context): Int = FtpPreferences.getTimeout(context)
 
-        override fun setTimeout(context: Context, timeout: Int) {
-            getPreferences(context).edit()
-                .putInt(FtpPreferences.KEY_PREFERENCE_TIMEOUT, timeout)
-                .apply()
+        override fun setTimeout(
+            context: Context,
+            timeout: Int,
+        ) {
+            getPreferences(context).edit {
+                putInt(FtpPreferences.KEY_PREFERENCE_TIMEOUT, timeout)
+            }
         }
     }
 }

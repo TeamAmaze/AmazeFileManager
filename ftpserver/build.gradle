@@ -33,6 +33,18 @@ android {
         viewBinding true
         buildConfig true
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+            all {
+                // Required for Mockito to work with Java 21
+                jvmArgs '-Dnet.bytebuddy.experimental=true'
+                jvmArgs '-XX:+EnableDynamicAgentLoading'
+            }
+        }
+    }
 }
 
 dependencies {
@@ -65,9 +77,11 @@ dependencies {
     implementation libs.libsu.io
 
     testImplementation libs.junit
-    testImplementation libs.mockito.core
     testImplementation libs.mockk
-    testImplementation libs.robolectric
+    testImplementation libs.mockito.core
+    testImplementation libs.mockito.inline
+    testImplementation libs.androidX.test.core
+    testImplementation libs.androidX.test.ext.junit
 
     androidTestImplementation libs.androidX.test.ext.junit
     androidTestImplementation libs.androidX.test.expresso

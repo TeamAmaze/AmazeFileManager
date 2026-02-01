@@ -44,14 +44,16 @@ import java.io.File
  * See [Draft spec](https://www.ietf.org/archive/id/draft-peterson-streamlined-ftp-command-extensions-10.txt)
  */
 class AVBL(
-    private val errorMessageProvider: ErrorMessageProvider
+    private val errorMessageProvider: ErrorMessageProvider,
 ) : AbstractCommand() {
-
     /**
      * Interface for providing localized error messages
      */
     interface ErrorMessageProvider {
-        fun getErrorMessage(subId: String, fileName: String? = null): String
+        fun getErrorMessage(
+            subId: String,
+            fileName: String? = null,
+        ): String
     }
 
     companion object {

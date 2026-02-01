@@ -30,7 +30,6 @@ import android.content.Context
  * to show server status in the notification bar.
  */
 interface ServerNotification {
-
     /**
      * Get the notification ID for this server
      */
@@ -47,14 +46,20 @@ interface ServerNotification {
      * @param noStopButton Whether to hide the stop button (e.g., when started from tile)
      * @return Notification to display
      */
-    fun createStartingNotification(context: Context, noStopButton: Boolean = false): Notification
+    fun createStartingNotification(
+        context: Context,
+        noStopButton: Boolean = false,
+    ): Notification
 
     /**
      * Update the notification when server is running
      * @param context Application context
      * @param noStopButton Whether to hide the stop button
      */
-    fun updateRunningNotification(context: Context, noStopButton: Boolean = false)
+    fun updateRunningNotification(
+        context: Context,
+        noStopButton: Boolean = false,
+    )
 
     /**
      * Remove the notification

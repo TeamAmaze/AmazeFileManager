@@ -23,8 +23,9 @@ package com.amaze.filemanager.ftpserver.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.content.ContextCompat
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Broadcast receiver for FTP server start/stop commands.
@@ -33,16 +34,21 @@ import androidx.core.content.ContextCompat
  * to provide the concrete FtpServerService class.
  */
 abstract class FtpReceiver : BroadcastReceiver() {
-
-    private val TAG = FtpReceiver::class.java.simpleName
+    companion object {
+        @JvmStatic
+        private val logger: Logger = LoggerFactory.getLogger(FtpReceiver::class.java)
+    }
 
     /**
      * Get the FTP service class to start/stop
      */
     abstract fun getFtpServiceClass(): Class<*>
 
-    override fun onReceive(context: Context, intent: Intent) {
-        Log.d(TAG, "Received: ${intent.action}")
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
+        logger.debug("Received: ${intent.action}")
 
         val serviceIntent = Intent(context, getFtpServiceClass())
         serviceIntent.putExtras(intent)
@@ -62,7 +68,7 @@ abstract class FtpReceiver : BroadcastReceiver() {
                 else -> Unit
             }
         }.onFailure {
-            Log.e(TAG, "Failed to start/stop on intent: ${it.message}")
+            logger.error("Failed to start/stop on intent", it)
         }
     }
 }

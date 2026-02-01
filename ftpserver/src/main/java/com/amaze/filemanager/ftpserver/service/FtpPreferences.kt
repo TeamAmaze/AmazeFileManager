@@ -59,6 +59,7 @@ object FtpPreferences {
     /**
      * Get default preferences for FTP server
      */
+    @JvmStatic
     fun getPreferences(context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
@@ -66,6 +67,7 @@ object FtpPreferences {
     /**
      * Get configured port
      */
+    @JvmStatic
     fun getPort(context: Context): Int {
         return getPreferences(context).getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
     }
@@ -73,6 +75,7 @@ object FtpPreferences {
     /**
      * Get whether secure connection is enabled
      */
+    @JvmStatic
     fun isSecure(context: Context): Boolean {
         return getPreferences(context).getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)
     }
@@ -80,6 +83,7 @@ object FtpPreferences {
     /**
      * Get configured timeout
      */
+    @JvmStatic
     fun getTimeout(context: Context): Int {
         return getPreferences(context).getInt(KEY_PREFERENCE_TIMEOUT, DEFAULT_TIMEOUT)
     }
@@ -87,6 +91,7 @@ object FtpPreferences {
     /**
      * Get configured path
      */
+    @JvmStatic
     fun getPath(context: Context): String {
         return getPreferences(context).getString(KEY_PREFERENCE_PATH, defaultPath(context))
             ?: defaultPath(context)
@@ -95,6 +100,7 @@ object FtpPreferences {
     /**
      * Get configured username
      */
+    @JvmStatic
     fun getUsername(context: Context): String {
         return getPreferences(context).getString(KEY_PREFERENCE_USERNAME, DEFAULT_USERNAME)
             ?: DEFAULT_USERNAME
@@ -103,6 +109,7 @@ object FtpPreferences {
     /**
      * Check if read-only mode is enabled
      */
+    @JvmStatic
     fun isReadOnly(context: Context): Boolean {
         return getPreferences(context).getBoolean(KEY_PREFERENCE_READONLY, false)
     }
@@ -110,6 +117,7 @@ object FtpPreferences {
     /**
      * Check if SAF filesystem should be used
      */
+    @JvmStatic
     fun useSafFilesystem(context: Context): Boolean {
         return getPreferences(context).getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
     }
@@ -117,6 +125,7 @@ object FtpPreferences {
     /**
      * Derive the FTP server's default share path, depending the user's Android version.
      */
+    @JvmStatic
     fun defaultPath(context: Context): String {
         return if (useSafFilesystem(context) && SDK_INT > M) {
             DocumentsContract.buildTreeDocumentUri(

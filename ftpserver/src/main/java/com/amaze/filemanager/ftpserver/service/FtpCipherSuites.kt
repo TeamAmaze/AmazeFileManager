@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ftpserver.service
 
+import android.annotation.SuppressLint
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.N
@@ -40,6 +41,7 @@ object FtpCipherSuites {
      * @see [javax.net.ssl.SSLEngine]
      */
     @JvmStatic
+    @SuppressLint("ObsoleteSdkInt")
     val enabledCipherSuites: Array<String> =
         LinkedList<String>().apply {
             if (SDK_INT >= Q) {

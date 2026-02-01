@@ -26,13 +26,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
-import androidx.core.app.ServiceCompat
-import com.amaze.filemanager.ftpserver.R
 import com.amaze.filemanager.ftpserver.commands.AVBL
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.InputStream
@@ -44,10 +38,6 @@ import java.util.concurrent.TimeUnit
  * This service manages the FTP server lifecycle as a foreground service.
  */
 abstract class FtpServerService : Service() {
-
-    private val log: Logger = LoggerFactory.getLogger(FtpServerService::class.java)
-    private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-
     private lateinit var wakeLock: PowerManager.WakeLock
     private var isStartedByTile = false
 
@@ -109,7 +99,11 @@ abstract class FtpServerService : Service() {
         wakeLock.setReferenceCounted(false)
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         isStartedByTile = intent?.getBooleanExtra(FtpPreferences.TAG_STARTED_BY_TILE, false) == true
 
         // Wait for any existing server to stop
@@ -119,7 +113,7 @@ abstract class FtpServerService : Service() {
                 attempts--
                 try {
                     Thread.sleep(1000)
-                } catch (ignored: InterruptedException) {
+                } catch (_: InterruptedException) {
                 }
             } else {
                 return START_STICKY
@@ -132,7 +126,7 @@ abstract class FtpServerService : Service() {
             startForeground(
                 getNotificationId(),
                 notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
             )
         } else {
             startForeground(getNotificationId(), notification)
@@ -151,28 +145,34 @@ abstract class FtpServerService : Service() {
 
         // Get password if authentication is enabled
         val username = FtpPreferences.getUsername(this)
-        val password = if (username.isNotEmpty()) {
-            val encryptedPassword = prefs.getString(FtpPreferences.KEY_PREFERENCE_PASSWORD, "") ?: ""
-            if (encryptedPassword.isNotEmpty()) {
-                decryptPassword(encryptedPassword)
-            } else null
-        } else null
+        val password =
+            if (username.isNotEmpty()) {
+                val encryptedPassword = prefs.getString(FtpPreferences.KEY_PREFERENCE_PASSWORD, "") ?: ""
+                if (encryptedPassword.isNotEmpty()) {
+                    decryptPassword(encryptedPassword)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
 
-        val config = FtpServerEngine.ServerConfig(
-            port = FtpPreferences.getPort(this),
-            timeout = FtpPreferences.getTimeout(this),
-            path = FtpPreferences.getPath(this),
-            username = username.takeIf { it.isNotEmpty() },
-            password = password,
-            isSecure = FtpPreferences.isSecure(this),
-            isReadOnly = FtpPreferences.isReadOnly(this),
-            useSafFilesystem = FtpPreferences.useSafFilesystem(this),
-            useRootFilesystem = isRootModeEnabled(),
-            keyStoreInputStream = if (FtpPreferences.isSecure(this)) getKeyStoreInputStream() else null,
-            keyStorePassword = getKeyStorePassword(),
-            errorMessageProvider = getErrorMessageProvider(),
-            featResponseProvider = { getFeatResponse() }
-        )
+        val config =
+            FtpServerEngine.ServerConfig(
+                port = FtpPreferences.getPort(this),
+                timeout = FtpPreferences.getTimeout(this),
+                path = FtpPreferences.getPath(this),
+                username = username.takeIf { it.isNotEmpty() },
+                password = password,
+                isSecure = FtpPreferences.isSecure(this),
+                isReadOnly = FtpPreferences.isReadOnly(this),
+                useSafFilesystem = FtpPreferences.useSafFilesystem(this),
+                useRootFilesystem = isRootModeEnabled(),
+                keyStoreInputStream = if (FtpPreferences.isSecure(this)) getKeyStoreInputStream() else null,
+                keyStorePassword = getKeyStorePassword(),
+                errorMessageProvider = getErrorMessageProvider(),
+                featResponseProvider = { getFeatResponse() },
+            )
 
         FtpServerEngine.start(this, config) { success ->
             if (success) {
@@ -199,6 +199,7 @@ abstract class FtpServerService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     companion object {
+        @JvmStatic
         private val log: Logger = LoggerFactory.getLogger(FtpServerService::class.java)
     }
 }

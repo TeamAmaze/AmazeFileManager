@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ftpserver.filesystem
 
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri

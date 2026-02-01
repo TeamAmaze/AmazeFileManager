@@ -26,7 +26,7 @@ import static com.amaze.filemanager.asynchronous.services.AbstractProgressiveSer
 import java.net.InetAddress;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
+import com.amaze.filemanager.ftpserver.service.FtpPreferences;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.NetworkUtil;
 
@@ -34,12 +34,10 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.preference.PreferenceManager;
 
 /**
  * Created by yashwanthreddyg on 19-06-2016.
@@ -72,7 +70,7 @@ public class FtpNotification {
       int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
       CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
       Intent stopIntent =
-          new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
+          new Intent(FtpPreferences.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
       PendingIntent stopPendingIntent =
           PendingIntent.getBroadcast(context, 0, stopIntent, getPendingIntentFlag(FLAG_ONE_SHOT));
 
@@ -98,10 +96,8 @@ public class FtpNotification {
   public static void updateNotification(Context context, boolean noStopButton) {
     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    int port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
-    boolean secureConnection =
-        sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
+    int port = FtpPreferences.getPort(context);
+    boolean secureConnection = FtpPreferences.isSecure(context);
 
     InetAddress address = NetworkUtil.getLocalInetAddress(context, false);
 
@@ -109,7 +105,7 @@ public class FtpNotification {
 
     if (address != null) {
       address_text =
-          (secureConnection ? FtpService.INITIALS_HOST_SFTP : FtpService.INITIALS_HOST_FTP)
+          (secureConnection ? FtpPreferences.INITIALS_HOST_SFTP : FtpPreferences.INITIALS_HOST_FTP)
               + address.getHostAddress()
               + ":"
               + port
