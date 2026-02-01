@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/choose_ftp_port"
+        android:title="@string/ftpmod_port_edit_menu_title"/>
+    <item
+        android:id="@+id/ftp_path"
+        android:title="@string/ftpmod_path" />
+    <item
+        android:id="@+id/ftp_login"
+        android:title="@string/ftpmod_login" />
+    <item
+        android:id="@+id/checkbox_ftp_secure"
+        android:title="@string/ftpmod_status_secure_connection"
+        android:checkable="true" />
+    <item
+        android:id="@+id/checkbox_ftp_readonly"
+        android:title="@string/ftpmod_readonly"
+        android:checkable="true" />
+    <item
+        android:id="@+id/ftp_timeout"
+        android:title="@string/ftpmod_timeout" />
+    <item
+        android:id="@+id/checkbox_ftp_legacy_filesystem"
+        android:title="@string/ftpmod_preference_saf_filesystem_title"
+        android:checkable="true" />
+</menu>
