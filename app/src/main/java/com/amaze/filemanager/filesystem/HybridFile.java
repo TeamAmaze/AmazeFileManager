@@ -406,7 +406,8 @@ public class HybridFile {
         s = getDocumentFile(false).length();
         break;
       case OTG:
-        s = OTGUtil.getDocumentFile(path, context, false).length();
+        DocumentFile otgDocFile = OTGUtil.getDocumentFile(path, context, false);
+        s = otgDocFile != null ? otgDocFile.length() : 0L;
         break;
       case DROPBOX:
       case BOX:
@@ -476,7 +477,13 @@ public class HybridFile {
         if (!Utils.isNullOrEmpty(name)) {
           return name;
         }
-        return OTGUtil.getDocumentFile(path, context, false).getName();
+        DocumentFile otgNameFile = OTGUtil.getDocumentFile(path, context, false);
+        if (otgNameFile != null) {
+          return otgNameFile.getName();
+        }
+        // Fallback: extract from path
+        String otgPath = path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+        return otgPath.substring(otgPath.lastIndexOf('/') + 1);
       case DOCUMENT_FILE:
         if (!Utils.isNullOrEmpty(name)) {
           return name;
@@ -946,7 +953,7 @@ public class HybridFile {
       case OTG:
         // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
         DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
-        size = documentFile.length();
+        size = documentFile != null ? documentFile.length() : 0L;
         break;
       case DOCUMENT_FILE:
         size = getDocumentFile(false).length();
@@ -1180,6 +1187,11 @@ public class HybridFile {
       case OTG:
         contentResolver = context.getContentResolver();
         documentSourceFile = OTGUtil.getDocumentFile(path, context, false);
+        if (documentSourceFile == null) {
+          LOG.warn("OTG DocumentFile is null - permission may not be granted for path: {}", path);
+          inputStream = null;
+          break;
+        }
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
@@ -1279,6 +1291,11 @@ public class HybridFile {
       case OTG:
         contentResolver = context.getContentResolver();
         documentSourceFile = OTGUtil.getDocumentFile(path, context, true);
+        if (documentSourceFile == null) {
+          LOG.warn("OTG DocumentFile is null - permission may not be granted for path: {}", path);
+          outputStream = null;
+          break;
+        }
         try {
           outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {

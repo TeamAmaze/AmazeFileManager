@@ -21,12 +21,14 @@
 package com.amaze.filemanager.filesystem;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 
+import android.net.Uri;
 import android.os.Parcel;
 
 /** Created by Rustam Khadipash on 29/3/2018. */
@@ -195,6 +197,51 @@ public class HybridFileParcelableTest {
     assertEquals("rwx", directory.getPermission());
     file.setPermission("rwx");
     assertEquals("rwx", file.getPermission());
+  }
+
+  /**
+   * Purpose: Verify that setFullUri(null) does NOT throw NullPointerException. This is a regression
+   * test for the crash that occurred when OTGUtil.getDocumentFiles used opportunistic direct
+   * filesystem access (OtgFileAccessFacade) and set fullUri = null.
+   *
+   * <p>Expected: No exception thrown; getFullUri returns null.
+   */
+  @Test
+  public void setFullUriNull_doesNotThrowNPE() {
+    // Must not throw NullPointerException
+    file.setFullUri(null);
+    // getFullUri only returns non-null for DOCUMENT_FILE mode; file is OpenMode.FILE
+    assertNull(file.getFullUri());
+  }
+
+  /**
+   * Purpose: Verify setFullUri accepts a valid content:// URI and stores it for DOCUMENT_FILE mode.
+   * Expected: getFullUri returns the URI when mode is DOCUMENT_FILE.
+   */
+  @Test
+  public void setFullUriContentScheme_storedForDocumentFileMode() {
+    HybridFileParcelable docFile =
+        new HybridFileParcelable(
+            "content://com.android.externalstorage.documents/tree/1234-ABCD%3A",
+            "rw", 0L, 0L, true);
+    docFile.setMode(OpenMode.DOCUMENT_FILE);
+    Uri contentUri = Uri.parse("content://com.android.externalstorage.documents/tree/1234-ABCD%3A");
+    docFile.setFullUri(contentUri);
+    assertEquals(contentUri, docFile.getFullUri());
+  }
+
+  /**
+   * Purpose: Verify setFullUri silently ignores non-content URIs (e.g. file://). Expected:
+   * getFullUri returns null for non-content scheme URIs.
+   */
+  @Test
+  public void setFullUriNonContentScheme_ignored() {
+    HybridFileParcelable docFile =
+        new HybridFileParcelable("file:///storage/emulated/0/test.txt", "rw", 0L, 0L, false);
+    docFile.setMode(OpenMode.DOCUMENT_FILE);
+    Uri fileUri = Uri.parse("file:///storage/emulated/0/test.txt");
+    docFile.setFullUri(fileUri); // non-content:// URI, should be silently ignored
+    assertNull(docFile.getFullUri());
   }
 
   /**

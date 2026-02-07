@@ -53,7 +53,6 @@ import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PASSWORD;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PORT;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PROTOCOL;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_USERNAME;
-import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
@@ -64,7 +63,9 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -96,8 +97,13 @@ import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.StorageNaming;
+import com.amaze.filemanager.fileoperations.filesystem.usb.DeviceDisconnectedListener;
+import com.amaze.filemanager.fileoperations.filesystem.usb.OnDeviceChangeListener;
+import com.amaze.filemanager.fileoperations.filesystem.usb.OtgFileAccessFacade;
+import com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager;
+import com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceRepresentation;
 import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgManager;
-import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation;
+import com.amaze.filemanager.fileoperations.filesystem.usb.VolumeStorageDevice;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -550,6 +556,7 @@ public class MainActivity extends PermissionsActivity
       oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
       oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
       operation = savedInstanceState.getInt(KEY_OPERATION);
+      pendingSafDeviceKey = savedInstanceState.getString("pendingSafDeviceKey");
       int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
       getDrawer().selectCorrectDrawerItem(selectedStorage);
     }
@@ -826,28 +833,61 @@ public class MainActivity extends PermissionsActivity
     // Final set of paths
     ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
     StorageManager sm = getSystemService(StorageManager.class);
+
+    // Keep track of UUIDs we've added via UsbOtgManager to avoid duplicates
+    Set<String> addedVolumeUuids = new HashSet<>();
+
+    // First, add all connected USB OTG / removable storage devices from UsbOtgManager
+    for (StorageDeviceRepresentation device : UsbOtgManager.getStorageDevices()) {
+      String name = device.getDisplayName();
+      String path;
+
+      // Try to use direct filesystem path if available and accessible.
+      // OtgFileAccessFacade.hasDirectAccess checks canRead() on pre-R and
+      // MANAGE_EXTERNAL_STORAGE + canRead() on R+. We must use the same check here
+      // so the drawer path is consistent with how OtgFileAccessFacade will list files.
+      String filesystemPath = device.getFilePath();
+      if (filesystemPath != null && OtgFileAccessFacade.INSTANCE.hasDirectAccess(filesystemPath)) {
+        // Use direct filesystem path - simpler and faster than SAF
+        path = filesystemPath;
+      } else {
+        // No filesystem path or no permission - use SAF-based otg:/ path
+        path = OTGUtil.buildOtgPath(device.getDeviceKey(), "");
+      }
+
+      volumes.add(new StorageDirectoryParcelable(path, name, R.drawable.ic_usb_white_24dp));
+
+      // Track the UUID if it's a volume device to avoid duplicate entries
+      if (device instanceof VolumeStorageDevice) {
+        addedVolumeUuids.add(((VolumeStorageDevice) device).getUuid());
+      }
+    }
+
+    // Then add non-removable volumes (internal storage) from StorageManager
     for (StorageVolume volume : sm.getStorageVolumes()) {
       if (!volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)
           && !volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED_READ_ONLY)) {
         continue;
       }
+
+      // Skip removable volumes - they're already added via UsbOtgManager above
+      // This avoids duplicate entries for the same physical device
+      if (volume.isRemovable()) {
+        String uuid = volume.getUuid();
+        if (uuid != null && addedVolumeUuids.contains(uuid)) {
+          continue; // Already added via UsbOtgManager
+        }
+        // For removable volumes not in UsbOtgManager (shouldn't happen normally),
+        // skip them as they need SAF permission handling
+        continue;
+      }
+
       File path = Utils.getVolumeDirectory(volume);
       String name = volume.getDescription(this);
       if (INTERNAL_SHARED_STORAGE.equalsIgnoreCase(name)) {
         name = getString(R.string.storage_internal);
       }
-      int icon;
-      if (!volume.isRemovable()) {
-        icon = R.drawable.ic_phone_android_white_24dp;
-      } else {
-        // HACK: There is no reliable way to distinguish USB and SD external storage
-        // However it is often enough to check for "USB" String
-        if (name.toUpperCase().contains("USB") || path.getPath().toUpperCase().contains("USB")) {
-          icon = R.drawable.ic_usb_white_24dp;
-        } else {
-          icon = R.drawable.ic_sd_storage_white_24dp;
-        }
-      }
+      int icon = R.drawable.ic_phone_android_white_24dp;
       volumes.add(new StorageDirectoryParcelable(path.getPath(), name, icon));
     }
     return volumes;
@@ -927,8 +967,8 @@ public class MainActivity extends PermissionsActivity
     if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
     if (SDK_INT >= KITKAT) {
-      // Add entry for each connected USB OTG device
-      for (UsbOtgRepresentation device : UsbOtgManager.getDevices()) {
+      // Add entry for each connected USB OTG / removable storage device
+      for (StorageDeviceRepresentation device : UsbOtgManager.getStorageDevices()) {
         String otgPath = OTGUtil.buildOtgPath(device.getDeviceKey(), "");
         rv.add(otgPath);
       }
@@ -939,22 +979,41 @@ public class MainActivity extends PermissionsActivity
     for (String file : rv) {
       File f = new File(file);
       @DrawableRes int icon;
+      String name;
 
-      if ("/storage/emulated/legacy".equals(file)
+      // Check if this is an OTG path
+      if (file.startsWith(OTGUtil.PREFIX_OTG)) {
+        icon = R.drawable.ic_usb_white_24dp;
+        String deviceKey = OTGUtil.extractDeviceKeyFromPath(file);
+        if (deviceKey != null) {
+          StorageDeviceRepresentation device = UsbOtgManager.getStorageDevice(deviceKey);
+          name = device != null ? device.getDisplayName() : "OTG";
+        } else {
+          name = "OTG";
+        }
+      } else if ("/storage/emulated/legacy".equals(file)
           || "/storage/emulated/0".equals(file)
           || "/mnt/sdcard".equals(file)) {
         icon = R.drawable.ic_phone_android_white_24dp;
+        @StorageNaming.DeviceDescription
+        int deviceDescription = StorageNaming.getDeviceDescriptionLegacy(f);
+        name = StorageNamingHelper.getNameForDeviceDescription(this, f, deviceDescription);
       } else if ("/storage/sdcard1".equals(file)) {
         icon = R.drawable.ic_sd_storage_white_24dp;
+        @StorageNaming.DeviceDescription
+        int deviceDescription = StorageNaming.getDeviceDescriptionLegacy(f);
+        name = StorageNamingHelper.getNameForDeviceDescription(this, f, deviceDescription);
       } else if ("/".equals(file)) {
         icon = R.drawable.ic_drawer_root_white;
+        @StorageNaming.DeviceDescription
+        int deviceDescription = StorageNaming.getDeviceDescriptionLegacy(f);
+        name = StorageNamingHelper.getNameForDeviceDescription(this, f, deviceDescription);
       } else {
         icon = R.drawable.ic_sd_storage_white_24dp;
+        @StorageNaming.DeviceDescription
+        int deviceDescription = StorageNaming.getDeviceDescriptionLegacy(f);
+        name = StorageNamingHelper.getNameForDeviceDescription(this, f, deviceDescription);
       }
-
-      @StorageNaming.DeviceDescription
-      int deviceDescription = StorageNaming.getDeviceDescriptionLegacy(f);
-      String name = StorageNamingHelper.getNameForDeviceDescription(this, f, deviceDescription);
 
       volumes.add(new StorageDirectoryParcelable(file, name, icon));
     }
@@ -1372,6 +1431,10 @@ public class MainActivity extends PermissionsActivity
       outState.putParcelableArrayList(KEY_OPERATIONS_PATH_LIST, (oparrayList));
       outState.putInt(KEY_OPERATION, operation);
     }
+
+    if (pendingSafDeviceKey != null) {
+      outState.putString("pendingSafDeviceKey", pendingSafDeviceKey);
+    }
   }
 
   @Override
@@ -1381,7 +1444,10 @@ public class MainActivity extends PermissionsActivity
     unregisterReceiver(receiver2);
 
     if (SDK_INT >= KITKAT) {
-      unregisterReceiver(mOtgReceiver);
+      // Unregister storage device change callback (new facade approach)
+      StorageDeviceManager.unregisterChangeCallback(this);
+      // Unregister device disconnection listener
+      UsbOtgManager.removeDisconnectionListener(mDeviceDisconnectedListener);
     }
 
     final Toast toast = this.toast.get();
@@ -1429,118 +1495,145 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
-  /** Updates everything related to USB devices MUST ALWAYS be called after onResume() */
+  /**
+   * Updates everything related to USB/removable storage devices. MUST ALWAYS be called after
+   * onResume()
+   */
   @RequiresApi(api = Build.VERSION_CODES.KITKAT)
   private void updateUsbInformation() {
-    // First, request USB permissions for all devices to get detailed device info
-    // (serial number, manufacturer name, product name)
-    final MainActivity activity = this;
-    OTGUtil.requestUsbPermissionsForAllDevices(
-        this,
-        new Runnable() {
-          @Override
-          public void run() {
-            // After permissions are handled, refresh the device list with full info
-            List<UsbOtgRepresentation> devices = OTGUtil.getMassStorageDevicesConnected(activity);
+    // Migrate any legacy device keys on first run
+    UsbOtgManager.migratePersistedRoots(this);
 
-            // Update device list - this removes disconnected devices and adds new ones
-            // while preserving SAF roots for devices that remain connected
-            UsbOtgManager.INSTANCE.updateDevices(devices);
+    // Get currently connected removable devices using the facade
+    List<StorageDeviceRepresentation> devices = StorageDeviceManager.getRemovableDevices(this);
 
-            // Validate that existing SAF roots are still accessible
-            for (String deviceKey : UsbOtgManager.INSTANCE.getDeviceKeys()) {
-              if (UsbOtgManager.INSTANCE.hasUsbOtgRoot(deviceKey)) {
-                if (!OTGUtil.isUsbUriAccessible(activity, deviceKey)) {
-                  // Root is no longer accessible, clear it
-                  UsbOtgManager.INSTANCE.setUsbOtgRoot(deviceKey, null);
+    // If USB permissions are required (API 21-23), request them
+    if (StorageDeviceManager.requiresUsbPermission()) {
+      final MainActivity activity = this;
+      for (StorageDeviceRepresentation device : devices) {
+        if (!StorageDeviceManager.hasUsbPermission(this, device)) {
+          StorageDeviceManager.requestUsbPermission(
+              this,
+              device,
+              (dev, granted) -> {
+                if (granted) {
+                  // Refresh device list after permission granted
+                  List<StorageDeviceRepresentation> updatedDevices =
+                      StorageDeviceManager.getRemovableDevices(activity);
+                  UsbOtgManager.updateDevices(updatedDevices);
+                  runOnUiThread(() -> drawer.refreshDrawer());
                 }
-              }
-            }
+                return kotlin.Unit.INSTANCE;
+              });
+        }
+      }
+    }
 
-            runOnUiThread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    drawer.refreshDrawer();
-                  }
-                });
-          }
-        });
+    // Update device list
+    UsbOtgManager.updateDevices(devices);
 
-    // Also do initial detection without waiting for permissions
-    // (devices will be updated again after permissions are granted)
-    List<UsbOtgRepresentation> connectedDevices = OTGUtil.getMassStorageDevicesConnected(this);
-    UsbOtgManager.INSTANCE.updateDevices(connectedDevices);
+    // Restore any previously persisted SAF URI permissions
+    UsbOtgManager.restorePersistedUriPermissions(this);
 
     // Validate that existing SAF roots are still accessible
-    for (String deviceKey : UsbOtgManager.INSTANCE.getDeviceKeys()) {
-      if (UsbOtgManager.INSTANCE.hasUsbOtgRoot(deviceKey)) {
+    for (String deviceKey : UsbOtgManager.getDeviceKeys()) {
+      if (UsbOtgManager.hasUsbOtgRoot(deviceKey)) {
         if (!OTGUtil.isUsbUriAccessible(this, deviceKey)) {
           // Root is no longer accessible, clear it
-          UsbOtgManager.INSTANCE.setUsbOtgRoot(deviceKey, null);
+          UsbOtgManager.setUsbOtgRoot(deviceKey, null);
         }
       }
     }
 
     drawer.refreshDrawer();
 
-    // Registering intent filter for OTG
-    IntentFilter otgFilter = new IntentFilter();
-    otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-    otgFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-    ContextCompat.registerReceiver(this, mOtgReceiver, otgFilter, ContextCompat.RECEIVER_EXPORTED);
+    // Register for device disconnection events to redirect tabs
+    UsbOtgManager.addDisconnectionListener(mDeviceDisconnectedListener);
+
+    // Register for device change events using the facade
+    StorageDeviceManager.registerChangeCallback(this, mDeviceChangeListener);
   }
 
-  /** Receiver to check if a USB device is connected at the runtime of application */
+  /** Listener for device disconnection events - redirects tabs viewing disconnected devices */
+  private final DeviceDisconnectedListener mDeviceDisconnectedListener =
+      (deviceKey, device) -> {
+        runOnUiThread(
+            () -> {
+              TabFragment tabFragment = getTabFragment();
+              if (tabFragment != null) {
+                tabFragment.redirectTabsOnDeviceDisconnected(deviceKey, device.getFilePath());
+                Toast.makeText(
+                        MainActivity.this,
+                        getString(R.string.usb_device_disconnected),
+                        Toast.LENGTH_SHORT)
+                    .show();
+              }
+              drawer.refreshDrawer();
+            });
+      };
+
+  /** Listener for storage device changes (attach/detach) */
+  private final OnDeviceChangeListener mDeviceChangeListener =
+      devices -> {
+        // Update device list with newly detected devices
+        UsbOtgManager.updateDevices(devices);
+
+        // Restore any previously persisted SAF URI permissions for newly connected devices
+        UsbOtgManager.restorePersistedUriPermissions(MainActivity.this);
+
+        runOnUiThread(
+            () -> {
+              drawer.refreshDrawer();
+
+              // If current path is on a device that was detached, go to main
+              executeWithMainFragment(
+                  mainFragment -> {
+                    String currentPath = mainFragment.getCurrentPath();
+                    if (currentPath != null) {
+                      if (currentPath.startsWith(OTGUtil.PREFIX_OTG)) {
+                        String deviceKey = OTGUtil.extractDeviceKeyFromPath(currentPath);
+                        if (deviceKey != null && !UsbOtgManager.isDeviceConnected(deviceKey)) {
+                          goToMain(null);
+                        }
+                      } else if (!currentPath.startsWith("/storage/emulated")) {
+                        // For direct filesystem paths (e.g. /storage/XXXX-XXXX,
+                        // /mnt/media_rw/XXXX-XXXX) — check if still accessible
+                        File pathFile = new File(currentPath);
+                        if (!pathFile.exists() || !pathFile.canRead()) {
+                          goToMain(null);
+                        }
+                      }
+                    }
+                    return null;
+                  },
+                  false);
+            });
+      };
+
+  /**
+   * Legacy receiver to check if a USB device is connected at the runtime of application.
+   *
+   * @deprecated Use StorageDeviceManager.registerChangeCallback() instead
+   */
+  @Deprecated
   BroadcastReceiver mOtgReceiver =
       new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-          if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-            // Request permissions for new device to get detailed info, then refresh
-            OTGUtil.requestUsbPermissionsForAllDevices(
-                MainActivity.this,
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    // After permissions are handled, refresh with full device info
-                    List<UsbOtgRepresentation> devices =
-                        OTGUtil.getMassStorageDevicesConnected(MainActivity.this);
-                    UsbOtgManager.INSTANCE.updateDevices(devices);
-                    runOnUiThread(
-                        new Runnable() {
-                          @Override
-                          public void run() {
-                            drawer.refreshDrawer();
-                          }
-                        });
-                  }
-                });
-
-            // Also do immediate detection (without waiting for permission)
-            List<UsbOtgRepresentation> connectedDevices =
-                OTGUtil.getMassStorageDevicesConnected(MainActivity.this);
-            UsbOtgManager.INSTANCE.updateDevices(connectedDevices);
+          // This receiver is now mostly unused as StorageDeviceManager handles callbacks
+          // Kept for backward compatibility on API 21-23 edge cases
+          if (intent.getAction() != null
+              && intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
+            List<StorageDeviceRepresentation> connectedDevices =
+                StorageDeviceManager.getRemovableDevices(MainActivity.this);
+            UsbOtgManager.updateDevices(connectedDevices);
             drawer.refreshDrawer();
-          } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-            // Re-detect all devices - the detached one will be automatically removed
-            List<UsbOtgRepresentation> connectedDevices =
-                OTGUtil.getMassStorageDevicesConnected(MainActivity.this);
-            UsbOtgManager.INSTANCE.updateDevices(connectedDevices);
+          } else if (intent.getAction() != null
+              && intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
+            List<StorageDeviceRepresentation> connectedDevices =
+                StorageDeviceManager.getRemovableDevices(MainActivity.this);
+            UsbOtgManager.updateDevices(connectedDevices);
             drawer.refreshDrawer();
-            // If current path is on a device that was detached, go to main
-            executeWithMainFragment(
-                mainFragment -> {
-                  String currentPath = mainFragment.getCurrentPath();
-                  if (currentPath != null && currentPath.startsWith(OTGUtil.PREFIX_OTG)) {
-                    String deviceKey = OTGUtil.extractDeviceKeyFromPath(currentPath);
-                    if (deviceKey != null && !UsbOtgManager.INSTANCE.isDeviceConnected(deviceKey)) {
-                      goToMain(null);
-                    }
-                  }
-                  return null;
-                },
-                false);
           }
         }
       };
@@ -1566,6 +1659,10 @@ public class MainActivity extends PermissionsActivity
     super.onDestroy();
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
+
+    // Unregister storage device change callback
+    StorageDeviceManager.unregisterChangeCallback(this);
+
     closeInteractiveShell();
     NetCopyClientConnectionPool.INSTANCE.shutdown();
     if (drawer != null && drawer.getBilling() != null) {
@@ -1801,30 +1898,63 @@ public class MainActivity extends PermissionsActivity
     } else if (requestCode == REQUEST_CODE_SAF) {
       executeWithMainFragment(
           mainFragment -> {
-            if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
+            if (responseCode == Activity.RESULT_OK && intent != null && intent.getData() != null) {
               // otg access
               Uri usbOtgRoot = intent.getData();
+
+              // Persist URI permission - this is required so the permission survives app restarts
+              if (SDK_INT >= KITKAT) {
+                try {
+                  getContentResolver()
+                      .takePersistableUriPermission(
+                          usbOtgRoot,
+                          Intent.FLAG_GRANT_READ_URI_PERMISSION
+                              | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                } catch (SecurityException e) {
+                  LOG.warn("Failed to persist URI permission", e);
+                }
+              }
+
               String deviceKey = pendingSafDeviceKey;
-              if (deviceKey != null && UsbOtgManager.INSTANCE.isDeviceConnected(deviceKey)) {
-                UsbOtgManager.INSTANCE.setUsbOtgRoot(deviceKey, usbOtgRoot);
+              if (deviceKey != null && UsbOtgManager.isDeviceConnected(deviceKey)) {
+                UsbOtgManager.setUsbOtgRoot(deviceKey, usbOtgRoot);
                 String otgPath = OTGUtil.buildOtgPath(deviceKey, "");
                 mainFragment.loadlist(otgPath, false, OpenMode.OTG, true);
               } else {
-                // Fallback for legacy behavior - use any connected device
-                UsbOtgRepresentation anyDevice = UsbOtgManager.INSTANCE.getAnyDevice();
-                if (anyDevice != null) {
-                  UsbOtgManager.INSTANCE.setUsbOtgRoot(anyDevice.getDeviceKey(), usbOtgRoot);
-                  String otgPath = OTGUtil.buildOtgPath(anyDevice.getDeviceKey(), "");
-                  mainFragment.loadlist(otgPath, false, OpenMode.OTG, true);
+                // Try to match the returned URI to a connected device by volume UUID
+                StorageDeviceRepresentation matchedDevice = null;
+                String uriPath = usbOtgRoot.getPath();
+                if (uriPath != null) {
+                  for (StorageDeviceRepresentation dev : UsbOtgManager.getStorageDevices()) {
+                    if (dev instanceof VolumeStorageDevice) {
+                      String uuid = ((VolumeStorageDevice) dev).getUuid();
+                      if (uriPath.contains(uuid)) {
+                        matchedDevice = dev;
+                        break;
+                      }
+                    }
+                  }
+                }
+
+                if (matchedDevice == null) {
+                  // Fallback - use any connected device
+                  matchedDevice = UsbOtgManager.getAnyStorageDevice();
+                }
+
+                if (matchedDevice != null) {
+                  try {
+                    UsbOtgManager.setUsbOtgRoot(matchedDevice.getDeviceKey(), usbOtgRoot);
+                    String otgPath = OTGUtil.buildOtgPath(matchedDevice.getDeviceKey(), "");
+                    mainFragment.loadlist(otgPath, false, OpenMode.OTG, true);
+                  } catch (IllegalStateException e) {
+                    LOG.error("Failed to set USB OTG root: device disconnected", e);
+                    Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+                  }
                 }
               }
               pendingSafDeviceKey = null;
               drawer.closeIfNotLocked();
               if (drawer.isLocked()) drawer.onDrawerClosed();
-            } else if (requestCode == REQUEST_CODE_SAF_FTP) {
-              FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
-              ftpServerFragment.changeFTPServerPath(intent.getData().toString());
-              Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
 
             } else {
               Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
@@ -2171,7 +2301,7 @@ public class MainActivity extends PermissionsActivity
 
       if (SDK_INT >= KITKAT) {
         if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
-          UsbOtgManager.INSTANCE.resetAll();
+          UsbOtgManager.resetAll();
           drawer.refreshDrawer();
         }
       }
