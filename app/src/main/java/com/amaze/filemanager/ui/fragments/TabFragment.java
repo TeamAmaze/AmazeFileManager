@@ -46,6 +46,7 @@ import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
 
 import android.animation.ArgbEvaluator;
@@ -54,6 +55,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -582,6 +584,67 @@ public class TabFragment extends Fragment {
                 return null;
               }));
     }
+  }
+
+  /**
+   * Redirect any tab that is currently viewing a path on a disconnected device to the default
+   * storage directory.
+   *
+   * @param deviceKey the key of the disconnected device
+   * @param deviceFilePath the filesystem path of the disconnected device (may be null)
+   */
+  public void redirectTabsOnDeviceDisconnected(String deviceKey, @Nullable String deviceFilePath) {
+    String defaultPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+    for (Fragment fragment : fragments) {
+      if (fragment instanceof MainFragment) {
+        MainFragment mainFragment = (MainFragment) fragment;
+        String currentPath = mainFragment.getCurrentPath();
+
+        if (currentPath != null && isPathOnDevice(currentPath, deviceKey, deviceFilePath)) {
+          LOG.info(
+              "Redirecting tab from disconnected device path: {} to: {}", currentPath, defaultPath);
+          mainFragment.loadlist(defaultPath, false, OpenMode.FILE, false);
+        }
+      }
+    }
+  }
+
+  /**
+   * Check if a path is located on a specific device.
+   *
+   * @param path the path to check
+   * @param deviceKey the device key
+   * @param deviceFilePath the filesystem path of the device (may be null)
+   * @return true if the path is on the device
+   */
+  private boolean isPathOnDevice(String path, String deviceKey, @Nullable String deviceFilePath) {
+    if (path == null) return false;
+
+    // Check OTG-style path (otg:/vol:UUID/... or otg:/usb:vendorId:productId/...)
+    if (path.startsWith(OTGUtil.PREFIX_OTG)) {
+      String pathDeviceKey = OTGUtil.extractDeviceKeyFromPath(path);
+      if (deviceKey.equals(pathDeviceKey)) {
+        return true;
+      }
+    }
+
+    // Check filesystem path (for MANAGE_EXTERNAL_STORAGE mode on Android 11+)
+    // e.g., /mnt/media_rw/LABEL or /storage/XXXX-YYYY
+    if (deviceFilePath != null && path.startsWith(deviceFilePath)) {
+      return true;
+    }
+
+    // Also check PREFIX_MEDIA_REMOVABLE paths
+    if (path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
+      // Extract the volume part from path and compare
+      // Path format: /mnt/media_rw/VOLUME_LABEL/...
+      if (deviceFilePath != null && path.startsWith(deviceFilePath)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @NonNull

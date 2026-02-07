@@ -34,13 +34,13 @@ import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.S
 import android.os.Build.VERSION_CODES.TIRAMISU
-import android.provider.DocumentsContract
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
 import com.amaze.filemanager.exceptions.DocumentFileNotFoundException
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.usb.OtgFileAccessFacade
 import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgManager
 import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -105,6 +105,27 @@ object OTGUtil {
         fileFound: OnFileFound,
     ) {
         val deviceKey = extractDeviceKeyFromPath(path)
+        if (deviceKey != null) {
+            // Use new facade for opportunistic direct access
+            val files = OtgFileAccessFacade.listFiles(context, deviceKey, getSubPathFromOtgPath(path))
+            if (files.isNotEmpty()) {
+                for (file in files) {
+                    val baseFile =
+                        HybridFileParcelable(
+                            file.absolutePath,
+                            null,
+                            file.lastModified(),
+                            if (file.isDirectory) 0 else file.length(),
+                            file.isDirectory,
+                        )
+                    baseFile.name = file.name
+                    baseFile.mode = OpenMode.FILE
+                    fileFound.onFileFound(baseFile)
+                }
+                return
+            }
+        }
+        // Fallback to original SAF logic if direct access not possible
         val rootUriString =
             if (deviceKey != null) {
                 UsbOtgManager.getUsbOtgRoot(deviceKey)
@@ -197,6 +218,7 @@ object OTGUtil {
      *
      * @param createRecursive flag used to determine whether to create new file while traversing to
      * path, in case path is not present. Notably useful in opening an output stream.
+     * @return DocumentFile for the path, or null if root URI is not set or path cannot be resolved
      */
     @JvmStatic
     fun getDocumentFile(
@@ -210,7 +232,13 @@ object OTGUtil {
                 UsbOtgManager.getUsbOtgRoot(deviceKey)
             } else {
                 UsbOtgManager.anyUsbOtgRoot
-            } ?: throw NullPointerException("USB OTG root not set!")
+            }
+
+        // Return null if root URI is not set yet (permission not granted)
+        if (rootUriString == null) {
+            Log.w(TAG, "USB OTG root not set for path: $path")
+            return null
+        }
 
         return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
     }
@@ -222,6 +250,7 @@ object OTGUtil {
      * @param path the path to the file/directory
      * @param context context for loading
      * @param createRecursive flag used to determine whether to create new file while traversing
+     * @return DocumentFile for the path, or null if root URI is not set or path cannot be resolved
      */
     @JvmStatic
     fun getDocumentFile(
@@ -230,9 +259,13 @@ object OTGUtil {
         context: Context,
         createRecursive: Boolean,
     ): DocumentFile? {
-        val rootUriString =
-            UsbOtgManager.getUsbOtgRoot(deviceKey)
-                ?: throw NullPointerException("USB OTG root not set for device: $deviceKey")
+        val rootUriString = UsbOtgManager.getUsbOtgRoot(deviceKey)
+
+        // Return null if root URI is not set yet (permission not granted)
+        if (rootUriString == null) {
+            Log.w(TAG, "USB OTG root not set for device: $deviceKey")
+            return null
+        }
 
         return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
     }
@@ -282,8 +315,8 @@ object OTGUtil {
     @RequiresApi(api = KITKAT)
     @JvmStatic
     fun isUsbUriAccessible(context: Context?): Boolean {
-        val rootUriString = UsbOtgManager.anyUsbOtgRoot
-        return DocumentsContract.isDocumentUri(context, rootUriString)
+        val rootUri = UsbOtgManager.anyUsbOtgRoot ?: return false
+        return isTreeUriAccessible(context, rootUri)
     }
 
     /** Check if the usb uri for a specific device is still accessible  */
@@ -293,8 +326,48 @@ object OTGUtil {
         context: Context?,
         deviceKey: String,
     ): Boolean {
-        val rootUriString = UsbOtgManager.getUsbOtgRoot(deviceKey)
-        return rootUriString != null && DocumentsContract.isDocumentUri(context, rootUriString)
+        val rootUri = UsbOtgManager.getUsbOtgRoot(deviceKey) ?: return false
+        return isTreeUriAccessible(context, rootUri)
+    }
+
+    /**
+     * Check if a tree URI is still accessible.
+     * Tree URIs come from ACTION_OPEN_DOCUMENT_TREE and need different validation
+     * than document URIs.
+     */
+    @RequiresApi(api = KITKAT)
+    private fun isTreeUriAccessible(
+        context: Context?,
+        treeUri: Uri,
+    ): Boolean {
+        if (context == null) return false
+
+        // Check if we still have persisted permission for this URI.
+        // Compare both raw and decoded forms to handle encoding differences
+        // across Android versions (e.g. %3A vs : in URI path).
+        val persistedPermissions = context.contentResolver.persistedUriPermissions
+        val treeUriDecoded = Uri.decode(treeUri.toString())
+        val hasPermission =
+            persistedPermissions.any { permission ->
+                permission.isReadPermission &&
+                    (
+                        permission.uri == treeUri ||
+                            Uri.decode(permission.uri.toString()) == treeUriDecoded
+                    )
+            }
+
+        if (!hasPermission) {
+            return false
+        }
+
+        // Try to access the tree root to verify it's actually accessible
+        return try {
+            val docFile = DocumentFile.fromTreeUri(context, treeUri)
+            docFile?.exists() == true
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to access tree URI: $treeUri", e)
+            false
+        }
     }
 
     /**
@@ -303,8 +376,16 @@ object OTGUtil {
      * @param context the context
      * @param device the USB device to check
      * @return true if permission is granted
+     * @deprecated Use [StorageDeviceManager.hasUsbPermission] instead
      */
     @JvmStatic
+    @Deprecated(
+        "Use StorageDeviceManager.hasUsbPermission() instead",
+        ReplaceWith(
+            "StorageDeviceManager.hasUsbPermission(context, device)",
+            "com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager",
+        ),
+    )
     fun hasUsbPermission(
         context: Context,
         device: UsbDevice,
@@ -320,8 +401,16 @@ object OTGUtil {
      * @param context the context
      * @param device the USB device to request permission for
      * @param onPermissionResult callback for permission result (device, granted)
+     * @deprecated Use [StorageDeviceManager.requestUsbPermission] instead
      */
     @JvmStatic
+    @Deprecated(
+        "Use StorageDeviceManager.requestUsbPermission() instead",
+        ReplaceWith(
+            "StorageDeviceManager.requestUsbPermission(context, device, callback)",
+            "com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager",
+        ),
+    )
     fun requestUsbPermission(
         context: Context,
         device: UsbDevice,
@@ -400,8 +489,16 @@ object OTGUtil {
      *
      * @param context the context
      * @param onAllPermissionsHandled callback when all permission requests are handled
+     * @deprecated Use [StorageDeviceManager] which handles permissions automatically on API 24+
      */
     @JvmStatic
+    @Deprecated(
+        "Use StorageDeviceManager which handles permissions automatically on API 24+",
+        ReplaceWith(
+            "StorageDeviceManager.getRemovableDevices(context)",
+            "com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager",
+        ),
+    )
     fun requestUsbPermissionsForAllDevices(
         context: Context,
         onAllPermissionsHandled: Runnable? = null,
@@ -442,8 +539,16 @@ object OTGUtil {
      *
      * @param context the context (use Activity context for permission requests)
      * @return list of connected mass storage devices
+     * @deprecated Use [StorageDeviceManager.getRemovableDevices] instead
      */
     @JvmStatic
+    @Deprecated(
+        "Use StorageDeviceManager.getRemovableDevices() instead",
+        ReplaceWith(
+            "StorageDeviceManager.getRemovableDevices(context)",
+            "com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager",
+        ),
+    )
     fun getMassStorageDevicesConnected(context: Context): List<UsbOtgRepresentation> {
         val usbManager = context.getSystemService(Context.USB_SERVICE) as? UsbManager
         val devices = usbManager?.deviceList ?: mapOf()

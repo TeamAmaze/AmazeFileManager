@@ -41,8 +41,10 @@ import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.usb.OtgFileAccessFacade;
+import com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager;
+import com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceRepresentation;
 import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgManager;
-import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
@@ -308,7 +310,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         String deviceKey = OTGUtil.extractDeviceKeyFromPath(file);
         String displayName = "OTG";
         if (deviceKey != null) {
-          UsbOtgRepresentation device = UsbOtgManager.getDevice(deviceKey);
+          StorageDeviceRepresentation device = UsbOtgManager.getStorageDevice(deviceKey);
           if (device != null) {
             displayName = device.getDisplayName();
           }
@@ -839,13 +841,34 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
             && (meta.path.contains(OTGUtil.PREFIX_OTG)
                 || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))) {
+          // If path starts with /mnt/media_rw, it's a direct filesystem path
+          // that doesn't need SAF permission at all - just navigate directly
+          if (meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
+            pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
+            closeIfNotLocked();
+            if (isLocked()) {
+              onDrawerClosed();
+            }
+            break;
+          }
+
           // Check if we need SAF permission for this specific device
           String deviceKey = OTGUtil.extractDeviceKeyFromPath(meta.path);
           boolean needsSafPermission = false;
 
           if (deviceKey != null) {
-            // Check if this specific device has SAF root
-            needsSafPermission = !UsbOtgManager.hasUsbOtgRoot(deviceKey);
+            // If this device has direct filesystem access available, no SAF needed.
+            // Must use the same check as OtgFileAccessFacade.hasDirectAccess() to avoid
+            // mismatch between drawer (asking for SAF) and file listing (using direct access).
+            StorageDeviceRepresentation device = UsbOtgManager.getStorageDevice(deviceKey);
+            if (device != null
+                && device.getFilePath() != null
+                && OtgFileAccessFacade.INSTANCE.hasDirectAccess(device.getFilePath())) {
+              needsSafPermission = false;
+            } else {
+              // Check if this specific device has SAF root
+              needsSafPermission = !UsbOtgManager.hasUsbOtgRoot(deviceKey);
+            }
           } else {
             // Legacy path without device key - check any device
             needsSafPermission = UsbOtgManager.getAnyUsbOtgRoot() == null;
@@ -858,7 +881,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 .getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener(
                     (v) -> {
-                      Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                      // Use StorageDeviceManager to create the appropriate SAF intent
+                      Intent safIntent;
+                      if (finalDeviceKey != null) {
+                        safIntent =
+                            StorageDeviceManager.createSafIntent(mainActivity, finalDeviceKey);
+                      } else {
+                        safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                      }
                       mainActivity.setPendingSafDeviceKey(finalDeviceKey);
 
                       ExtensionsKt.runIfDocumentsUIExists(
