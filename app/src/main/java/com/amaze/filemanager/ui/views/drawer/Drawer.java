@@ -41,7 +41,8 @@ import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
-import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgManager;
+import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
@@ -303,11 +304,20 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       storageDirectoryPaths.add(file);
 
       if (file.contains(OTGUtil.PREFIX_OTG) || file.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
+        // Extract device key from path and get device info for display name
+        String deviceKey = OTGUtil.extractDeviceKeyFromPath(file);
+        String displayName = "OTG";
+        if (deviceKey != null) {
+          UsbOtgRepresentation device = UsbOtgManager.getDevice(deviceKey);
+          if (device != null) {
+            displayName = device.getDisplayName();
+          }
+        }
         addNewItem(
             menu,
             STORAGES_GROUP,
             order++,
-            "OTG",
+            displayName,
             new MenuMetadata(file, false),
             R.drawable.ic_usb_white_24dp,
             R.drawable.ic_show_chart_black_24dp,
@@ -828,25 +838,46 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
             && (meta.path.contains(OTGUtil.PREFIX_OTG)
-                || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
-            && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
-          MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
-          dialog
-              .getActionButton(DialogAction.POSITIVE)
-              .setOnClickListener(
-                  (v) -> {
-                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))) {
+          // Check if we need SAF permission for this specific device
+          String deviceKey = OTGUtil.extractDeviceKeyFromPath(meta.path);
+          boolean needsSafPermission = false;
 
-                    ExtensionsKt.runIfDocumentsUIExists(
-                        safIntent,
-                        mainActivity,
-                        () ->
-                            mainActivity.startActivityForResult(
-                                safIntent, MainActivity.REQUEST_CODE_SAF));
+          if (deviceKey != null) {
+            // Check if this specific device has SAF root
+            needsSafPermission = !UsbOtgManager.hasUsbOtgRoot(deviceKey);
+          } else {
+            // Legacy path without device key - check any device
+            needsSafPermission = UsbOtgManager.getAnyUsbOtgRoot() == null;
+          }
 
-                    dialog.dismiss();
-                  });
-          dialog.show();
+          if (needsSafPermission) {
+            final String finalDeviceKey = deviceKey;
+            MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
+            dialog
+                .getActionButton(DialogAction.POSITIVE)
+                .setOnClickListener(
+                    (v) -> {
+                      Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                      mainActivity.setPendingSafDeviceKey(finalDeviceKey);
+
+                      ExtensionsKt.runIfDocumentsUIExists(
+                          safIntent,
+                          mainActivity,
+                          () ->
+                              mainActivity.startActivityForResult(
+                                  safIntent, MainActivity.REQUEST_CODE_SAF));
+
+                      dialog.dismiss();
+                    });
+            dialog.show();
+          } else {
+            pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
+            closeIfNotLocked();
+            if (isLocked()) {
+              onDrawerClosed();
+            }
+          }
         } else {
           pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
           closeIfNotLocked();

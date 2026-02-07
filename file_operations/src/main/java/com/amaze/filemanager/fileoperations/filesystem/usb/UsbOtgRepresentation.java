@@ -20,10 +20,11 @@
 
 package com.amaze.filemanager.fileoperations.filesystem.usb;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * This class replesents a usb device.
+ * This class represents a usb device.
  *
  * @see UsbOtgRepresentation#equals(Object)
  */
@@ -31,11 +32,57 @@ public class UsbOtgRepresentation {
 
   public final int productID, vendorID;
   public final @Nullable String serialNumber;
+  public final @Nullable String manufacturerName;
+  public final @Nullable String productName;
 
   public UsbOtgRepresentation(int productID, int vendorID, @Nullable String serialNumber) {
+    this(productID, vendorID, serialNumber, null, null);
+  }
+
+  public UsbOtgRepresentation(
+      int productID,
+      int vendorID,
+      @Nullable String serialNumber,
+      @Nullable String manufacturerName,
+      @Nullable String productName) {
     this.productID = productID;
     this.vendorID = vendorID;
     this.serialNumber = serialNumber;
+    this.manufacturerName = manufacturerName;
+    this.productName = productName;
+  }
+
+  /** Returns a unique device key for this device. Format: vendorId:productId[:serialNumber] */
+  @NonNull
+  public String getDeviceKey() {
+    if (serialNumber != null && !serialNumber.isEmpty()) {
+      return vendorID + ":" + productID + ":" + serialNumber;
+    }
+    return vendorID + ":" + productID;
+  }
+
+  /**
+   * Returns a user-friendly display name for this device. Uses manufacturer and product names if
+   * available, otherwise falls back to "USB Device".
+   */
+  @NonNull
+  public String getDisplayName() {
+    StringBuilder sb = new StringBuilder();
+    if (manufacturerName != null && !manufacturerName.isEmpty()) {
+      sb.append(manufacturerName);
+    }
+    if (productName != null && !productName.isEmpty()) {
+      if (sb.length() > 0) {
+        sb.append(" ");
+      }
+      sb.append(productName);
+    }
+    if (sb.length() == 0) {
+      sb.append("USB Device (");
+      sb.append(String.format("%04X:%04X", vendorID, productID));
+      sb.append(")");
+    }
+    return sb.toString();
   }
 
   /**
