@@ -6,6 +6,7 @@ import com.openmobilehub.android.storage.core.model.OmhStorageMetadata
 import com.openmobilehub.android.storage.core.utils.folderSize
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 /**
  * Blocking version of [OmhStorageClient.search].
@@ -108,4 +109,26 @@ fun OmhStorageClient.getStorageUsageBlocking(): Long =
 fun OmhStorageClient.getStorageQuotaBlocking(): Long =
     runBlocking {
         getStorageQuota()
+    }
+
+/**
+ * Blocking version of [OmhStorageClient.uploadFile].
+ */
+fun OmhStorageClient.uploadFileBlocking(
+    localFile: File,
+    parentId: String,
+): OmhStorageEntity? =
+    runBlocking {
+        uploadFile(localFile, parentId)
+    }
+
+/**
+ * Blocking version of [OmhStorageClient.rename].
+ */
+fun OmhStorageClient.renameBlocking(
+    fileId: String,
+    newName: String,
+): OmhStorageEntity? =
+    runBlocking {
+        rename(fileId, newName)
     }

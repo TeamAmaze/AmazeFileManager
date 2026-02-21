@@ -73,9 +73,7 @@ import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import kotlin.Unit;
-import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.text.StringsKt;
-import kotlinx.coroutines.BuildersKt;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public class Operations {
@@ -429,6 +427,18 @@ public class Operations {
                */
               private static final String TEMP_FILE_EXT = "u0CtHRqWUnvxIaeBQ@nY2umVm9MDyR1P";
 
+              private Function<DocumentFile, Unit> safRenameFile =
+                  input -> {
+                    boolean result = false;
+                    try {
+                      result = input.renameTo(newFile.getName(context));
+                    } catch (Exception e) {
+                      LOG.warn(getClass().getSimpleName(), "Failed to rename", e);
+                    }
+                    errorCallBack.done(newFile, result);
+                    return Unit.INSTANCE;
+                  };
+
               private boolean localRename(
                   @NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
                 File file = new File(oldFile.getPath());
@@ -486,18 +496,6 @@ public class Operations {
                 }
                 return false;
               }
-
-              private Function<DocumentFile, Void> safRenameFile =
-                  input -> {
-                    boolean result = false;
-                    try {
-                      result = input.renameTo(newFile.getName(context));
-                    } catch (Exception e) {
-                      LOG.warn(getClass().getSimpleName(), "Failed to rename", e);
-                    }
-                    errorCallBack.done(newFile, result);
-                    return null;
-                  };
 
               @Override
               public Unit call() throws Exception {
@@ -600,24 +598,26 @@ public class Operations {
                   OmhStorageClient storageClient =
                       OMHClientHelper.getStorageClient(oldFile.getMode());
                   if (storageClient != null) {
-                    OmhStorageEntity oldCloudFile =
-                        BuildersKt.runBlocking(
-                            EmptyCoroutineContext.INSTANCE,
-                            (scope, continuation) ->
-                                storageClient.resolvePath(
-                                    CloudUtil.stripCloudPath(oldFile.getMode(), oldFile.path),
-                                    continuation));
-                    if (oldCloudFile != null) {
-                      BuildersKt.runBlocking(
-                          EmptyCoroutineContext.INSTANCE,
-                          (scope, continuation) -> {
-                            //                            storageClient.rename(oldCloudFile.getId(),
-                            // newFile.name, continuation);
-                            return Unit.INSTANCE;
-                          });
-                    }
-                    return Unit.INSTANCE;
+                    OmhStorageEntity renamedEntity =
+                        OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+                            oldFile.getMode(),
+                            AppConfig.getInstance().getCloudAuthTrigger(),
+                            () -> {
+                              OmhStorageEntity oldCloudFile =
+                                  OmhStorageClientExtKt.resolvePathBlocking(
+                                      storageClient,
+                                      CloudUtil.stripCloudPath(oldFile.getMode(), oldFile.path));
+                              if (oldCloudFile == null || oldCloudFile.getId() == null) {
+                                return null;
+                              }
+                              return OmhStorageClientExtKt.renameBlocking(
+                                  storageClient, oldCloudFile.getId(), newFile.getSimpleName());
+                            });
+                    errorCallBack.done(newFile, renamedEntity != null);
+                  } else {
+                    errorCallBack.done(newFile, false);
                   }
+                  return Unit.INSTANCE;
                 } else if (oldFile.isOtgFile()) {
                   if (checkOtgNewFileExists(newFile, context)) {
                     errorCallBack.exists(newFile);

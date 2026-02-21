@@ -33,17 +33,18 @@ class CloudLoaderCallable(
                 val v = data.getInt(0)
                 when (v) {
                     1 -> Unit
-                    2, 3, 4 -> {
+                    2, 3, 4, 5 -> {
                         val openMode =
                             when (v) {
                                 2 -> OpenMode.GDRIVE
                                 3 -> OpenMode.DROPBOX
+                                4 -> OpenMode.BOX
                                 else -> OpenMode.ONEDRIVE
                             }
                         val authClient =
                             OMHClientHelper.getAuthClient(
                                 openMode,
-                                data.getString(1),
+                                data,
                             )
                         val credentials = authClient.getCredentials()
                         if (credentials.accessToken != null) {

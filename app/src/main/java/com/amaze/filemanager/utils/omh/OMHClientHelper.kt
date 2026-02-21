@@ -10,11 +10,13 @@ import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.utils.cloud.CloudPluginUtil
 import com.openmobilehub.android.auth.core.OmhAuthClient
+import com.openmobilehub.android.auth.plugin.box.mobileweb.presentation.BoxMobileWebAuthClient
 import com.openmobilehub.android.auth.plugin.dropbox.mobileweb.presentation.DropboxMobileWebAuthClient
 import com.openmobilehub.android.auth.plugin.google.nongms.presentation.OmhAuthFactoryImpl
 import com.openmobilehub.android.auth.plugin.microsoft.mobileweb.presentation.MicrosoftMobileWebAuthClient
 import com.openmobilehub.android.storage.core.OmhStorageClient
 import com.openmobilehub.android.storage.core.OmhStorageProvider
+import com.openmobilehub.android.storage.plugin.box.restful.BoxRestfulOmhStorageClientFactory
 import com.openmobilehub.android.storage.plugin.dropbox.restful.DropboxRestfulOmhStorageClientFactory
 import com.openmobilehub.android.storage.plugin.googledrive.nongms.GoogleDriveNonGmsConstants
 import com.openmobilehub.android.storage.plugin.onedrive.restful.OneDriveRestfulOmhStorageClientFactory
@@ -54,10 +56,10 @@ object OMHClientHelper {
             } else {
                 do {
                     when (cursor.getInt(0)) {
-                        1 -> getAuthClient(OpenMode.GDRIVE, cursor.getString(1))
-                        2 -> getAuthClient(OpenMode.DROPBOX, cursor.getString(1))
-                        3 -> getAuthClient(OpenMode.BOX, cursor.getString(1))
-                        4 -> getAuthClient(OpenMode.ONEDRIVE, cursor.getString(1))
+                        1 -> getAuthClient(OpenMode.GDRIVE, cursor)
+                        2 -> getAuthClient(OpenMode.DROPBOX, cursor)
+                        3 -> getAuthClient(OpenMode.BOX, cursor)
+                        4 -> getAuthClient(OpenMode.ONEDRIVE, cursor)
                     }
                 } while (cursor.moveToNext())
                 cursor.close()
@@ -77,7 +79,7 @@ object OMHClientHelper {
             if (cursor == null || !cursor.moveToFirst()) {
                 throw CloudPluginException()
             } else {
-                getAuthClient(openMode, cursor.getString(1))
+                getAuthClient(openMode, cursor)
             }
         }
     }
@@ -88,13 +90,14 @@ object OMHClientHelper {
     @JvmStatic
     fun getAuthClient(
         openMode: OpenMode,
-        apiKey: String,
+        cursor: Cursor,
     ): OmhAuthClient {
         val context = AppConfig.getInstance()
         if (authClients.containsKey(openMode)) {
             return authClients[openMode]!!
         } else {
             synchronized(authClients) {
+                val apiKey = cursor.getString(1)
                 val authClient =
                     when (openMode) {
                         OpenMode.GDRIVE -> {
@@ -105,6 +108,9 @@ object OMHClientHelper {
                         }
                         OpenMode.ONEDRIVE -> {
                             getOnedriveAuthClient(context, apiKey)
+                        }
+                        OpenMode.BOX -> {
+                            getBoxAuthClient(context, apiKey, cursor.getString(2))
                         }
                         else -> throw IllegalArgumentException("Unsupported OpenMode $openMode")
                     }
@@ -137,6 +143,9 @@ object OMHClientHelper {
                             OpenMode.ONEDRIVE -> {
                                 getOnedriveStorageClient(context, credentials)
                             }
+                            OpenMode.BOX -> {
+                                getBoxStorageClient(credentials)
+                            }
                             else -> throw IllegalArgumentException("Unsupported OpenMode $openMode")
                         }
                     credentials.close()
@@ -146,6 +155,21 @@ object OMHClientHelper {
                 }
             }
             return storageClients[openMode]
+        }
+    }
+
+    /**
+     * Invalidates cached auth and storage clients for the given [openMode].
+     * Should be called after disconnecting a cloud account or after re-authentication
+     * so that new client instances are created with fresh credentials on the next access.
+     */
+    @JvmStatic
+    fun invalidateClient(openMode: OpenMode) {
+        synchronized(storageClients) {
+            storageClients.remove(openMode)
+        }
+        synchronized(authClients) {
+            authClients.remove(openMode)
         }
     }
 
@@ -197,7 +221,14 @@ object OMHClientHelper {
         apiKey: String,
     ): OmhAuthClient {
         return MicrosoftMobileWebAuthClient.Builder(apiKey).also { builder ->
-            arrayListOf("User.Read", "openid", "profile", "email").forEach { scope ->
+            arrayListOf(
+                "User.Read",
+                "openid",
+                "profile",
+                "email",
+                "Files.ReadWrite.All",
+                "offline_access",
+            ).forEach { scope ->
                 builder.addScope(scope)
             }
         }.build(context)
@@ -237,12 +268,29 @@ object OMHClientHelper {
         context: Context,
         cursor: Cursor,
     ): OmhStorageClient {
-        val authClient = getAuthClient(OpenMode.GDRIVE, cursor.getString(1))
+        val authClient = getAuthClient(OpenMode.GDRIVE, cursor)
         val storageClientInstance =
             OmhStorageProvider.Builder()
                 .addNonGmsPath(GoogleDriveNonGmsConstants.IMPLEMENTATION_PATH)
                 .build()
                 .provideStorageClient(authClient, context)
         return storageClientInstance
+    }
+
+    private fun getBoxAuthClient(
+        context: Context,
+        clientId: String,
+        clientSecret: String,
+    ): OmhAuthClient {
+        return BoxMobileWebAuthClient.Builder(clientId, clientSecret).also { builder ->
+            arrayListOf("root_readonly", "root_readwrite").forEach { scope ->
+                builder.addScope(scope)
+            }
+        }.build(context)
+    }
+
+    private fun getBoxStorageClient(cursor: Cursor): OmhStorageClient {
+        val authClient = getAuthClient(OpenMode.BOX, cursor)
+        return BoxRestfulOmhStorageClientFactory().getStorageClient(authClient)
     }
 }

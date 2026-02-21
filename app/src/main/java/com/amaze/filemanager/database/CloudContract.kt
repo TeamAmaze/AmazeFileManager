@@ -59,6 +59,7 @@ object CloudContract {
             OpenMode.GDRIVE,
             OpenMode.DROPBOX,
             OpenMode.ONEDRIVE,
+            OpenMode.BOX,
         )
 
     val ENABLED_PROVIDER_IDS: Array<String> =

@@ -259,9 +259,8 @@ object DataUtils {
      * Remove account for given service type.
      */
     fun removeAccount(serviceType: OpenMode) {
-        accounts.let {
-            val newValue = it.toMutableList()
-            newValue.removeAll { entry: OmhCredentialsWrapper ->
+        synchronized(_accounts) {
+            _accounts.removeAll { entry: OmhCredentialsWrapper ->
                 entry.openMode == serviceType
             }
         }

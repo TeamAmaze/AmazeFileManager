@@ -96,7 +96,7 @@ public class GenericCopyUtil {
 
   /**
    * Starts copy of file Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile},
-   * {@link CloudStorage}
+   * {@link com.openmobilehub.android.storage.core.OmhStorageClient}
    *
    * @param lowOnMemory defines whether system is running low on memory, in which case we'll switch
    *     to using streams instead of channel which maps the who buffer in memory. TODO: Use buffers

@@ -960,7 +960,7 @@ class OmhAuthClientExtTest {
         runTest {
             val modesUsed = mutableListOf<OpenMode>()
 
-            for (mode in listOf(OpenMode.DROPBOX, OpenMode.GDRIVE, OpenMode.ONEDRIVE)) {
+            for (mode in listOf(OpenMode.DROPBOX, OpenMode.GDRIVE, OpenMode.ONEDRIVE, OpenMode.BOX)) {
                 retryOnUnauthorized(
                     openMode = mode,
                     maxRetries = 1,
@@ -981,7 +981,7 @@ class OmhAuthClientExtTest {
                 )
             }
 
-            assertEquals(listOf(OpenMode.DROPBOX, OpenMode.GDRIVE, OpenMode.ONEDRIVE), modesUsed)
+            assertEquals(listOf(OpenMode.DROPBOX, OpenMode.GDRIVE, OpenMode.ONEDRIVE, OpenMode.BOX), modesUsed)
         }
 
     // ========== Tests for Mixed Exception Types ==========

@@ -358,9 +358,15 @@ public class MainActivity extends PermissionsActivity
                         OpenMode openMode =
                             (OpenMode) result.getData().getSerializableExtra(KEY_OPEN_MODE);
                         Objects.requireNonNull(openMode);
+                        boolean isReauth =
+                            result.getData().getBooleanExtra(KEY_CLOUD_REAUTHENTICATING, false);
+                        if (isReauth) {
+                          // Invalidate stale cached clients so they are rebuilt with fresh tokens
+                          OMHClientHelper.invalidateClient(openMode);
+                        }
                         OmhAuthClient authClient = OMHClientHelper.getAuthClient(openMode);
                         OmhCredentials credentials = authClient.getCredentials();
-                        if (!result.getData().getBooleanExtra(KEY_CLOUD_REAUTHENTICATING, false)) {
+                        if (!isReauth) {
                           dataUtils.addAccount(new OmhCredentialsWrapper(openMode, credentials));
                         }
                         return true;
@@ -2421,6 +2427,7 @@ public class MainActivity extends PermissionsActivity
         .edit()
         .clear()
         .apply();
+    OMHClientHelper.invalidateClient(service);
     dataUtils.removeAccount(service);
     runOnUiThread(drawer::refreshDrawer);
   }

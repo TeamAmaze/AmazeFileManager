@@ -195,14 +195,6 @@ public class DeleteTask
               });
         }
         return true;
-        //        CloudStorage cloudStorage = dataUtils.getAccount(file.getMode());
-        //        try {
-        //          cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
-        //          return true;
-        //        } catch (Exception e) {
-        //          LOG.warn("failed to delete cloud files", e);
-        //          return false;
-        //        }
       default:
         try {
           /* SMB and SFTP (or any remote files that may support in the future) should not be

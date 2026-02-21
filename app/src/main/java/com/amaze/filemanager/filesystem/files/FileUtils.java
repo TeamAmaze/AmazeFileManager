@@ -65,7 +65,6 @@ import com.amaze.filemanager.utils.omh.OMHClientHelper;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.openmobilehub.android.storage.core.OmhStorageClient;
-import com.openmobilehub.android.storage.core.model.OmhStorageMetadata;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -174,24 +173,6 @@ public class FileUtils {
     } finally {
       return retval;
     }
-  }
-
-  public static long folderSizeCloud(OpenMode openMode, OmhStorageMetadata sourceFileMeta) {
-
-    //    DataUtils dataUtils = DataUtils.INSTANCE;
-    long length = 0;
-    //    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
-    //    for (CloudMetaData metaData :
-    //        cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
-    //
-    //      if (metaData.getFolder()) {
-    //        length += folderSizeCloud(openMode, metaData);
-    //      } else {
-    //        length += metaData.getSize();
-    //      }
-    //    }
-
-    return length;
   }
 
   /** Helper method to get size of an otg folder */
