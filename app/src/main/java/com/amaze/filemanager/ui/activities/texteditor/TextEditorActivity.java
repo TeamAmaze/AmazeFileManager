@@ -54,12 +54,14 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -98,6 +100,9 @@ public class TextEditorActivity extends ThemedActivity
   private Snackbar loadingSnackbar;
 
   private TextEditorActivityViewModel viewModel;
+
+  /** Scroll listener reference for windowed mode (so it can be removed if needed). */
+  private ViewTreeObserver.OnScrollChangedListener windowedScrollListener;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -173,10 +178,18 @@ public class TextEditorActivity extends ThemedActivity
       if (savedInstanceState.getBoolean(KEY_MONOFONT)) {
         mainTextView.setTypeface(inputTypefaceMono);
       }
+      // Restore windowed mode state after rotation
+      if (viewModel.isWindowed()) {
+        setReadOnly();
+        initWindowedScrollListener();
+      }
     } else {
       load(this);
     }
     initStatusBarResources(findViewById(R.id.textEditorRootView));
+
+    // Observe windowed-mode LiveData for new window content
+    observeWindowContent();
   }
 
   @Override
@@ -195,6 +208,12 @@ public class TextEditorActivity extends ThemedActivity
   private void checkUnsavedChanges() {
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
+    // In windowed mode, the file is read-only — no unsaved changes possible
+    if (viewModel.isWindowed()) {
+      finish();
+      return;
+    }
 
     if (viewModel.getOriginal() != null
         && mainTextView.isShown()
@@ -282,7 +301,14 @@ public class TextEditorActivity extends ThemedActivity
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    menu.findItem(R.id.save).setVisible(viewModel.getModified());
+    boolean windowed = viewModel.isWindowed();
+
+    // Hide save in windowed mode; otherwise show based on modification state
+    menu.findItem(R.id.save).setVisible(!windowed && viewModel.getModified());
+
+    // Hide search in windowed mode (search only works on in-memory text)
+    menu.findItem(R.id.find).setVisible(!windowed);
+
     menu.findItem(R.id.monofont).setChecked(inputTypefaceMono.equals(mainTextView.getTypeface()));
     return super.onPrepareOptionsMenu(menu);
   }
@@ -378,6 +404,10 @@ public class TextEditorActivity extends ThemedActivity
         && charSequence.hashCode() == mainTextView.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
+      // Skip modification tracking in windowed mode (text changes are window loads, not edits)
+      if (viewModel.isWindowed()) return;
+
       final Timer oldTimer = viewModel.getTimer();
       viewModel.setTimer(null);
 
@@ -613,5 +643,89 @@ public class TextEditorActivity extends ThemedActivity
         mainTextView.getText().removeSpan(colorSpan);
       }
     }
+  }
+
+  // ── Sliding Window Helpers ──────────────────────────────────────────
+
+  /**
+   * Observe the ViewModel's windowContent LiveData. When a new window is loaded, replace the
+   * EditText content and adjust the scroll position for visual continuity.
+   */
+  private void observeWindowContent() {
+    viewModel
+        .getWindowContent()
+        .observe(
+            this,
+            result -> {
+              if (result == null) return;
+
+              // Determine an anchor: find the text line near the middle of the current viewport
+              int oldScrollY = scrollView.getScrollY();
+              Layout oldLayout = mainTextView.getLayout();
+
+              // Replace text (TextWatcher will fire but windowed-mode guard skips modification
+              // tracking)
+              mainTextView.setText(result.getText());
+
+              // Adjust scroll position for visual continuity
+              mainTextView.post(
+                  () -> {
+                    Layout newLayout = mainTextView.getLayout();
+                    if (newLayout == null) return;
+
+                    TextEditorActivityViewModel.Direction direction;
+                    // Infer direction from old scroll position
+                    int viewportHeight = scrollView.getHeight();
+                    if (oldScrollY > viewportHeight / 2) {
+                      // Was scrolling down → new content has overlap at the top → scroll to top
+                      // area
+                      // The overlap is ~50% of the window, so position at roughly 25% down
+                      int targetLine = newLayout.getLineCount() / 4;
+                      int targetY = newLayout.getLineTop(targetLine);
+                      scrollView.scrollTo(0, targetY);
+                    } else {
+                      // Was scrolling up → new content has overlap at the bottom → scroll to bottom
+                      // area
+                      int targetLine = (newLayout.getLineCount() * 3) / 4;
+                      int targetY = newLayout.getLineTop(targetLine);
+                      scrollView.scrollTo(0, Math.max(0, targetY - viewportHeight));
+                    }
+
+                    invalidateOptionsMenu();
+                  });
+            });
+  }
+
+  /**
+   * Called by ReadTextFileTask after initializing windowed mode. Sets up a scroll listener that
+   * triggers window loads when the user scrolls near the top or bottom edge.
+   */
+  public void initWindowedScrollListener() {
+    if (windowedScrollListener != null) return; // already initialized
+
+    windowedScrollListener =
+        () -> {
+          if (!viewModel.isWindowed()) return;
+
+          int scrollY = scrollView.getScrollY();
+          int viewportHeight = scrollView.getHeight();
+          int contentHeight = mainTextView.getHeight();
+
+          if (contentHeight <= 0 || viewportHeight <= 0) return;
+
+          // Threshold: 20% of viewport
+          int threshold = viewportHeight / 5;
+
+          int distanceFromBottom = contentHeight - scrollY - viewportHeight;
+          int distanceFromTop = scrollY;
+
+          if (distanceFromBottom < threshold) {
+            viewModel.loadWindow(TextEditorActivityViewModel.Direction.FORWARD);
+          } else if (distanceFromTop < threshold) {
+            viewModel.loadWindow(TextEditorActivityViewModel.Direction.BACKWARD);
+          }
+        };
+
+    scrollView.getViewTreeObserver().addOnScrollChangedListener(windowedScrollListener);
   }
 }

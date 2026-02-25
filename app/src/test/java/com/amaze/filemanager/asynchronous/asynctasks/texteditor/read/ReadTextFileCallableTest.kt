@@ -35,7 +35,9 @@ import com.amaze.filemanager.filesystem.RandomPathGenerator
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -49,6 +51,9 @@ import kotlin.random.Random
     sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 class ReadTextFileCallableTest {
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
     /**
      * Test read an empty file with [ReadTextFileCallable]
      */
@@ -149,5 +154,102 @@ class ReadTextFileCallableTest {
     private fun generatePath(): Uri {
         val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
         return Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
+    }
+
+    // ── New tests for windowed mode (file:// URI with FileWindowReader) ──
+
+    /**
+     * Test that reading a big file via file:// URI produces a FileWindowReader
+     * and correct total file size.
+     */
+    @Test
+    fun testReadBigFileViaFileUriCreatesWindowReader() {
+        val random = Random(456)
+        val letters = ('A'..'Z').toSet() + ('a'..'z').toSet()
+        val bigContent = List(MAX_FILE_SIZE_CHARS * 2) { letters.random(random) }.joinToString("")
+
+        val file = tempFolder.newFile("bigfile.txt")
+        file.writeText(bigContent)
+
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val uri = Uri.fromFile(file)
+        val task =
+            ReadTextFileCallable(
+                ctx.contentResolver,
+                EditableFileAbstraction(ctx, uri),
+                tempFolder.root,
+                false,
+            )
+        val result = task.call()
+
+        Assert.assertTrue("File should be too long", result.fileIsTooLong)
+        Assert.assertEquals(
+            bigContent.substring(0, MAX_FILE_SIZE_CHARS),
+            result.fileContents,
+        )
+        Assert.assertNotNull("FileWindowReader should be created for file:// URI", result.fileWindowReader)
+        Assert.assertEquals(file.length(), result.totalFileSize)
+
+        // Verify the reader works
+        val windowResult = result.fileWindowReader!!.readWindow(0, 100)
+        Assert.assertTrue(windowResult.text.isNotEmpty())
+        Assert.assertTrue(windowResult.isStartOfFile)
+
+        result.fileWindowReader!!.close()
+    }
+
+    /**
+     * Test that reading a small file via file:// URI does NOT create a FileWindowReader.
+     */
+    @Test
+    fun testReadSmallFileViaFileUriNoWindowReader() {
+        val content = "Small file content\n"
+
+        val file = tempFolder.newFile("smallfile.txt")
+        file.writeText(content)
+
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val uri = Uri.fromFile(file)
+        val task =
+            ReadTextFileCallable(
+                ctx.contentResolver,
+                EditableFileAbstraction(ctx, uri),
+                tempFolder.root,
+                false,
+            )
+        val result = task.call()
+
+        Assert.assertFalse("File should not be too long", result.fileIsTooLong)
+        Assert.assertEquals(content, result.fileContents)
+        Assert.assertNull("FileWindowReader should be null for small files", result.fileWindowReader)
+        Assert.assertEquals(0L, result.totalFileSize)
+    }
+
+    /**
+     * Test that big file via content:// URI gracefully handles missing seekable descriptor
+     * (fileWindowReader remains null).
+     */
+    @Test
+    fun testReadBigFileViaContentUriFallsBackGracefully() {
+        val random = Random(789)
+        val letters = ('A'..'Z').toSet() + ('a'..'z').toSet()
+        val bigContent = List(MAX_FILE_SIZE_CHARS * 2) { letters.random(random) }.joinToString("")
+
+        val uri = generatePath()
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val cr = ctx.contentResolver
+        Shadows.shadowOf(cr).registerInputStream(uri, ByteArrayInputStream(bigContent.toByteArray()))
+
+        val task = ReadTextFileCallable(cr, EditableFileAbstraction(ctx, uri), null, false)
+        val result = task.call()
+
+        Assert.assertTrue("File should be too long", result.fileIsTooLong)
+        // Content provider shadow doesn't support openFileDescriptor,
+        // so FileWindowReader creation should have failed gracefully
+        Assert.assertNull(
+            "FileWindowReader should be null when content provider doesn't support seek",
+            result.fileWindowReader,
+        )
+        Assert.assertEquals(0L, result.totalFileSize)
     }
 }
