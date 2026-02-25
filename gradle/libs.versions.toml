@@ -74,6 +74,7 @@ concurrentTrees = "2.6.1"
 aboutLibraries = "6.1.1"
 amazeTrashBin = "1.0.10"
 rustAndroidGradle = "0.9.6"
+commonmark = "0.27.1"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -181,3 +182,7 @@ acra-core = { module = "ch.acra:acra-core", version.ref = "acraCore" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 
 amaze-trashBin = { module = "com.github.TeamAmaze:AmazeTrashBin", version.ref = "amazeTrashBin" }
+
+commonmark = { module = "org.commonmark:commonmark", version.ref = "commonmark" }
+commonmark-ext-gfm-tables = { module = "org.commonmark:commonmark-ext-gfm-tables", version.ref = "commonmark" }
+commonmark-ext-gfm-strikethrough = { module = "org.commonmark:commonmark-ext-gfm-strikethrough", version.ref = "commonmark" }

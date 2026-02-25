@@ -166,7 +166,7 @@ class ReadTextFileCallableTest {
     fun testReadBigFileViaFileUriCreatesWindowReader() {
         val random = Random(456)
         val letters = ('A'..'Z').toSet() + ('a'..'z').toSet()
-        val bigContent = List(MAX_FILE_SIZE_CHARS * 2) { letters.random(random) }.joinToString("")
+        val bigContent = List((MAX_FILE_SIZE_CHARS * 1.05).toInt()) { letters.random(random) }.joinToString("")
 
         val file = tempFolder.newFile("bigfile.txt")
         file.writeText(bigContent)

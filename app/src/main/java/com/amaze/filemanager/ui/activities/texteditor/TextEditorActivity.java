@@ -66,6 +66,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -86,12 +87,14 @@ public class TextEditorActivity extends ThemedActivity
   private Typeface inputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
   ScrollView scrollView;
+  private WebView markdownWebView;
 
   private SearchTextTask searchTextTask;
   private static final String KEY_MODIFIED_TEXT = "modified";
   private static final String KEY_INDEX = "index";
   private static final String KEY_ORIGINAL_TEXT = "original";
   private static final String KEY_MONOFONT = "monofont";
+  private static final String KEY_MARKDOWN_PREVIEW = "markdown_preview";
 
   private ConstraintLayout searchViewLayout;
   public AppCompatImageButton upButton;
@@ -134,6 +137,8 @@ public class TextEditorActivity extends ThemedActivity
     }
     mainTextView = findViewById(R.id.textEditorMainEditText);
     scrollView = findViewById(R.id.textEditorScrollView);
+    markdownWebView = findViewById(R.id.textEditorMarkdownWebView);
+    markdownWebView.getSettings().setJavaScriptEnabled(false);
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
@@ -178,6 +183,11 @@ public class TextEditorActivity extends ThemedActivity
       if (savedInstanceState.getBoolean(KEY_MONOFONT)) {
         mainTextView.setTypeface(inputTypefaceMono);
       }
+      // Restore markdown preview state
+      if (savedInstanceState.getBoolean(KEY_MARKDOWN_PREVIEW, false)) {
+        viewModel.setMarkdownPreviewEnabled(true);
+        toggleMarkdownPreview(true);
+      }
       // Restore windowed mode state after rotation
       if (viewModel.isWindowed()) {
         setReadOnly();
@@ -203,6 +213,7 @@ public class TextEditorActivity extends ThemedActivity
     outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
     outState.putBoolean(KEY_MONOFONT, inputTypefaceMono.equals(mainTextView.getTypeface()));
+    outState.putBoolean(KEY_MARKDOWN_PREVIEW, viewModel.getMarkdownPreviewEnabled());
   }
 
   private void checkUnsavedChanges() {
@@ -309,6 +320,11 @@ public class TextEditorActivity extends ThemedActivity
     // Hide search in windowed mode (search only works on in-memory text)
     menu.findItem(R.id.find).setVisible(!windowed);
 
+    // Show markdown preview item only for .md/.markdown files
+    MenuItem markdownItem = menu.findItem(R.id.markdown_preview);
+    markdownItem.setVisible(isMarkdownFile());
+    markdownItem.setChecked(viewModel.getMarkdownPreviewEnabled());
+
     menu.findItem(R.id.monofont).setChecked(inputTypefaceMono.equals(mainTextView.getTypeface()));
     return super.onPrepareOptionsMenu(menu);
   }
@@ -362,6 +378,11 @@ public class TextEditorActivity extends ThemedActivity
     } else if (item.getItemId() == R.id.monofont) {
       item.setChecked(!item.isChecked());
       mainTextView.setTypeface(item.isChecked() ? inputTypefaceMono : inputTypefaceDefault);
+    } else if (item.getItemId() == R.id.markdown_preview) {
+      boolean newState = !item.isChecked();
+      item.setChecked(newState);
+      viewModel.setMarkdownPreviewEnabled(newState);
+      toggleMarkdownPreview(newState);
     } else {
       return false;
     }
@@ -661,7 +682,6 @@ public class TextEditorActivity extends ThemedActivity
 
               // Determine an anchor: find the text line near the middle of the current viewport
               int oldScrollY = scrollView.getScrollY();
-              Layout oldLayout = mainTextView.getLayout();
 
               // Replace text (TextWatcher will fire but windowed-mode guard skips modification
               // tracking)
@@ -673,7 +693,6 @@ public class TextEditorActivity extends ThemedActivity
                     Layout newLayout = mainTextView.getLayout();
                     if (newLayout == null) return;
 
-                    TextEditorActivityViewModel.Direction direction;
                     // Infer direction from old scroll position
                     int viewportHeight = scrollView.getHeight();
                     if (oldScrollY > viewportHeight / 2) {
@@ -727,5 +746,47 @@ public class TextEditorActivity extends ThemedActivity
         };
 
     scrollView.getViewTreeObserver().addOnScrollChangedListener(windowedScrollListener);
+  }
+
+  // ── Markdown Preview Helpers ────────────────────────────────────────
+
+  /** Returns true if the currently opened file has a Markdown extension (.md or .markdown). */
+  private boolean isMarkdownFile() {
+    EditableFileAbstraction file = viewModel.getFile();
+    if (file == null) return false;
+    return MarkdownHtmlGenerator.isMarkdownFile(file.name);
+  }
+
+  /**
+   * Toggle between Markdown preview (WebView) and the normal EditText editor.
+   *
+   * @param enabled true to show the WebView with rendered Markdown; false to show EditText
+   */
+  private void toggleMarkdownPreview(boolean enabled) {
+    if (enabled) {
+      renderMarkdownToWebView();
+      scrollView.setVisibility(View.GONE);
+      markdownWebView.setVisibility(View.VISIBLE);
+    } else {
+      markdownWebView.setVisibility(View.GONE);
+      scrollView.setVisibility(View.VISIBLE);
+    }
+    invalidateOptionsMenu();
+  }
+
+  /**
+   * Parse the current EditText content as Markdown using commonmark, render to HTML, and load it
+   * into the WebView.
+   */
+  private void renderMarkdownToWebView() {
+    String markdownSource = "";
+    if (mainTextView.getText() != null) {
+      markdownSource = mainTextView.getText().toString();
+    }
+
+    String bodyHtml = MarkdownHtmlGenerator.renderToHtml(markdownSource);
+    boolean isDark = getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK);
+    String fullHtml = MarkdownHtmlGenerator.wrapWithBaseHtml(bodyHtml, isDark);
+    markdownWebView.loadDataWithBaseURL(null, fullHtml, "text/html", "UTF-8", null);
   }
 }

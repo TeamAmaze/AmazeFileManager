@@ -27,9 +27,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Tests for [ReturnedValueOnReadFile] data class, including new windowed mode fields.
+ * Tests for [ReturnedValueOnReadFile] data class.
  */
+@Suppress("StringLiteralDuplication")
 class ReturnedValueOnReadFileTest {
+    /**
+     * Test default values
+     */
     @Test
     fun testDefaultValues() {
         val result = ReturnedValueOnReadFile("content", null, false)
@@ -40,6 +44,9 @@ class ReturnedValueOnReadFileTest {
         assertEquals(0L, result.totalFileSize)
     }
 
+    /**
+     * Test explicit null values for optional parameters
+     */
     @Test
     fun testExplicitNullReader() {
         val result = ReturnedValueOnReadFile("content", null, true, null, 0L)
@@ -48,6 +55,9 @@ class ReturnedValueOnReadFileTest {
         assertEquals(0L, result.totalFileSize)
     }
 
+    /**
+     *
+     */
     @Test
     fun testEqualityWithDefaultParams() {
         val a = ReturnedValueOnReadFile("hello", null, false)
@@ -55,6 +65,9 @@ class ReturnedValueOnReadFileTest {
         assertEquals(a, b)
     }
 
+    /**
+     * Test equality with different file contents
+     */
     @Test
     fun testEqualityDifferentContent() {
         val a = ReturnedValueOnReadFile("hello", null, false)
@@ -62,6 +75,9 @@ class ReturnedValueOnReadFileTest {
         assertFalse(a == b)
     }
 
+    /**
+     * Test the copy method with modified fileIsTooLong and totalFileSize
+     */
     @Test
     fun testCopyWithTotalFileSize() {
         val original = ReturnedValueOnReadFile("content", null, false)
@@ -71,6 +87,11 @@ class ReturnedValueOnReadFileTest {
         assertEquals("content", modified.fileContents)
     }
 
+    /**
+     * Test toString().
+     *
+     * WARNING: return value can be expensive if content is big!
+     */
     @Test
     fun testToString() {
         val result = ReturnedValueOnReadFile("hi", null, false)

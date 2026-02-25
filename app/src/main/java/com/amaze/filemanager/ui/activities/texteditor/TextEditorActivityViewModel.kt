@@ -66,6 +66,11 @@ class TextEditorActivityViewModel : ViewModel() {
 
     var file: EditableFileAbstraction? = null
 
+    // ── Markdown preview state ────────────────────────────────────────
+
+    /** Whether Markdown preview mode is currently enabled. */
+    var markdownPreviewEnabled = false
+
     // ── Sliding window state ──────────────────────────────────────────
 
     /** Whether the editor is in windowed (read-only) mode for large files. */

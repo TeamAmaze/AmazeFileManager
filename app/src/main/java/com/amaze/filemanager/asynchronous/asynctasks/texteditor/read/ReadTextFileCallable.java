@@ -45,7 +45,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
-  public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
+  public static final int MAX_FILE_SIZE_CHARS = 100 * 1024;
 
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;

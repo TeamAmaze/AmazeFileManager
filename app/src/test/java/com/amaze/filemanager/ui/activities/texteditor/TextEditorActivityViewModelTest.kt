@@ -98,6 +98,24 @@ class TextEditorActivityViewModelTest {
         assertEquals(-1, vm.current)
         assertEquals(0, vm.line)
         assertTrue(vm.searchResultIndices.isEmpty())
+        assertFalse(vm.markdownPreviewEnabled)
+    }
+
+    // ── Markdown preview state ───────────────────────────────────────
+
+    @Test
+    fun testMarkdownPreviewDefaultDisabled() {
+        val vm = TextEditorActivityViewModel()
+        assertFalse(vm.markdownPreviewEnabled)
+    }
+
+    @Test
+    fun testMarkdownPreviewToggle() {
+        val vm = TextEditorActivityViewModel()
+        vm.markdownPreviewEnabled = true
+        assertTrue(vm.markdownPreviewEnabled)
+        vm.markdownPreviewEnabled = false
+        assertFalse(vm.markdownPreviewEnabled)
     }
 
     // ── Windowed state initialization ────────────────────────────────

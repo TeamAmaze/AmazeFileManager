@@ -261,6 +261,10 @@ dependencies {
 
     implementation libs.gson
     implementation libs.amaze.trashBin
+
+    implementation libs.commonmark
+    implementation libs.commonmark.ext.gfm.tables
+    implementation libs.commonmark.ext.gfm.strikethrough
 }
 
 kotlin {

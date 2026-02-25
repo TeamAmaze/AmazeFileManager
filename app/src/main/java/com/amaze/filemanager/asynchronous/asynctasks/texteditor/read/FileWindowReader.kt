@@ -64,6 +64,7 @@ class FileWindowReader(
      * 4. Snaps the end to the last newline (unless at file end)
      * 5. Returns the decoded string and actual byte range consumed
      */
+    @Suppress("LongMethod")
     fun readWindow(
         byteOffset: Long,
         maxChars: Int,
@@ -161,7 +162,7 @@ class FileWindowReader(
      * past any continuation bytes (10xxxxxx pattern).
      */
     private fun snapToCharBoundary(offset: Long): Long {
-        if (offset <= 0L || offset >= fileSize) return offset.coerceIn(0L, fileSize)
+        if (offset !in 1..<fileSize) return offset.coerceIn(0L, fileSize)
 
         val buf = ByteBuffer.allocate(1)
         var pos = offset
@@ -226,16 +227,14 @@ class FileWindowReader(
                 channel = channel,
                 fileSize = size,
                 closeable =
-                    object : Closeable {
-                        override fun close() {
-                            try {
-                                fis.close()
-                            } catch (_: Exception) {
-                            }
-                            try {
-                                pfd.close()
-                            } catch (_: Exception) {
-                            }
+                    Closeable {
+                        try {
+                            fis.close()
+                        } catch (_: Exception) {
+                        }
+                        try {
+                            pfd.close()
+                        } catch (_: Exception) {
                         }
                     },
             )

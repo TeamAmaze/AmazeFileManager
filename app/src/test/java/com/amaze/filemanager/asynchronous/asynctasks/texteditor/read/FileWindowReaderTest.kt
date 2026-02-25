@@ -31,23 +31,25 @@ import java.io.File
 
 /**
  * Unit tests for [FileWindowReader].
- *
- * These are pure JVM tests (no Android/Robolectric needed) since FileWindowReader
- * only depends on java.io and java.nio classes.
  */
+@Suppress("StringLiteralDuplication")
 class FileWindowReaderTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
     private lateinit var testFile: File
 
+    /**
+     * Pre-test setup
+     */
     @Before
     fun setUp() {
         testFile = tempFolder.newFile("test.txt")
     }
 
-    // ── Basic reading ────────────────────────────────────────────────
-
+    /**
+     * Test reading empty file.
+     */
     @Test
     fun testReadEmptyFile() {
         testFile.writeText("")
@@ -62,6 +64,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test reading file fitting the window.
+     */
     @Test
     fun testReadSmallFileFitsInWindow() {
         val content = "Hello, World!\nSecond line\nThird line\n"
@@ -76,6 +81,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test reading a file with a single line that has no newline at the end.
+     */
     @Test
     fun testReadSingleLineFile() {
         val content = "No newline at end"
@@ -89,6 +97,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test file size is correctly reported.
+     */
     @Test
     fun testFileSizeCorrect() {
         val content = "Hello"
@@ -99,8 +110,9 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Window limiting ──────────────────────────────────────────────
-
+    /**
+     * Test maxChars limits the output and snaps to line boundaries.
+     */
     @Test
     fun testMaxCharsLimitsOutput() {
         // Create content with multiple lines, each larger than 5 chars
@@ -117,6 +129,10 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test window read from the start of the file correctly identifies start of file
+     * and returns expected content.
+     */
     @Test
     fun testWindowFromStartOfFile() {
         val lines = (1..100).map { "Line number $it here\n" }
@@ -132,8 +148,10 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Mid-file window with line snapping ───────────────────────────
-
+    /**
+     * Test window read from the middle of the file snaps to the next line start and does not
+     * include partial lines at the start.
+     */
     @Test
     fun testWindowFromMiddleSnapsToLineStart() {
         val lines = (1..20).map { "Line $it\n" }
@@ -153,6 +171,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test when window end falls in the middle of a line, it snaps back to the previous newline
+     */
     @Test
     fun testWindowEndSnapsToNewline() {
         // Large content so the window can't contain it all
@@ -172,8 +193,10 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Window reading near end of file ──────────────────────────────
-
+    /**
+     * Test reading a window starting near the end of the file where requested maxChars
+     * exceeds remaining chars
+     */
     @Test
     fun testWindowNearEndOfFile() {
         val lines = (1..50).map { "Line $it\n" }
@@ -192,6 +215,10 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test reading a window starting exactly at the end of the file should return empty text and
+     * indicate end of file.
+     */
     @Test
     fun testWindowAtExactEndOfFile() {
         val content = "Hello\nWorld\n"
@@ -204,8 +231,9 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── UTF-8 multi-byte character handling ──────────────────────────
-
+    /**
+     * Test UTF-8 multibyte boundary handling
+     */
     @Test
     fun testUtf8MultiByteBoundary() {
         // Use multibyte UTF-8 characters (emoji = 4 bytes each)
@@ -220,6 +248,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test seeking to a byte offset that falls in the middle of a multibyte UTF-8 character
+     */
     @Test
     fun testUtf8SeekIntoMiddleOfMultibyteChar() {
         // 2-byte UTF-8 chars: é = C3 A9 (2 bytes)
@@ -235,6 +266,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test reading a file with CJK characters
+     */
     @Test
     fun testCjkCharacters() {
         // 3-byte UTF-8 chars: Chinese characters
@@ -250,8 +284,9 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Consecutive window reads (simulating scroll) ─────────────────
-
+    /**
+     * Test consecutive forward window reads
+     */
     @Test
     fun testConsecutiveForwardWindowReads() {
         val lines = (1..200).map { "Line $it\n" }
@@ -274,6 +309,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test overlapping windows share content correctly and the overlapping lines are consistent
+     */
     @Test
     fun testOverlappingWindowsShareContent() {
         val lines = (1..200).map { "Line $it content here\n" }
@@ -298,8 +336,9 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Edge cases ───────────────────────────────────────────────────
-
+    /**
+     * Test negative offset
+     */
     @Test
     fun testNegativeOffset() {
         val content = "Hello\nWorld\n"
@@ -313,6 +352,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test offset beyond file size
+     */
     @Test
     fun testOffsetBeyondFileSize() {
         val content = "Hello\nWorld\n"
@@ -325,6 +367,9 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test maxChars=0, should return empty text
+     */
     @Test
     fun testMaxCharsZero() {
         val content = "Hello\nWorld\n"
@@ -337,6 +382,10 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test file with only newlines, should return correct number of newlines
+     * and indicate start/end of file
+     */
     @Test
     fun testFileWithOnlyNewlines() {
         val content = "\n\n\n\n\n"
@@ -350,6 +399,10 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test very long single line that exceeds maxChars.
+     * Should return up to maxChars and indicate start of file
+     */
     @Test
     fun testVeryLongSingleLine() {
         // Single line with no newlines at all
@@ -366,8 +419,9 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Close behavior ───────────────────────────────────────────────
-
+    /**
+     * Test close reader should release resources and allow for double close without exception
+     */
     @Test
     fun testCloseReleasesChannel() {
         val content = "Hello"
@@ -378,8 +432,9 @@ class FileWindowReaderTest {
         reader.close()
     }
 
-    // ── fromFile factory ─────────────────────────────────────────────
-
+    /**
+     * Test FileWindowReader.fromFile()
+     */
     @Test
     fun testFromFileFactory() {
         val content = "Factory test\nLine 2\n"
@@ -391,8 +446,9 @@ class FileWindowReaderTest {
         }
     }
 
-    // ── Byte offset tracking ─────────────────────────────────────────
-
+    /**
+     * Test byte offset consistency: startByte + text byte length should equal endByte
+     */
     @Test
     fun testByteOffsetsAreConsistent() {
         val lines = (1..50).map { "Line $it\n" }
@@ -407,6 +463,10 @@ class FileWindowReaderTest {
         }
     }
 
+    /**
+     * Test that when reading from a mid-file offset, the returned startByte is at or after
+     * the requested offset and that the text corresponds to the byte range.
+     */
     @Test
     fun testByteOffsetsForMidFileRead() {
         val lines = (1..100).map { "Line $it\n" }
