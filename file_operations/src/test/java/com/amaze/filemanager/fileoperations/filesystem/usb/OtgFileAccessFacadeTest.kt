@@ -5,6 +5,7 @@ import android.os.Build
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -177,5 +178,179 @@ class OtgFileAccessFacadeTest {
         }
         testFile.delete()
         testDir.delete()
+    }
+
+    /**
+     * Test that disabling preferNativeAccess forces SAF path.
+     * hasDirectAccess should return false regardless of filesystem readability.
+     */
+    @Test
+    fun testPreferNativeAccessDisabled_hasDirectAccessReturnsFalse() {
+        val testDir = File("/tmp/otg_pref_test")
+        testDir.mkdirs()
+        try {
+            // With preference enabled (default), should return true for readable path
+            OtgFileAccessFacade.preferNativeAccess = true
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                assertTrue(OtgFileAccessFacade.hasDirectAccess(testDir.absolutePath))
+            }
+
+            // With preference disabled, should always return false
+            OtgFileAccessFacade.preferNativeAccess = false
+            assertFalse(OtgFileAccessFacade.hasDirectAccess(testDir.absolutePath))
+        } finally {
+            // Restore default
+            OtgFileAccessFacade.preferNativeAccess = true
+            testDir.delete()
+        }
+    }
+
+    /**
+     * Test that disabling preferNativeAccess makes listFiles return empty (SAF stub)
+     * even for a readable directory.
+     */
+    @Test
+    fun testPreferNativeAccessDisabled_listFilesReturnsSafStub() {
+        val deviceKey = "vol:test-pref"
+        val testDir = File("/tmp/otg_pref_list_test")
+        testDir.mkdirs()
+        val testFile = File(testDir, "sample.txt")
+        testFile.writeText("data")
+
+        Mockito.mockStatic(StorageDeviceManager::class.java).use { mocked ->
+            mocked.`when`<Any> { StorageDeviceManager.findDeviceByKey(context, deviceKey) }
+                .thenReturn(TestStorageDevice(deviceKey, "Test Device", testDir.absolutePath))
+
+            try {
+                // With preference enabled, should list the file
+                OtgFileAccessFacade.preferNativeAccess = true
+                val filesEnabled = OtgFileAccessFacade.listFiles(context, deviceKey)
+                assertTrue(filesEnabled.any { it.name == "sample.txt" })
+
+                // With preference disabled, should fall back to SAF stub (empty list)
+                OtgFileAccessFacade.preferNativeAccess = false
+                val filesDisabled = OtgFileAccessFacade.listFiles(context, deviceKey)
+                assertTrue(filesDisabled.isEmpty())
+            } finally {
+                // Restore default
+                OtgFileAccessFacade.preferNativeAccess = true
+                testFile.delete()
+                testDir.delete()
+            }
+        }
+    }
+
+    /**
+     * Test that disabling preferNativeAccess makes getFile return null
+     * even for an existing file.
+     */
+    @Test
+    fun testPreferNativeAccessDisabled_getFileReturnsNull() {
+        val deviceKey = "vol:test-pref-file"
+        val testDir = File("/tmp/otg_pref_file_test")
+        testDir.mkdirs()
+        val testFile = File(testDir, "doc.pdf")
+        testFile.writeText("content")
+
+        Mockito.mockStatic(StorageDeviceManager::class.java).use { mocked ->
+            mocked.`when`<Any> { StorageDeviceManager.findDeviceByKey(context, deviceKey) }
+                .thenReturn(TestStorageDevice(deviceKey, "Test Device", testDir.absolutePath))
+
+            try {
+                // With preference enabled, should return the File
+                OtgFileAccessFacade.preferNativeAccess = true
+                val fileEnabled = OtgFileAccessFacade.getFile(context, deviceKey, "doc.pdf")
+                assertNotNull(fileEnabled)
+                assertEquals("doc.pdf", fileEnabled?.name)
+
+                // With preference disabled, should return null
+                OtgFileAccessFacade.preferNativeAccess = false
+                val fileDisabled = OtgFileAccessFacade.getFile(context, deviceKey, "doc.pdf")
+                assertNull(fileDisabled)
+            } finally {
+                // Restore default
+                OtgFileAccessFacade.preferNativeAccess = true
+                testFile.delete()
+                testDir.delete()
+            }
+        }
+    }
+
+    /**
+     * Test that listFiles returns empty when mount point becomes inaccessible
+     * (simulating device unplug/unmount during operation).
+     */
+    @Test
+    fun testListFiles_mountPointBecomesInaccessible_returnsSafStub() {
+        val deviceKey = "vol:test-unplug"
+        val testDir = File("/tmp/otg_unplug_test")
+        testDir.mkdirs()
+        val testFile = File(testDir, "data.txt")
+        testFile.writeText("content")
+
+        Mockito.mockStatic(StorageDeviceManager::class.java).use { mocked ->
+            mocked.`when`<Any> { StorageDeviceManager.findDeviceByKey(context, deviceKey) }
+                .thenReturn(TestStorageDevice(deviceKey, "Test Device", testDir.absolutePath))
+
+            try {
+                // With preference enabled and mount point accessible
+                OtgFileAccessFacade.preferNativeAccess = true
+                val filesAccessible = OtgFileAccessFacade.listFiles(context, deviceKey)
+                assertTrue(filesAccessible.any { it.name == "data.txt" })
+
+                // Simulate device unplug by deleting the directory
+                testFile.delete()
+                testDir.delete()
+
+                // Now listFiles should fall back to SAF (empty list)
+                val filesInaccessible = OtgFileAccessFacade.listFiles(context, deviceKey)
+                assertTrue(
+                    "When mount point is inaccessible, should return SAF stub (empty list)",
+                    filesInaccessible.isEmpty()
+                )
+            } finally {
+                OtgFileAccessFacade.preferNativeAccess = true
+                if (testFile.exists()) testFile.delete()
+                if (testDir.exists()) testDir.delete()
+            }
+        }
+    }
+
+    /**
+     * Test that getFile returns null when mount point becomes inaccessible
+     * (simulating device unplug/unmount during operation).
+     */
+    @Test
+    fun testGetFile_mountPointBecomesInaccessible_returnsNull() {
+        val deviceKey = "vol:test-unplug-file"
+        val testDir = File("/tmp/otg_unplug_file_test")
+        testDir.mkdirs()
+        val testFile = File(testDir, "doc.pdf")
+        testFile.writeText("document")
+
+        Mockito.mockStatic(StorageDeviceManager::class.java).use { mocked ->
+            mocked.`when`<Any> { StorageDeviceManager.findDeviceByKey(context, deviceKey) }
+                .thenReturn(TestStorageDevice(deviceKey, "Test Device", testDir.absolutePath))
+
+            try {
+                // With preference enabled and mount point accessible
+                OtgFileAccessFacade.preferNativeAccess = true
+                val fileAccessible = OtgFileAccessFacade.getFile(context, deviceKey, "doc.pdf")
+                assertNotNull(fileAccessible)
+                assertEquals("doc.pdf", fileAccessible?.name)
+
+                // Simulate device unplug by deleting the directory
+                testFile.delete()
+                testDir.delete()
+
+                // Now getFile should return null (mount point inaccessible)
+                val fileInaccessible = OtgFileAccessFacade.getFile(context, deviceKey, "doc.pdf")
+                assertNull("When mount point is inaccessible, should return null", fileInaccessible)
+            } finally {
+                OtgFileAccessFacade.preferNativeAccess = true
+                if (testFile.exists()) testFile.delete()
+                if (testDir.exists()) testDir.delete()
+            }
+        }
     }
 }

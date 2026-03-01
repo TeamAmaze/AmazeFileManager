@@ -97,6 +97,8 @@
     <string name="root_mode">Root 模式</string>
     <string name="root_mode_summary">僅供已獲取 Root 許可權嘅設備使用。你知你做緊乜先好開呀。</string>
     <string name="root_failure">未獲取 Root 訪問許可權</string>
+    <string name="otg_native_access_title">優先使用原生檔案系統存取 OTG USB 儲存裝置</string>
+    <string name="otg_native_access_summary">啟用時，將繞過Storage Access Framework（SAF），在支援的裝置上實現更快速的OTG USB存取。若需強制使用SAF存取進行疑難排解，請關閉此功能。</string>
     <string name="select_all">全選</string>
     <string name="delete">刪除</string>
     <string name="set_as_home">設為首頁目錄</string>
