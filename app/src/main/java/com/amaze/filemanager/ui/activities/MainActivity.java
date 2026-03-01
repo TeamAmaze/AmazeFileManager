@@ -1971,6 +1971,23 @@ public class MainActivity extends PermissionsActivity
   void initialisePreferences() {
     currentTab = getCurrentTab();
     skinStatusBar = PreferenceUtils.getStatusColor(getPrimary());
+
+    // Initialize OTG native access preference
+    boolean preferNativeAccess =
+        getPrefs().getBoolean(PreferencesConstants.PREFERENCE_OTG_NATIVE_ACCESS, false);
+    OtgFileAccessFacade.INSTANCE.setPreferNativeAccess(preferNativeAccess);
+
+    // Listen for preference changes to update OTG access mode dynamically
+    getPrefs()
+        .registerOnSharedPreferenceChangeListener(
+            (sharedPreferences, key) -> {
+              if (PreferencesConstants.PREFERENCE_OTG_NATIVE_ACCESS.equals(key)) {
+                boolean newValue = sharedPreferences.getBoolean(key, false);
+                OtgFileAccessFacade.INSTANCE.setPreferNativeAccess(newValue);
+                // Refresh drawer to update OTG device paths (direct vs SAF)
+                runOnUiThread(() -> drawer.refreshDrawer());
+              }
+            });
   }
 
   void initialiseViews() {
