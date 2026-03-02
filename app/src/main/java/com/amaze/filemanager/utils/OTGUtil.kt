@@ -746,4 +746,47 @@ object OTGUtil {
             pathWithoutPrefix
         }
     }
+
+    /**
+     * Get the mount point for an OTG device.
+     * Checks StorageDeviceRepresentation for direct filesystem path first,
+     * then falls back to checking for device accessibility.
+     *
+     * @param context context for accessing StorageDeviceManager
+     * @param deviceKey the unique device key (optional)
+     * @param devicePath the OTG or direct access path
+     * @return the mount point if device is mounted, null otherwise
+     */
+    @JvmStatic
+    fun getMountPointForDevice(
+        context: Context,
+        deviceKey: String?,
+        devicePath: String,
+    ): String? {
+        // If path already starts with /mnt/media_rw or /storage, it's the mount point
+        if (devicePath.startsWith(PREFIX_MEDIA_REMOVABLE) || devicePath.startsWith("/storage/")) {
+            // Verify it's still accessible
+            val testFile = java.io.File(devicePath)
+            if (testFile.exists() && testFile.canRead()) {
+                return devicePath
+            }
+            return null
+        }
+
+        // For otg:/ paths, try to get the device and retrieve its filesystem path
+        if (deviceKey != null) {
+            val device = com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgManager.getStorageDevice(deviceKey)
+            if (device != null) {
+                val filePath = device.filePath
+                if (filePath != null) {
+                    val testFile = java.io.File(filePath)
+                    if (testFile.exists() && testFile.canRead()) {
+                        return filePath
+                    }
+                }
+            }
+        }
+
+        return null
+    }
 }

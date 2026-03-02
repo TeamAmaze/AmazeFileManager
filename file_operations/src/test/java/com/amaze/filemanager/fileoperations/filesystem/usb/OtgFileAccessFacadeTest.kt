@@ -306,7 +306,7 @@ class OtgFileAccessFacadeTest {
                 val filesInaccessible = OtgFileAccessFacade.listFiles(context, deviceKey)
                 assertTrue(
                     "When mount point is inaccessible, should return SAF stub (empty list)",
-                    filesInaccessible.isEmpty()
+                    filesInaccessible.isEmpty(),
                 )
             } finally {
                 OtgFileAccessFacade.preferNativeAccess = true

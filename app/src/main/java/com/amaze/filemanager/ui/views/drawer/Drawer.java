@@ -315,16 +315,30 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             displayName = device.getDisplayName();
           }
         }
-        addNewItem(
-            menu,
-            STORAGES_GROUP,
-            order++,
-            displayName,
-            new MenuMetadata(file, false),
-            R.drawable.ic_usb_white_24dp,
-            R.drawable.ic_show_chart_black_24dp,
-            Formatter.formatFileSize(mainActivity, freeSpace),
-            Formatter.formatFileSize(mainActivity, totalSpace));
+        MenuItem otgItem =
+            addNewItem(
+                menu,
+                STORAGES_GROUP,
+                order++,
+                displayName,
+                new MenuMetadata(file, false),
+                R.drawable.ic_usb_white_24dp,
+                R.drawable.ic_show_chart_black_24dp,
+                Formatter.formatFileSize(mainActivity, freeSpace),
+                Formatter.formatFileSize(mainActivity, totalSpace));
+
+        // Add long-press handler for eject functionality
+        final String finalDeviceKey = deviceKey;
+        final String finalDevicePath = file;
+        View otgItemView = navView.getMenuItemView(otgItem);
+        if (otgItemView != null) {
+          otgItemView.setOnLongClickListener(
+              v -> {
+                GeneralDialogCreation.showOtgEjectDialog(
+                    mainActivity, finalDeviceKey, finalDevicePath, mainActivity.isRootExplorer());
+                return true;
+              });
+        }
         continue;
       }
 
@@ -688,7 +702,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     return this.donateImageView;
   }
 
-  private void addNewItem(
+  private MenuItem addNewItem(
       Menu menu,
       int group,
       int order,
@@ -696,11 +710,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
-    addNewItem(
+    return addNewItem(
         menu, group, order, mainActivity.getString(text), meta, icon, actionViewIcon, null, null);
   }
 
-  private void addNewItem(
+  private MenuItem addNewItem(
       Menu menu,
       int group,
       int order,
@@ -708,10 +722,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
-    addNewItem(menu, group, order, text, meta, icon, actionViewIcon, null, null);
+    return addNewItem(menu, group, order, text, meta, icon, actionViewIcon, null, null);
   }
 
-  private void addNewItem(
+  private MenuItem addNewItem(
       @NonNull Menu menu,
       int group,
       int order,
@@ -755,6 +769,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuItem finalItem = item;
       item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(finalItem));
     }
+
+    return item;
   }
 
   public void closeIfNotLocked() {
