@@ -35,6 +35,7 @@ androidXTestRunner = "1.6.2"
 androidXTestExt = "1.2.1"
 androidXArchCoreTest = "2.2.0"
 androidXMultidex = "2.0.1"
+androidDesugaring = "2.1.5"
 autoService = "1.1.1"
 kotlinxCoroutines = "1.7.3"
 kotlinStdlibJdk8 = "1.9.20"
@@ -99,6 +100,7 @@ androidX-vectordrawable-animated = { module = "androidx.vectordrawable:vectordra
 androidX-biometric = { module = "androidx.biometric:biometric", version.ref = "androidXBiometric" }
 androidX-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidXLifecycle" }
 androidX-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidXLifecycle" }
+android-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugaring" }
 
 androidX-test-core = { module = "androidx.test:core", version.ref = "androidXTest" }
 androidX-test-runner = { module = "androidx.test:runner", version.ref = "androidXTestRunner" }
