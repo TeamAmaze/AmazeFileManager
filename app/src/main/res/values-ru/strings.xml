@@ -186,7 +186,7 @@
     <string name="circular_images">Использовать круглые иконки для изображений и видео</string>
     <string name="circular_icons">Использовать круглые иконки</string>
     <string name="follow_battery_saver_title">Следовать режиму энергосбережения</string>
-    <string name="follow_battery_saver_desc">Если выбран режим экономии заряда батареи и он включён, тема изменится на тёмную.</string>
+    <string name="follow_battery_saver_desc">Если опция включена, тема приложения станет тёмной при активации режима энергосбережения.</string>
     <string name="back_title">Кнопка назад</string>
     <string name="back_summary">Кнопка назад в верхней части списка</string>
     <string name="details">Подробнее</string>
