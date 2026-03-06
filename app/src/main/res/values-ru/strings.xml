@@ -76,7 +76,7 @@
     <string name="dialog_delete_category_directories">ПАПКИ</string>
     <string name="dialog_delete_category_files">ФАЙЛЫ</string>
     <string name="dialog_delete_disclaimer">Вы уверены, что хотите удалить выбранные файлы\?</string>
-    <string name="dialog_delete_temporarily_disclaimer">Вы уверены что хотите удалить их\?</string>
+    <string name="dialog_delete_temporarily_disclaimer">Вы уверены, что хотите удалить их\?</string>
     <string name="dialog_restore_disclaimer">Вы уверены, что хотите восстановить следующие элементы\?</string>
     <string name="dialog_delete_title">Вы уверены что хотите удалить навсегда\?</string>
     <string name="deleting">Удаление...</string>
@@ -251,7 +251,7 @@
     <string name="anonymous">Анонимно</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="folders">Папки</string>
-    <string name="folderfilecount">%1$d папок и%2$d файлов</string>
+    <string name="folderfilecount">%1$d папок и %2$d файлов</string>
     <string name="videos">Видео</string>
     <string name="apks">APK-файлы</string>
     <string name="documents">Документы</string>
