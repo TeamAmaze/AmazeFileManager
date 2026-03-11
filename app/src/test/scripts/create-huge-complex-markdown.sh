@@ -4,7 +4,7 @@ set -euo pipefail
 output="realistic.md"
 > "$output"
 
-for i in {1..20}; do
+for i in {1..2}; do
   cat <<PART >> "$output"
 
 # Document #$i – $(date --utc +%Y-%m-%dT%H:%M:%SZ)
@@ -34,17 +34,17 @@ $(for ((j=1; j<=300; j++)); do
 
 [
 $(for ((k=1; k<=80; k++)); do
-    # Smaller random payload to keep generation speed reasonable
-    payload=$(head -c $((60 + (k % 140))) /dev/urandom 2>/dev/null | base64 -w 0 | head -c 120)
-    cat <<JSON
+    json=$(cat <<JSON
   {
     "id": $((i*1000 + k)),
     "timestamp": "$(date --utc +%Y-%m-%dT%H:%M:%SZ)",
     "event": "click",
-    "payload": "$payload",
+    "payload": "$(head -c $((60 + (k % 140))) /dev/urandom 2>/dev/null | base64 -w 0 | head -c 120)",
     "ip": "192.168.$((i % 255)).$((k % 255))"
   }$( [[ $k -lt 80 ]] && echo "," || echo "" )
 JSON
+)
+    echo "$json"
   done
 )
 
@@ -65,13 +65,13 @@ done)
 
 ## Image & link references
 
-![Widget $(printf %04d $i)](https://picsum.photos/seed/doc$i/1200/800?grayscale)
+![Widget $(printf "%04d$i")](https://picsum.photos/seed/doc$i/1200/800?grayscale)
 → [Open report #$i](https://demo.app/reports/$i?token=$(head -c 8 /dev/urandom | xxd -p -c 16))
 
 PART
 
   # Show progress
-  (( i % 200 == 0 )) && du -h "$output" | awk '{print "  → " $1 " so far (document " "'$i'")}'
+  (( i % 200 == 0 )) && du -h "$output" | awk "{print \"  → \" $1 \" so far (document \" \"'$i'\")}"
 
 done
 

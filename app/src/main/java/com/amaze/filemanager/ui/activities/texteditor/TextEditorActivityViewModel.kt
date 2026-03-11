@@ -100,28 +100,36 @@ class TextEditorActivityViewModel : ViewModel() {
 
     enum class Direction { FORWARD, BACKWARD }
 
+    /** Direction of the most recent successful window load. */
+    var lastLoadDirection: Direction? = null
+
     /**
      * Loads the next or previous window of text from the file.
      * Debounced: if a load is already in flight, the call is ignored.
+     *
+     * The method attempts to maintain ~60% overlap between consecutive windows to provide
+     * smooth scrolling. Due to line-boundary snapping, exact overlap cannot be guaranteed,
+     * but this provides better continuity than 50% overlap.
      */
     fun loadWindow(direction: Direction) {
         if (windowLoadJob?.isActive == true) return // debounce
         val reader = fileWindowReader ?: return
 
         val windowSize = windowEndByte - windowStartByte
-        val halfWindow = windowSize / 2
+        // Use 40% shift (60% overlap) for smoother transitions
+        val shiftAmount = (windowSize * 0.4).toLong()
 
         val targetOffset =
             when (direction) {
                 Direction.FORWARD -> {
                     // Don't shift if already at end of file
                     if (windowEndByte >= totalFileSize) return
-                    windowStartByte + halfWindow
+                    windowStartByte + shiftAmount
                 }
                 Direction.BACKWARD -> {
                     // Don't shift if already at start of file
                     if (windowStartByte <= 0L) return
-                    maxOf(0L, windowStartByte - halfWindow)
+                    maxOf(0L, windowStartByte - shiftAmount)
                 }
             }
 
@@ -133,6 +141,7 @@ class TextEditorActivityViewModel : ViewModel() {
                     }
                 windowStartByte = result.startByte
                 windowEndByte = result.endByte
+                lastLoadDirection = direction
                 _windowContent.value = result
             }
     }

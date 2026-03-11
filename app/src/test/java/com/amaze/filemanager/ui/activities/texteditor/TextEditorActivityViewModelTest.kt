@@ -66,18 +66,25 @@ class TextEditorActivityViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
+    /**
+     * Setup before test.
+     */
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
     }
 
+    /**
+     * Cleanup after test.
+     */
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-    // ── Default state ────────────────────────────────────────────────
-
+    /**
+     * Test default state of the ViewModel is non-windowed with null reader and zero offsets.
+     */
     @Test
     fun testDefaultStateNotWindowed() {
         val vm = TextEditorActivityViewModel()
@@ -86,9 +93,13 @@ class TextEditorActivityViewModelTest {
         assertEquals(0L, vm.windowStartByte)
         assertEquals(0L, vm.windowEndByte)
         assertEquals(0L, vm.totalFileSize)
+        assertNull(vm.lastLoadDirection)
         assertNull(vm.windowContent.value)
     }
 
+    /**
+     * Test non-windowed state properties are initialized to expected defaults (null/false/empty).
+     */
     @Test
     fun testDefaultNonWindowedState() {
         val vm = TextEditorActivityViewModel()
@@ -101,14 +112,18 @@ class TextEditorActivityViewModelTest {
         assertFalse(vm.markdownPreviewEnabled)
     }
 
-    // ── Markdown preview state ───────────────────────────────────────
-
+    /**
+     * Test markdown preview is disabled by default and can be toggled on/off correctly.
+     */
     @Test
     fun testMarkdownPreviewDefaultDisabled() {
         val vm = TextEditorActivityViewModel()
         assertFalse(vm.markdownPreviewEnabled)
     }
 
+    /**
+     * Test toggling markdown preview on and off updates the state as expected.
+     */
     @Test
     fun testMarkdownPreviewToggle() {
         val vm = TextEditorActivityViewModel()
@@ -118,8 +133,9 @@ class TextEditorActivityViewModelTest {
         assertFalse(vm.markdownPreviewEnabled)
     }
 
-    // ── Windowed state initialization ────────────────────────────────
-
+    /**
+     * Test initializing windowed mode properties with a valid reader and file size sets the state correctly.
+     */
     @Test
     fun testInitializeWindowedMode() {
         val vm = TextEditorActivityViewModel()
@@ -141,8 +157,10 @@ class TextEditorActivityViewModelTest {
         reader.close()
     }
 
-    // ── loadWindow: forward ──────────────────────────────────────────
-
+    /**
+     * Test loadWindow shifts the window forward and emits new content when a reader is set and
+     * not at end of file.
+     */
     @Test
     fun testLoadWindowForward() =
         runTest(testDispatcher) {
@@ -169,8 +187,10 @@ class TextEditorActivityViewModelTest {
             reader.close()
         }
 
-    // ── loadWindow: backward ─────────────────────────────────────────
-
+    /**
+     * Test loadWindow shifts the window backward and emits new content when a reader is set and
+     * not at start of file.
+     */
     @Test
     fun testLoadWindowBackward() =
         runTest(testDispatcher) {
@@ -197,8 +217,10 @@ class TextEditorActivityViewModelTest {
             reader.close()
         }
 
-    // ── loadWindow: no-op at boundaries ──────────────────────────────
-
+    /**
+     * Test loadWindow does not emit new content when trying to shift forward at end of file
+     * (no-op).
+     */
     @Test
     fun testLoadWindowForwardNoOpAtEndOfFile() =
         runTest(testDispatcher) {
@@ -224,6 +246,10 @@ class TextEditorActivityViewModelTest {
             reader.close()
         }
 
+    /**
+     * Test loadWindow does not emit new content when trying to shift backward at start of file
+     * (no-op).
+     */
     @Test
     fun testLoadWindowBackwardNoOpAtStartOfFile() =
         runTest(testDispatcher) {
@@ -248,8 +274,9 @@ class TextEditorActivityViewModelTest {
             reader.close()
         }
 
-    // ── loadWindow: no-op when no reader ─────────────────────────────
-
+    /**
+     * Test loadWindow does not emit new content when no reader is set (no-op).
+     */
     @Test
     fun testLoadWindowNoOpWithoutReader() =
         runTest(testDispatcher) {
@@ -266,8 +293,10 @@ class TextEditorActivityViewModelTest {
             assertNull(result)
         }
 
-    // ── Window byte offsets updated after load ───────────────────────
-
+    /**
+     * Test after loadWindow, the windowStartByte and windowEndByte are updated to reflect
+     * the new window position based on the result from the reader.
+     */
     @Test
     fun testWindowByteOffsetsUpdatedAfterLoad() =
         runTest(testDispatcher) {
@@ -293,14 +322,45 @@ class TextEditorActivityViewModelTest {
             // Offsets should reflect the new window position from the result
             assertEquals(result!!.startByte, vm.windowStartByte)
             assertEquals(result!!.endByte, vm.windowEndByte)
+            assertEquals(TextEditorActivityViewModel.Direction.FORWARD, vm.lastLoadDirection)
             // Should have shifted
             assertTrue(vm.windowStartByte > originalStart || vm.windowEndByte > originalEnd)
 
             reader.close()
         }
 
-    // ── onCleared closes reader ──────────────────────────────────────
+    /**
+     * Test load direction metadata is updated only after a successful load.
+     */
+    @Test
+    fun testLastLoadDirectionUpdatedOnSuccessfulLoadOnly() =
+        runTest(testDispatcher) {
+            val vm = createWindowedViewModel()
+            val file = createLargeTestFile()
+            val reader = FileWindowReader.fromFile(file)
 
+            vm.fileWindowReader = reader
+            vm.totalFileSize = file.length()
+            vm.windowStartByte = 0L
+            vm.windowEndByte = 200L
+
+            vm.loadWindow(TextEditorActivityViewModel.Direction.BACKWARD)
+            advanceUntilIdle()
+
+            // No-op at start of file should keep direction unset
+            assertNull(vm.lastLoadDirection)
+
+            vm.loadWindow(TextEditorActivityViewModel.Direction.FORWARD)
+            advanceUntilIdle()
+
+            assertEquals(TextEditorActivityViewModel.Direction.FORWARD, vm.lastLoadDirection)
+            reader.close()
+        }
+
+    /**
+     * Test TextEditorActivityViewModel.onCleared properly closes FileWindowReader to release
+     * resources.
+     */
     @Test
     fun testOnClearedClosesReader() {
         val vm = TextEditorActivityViewModel()
@@ -319,14 +379,15 @@ class TextEditorActivityViewModelTest {
         var threwException = false
         try {
             reader.readWindow(0, 100)
-        } catch (e: Exception) {
+        } catch (_: Throwable) {
             threwException = true
         }
         assertTrue("Reader should be closed after onCleared", threwException)
     }
 
-    // ── Direction enum values ────────────────────────────────────────
-
+    /**
+     * Test that the Direction enum has the expected values and order.
+     */
     @Test
     fun testDirectionEnum() {
         val values = TextEditorActivityViewModel.Direction.values()
@@ -334,8 +395,6 @@ class TextEditorActivityViewModelTest {
         assertEquals(TextEditorActivityViewModel.Direction.FORWARD, values[0])
         assertEquals(TextEditorActivityViewModel.Direction.BACKWARD, values[1])
     }
-
-    // ── Helpers ──────────────────────────────────────────────────────
 
     /** Creates a ViewModel configured for windowed mode with testDispatcher for IO. */
     private fun createWindowedViewModel(): TextEditorActivityViewModel {

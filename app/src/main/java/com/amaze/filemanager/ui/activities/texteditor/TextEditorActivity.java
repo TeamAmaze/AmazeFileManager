@@ -53,6 +53,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.Spanned;
@@ -106,6 +107,22 @@ public class TextEditorActivity extends ThemedActivity
 
   /** Scroll listener reference for windowed mode (so it can be removed if needed). */
   private ViewTreeObserver.OnScrollChangedListener windowedScrollListener;
+
+  /** Pre-draw listener used to position a freshly loaded window before it is first drawn. */
+  private ViewTreeObserver.OnPreDrawListener pendingWindowApplyPreDrawListener;
+
+  /** True while replacing window content and restoring scroll programmatically. */
+  private boolean isApplyingWindowContent;
+
+  /** Suppress edge-triggered loads briefly after programmatic scroll changes. */
+  private long suppressWindowLoadsUntilMs;
+
+  /**
+   * Duration (ms) to suppress edge-triggered window loads after a programmatic scroll change. Must
+   * be long enough to cover the layout pass after setText() + the scroll restoration; 400ms is a
+   * safe margin on most devices.
+   */
+  private static final long WINDOW_LOAD_SUPPRESSION_MS = 400L;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -391,6 +408,7 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void onDestroy() {
+    clearPendingWindowApplyPreDrawListener();
     super.onDestroy();
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
@@ -680,39 +698,155 @@ public class TextEditorActivity extends ThemedActivity
             result -> {
               if (result == null) return;
 
-              // Determine an anchor: find the text line near the middle of the current viewport
+              // Capture the currently visible text as an anchor before replacing content
+              String anchorText = null;
               int oldScrollY = scrollView.getScrollY();
+              int viewportHeight = scrollView.getHeight();
+
+              Layout oldLayout = mainTextView.getLayout();
+              if (oldLayout != null && mainTextView.getText() != null) {
+                // Find the line at the middle of the viewport
+                int anchorY = oldScrollY + viewportHeight / 2;
+                int anchorLine = oldLayout.getLineForVertical(anchorY);
+
+                if (anchorLine >= 0 && anchorLine < oldLayout.getLineCount()) {
+                  int lineStart = oldLayout.getLineStart(anchorLine);
+                  int lineEnd = oldLayout.getLineEnd(anchorLine);
+                  if (lineStart < lineEnd && lineEnd <= mainTextView.getText().length()) {
+                    // Get a distinctive snippet (up to 80 chars) from this line
+                    int snippetEnd = Math.min(lineEnd, lineStart + 80);
+                    anchorText =
+                        mainTextView.getText().subSequence(lineStart, snippetEnd).toString();
+                  }
+                }
+              }
 
               // Replace text (TextWatcher will fire but windowed-mode guard skips modification
               // tracking)
+              final String savedAnchorText = anchorText;
+              final TextEditorActivityViewModel.Direction lastDirection =
+                  viewModel.getLastLoadDirection();
+              isApplyingWindowContent = true;
+              suppressWindowLoadsUntilMs = SystemClock.uptimeMillis() + WINDOW_LOAD_SUPPRESSION_MS;
+              clearPendingWindowApplyPreDrawListener();
               mainTextView.setText(result.getText());
 
-              // Adjust scroll position for visual continuity
-              mainTextView.post(
+              pendingWindowApplyPreDrawListener =
                   () -> {
                     Layout newLayout = mainTextView.getLayout();
-                    if (newLayout == null) return;
-
-                    // Infer direction from old scroll position
-                    int viewportHeight = scrollView.getHeight();
-                    if (oldScrollY > viewportHeight / 2) {
-                      // Was scrolling down → new content has overlap at the top → scroll to top
-                      // area
-                      // The overlap is ~50% of the window, so position at roughly 25% down
-                      int targetLine = newLayout.getLineCount() / 4;
-                      int targetY = newLayout.getLineTop(targetLine);
-                      scrollView.scrollTo(0, targetY);
-                    } else {
-                      // Was scrolling up → new content has overlap at the bottom → scroll to bottom
-                      // area
-                      int targetLine = (newLayout.getLineCount() * 3) / 4;
-                      int targetY = newLayout.getLineTop(targetLine);
-                      scrollView.scrollTo(0, Math.max(0, targetY - viewportHeight));
+                    if (newLayout == null) {
+                      return true; // layout not ready yet, let the draw pass proceed
                     }
 
+                    int targetY =
+                        resolveWindowedTargetScrollY(
+                            newLayout, savedAnchorText, viewportHeight, lastDirection);
+
+                    suppressWindowLoadsUntilMs =
+                        SystemClock.uptimeMillis() + WINDOW_LOAD_SUPPRESSION_MS;
+                    scrollView.scrollTo(0, targetY);
+                    clearPendingWindowApplyPreDrawListener();
+                    scrollView.post(() -> isApplyingWindowContent = false);
                     invalidateOptionsMenu();
-                  });
+                    return true; // proceed with this draw pass using the corrected scroll
+                  };
+
+              ViewTreeObserver observer = scrollView.getViewTreeObserver();
+              if (observer.isAlive()) {
+                observer.addOnPreDrawListener(pendingWindowApplyPreDrawListener);
+              } else {
+                isApplyingWindowContent = false;
+              }
             });
+  }
+
+  private void clearPendingWindowApplyPreDrawListener() {
+    if (pendingWindowApplyPreDrawListener == null) return;
+
+    ViewTreeObserver observer = scrollView.getViewTreeObserver();
+    if (observer.isAlive()) {
+      observer.removeOnPreDrawListener(pendingWindowApplyPreDrawListener);
+    }
+    pendingWindowApplyPreDrawListener = null;
+  }
+
+  private int resolveWindowedTargetScrollY(
+      Layout newLayout,
+      String savedAnchorText,
+      int viewportHeight,
+      TextEditorActivityViewModel.Direction lastDirection) {
+    if (savedAnchorText != null && mainTextView.getText() != null) {
+      String newText = mainTextView.getText().toString();
+      int anchorIndex = findAnchorNearExpectedPosition(newText, savedAnchorText, lastDirection);
+
+      if (anchorIndex >= 0) {
+        int anchorLine = newLayout.getLineForOffset(anchorIndex);
+        int anchorLineTop = newLayout.getLineTop(anchorLine);
+        return Math.max(0, anchorLineTop - viewportHeight / 2);
+      }
+    }
+
+    return inferScrollPositionFallback(newLayout, viewportHeight, lastDirection);
+  }
+
+  /**
+   * Find the anchor text in the new content, preferring the occurrence closest to where it is
+   * expected given the load direction and 60% overlap.
+   *
+   * <p>For a FORWARD load the old viewport-center content should end up in roughly the first 30–40%
+   * of the new window (because 60% overlaps). For a BACKWARD load it should be in the last 30–40%.
+   * We estimate an expected char offset and pick the occurrence nearest to it.
+   *
+   * <p>This avoids the problem with naive {@code indexOf}/{@code lastIndexOf} picking a wrong
+   * duplicate occurrence in files with many repeated lines (e.g. log files).
+   */
+  private static int findAnchorNearExpectedPosition(
+      String newText, String anchor, TextEditorActivityViewModel.Direction direction) {
+    if (newText.isEmpty() || anchor.isEmpty()) return -1;
+
+    // Estimate where in the new text the anchor should be
+    int expectedPos;
+    if (direction == TextEditorActivityViewModel.Direction.FORWARD) {
+      // After a 40% forward shift with 60% overlap, the old viewport center
+      // (≈50% of old window) maps to ≈ (50%-40%) / (100%) ≈ first 10-30% of new window
+      expectedPos = (int) (newText.length() * 0.20);
+    } else {
+      // After a 40% backward shift, the old viewport center maps to ≈ last 70-80%
+      expectedPos = (int) (newText.length() * 0.80);
+    }
+
+    int bestIndex = -1;
+    int bestDistance = Integer.MAX_VALUE;
+    int searchFrom = 0;
+
+    while (searchFrom <= newText.length() - anchor.length()) {
+      int idx = newText.indexOf(anchor, searchFrom);
+      if (idx < 0) break;
+
+      int distance = Math.abs(idx - expectedPos);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestIndex = idx;
+      }
+      searchFrom = idx + 1;
+    }
+
+    return bestIndex;
+  }
+
+  /**
+   * Fallback method when anchor text is not found. Keep the viewport in the middle band so edge
+   * thresholds do not immediately trigger another opposite-direction window load.
+   */
+  private int inferScrollPositionFallback(
+      Layout newLayout, int viewportHeight, TextEditorActivityViewModel.Direction direction) {
+    int targetLine = newLayout.getLineCount() / 2;
+    if (direction == TextEditorActivityViewModel.Direction.BACKWARD) {
+      targetLine = (newLayout.getLineCount() * 55) / 100;
+    } else if (direction == TextEditorActivityViewModel.Direction.FORWARD) {
+      targetLine = (newLayout.getLineCount() * 45) / 100;
+    }
+    return Math.max(0, newLayout.getLineTop(targetLine) - viewportHeight / 2);
   }
 
   /**
@@ -725,6 +859,8 @@ public class TextEditorActivity extends ThemedActivity
     windowedScrollListener =
         () -> {
           if (!viewModel.isWindowed()) return;
+          if (isApplyingWindowContent) return;
+          if (SystemClock.uptimeMillis() < suppressWindowLoadsUntilMs) return;
 
           int scrollY = scrollView.getScrollY();
           int viewportHeight = scrollView.getHeight();
