@@ -33,6 +33,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.SearchRecyclerViewAdapter;
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult;
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResultListSorter;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.files.sort.DirSortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortBy;
 import com.amaze.filemanager.filesystem.files.sort.SortOrder;
@@ -272,9 +273,18 @@ public class SearchView {
     searchResultsHintTV.setVisibility(View.VISIBLE);
     searchResultsSortButton.setVisibility(View.VISIBLE);
     searchResultsSortHintTV.setVisibility(View.VISIBLE);
-    deepSearchContainer.setVisibility(View.VISIBLE);
-    searchMode = 1;
-    deepSearchButton.setText(mainActivity.getString(R.string.try_indexed_search));
+
+    OpenMode openMode =
+        mainActivity.getCurrentMainFragment().getMainFragmentViewModel().getOpenMode();
+
+    if (openMode == OpenMode.CUSTOM || openMode == OpenMode.TRASH_BIN) {
+      deepSearchContainer.setVisibility(View.GONE);
+      searchMode = 0;
+    } else {
+      deepSearchContainer.setVisibility(View.VISIBLE);
+      searchMode = 1;
+      deepSearchButton.setText(mainActivity.getString(R.string.try_indexed_search));
+    }
 
     mainActivity
         .getCurrentMainFragment()
