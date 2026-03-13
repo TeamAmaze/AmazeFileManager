@@ -1063,13 +1063,14 @@ public class MainFragment extends Fragment
               AppCompatEditText textfield =
                   dialog.getCustomView().findViewById(R.id.singleedittext_input);
               String name1 = textfield.getText().toString().trim();
+              String targetParent = f.getParent(requireContext());
 
               getMainActivity()
                   .mainActivityHelper
                   .rename(
-                      mainFragmentViewModel.getOpenMode(),
+                      f.getMode(),
                       f.getPath(),
-                      mainFragmentViewModel.getCurrentPath(),
+                      targetParent,
                       name1,
                       f.isDirectory(),
                       getActivity(),
