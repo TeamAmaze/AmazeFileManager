@@ -1238,11 +1238,17 @@ public class MainFragment extends Fragment
 
   public void updateList(boolean forceReload) {
     computeScroll();
+
+    boolean shouldForceReload =
+        forceReload
+            || mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM
+            || mainFragmentViewModel.getOpenMode() == OpenMode.TRASH_BIN;
+
     loadlist(
         mainFragmentViewModel.getCurrentPath(),
         true,
         mainFragmentViewModel.getOpenMode(),
-        forceReload);
+        shouldForceReload);
   }
 
   @Override
