@@ -181,6 +181,7 @@ public class SmbConnectDialog extends DialogFragment {
     ExtensionsKt.makeRequired(connectionTIL);
     ExtensionsKt.makeRequired(ipTIL);
     ExtensionsKt.makeRequired(usernameTIL);
+    ExtensionsKt.makeRequired(passwordTIL);
 
     conName.addTextChangedListener(
         new SimpleTextWatcher() {
