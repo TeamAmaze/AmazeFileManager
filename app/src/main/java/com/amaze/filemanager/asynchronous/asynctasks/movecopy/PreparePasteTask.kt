@@ -247,11 +247,8 @@ class PreparePasteTask(strongRefMain: MainActivity) {
         while (iterator.hasNext()) {
             val hybridFileParcelable = iterator.next()
             copyDialogBinding.fileNameText.text = hybridFileParcelable.name
+            dialogBuilder.cancelable(hybridFileParcelable.getParent(context.get()) == targetPath)
             val dialog = dialogBuilder.build()
-            if (hybridFileParcelable.getParent(context.get()) == targetPath) {
-                dialog.getActionButton(DialogAction.NEGATIVE)
-                    .isEnabled = false
-            }
             val resultDeferred = CompletableDeferred<DialogAction>()
             dialogBuilder.onPositive { _, _ ->
                 resultDeferred.complete(DialogAction.POSITIVE)
@@ -261,6 +258,13 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             }
             dialogBuilder.onNeutral { _, _ ->
                 resultDeferred.complete(DialogAction.NEUTRAL)
+            }
+            if (hybridFileParcelable.getParent(context.get()) == targetPath) {
+                dialog.setOnCancelListener {
+                    resultDeferred.complete(DialogAction.NEUTRAL)
+                }
+                dialog.getActionButton(DialogAction.NEGATIVE)
+                    .isEnabled = false
             }
             dialog.show()
             when (resultDeferred.await()) {
