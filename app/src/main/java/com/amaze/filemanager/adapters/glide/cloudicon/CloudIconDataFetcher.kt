@@ -30,6 +30,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.data.DataFetcher
 import java.io.IOException
 import java.io.InputStream
+import java.util.concurrent.atomic.AtomicBoolean
 
 class CloudIconDataFetcher(
     private val context: Context,
@@ -39,22 +40,80 @@ class CloudIconDataFetcher(
 ) : DataFetcher<Bitmap> {
     companion object {
         private val TAG = CloudIconDataFetcher::class.java.simpleName
+
+        /**
+         * Calculate an [BitmapFactory.Options.inSampleSize] value that keeps the
+         * decoded bitmap larger than the requested [reqWidth]×[reqHeight] while
+         * still reducing memory usage significantly for oversized sources.
+         */
+        @JvmStatic
+        internal fun calculateInSampleSize(
+            outWidth: Int,
+            outHeight: Int,
+            reqWidth: Int,
+            reqHeight: Int,
+        ): Int {
+            var inSampleSize = 1
+            if (outHeight > reqHeight || outWidth > reqWidth) {
+                val halfHeight = outHeight / 2
+                val halfWidth = outWidth / 2
+                while (halfHeight / inSampleSize >= reqHeight &&
+                    halfWidth / inSampleSize >= reqWidth
+                ) {
+                    inSampleSize *= 2
+                }
+            }
+            return inSampleSize
+        }
     }
 
     private var inputStream: InputStream? = null
+    private val cancelled = AtomicBoolean(false)
 
     override fun loadData(
         priority: Priority,
         callback: DataFetcher.DataCallback<in Bitmap?>,
     ) {
-        inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path)
-        val options =
-            BitmapFactory.Options().also {
-                it.outWidth = width
-                it.outHeight = height
+        try {
+            inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path)
+            if (inputStream == null || cancelled.get()) {
+                callback.onDataReady(null)
+                return
             }
-        val drawable = BitmapFactory.decodeStream(inputStream, null, options)
-        callback.onDataReady(drawable)
+
+            // Buffer the full stream so we can do a two-pass decode.
+            // Pass 1 reads only the dimensions; pass 2 decodes with inSampleSize.
+            val bytes = inputStream!!.readBytes()
+            if (cancelled.get()) {
+                callback.onDataReady(null)
+                return
+            }
+
+            // --- Pass 1: decode bounds only ---
+            val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size, boundsOptions)
+
+            // --- Pass 2: decode with appropriate down-sampling ---
+            val decodeOptions =
+                BitmapFactory.Options().apply {
+                    inSampleSize =
+                        calculateInSampleSize(
+                            boundsOptions.outWidth,
+                            boundsOptions.outHeight,
+                            width,
+                            height,
+                        )
+                }
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, decodeOptions)
+            callback.onDataReady(bitmap)
+        } catch (e: Exception) {
+            if (cancelled.get()) {
+                callback.onDataReady(null)
+            } else {
+                Log.e(TAG, "Error loading cloud icon for $path", e)
+                callback.onLoadFailed(e)
+            }
+        }
     }
 
     override fun cleanup() {
@@ -65,7 +124,17 @@ class CloudIconDataFetcher(
         }
     }
 
-    override fun cancel() = Unit
+    override fun cancel() {
+        cancelled.set(true)
+        // Close the stream to interrupt any in-progress network read so the
+        // background thread doesn't keep downloading a file whose result will
+        // never be used.
+        try {
+            inputStream?.close()
+        } catch (_: IOException) {
+            // Best-effort; the stream may already be closed.
+        }
+    }
 
     override fun getDataClass(): Class<Bitmap> = Bitmap::class.java
 
