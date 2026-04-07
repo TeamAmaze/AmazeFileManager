@@ -73,7 +73,7 @@ public class RecyclerPreloadModelProvider
         requestBuilder = request.load(iconData.path);
         break;
       case IconDataParcelable.IMAGE_FROMCLOUD:
-        requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
+        requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.RESOURCE);
         break;
       default:
         requestBuilder = request.load(iconData.image);

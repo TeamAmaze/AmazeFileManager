@@ -171,6 +171,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private final int dragAndDropPreference;
   private final boolean isGrid;
 
+  /**
+   * Cached thumbnail-preference values, refreshed once per {@link #setItems} call to avoid per-bind
+   * {@code Resources.getIntArray()} allocations and {@code SharedPreferences} reads.
+   */
+  private boolean cachedShowThumb;
+
+  private int[] cachedMaxSizes;
+  private int cachedCapIndex;
+
   @IntDef({VIEW_GENERIC, VIEW_PICTURE, VIEW_APK, VIEW_THUMB})
   public @interface ViewType {}
 
@@ -216,6 +225,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     grey_color = Utils.getColor(context, R.color.grey);
     apkColor = Utils.getColor(context, R.color.apk_item);
 
+    refreshThumbnailPreferences();
     setItems(recyclerView, itemsRaw, false);
   }
 
@@ -580,6 +590,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       @NonNull RecyclerView recyclerView,
       @NonNull List<LayoutElementParcelable> elements,
       boolean invalidate) {
+    refreshThumbnailPreferences();
+
     if (preloader != null) {
       recyclerView.removeOnScrollListener(preloader);
       preloader = null;
@@ -796,6 +808,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     final LayoutElementParcelable rowItem =
         getItemsDigested().get(position).layoutElementParcelable;
 
+    // Compute once per bind to avoid repeated resource/SharedPreferences reads
+    final boolean shouldLoad = shouldLoadThumbnail(rowItem.longSize, rowItem.getMode());
+
     if (mainFragment.getMainFragmentViewModel() != null && position == getItemCount() - 1) {
       holder.baseItemView.setMinimumHeight((int) minRowHeight);
       if (getItemsDigested().size() == (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 1 : 0))
@@ -907,7 +922,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     switch (rowItem.filetype) {
       case Icons.IMAGE:
       case Icons.VIDEO:
-        if (shouldLoadThumbnail(rowItem.longSize, rowItem.getMode())) {
+        if (shouldLoad) {
           if (getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)) {
             showThumbnailWithBackground(
                 holder, rowItem.iconData, holder.pictureIcon, rowItem.iconData::setImageBroken);
@@ -923,7 +938,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         break;
       case Icons.APK:
-        if (shouldLoadThumbnail(rowItem.longSize, rowItem.getMode())) {
+        if (shouldLoad) {
           showThumbnailWithBackground(
               holder, rowItem.iconData, holder.apkIcon, rowItem.iconData::setImageBroken);
         } else {
@@ -966,7 +981,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       if ((rowItem.filetype != Icons.IMAGE
               && rowItem.filetype != Icons.APK
               && rowItem.filetype != Icons.VIDEO)
-          || !shouldLoadThumbnail(rowItem.longSize, rowItem.getMode())) {
+          || !shouldLoad) {
         holder.apkIcon.setVisibility(View.GONE);
         holder.pictureIcon.setVisibility(View.GONE);
         holder.genericIcon.setVisibility(View.VISIBLE);
@@ -980,7 +995,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       if (!((rowItem.filetype == Icons.APK
               || rowItem.filetype == Icons.IMAGE
               || rowItem.filetype == Icons.VIDEO)
-          && shouldLoadThumbnail(rowItem.longSize, rowItem.getMode()))) {
+          && shouldLoad)) {
         holder.genericIcon.setVisibility(View.VISIBLE);
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
@@ -1021,6 +1036,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     final LayoutElementParcelable rowItem =
         getItemsDigested().get(position).layoutElementParcelable;
 
+    // Compute once per bind to avoid repeated resource/SharedPreferences reads
+    final boolean shouldLoad = shouldLoadThumbnail(rowItem.longSize, rowItem.getMode());
+
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
           if (hasPendingPasteOperation()) return false;
@@ -1056,8 +1074,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
 
     if (rowItem.filetype == Icons.IMAGE || rowItem.filetype == Icons.VIDEO) {
-      if (getBoolean(PREFERENCE_SHOW_THUMB)
-          && shouldLoadThumbnail(rowItem.longSize, rowItem.getMode())) {
+      if (shouldLoad) {
         holder.imageView1.setVisibility(View.VISIBLE);
         holder.imageView1.setImageDrawable(null);
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK)
@@ -1066,7 +1083,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         showRoundedThumbnail(
             holder,
             rowItem.longSize,
-            rowItem.getMode(),
             rowItem.iconData,
             holder.imageView1,
             rowItem.iconData::setImageBroken);
@@ -1076,12 +1092,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else holder.genericIcon.setImageResource(R.drawable.ic_doc_video_am);
       }
     } else if (rowItem.filetype == Icons.APK) {
-      if (getBoolean(PREFERENCE_SHOW_THUMB)
-          && shouldLoadThumbnail(rowItem.longSize, rowItem.getMode()))
+      if (shouldLoad)
         showRoundedThumbnail(
             holder,
             rowItem.longSize,
-            rowItem.getMode(),
             rowItem.iconData,
             holder.genericIcon,
             rowItem.iconData::setImageBroken);
@@ -1100,8 +1114,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       } else {
         switch (rowItem.filetype) {
           case Icons.VIDEO:
-            if (!shouldLoadThumbnail(rowItem.longSize, rowItem.getMode()))
-              iconBackground.setBackgroundColor(videoColor);
+            if (!shouldLoad) iconBackground.setBackgroundColor(videoColor);
             break;
           case Icons.AUDIO:
             iconBackground.setBackgroundColor(audioColor);
@@ -1122,12 +1135,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iconBackground.setBackgroundColor(genericColor);
             break;
           case Icons.APK:
-            if (!shouldLoadThumbnail(rowItem.longSize, rowItem.getMode()))
-              iconBackground.setBackgroundColor(apkColor);
+            if (!shouldLoad) iconBackground.setBackgroundColor(apkColor);
             break;
           case Icons.IMAGE:
-            if (!shouldLoadThumbnail(rowItem.longSize, rowItem.getMode()))
-              iconBackground.setBackgroundColor(videoColor);
+            if (!shouldLoad) iconBackground.setBackgroundColor(videoColor);
             break;
           default:
             iconBackground.setBackgroundColor(iconSkinColor);
@@ -1146,7 +1157,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if ((rowItem.filetype != Icons.IMAGE
                 && rowItem.filetype != Icons.APK
                 && rowItem.filetype != Icons.VIDEO)
-            || !shouldLoadThumbnail(rowItem.longSize, rowItem.getMode())) {
+            || !shouldLoad) {
           View iconBackground =
               getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES) ? holder.genericIcon : holder.iconLayout;
           iconBackground.setBackgroundColor(goBackColor);
@@ -1196,7 +1207,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     if (mainFragment.getMainFragmentViewModel() != null
         && mainFragment.getMainFragmentViewModel().isList()) {
-      if (getBoolean(PREFERENCE_SHOW_THUMB)) {
+      if (cachedShowThumb) {
         int filetype =
             getItemsDigested().get(adapterPosition).requireLayoutElementParcelable().filetype;
 
@@ -1365,7 +1376,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private void showRoundedThumbnail(
       ItemViewHolder viewHolder,
       long longSize,
-      OpenMode mode,
       IconDataParcelable iconData,
       AppCompatImageView view,
       OnImageProcessed errorListener) {
@@ -1541,11 +1551,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private boolean shouldLoadThumbnail(long longSize, OpenMode mode) {
-    int[] maxSizes =
-        preferenceActivity.getResources().getIntArray(R.array.thumbnailDisplaySizeLimitPreference);
-    int idx = preferenceActivity.getPrefs().getInt(PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE, 0);
     return shouldLoadThumbnailStatic(
-        getBoolean(PREFERENCE_SHOW_THUMB), maxSizes, idx, longSize, mode);
+        cachedShowThumb, cachedMaxSizes, cachedCapIndex, longSize, mode);
+  }
+
+  /** Re-reads preference / resource values into the cached fields. */
+  private void refreshThumbnailPreferences() {
+    cachedShowThumb = getBoolean(PREFERENCE_SHOW_THUMB);
+    cachedMaxSizes =
+        preferenceActivity.getResources().getIntArray(R.array.thumbnailDisplaySizeLimitPreference);
+    cachedCapIndex = preferenceActivity.getPrefs().getInt(PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE, 0);
   }
 
   /**
@@ -1658,7 +1673,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setAnimate(boolean animating) {
-      if (specialType == -1) this.animate = animating;
+      if (specialType == TYPE_ITEM || specialType == TYPE_BACK) this.animate = animating;
     }
 
     public boolean getAnimating() {

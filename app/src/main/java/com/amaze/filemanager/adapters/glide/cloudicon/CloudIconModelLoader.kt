@@ -35,11 +35,13 @@ class CloudIconModelLoader(private val context: Context) : ModelLoader<String, B
         height: Int,
         options: Options,
     ): ModelLoader.LoadData<Bitmap> {
-        // we put key as current time since we're not disk caching the images for cloud,
-        // as there is no way to differentiate input streams returned by different cloud services
-        // for future instances and they don't expose concrete paths either
+        // Use the path as the cache key so Glide's memory (and disk) cache can
+        // recognise repeated loads of the same remote file and serve them from
+        // cache instead of re-downloading.  The previous implementation used
+        // System.currentTimeMillis() which made every request unique, defeating
+        // all caching and causing repeated full-file downloads on every bind.
         return ModelLoader.LoadData(
-            ObjectKey(System.currentTimeMillis()),
+            ObjectKey(s),
             CloudIconDataFetcher(context, s, width, height),
         )
     }
