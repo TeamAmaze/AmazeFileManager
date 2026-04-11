@@ -35,7 +35,7 @@ import org.junit.Test
  * means "no limit").
  */
 class RecyclerAdapterShouldLoadThumbnailTest {
-    /** Matches R.array.thumbnailDisplaySizeLimitPreference: [-1, 1, 4, 10, 100] */
+    // Matches R.array.thumbnailDisplaySizeLimitPreference: [-1, 1, 4, 10, 100]
     private val maxSizes = intArrayOf(-1, 1, 4, 10, 100)
 
     // ------------------------------------------------------------------ showThumb = false
@@ -60,6 +60,10 @@ class RecyclerAdapterShouldLoadThumbnailTest {
         )
     }
 
+    /**
+     * Even if the file size is well below the cap, when showThumb=false, no thumbnail should load
+     * for remote files
+     */
     @Test
     fun testShowThumbFalse_remoteSmallFile_returnsFalse() {
         assertFalse(
@@ -97,6 +101,10 @@ class RecyclerAdapterShouldLoadThumbnailTest {
         )
     }
 
+    /**
+     * Even if showThumb=true and the file size is well below the 1 MB cap,
+     * FTP mode should still return false
+     */
     @Test
     fun testFtpMode_showThumbTrue_withCap_smallFile_returnsFalse() {
         assertFalse(
@@ -112,8 +120,6 @@ class RecyclerAdapterShouldLoadThumbnailTest {
             ),
         )
     }
-
-    // ------------------------------------------------------------------ Local modes
 
     /**
      * Local file-system modes have no size cap – thumbnails are always loaded when showThumb=true.
@@ -134,6 +140,9 @@ class RecyclerAdapterShouldLoadThumbnailTest {
         )
     }
 
+    /**
+     * Root mode also has no size cap – thumbnails should load for any file when showThumb=true.
+     */
     @Test
     fun testRootMode_returnsTrue() {
         assertTrue(
@@ -146,8 +155,6 @@ class RecyclerAdapterShouldLoadThumbnailTest {
             ),
         )
     }
-
-    // ------------------------------------------------------------------ Remote modes: no cap
 
     /**
      * When capIndex == 0 ("No limit"), any file size should load a thumbnail for remote modes.
@@ -167,6 +174,9 @@ class RecyclerAdapterShouldLoadThumbnailTest {
         )
     }
 
+    /**
+     * When capIndex == 0 ("No limit"), any file size should load a thumbnail for remote modes
+     */
     @Test
     fun testSmb_noCap_largeFile_returnsTrue() {
         assertTrue(
@@ -179,8 +189,6 @@ class RecyclerAdapterShouldLoadThumbnailTest {
             ),
         )
     }
-
-    // ------------------------------------------------------------------ Remote modes: with cap
 
     /** File strictly below the 1 MB cap → thumbnail should load. */
     @Test

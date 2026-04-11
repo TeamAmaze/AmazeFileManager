@@ -46,7 +46,6 @@ class CloudIconModelLoaderTest {
     private val context = mockk<android.content.Context>(relaxed = true)
     private val loader = CloudIconModelLoader(context)
 
-
     /**
      * Only paths that look like cloud storage URLs should return `true`
      */
