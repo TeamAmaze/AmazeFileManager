@@ -136,7 +136,7 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
     }
 
     private fun resolveDocumentFileFromRoot(path: String?): DocumentFile? {
-        return if (path.isNullOrBlank() or ("/" == path) or ("./" == path)) {
+        return if (path.isNullOrBlank() || ("/" == path) || ("./" == path)) {
             rootDocumentFile
         } else {
             val pathElements = path!!.split('/')

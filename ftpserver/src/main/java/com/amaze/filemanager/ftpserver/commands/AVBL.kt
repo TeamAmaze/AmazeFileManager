@@ -50,6 +50,9 @@ class AVBL(
      * Interface for providing localized error messages
      */
     interface ErrorMessageProvider {
+        /**
+         * Returns a localized error message based on the provided subId and optional filename.
+         */
         fun getErrorMessage(
             subId: String,
             fileName: String? = null,

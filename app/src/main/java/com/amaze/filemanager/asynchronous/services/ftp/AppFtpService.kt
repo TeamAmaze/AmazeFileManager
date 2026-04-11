@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.services.ftp
 
 import android.app.Notification
+import android.content.res.Resources
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
@@ -32,7 +33,9 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.PasswordUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.IOException
 import java.io.InputStream
+import java.security.GeneralSecurityException
 
 /**
  * Concrete implementation of FtpServerService for the Amaze File Manager app.
@@ -56,7 +59,7 @@ class AppFtpService : FtpServerService() {
     override fun getKeyStoreInputStream(): InputStream? {
         return try {
             resources.openRawResource(R.raw.key)
-        } catch (e: Exception) {
+        } catch (e: Resources.NotFoundException) {
             log.error("Failed to open keystore", e)
             null
         }
@@ -69,8 +72,11 @@ class AppFtpService : FtpServerService() {
     override fun decryptPassword(encryptedPassword: String): String? {
         return try {
             PasswordUtil.decryptPassword(applicationContext, encryptedPassword)
-        } catch (e: Exception) {
+        } catch (e: GeneralSecurityException) {
             log.warn("Failed to decrypt password", e)
+            null
+        } catch (e: IOException) {
+            log.warn("Unexpected error during password decryption", e)
             null
         }
     }

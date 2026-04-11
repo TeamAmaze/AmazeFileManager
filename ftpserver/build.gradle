@@ -41,7 +41,9 @@ android {
             all {
                 // Required for Mockito to work with Java 21
                 jvmArgs '-Dnet.bytebuddy.experimental=true'
-                jvmArgs '-XX:+EnableDynamicAgentLoading'
+                if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_21)) {
+                    jvmArgs '-XX:+EnableDynamicAgentLoading'
+                }
             }
         }
     }

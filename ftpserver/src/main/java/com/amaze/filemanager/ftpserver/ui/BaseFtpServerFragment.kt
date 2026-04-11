@@ -55,6 +55,7 @@ import kotlinx.coroutines.launch
  * This provides the core FTP server UI functionality that can be extended
  * by the app module to add app-specific features.
  */
+@Suppress("StringLiteralDuplication")
 abstract class BaseFtpServerFragment : Fragment() {
     private var _binding: FragmentFtpBinding? = null
     protected val binding get() = _binding!!

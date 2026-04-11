@@ -191,21 +191,40 @@ class RootFileSystemView(
         return path
     }
 
+    /**
+     * Factory for creating SuFile instances.
+     */
     interface SuFileFactory {
+        /**
+         * Create a SuFile instance for the given pathname.
+         */
         fun create(pathname: String): SuFile = SuFile(pathname)
 
+        /**
+         * Create a SuFile instance for the given parent and child paths.
+         */
         fun create(
             parent: String,
             child: String,
         ): SuFile = SuFile(parent, child)
 
+        /**
+         * Create a SuFile instance for the given parent File and child path.
+         */
         fun create(
             parent: File,
             child: String,
         ): SuFile = SuFile(parent, child)
 
+        /**
+         * Create a SuFile instance for the given URI.
+         */
         fun create(uri: URI): SuFile = SuFile(uri)
     }
 
+    /**
+     * Default implementation of SuFileFactory that creates SuFile instances using the default
+     * constructors.
+     */
     class DefaultSuFileFactory : SuFileFactory
 }

@@ -106,6 +106,7 @@ object FtpServerEngine {
             }.apply { start() }
     }
 
+    @Suppress("LongMethod", "ComplexMethod", "TooGenericExceptionCaught")
     private fun runServer(
         context: Context,
         config: ServerConfig,
@@ -116,13 +117,14 @@ object FtpServerEngine {
                 val connectionConfigFactory = ConnectionConfigFactory()
 
                 // Configure filesystem
-                if (SDK_INT >= KITKAT && config.useSafFilesystem) {
-                    fileSystem = AndroidFileSystemFactory(context) { config.path }
-                } else if (config.useRootFilesystem) {
-                    fileSystem = RootFileSystemFactory()
-                } else {
-                    fileSystem = NativeFileSystemFactory()
-                }
+                fileSystem =
+                    if (SDK_INT >= KITKAT && config.useSafFilesystem) {
+                        AndroidFileSystemFactory(context) { config.path }
+                    } else if (config.useRootFilesystem) {
+                        RootFileSystemFactory()
+                    } else {
+                        NativeFileSystemFactory()
+                    }
 
                 // Configure commands
                 if (config.errorMessageProvider != null && config.featResponseProvider != null) {
@@ -202,7 +204,7 @@ object FtpServerEngine {
                         onStarted(true)
                     }
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             log.error("Failed to start FTP server", e)
             scope.launch {
                 FtpEventBus.emit(FtpServerEvent.FailedToStart)
