@@ -145,6 +145,10 @@ class RecyclerAdapterListItemTest {
         )
     }
 
+    /**
+     * Section headers (TYPE_HEADER_FILES) are not real file entries; they must
+     * never carry an animation flag regardless of what is passed to `setAnimate`.
+     */
     @Test
     fun testSetAnimate_true_typeHeaderFiles_remainsFalse() {
         val item = makeSpecialItem(TYPE_HEADER_FILES)
