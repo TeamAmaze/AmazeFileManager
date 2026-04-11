@@ -25,7 +25,6 @@ import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.FlakyTest
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.services.FtpServiceAndroidFileSystemIntegrationTest
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.Operations
@@ -96,6 +95,22 @@ open class FtpHybridFileTest {
         const val PASSWORD = "passw0rD"
 
         private const val PORT = 2221
+
+        val directories =
+            arrayOf(
+                Environment.DIRECTORY_MUSIC,
+                Environment.DIRECTORY_PODCASTS,
+                Environment.DIRECTORY_RINGTONES,
+                Environment.DIRECTORY_ALARMS,
+                Environment.DIRECTORY_NOTIFICATIONS,
+                Environment.DIRECTORY_PICTURES,
+                Environment.DIRECTORY_MOVIES,
+                Environment.DIRECTORY_DOWNLOADS,
+                Environment.DIRECTORY_DCIM,
+                Environment.DIRECTORY_DOCUMENTS,
+                "1/2/3/4/5/6/7",
+                "lost+found",
+            )
     }
 
     /**
@@ -118,7 +133,7 @@ open class FtpHybridFileTest {
             Schedulers.trampoline()
         }
         Environment.getExternalStorageDirectory().run {
-            FtpServiceAndroidFileSystemIntegrationTest.directories.forEach { dir ->
+            directories.forEach { dir ->
                 File(this, dir).mkdirs()
             }
         }
