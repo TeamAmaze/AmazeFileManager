@@ -31,6 +31,10 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class LayoutElementParcelableEspressoTest {
+    /**
+     * Test constructor of [LayoutElementParcelable] with a big remote file (size > 10 MB)
+     * and verify that the icon type is set to [IMAGE_RES].
+     */
     @Test
     fun testConstructorWithBigRemoteFile() {
         val a =
@@ -54,6 +58,10 @@ class LayoutElementParcelableEspressoTest {
         }
     }
 
+    /**
+     * Test constructor of [LayoutElementParcelable] with a small remote file (size <= 10 MB)
+     * and verify that the icon type is set to [IMAGE_FROMCLOUD].
+     */
     @Test
     fun testConstructorWithSmallRemoteFile() {
         val b =

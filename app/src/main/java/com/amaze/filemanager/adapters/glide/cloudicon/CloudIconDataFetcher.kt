@@ -70,6 +70,7 @@ class CloudIconDataFetcher(
     private var inputStream: InputStream? = null
     private val cancelled = AtomicBoolean(false)
 
+    @Suppress("TooGenericExceptionCaught")
     override fun loadData(
         priority: Priority,
         callback: DataFetcher.DataCallback<in Bitmap?>,

@@ -75,6 +75,9 @@ class UiPrefsFragmentTest : AbstractPreferencesFragmentTest<UiPrefsFragment>("ui
         }
     }
 
+    /**
+     * Verify that enabling/disabling show thumbnails also enables/disables the max size option
+     */
     @Test
     fun testShowThumbnailsCheckbox() {
         performTest { prefs, preferencesActivity, prefsFragment ->
@@ -86,6 +89,9 @@ class UiPrefsFragmentTest : AbstractPreferencesFragmentTest<UiPrefsFragment>("ui
         }
     }
 
+    /**
+     * Verify that the max size options are displayed correctly and have the correct values.
+     */
     @Test
     fun testShowRemoteThumbnailsMaxSizeOptions() {
         val presetItems =

@@ -47,7 +47,11 @@ import org.robolectric.annotation.Config
     sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
     shadows = [ShadowMultiDex::class],
 )
+@Suppress("StringLiteralDuplication")
 class LayoutElementParcelableTest {
+    /**
+     * Set up before test.
+     */
     @Before
     fun setUp() {
         // By default Robolectric's MimeTypeMap is empty, we need to populate them
@@ -61,6 +65,9 @@ class LayoutElementParcelableTest {
             .apply()
     }
 
+    /**
+     * After test clean up.
+     */
     @After
     fun tearDown() {
         PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())

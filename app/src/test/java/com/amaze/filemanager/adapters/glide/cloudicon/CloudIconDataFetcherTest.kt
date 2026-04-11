@@ -20,8 +20,10 @@
 
 package com.amaze.filemanager.adapters.glide.cloudicon
 
+import android.content.Context
 import android.graphics.Bitmap
 import com.amaze.filemanager.adapters.glide.cloudicon.CloudIconDataFetcher.Companion.calculateInSampleSize
+import com.bumptech.glide.load.DataSource
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -34,6 +36,7 @@ import java.io.InputStream
  *  - [CloudIconDataFetcher.Companion.calculateInSampleSize] — pure arithmetic, no Android runtime needed.
  *  - [CloudIconDataFetcher.cancel] — sets the cancelled flag so a subsequent [loadData] returns null.
  */
+@Suppress("StringLiteralDuplication")
 class CloudIconDataFetcherTest {
     // -------------------------------------------------------------------------
     // calculateInSampleSize
@@ -157,7 +160,7 @@ class CloudIconDataFetcherTest {
      */
     @Test
     fun testCancel_closesStreamWithoutException() {
-        val context = mockk<android.content.Context>(relaxed = true)
+        val context = mockk<Context>(relaxed = true)
         val fetcher = CloudIconDataFetcher(context, "smb://host/file.jpg", 100, 100)
 
         // Should not throw even when there is no active stream.
@@ -206,7 +209,7 @@ class CloudIconDataFetcherTest {
      */
     @Test
     fun testCleanup_noStream_doesNotThrow() {
-        val context = mockk<android.content.Context>(relaxed = true)
+        val context = mockk<Context>(relaxed = true)
         val fetcher = CloudIconDataFetcher(context, "smb://host/file.jpg", 100, 100)
         fetcher.cleanup() // must not throw
     }
@@ -227,7 +230,7 @@ class CloudIconDataFetcherTest {
                 }
             }
 
-        val context = mockk<android.content.Context>(relaxed = true)
+        val context = mockk<Context>(relaxed = true)
         val fetcher = CloudIconDataFetcher(context, "smb://host/file.jpg", 100, 100)
 
         val field = CloudIconDataFetcher::class.java.getDeclaredField("inputStream")
@@ -239,21 +242,23 @@ class CloudIconDataFetcherTest {
         assertEquals("cleanup() must close the stream", 1, closed.size)
     }
 
-    // -------------------------------------------------------------------------
-    // getDataClass / getDataSource contract
-    // -------------------------------------------------------------------------
-
+    /**
+     * Test [CloudIconDataFetcher.getDataClass] must return Bitmap
+     */
     @Test
     fun testGetDataClass_returnsBitmapClass() {
-        val context = mockk<android.content.Context>(relaxed = true)
+        val context = mockk<Context>(relaxed = true)
         val fetcher = CloudIconDataFetcher(context, "smb://host/file.jpg", 100, 100)
         assertEquals(Bitmap::class.java, fetcher.dataClass)
     }
 
+    /**
+     * Test [CloudIconDataFetcher.getDataSource] must return REMOTE
+     */
     @Test
     fun testGetDataSource_returnsRemote() {
-        val context = mockk<android.content.Context>(relaxed = true)
+        val context = mockk<Context>(relaxed = true)
         val fetcher = CloudIconDataFetcher(context, "smb://host/file.jpg", 100, 100)
-        assertEquals(com.bumptech.glide.load.DataSource.REMOTE, fetcher.dataSource)
+        assertEquals(DataSource.REMOTE, fetcher.dataSource)
     }
 }
