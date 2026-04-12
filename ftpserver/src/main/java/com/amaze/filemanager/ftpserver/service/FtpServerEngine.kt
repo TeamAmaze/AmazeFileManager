@@ -76,6 +76,7 @@ object FtpServerEngine {
         val keyStorePassword: String = "",
         val errorMessageProvider: AVBL.ErrorMessageProvider? = null,
         val featResponseProvider: (() -> String)? = null,
+        val startedByTile: Boolean = false,
     )
 
     /**
@@ -199,7 +200,13 @@ object FtpServerEngine {
                     createServer().apply {
                         start()
                         scope.launch {
-                            FtpEventBus.emit(FtpServerEvent.Started)
+                            val event =
+                                if (config.startedByTile) {
+                                    FtpServerEvent.StartedFromTile
+                                } else {
+                                    FtpServerEvent.Started
+                                }
+                            FtpEventBus.emit(event)
                         }
                         onStarted(true)
                     }
@@ -217,20 +224,19 @@ object FtpServerEngine {
      * Stop the FTP server
      */
     fun stop() {
-        serverThread?.let { thread ->
-            thread.interrupt()
-            thread.join(10000)
-
-            if (!thread.isAlive) {
-                serverThread = null
+        scope.launch {
+            serverThread?.let { thread ->
+                thread.interrupt()
+                thread.join(10000)
+                if (!thread.isAlive) {
+                    serverThread = null
+                }
             }
 
             server?.stop()
             server = null
 
-            scope.launch {
-                FtpEventBus.emit(FtpServerEvent.Stopped)
-            }
+            FtpEventBus.emit(FtpServerEvent.Stopped)
         }
     }
 }

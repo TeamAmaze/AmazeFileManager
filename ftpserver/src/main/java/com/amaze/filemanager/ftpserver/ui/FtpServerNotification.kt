@@ -53,8 +53,8 @@ class FtpServerNotification(
         ensureNotificationChannel(context)
         return buildNotification(
             context,
-            R.string.ftpmod_notif_starting_title,
-            context.getString(R.string.ftpmod_notif_starting),
+            R.string.ftpmod_notification_title,
+            context.getString(R.string.ftpmod_notification_starting),
             noStopButton,
         ).build()
     }
@@ -80,14 +80,14 @@ class FtpServerNotification(
                     }
                 "$prefix$address:$port/"
             } else {
-                "Address not found"
+                context.getString(R.string.ftpmod_notification_error_address_not_found)
             }
 
         val notification =
             buildNotification(
                 context,
-                R.string.ftpmod_notif_title,
-                context.getString(R.string.ftpmod_notif_text, addressText),
+                R.string.ftpmod_notification_running_title,
+                context.getString(R.string.ftpmod_notification_running_text, addressText),
                 noStopButton,
             ).build()
 
@@ -120,7 +120,7 @@ class FtpServerNotification(
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_ftp_light)
-                .setTicker(context.getString(R.string.ftpmod_notif_starting))
+                .setTicker(context.getString(R.string.ftpmod_notification_starting))
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -138,7 +138,7 @@ class FtpServerNotification(
                 )
             builder.addAction(
                 android.R.drawable.ic_menu_close_clear_cancel,
-                context.getString(R.string.ftpmod_notif_stop_server),
+                context.getString(R.string.ftpmod_notification_stop_server),
                 stopPendingIntent,
             )
         }
@@ -151,10 +151,10 @@ class FtpServerNotification(
             val channel =
                 NotificationChannel(
                     channelId,
-                    "FTP Server",
+                    context.getString(R.string.ftpmod_notification_title),
                     NotificationManager.IMPORTANCE_LOW,
                 ).apply {
-                    description = "FTP server status notifications"
+                    description = context.getString(R.string.ftpmod_notification_channel_desc)
                     setShowBadge(false)
                 }
             val notificationManager = context.getSystemService(NotificationManager::class.java)

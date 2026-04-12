@@ -27,6 +27,12 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import com.amaze.filemanager.ftpserver.commands.AVBL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.InputStream
@@ -40,6 +46,7 @@ import java.util.concurrent.TimeUnit
 abstract class FtpServerService : Service() {
     private lateinit var wakeLock: PowerManager.WakeLock
     private var isStartedByTile = false
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     /**
      * Get the notification ID for this service
@@ -106,21 +113,7 @@ abstract class FtpServerService : Service() {
     ): Int {
         isStartedByTile = intent?.getBooleanExtra(FtpPreferences.TAG_STARTED_BY_TILE, false) == true
 
-        // Wait for any existing server to stop
-        var attempts = 10
-        while (FtpServerEngine.isRunning()) {
-            if (attempts > 0) {
-                attempts--
-                try {
-                    Thread.sleep(1000)
-                } catch (_: InterruptedException) {
-                }
-            } else {
-                return START_STICKY
-            }
-        }
-
-        // Start as foreground service
+        // Start as foreground service immediately to avoid ANR
         val notification = createStartingNotification(isStartedByTile)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
@@ -132,8 +125,21 @@ abstract class FtpServerService : Service() {
             startForeground(getNotificationId(), notification)
         }
 
-        // Start the server
-        startServer()
+        // Wait for any existing server to stop off the main thread, then start
+        serviceScope.launch(Dispatchers.IO) {
+            var attempts = 10
+            while (FtpServerEngine.isRunning()) {
+                if (attempts > 0) {
+                    attempts--
+                    delay(1000)
+                } else {
+                    log.warn("FTP server did not stop in time; aborting start.")
+                    stopSelf()
+                    return@launch
+                }
+            }
+            startServer()
+        }
 
         return START_STICKY
     }
@@ -172,6 +178,7 @@ abstract class FtpServerService : Service() {
                 keyStorePassword = getKeyStorePassword(),
                 errorMessageProvider = getErrorMessageProvider(),
                 featResponseProvider = { getFeatResponse() },
+                startedByTile = isStartedByTile,
             )
 
         FtpServerEngine.start(this, config) { success ->
@@ -187,6 +194,7 @@ abstract class FtpServerService : Service() {
     }
 
     override fun onDestroy() {
+        serviceScope.cancel()
         FtpServerEngine.stop()
 
         if (wakeLock.isHeld) {

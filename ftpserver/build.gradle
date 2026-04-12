@@ -61,7 +61,6 @@ dependencies {
     implementation libs.androidX.material
     implementation 'androidx.documentfile:documentfile:1.0.1'
 
-    implementation 'org.greenrobot:eventbus:3.3.1'
     implementation libs.apache.mina.core
     implementation libs.apache.ftpserver.ftplet.api
     implementation libs.apache.ftpserver.core

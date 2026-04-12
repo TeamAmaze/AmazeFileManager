@@ -271,11 +271,11 @@ abstract class BaseFtpServerFragment : Fragment() {
                 binding.textViewFtpStatus.text = spannedStatusNotRunning
                 Toast.makeText(context, R.string.ftpmod_unknown_error, Toast.LENGTH_LONG).show()
                 binding.startStopButton.text = getString(R.string.ftpmod_start).uppercase()
-                binding.textViewFtpUrl.text = "URL: "
+                binding.textViewFtpUrl.text = getString(R.string.ftpmod_url_label)
             }
             is FtpServerEvent.Stopped -> {
                 binding.textViewFtpStatus.text = spannedStatusNotRunning
-                binding.textViewFtpUrl.text = "URL: "
+                binding.textViewFtpUrl.text = getString(R.string.ftpmod_url_label)
                 binding.startStopButton.text = getString(R.string.ftpmod_start).uppercase()
             }
         }

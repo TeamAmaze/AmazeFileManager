@@ -44,11 +44,13 @@
     <string name="ftpmod_error_AVBL_missing">Path not found: %1$s</string>
 
     <!-- Notification strings -->
-    <string name="ftpmod_notif_starting_title">FTP Server</string>
-    <string name="ftpmod_notif_starting">Starting FTP server…</string>
-    <string name="ftpmod_notif_title">FTP Server Running</string>
-    <string name="ftpmod_notif_text">FTP server is running at %1$s</string>
-    <string name="ftpmod_notif_stop_server">Stop</string>
+    <string name="ftpmod_notification_channel_desc">FTP server status notifications</string>
+    <string name="ftpmod_notification_title">FTP Server</string>
+    <string name="ftpmod_notification_starting">Starting FTP server…</string>
+    <string name="ftpmod_notification_running_title">FTP Server Running</string>
+    <string name="ftpmod_notification_running_text">FTP server is running at %1$s</string>
+    <string name="ftpmod_notification_stop_server">Stop</string>
+    <string name="ftpmod_notification_error_address_not_found">Address not found</string>
 
     <!-- Common -->
     <string name="ftpmod_ok">OK</string>
