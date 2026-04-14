@@ -79,8 +79,9 @@ import com.amaze.filemanager.ftpserver.service.FtpEventBus
 import com.amaze.filemanager.ftpserver.service.FtpPreferences
 import com.amaze.filemanager.ftpserver.service.FtpServerEngine
 import com.amaze.filemanager.ftpserver.service.FtpServerEvent
+import com.amaze.filemanager.server.ServerRegistry
+import com.amaze.filemanager.server.ServerType
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.runIfDocumentsUIExists
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.NetworkUtil.getLocalInetAddress
@@ -418,10 +419,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
                 url.text = spannedStatusUrl
                 ftpBtn.text = resources.getString(R.string.stop_ftp).uppercase()
-                FtpNotification.updateNotification(
-                    context,
-                    FtpServerEvent.StartedFromTile == signal,
-                )
+                ServerRegistry.getProvider(ServerType.FTP)
+                    ?.getNotification()
+                    ?.updateRunningNotification(
+                        context ?: return,
+                        FtpServerEvent.StartedFromTile == signal,
+                    )
             }
             FtpServerEvent.FailedToStart -> {
                 statusText.text = spannedStatusNotRunning

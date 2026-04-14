@@ -124,6 +124,9 @@ class FtpServerNotification(
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
 
         if (!noStopButton) {
             val stopIntent =
@@ -152,10 +155,9 @@ class FtpServerNotification(
                 NotificationChannel(
                     channelId,
                     context.getString(R.string.ftpmod_notification_title),
-                    NotificationManager.IMPORTANCE_LOW,
+                    NotificationManager.IMPORTANCE_HIGH,
                 ).apply {
                     description = context.getString(R.string.ftpmod_notification_channel_desc)
-                    setShowBadge(false)
                 }
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)

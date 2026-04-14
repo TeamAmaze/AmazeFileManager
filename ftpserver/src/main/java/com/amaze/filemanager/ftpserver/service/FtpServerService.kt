@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit
  *
  * This service manages the FTP server lifecycle as a foreground service.
  */
+@Suppress("LabeledExpression")
 abstract class FtpServerService : Service() {
     private lateinit var wakeLock: PowerManager.WakeLock
     private var isStartedByTile = false

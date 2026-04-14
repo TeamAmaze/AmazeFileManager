@@ -45,7 +45,7 @@ public class NotificationConstants {
   public static final int FAILED_ID = 6;
   public static final int WAIT_ID = 7;
 
-  public static final int TYPE_NORMAL = 0, TYPE_FTP = 1;
+  public static final int TYPE_NORMAL = 0;
 
   public static final String CHANNEL_NORMAL_ID = "normalChannel";
   public static final String CHANNEL_FTP_ID = "ftpChannel";
@@ -60,9 +60,6 @@ public class NotificationConstants {
         case TYPE_NORMAL:
           createNormalChannel(context);
           break;
-        case TYPE_FTP:
-          createFtpChannel(context);
-          break;
         default:
           throw new IllegalArgumentException("Unrecognized type:" + type);
       }
@@ -76,38 +73,9 @@ public class NotificationConstants {
             notification.setPriority(Notification.PRIORITY_MIN);
           }
           break;
-        case TYPE_FTP:
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notification.setCategory(Notification.CATEGORY_SERVICE);
-            notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-          }
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            notification.setPriority(Notification.PRIORITY_MAX);
-          }
-          break;
         default:
           throw new IllegalArgumentException("Unrecognized type:" + type);
       }
-    }
-  }
-
-  /**
-   * You CANNOT call this from android < O. THis channel is set so it doesn't bother the user, but
-   * it has importance.
-   */
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private static void createFtpChannel(Context context) {
-    NotificationManager mNotificationManager =
-        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    if (mNotificationManager.getNotificationChannel(CHANNEL_FTP_ID) == null) {
-      NotificationChannel mChannel =
-          new NotificationChannel(
-              CHANNEL_FTP_ID,
-              context.getString(R.string.channel_name_ftp),
-              NotificationManager.IMPORTANCE_HIGH);
-      // Configure the notification channel.
-      mChannel.setDescription(context.getString(R.string.channel_description_ftp));
-      mNotificationManager.createNotificationChannel(mChannel);
     }
   }
 

@@ -27,9 +27,9 @@ import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ftpserver.commands.AVBL
 import com.amaze.filemanager.ftpserver.service.FtpServerService
+import com.amaze.filemanager.server.ServerRegistry
+import com.amaze.filemanager.server.ServerType
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
-import com.amaze.filemanager.ui.notifications.FtpNotification
-import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.PasswordUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -44,16 +44,19 @@ import java.security.GeneralSecurityException
  * password decryption, and error messages.
  */
 class AppFtpService : FtpServerService() {
-    override fun getNotificationId(): Int = NotificationConstants.FTP_ID
+    private val serverNotification
+        get() = ServerRegistry.getProvider(ServerType.FTP)!!.getNotification()
 
-    override fun getNotificationChannelId(): String = NotificationConstants.CHANNEL_FTP_ID
+    override fun getNotificationId(): Int = serverNotification.getNotificationId()
+
+    override fun getNotificationChannelId(): String = serverNotification.getChannelId()
 
     override fun createStartingNotification(noStopButton: Boolean): Notification {
-        return FtpNotification.startNotification(applicationContext, noStopButton)
+        return serverNotification.createStartingNotification(applicationContext, noStopButton)
     }
 
     override fun updateRunningNotification(noStopButton: Boolean) {
-        FtpNotification.updateNotification(applicationContext, noStopButton)
+        serverNotification.updateRunningNotification(applicationContext, noStopButton)
     }
 
     override fun getKeyStoreInputStream(): InputStream? {
