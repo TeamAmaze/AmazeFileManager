@@ -65,6 +65,15 @@ object ServerRegistry {
     fun isRegistered(serverType: ServerType): Boolean {
         return servers.containsKey(serverType)
     }
+
+    /**
+     * Clear all registered server providers.
+     *
+     * Primarily intended for test teardown to ensure a clean state between tests.
+     */
+    fun clearAll() {
+        servers.clear()
+    }
 }
 
 /**

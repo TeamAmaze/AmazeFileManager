@@ -27,6 +27,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -40,6 +41,8 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.server.ServerRegistry;
+import com.amaze.filemanager.server.ServerType;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
@@ -57,6 +60,16 @@ public class AppConfigTest {
   @After
   public void tearDown() {
     ShadowToast.reset();
+    ServerRegistry.INSTANCE.clearAll();
+  }
+
+  @Test
+  public void testFtpServerProviderRegistered() {
+    assertTrue(ServerRegistry.INSTANCE.isRegistered(ServerType.FTP));
+    assertEquals(
+        "FTP Server", ServerRegistry.INSTANCE.getProvider(ServerType.FTP).getDisplayName());
+    assertEquals(
+        ServerType.FTP, ServerRegistry.INSTANCE.getProvider(ServerType.FTP).getServerType());
   }
 
   @Test

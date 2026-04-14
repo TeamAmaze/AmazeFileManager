@@ -22,6 +22,7 @@ package com.amaze.filemanager.application;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
 import java.util.concurrent.Callable;
 
 import org.acra.ACRA;
@@ -42,8 +43,13 @@ import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
+import com.amaze.filemanager.ftpserver.FtpServerProvider;
+import com.amaze.filemanager.server.ServerRegistry;
+import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
+import com.amaze.filemanager.ui.notifications.FtpNotificationAdapter;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.utils.NetworkUtil;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinConfig;
@@ -112,6 +118,18 @@ public class AppConfig extends GlideApplication {
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
+
+    // Register FtpServerProvider into ServerRegistry so FTP is discoverable via the registry.
+    // Using application context (this) here is safe — no Activity leak.
+    ServerRegistry.INSTANCE.register(
+        new FtpServerProvider(
+            this,
+            FtpServerFragment::new,
+            new FtpNotificationAdapter(),
+            ctx -> {
+              InetAddress addr = NetworkUtil.getLocalInetAddress(ctx, false);
+              return addr != null ? addr.getHostAddress() : null;
+            }));
   }
 
   @Override
@@ -123,6 +141,7 @@ public class AppConfig extends GlideApplication {
   @Override
   public void onTerminate() {
     super.onTerminate();
+    ServerRegistry.INSTANCE.clearAll();
   }
 
   /**

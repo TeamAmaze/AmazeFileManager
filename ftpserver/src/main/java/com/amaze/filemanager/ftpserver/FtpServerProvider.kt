@@ -39,6 +39,7 @@ class FtpServerProvider(
     private val context: Context,
     private val fragmentFactory: () -> Fragment,
     private val notificationHandler: ServerNotification,
+    private val getLocalAddress: (Context) -> String? = { null },
 ) : ServerProvider {
     override val serverType: ServerType = ServerType.FTP
 
@@ -57,8 +58,8 @@ class FtpServerProvider(
         val port = FtpPreferences.getPort(context)
         val secure = FtpPreferences.isSecure(context)
         val prefix = if (secure) FtpPreferences.INITIALS_HOST_SFTP else FtpPreferences.INITIALS_HOST_FTP
-        // Note: actual IP address needs to be obtained from NetworkUtil in the app module
-        return "${prefix}localhost:$port/"
+        val address = getLocalAddress(context) ?: return null
+        return "$prefix$address:$port/"
     }
 
     /**
