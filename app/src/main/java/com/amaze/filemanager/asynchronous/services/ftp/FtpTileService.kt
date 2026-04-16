@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.services.ftp
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
+import android.os.PowerManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.widget.Toast
@@ -76,6 +77,14 @@ class FtpTileService : TileService() {
                 if (isConnectedToWifi(applicationContext) ||
                     isConnectedToLocalNetwork(applicationContext)
                 ) {
+                    val pm = getSystemService(POWER_SERVICE) as PowerManager
+                    if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                        Toast.makeText(
+                            applicationContext,
+                            R.string.ftp_battery_optimization_tile_warning,
+                            Toast.LENGTH_LONG,
+                        ).show()
+                    }
                     val i = Intent(FtpPreferences.ACTION_START_FTPSERVER).setPackage(packageName)
                     i.putExtra(FtpPreferences.TAG_STARTED_BY_TILE, true)
                     applicationContext.sendBroadcast(i)

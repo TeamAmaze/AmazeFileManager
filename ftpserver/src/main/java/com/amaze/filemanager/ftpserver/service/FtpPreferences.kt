@@ -46,6 +46,7 @@ object FtpPreferences {
     const val KEY_PREFERENCE_READONLY = "ftp_readonly"
     const val KEY_PREFERENCE_SAF_FILESYSTEM = "ftp_saf_filesystem"
     const val KEY_PREFERENCE_ROOT_FILESYSTEM = "ftp_root_filesystem"
+    const val KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED = "ftp_battery_optimization_asked"
 
     const val INITIALS_HOST_FTP = "ftp://"
     const val INITIALS_HOST_SFTP = "ftps://"

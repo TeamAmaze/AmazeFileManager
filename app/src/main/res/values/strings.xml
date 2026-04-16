@@ -761,6 +761,15 @@ You only need to do this once, until the next time you select a new location for
     <string name="ftp_server_reset_notify">FTP server shared path had been reset to internal storage</string>
     <string name="ftp_server_root_unavailable">You are choosing a path which requires root access. Please enable root explorer in settings if your device is rooted.</string>
     <string name="ftp_server_root_filesystem_warning">You are choosing a path which requires root access, which enables read/write operations in the whole filesystem on your device, and it is dangerous - careless mistakes could brick your device!\n\nAre you sure?</string>
+    <string name="ftp_battery_optimization_title">Battery Optimization</string>
+    <string name="ftp_battery_optimization_message">Amaze FTP Server runs as a long-lived background service. Battery optimization may cause the OS to stop it unexpectedly or slow transfer speeds.\n\nFor best reliability, consider disabling battery optimization.</string>
+    <string name="ftp_battery_optimization_action_settings">Open Settings</string>
+    <string name="ftp_battery_optimization_action_skip">Skip</string>
+    <string name="ftp_battery_optimization_action_dont_ask">Don\'t ask again</string>
+    <string name="ftp_battery_optimization_tile_warning">Battery optimization is enabled — FTP server may be stopped by the OS</string>
+    <string name="ftp_battery_optimization_pref_title">Disable battery optimization prompt</string>
+    <string name="ftp_battery_optimization_pref_summary">Skip battery optimization reminder when starting the FTP server</string>
+    <string name="ftp_server_preferences">FTP Server</string>
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
     <string name="error_bad_archive_without_info">\"%s\" is a corrupted archive.</string>

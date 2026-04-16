@@ -245,8 +245,20 @@ abstract class BaseFtpServerFragment : Fragment() {
         }
     }
 
+    /**
+     * Called just before the FTP service is started. Override in subclasses to insert
+     * pre-start checks (e.g. battery optimization prompt). The default implementation
+     * calls [proceed] immediately.
+     *
+     * @param proceed Lambda to invoke when the subclass is ready to proceed with starting
+     *   the server.
+     */
+    protected open fun onBeforeStartServer(proceed: () -> Unit) {
+        proceed()
+    }
+
     private fun startServer() {
-        startFtpService(false)
+        onBeforeStartServer { startFtpService(false) }
     }
 
     private fun stopServer() {

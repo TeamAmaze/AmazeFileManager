@@ -20,11 +20,16 @@
 
 package com.amaze.filemanager.ui.fragments.preferencefragments
 
+import android.content.Intent
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
 import android.text.InputType
 import androidx.preference.Preference
 import androidx.preference.PreferenceManager
+import androidx.preference.TwoStatePreference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
@@ -91,6 +96,26 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
                 trashBinCleanupInterval()
                 true
             }
+
+        val batteryOptPref =
+            findPreference<TwoStatePreference>(
+                PreferencesConstants.PREFERENCE_FTP_BATTERY_OPTIMIZATION_ASKED,
+            )
+        if (SDK_INT < M) {
+            batteryOptPref?.isVisible = false
+        } else {
+            batteryOptPref?.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    // When user unchecks the toggle (re-enabling the prompt), deep-link to
+                    // battery optimization settings so they can act on it right away.
+                    if (newValue == false) {
+                        startActivity(
+                            Intent(ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
+                        )
+                    }
+                    true
+                }
+        }
     }
 
     override fun onFolderSelection(

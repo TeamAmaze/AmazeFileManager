@@ -34,10 +34,12 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
+import android.os.PowerManager
 import android.os.Process
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.provider.Settings
+import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
 import android.text.InputType
 import android.text.Spanned
 import android.view.KeyEvent
@@ -122,6 +124,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private var spannedStatusSecure: Spanned? = null
     private var spannedStatusNotRunning: Spanned? = null
     private var snackbar: Snackbar? = null
+    private var pendingBatteryOptimizationResult = false
 
     private var _binding: FragmentFtpBinding? = null
     private val binding get() = _binding!!
@@ -457,6 +460,53 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
     }
 
+    /**
+     * On API 23+, checks whether the app is exempt from battery optimizations before starting
+     * the FTP server. If already exempt, or if the user has previously dismissed the prompt,
+     * [callback] is invoked directly. Otherwise a [MaterialDialog] is shown with options to
+     * open battery optimization settings, skip, or suppress future prompts.
+     */
+    private fun checkBatteryOptimizationIfNecessary(callback: () -> Unit) {
+        if (SDK_INT < M) {
+            callback()
+            return
+        }
+        val pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+        val alreadyAsked =
+            FtpPreferences.getPreferences(requireContext())
+                .getBoolean(FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED, false)
+        if (pm.isIgnoringBatteryOptimizations(requireContext().packageName) || alreadyAsked) {
+            callback()
+            return
+        }
+        MaterialDialog.Builder(requireContext())
+            .title(R.string.ftp_battery_optimization_title)
+            .content(R.string.ftp_battery_optimization_message)
+            .positiveText(R.string.ftp_battery_optimization_action_settings)
+            .negativeText(R.string.ftp_battery_optimization_action_skip)
+            .neutralText(R.string.ftp_battery_optimization_action_dont_ask)
+            .onPositive { dialog, _ ->
+                pendingBatteryOptimizationResult = true
+                startActivity(
+                    Intent(ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
+                )
+                dialog.dismiss()
+            }
+            .onNegative { dialog, _ ->
+                dialog.dismiss()
+                callback()
+            }
+            .onNeutral { dialog, _ ->
+                FtpPreferences.getPreferences(requireContext()).edit {
+                    putBoolean(FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED, true)
+                }
+                dialog.dismiss()
+                callback()
+            }
+            .build()
+            .show()
+    }
+
     /** Check URI access. Prompt user to DocumentsUI if necessary */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {
         val directoryUri: String =
@@ -534,8 +584,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     /** Sends a broadcast to start ftp server  */
     private fun startServer() {
-        checkUriAccessIfNecessary {
-            doStartServer()
+        checkBatteryOptimizationIfNecessary {
+            checkUriAccessIfNecessary {
+                doStartServer()
+            }
         }
     }
 
@@ -562,6 +614,17 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             wifiFilter,
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
+        if (pendingBatteryOptimizationResult) {
+            pendingBatteryOptimizationResult = false
+            if (SDK_INT >= M) {
+                val pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+                if (pm.isIgnoringBatteryOptimizations(requireContext().packageName) &&
+                    (isConnectedToWifi(requireContext()) || isConnectedToLocalNetwork(requireContext()))
+                ) {
+                    checkUriAccessIfNecessary { doStartServer() }
+                }
+            }
+        }
         updateStatus()
     }
 
