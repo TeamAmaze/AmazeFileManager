@@ -388,7 +388,9 @@ public class MainActivityHelper {
                    * DocumentFile.renameTo() may return false even when rename is successful. Hence we need an extra check
                    * instead of merely looking at the return value
                    */
-                  if (b || newFile.exists(context)) {
+                  if (b
+                      || ((newFile.isDocumentFile() || newFile.isOtgFile())
+                          && newFile.exists(context))) {
                     Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
 
                     intent.putExtra(
