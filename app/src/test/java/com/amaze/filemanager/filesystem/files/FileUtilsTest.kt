@@ -47,6 +47,55 @@ class FileUtilsTest {
      * @see FileUtils.getPathsInPath
      */
     @Test
+    fun testGetPathsInPathForEmpty() {
+        getPathsInPath("").run {
+            assertEquals(0, size)
+            assertArrayEquals(
+                arrayOf(),
+                this,
+            )
+        }
+    }
+
+    @Test
+    fun testGetPathsInPathForWhitespace() {
+        getPathsInPath(" ").run {
+            assertEquals(0, size)
+            assertArrayEquals(
+                arrayOf(),
+                this,
+            )
+        }
+    }
+
+    @Test
+    fun testGetPathsInPathForSingleSlash() {
+        getPathsInPath("/").run {
+            assertEquals(1, size)
+            assertArrayEquals(
+                arrayOf(
+                    "/",
+                ),
+                this,
+            )
+        }
+    }
+
+    @Test
+    fun testGetPathsInPathForSingleFolderWithSlashAtEnd() {
+        getPathsInPath("/dir/").run {
+            assertEquals(2, size)
+            assertArrayEquals(
+                arrayOf(
+                    "/",
+                    "/dir",
+                ),
+                this,
+            )
+        }
+    }
+
+    @Test
     fun testGetPathsInPathForFolder() {
         getPathsInPath("/etc/default/grub/2/conf.d").run {
             assertEquals(6, size)
