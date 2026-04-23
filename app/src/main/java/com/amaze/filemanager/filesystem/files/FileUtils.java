@@ -590,22 +590,34 @@ public class FileUtils {
    * @return string array of incremental path segments
    */
   public static String[] getPathsInPath(String path) {
+
+    path = path.trim();
+    if (path == "") {
+      return new String[0];
+    } else if (path == "/") {
+      return new String[] {"/"};
+    }
     if (path.endsWith("/")) {
       path = path.substring(0, path.length() - 1);
     }
     path = path.trim();
 
-    ArrayList<String> paths = new ArrayList<>();
     @Nullable String urlPrefix = null;
     @Nullable Pair<String, String> splitUri = splitUri(path);
     if (splitUri != null) {
       urlPrefix = splitUri.first;
       path = splitUri.second;
+
+      if (path == null) {
+        return new String[] {urlPrefix};
+      }
     }
 
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
+
+    ArrayList<String> paths = new ArrayList<>();
 
     while (path.length() > 0) {
       if (urlPrefix != null) {
