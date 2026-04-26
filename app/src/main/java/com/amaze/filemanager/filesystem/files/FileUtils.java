@@ -592,9 +592,10 @@ public class FileUtils {
   public static String[] getPathsInPath(String pathParam) {
     String path = pathParam;
     path = path.trim();
-    if (path.equals("")) {
+    if (path.isEmpty()) {
       return new String[0];
-    } else if (path.equals("/")) {
+    }
+    if (path.equals("/")) {
       return new String[] {"/"};
     }
     if (path.endsWith("/")) {
@@ -617,8 +618,23 @@ public class FileUtils {
       path = "/" + path;
     }
 
-    ArrayList<String> paths = new ArrayList<>();
+    ArrayList<String> paths = buildPaths(path, urlPrefix);
 
+    paths.add(urlPrefix != null ? urlPrefix : "/");
+    Collections.reverse(paths);
+
+    return paths.toArray(new String[0]);
+  }
+
+  /**
+   * Splits a given path to URI prefix (if exists) and path.
+   *
+   * @param pathParam
+   * @return string array of incremental path segments
+   */
+  public static ArrayList<String> buildPaths(String pathParam, String urlPrefix) {
+    ArrayList<String> paths = new ArrayList<>();
+    String path = pathParam;
     while (path.length() > 0) {
       if (urlPrefix != null) {
         paths.add(urlPrefix + path);
@@ -631,15 +647,7 @@ public class FileUtils {
         break;
       }
     }
-
-    if (urlPrefix != null) {
-      paths.add(urlPrefix);
-    } else {
-      paths.add("/");
-    }
-    Collections.reverse(paths);
-
-    return paths.toArray(new String[0]);
+    return paths;
   }
 
   /**
