@@ -42,7 +42,7 @@ import java.util.TimeZone
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class FileUtilsTest {
     /**
-     * Test FileUtils.getPathsInPath() for directory
+     * Test FileUtils.getPathsInPath() with empty
      *
      * @see FileUtils.getPathsInPath
      */
@@ -57,6 +57,11 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test FileUtils.getPathsInPath() with just whitespace
+     *
+     * @see FileUtils.getPathsInPath
+     */
     @Test
     fun testGetPathsInPathForWhitespace() {
         getPathsInPath(" ").run {
@@ -68,6 +73,11 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test FileUtils.getPathsInPath() with single slash
+     *
+     * @see FileUtils.getPathsInPath
+     */
     @Test
     fun testGetPathsInPathForSingleSlash() {
         getPathsInPath("/").run {
@@ -81,6 +91,11 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test FileUtils.getPathsInPath() for folder with slash at end
+     *
+     * @see FileUtils.getPathsInPath
+     */
     @Test
     fun testGetPathsInPathForSingleFolderWithSlashAtEnd() {
         getPathsInPath("/dir/").run {
@@ -95,6 +110,11 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test FileUtils.getPathsInPath() for directory
+     *
+     * @see FileUtils.getPathsInPath
+     */
     @Test
     fun testGetPathsInPathForFolder() {
         getPathsInPath("/etc/default/grub/2/conf.d").run {
