@@ -589,12 +589,12 @@ public class FileUtils {
    * @param path
    * @return string array of incremental path segments
    */
-  public static String[] getPathsInPath(String path) {
-
+  public static String[] getPathsInPath(String pathParam) {
+    String path = pathParam;
     path = path.trim();
-    if (path == "") {
+    if (path.equals("")) {
       return new String[0];
-    } else if (path == "/") {
+    } else if (path.equals("/")) {
       return new String[] {"/"};
     }
     if (path.endsWith("/")) {
