@@ -586,7 +586,7 @@ public class FileUtils {
    * ["smb://user;workgroup:passw0rd@12.3.4", "smb://user;workgroup:passw0rd@12.3.4/user", "smb://user;workgroup:passw0rd@12.3.4/user/Documents", "smb://user;workgroup:passw0rd@12.3.4/user/Documents/flare.doc"]
    * </code>
    *
-   * @param path
+   * @param pathParam
    * @return string array of incremental path segments
    */
   public static String[] getPathsInPath(String pathParam) {
