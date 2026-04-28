@@ -53,8 +53,6 @@ import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.omh.OMHClientHelper;
-import com.openmobilehub.android.storage.core.OmhStorageClient;
-import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -64,11 +62,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.documentfile.provider.DocumentFile;
 
-import kotlin.Unit;
-import kotlin.coroutines.EmptyCoroutineContext;
 import kotlin.io.ByteStreamsKt;
 import kotlin.text.StringsKt;
-import kotlinx.coroutines.BuildersKt;
 
 /** Base class to handle file copy. */
 public class GenericCopyUtil {
@@ -273,32 +268,20 @@ public class GenericCopyUtil {
   private void cloudCopy(
       @NonNull OpenMode openMode, @NonNull BufferedInputStream bufferedInputStream)
       throws IOException {
-    OmhStorageClient storageClient = OMHClientHelper.getStorageClient(openMode);
-    if (storageClient != null) {
-      String fullFilename = mTargetFile.getSimpleName();
-      String filename = StringsKt.substringBeforeLast(fullFilename, '.', fullFilename);
-      String extension = StringsKt.substringAfterLast(fullFilename, '.', "");
-      File tmpFile =
-          File.createTempFile(filename, "." + extension, AppConfig.getInstance().getCacheDir());
-      tmpFile.deleteOnExit();
-      ByteStreamsKt.copyTo(bufferedInputStream, new FileOutputStream(tmpFile), DEFAULT_BUFFER_SIZE);
+    String fullFilename = mTargetFile.getSimpleName();
+    String filename = StringsKt.substringBeforeLast(fullFilename, '.', fullFilename);
+    String extension = StringsKt.substringAfterLast(fullFilename, '.', "");
+    File tmpFile =
+        File.createTempFile(filename, "." + extension, AppConfig.getInstance().getCacheDir());
+    tmpFile.deleteOnExit();
+    ByteStreamsKt.copyTo(bufferedInputStream, new FileOutputStream(tmpFile), DEFAULT_BUFFER_SIZE);
 
-      final String parent = mTargetFile.getParent(mContext);
-      try {
-        BuildersKt.runBlocking(
-            EmptyCoroutineContext.INSTANCE,
-            (scope, continuation) -> {
-              OmhStorageEntity parentFolder =
-                  (OmhStorageEntity)
-                      storageClient.resolvePath(
-                          CloudUtil.stripCloudPath(openMode, parent), continuation);
-              storageClient.uploadFile(tmpFile, parentFolder.getId(), continuation);
-              tmpFile.delete();
-              return Unit.INSTANCE;
-            });
-      } catch (InterruptedException e) {
-
-      }
+    final String parent = mTargetFile.getParent(mContext);
+    try {
+      OMHClientHelper.uploadCloudFile(
+          openMode, tmpFile, CloudUtil.stripCloudPath(openMode, parent));
+    } catch (Exception e) {
+      LOG.error("Error uploading cloud file", e);
     }
   }
 

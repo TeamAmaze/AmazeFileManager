@@ -45,7 +45,6 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.omh.OMHClientHelper;
-import com.openmobilehub.android.storage.core.OmhStorageClient;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -58,8 +57,6 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbException;
-import kotlin.coroutines.EmptyCoroutineContext;
-import kotlinx.coroutines.BuildersKt;
 
 public class DeleteTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
@@ -180,19 +177,10 @@ public class DeleteTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        OmhStorageClient storageClient = OMHClientHelper.getStorageClient(file.getMode());
-        if (storageClient != null) {
-          BuildersKt.runBlocking(
-              EmptyCoroutineContext.INSTANCE,
-              (scope, continuation) -> {
-                try {
-                  storageClient.deleteFile(file.getCloudFileId(), continuation);
-                  return true;
-                } catch (Exception e) {
-                  LOG.error("Error delete cloud file", e);
-                  return false;
-                }
-              });
+        try {
+          OMHClientHelper.deleteCloudFile(file.getMode(), file.getCloudFileId());
+        } catch (Exception e) {
+          LOG.error("Error deleting cloud file", e);
         }
         return true;
       default:
