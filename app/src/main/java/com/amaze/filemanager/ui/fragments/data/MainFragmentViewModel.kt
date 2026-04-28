@@ -47,6 +47,42 @@ class MainFragmentViewModel : ViewModel() {
     var currentPath: String? = null
     var cloudFolderId: String? = null
 
+    /**
+     * Back-stack of cloud folder IDs, used to restore the correct folder ID when
+     * navigating back in cloud storage. Each entry corresponds to one "folder entered"
+     * action.  The entry at the top is the **parent** folder's ID we should return to.
+     */
+    private val cloudFolderIdHistory: ArrayDeque<String?> = ArrayDeque()
+
+    /**
+     * Saves the current [cloudFolderId] onto the history stack before navigating
+     * forward into a cloud subfolder.  Call this immediately before updating
+     * [cloudFolderId] to the child folder's ID.
+     */
+    fun saveCloudFolderIdToHistory() {
+        cloudFolderIdHistory.addLast(cloudFolderId)
+    }
+
+    /**
+     * Pops the previous cloud folder ID from the history stack and stores it in
+     * [cloudFolderId], so that [loadlist] (and any subsequent pull-to-refresh) uses
+     * the correct parent folder ID.
+     *
+     * @return the restored ID (`null` = cloud root / use rootFolder)
+     */
+    fun restoreCloudFolderIdFromHistory(): String? {
+        cloudFolderId = cloudFolderIdHistory.removeLastOrNull()
+        return cloudFolderId
+    }
+
+    /**
+     * Clears the cloud folder ID history.  Should be called whenever the user
+     * leaves cloud mode entirely (e.g. navigates to a local or SMB path).
+     */
+    fun clearCloudFolderIdHistory() {
+        cloudFolderIdHistory.clear()
+    }
+
     /** This is not an exact copy of the elements in the adapter  */
     var listElements: List<LayoutElementParcelable> = ArrayList<LayoutElementParcelable>()
 

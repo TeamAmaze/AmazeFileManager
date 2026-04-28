@@ -482,13 +482,14 @@ public class MainFragment extends Fragment
             adapter.toggleChecked(position, imageView);
           } else {
             computeScroll();
-            if (mainFragmentViewModel.getIsCloudOpenMode()) {
-              loadlist(
-                  layoutElementParcelable.cloudFileId,
-                  path,
-                  false,
-                  mainFragmentViewModel.getOpenMode(),
-                  false);
+          if (mainFragmentViewModel.getIsCloudOpenMode()) {
+            mainFragmentViewModel.saveCloudFolderIdToHistory();
+            loadlist(
+                layoutElementParcelable.cloudFileId,
+                path,
+                false,
+                mainFragmentViewModel.getOpenMode(),
+                false);
             } else {
               loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
             }
@@ -837,6 +838,14 @@ public class MainFragment extends Fragment
       mainFragmentViewModel.setCloudFolderId(cloudFolderId);
       mainFragmentViewModel.setCurrentPath(path);
       mainFragmentViewModel.setOpenMode(openMode);
+      // Clear the cloud folder ID back-stack when the user moves away from cloud mode entirely,
+      // so stale history from a previous cloud session doesn't leak into the next one.
+      if (openMode != OpenMode.GDRIVE
+          && openMode != OpenMode.DROPBOX
+          && openMode != OpenMode.BOX
+          && openMode != OpenMode.ONEDRIVE) {
+        mainFragmentViewModel.clearCloudFolderIdHistory();
+      }
       reloadListElements(back, grid);
     } else {
       // list loading cancelled
@@ -1202,8 +1211,20 @@ public class MainFragment extends Fragment
               false);
         }
       } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-        loadlist(
-            currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+        if (mainFragmentViewModel.getIsCloudOpenMode()) {
+          // Pop the parent folder's cloud ID from history so that both the immediate
+          // listing and any subsequent pull-to-refresh use the correct folder ID.
+          String parentCloudFolderId = mainFragmentViewModel.restoreCloudFolderIdFromHistory();
+          loadlist(
+              parentCloudFolderId,
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        } else {
+          loadlist(
+              currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+        }
       } else {
         requireMainActivity().exit();
       }
@@ -1259,8 +1280,18 @@ public class MainFragment extends Fragment
           || mainFragmentViewModel.getIsOnCloudRoot()) {
         requireMainActivity().exit();
       } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-        loadlist(
-            currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+        if (mainFragmentViewModel.getIsCloudOpenMode()) {
+          String parentCloudFolderId = mainFragmentViewModel.restoreCloudFolderIdFromHistory();
+          loadlist(
+              parentCloudFolderId,
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        } else {
+          loadlist(
+              currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+        }
       } else requireMainActivity().exit();
     }
   }
