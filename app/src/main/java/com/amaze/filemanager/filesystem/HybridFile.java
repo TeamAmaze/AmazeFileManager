@@ -1193,7 +1193,7 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        LOG.trace(CloudUtil.stripCloudPath(mode, path));
+        LOG.debug("DEBUG: " + CloudUtil.stripCloudPath(mode, path));
         inputStream = HybridFileOmhStorageExtKt.downloadCloudFile(this);
         break;
       case TRASH_BIN:

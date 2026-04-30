@@ -34,6 +34,7 @@ import java.io.InputStream
 class CloudIconDataFetcher(
     private val context: Context,
     private val path: String,
+    private val cloudFileId: String?,
     private val width: Int,
     private val height: Int,
 ) : DataFetcher<Bitmap> {
@@ -47,7 +48,7 @@ class CloudIconDataFetcher(
         priority: Priority,
         callback: DataFetcher.DataCallback<in Bitmap?>,
     ) {
-        inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path)
+        inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path, cloudFileId)
         val options =
             BitmapFactory.Options().also {
                 it.outWidth = width

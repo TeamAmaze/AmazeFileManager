@@ -71,7 +71,9 @@ public class RecyclerPreloadModelProvider
     if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
       requestBuilder = request.load(iconData.path);
     } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
-      requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
+      // Load the IconDataParcelable directly so cloudFileId is available to the model loader,
+      // avoiding an extra resolvePath() API call per thumbnail.
+      requestBuilder = request.load(iconData).diskCacheStrategy(DiskCacheStrategy.NONE);
     } else {
       requestBuilder = request.load(iconData.image);
     }

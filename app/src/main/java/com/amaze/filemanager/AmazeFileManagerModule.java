@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager;
 
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.glide.apkimage.ApkImageModelLoaderFactory;
 import com.amaze.filemanager.adapters.glide.cloudicon.CloudIconModelFactory;
 import com.bumptech.glide.Glide;
@@ -37,6 +38,6 @@ public class AmazeFileManagerModule extends AppGlideModule {
   @Override
   public void registerComponents(Context context, Glide glide, Registry registry) {
     registry.prepend(String.class, Drawable.class, new ApkImageModelLoaderFactory(context));
-    registry.prepend(String.class, Bitmap.class, new CloudIconModelFactory(context));
+    registry.prepend(IconDataParcelable.class, Bitmap.class, new CloudIconModelFactory(context));
   }
 }

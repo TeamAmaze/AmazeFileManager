@@ -220,11 +220,15 @@ object CloudUtil {
 
     /**
      * Get an input stream for thumbnail for a given path.
+     *
+     * @param cloudFileId If non-null (OMH cloud storage), the file ID is used directly to fetch
+     *   the thumbnail, avoiding an extra [OmhStorageClient.resolvePath] network call.
      */
     @Suppress("LabeledExpression")
     fun getThumbnailInputStreamForCloud(
         context: Context,
         path: String?,
+        cloudFileId: String? = null,
     ): InputStream? {
         var inputStream: InputStream?
         val hybridFile = HybridFile(OpenMode.UNKNOWN, path)
@@ -265,14 +269,21 @@ object CloudUtil {
                     inputStream =
                         ByteArrayInputStream(
                             runBlocking {
-                                val path = stripCloudPath(hybridFile.mode, path!!)
-                                val storageEntity =
-                                    storageClient.resolvePath(
-                                        if (path.startsWith("/")) path else "/$path",
-                                    ) ?: return@runBlocking ByteArray(0)
-                                val cloudFileId = storageEntity.id
+                                // Use the cloudFileId directly if it was provided (avoids an
+                                // extra resolvePath() network round-trip per thumbnail).
+                                val resolvedFileId =
+                                    if (!cloudFileId.isNullOrEmpty()) {
+                                        cloudFileId
+                                    } else {
+                                        val strippedPath = stripCloudPath(hybridFile.mode, path!!)
+                                        val storageEntity =
+                                            storageClient.resolvePath(
+                                                if (strippedPath.startsWith("/")) strippedPath else "/$strippedPath",
+                                            ) ?: return@runBlocking ByteArray(0)
+                                        storageEntity.id
+                                    }
                                 storageClient.getFileThumbnail(
-                                    cloudFileId,
+                                    resolvedFileId,
                                     ThumbnailSize.MEDIUM,
                                 ).toByteArray()
                             },

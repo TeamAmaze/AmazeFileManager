@@ -16,20 +16,24 @@ import com.openmobilehub.android.auth.plugin.google.nongms.presentation.OmhAuthF
 import com.openmobilehub.android.auth.plugin.microsoft.mobileweb.presentation.MicrosoftMobileWebAuthClient
 import com.openmobilehub.android.storage.core.OmhStorageClient
 import com.openmobilehub.android.storage.core.OmhStorageProvider
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity
 import com.openmobilehub.android.storage.plugin.box.restful.BoxRestfulOmhStorageClientFactory
 import com.openmobilehub.android.storage.plugin.dropbox.restful.DropboxRestfulOmhStorageClientFactory
 import com.openmobilehub.android.storage.plugin.googledrive.nongms.GoogleDriveNonGmsConstants
 import com.openmobilehub.android.storage.plugin.onedrive.restful.OneDriveRestfulOmhStorageClientFactory
+import kotlinx.coroutines.runBlocking
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.EnumMap
-import kotlinx.coroutines.runBlocking
-import com.openmobilehub.android.storage.core.model.OmhStorageEntity
 
 /**
  * Helper object to manage Open Mobile Hub auth and storage clients for different cloud providers.
  *
  */
 object OMHClientHelper {
+    private val LOG: Logger = LoggerFactory.getLogger(OMHClientHelper::class.java)
+
     const val MULTI_SLASH_FOR_CLOUD = "(?<=[^:])(///+)"
 
     private val authClients: MutableMap<OpenMode, OmhAuthClient> =
@@ -310,7 +314,10 @@ object OMHClientHelper {
      * Safe to call from a background Java thread (e.g. [android.os.AsyncTask]).
      */
     @JvmStatic
-    fun deleteCloudFile(openMode: OpenMode, fileId: String) {
+    fun deleteCloudFile(
+        openMode: OpenMode,
+        fileId: String,
+    ) {
         val storageClient = getStorageClient(openMode) ?: return
         runBlocking {
             storageClient.deleteFile(fileId)
@@ -318,17 +325,37 @@ object OMHClientHelper {
     }
 
     /**
-     * Blocking wrapper that resolves [remotePath] to an [OmhStorageEntity] id,
+     * Blocking wrapper that resolves [remoteFolderPath] to an [OmhStorageEntity] id,
      * uploads [localFile] into that folder, then deletes the temp file.
      * Safe to call from a background Java thread.
+     *
+     * When [remoteFolderPath] is empty the target is the provider's root folder, so
+     * [OmhStorageClient.rootFolder] is used directly instead of attempting to resolve
+     * an empty path (which would return null and silently drop the upload).
      */
     @JvmStatic
-    fun uploadCloudFile(openMode: OpenMode, localFile: File, remoteFolderPath: String) {
+    fun uploadCloudFile(
+        openMode: OpenMode,
+        localFile: File,
+        remoteFolderPath: String,
+    ) {
         val storageClient = getStorageClient(openMode) ?: return
         runBlocking {
-            val parentFolder: OmhStorageEntity =
-                storageClient.resolvePath(remoteFolderPath) ?: return@runBlocking
-            storageClient.uploadFile(localFile, parentFolder.id)
+            val parentFolderId: String =
+                if (remoteFolderPath.isEmpty()) {
+                    storageClient.rootFolder
+                } else {
+                    storageClient.resolvePath(remoteFolderPath)?.id
+                        ?: run {
+                            LOG.error(
+                                "uploadCloudFile: could not resolve cloud path '{}', upload aborted",
+                                remoteFolderPath,
+                            )
+                            localFile.delete()
+                            return@runBlocking
+                        }
+                }
+            storageClient.uploadFile(localFile, parentFolderId)
             localFile.delete()
         }
     }

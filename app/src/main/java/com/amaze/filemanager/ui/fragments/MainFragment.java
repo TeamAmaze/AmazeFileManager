@@ -482,14 +482,14 @@ public class MainFragment extends Fragment
             adapter.toggleChecked(position, imageView);
           } else {
             computeScroll();
-          if (mainFragmentViewModel.getIsCloudOpenMode()) {
-            mainFragmentViewModel.saveCloudFolderIdToHistory();
-            loadlist(
-                layoutElementParcelable.cloudFileId,
-                path,
-                false,
-                mainFragmentViewModel.getOpenMode(),
-                false);
+            if (mainFragmentViewModel.getIsCloudOpenMode()) {
+              mainFragmentViewModel.saveCloudFolderIdToHistory();
+              loadlist(
+                  layoutElementParcelable.cloudFileId,
+                  path,
+                  false,
+                  mainFragmentViewModel.getOpenMode(),
+                  false);
             } else {
               loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
             }
@@ -1223,7 +1223,10 @@ public class MainFragment extends Fragment
               false);
         } else {
           loadlist(
-              currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
         }
       } else {
         requireMainActivity().exit();
@@ -1290,7 +1293,10 @@ public class MainFragment extends Fragment
               false);
         } else {
           loadlist(
-              currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
         }
       } else requireMainActivity().exit();
     }

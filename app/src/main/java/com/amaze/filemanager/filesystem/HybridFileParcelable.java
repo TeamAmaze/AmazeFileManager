@@ -229,6 +229,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     date = in.readLong();
     size = in.readLong();
     isDirectory = in.readByte() != 0;
+    cloudFileId = in.readString(); // may be null for non-cloud files
   }
 
   public static final Creator<HybridFileParcelable> CREATOR =
@@ -258,6 +259,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     dest.writeLong(date);
     dest.writeLong(size);
     dest.writeByte((byte) (isDirectory ? 1 : 0));
+    dest.writeString(cloudFileId); // null for non-cloud files; Parcel handles null strings
   }
 
   @NonNull

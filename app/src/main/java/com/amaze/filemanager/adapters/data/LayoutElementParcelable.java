@@ -155,6 +155,14 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
       switch (mode) {
         case SMB:
         case SFTP:
+          if (!isDirectory
+              && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
+            this.iconData =
+                new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
+          } else {
+            this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+          }
+          break;
         case DROPBOX:
         case GDRIVE:
         case ONEDRIVE:
@@ -162,7 +170,8 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
           if (!isDirectory
               && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
             this.iconData =
-                new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
+                new IconDataParcelable(
+                    IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon, cloudFileId);
           } else {
             this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
           }
