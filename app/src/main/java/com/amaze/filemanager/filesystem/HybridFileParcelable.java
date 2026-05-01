@@ -124,13 +124,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     return date;
   }
 
-  public String getCloudFileId() {
-    return cloudFileId;
-  }
-
-  public void setCloudFileId(String cloudFileId) {
-    this.cloudFileId = cloudFileId;
-  }
 
   public String getName() {
     if (!Utils.isNullOrEmpty(name)) return name;

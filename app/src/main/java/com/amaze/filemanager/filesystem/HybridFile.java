@@ -144,6 +144,14 @@ public class HybridFile {
   protected OpenMode mode;
   protected String name;
 
+  public String getCloudFileId() {
+    return cloudFileId;
+  }
+
+  public void setCloudFileId(String cloudFileId) {
+    this.cloudFileId = cloudFileId;
+  }
+
   public HybridFile(OpenMode mode, String path) {
     this.path = path;
     this.mode = mode;

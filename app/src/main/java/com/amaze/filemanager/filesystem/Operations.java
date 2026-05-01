@@ -603,15 +603,21 @@ public class Operations {
                             oldFile.getMode(),
                             AppConfig.getInstance().getCloudAuthTrigger(),
                             () -> {
-                              OmhStorageEntity oldCloudFile =
-                                  OmhStorageClientExtKt.resolvePathBlocking(
-                                      storageClient,
-                                      CloudUtil.stripCloudPath(oldFile.getMode(), oldFile.path));
-                              if (oldCloudFile == null || oldCloudFile.getId() == null) {
+                              String fileId = oldFile.getCloudFileId();
+                              if (fileId == null) {
+                                // cloudFileId not pre-populated; resolve via path (extra network call)
+                                OmhStorageEntity oldCloudFile =
+                                    OmhStorageClientExtKt.resolvePathBlocking(
+                                        storageClient,
+                                        CloudUtil.stripCloudPath(oldFile.getMode(), oldFile.path));
+                                fileId =
+                                    oldCloudFile != null ? oldCloudFile.getId() : null;
+                              }
+                              if (fileId == null) {
                                 return null;
                               }
                               return OmhStorageClientExtKt.renameBlocking(
-                                  storageClient, oldCloudFile.getId(), newFile.getSimpleName());
+                                  storageClient, fileId, newFile.getSimpleName());
                             });
                     errorCallBack.done(newFile, renamedEntity != null);
                   } else {

@@ -1092,7 +1092,8 @@ public class MainFragment extends Fragment
                       name1,
                       f.isDirectory(),
                       getActivity(),
-                      getMainActivity().isRootExplorer());
+                      getMainActivity().isRootExplorer(),
+                      f.getCloudFileId());
             },
             (text) -> {
               boolean isValidFilename = FileProperties.isValidFilename(text);

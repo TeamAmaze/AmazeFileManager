@@ -79,6 +79,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -338,10 +339,23 @@ public class MainActivityHelper {
       final boolean isDirectory,
       final Activity context,
       boolean rootmode) {
+    rename(mode, oldPath, newPath, newName, isDirectory, context, rootmode, null);
+  }
+
+  public void rename(
+      OpenMode mode,
+      final String oldPath,
+      final String newPath,
+      final String newName,
+      final boolean isDirectory,
+      final Activity context,
+      boolean rootmode,
+      @Nullable String cloudFileId) {
     final Toast toast =
         Toast.makeText(context, context.getString(R.string.renaming), Toast.LENGTH_SHORT);
     toast.show();
     HybridFile oldFile = new HybridFile(mode, oldPath);
+    oldFile.setCloudFileId(cloudFileId);
     HybridFile newFile;
     if (Utils.isNullOrEmpty(newName)) {
       newFile = new HybridFile(mode, newPath);
