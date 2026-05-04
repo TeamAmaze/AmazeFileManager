@@ -330,6 +330,18 @@ public class Operations {
                   String extension = MimeTypes.getExtension(filename);
                   String filenameWithoutExtension =
                       StringsKt.substringBeforeLast(filename, ".", filename);
+                  if (parentFile.cloudFileId == null) {
+                    // cloudFileId not pre-populated; resolve via path (extra network call)
+                    OmhStorageEntity parentCloudFile =
+                        OmhStorageClientExtKt.resolvePathBlocking(
+                            storageClient,
+                            CloudUtil.stripCloudPath(file.getMode(), parentFile.getPath())
+                        );
+                    if (parentCloudFile != null) {
+                      parentFile.cloudFileId = parentCloudFile.getId();
+                    }
+                  }
+                  OmhStorageEntity result =
                   OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
                       file.mode,
                       AppConfig.getInstance().getCloudAuthTrigger(),
@@ -341,6 +353,7 @@ public class Operations {
                               parentFile.cloudFileId == null
                                   ? storageClient.getRootFolder()
                                   : parentFile.cloudFileId));
+                  errorCallBack.done(file, result != null);
                   return Unit.INSTANCE;
                 }
               } else if (file.isOtgFile()) {

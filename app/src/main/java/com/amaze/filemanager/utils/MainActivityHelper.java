@@ -571,8 +571,8 @@ public class MainActivityHelper {
             ma.getActivity()
                 .runOnUiThread(
                     () -> {
-                      if (b) {
-                        ma.updateList(false);
+                      if (hFile != null && b) {
+                        ma.updateList(true);
                       } else {
                         Toast.makeText(
                                 ma.getActivity(),
@@ -652,8 +652,8 @@ public class MainActivityHelper {
             ma.getActivity()
                 .runOnUiThread(
                     () -> {
-                      if (b) {
-                        ma.updateList(false);
+                      if (b && hFile != null) {
+                        ma.updateList(true);
                       } else {
                         Toast.makeText(
                                 ma.getActivity(),
