@@ -345,21 +345,44 @@ public class Operations {
                           file.mode,
                           AppConfig.getInstance().getCloudAuthTrigger(),
                           () ->
-                              OpenMode.GDRIVE.equals(file.mode)
-                                  ? OmhStorageClientExtKt.createFileWithMimeTypeBlocking(
-                                      storageClient,
-                                      filenameWithoutExtension,
-                                      extension,
-                                      parentFile.cloudFileId == null
-                                          ? storageClient.getRootFolder()
-                                          : parentFile.cloudFileId)
-                                  : OmhStorageClientExtKt.createFileWithExtensionBlocking(
-                                      storageClient,
-                                      filenameWithoutExtension,
-                                      extension,
-                                      parentFile.cloudFileId == null
-                                          ? storageClient.getRootFolder()
-                                          : parentFile.cloudFileId));
+                              switch (file.mode) {
+                                case GDRIVE ->
+                                    OmhStorageClientExtKt.createFileWithMimeTypeBlocking(
+                                        storageClient,
+                                        filenameWithoutExtension,
+                                        extension,
+                                        parentFile.cloudFileId == null
+                                            ? storageClient.getRootFolder()
+                                            : parentFile.cloudFileId);
+                                case BOX -> {
+                                  File tmpFile =
+                                      new File(AppConfig.getInstance().getCacheDir(), filename);
+                                  OmhStorageEntity retval = null;
+                                  try {
+                                    tmpFile.createNewFile();
+                                    tmpFile.deleteOnExit();
+                                    retval =
+                                        OmhStorageClientExtKt.uploadFileBlocking(
+                                            storageClient,
+                                            tmpFile,
+                                            parentFile.cloudFileId == null
+                                                ? storageClient.getRootFolder()
+                                                : parentFile.cloudFileId);
+                                    tmpFile.delete();
+                                  } catch (IOException e) {
+                                    LOG.warn("failed to create temp file for Box upload", e);
+                                  }
+                                  yield retval;
+                                }
+                                default ->
+                                    OmhStorageClientExtKt.createFileWithExtensionBlocking(
+                                        storageClient,
+                                        filenameWithoutExtension,
+                                        extension,
+                                        parentFile.cloudFileId == null
+                                            ? storageClient.getRootFolder()
+                                            : parentFile.cloudFileId);
+                              });
                   errorCallBack.done(file, result != null);
                   return Unit.INSTANCE;
                 }

@@ -310,21 +310,6 @@ object OMHClientHelper {
     // -------------------------------------------------------------------------
 
     /**
-     * Blocking wrapper around [OmhStorageClient.deleteFile].
-     * Safe to call from a background Java thread (e.g. [android.os.AsyncTask]).
-     */
-    @JvmStatic
-    fun deleteCloudFile(
-        openMode: OpenMode,
-        fileId: String,
-    ) {
-        val storageClient = getStorageClient(openMode) ?: return
-        runBlocking {
-            storageClient.deleteFile(fileId)
-        }
-    }
-
-    /**
      * Blocking wrapper that resolves [remoteFolderPath] to an [OmhStorageEntity] id,
      * uploads [localFile] into that folder, then deletes the temp file.
      * Safe to call from a background Java thread.

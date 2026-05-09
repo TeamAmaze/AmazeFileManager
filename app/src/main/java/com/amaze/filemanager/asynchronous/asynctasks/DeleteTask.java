@@ -45,6 +45,9 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.omh.OMHClientHelper;
+import com.amaze.filemanager.utils.omh.OmhAuthClientExtKt;
+import com.amaze.filemanager.utils.omh.OmhStorageClientExtKt;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -57,6 +60,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbException;
+import kotlin.Unit;
 
 public class DeleteTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
@@ -178,7 +182,16 @@ public class DeleteTask
       case GDRIVE:
       case ONEDRIVE:
         try {
-          OMHClientHelper.deleteCloudFile(file.getMode(), file.getCloudFileId());
+          OmhStorageClient storageClient = OMHClientHelper.getStorageClient(file.getMode());
+          if (storageClient != null) {
+            OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+                file.getMode(),
+                AppConfig.getInstance().getCloudAuthTrigger(),
+                () -> {
+                  OmhStorageClientExtKt.deleteFileBlocking(storageClient, file.getCloudFileId());
+                  return Unit.INSTANCE;
+                });
+          }
         } catch (Exception e) {
           LOG.error("Error deleting cloud file", e);
         }
