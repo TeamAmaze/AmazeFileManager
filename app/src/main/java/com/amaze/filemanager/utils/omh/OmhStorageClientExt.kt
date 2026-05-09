@@ -1,5 +1,6 @@
 package com.amaze.filemanager.utils.omh
 
+import android.webkit.MimeTypeMap
 import com.openmobilehub.android.storage.core.OmhStorageClient
 import com.openmobilehub.android.storage.core.model.OmhStorageEntity
 import com.openmobilehub.android.storage.core.model.OmhStorageMetadata
@@ -12,6 +13,22 @@ import java.io.File
  * Blocking version of [OmhStorageClient.search].
  */
 fun OmhStorageClient.searchBlocking(query: String): List<OmhStorageEntity> = runBlocking { search(query) }
+
+/**
+ * Blocking version of [OmhStorageClient.createFileWithMimeType].
+ */
+fun OmhStorageClient.createFileWithMimeTypeBlocking(
+    name: String,
+    extension: String,
+    parentId: String,
+): OmhStorageEntity? =
+    runBlocking {
+        createFileWithMimeType(
+            "$name.$extension",
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "text/plain",
+            parentId,
+        )
+    }
 
 /**
  * Blocking version of [OmhStorageClient.createFileWithExtension].

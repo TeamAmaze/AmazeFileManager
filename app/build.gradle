@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeUnit
+import com.android.build.gradle.internal.cxx.configure.GradleLocalPropertiesKt
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -35,6 +36,10 @@ android {
                               "room.expandProjection": "true"]
             }
         }
+
+        def googleClientId = getValueFromEnvOrProperties("AMAZE_CLOUD_GOOGLE_CLIENT_ID")
+        def bareGoogleClientId = googleClientId.replace(".apps.googleusercontent.com", "")
+        manifestPlaceholders["googleClientIdForRedirect"] = "com.googleusercontent.apps.${bareGoogleClientId}"
     }
 
     signingConfigs {
@@ -238,6 +243,20 @@ dependencies {
         transitive = true
     }
 
+    implementation(libs.google.api.client) {
+        transitive = false
+    }
+
+    implementation(libs.google.oauth.client) {
+        transitive = false
+    }
+
+    implementation(libs.google.http.client) {
+        transitive = false
+    }
+
+    implementation(libs.google.http.client.gson)
+
     //zip4j: support password-protected zips
     implementation libs.zip4j
 
@@ -348,9 +367,15 @@ if (propFile.canRead()) {
     println 'signing.properties not found'
     android.buildTypes.release.signingConfig = null
 }
+
 repositories {
     google()
     mavenCentral()
     maven { url "https://jitpack.io" }
     maven { url "https://jcenter.bintray.com" }
+}
+
+String getValueFromEnvOrProperties(String name) {
+    def localProperties = GradleLocalPropertiesKt.gradleLocalProperties(rootDir, project.providers)
+    return System.getenv(name) ?: localProperties[name]
 }

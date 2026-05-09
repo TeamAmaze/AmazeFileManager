@@ -78,6 +78,7 @@ amazeTrashBin = "1.0.10"
 retrofit = "2.9.0"
 jackson = "2.15.2"
 rustAndroidGradle = "0.9.6"
+googleApiClient = "1.33.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -122,6 +123,10 @@ apache-sshd = { module = "org.apache.sshd:sshd-core", version.ref = "apacheSshd"
 apache-ftpserver-ftplet-api = { module = "org.apache.ftpserver:ftplet-api", version.ref = "ftpserver" }
 apache-ftpserver-core = { module = "org.apache.ftpserver:ftpserver-core", version.ref = "ftpserver" }
 
+google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "googleApiClient" }
+google-oauth-client = { module = "com.google.oauth-client:google-oauth-client", version.ref = "googleApiClient" }
+google-http-client = { module = "com.google.http-client:google-http-client", version.ref = "googleApiClient" }
+google-http-client-gson = { module = "com.google.http-client:google-http-client-gson", version.ref = "googleApiClient" }
 google-play-billing = { module = "com.android.billingclient:billing", version.ref = "androidBilling" }
 
 concurrent-trees = { module = "com.github.npgall:concurrent-trees", version.ref = "concurrentTrees" }

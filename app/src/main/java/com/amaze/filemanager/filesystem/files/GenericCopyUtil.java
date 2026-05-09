@@ -271,8 +271,7 @@ public class GenericCopyUtil {
     String fullFilename = mTargetFile.getSimpleName();
     String filename = StringsKt.substringBeforeLast(fullFilename, '.', fullFilename);
     String extension = StringsKt.substringAfterLast(fullFilename, '.', "");
-    File tmpFile =
-        File.createTempFile(filename, "." + extension, AppConfig.getInstance().getCacheDir());
+    File tmpFile = new File(AppConfig.getInstance().getCacheDir(), filename + "." + extension);
     tmpFile.deleteOnExit();
     ByteStreamsKt.copyTo(bufferedInputStream, new FileOutputStream(tmpFile), DEFAULT_BUFFER_SIZE);
 
@@ -282,6 +281,13 @@ public class GenericCopyUtil {
           openMode, tmpFile, CloudUtil.stripCloudPath(openMode, parent));
     } catch (Exception e) {
       LOG.error("Error uploading cloud file", e);
+    } finally {
+      if (tmpFile.exists()) {
+        boolean deleted = tmpFile.delete();
+        if (!deleted) {
+          LOG.warn("Failed to delete temporary file {}", tmpFile.getAbsolutePath());
+        }
+      }
     }
   }
 

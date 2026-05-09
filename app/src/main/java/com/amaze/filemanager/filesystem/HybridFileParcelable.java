@@ -124,7 +124,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
     return date;
   }
 
-
   public String getName() {
     if (!Utils.isNullOrEmpty(name)) return name;
     else return super.getSimpleName();

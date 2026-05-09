@@ -335,24 +335,31 @@ public class Operations {
                     OmhStorageEntity parentCloudFile =
                         OmhStorageClientExtKt.resolvePathBlocking(
                             storageClient,
-                            CloudUtil.stripCloudPath(file.getMode(), parentFile.getPath())
-                        );
+                            CloudUtil.stripCloudPath(file.getMode(), parentFile.getPath()));
                     if (parentCloudFile != null) {
                       parentFile.cloudFileId = parentCloudFile.getId();
                     }
                   }
                   OmhStorageEntity result =
-                  OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
-                      file.mode,
-                      AppConfig.getInstance().getCloudAuthTrigger(),
-                      () ->
-                          OmhStorageClientExtKt.createFileWithExtensionBlocking(
-                              storageClient,
-                              filenameWithoutExtension,
-                              extension,
-                              parentFile.cloudFileId == null
-                                  ? storageClient.getRootFolder()
-                                  : parentFile.cloudFileId));
+                      OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+                          file.mode,
+                          AppConfig.getInstance().getCloudAuthTrigger(),
+                          () ->
+                              OpenMode.GDRIVE.equals(file.mode)
+                                  ? OmhStorageClientExtKt.createFileWithMimeTypeBlocking(
+                                      storageClient,
+                                      filenameWithoutExtension,
+                                      extension,
+                                      parentFile.cloudFileId == null
+                                          ? storageClient.getRootFolder()
+                                          : parentFile.cloudFileId)
+                                  : OmhStorageClientExtKt.createFileWithExtensionBlocking(
+                                      storageClient,
+                                      filenameWithoutExtension,
+                                      extension,
+                                      parentFile.cloudFileId == null
+                                          ? storageClient.getRootFolder()
+                                          : parentFile.cloudFileId));
                   errorCallBack.done(file, result != null);
                   return Unit.INSTANCE;
                 }
@@ -618,13 +625,13 @@ public class Operations {
                             () -> {
                               String fileId = oldFile.getCloudFileId();
                               if (fileId == null) {
-                                // cloudFileId not pre-populated; resolve via path (extra network call)
+                                // cloudFileId not pre-populated; resolve via path (extra network
+                                // call)
                                 OmhStorageEntity oldCloudFile =
                                     OmhStorageClientExtKt.resolvePathBlocking(
                                         storageClient,
                                         CloudUtil.stripCloudPath(oldFile.getMode(), oldFile.path));
-                                fileId =
-                                    oldCloudFile != null ? oldCloudFile.getId() : null;
+                                fileId = oldCloudFile != null ? oldCloudFile.getId() : null;
                               }
                               if (fileId == null) {
                                 return null;

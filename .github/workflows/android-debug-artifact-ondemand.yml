@@ -29,6 +29,9 @@ jobs:
           echo "::set-output name=repo_name::${{ fromJson(steps.request.outputs.data).head.repo.full_name }}"
           echo "::set-output name=repo_clone_url::${{ fromJson(steps.request.outputs.data).head.repo.clone_url }}"
           echo "::set-output name=repo_ssh_url::${{ fromJson(steps.request.outputs.data).head.repo.ssh_url }}"
+      - name: Export secret to env
+        run: |
+          echo "AMAZE_CLOUD_GOOGLE_CLIENT_ID=${{ secrets.AMAZE_CLOUD_GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
       - name: Checkout PR Branch
         uses: actions/checkout@v6
         with:
