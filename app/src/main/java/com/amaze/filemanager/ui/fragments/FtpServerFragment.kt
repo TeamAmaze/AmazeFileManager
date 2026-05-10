@@ -645,7 +645,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 statusText.text = spannedStatusNotRunning
                 ftpBtn.isEnabled = true
             }
-            url.text = getString(com.amaze.filemanager.ftpserver.R.string.ftpmod_url_label, "")
+            url.text = getString(R.string.ftp_url_label, "")
             ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
         } else {
             accentColor = mainActivity.accent
@@ -768,7 +768,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         spannedStatusUrl =
             HtmlCompat.fromHtml(
-                getString(com.amaze.filemanager.ftpserver.R.string.ftpmod_url_label, ftpAddress),
+                getString(R.string.ftp_url_label, ftpAddress),
                 FROM_HTML_MODE_COMPACT,
             )
         spannedStatusNoConnection =

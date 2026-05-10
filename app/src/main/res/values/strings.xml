@@ -316,6 +316,7 @@
     <string name="ftp_port_edit_menu_title">FTP port</string>
     <string name="ftp_port_change_success">FTP port changed successfully</string>
     <string name="ftp_port_change_error_invalid">Invalid port number selected</string>
+    <string name="ftp_url_label">URL: %s</string>
     <string name="primary_two_title">Primary Color (Right Tab)</string>
     <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
     <string name="support_development">Support Development</string>

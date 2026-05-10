@@ -8,7 +8,6 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.ftpserver.service.FtpPreferences
-import com.amaze.filemanager.ftpserver.ui.BaseFtpServerFragment
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -27,7 +26,6 @@ import org.robolectric.shadows.ShadowPowerManager
  * - [FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED] preference saves and reads correctly.
  * - The Robolectric [ShadowPowerManager] correctly simulates the battery exemption state that
  *   `FtpServerFragment.checkBatteryOptimizationIfNecessary` reads.
- * - [BaseFtpServerFragment.onBeforeStartServer] invokes its `proceed` lambda immediately by default.
  *
  * Full integration tests for the dialog being shown / dismissed are covered by instrumented tests
  * that launch [com.amaze.filemanager.ui.activities.MainActivity] and navigate to the FTP fragment.
@@ -40,84 +38,6 @@ import org.robolectric.shadows.ShadowPowerManager
 class FtpServerFragmentBatteryOptimizationTest {
     private lateinit var context: Context
     private lateinit var shadowPowerManager: ShadowPowerManager
-
-    /**
-     * Minimal concrete [BaseFtpServerFragment] subclass for testing [onBeforeStartServer].
-     * All abstract members are no-ops; the default [onBeforeStartServer] is NOT overridden.
-     */
-    private class DefaultFragment : BaseFtpServerFragment() {
-        var proceedCalled = false
-
-        fun callOnBeforeStartServer() {
-            onBeforeStartServer { proceedCalled = true }
-        }
-
-        override fun getAccentColor(): Int = 0
-
-        override fun isConnectedToLocalNetwork(): Boolean = true
-
-        override fun isConnectedToWifi(): Boolean = true
-
-        override fun getLocalAddress(): String = "127.0.0.1"
-
-        override fun startFtpService(startedByTile: Boolean) {}
-
-        override fun stopFtpService() {}
-
-        override fun promptUserToEnableWireless() {}
-
-        override fun dismissSnackbar() {}
-
-        override fun getEncryptedPassword(): String? = null
-
-        override fun decryptPassword(encryptedPassword: String): String? = null
-
-        override fun onPathChangeRequested() {}
-
-        override fun onLoginChangeRequested() {}
-    }
-
-    /**
-     * Concrete [BaseFtpServerFragment] subclass that overrides [onBeforeStartServer] to
-     * simulate gating (e.g. showing a dialog) without calling [proceed].
-     */
-    private class GatingFragment : BaseFtpServerFragment() {
-        var proceedCalled = false
-        var intercepted = false
-
-        fun callOnBeforeStartServer() {
-            onBeforeStartServer { proceedCalled = true }
-        }
-
-        override fun onBeforeStartServer(proceed: () -> Unit) {
-            intercepted = true
-            // Deliberately do NOT call proceed — simulating a dialog gate.
-        }
-
-        override fun getAccentColor(): Int = 0
-
-        override fun isConnectedToLocalNetwork(): Boolean = true
-
-        override fun isConnectedToWifi(): Boolean = true
-
-        override fun getLocalAddress(): String = "127.0.0.1"
-
-        override fun startFtpService(startedByTile: Boolean) {}
-
-        override fun stopFtpService() {}
-
-        override fun promptUserToEnableWireless() {}
-
-        override fun dismissSnackbar() {}
-
-        override fun getEncryptedPassword(): String? = null
-
-        override fun decryptPassword(encryptedPassword: String): String? = null
-
-        override fun onPathChangeRequested() {}
-
-        override fun onLoginChangeRequested() {}
-    }
 
     @Before
     fun setUp() {
@@ -150,7 +70,10 @@ class FtpServerFragmentBatteryOptimizationTest {
         val asked =
             FtpPreferences.getPreferences(context)
                 .getBoolean(FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED, false)
-        assertFalse("Battery optimization preference should default to false (prompt not suppressed)", asked)
+        assertFalse(
+            "Battery optimization preference should default to false (prompt not suppressed)",
+            asked,
+        )
     }
 
     /**
@@ -166,7 +89,10 @@ class FtpServerFragmentBatteryOptimizationTest {
         val asked =
             FtpPreferences.getPreferences(context)
                 .getBoolean(FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED, false)
-        assertTrue("Battery optimization preference should be true after user suppresses it", asked)
+        assertTrue(
+            "Battery optimization preference should be true after user suppresses it",
+            asked,
+        )
     }
 
     // ---- ShadowPowerManager simulation tests ----
@@ -216,37 +142,6 @@ class FtpServerFragmentBatteryOptimizationTest {
         assertFalse(
             "Bypassing the check due to system exemption must not persist the 'don't ask' flag",
             asked,
-        )
-    }
-
-    // ---- BaseFtpServerFragment.onBeforeStartServer tests ----
-
-    /**
-     * The default [BaseFtpServerFragment.onBeforeStartServer] must invoke the `proceed`
-     * lambda immediately without any interception.
-     */
-    @Test
-    fun testDefaultOnBeforeStartServerCallsProceed() {
-        val fragment = DefaultFragment()
-        fragment.callOnBeforeStartServer()
-        assertTrue(
-            "Default onBeforeStartServer must invoke proceed immediately",
-            fragment.proceedCalled,
-        )
-    }
-
-    /**
-     * A subclass that overrides [BaseFtpServerFragment.onBeforeStartServer] and does NOT call
-     * `proceed` can gate the server start — e.g. to show a battery optimization dialog first.
-     */
-    @Test
-    fun testOverriddenOnBeforeStartServerCanIntercept() {
-        val fragment = GatingFragment()
-        fragment.callOnBeforeStartServer()
-        assertTrue("Overridden onBeforeStartServer must be invoked", fragment.intercepted)
-        assertFalse(
-            "Proceed must NOT be called when the override intercepts it",
-            fragment.proceedCalled,
         )
     }
 }
