@@ -102,8 +102,7 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 
 /**
- * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed
- * FTP Server while usi
+ * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017
  */
 @Suppress("TooManyFunctions")
 class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
@@ -425,7 +424,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 ServerRegistry.getProvider(ServerType.FTP)
                     ?.getNotification()
                     ?.updateRunningNotification(
-                        context ?: return,
+                        requireContext() ?: return,
                         FtpServerEvent.StartedFromTile == signal,
                     )
             }
@@ -646,7 +645,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 statusText.text = spannedStatusNotRunning
                 ftpBtn.isEnabled = true
             }
-            url.text = "URL: "
+            url.text = getString(com.amaze.filemanager.ftpserver.R.string.ftpmod_url_label, "")
             ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
         } else {
             accentColor = mainActivity.accent
@@ -740,9 +739,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun resetFTPPath() {
         mainActivity.prefs
-            .edit()
-            .putString(FtpPreferences.KEY_PREFERENCE_PATH, FtpPreferences.defaultPath(requireContext()))
-            .apply()
+            .edit {
+                putString(
+                    FtpPreferences.KEY_PREFERENCE_PATH,
+                    FtpPreferences.defaultPath(requireContext()),
+                )
+            }
     }
 
     /** Updates the status spans  */
@@ -766,7 +768,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         spannedStatusUrl =
             HtmlCompat.fromHtml(
-                "URL:&nbsp;$ftpAddress",
+                getString(com.amaze.filemanager.ftpserver.R.string.ftpmod_url_label, ftpAddress),
                 FROM_HTML_MODE_COMPACT,
             )
         spannedStatusNoConnection =
@@ -789,11 +791,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     android.R.color.holo_green_light,
                 )}'>" +
                     "${resources.getString(R.string.ftp_status_secure_connection)}</font></b>",
-                FROM_HTML_MODE_COMPACT,
-            )
-        spannedStatusUrl =
-            HtmlCompat.fromHtml(
-                "URL:&nbsp;$ftpAddress",
                 FROM_HTML_MODE_COMPACT,
             )
     }

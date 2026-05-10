@@ -23,8 +23,6 @@ package com.amaze.filemanager.server
 /**
  * Interface for file server implementations (FTP, SSH, WebDAV, etc.)
  *
- * Each server implementation should provide its own implementation of this interface
- * to handle server lifecycle and configuration.
  */
 interface FileServer {
     /**
@@ -64,7 +62,4 @@ interface FileServer {
  */
 enum class ServerType(val id: String) {
     FTP("ftp"),
-    SFTP("sftp"),
-    SSH("ssh"),
-    WEBDAV("webdav"),
 }

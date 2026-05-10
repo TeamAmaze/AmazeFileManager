@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.services.ftp
 
 import com.amaze.filemanager.ftpserver.service.FtpReceiver
+import com.amaze.filemanager.ftpserver.service.FtpServerService
 
 /**
  * Concrete implementation of FtpReceiver for the Amaze File Manager app.
@@ -28,5 +29,5 @@ import com.amaze.filemanager.ftpserver.service.FtpReceiver
  * This receiver handles start/stop intents for the FTP server service.
  */
 class AppFtpReceiver : FtpReceiver() {
-    override fun getFtpServiceClass(): Class<*> = AppFtpService::class.java
+    override fun getFtpServiceClass(): Class<out FtpServerService> = AppFtpService::class.java
 }

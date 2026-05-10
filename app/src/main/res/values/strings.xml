@@ -701,8 +701,10 @@
     <string name="choose_folder">Choose This Folder</string>
     <string name="folder_go_up_one_level" translatable="false">..</string>
     <string name="some_files_failed_invalid_operation">Some files failed due to invalid operation</string>
+    <string name="ftp_readonly">Read-only access</string>
     <string name="ftp_server_prompt_connect_to_network">Connect to a network or enable AP</string>
     <string name="ftp_server_open_settings">Open settings</string>
+    <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
     <string name="move">Move</string>
     <string name="select_save_location">Select location to save</string>
     <string name="scp_default_path">Default Path (Optional)</string>
@@ -735,11 +737,9 @@
     <string name="choose_different_app">Choose different application</string>
     <string name="clear_open_file">Clear cache</string>
     <string name="clear_open_file_summary">Clears selected default file opening apps</string>
-    <string name="ftp_readonly">Read-only access</string>
     <string name="legacy_listing_title">Use legacy listing for root</string>
     <string name="legacy_listing_summary">If enabled, uses legacy method to list files</string>
     <string name="error_unsupported_v5_rar">RAR archive \"%s\" is unsupported RAR v5 archive.</string>
-    <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
     <string name="error_permission_denied">Permission denied</string>
     <string name="error_archive_password_incorrect">Wrong archive password.</string>
     <string name="error_archive_cannot_extract">Cannot extract archive entry \"%s\" to \"%s\".</string>
@@ -766,7 +766,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="ftp_battery_optimization_action_settings">Open Settings</string>
     <string name="ftp_battery_optimization_action_skip">Skip</string>
     <string name="ftp_battery_optimization_action_dont_ask">Don\'t ask again</string>
-    <string name="ftp_battery_optimization_tile_warning">Battery optimization is enabled — FTP server may be stopped by the OS</string>
+    <string name="ftp_battery_optimization_tile_warning">Battery optimization is enabled. You may experience lower transfer speeds when using the FTP server.</string>
     <string name="ftp_battery_optimization_pref_title">Disable battery optimization prompt</string>
     <string name="ftp_battery_optimization_pref_summary">Skip battery optimization reminder when starting the FTP server</string>
     <string name="ftp_server_preferences">FTP Server</string>

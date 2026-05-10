@@ -20,8 +20,6 @@
 
 package com.amaze.filemanager.server
 
-import androidx.fragment.app.Fragment
-
 /**
  * Registry for server implementations.
  *
@@ -74,46 +72,4 @@ object ServerRegistry {
     fun clearAll() {
         servers.clear()
     }
-}
-
-/**
- * Provider interface for creating server-related components.
- *
- * Each server module should implement this to provide its components.
- */
-interface ServerProvider {
-    /**
-     * The server type this provider handles
-     */
-    val serverType: ServerType
-
-    /**
-     * Display name for this server type
-     */
-    val displayName: String
-
-    /**
-     * Create the UI fragment for this server
-     */
-    fun createFragment(): Fragment
-
-    /**
-     * Get the server preferences handler
-     */
-    fun getPreferences(): ServerPreferences
-
-    /**
-     * Get the notification handler
-     */
-    fun getNotification(): ServerNotification
-
-    /**
-     * Check if the server is currently running
-     */
-    fun isServerRunning(): Boolean
-
-    /**
-     * Get the server URL if running
-     */
-    fun getServerUrl(): String?
 }

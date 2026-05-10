@@ -86,7 +86,7 @@ object PreferencesConstants {
     const val PREFERENCE_REGEX = "regex"
     const val PREFERENCE_REGEX_MATCHES = "matches"
 
-    // ftp preferences (shared key with FtpPreferences in ftpserver module)
+    // ftp preferences
     const val PREFERENCE_FTP_BATTERY_OPTIMIZATION_ASKED = "ftp_battery_optimization_asked"
 
     // security_prefs.xml

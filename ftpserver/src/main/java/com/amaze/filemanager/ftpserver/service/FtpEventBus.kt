@@ -24,7 +24,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 /**
- * Event bus for FTP server events using Kotlin's Flow.
+ * Replacement event bus to handle [FtpServerService] events using Kotlin's Flow.
+ *
+ * Original idea: https://mirchev.medium.com/its-21st-century-stop-using-eventbus-3ff5d9c6a00f
+ *
+ * @see [FtpServerService]
  */
 object FtpEventBus {
     private val _events = MutableSharedFlow<FtpServerEvent>(replay = 0)
@@ -32,21 +36,10 @@ object FtpEventBus {
 
     /**
      * Emit the event signal to the event bus.
+     *
+     * @param event The event to be emitted.
      */
     suspend fun emit(event: FtpServerEvent) {
         _events.emit(event)
     }
-}
-
-/**
- * Events broadcast when FTP server state changes.
- */
-sealed class FtpServerEvent {
-    data object Started : FtpServerEvent()
-
-    data object StartedFromTile : FtpServerEvent()
-
-    data object Stopped : FtpServerEvent()
-
-    data object FailedToStart : FtpServerEvent()
 }

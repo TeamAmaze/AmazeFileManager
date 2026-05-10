@@ -21,7 +21,9 @@
 package com.amaze.filemanager.ftpserver.commands
 
 import com.amaze.filemanager.ftpserver.filesystem.AndroidFileSystemFactory
+import com.amaze.filemanager.ftpserver.filesystem.RootFileSystemFactory
 import org.apache.ftpserver.command.AbstractCommand
+import org.apache.ftpserver.filesystem.nativefs.NativeFileSystemFactory
 import org.apache.ftpserver.ftplet.DefaultFtpReply
 import org.apache.ftpserver.ftplet.FtpFile
 import org.apache.ftpserver.ftplet.FtpReply.REPLY_213_FILE_STATUS
@@ -38,7 +40,7 @@ import java.io.File
 /**
  * Implements FTP extension AVBL command, to answer device remaining space in FTP command.
  *
- * Only supports RootFileSystemFactory and NativeFileSystemFactory. Otherwise will simply return
+ * Only supports [RootFileSystemFactory] and [NativeFileSystemFactory]. Otherwise will simply return
  * 550 Access Denied.
  *
  * See [Draft spec](https://www.ietf.org/archive/id/draft-peterson-streamlined-ftp-command-extensions-10.txt)

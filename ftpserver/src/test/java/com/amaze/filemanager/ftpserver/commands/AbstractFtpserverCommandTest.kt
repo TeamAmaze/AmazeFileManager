@@ -20,14 +20,26 @@
 
 package com.amaze.filemanager.ftpserver.commands
 
+import android.os.Build
+import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.P
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.apache.mina.core.session.DummySession
 import org.apache.mina.core.session.IoSession
 import org.junit.After
 import org.junit.Before
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 /**
  * Base class for ftpserver command unit tests.
  */
+@RunWith(AndroidJUnit4::class)
+@Config(
+    shadows = [ShadowMultiDex::class],
+    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+)
 abstract class AbstractFtpserverCommandTest {
     protected lateinit var logger: LogMessageFilter
 

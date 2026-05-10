@@ -27,12 +27,12 @@ import org.apache.ftpserver.command.CommandFactory
 import org.apache.ftpserver.command.CommandFactoryFactory
 
 /**
- * Custom CommandFactory factory with custom commands.
+ * Custom [CommandFactory] factory with custom commands.
  */
 object FtpCommandFactoryFactory {
     /**
-     * Encapsulate custom CommandFactory construction logic. Append custom AVBL and PWD command,
-     * as well as feature flag in FEAT command if not using AndroidFtpFileSystemView.
+     * Encapsulate custom [CommandFactory] construction logic. Append custom [AVBL] and [PWD] command,
+     * as well as feature flag in [FEAT] command if not using AndroidFtpFileSystemView.
      */
     fun create(
         useAndroidFileSystem: Boolean,

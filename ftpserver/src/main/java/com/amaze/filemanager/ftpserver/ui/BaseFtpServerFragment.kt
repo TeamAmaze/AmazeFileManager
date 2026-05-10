@@ -358,7 +358,7 @@ abstract class BaseFtpServerFragment : Fragment() {
                 binding.startStopButton.text = getString(R.string.ftpmod_stop).uppercase()
             } else {
                 binding.textViewFtpStatus.text = spannedStatusNotRunning
-                binding.textViewFtpUrl.text = "URL: "
+                binding.textViewFtpUrl.text = getString(R.string.ftpmod_url_label, "")
                 binding.startStopButton.text = getString(R.string.ftpmod_start).uppercase()
             }
         }

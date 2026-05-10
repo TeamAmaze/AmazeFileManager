@@ -38,14 +38,19 @@ import java.io.InputStream
 import java.security.GeneralSecurityException
 
 /**
- * Concrete implementation of FtpServerService for the Amaze File Manager app.
+ * Concrete implementation of [FtpServerService].
  *
  * This class provides app-specific implementations for notifications, keystore access,
  * password decryption, and error messages.
  */
 class AppFtpService : FtpServerService() {
+    companion object {
+        @JvmStatic
+        private val log: Logger = LoggerFactory.getLogger(AppFtpService::class.java)
+    }
+
     private val serverNotification
-        get() = ServerRegistry.getProvider(ServerType.FTP)!!.getNotification()
+        get() = requireNotNull(ServerRegistry.getProvider(ServerType.FTP)).getNotification()
 
     override fun getNotificationId(): Int = serverNotification.getNotificationId()
 
@@ -108,10 +113,5 @@ class AppFtpService : FtpServerService() {
 
     override fun getFeatResponse(): String {
         return getString(R.string.ftp_command_FEAT)
-    }
-
-    companion object {
-        @JvmStatic
-        private val log: Logger = LoggerFactory.getLogger(AppFtpService::class.java)
     }
 }

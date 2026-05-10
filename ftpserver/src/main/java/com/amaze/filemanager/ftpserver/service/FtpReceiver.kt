@@ -36,20 +36,18 @@ import org.slf4j.LoggerFactory
 abstract class FtpReceiver : BroadcastReceiver() {
     companion object {
         @JvmStatic
-        private val logger: Logger = LoggerFactory.getLogger(FtpReceiver::class.java)
+        protected val logger: Logger = LoggerFactory.getLogger(FtpReceiver::class.java)
     }
 
     /**
      * Get the FTP service class to start/stop
      */
-    abstract fun getFtpServiceClass(): Class<*>
+    abstract fun getFtpServiceClass(): Class<out FtpServerService>
 
     override fun onReceive(
         context: Context,
         intent: Intent,
     ) {
-        logger.debug("Received: ${intent.action}")
-
         val serviceIntent = Intent(context, getFtpServiceClass())
         serviceIntent.putExtras(intent)
 

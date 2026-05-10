@@ -28,7 +28,7 @@ import org.apache.ftpserver.impl.FtpIoSession
 import org.apache.ftpserver.impl.FtpServerContext
 
 /**
- * Custom FEAT command to add AVBL command to the list.
+ * Custom [org.apache.ftpserver.command.impl.FEAT] command to add [AVBL] command to the list.
  */
 class FEAT(
     private val featResponseProvider: () -> String,

@@ -8,7 +8,7 @@
     <string name="ftpmod_status_not_running">FTP Server Not Running</string>
     <string name="ftpmod_status_no_connection">No network connection</string>
     <string name="ftpmod_status_secure_connection">Secure Connection (FTPS)</string>
-    <string name="ftpmod_url_label">URL: </string>
+    <string name="ftpmod_url_label">URL: %s</string>
     <string name="ftpmod_username_label">Username: </string>
     <string name="ftpmod_password_label">Password: </string>
     <string name="ftpmod_port_label">Port: </string>
