@@ -21,7 +21,6 @@
 package com.amaze.filemanager.adapters.data;
 
 import java.io.File;
-import java.util.Calendar;
 
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -38,9 +37,7 @@ import androidx.annotation.NonNull;
 
 public class LayoutElementParcelable implements Parcelable, ComparableParcelable {
 
-  private static final String CURRENT_YEAR =
-      String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-
+  public final String cloudFileId;
   public final boolean isBack;
   public final int filetype;
   public final IconDataParcelable iconData;
@@ -62,6 +59,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
     this(
         c,
         true,
+        "",
         new File("..").getName(),
         "..",
         "",
@@ -77,6 +75,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
 
   public LayoutElementParcelable(
       @NonNull Context c,
+      String cloudFileId,
       String path,
       String permissions,
       String symlink,
@@ -89,6 +88,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
       OpenMode openMode) {
     this(
         c,
+        cloudFileId,
         new File(path).getName(),
         path,
         permissions,
@@ -104,6 +104,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
 
   public LayoutElementParcelable(
       @NonNull Context c,
+      String cloudFileId,
       String title,
       String path,
       String permissions,
@@ -118,6 +119,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
     this(
         c,
         false,
+        cloudFileId,
         title,
         path,
         permissions,
@@ -134,6 +136,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
   public LayoutElementParcelable(
       @NonNull Context c,
       boolean isBack,
+      String cloudFileId,
       String title,
       String path,
       String permissions,
@@ -152,6 +155,14 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
       switch (mode) {
         case SMB:
         case SFTP:
+          if (!isDirectory
+              && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
+            this.iconData =
+                new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
+          } else {
+            this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+          }
+          break;
         case DROPBOX:
         case GDRIVE:
         case ONEDRIVE:
@@ -159,7 +170,8 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
           if (!isDirectory
               && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
             this.iconData =
-                new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
+                new IconDataParcelable(
+                    IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon, cloudFileId);
           } else {
             this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
           }
@@ -180,7 +192,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
     } else {
       this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
     }
-
+    this.cloudFileId = cloudFileId;
     this.title = title;
     this.desc = path;
     this.permissions = permissions.trim();
@@ -210,6 +222,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
   public HybridFileParcelable generateBaseFile() {
     HybridFileParcelable baseFile =
         new HybridFileParcelable(desc, permissions, date, longSize, isDirectory);
+    baseFile.setCloudFileId(cloudFileId);
     baseFile.setMode(mode);
     baseFile.setName(title);
     return baseFile;
@@ -228,6 +241,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
   public LayoutElementParcelable(Parcel im) {
     filetype = im.readInt();
     iconData = im.readParcelable(IconDataParcelable.class.getClassLoader());
+    cloudFileId = im.readString();
     title = im.readString();
     desc = im.readString();
     permissions = im.readString();
@@ -253,6 +267,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
   public void writeToParcel(Parcel p1, int p2) {
     p1.writeInt(filetype);
     p1.writeParcelable(iconData, 0);
+    p1.writeString(cloudFileId);
     p1.writeString(title);
     p1.writeString(desc);
     p1.writeString(permissions);

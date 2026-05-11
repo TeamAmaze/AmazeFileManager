@@ -42,10 +42,6 @@ import com.amaze.filemanager.utils.SimpleTextWatcher
 class BookmarksPrefsFragment : BasePrefsFragment() {
     override val title = R.string.show_bookmarks_pref
 
-    companion object {
-        private val dataUtils = DataUtils.getInstance()!!
-    }
-
     private val position: MutableMap<Preference, Int> = HashMap()
     private var bookmarksList: PreferenceCategory? = null
 
@@ -80,10 +76,10 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         }
 
         position.clear()
-        for (i in dataUtils.books.indices) {
+        for (i in DataUtils.getBooks().indices) {
             val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
-            p.title = dataUtils.books[i][0]
-            p.summary = dataUtils.books[i][1]
+            p.title = DataUtils.getBooks()[i][0]
+            p.summary = DataUtils.getBooks()[i][1]
             position[p] = i
             bookmarksList?.addPreference(p)
         }
@@ -126,14 +122,14 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                     val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
                     p.title = txtShortcutName.text
                     p.summary = txtShortcutPath.text
-                    position[p] = dataUtils.books.size
+                    position[p] = DataUtils.getBooks().size
                     bookmarksList?.addPreference(p)
                     val values =
                         arrayOf(
                             txtShortcutName.text.toString(),
                             txtShortcutPath.text.toString(),
                         )
-                    dataUtils.addBook(values)
+                    DataUtils.addBook(values)
                     utilsHandler.saveToDatabase(
                         OperationData(
                             UtilsHandler.Operation.BOOKMARKS,
@@ -153,7 +149,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
     ): Pair<Boolean, Int> {
         return when {
             name.isEmpty() -> Pair(false, R.string.invalid_name)
-            dataUtils.containsBooks(arrayOf(name, path)) != -1 -> Pair(false, R.string.bookmark_exists)
+            DataUtils.containsBooks(arrayOf(name, path)) != -1 -> Pair(false, R.string.bookmark_exists)
             !FileUtils.isPathAccessible(path, activity.prefs) -> Pair(false, R.string.ftp_path_change_error_invalid)
             else -> Pair(true, 0)
         }
@@ -190,7 +186,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             .setOnClickListener {
                 val oldName = p.title.toString()
                 val oldPath = p.summary.toString()
-                dataUtils.removeBook(position[p]!!)
+                DataUtils.removeBook(position[p]!!)
                 position.remove(p)
                 bookmarksList?.removePreference(p)
                 p.title = editText1.text
@@ -198,7 +194,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                 position[p] = position.size
                 bookmarksList?.addPreference(p)
                 val values = arrayOf(editText1.text.toString(), editText2.text.toString())
-                dataUtils.addBook(values)
+                DataUtils.addBook(values)
                 AppConfig.getInstance()
                     .runInBackground {
                         utilsHandler.renameBookmark(
@@ -228,7 +224,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                 .build()
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
-                dataUtils.removeBook(position[p]!!)
+                DataUtils.removeBook(position[p]!!)
                 utilsHandler.removeFromDatabase(
                     OperationData(
                         UtilsHandler.Operation.BOOKMARKS,

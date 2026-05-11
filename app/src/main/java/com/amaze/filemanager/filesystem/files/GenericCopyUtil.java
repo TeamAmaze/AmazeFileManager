@@ -39,6 +39,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.utils.OnLowMemory;
 import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
@@ -49,10 +50,9 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.cloudrail.si.interfaces.CloudStorage;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -62,14 +62,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.documentfile.provider.DocumentFile;
 
+import kotlin.io.ByteStreamsKt;
+import kotlin.text.StringsKt;
+
 /** Base class to handle file copy. */
 public class GenericCopyUtil {
-  private final Logger LOG = LoggerFactory.getLogger(GenericCopyUtil.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GenericCopyUtil.class);
 
   private HybridFileParcelable mSourceFile;
   private HybridFile mTargetFile;
   private final Context mContext; // context needed to find the DocumentFile in otg/sd card
-  private final DataUtils dataUtils = DataUtils.getInstance();
   private final ProgressHandler progressHandler;
 
   public static final int DEFAULT_BUFFER_SIZE = 8192;
@@ -89,7 +91,7 @@ public class GenericCopyUtil {
 
   /**
    * Starts copy of file Supports : {@link File}, {@link jcifs.smb.SmbFile}, {@link DocumentFile},
-   * {@link CloudStorage}
+   * {@link com.openmobilehub.android.storage.core.OmhStorageClient}
    *
    * @param lowOnMemory defines whether system is running low on memory, in which case we'll switch
    *     to using streams instead of channel which maps the who buffer in memory. TODO: Use buffers
@@ -123,21 +125,13 @@ public class GenericCopyUtil {
         bufferedInputStream =
             new BufferedInputStream(
                 contentResolver.openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
-      } else if (mSourceFile.isSmb() || mSourceFile.isSftp() || mSourceFile.isFtp()) {
+      } else if (mSourceFile.isSmb()
+          || mSourceFile.isSftp()
+          || mSourceFile.isFtp()
+          || mSourceFile.isCloudDriveFile()) {
         bufferedInputStream =
             new BufferedInputStream(mSourceFile.getInputStream(mContext), DEFAULT_TRANSFER_QUANTUM);
-      } else if (mSourceFile.isDropBoxFile()
-          || mSourceFile.isBoxFile()
-          || mSourceFile.isGoogleDriveFile()
-          || mSourceFile.isOneDriveFile()) {
-        OpenMode openMode = mSourceFile.getMode();
-
-        CloudStorage cloudStorage = dataUtils.getAccount(openMode);
-        bufferedInputStream =
-            new BufferedInputStream(
-                cloudStorage.download(CloudUtil.stripPath(openMode, mSourceFile.getPath())));
       } else {
-
         // source file is neither smb nor otg; getting a channel from direct file instead of stream
         File file = new File(mSourceFile.getPath());
         if (FileProperties.isReadable(file)) {
@@ -192,10 +186,7 @@ public class GenericCopyUtil {
         bufferedOutputStream =
             new BufferedOutputStream(
                 mTargetFile.getOutputStream(mContext), DEFAULT_TRANSFER_QUANTUM);
-      } else if (mTargetFile.isDropBoxFile()
-          || mTargetFile.isBoxFile()
-          || mTargetFile.isGoogleDriveFile()
-          || mTargetFile.isOneDriveFile()) {
+      } else if (mTargetFile.isCloudDriveFile()) {
         cloudCopy(mTargetFile.getMode(), bufferedInputStream);
         return;
       } else {
@@ -277,22 +268,26 @@ public class GenericCopyUtil {
   private void cloudCopy(
       @NonNull OpenMode openMode, @NonNull BufferedInputStream bufferedInputStream)
       throws IOException {
-    DataUtils dataUtils = DataUtils.getInstance();
-    // API doesn't support output stream, we'll upload the file directly
-    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+    String fullFilename = mTargetFile.getSimpleName();
+    String filename = StringsKt.substringBeforeLast(fullFilename, '.', fullFilename);
+    String extension = StringsKt.substringAfterLast(fullFilename, '.', "");
+    File tmpFile = new File(AppConfig.getInstance().getCacheDir(), filename + "." + extension);
+    tmpFile.deleteOnExit();
+    ByteStreamsKt.copyTo(bufferedInputStream, new FileOutputStream(tmpFile), DEFAULT_BUFFER_SIZE);
 
-    if (mSourceFile.getMode() == openMode) {
-      // we're in the same provider, use api method
-      cloudStorage.copy(
-          CloudUtil.stripPath(openMode, mSourceFile.getPath()),
-          CloudUtil.stripPath(openMode, mTargetFile.getPath()));
-    } else {
-      cloudStorage.upload(
-          CloudUtil.stripPath(openMode, mTargetFile.getPath()),
-          bufferedInputStream,
-          mSourceFile.getSize(),
-          true);
-      bufferedInputStream.close();
+    final String parent = mTargetFile.getParent(mContext);
+    try {
+      OMHClientHelper.uploadCloudFile(
+          openMode, tmpFile, CloudUtil.stripCloudPath(openMode, parent));
+    } catch (Exception e) {
+      LOG.error("Error uploading cloud file", e);
+    } finally {
+      if (tmpFile.exists()) {
+        boolean deleted = tmpFile.delete();
+        if (!deleted) {
+          LOG.warn("Failed to delete temporary file {}", tmpFile.getAbsolutePath());
+        }
+      }
     }
   }
 

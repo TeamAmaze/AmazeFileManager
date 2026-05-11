@@ -33,6 +33,8 @@ import android.text.format.Formatter;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.util.Pair;
 
+import kotlin.Unit;
+
 /**
  * @author Emmanuel on 12/5/2017, at 19:40.
  */
@@ -58,7 +60,13 @@ public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>
 
     if (file.isDirectory(context)) {
       final AtomicInteger x = new AtomicInteger(0);
-      file.forEachChildrenFile(context, false, file -> x.incrementAndGet());
+      file.forEachChildrenFile(
+          context,
+          false,
+          file -> {
+            x.incrementAndGet();
+            return Unit.INSTANCE;
+          });
       final int folderLength = x.intValue();
       long folderSize;
 

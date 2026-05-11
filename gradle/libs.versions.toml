@@ -1,8 +1,9 @@
 [versions]
 compileSdk = "34"
-minSdk = "21"
+jdk9DepsVersion = "1.0"
+minSdk = "26"
 targetSdk = "35"
-kotlin = "1.9.25"
+kotlin = "2.1.20"
 ndk = "28.2.13676358" #r28c
 
 jacocoAndroid = "0.2.1"
@@ -29,14 +30,17 @@ androidXPalette = "1.0.0"
 androidXCardView = "1.0.0"
 androidXConstraintLayout = "1.1.3"
 androidXBiometric = "1.1.0"
+androidXSecurity = "1.0.0"
+androidXBrowserCustomTabs = "1.5.0"
 androidXTest = "1.6.1"
 androidXTestRunner = "1.6.2"
 androidXTestExt = "1.2.1"
 androidXArchCoreTest = "2.2.0"
 androidXMultidex = "2.0.1"
 autoService = "1.1.1"
-kotlinxCoroutines = "1.7.3"
-kotlinStdlibJdk8 = "1.9.20"
+kotlinxCoroutines = "1.10.2"
+kotlinxCoroutineTest = "1.10.2"
+kotlinStdlibJdk8 = "2.1.20"
 uiAutomator = "2.3.0"
 junit = "4.13.2"
 slf4j = "2.0.13"
@@ -46,7 +50,6 @@ mockito = "4.11.0"
 mockitoInline = "4.11.0"
 mockitoKotlin = "4.1.0"
 androidBilling = "7.1.1"
-cloudrailSiAndroid = "2.22.4"
 junrar = "7.4.0"
 vectordrawableAnimated = "1.2.0"
 xz = "1.9"
@@ -72,11 +75,16 @@ mpAndroidChart = "v3.0.2"
 concurrentTrees = "2.6.1"
 aboutLibraries = "6.1.1"
 amazeTrashBin = "1.0.10"
+retrofit = "2.9.0"
+jackson = "2.15.2"
 rustAndroidGradle = "0.9.6"
+googleApiClient = "1.33.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 jacoco-android-plugin = { module = "com.mxalbert.gradle:jacoco-android", version.ref = "jacocoAndroid" }
+#jdk9-deps = { module = "com.github.pengrad:jdk9-deps", version.ref = "jdk9Deps" }
+jdk9-deps = { module = "com.github.pengrad:jdk9-deps", version.ref = "jdk9DepsVersion" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 rust-android-gradle = { module = "org.mozilla.rust-android-gradle.rust-android:org.mozilla.rust-android-gradle.rust-android.gradle.plugin", version.ref = "rustAndroidGradle" }
 
@@ -95,6 +103,8 @@ androidX-palette = { module = "androidx.palette:palette-ktx", version.ref = "and
 androidX-preference = { module = "androidx.preference:preference-ktx", version.ref = "androidXPref" }
 androidX-vectordrawable-animated = { module = "androidx.vectordrawable:vectordrawable-animated", version.ref = "vectordrawableAnimated" }
 androidX-biometric = { module = "androidx.biometric:biometric", version.ref = "androidXBiometric" }
+androidX-security = { module = "androidx.security:security-crypto", version.ref = "androidXSecurity" }
+androidX-browser-customtabs = { module = "androidx.browser:browser", version.ref = "androidXBrowserCustomTabs" }
 
 androidX-test-core = { module = "androidx.test:core", version.ref = "androidXTest" }
 androidX-test-runner = { module = "androidx.test:runner", version.ref = "androidXTestRunner" }
@@ -113,17 +123,23 @@ apache-sshd = { module = "org.apache.sshd:sshd-core", version.ref = "apacheSshd"
 apache-ftpserver-ftplet-api = { module = "org.apache.ftpserver:ftplet-api", version.ref = "ftpserver" }
 apache-ftpserver-core = { module = "org.apache.ftpserver:ftpserver-core", version.ref = "ftpserver" }
 
+google-api-client = { module = "com.google.api-client:google-api-client", version.ref = "googleApiClient" }
+google-oauth-client = { module = "com.google.oauth-client:google-oauth-client", version.ref = "googleApiClient" }
+google-http-client = { module = "com.google.http-client:google-http-client", version.ref = "googleApiClient" }
+google-http-client-gson = { module = "com.google.http-client:google-http-client-gson", version.ref = "googleApiClient" }
 google-play-billing = { module = "com.android.billingclient:billing", version.ref = "androidBilling" }
-
-cloudrail-si-android = { module = "com.cloudrail:cloudrail-si-android", version.ref = "cloudrailSiAndroid" }
 
 concurrent-trees = { module = "com.github.npgall:concurrent-trees", version.ref = "concurrentTrees" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlinStdlibJdk8" }
-kotlin-coroutine-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlin-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "kotlinxCoroutines" }
+kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlin-coroutines-rxjava2 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-rx2", version.ref = "kotlinxCoroutines" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutineTest" }
 
 libsu-core = { module = "com.github.topjohnwu.libsu:core", version.ref = "libsu" }
 libsu-io = { module = "com.github.topjohnwu.libsu:io", version.ref = "libsu" }
@@ -150,6 +166,7 @@ jcifs-ng = { module = "eu.agno3.jcifs:jcifs-ng", version.ref = "jcifs" }
 speedDial = { module = "com.leinardi.android:speed-dial", version.ref = "fabSpeedDial" }
 sshj = { module = "com.hierynomus:sshj", version.ref = "sshj" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okHttp" }
+okhttp-loggingInterceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okHttp" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
@@ -176,3 +193,7 @@ acra-core = { module = "ch.acra:acra-core", version.ref = "acraCore" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 
 amaze-trashBin = { module = "com.github.TeamAmaze:AmazeTrashBin", version.ref = "amazeTrashBin" }
+
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-jacksonConverter = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }

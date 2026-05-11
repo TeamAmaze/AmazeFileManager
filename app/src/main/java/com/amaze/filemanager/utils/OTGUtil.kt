@@ -30,6 +30,7 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.provider.DocumentsContract
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.arch.core.util.Function
 import androidx.documentfile.provider.DocumentFile
 import com.amaze.filemanager.exceptions.DocumentFileNotFoundException
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
@@ -70,12 +71,9 @@ object OTGUtil {
         getDocumentFiles(
             path,
             context,
-            object : OnFileFound {
-                override fun onFileFound(file: HybridFileParcelable) {
-                    files.add(file)
-                }
-            },
-        )
+        ) { file: HybridFileParcelable ->
+            files.add(file)
+        }
         return files
     }
 
@@ -90,7 +88,7 @@ object OTGUtil {
     fun getDocumentFiles(
         path: String,
         context: Context,
-        fileFound: OnFileFound,
+        fileFound: Function<HybridFileParcelable, Unit>,
     ) {
         val rootUriString =
             SingletonUsbOtg.getInstance().usbOtgRoot
@@ -104,7 +102,7 @@ object OTGUtil {
         path: String,
         context: Context,
         openMode: OpenMode,
-        fileFound: OnFileFound,
+        fileFound: Function<HybridFileParcelable, Unit>,
     ) {
         var rootUri = DocumentFile.fromTreeUri(context, rootUriString)
 
@@ -145,7 +143,7 @@ object OTGUtil {
                 baseFile.name = file.name
                 baseFile.mode = openMode
                 baseFile.fullUri = file.uri
-                fileFound.onFileFound(baseFile)
+                fileFound.apply(baseFile)
             }
         }
     }

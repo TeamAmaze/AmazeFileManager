@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.theme
 
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import android.os.PowerManager
 import androidx.preference.PreferenceManager
@@ -41,7 +41,7 @@ import java.util.Calendar
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [O, P, Build.VERSION_CODES.R],
     shadows = [ShadowMultiDex::class],
 )
 class AppThemeTest {
@@ -180,7 +180,7 @@ class AppThemeTest {
     @Config(
         shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
         qualifiers = "notnight",
-        minSdk = Build.VERSION_CODES.LOLLIPOP,
+        minSdk = O,
     )
     fun testSimpleAppThemeWithFollowBatterySaverAndBatterySaverOn() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -215,7 +215,7 @@ class AppThemeTest {
     @Config(
         shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
         qualifiers = "notnight",
-        minSdk = Build.VERSION_CODES.LOLLIPOP,
+        minSdk = O,
     )
     fun testSimpleAppThemeWithFollowBatterySaverAndBatterySaverOff() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -233,7 +233,7 @@ class AppThemeTest {
     @Config(
         shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
         qualifiers = "notnight",
-        minSdk = Build.VERSION_CODES.LOLLIPOP,
+        minSdk = O,
     )
     fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOn() {
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -268,7 +268,7 @@ class AppThemeTest {
     @Config(
         shadows = [ShadowPowerManager::class, ShadowMultiDex::class],
         qualifiers = "notnight",
-        minSdk = Build.VERSION_CODES.LOLLIPOP,
+        minSdk = O,
     )
     fun testMaterialDialogThemeWithFollowBatterySaverAndBatterySaverOff() {
         val context = ApplicationProvider.getApplicationContext<Context>()

@@ -51,19 +51,18 @@ import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.sort.SortType;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
-import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.cloud.CloudPluginUtil;
 import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinFile;
-import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -81,11 +80,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.arch.core.util.Function;
 import androidx.core.util.Pair;
 
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
 
 public class LoadFilesListTask
@@ -93,31 +94,55 @@ public class LoadFilesListTask
 
   private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
 
+  private String cloudFolderId;
   private String path;
   private WeakReference<MainFragment> mainFragmentReference;
   private WeakReference<Context> context;
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private DataUtils dataUtils = DataUtils.INSTANCE;
   private OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> listener;
   private boolean forceReload;
 
   public LoadFilesListTask(
-      Context context,
-      String path,
-      MainFragment mainFragment,
-      OpenMode openmode,
+      @NonNull Context context,
+      @NonNull String path,
+      @NonNull MainFragment mainFragment,
+      @NonNull OpenMode openmode,
       boolean showThumbs,
       boolean showHiddenFiles,
       boolean forceReload,
-      OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> l) {
+      @NonNull OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> listener) {
+    this(
+        context,
+        null,
+        path,
+        mainFragment,
+        openmode,
+        showThumbs,
+        showHiddenFiles,
+        forceReload,
+        listener);
+  }
+
+  public LoadFilesListTask(
+      @NonNull Context context,
+      @Nullable String cloudFolderId,
+      @NonNull String path,
+      @NonNull MainFragment mainFragment,
+      @NonNull OpenMode openmode,
+      boolean showThumbs,
+      boolean showHiddenFiles,
+      boolean forceReload,
+      OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> listener) {
+    this.cloudFolderId = (cloudFolderId == null) ? "" : cloudFolderId;
     this.path = path;
     this.mainFragmentReference = new WeakReference<>(mainFragment);
     this.openmode = openmode;
     this.context = new WeakReference<>(context);
     this.showThumbs = showThumbs;
     this.showHiddenFiles = showHiddenFiles;
-    this.listener = l;
+    this.listener = listener;
     this.forceReload = forceReload;
   }
 
@@ -182,8 +207,9 @@ public class LoadFilesListTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
+        final MainActivity mainActivity = mainFragment.requireMainActivity();
         try {
-          list = listCloud(mainActivityViewModel);
+          list = listCloud(mainActivity, mainActivityViewModel);
         } catch (CloudPluginException e) {
           LOG.warn("failed to load cloud files", e);
           AppConfig.toast(context, context.getResources().getString(R.string.failed_no_connection));
@@ -360,6 +386,7 @@ public class LoadFilesListTask
     LayoutElementParcelable layoutElement =
         new LayoutElementParcelable(
             context,
+            baseFile.getCloudFileId(),
             baseFile.getName(context),
             baseFile.getPath(),
             baseFile.getPermission(),
@@ -687,6 +714,7 @@ public class LoadFilesListTask
           LayoutElementParcelable element =
               new LayoutElementParcelable(
                   ctx,
+                  "",
                   dir.getAbsolutePath(),
                   "",
                   "",
@@ -760,6 +788,7 @@ public class LoadFilesListTask
                 list.add(elem);
               }
             }
+            return Unit.INSTANCE;
           });
       mainActivityViewModel.putInCache(path, list);
     }
@@ -772,7 +801,10 @@ public class LoadFilesListTask
         path,
         file -> {
           LayoutElementParcelable elem = createListParcelables(file);
-          if (elem != null) list.add(elem);
+          if (elem != null) {
+            list.add(elem);
+          }
+          return Unit.INSTANCE;
         });
     return list;
   }
@@ -788,7 +820,10 @@ public class LoadFilesListTask
       listDocumentFilesInternal(
           file -> {
             LayoutElementParcelable elem = createListParcelables(file);
-            if (elem != null) list.add(elem);
+            if (elem != null) {
+              list.add(elem);
+            }
+            return Unit.INSTANCE;
           });
       mainActivityViewModel.putInCache(path, list);
     }
@@ -796,21 +831,24 @@ public class LoadFilesListTask
   }
 
   private List<LayoutElementParcelable> listCloud(
-      @NonNull MainActivityViewModel mainActivityViewModel) throws CloudPluginException {
+      @NonNull MainActivity mainActivity, @NonNull MainActivityViewModel mainActivityViewModel)
+      throws CloudPluginException {
     List<LayoutElementParcelable> list;
     List<LayoutElementParcelable> cloudCache = mainActivityViewModel.getFromListCache(path);
     if (cloudCache != null && !forceReload) {
       list = cloudCache;
     } else {
-      CloudStorage cloudStorage = dataUtils.getAccount(openmode);
       list = new ArrayList<>();
       listCloudInternal(
-          path,
-          cloudStorage,
+          mainActivity,
+          cloudFolderId,
           openmode,
           file -> {
             LayoutElementParcelable elem = createListParcelables(file);
-            if (elem != null) list.add(elem);
+            if (elem != null) {
+              list.add(elem);
+            }
+            return Unit.INSTANCE;
           });
       mainActivityViewModel.putInCache(path, list);
     }
@@ -859,7 +897,7 @@ public class LoadFilesListTask
    *     com.amaze.filemanager.utils.OTGUtil#PREFIX_OTG} Independent of URI (or mount point) for the
    *     OTG
    */
-  private void listOtgInternal(String path, OnFileFound fileFound) {
+  private void listOtgInternal(String path, Function<HybridFileParcelable, Unit> fileFound) {
     final Context context = this.context.get();
 
     if (context == null) {
@@ -870,7 +908,7 @@ public class LoadFilesListTask
     OTGUtil.getDocumentFiles(path, context, fileFound);
   }
 
-  private void listDocumentFilesInternal(OnFileFound fileFound) {
+  private void listDocumentFilesInternal(Function<HybridFileParcelable, Unit> fileFound) {
     final Context context = this.context.get();
 
     if (context == null) {
@@ -883,7 +921,10 @@ public class LoadFilesListTask
   }
 
   private void listCloudInternal(
-      String path, CloudStorage cloudStorage, OpenMode openMode, OnFileFound fileFoundCallback)
+      MainActivity mainActivity,
+      String cloudFolderId,
+      OpenMode openMode,
+      Function<HybridFileParcelable, Unit> fileFoundCallback)
       throws CloudPluginException {
     final Context context = this.context.get();
 
@@ -892,10 +933,18 @@ public class LoadFilesListTask
       return;
     }
 
-    if (!CloudSheetFragment.isCloudProviderAvailable(context)) {
+    if (!CloudPluginUtil.isCloudProviderAvailable(context)) {
       throw new CloudPluginException();
     }
 
-    CloudUtil.getCloudFiles(path, cloudStorage, openMode, fileFoundCallback);
+    // Use a dedicated thread dispatcher instead of runBlocking -
+    // dirty hack for using the coroutine inside AsyncTask
+    try {
+      CloudUtil.getCloudFilesBlocking(
+          cloudFolderId, path, openMode, mainActivity, fileFoundCallback);
+    } catch (Exception e) {
+      LOG.warn("Cloud listing interrupted", e);
+      throw new CloudPluginException();
+    }
   }
 }

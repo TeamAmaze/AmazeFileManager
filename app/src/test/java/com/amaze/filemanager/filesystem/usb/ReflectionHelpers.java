@@ -107,7 +107,7 @@ class ReflectionHelpers {
     configureMethod.invoke(usbConfiguration, (Object) new Parcelable[] {usbInterface});
   }
 
-  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.M)
   static Parcelable[] configureUsbDevice()
       throws ClassNotFoundException,
           NoSuchMethodException,
@@ -207,7 +207,7 @@ class ReflectionHelpers {
         serialNumber);
   }
 
-  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.M)
   static UsbDevice callUsbDeviceConstructor(
       @NonNull String name,
       int vendorId,
@@ -271,7 +271,7 @@ class ReflectionHelpers {
     return constructor.newInstance(id, alternateSetting, name, usbClass, subClass, protocol);
   }
 
-  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
+  @SdkSuppress(minSdkVersion = Build.VERSION_CODES.M)
   static UsbInterface callUsbInterfaceConstructor(
       int id, int usbClass, int subClass, int protocol, @Nullable Parcelable[] endpoints)
       throws ClassNotFoundException,

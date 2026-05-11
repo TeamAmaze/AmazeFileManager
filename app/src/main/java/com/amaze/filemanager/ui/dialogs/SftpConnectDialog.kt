@@ -315,11 +315,11 @@ class SftpConnectDialog : DialogFragment() {
                             edit = true,
                         )
                     val i =
-                        DataUtils.getInstance().containsServer(
+                        DataUtils.containsServer(
                             arrayOf(connectionName, path),
                         )
                     if (i > -1) {
-                        DataUtils.getInstance().removeServer(i)
+                        DataUtils.removeServer(i)
                         AppConfig.getInstance()
                             .runInBackground {
                                 AppConfig.getInstance().utilsHandler.removeFromDatabase(
@@ -721,8 +721,8 @@ class SftpConnectDialog : DialogFragment() {
                     selectedParsedKeyPair,
                     explicitTls,
                 )?.run {
-                    if (DataUtils.getInstance().containsServer(encryptedPath) == -1) {
-                        DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
+                    if (DataUtils.containsServer(encryptedPath) == -1) {
+                        DataUtils.addServer(arrayOf(connectionName, encryptedPath))
                         (activity as MainActivity).drawer.refreshDrawer()
                         AppConfig.getInstance().utilsHandler.saveToDatabase(
                             OperationData(
@@ -768,14 +768,14 @@ class SftpConnectDialog : DialogFragment() {
         hostKeyFingerprint: String?,
         encryptedPath: String,
     ): Boolean {
-        val i = DataUtils.getInstance().containsServer(oldPath)
+        val i = DataUtils.containsServer(oldPath!!)
 
         if (i != -1) {
-            DataUtils.getInstance().removeServer(i)
+            DataUtils.removeServer(i)
         }
 
-        DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
-        DataUtils.getInstance().servers.sortWith(BookSorter())
+        DataUtils.addServer(arrayOf(connectionName, encryptedPath))
+        DataUtils.getServers().sortWith(BookSorter())
         (activity as MainActivity).drawer.refreshDrawer()
         AppConfig.getInstance().runInBackground {
             AppConfig.getInstance().utilsHandler.updateSsh(

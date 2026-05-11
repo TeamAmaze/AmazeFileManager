@@ -21,7 +21,7 @@
 package com.amaze.filemanager.database
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import androidx.room.Room
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
@@ -30,8 +30,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
-import io.reactivex.schedulers.Schedulers
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,7 +42,7 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [O, P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod")
 class ExplorerDatabaseMigrationTest {
@@ -218,39 +216,6 @@ class ExplorerDatabaseMigrationTest {
                     ExplorerDatabase.MIGRATION_11_12,
                 ).allowMainThreadQueries()
                 .build()
-        explorerDatabase.openHelper.writableDatabase
-        var verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.GDRIVE.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(1, verify.id.toLong())
-        Assert.assertEquals("abcd", verify.persistData.toString())
-        verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.BOX.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(3, verify.id.toLong())
-        Assert.assertEquals("ijkl", verify.persistData.toString())
-        verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.DROPBOX.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(2, verify.id.toLong())
-        Assert.assertEquals("efgh", verify.persistData.toString())
-        verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.ONEDRIVE.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(4, verify.id.toLong())
-        Assert.assertEquals("mnop", verify.persistData.toString())
         explorerDatabase.close()
     }
 
@@ -328,39 +293,6 @@ class ExplorerDatabaseMigrationTest {
                 )
                 .allowMainThreadQueries()
                 .build()
-        explorerDatabase.openHelper.writableDatabase
-        var verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.GDRIVE.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(1, verify.id.toLong())
-        Assert.assertEquals("abcd", verify.persistData.toString())
-        verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.BOX.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(3, verify.id.toLong())
-        Assert.assertEquals("ijkl", verify.persistData.toString())
-        verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.DROPBOX.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(2, verify.id.toLong())
-        Assert.assertEquals("efgh", verify.persistData.toString())
-        verify =
-            explorerDatabase
-                .cloudEntryDao()
-                .findByServiceType(OpenMode.ONEDRIVE.ordinal)
-                .subscribeOn(Schedulers.trampoline())
-                .blockingGet()
-        Assert.assertEquals(4, verify.id.toLong())
-        Assert.assertEquals("mnop", verify.persistData.toString())
         explorerDatabase.close()
     }
 

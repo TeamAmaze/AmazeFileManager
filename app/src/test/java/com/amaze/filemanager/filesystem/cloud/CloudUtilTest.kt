@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem.cloud
 
-import com.amaze.filemanager.database.CloudHandler
+import com.amaze.filemanager.database.CloudContract
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode.BOX
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode.DROPBOX
@@ -33,21 +33,21 @@ import kotlin.random.Random
 
 class CloudUtilTest {
     /**
-     * Tests [CloudUtil.stripPath]
+     * Tests [CloudUtil.stripCloudPath]
      */
     @Test
     fun stripPathTest() {
         val assertForTest = { mode: OpenMode, path: String, completePath: String ->
-            Assert.assertEquals(path, CloudUtil.stripPath(mode, completePath))
+            Assert.assertEquals(path, CloudUtil.stripCloudPath(mode, completePath))
         }
 
         val generatePathForMode = { mode: OpenMode, path: String ->
             val prefix =
                 when (mode) {
-                    DROPBOX -> CloudHandler.CLOUD_PREFIX_DROPBOX
-                    BOX -> CloudHandler.CLOUD_PREFIX_BOX
-                    GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
-                    ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
+                    DROPBOX -> CloudContract.CLOUD_PREFIX_DROPBOX
+                    BOX -> CloudContract.CLOUD_PREFIX_BOX
+                    GDRIVE -> CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE
+                    ONEDRIVE -> CloudContract.CLOUD_PREFIX_ONE_DRIVE
                     else -> null
                 }
             requireNotNull(prefix)
@@ -60,7 +60,7 @@ class CloudUtilTest {
             val path = RandomPathGenerator.generateRandomPath(r, 50)
 
             val genAndStrip = { mode: OpenMode ->
-                CloudUtil.stripPath(mode, generatePathForMode(mode, path))
+                CloudUtil.stripCloudPath(mode, generatePathForMode(mode, path))
             }
 
             assertForTest(DROPBOX, path, genAndStrip(DROPBOX))

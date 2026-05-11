@@ -39,12 +39,11 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.AboutActivity;
@@ -53,7 +52,6 @@ import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.AppsListFragment;
-import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.QuickAccessesPrefsFragment;
@@ -66,11 +64,8 @@ import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.services.Box;
-import com.cloudrail.si.services.Dropbox;
-import com.cloudrail.si.services.GoogleDrive;
-import com.cloudrail.si.services.OneDrive;
+import com.amaze.filemanager.utils.cloud.CloudPluginUtil;
+import com.amaze.filemanager.utils.omh.OmhCredentialsWrapper;
 import com.google.android.material.navigation.NavigationView;
 
 import android.content.ActivityNotFoundException;
@@ -98,12 +93,12 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.lifecycle.ViewModelProvider;
 
 public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
@@ -148,7 +143,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public Drawer(MainActivity mainActivity) {
     this.mainActivity = mainActivity;
-    dataUtils = DataUtils.getInstance();
+    dataUtils = DataUtils.INSTANCE;
 
     drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);
     drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
@@ -164,28 +159,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     telegramImageView.setOnClickListener(v -> Utils.openTelegramURL(mainActivity));
     instagramImageView.setOnClickListener(v -> Utils.openInstagramURL(mainActivity));
     initDrawerFocusItems();
-    /*drawerHeaderView.setOnLongClickListener(
-    v -> {
-      Intent intent1;
-      if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-        intent1 = new Intent();
-        intent1.setAction(Intent.ACTION_GET_CONTENT);
-      } else {
-        intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-      }
-      intent1.addCategory(Intent.CATEGORY_OPENABLE);
-      intent1.setType("image/*");
-      mainActivity.startActivityForResult(intent1, image_selector_request_code);
-      return false;
-    });*/
 
     navView = mainActivity.findViewById(R.id.navigation);
-
-    // set width of drawer in portrait to follow material guidelines
-    /*if(!Utils.isDeviceInLandScape(mainActivity)){
-        setNavViewDimension(navView);
-    }*/
-
     navView.setNavigationItemSelectedListener(this);
 
     int accentColor = mainActivity.getAccent(), idleColor;
@@ -236,7 +211,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
           new ActionBarDrawerToggle(
               mainActivity, /* host Activity */
               mDrawerLayout, /* DrawerLayout object */
-              R.drawable.ic_drawer_l, /* nav drawer image to replace 'Up' caret */
               R.string.drawer_open, /* "open drawer" description for accessibility */
               R.string.drawer_close /* "close drawer" description for accessibility */) {
             public void onDrawerClosed(View view) {
@@ -248,7 +222,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               // creates call to onPrepareOptionsMenu()
             }
           };
-      mDrawerLayout.setDrawerListener(mDrawerToggle);
+      mDrawerToggle.setHomeAsUpIndicator(
+          R.drawable.ic_drawer_l); /* nav drawer image to replace 'Up' caret */
+      mDrawerLayout.addDrawerListener(mDrawerToggle);
       mainActivity.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_l);
       mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
       mainActivity.getSupportActionBar().setHomeButtonEnabled(true);
@@ -353,65 +329,66 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
 
-    if (CloudSheetFragment.isCloudProviderAvailable(mainActivity)) {
-      for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+    if (CloudPluginUtil.isCloudProviderAvailable(mainActivity)) {
+      for (OmhCredentialsWrapper cloudStorage : dataUtils.getAccounts()) {
         @DrawableRes int deleteIcon = R.drawable.ic_delete_grey_24dp;
 
-        if (cloudStorage instanceof Dropbox) {
+        if (OpenMode.DROPBOX.equals(cloudStorage.getOpenMode())) {
           addNewItem(
               menu,
               CLOUDS_GROUP,
               order++,
-              CloudHandler.CLOUD_NAME_DROPBOX,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_DROPBOX + "/", false),
+              CloudContract.CLOUD_NAME_DROPBOX,
+              new MenuMetadata(CloudContract.CLOUD_PREFIX_DROPBOX + "/", false),
               R.drawable.ic_dropbox_white_24dp,
               deleteIcon);
 
           accountAuthenticationList.add(
               new String[] {
-                CloudHandler.CLOUD_NAME_DROPBOX, CloudHandler.CLOUD_PREFIX_DROPBOX + "/",
+                CloudContract.CLOUD_NAME_DROPBOX, CloudContract.CLOUD_PREFIX_DROPBOX + "/",
               });
-        } else if (cloudStorage instanceof Box) {
+        } else if (OpenMode.BOX.equals(cloudStorage.getOpenMode())) {
           addNewItem(
               menu,
               CLOUDS_GROUP,
               order++,
-              CloudHandler.CLOUD_NAME_BOX,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_BOX + "/", false),
+              CloudContract.CLOUD_NAME_BOX,
+              new MenuMetadata(CloudContract.CLOUD_PREFIX_BOX + "/", false),
               R.drawable.ic_box_white_24dp,
               deleteIcon);
 
           accountAuthenticationList.add(
               new String[] {
-                CloudHandler.CLOUD_NAME_BOX, CloudHandler.CLOUD_PREFIX_BOX + "/",
+                CloudContract.CLOUD_NAME_BOX, CloudContract.CLOUD_PREFIX_BOX + "/",
               });
-        } else if (cloudStorage instanceof OneDrive) {
+        } else if (OpenMode.ONEDRIVE.equals(cloudStorage.getOpenMode())) {
           addNewItem(
               menu,
               CLOUDS_GROUP,
               order++,
-              CloudHandler.CLOUD_NAME_ONE_DRIVE,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/", false),
+              CloudContract.CLOUD_NAME_ONE_DRIVE,
+              new MenuMetadata(CloudContract.CLOUD_PREFIX_ONE_DRIVE + "/", false),
               R.drawable.ic_onedrive_white_24dp,
               deleteIcon);
 
           accountAuthenticationList.add(
               new String[] {
-                CloudHandler.CLOUD_NAME_ONE_DRIVE, CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/",
+                CloudContract.CLOUD_NAME_ONE_DRIVE, CloudContract.CLOUD_PREFIX_ONE_DRIVE + "/",
               });
-        } else if (cloudStorage instanceof GoogleDrive) {
+        } else if (OpenMode.GDRIVE.equals(cloudStorage.getOpenMode())) {
           addNewItem(
               menu,
               CLOUDS_GROUP,
               order++,
-              CloudHandler.CLOUD_NAME_GOOGLE_DRIVE,
-              new MenuMetadata(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/", false),
+              CloudContract.CLOUD_NAME_GOOGLE_DRIVE,
+              new MenuMetadata(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE + "/", false),
               R.drawable.ic_google_drive_white_24dp,
               deleteIcon);
 
           accountAuthenticationList.add(
               new String[] {
-                CloudHandler.CLOUD_NAME_GOOGLE_DRIVE, CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
+                CloudContract.CLOUD_NAME_GOOGLE_DRIVE,
+                CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE + "/",
               });
         }
       }
@@ -818,12 +795,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         }
 
         if (dataUtils.getAccounts().size() > 0
-            && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
-                || meta.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)
-                || meta.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)
-                || meta.path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE))) {
+            && (meta.path.startsWith(CloudContract.CLOUD_PREFIX_BOX)
+                || meta.path.startsWith(CloudContract.CLOUD_PREFIX_DROPBOX)
+                || meta.path.startsWith(CloudContract.CLOUD_PREFIX_ONE_DRIVE)
+                || meta.path.startsWith(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE))) {
           // we have cloud accounts, try see if token is expired or not
-          CloudUtil.checkToken(meta.path, mainActivity);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
@@ -891,16 +867,16 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             || path.startsWith(FTP_URI_PREFIX)
             || path.startsWith(FTPS_URI_PREFIX)) {
           mainActivity.showSftpDialog(title, path, true);
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+        } else if (path.startsWith(CloudContract.CLOUD_PREFIX_DROPBOX)) {
           GeneralDialogCreation.showCloudDialog(
               mainActivity, mainActivity.getAppTheme(), OpenMode.DROPBOX);
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+        } else if (path.startsWith(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE)) {
           GeneralDialogCreation.showCloudDialog(
               mainActivity, mainActivity.getAppTheme(), OpenMode.GDRIVE);
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+        } else if (path.startsWith(CloudContract.CLOUD_PREFIX_BOX)) {
           GeneralDialogCreation.showCloudDialog(
               mainActivity, mainActivity.getAppTheme(), OpenMode.BOX);
-        } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+        } else if (path.startsWith(CloudContract.CLOUD_PREFIX_ONE_DRIVE)) {
           GeneralDialogCreation.showCloudDialog(
               mainActivity, mainActivity.getAppTheme(), OpenMode.ONEDRIVE);
         }

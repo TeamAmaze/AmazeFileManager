@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.fileoperations.filesystem.cloud;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -50,7 +50,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {KITKAT, P})
+    sdk = {O, P})
 public class CloudStreamSourceTest {
   private CloudStreamSource cs;
   private String testFilePath;

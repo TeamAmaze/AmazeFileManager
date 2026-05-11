@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.utils.smb
 
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import android.os.Build.VERSION_CODES.R
 import android.os.Looper
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 @Suppress("LongClass", "StringLiteralDuplication")
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [LOLLIPOP, P, R])
+@Config(sdk = [O, P, R])
 class SmbDeviceScannerObservableTest {
     private lateinit var mockStrategy1: SmbDeviceScannerObservable.DiscoverDeviceStrategy
     private lateinit var mockStrategy2: SmbDeviceScannerObservable.DiscoverDeviceStrategy

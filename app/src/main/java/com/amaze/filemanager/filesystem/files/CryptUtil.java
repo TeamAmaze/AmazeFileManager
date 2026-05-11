@@ -57,6 +57,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import kotlin.Unit;
 import kotlin.io.ByteStreamsKt;
 import kotlin.io.ConstantsKt;
 
@@ -205,6 +206,7 @@ public class CryptUtil {
             } catch (IOException | GeneralSecurityException e) {
               throw new IllegalStateException(e); // throw unchecked exception, no throws needed
             }
+            return Unit.INSTANCE;
           });
     } else {
 
@@ -284,6 +286,7 @@ public class CryptUtil {
             } catch (IOException | GeneralSecurityException e) {
               throw new IllegalStateException(e); // throw unchecked exception, no throws needed
             }
+            return Unit.INSTANCE;
           });
     } else {
 

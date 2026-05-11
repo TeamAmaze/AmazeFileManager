@@ -30,7 +30,7 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.database.CloudHandler
+import com.amaze.filemanager.database.CloudContract
 import com.amaze.filemanager.filesystem.DeleteOperation.deleteFile
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation.isOnExtSdCard
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
@@ -180,10 +180,10 @@ object FileProperties {
             f.startsWith(NetCopyClientConnectionPool.FTP_URI_PREFIX) ||
             f.startsWith(NetCopyClientConnectionPool.FTPS_URI_PREFIX) ||
             f.startsWith(OTGUtil.PREFIX_OTG) ||
-            f.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
-            f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE) ||
-            f.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-            f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+            f.startsWith(CloudContract.CLOUD_PREFIX_BOX) ||
+            f.startsWith(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE) ||
+            f.startsWith(CloudContract.CLOUD_PREFIX_DROPBOX) ||
+            f.startsWith(CloudContract.CLOUD_PREFIX_ONE_DRIVE) ||
             f.startsWith("content://")
         ) {
             return 1

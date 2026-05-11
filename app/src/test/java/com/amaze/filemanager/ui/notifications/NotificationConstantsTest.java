@@ -22,7 +22,10 @@ package com.amaze.filemanager.ui.notifications;
 
 import static android.app.NotificationManager.IMPORTANCE_HIGH;
 import static android.app.NotificationManager.IMPORTANCE_MIN;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_FTP_ID;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_NORMAL_ID;
@@ -54,7 +57,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
+@Config(sdk = {O, P, Build.VERSION_CODES.R})
 public class NotificationConstantsTest {
 
   private Context context;
@@ -89,7 +92,7 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(sdk = {LOLLIPOP}) // max sdk is N
+  @Config(maxSdk = N) // test only runs up to Android N
   public void testNormalNotification() {
     NotificationCompat.Builder builder =
         new NotificationCompat.Builder(context, CHANNEL_NORMAL_ID)
@@ -104,7 +107,7 @@ public class NotificationConstantsTest {
     if (Build.VERSION.SDK_INT >= LOLLIPOP) {
       assertEquals(Notification.CATEGORY_SERVICE, result.category);
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+    if (Build.VERSION.SDK_INT >= JELLY_BEAN) {
       assertEquals(Notification.PRIORITY_MIN, result.priority);
     } else {
       assertEquals(Notification.PRIORITY_DEFAULT, result.priority);
@@ -112,7 +115,7 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(sdk = {LOLLIPOP}) // max sdk is N
+  @Config(maxSdk = N) // test only runs up to Android N
   public void testFtpNotification() {
     NotificationCompat.Builder builder =
         new NotificationCompat.Builder(context, CHANNEL_FTP_ID)
@@ -128,7 +131,7 @@ public class NotificationConstantsTest {
       assertEquals(Notification.CATEGORY_SERVICE, result.category);
       assertEquals(Notification.VISIBILITY_PUBLIC, result.visibility);
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+    if (Build.VERSION.SDK_INT >= JELLY_BEAN) {
       assertEquals(Notification.PRIORITY_MAX, result.priority);
     } else {
       assertEquals(Notification.PRIORITY_DEFAULT, result.priority);

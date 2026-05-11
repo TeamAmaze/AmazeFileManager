@@ -28,6 +28,7 @@ import static com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.MULTI_S
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SFTPClientExtKt.READ_AHEAD_MAX_UNCONFIRMED_READS;
 import static com.amaze.filemanager.filesystem.ssh.SshClientUtils.sftpGetSize;
+import static com.amaze.filemanager.utils.omh.OMHClientHelper.MULTI_SLASH_FOR_CLOUD;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +49,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -63,7 +63,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
@@ -87,15 +87,14 @@ import com.amaze.filemanager.filesystem.ssh.Statvfs;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.omh.AuthTrigger;
 import com.amaze.filemanager.utils.smb.SmbUtil;
 import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinFile;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.SpaceAllocation;
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
+import com.openmobilehub.android.storage.core.model.OmhStorageMetadata;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -118,6 +117,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.Unit;
 import kotlin.collections.ArraysKt;
 import kotlin.io.ByteStreamsKt;
 import kotlin.text.Charsets;
@@ -134,16 +134,23 @@ import net.schmizz.sshj.sftp.SFTPException;
 /** Hybrid file for handeling all types of files */
 public class HybridFile {
 
-  private static final Logger LOG = LoggerFactory.getLogger(HybridFile.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(HybridFile.class);
 
   public static final String DOCUMENT_FILE_PREFIX =
       "content://com.android.externalstorage.documents";
 
+  protected String cloudFileId;
   protected String path;
   protected OpenMode mode;
   protected String name;
 
-  private final DataUtils dataUtils = DataUtils.getInstance();
+  public String getCloudFileId() {
+    return cloudFileId;
+  }
+
+  public void setCloudFileId(String cloudFileId) {
+    this.cloudFileId = cloudFileId;
+  }
 
   public HybridFile(OpenMode mode, String path) {
     this.path = path;
@@ -186,13 +193,13 @@ public class HybridFile {
       mode = OpenMode.DOCUMENT_FILE;
     } else if (isCustomPath()) {
       mode = OpenMode.CUSTOM;
-    } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
+    } else if (path.startsWith(CloudContract.CLOUD_PREFIX_BOX)) {
       mode = OpenMode.BOX;
-    } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
+    } else if (path.startsWith(CloudContract.CLOUD_PREFIX_ONE_DRIVE)) {
       mode = OpenMode.ONEDRIVE;
-    } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
+    } else if (path.startsWith(CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE)) {
       mode = OpenMode.GDRIVE;
-    } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
+    } else if (path.startsWith(CloudContract.CLOUD_PREFIX_DROPBOX)) {
       mode = OpenMode.DROPBOX;
     } else if (path.equals("7") || isTrashBin()) {
       mode = OpenMode.TRASH_BIN;
@@ -353,6 +360,11 @@ public class HybridFile {
         return getFile().lastModified();
       case DOCUMENT_FILE:
         return getDocumentFile(false).lastModified();
+      case GDRIVE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+        return HybridFileOmhStorageExtKt.getCloudLastModified(this);
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getDate();
@@ -412,16 +424,7 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        s =
-            Single.fromCallable(
-                    () ->
-                        dataUtils
-                            .getAccount(mode)
-                            .getMetadata(CloudUtil.stripPath(mode, path))
-                            .getSize())
-                .subscribeOn(Schedulers.io())
-                .blockingGet();
-        return s;
+        return HybridFileOmhStorageExtKt.getCloudFileSize(this);
       default:
         break;
     }
@@ -609,6 +612,7 @@ public class HybridFile {
    *
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
+  @Deprecated
   public boolean isDirectory() {
     boolean isDirectory;
     switch (mode) {
@@ -685,14 +689,13 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        return Single.fromCallable(
-                () ->
-                    dataUtils
-                        .getAccount(mode)
-                        .getMetadata(CloudUtil.stripPath(mode, path))
-                        .getFolder())
-            .subscribeOn(Schedulers.io())
-            .blockingGet();
+        try {
+          OmhStorageMetadata metadata = HybridFileOmhStorageExtKt.getCloudFileMetadata(this);
+          return metadata != null && metadata.getEntity() instanceof OmhStorageEntity.OmhFolder;
+        } catch (CloudPluginException e) {
+          LOG.error("Error obtaining metadata for cloud file", e);
+          return false;
+        }
       case TRASH_BIN:
       default: // also handles the case `FILE`
         File file = getFile();
@@ -703,6 +706,7 @@ public class HybridFile {
   /**
    * @deprecated use {@link #folderSize(Context)}
    */
+  @Deprecated
   public long folderSize() {
     long size = 0L;
 
@@ -722,6 +726,11 @@ public class HybridFile {
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) size = baseFile.getSize();
         break;
+      case GDRIVE:
+      case DROPBOX:
+      case ONEDRIVE:
+      case BOX:
+        return HybridFileOmhStorageExtKt.getCloudFolderSize(this);
       default:
         return 0L;
     }
@@ -775,19 +784,19 @@ public class HybridFile {
             path,
             context,
             OpenMode.DOCUMENT_FILE,
-            file -> totalBytes.addAndGet(FileUtils.getBaseFileSize(file, context)));
+            file -> {
+              totalBytes.addAndGet(FileUtils.getBaseFileSize(file, context));
+              return Unit.INSTANCE;
+            });
         break;
       case DROPBOX:
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        size =
-            FileUtils.folderSizeCloud(
-                mode, dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
-        break;
+        return HybridFileOmhStorageExtKt.getCloudFolderSize(this);
       case FTP:
       default:
-        return 0l;
+        return 0L;
     }
     return size;
   }
@@ -799,16 +808,15 @@ public class HybridFile {
       case SMB:
         size =
             Single.fromCallable(
-                    (Callable<Long>)
-                        () -> {
-                          try {
-                            SmbFile smbFile = getSmbFile();
-                            return smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
-                          } catch (SmbException e) {
-                            LOG.warn("failed to get usage space for smb file", e);
-                            return 0L;
-                          }
-                        })
+                    () -> {
+                      try {
+                        SmbFile smbFile = getSmbFile();
+                        return smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
+                      } catch (SmbException e) {
+                        LOG.warn("failed to get usage space for smb file", e);
+                        return 0L;
+                      }
+                    })
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
         break;
@@ -821,8 +829,7 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
-        size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
+        size = HybridFileOmhStorageExtKt.getCloudUsableSpace(this);
         break;
       case SFTP:
         final Long returnValue =
@@ -887,7 +894,7 @@ public class HybridFile {
 
   /** Gets total size of the disk */
   public long getTotal(Context context) {
-    long size = 0l;
+    long size = 0L;
     switch (mode) {
       case SMB:
         // TODO: Find total storage space of SMB when JCIFS adds support
@@ -907,13 +914,12 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
-        size = spaceAllocation.getTotal();
+        size = HybridFileOmhStorageExtKt.getCloudTotalSpace(this);
         break;
       case SFTP:
         final Long returnValue =
             SshClientUtils.execute(
-                new SFtpClientTemplate<Long>(path, true) {
+                new SFtpClientTemplate<>(path, true) {
                   @Override
                   public Long execute(@NonNull SFTPClient client) throws IOException {
                     try {
@@ -958,7 +964,8 @@ public class HybridFile {
   }
 
   /** Helper method to list children of this file */
-  public void forEachChildrenFile(Context context, boolean isRoot, OnFileFound onFileFound) {
+  public void forEachChildrenFile(
+      Context context, boolean isRoot, Function<HybridFileParcelable, Unit> onFileFound) {
     switch (mode) {
       case SFTP:
         SshClientUtils.execute(
@@ -976,7 +983,7 @@ public class HybridFile {
                       continue;
                     }
                     HybridFileParcelable f = new HybridFileParcelable(getPath(), isDirectory, info);
-                    onFileFound.onFileFound(f);
+                    onFileFound.apply(f);
                   }
                 } catch (IOException e) {
                   LOG.warn("IOException", e);
@@ -1004,7 +1011,7 @@ public class HybridFile {
                 LOG.warn("failed to get children file for smb", shouldNeverHappen);
                 baseFile = new HybridFileParcelable(smbFile1);
               }
-              onFileFound.onFileFound(baseFile);
+              onFileFound.apply(baseFile);
             }
           }
         } catch (SmbException e) {
@@ -1023,7 +1030,7 @@ public class HybridFile {
                   }
                 });
         for (FTPFile ftpFile : ftpFiles) {
-          onFileFound.onFileFound(new HybridFileParcelable(getPath(), ftpFile));
+          onFileFound.apply(new HybridFileParcelable(getPath(), ftpFile));
         }
         break;
       case OTG:
@@ -1037,11 +1044,8 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        try {
-          CloudUtil.getCloudFiles(path, dataUtils.getAccount(mode), mode, onFileFound);
-        } catch (CloudPluginException e) {
-          LOG.warn("failed to get children file for cloud file", e);
-        }
+        AuthTrigger authTrigger = AppConfig.getInstance().getCloudAuthTrigger();
+        CloudUtil.getCloudFilesBlocking(cloudFileId, path, mode, authTrigger, onFileFound);
         break;
       case TRASH_BIN:
       default:
@@ -1051,7 +1055,7 @@ public class HybridFile {
             true,
             openMode -> null,
             hybridFileParcelable -> {
-              onFileFound.onFileFound(hybridFileParcelable);
+              onFileFound.apply(hybridFileParcelable);
               return null;
             });
     }
@@ -1064,7 +1068,13 @@ public class HybridFile {
    */
   public ArrayList<HybridFileParcelable> listFiles(Context context, boolean isRoot) {
     ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
-    forEachChildrenFile(context, isRoot, arrayList::add);
+    forEachChildrenFile(
+        context,
+        isRoot,
+        file -> {
+          arrayList.add(file);
+          return Unit.INSTANCE;
+        });
     return arrayList;
   }
 
@@ -1104,7 +1114,7 @@ public class HybridFile {
       case SFTP:
         inputStream =
             SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(getPath(), false) {
+                new SFtpClientTemplate<>(getPath(), false) {
                   @Override
                   public InputStream execute(@NonNull final SFTPClient client) throws IOException {
                     final RemoteFile rf =
@@ -1114,12 +1124,12 @@ public class HybridFile {
                       @Override
                       public void close() throws IOException {
                         try {
-                          LOG.debug("Closing input stream for {}", getPath());
+                          LOG.trace("Closing input stream for {}", getPath());
                           super.close();
                         } catch (Throwable e) {
-                          e.printStackTrace();
+                          LOG.warn("Error closing stream", e);
                         } finally {
-                          LOG.debug("Closing client for {}", getPath());
+                          LOG.trace("Closing client for {}", getPath());
                           rf.close();
                           client.close();
                         }
@@ -1191,9 +1201,8 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        CloudStorage cloudStorageOneDrive = dataUtils.getAccount(mode);
-        LOG.debug(CloudUtil.stripPath(mode, path));
-        inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(mode, path));
+        LOG.debug("DEBUG: " + CloudUtil.stripCloudPath(mode, path));
+        inputStream = HybridFileOmhStorageExtKt.downloadCloudFile(this);
         break;
       case TRASH_BIN:
       default:
@@ -1214,7 +1223,7 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         return SshClientUtils.execute(
-            new SFtpClientTemplate<OutputStream>(getPath(), false) {
+            new SFtpClientTemplate<>(getPath(), false) {
               @Nullable
               @Override
               public OutputStream execute(@NonNull SFTPClient client) throws IOException {
@@ -1244,7 +1253,7 @@ public class HybridFile {
       case FTP:
         outputStream =
             NetCopyClientUtils.INSTANCE.execute(
-                new FtpClientTemplate<OutputStream>(path, false) {
+                new FtpClientTemplate<>(path, false) {
                   public OutputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
                     ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
@@ -1331,18 +1340,16 @@ public class HybridFile {
       else {
         exists = getFtpFile() != null;
       }
-    } else if (isDropBoxFile()) {
-      CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-      exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-    } else if (isBoxFile()) {
-      CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-      exists = cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));
-    } else if (isGoogleDriveFile()) {
-      CloudStorage cloudStorageGoogleDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-      exists = cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-    } else if (isOneDriveFile()) {
-      CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-      exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
+    } else if (isCloudDriveFile()) {
+      if (cloudFileId == null) {
+        return false;
+      }
+      try {
+        OmhStorageMetadata metadata = HybridFileOmhStorageExtKt.getCloudFileMetadata(this);
+        exists = metadata != null;
+      } catch (CloudPluginException e) {
+        LOG.error("Error fetching metadata", e);
+      }
     } else if (isLocal()) {
       exists = getFile().exists();
     } else if (isRoot()) {
@@ -1438,6 +1445,9 @@ public class HybridFile {
                   return 0 == cmd.getExitStatus();
                 }
               }));
+    } else if (isCloudDriveFile()) {
+      // do nothing
+      return true;
     } else if (isTrashBin()) {
       // do nothing
       return true;
@@ -1507,12 +1517,7 @@ public class HybridFile {
         }
       }
     } else if (isCloudDriveFile()) {
-      CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
-      try {
-        cloudStorageDropbox.createFolder(CloudUtil.stripPath(mode, path));
-      } catch (Exception e) {
-        LOG.warn("failed to create folder for cloud file", e);
-      }
+      HybridFileOmhStorageExtKt.createCloudFolder(this);
     } else if (isTrashBin()) { // do nothing
     } else MakeDirectoryOperation.mkdirs(context, this);
   }
@@ -1550,6 +1555,8 @@ public class HybridFile {
         LOG.error("Error delete SMB file", e);
         throw e;
       }
+    } else if (isCloudDriveFile()) {
+      HybridFileOmhStorageExtKt.deleteCloudFile(this);
     } else if (isTrashBin()) {
       try {
         deletePermanentlyFromBin(context);
@@ -1649,6 +1656,7 @@ public class HybridFile {
           layoutElement =
               new LayoutElementParcelable(
                   c,
+                  "",
                   path,
                   RootHelper.parseFilePermission(file),
                   "",
@@ -1663,6 +1671,7 @@ public class HybridFile {
           layoutElement =
               new LayoutElementParcelable(
                   c,
+                  "",
                   file.getPath(),
                   RootHelper.parseFilePermission(file),
                   file.getPath(),
@@ -1950,6 +1959,6 @@ public class HybridFile {
   }
 
   private void sanitizePathAsNecessary() {
-    this.path = this.path.replaceAll(MULTI_SLASH, "/");
+    this.path = this.path.replaceAll(isCloudDriveFile() ? MULTI_SLASH_FOR_CLOUD : MULTI_SLASH, "/");
   }
 }

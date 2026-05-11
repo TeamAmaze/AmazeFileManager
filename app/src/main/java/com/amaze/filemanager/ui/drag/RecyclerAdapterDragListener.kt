@@ -58,8 +58,7 @@ class RecyclerAdapterDragListener(
                 if (dragAndDropPref
                     != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
                 ) {
-                    val dataUtils = DataUtils.getInstance()
-                    dataUtils.checkedItemsList = null
+                    DataUtils.checkedItemsList = null
                     mainFragment.requireMainActivity()
                         .tabFragment.dragPlaceholder?.visibility = View.INVISIBLE
                 }
@@ -188,14 +187,13 @@ class RecyclerAdapterDragListener(
                     if (checkedItems?.size == 0) {
                         // probably because we switched tabs and
                         // this adapter doesn't have any checked items, get from data utils
-                        val dataUtils = DataUtils.getInstance()
                         Log.d(
                             TAG,
                             "Didn't find checked items in adapter, " +
                                 "checking dataUtils size ${
-                                    dataUtils.checkedItemsList?.size ?: "null"}",
+                                    DataUtils.checkedItemsList?.size ?: "null"}",
                         )
-                        checkedItems = dataUtils.checkedItemsList
+                        checkedItems = DataUtils.checkedItemsList
                     }
                     val arrayList = ArrayList<HybridFileParcelable>()
                     checkedItems?.forEach {

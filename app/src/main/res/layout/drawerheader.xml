@@ -18,7 +18,7 @@
             android:minHeight="@dimen/drawer_header_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"/>
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/app_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

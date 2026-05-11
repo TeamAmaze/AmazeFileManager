@@ -44,7 +44,7 @@ public class RenameBookmark extends DialogFragment {
   private String title;
   private String path;
   private BookmarkCallback bookmarkCallback;
-  private final DataUtils dataUtils = DataUtils.getInstance();
+  private final DataUtils dataUtils = DataUtils.INSTANCE;
 
   public static RenameBookmark getInstance(String name, String path, int accentColor) {
     RenameBookmark renameBookmark = new RenameBookmark();

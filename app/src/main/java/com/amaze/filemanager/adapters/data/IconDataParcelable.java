@@ -24,6 +24,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 
 /**
  * Saves data on what should be loaded as an icon for LayoutElementParcelable
@@ -36,6 +37,10 @@ public class IconDataParcelable implements Parcelable {
 
   public final int type;
   public final String path;
+
+  /** Cloud file ID (only set for OMH cloud storage modes; null for SMB/SFTP/local). */
+  @Nullable public final String cloudFileId;
+
   public final @DrawableRes int image;
   public final @DrawableRes int loadingImage;
   private boolean isImageBroken = false;
@@ -46,14 +51,21 @@ public class IconDataParcelable implements Parcelable {
     this.image = img;
     this.loadingImage = -1;
     this.path = null;
+    this.cloudFileId = null;
   }
 
   public IconDataParcelable(int type, String path, @DrawableRes int loadingImages) {
+    this(type, path, loadingImages, null);
+  }
+
+  public IconDataParcelable(
+      int type, String path, @DrawableRes int loadingImages, @Nullable String cloudFileId) {
     if (type == IMAGE_RES) throw new IllegalArgumentException();
     this.type = type;
     this.path = path;
     this.loadingImage = loadingImages;
     this.image = -1;
+    this.cloudFileId = cloudFileId;
   }
 
   public boolean isImageBroken() {
@@ -76,6 +88,7 @@ public class IconDataParcelable implements Parcelable {
     parcel.writeInt(image);
     parcel.writeInt(loadingImage);
     parcel.writeInt(isImageBroken ? 1 : 0);
+    parcel.writeString(cloudFileId);
   }
 
   public IconDataParcelable(Parcel im) {
@@ -84,6 +97,7 @@ public class IconDataParcelable implements Parcelable {
     image = im.readInt();
     loadingImage = im.readInt();
     isImageBroken = im.readInt() == 1;
+    cloudFileId = im.readString();
   }
 
   public static final Parcelable.Creator<IconDataParcelable> CREATOR =

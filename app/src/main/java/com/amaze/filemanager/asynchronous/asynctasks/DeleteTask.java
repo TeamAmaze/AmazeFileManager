@@ -36,7 +36,6 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.SafRootHolder;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
@@ -44,9 +43,11 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.cloudrail.si.interfaces.CloudStorage;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
+import com.amaze.filemanager.utils.omh.OmhAuthClientExtKt;
+import com.amaze.filemanager.utils.omh.OmhStorageClientExtKt;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -59,6 +60,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbException;
+import kotlin.Unit;
 
 public class DeleteTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
@@ -71,7 +73,6 @@ public class DeleteTask
   private CompressedExplorerFragment compressedExplorerFragment;
 
   private boolean doDeletePermanently;
-  private final DataUtils dataUtils = DataUtils.getInstance();
 
   public DeleteTask(@NonNull Context applicationContext, @NonNull boolean doDeletePermanently) {
     this.applicationContext = applicationContext.getApplicationContext();
@@ -180,14 +181,21 @@ public class DeleteTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        CloudStorage cloudStorage = dataUtils.getAccount(file.getMode());
         try {
-          cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
-          return true;
+          OmhStorageClient storageClient = OMHClientHelper.getStorageClient(file.getMode());
+          if (storageClient != null) {
+            OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+                file.getMode(),
+                AppConfig.getInstance().getCloudAuthTrigger(),
+                () -> {
+                  OmhStorageClientExtKt.deleteFileBlocking(storageClient, file.getCloudFileId());
+                  return Unit.INSTANCE;
+                });
+          }
         } catch (Exception e) {
-          LOG.warn("failed to delete cloud files", e);
-          return false;
+          LOG.error("Error deleting cloud file", e);
         }
+        return true;
       default:
         try {
           /* SMB and SFTP (or any remote files that may support in the future) should not be

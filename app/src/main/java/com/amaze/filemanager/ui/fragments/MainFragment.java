@@ -378,8 +378,8 @@ public class MainFragment extends Fragment
 
   public void switchView() {
     boolean isPathLayoutGrid =
-        DataUtils.getInstance()
-                .getListOrGridForPath(mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
+        DataUtils.INSTANCE.getListOrGridForPath(
+                mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
             == DataUtils.GRID;
     reloadListElements(false, isPathLayoutGrid);
   }
@@ -482,7 +482,17 @@ public class MainFragment extends Fragment
             adapter.toggleChecked(position, imageView);
           } else {
             computeScroll();
-            loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
+            if (mainFragmentViewModel.getIsCloudOpenMode()) {
+              mainFragmentViewModel.saveCloudFolderIdToHistory();
+              loadlist(
+                  layoutElementParcelable.cloudFileId,
+                  path,
+                  false,
+                  mainFragmentViewModel.getOpenMode(),
+                  false);
+            } else {
+              loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
+            }
           }
         } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)
             || layoutElementParcelable.desc.endsWith(CryptUtil.AESCRYPT_EXTENSION)) {
@@ -513,7 +523,7 @@ public class MainFragment extends Fragment
                 new HybridFileParcelable[] {layoutElementParcelable.generateBaseFile()});
           } else {
             layoutElementParcelable.generateBaseFile().openFile(getMainActivity(), false);
-            DataUtils.getInstance().addHistoryFile(layoutElementParcelable.desc);
+            DataUtils.INSTANCE.addHistoryFile(layoutElementParcelable.desc);
           }
         }
       }
@@ -621,15 +631,30 @@ public class MainFragment extends Fragment
 
   LoadFilesListTask loadFilesListTask;
 
+  public void loadlist(
+      final String providedPath,
+      final boolean back,
+      final OpenMode providedOpenMode,
+      boolean forceReload) {
+    loadlist(
+        mainFragmentViewModel.getCloudFolderId(),
+        providedPath,
+        back,
+        providedOpenMode,
+        forceReload);
+  }
+
   /**
    * This loads a path into the MainFragment.
    *
+   * @param cloudFolderId cloud folder ID. Leave it blank if not used.
    * @param providedPath the path to be loaded
    * @param back if we're coming back from any directory and want the scroll to be restored
    * @param providedOpenMode the mode in which the directory should be opened
    * @param forceReload whether use cached list or force reload the list items
    */
   public void loadlist(
+      @NonNull final String cloudFolderId,
       final String providedPath,
       final boolean back,
       final OpenMode providedOpenMode,
@@ -653,7 +678,10 @@ public class MainFragment extends Fragment
     }
 
     OpenMode openMode = providedOpenMode;
-    String actualPath = FileProperties.remapPathForApi30OrAbove(providedPath, false);
+    String actualPath;
+    if ((OpenMode.FILE.equals(openMode)) && SDK_INT > Q)
+      actualPath = FileProperties.remapPathForApi30OrAbove(providedPath, false);
+    else actualPath = providedPath;
 
     if (SDK_INT >= Q && ArraysKt.any(ANDROID_DATA_DIRS, providedPath::contains)) {
       openMode = loadPathInQ(actualPath, providedPath, providedOpenMode);
@@ -667,7 +695,8 @@ public class MainFragment extends Fragment
 
     loadFilesListTask =
         new LoadFilesListTask(
-            getActivity(),
+            requireMainActivity(),
+            cloudFolderId,
             actualPath,
             this,
             openMode,
@@ -678,9 +707,10 @@ public class MainFragment extends Fragment
               mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
                 boolean isPathLayoutGrid =
-                    DataUtils.getInstance().getListOrGridForPath(providedPath, DataUtils.LIST)
+                    DataUtils.INSTANCE.getListOrGridForPath(providedPath, DataUtils.LIST)
                         == DataUtils.GRID;
-                setListElements(data.second, back, providedPath, data.first, isPathLayoutGrid);
+                setListElements(
+                    data.second, back, cloudFolderId, providedPath, data.first, isPathLayoutGrid);
               } else {
                 LOG.warn("Load list operation cancelled");
               }
@@ -799,13 +829,23 @@ public class MainFragment extends Fragment
   public void setListElements(
       List<LayoutElementParcelable> bitmap,
       boolean back,
-      String path,
+      @Nullable String cloudFolderId,
+      @NonNull String path,
       final OpenMode openMode,
       boolean grid) {
     if (bitmap != null) {
       mainFragmentViewModel.setListElements(bitmap);
+      mainFragmentViewModel.setCloudFolderId(cloudFolderId);
       mainFragmentViewModel.setCurrentPath(path);
       mainFragmentViewModel.setOpenMode(openMode);
+      // Clear the cloud folder ID back-stack when the user moves away from cloud mode entirely,
+      // so stale history from a previous cloud session doesn't leak into the next one.
+      if (openMode != OpenMode.GDRIVE
+          && openMode != OpenMode.DROPBOX
+          && openMode != OpenMode.BOX
+          && openMode != OpenMode.ONEDRIVE) {
+        mainFragmentViewModel.clearCloudFolderIdHistory();
+      }
       reloadListElements(back, grid);
     } else {
       // list loading cancelled
@@ -885,7 +925,7 @@ public class MainFragment extends Fragment
 
     if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM
         && mainFragmentViewModel.getOpenMode() != OpenMode.TRASH_BIN) {
-      DataUtils.getInstance().addHistoryFile(mainFragmentViewModel.getCurrentPath());
+      DataUtils.INSTANCE.addHistoryFile(mainFragmentViewModel.getCurrentPath());
     }
 
     listView.setAdapter(adapter);
@@ -1052,7 +1092,8 @@ public class MainFragment extends Fragment
                       name1,
                       f.isDirectory(),
                       getActivity(),
-                      getMainActivity().isRootExplorer());
+                      getMainActivity().isRootExplorer(),
+                      f.getCloudFileId());
             },
             (text) -> {
               boolean isValidFilename = FileProperties.isValidFilename(text);
@@ -1171,8 +1212,23 @@ public class MainFragment extends Fragment
               false);
         }
       } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-        loadlist(
-            currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+        if (mainFragmentViewModel.getIsCloudOpenMode()) {
+          // Pop the parent folder's cloud ID from history so that both the immediate
+          // listing and any subsequent pull-to-refresh use the correct folder ID.
+          String parentCloudFolderId = mainFragmentViewModel.restoreCloudFolderIdFromHistory();
+          loadlist(
+              parentCloudFolderId,
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        } else {
+          loadlist(
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        }
       } else {
         requireMainActivity().exit();
       }
@@ -1187,13 +1243,11 @@ public class MainFragment extends Fragment
                 () -> {
                   int i;
                   AppConfig.toast(requireContext(), getString(R.string.unknown_error));
-                  if ((i =
-                          DataUtils.getInstance()
-                              .containsServer(mainFragmentViewModel.getSmbPath()))
+                  if ((i = DataUtils.INSTANCE.containsServer(mainFragmentViewModel.getSmbPath()))
                       != -1) {
                     requireMainActivity()
                         .showSMBDialog(
-                            DataUtils.getInstance().getServers().get(i)[0],
+                            DataUtils.INSTANCE.getServers().get(i)[0],
                             mainFragmentViewModel.getSmbPath(),
                             true);
                   }
@@ -1230,8 +1284,21 @@ public class MainFragment extends Fragment
           || mainFragmentViewModel.getIsOnCloudRoot()) {
         requireMainActivity().exit();
       } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-        loadlist(
-            currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode(), false);
+        if (mainFragmentViewModel.getIsCloudOpenMode()) {
+          String parentCloudFolderId = mainFragmentViewModel.restoreCloudFolderIdFromHistory();
+          loadlist(
+              parentCloudFolderId,
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        } else {
+          loadlist(
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
+        }
       } else requireMainActivity().exit();
     }
   }
@@ -1289,7 +1356,7 @@ public class MainFragment extends Fragment
       mainFragmentViewModel.getSearchHelper().clear();
     }
     for (SmbFile aMFile : mFile) {
-      if ((DataUtils.getInstance().isFileHidden(aMFile.getPath()) || aMFile.isHidden())
+      if ((DataUtils.INSTANCE.isFileHidden(aMFile.getPath()) || aMFile.isHidden())
           && !showHiddenFiles) {
         continue;
       }
@@ -1358,7 +1425,7 @@ public class MainFragment extends Fragment
   }
 
   public void hide(String path) {
-    DataUtils.getInstance().addHiddenFile(path);
+    DataUtils.INSTANCE.addHiddenFile(path);
     File file = new File(path);
     if (file.isDirectory()) {
       File f1 = new File(path + "/" + ".nomedia");

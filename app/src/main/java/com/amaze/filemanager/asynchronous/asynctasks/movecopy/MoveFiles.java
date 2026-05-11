@@ -21,6 +21,8 @@
 package com.amaze.filemanager.asynchronous.asynctasks.movecopy;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
@@ -28,6 +30,7 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -36,13 +39,19 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
-import com.amaze.filemanager.utils.DataUtils;
-import com.cloudrail.si.interfaces.CloudStorage;
+import com.amaze.filemanager.utils.omh.OMHClientHelper;
+import com.amaze.filemanager.utils.omh.OmhAuthClientExtKt;
+import com.amaze.filemanager.utils.omh.OmhStorageClientExtKt;
+import com.openmobilehub.android.storage.core.OmhStorageClient;
+import com.openmobilehub.android.storage.core.model.OmhStorageEntity;
 
 import android.content.Context;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
+
+import kotlin.Unit;
+import kotlin.text.StringsKt;
 
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
@@ -133,22 +142,56 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        DataUtils dataUtils = DataUtils.getInstance();
-
-        CloudStorage cloudStorage = dataUtils.getAccount(mode);
-        if (baseFile.getMode() == mode) {
-          // source and target both in same filesystem, use API method
-          try {
-            cloudStorage.move(
-                CloudUtil.stripPath(mode, baseFile.getPath()), CloudUtil.stripPath(mode, destPath));
-          } catch (RuntimeException e) {
-            LOG.warn("failed to move file in cloud filesystem", e);
-            return new MoveFilesReturn(false, false, destinationSize, totalBytes);
-          }
-        } else {
-          // not in same filesystem, execute service
+        OmhStorageClient storageClient = OMHClientHelper.getStorageClient(mode);
+        if (storageClient == null) {
+          LOG.warn("No storage client available for mode: {}", mode);
           return new MoveFilesReturn(false, false, destinationSize, totalBytes);
         }
+        try {
+          OmhAuthClientExtKt.retryOnUnauthorizedBlocking(
+              mode,
+              AppConfig.getInstance().getCloudAuthTrigger(),
+              () -> {
+                // 1. Download source file into a local temp file
+                String name = baseFile.getName(context);
+                String baseName = StringsKt.substringBeforeLast(name, ".", name);
+                String ext = StringsKt.substringAfterLast(name, ".", "");
+                File tmpFile;
+                try {
+                  tmpFile =
+                      File.createTempFile(
+                          baseName, "." + ext, AppConfig.getInstance().getCacheDir());
+                } catch (IOException e) {
+                  throw new RuntimeException(e);
+                }
+                tmpFile.deleteOnExit();
+                try {
+                  OmhStorageClientExtKt.downloadFileBlocking(
+                          storageClient, baseFile.getCloudFileId())
+                      .writeTo(new FileOutputStream(tmpFile));
+                } catch (IOException e) {
+                  throw new RuntimeException(e);
+                }
+                // 2. Resolve destination parent folder
+                OmhStorageEntity destFolder =
+                    OmhStorageClientExtKt.resolvePathBlocking(
+                        storageClient, CloudUtil.stripCloudPath(mode, path));
+                String parentId =
+                    (destFolder != null && destFolder.getId() != null)
+                        ? destFolder.getId()
+                        : storageClient.getRootFolder();
+                // 3. Upload to destination
+                OmhStorageClientExtKt.uploadFileBlocking(storageClient, tmpFile, parentId);
+                tmpFile.delete();
+                // 4. Delete original source
+                OmhStorageClientExtKt.deleteFileBlocking(storageClient, baseFile.getCloudFileId());
+                return Unit.INSTANCE;
+              });
+        } catch (Exception e) {
+          LOG.warn("Cloud move failed for {}", baseFile.getPath(), e);
+          return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+        }
+        break;
       default:
         return new MoveFilesReturn(false, false, destinationSize, totalBytes);
     }

@@ -45,6 +45,7 @@ import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.ScreenUtils;
+import com.amaze.filemanager.utils.omh.AuthTrigger;
 import com.amaze.trashbin.TrashBin;
 import com.amaze.trashbin.TrashBinConfig;
 
@@ -74,6 +75,7 @@ public class AppConfig extends GlideApplication {
 
   private UtilitiesProvider utilsProvider;
   private UtilsHandler utilsHandler;
+  private AuthTrigger cloudAuthTrigger;
 
   private WeakReference<Context> mainActivityContext;
   private static ScreenUtils screenUtils;
@@ -81,11 +83,11 @@ public class AppConfig extends GlideApplication {
   private static AppConfig instance;
 
   private UtilitiesDatabase utilitiesDatabase;
-
   private ExplorerDatabase explorerDatabase;
 
   private TrashBinConfig trashBinConfig;
   private TrashBin trashBin;
+
   private static final String TRASH_BIN_BASE_PATH =
       Environment.getExternalStorageDirectory().getPath() + File.separator + ".AmazeData";
 
@@ -214,6 +216,10 @@ public class AppConfig extends GlideApplication {
     screenUtils = new ScreenUtils(activity);
   }
 
+  public void setCloudAuthTrigger(@NonNull AuthTrigger cloudAuthTrigger) {
+    this.cloudAuthTrigger = cloudAuthTrigger;
+  }
+
   public ScreenUtils getScreenUtils() {
     return screenUtils;
   }
@@ -221,6 +227,10 @@ public class AppConfig extends GlideApplication {
   @Nullable
   public Context getMainActivityContext() {
     return mainActivityContext.get();
+  }
+
+  public AuthTrigger getCloudAuthTrigger() {
+    return cloudAuthTrigger;
   }
 
   public ExplorerDatabase getExplorerDatabase() {

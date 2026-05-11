@@ -41,7 +41,7 @@ import java.util.regex.Pattern
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [Build.VERSION_CODES.LOLLIPOP, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
+    sdk = [Build.VERSION_CODES.O, Build.VERSION_CODES.P, Build.VERSION_CODES.R],
 )
 @Suppress("StringLiteralDuplication", "ComplexMethod", "LongMethod", "LargeClass")
 class SearchResultListSorterTest {
@@ -338,6 +338,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abc-efg",
                 "user",
@@ -353,6 +354,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABCD-FG",
                 "user",
@@ -401,6 +403,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abcdefg",
                 "user",
@@ -416,6 +419,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABC_EFG",
                 "user",
@@ -465,6 +469,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abcdefg",
                 "user",
@@ -480,6 +485,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABC EFG",
                 "user",
@@ -529,6 +535,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abcdefg",
                 "user",
@@ -544,6 +551,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABC.EFG",
                 "user",
@@ -594,6 +602,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abc.efg",
                 "user",
@@ -609,6 +618,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABC_EFG",
                 "user",
@@ -659,6 +669,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abc.efg",
                 "user",
@@ -674,6 +685,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABC_EFG",
                 "user",
@@ -723,6 +735,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abc.efg",
                 "user",
@@ -738,6 +751,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\ABC_EFG",
                 "user",
@@ -793,6 +807,7 @@ class SearchResultListSorterTest {
         val file1 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title1,
                 "C:\\AmazeFileManager\\abc.efghij",
                 "user",
@@ -812,6 +827,7 @@ class SearchResultListSorterTest {
         val file2 =
             LayoutElementParcelable(
                 ApplicationProvider.getApplicationContext(),
+                "",
                 title2,
                 "C:\\AmazeFileManager\\EFGABC",
                 "user",

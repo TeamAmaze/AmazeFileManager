@@ -28,7 +28,7 @@ import androidx.lifecycle.viewModelScope
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
-import com.amaze.filemanager.database.CloudHandler
+import com.amaze.filemanager.database.CloudContract
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.sort.DirSortBy
@@ -45,6 +45,43 @@ import java.util.Objects
 
 class MainFragmentViewModel : ViewModel() {
     var currentPath: String? = null
+    var cloudFolderId: String? = null
+
+    /**
+     * Back-stack of cloud folder IDs, used to restore the correct folder ID when
+     * navigating back in cloud storage. Each entry corresponds to one "folder entered"
+     * action.  The entry at the top is the **parent** folder's ID we should return to.
+     */
+    private val cloudFolderIdHistory: ArrayDeque<String?> = ArrayDeque()
+
+    /**
+     * Saves the current [cloudFolderId] onto the history stack before navigating
+     * forward into a cloud subfolder.  Call this immediately before updating
+     * [cloudFolderId] to the child folder's ID.
+     */
+    fun saveCloudFolderIdToHistory() {
+        cloudFolderIdHistory.addLast(cloudFolderId)
+    }
+
+    /**
+     * Pops the previous cloud folder ID from the history stack and stores it in
+     * [cloudFolderId], so that [loadlist] (and any subsequent pull-to-refresh) uses
+     * the correct parent folder ID.
+     *
+     * @return the restored ID (`null` = cloud root / use rootFolder)
+     */
+    fun restoreCloudFolderIdFromHistory(): String? {
+        cloudFolderId = cloudFolderIdHistory.removeLastOrNull()
+        return cloudFolderId
+    }
+
+    /**
+     * Clears the cloud folder ID history.  Should be called whenever the user
+     * leaves cloud mode entirely (e.g. navigates to a local or SMB path).
+     */
+    fun clearCloudFolderIdHistory() {
+        cloudFolderIdHistory.clear()
+    }
 
     /** This is not an exact copy of the elements in the adapter  */
     var listElements: List<LayoutElementParcelable> = ArrayList<LayoutElementParcelable>()
@@ -139,7 +176,7 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize isList from dataUtils
      */
     fun initIsList() {
-        isList = DataUtils.getInstance().getListOrGridForPath(
+        isList = DataUtils.getListOrGridForPath(
             currentPath,
             DataUtils.LIST,
         ) == DataUtils.LIST
@@ -193,10 +230,10 @@ class MainFragmentViewModel : ViewModel() {
      * Check if current path is cloud root path
      */
     fun getIsOnCloudRoot(): Boolean {
-        return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/" == currentPath ||
-            CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/" == currentPath ||
-            CloudHandler.CLOUD_PREFIX_BOX + "/" == currentPath ||
-            CloudHandler.CLOUD_PREFIX_DROPBOX + "/" == currentPath
+        return CloudContract.CLOUD_PREFIX_GOOGLE_DRIVE + "/" == currentPath ||
+            CloudContract.CLOUD_PREFIX_ONE_DRIVE + "/" == currentPath ||
+            CloudContract.CLOUD_PREFIX_BOX + "/" == currentPath ||
+            CloudContract.CLOUD_PREFIX_DROPBOX + "/" == currentPath
     }
 
     /**
