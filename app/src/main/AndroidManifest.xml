@@ -46,6 +46,13 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="*/*" />
+        </intent>
+    </queries>
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -71,8 +78,7 @@
             android:name=".ui.activities.MainActivity"
             android:theme="@style/appCompatBlack"
             android:configChanges="uiMode"
-            android:windowSoftInputMode="adjustPan"
-           >
+            android:windowSoftInputMode="adjustPan">
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -184,6 +190,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="db/*" />
+                <data android:mimeType="application/vnd.sqlite3" />
             </intent-filter>
 
         </activity>

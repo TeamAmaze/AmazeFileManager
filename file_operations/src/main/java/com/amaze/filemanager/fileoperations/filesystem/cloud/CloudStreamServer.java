@@ -91,6 +91,7 @@ import android.net.Uri;
  *
  * See the end of the source file for distribution license (Modified BSD licence)
  */
+@SuppressWarnings("PMD")
 public abstract class CloudStreamServer {
   private static final Logger LOG = LoggerFactory.getLogger(CloudStreamServer.class);
 

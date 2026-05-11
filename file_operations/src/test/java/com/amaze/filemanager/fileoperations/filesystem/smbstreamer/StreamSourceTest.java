@@ -110,11 +110,11 @@ public class StreamSourceTest {
   public void read() throws IOException {
     ss.open();
     byte[] buff = new byte[10];
-    int n = ss.read(buff);
+    int bytesRead = ss.read(buff);
     byte[] temp = Arrays.copyOfRange(text, 0, buff.length);
 
     assertArrayEquals(temp, buff);
-    assertEquals(buff.length, n);
+    assertEquals(buff.length, bytesRead);
   }
 
   /**
@@ -125,12 +125,12 @@ public class StreamSourceTest {
   public void readExceed() throws IOException {
     ss.open();
     byte[] buff = new byte[100];
-    int n = ss.read(buff);
+    int bytesRead = ss.read(buff);
     // erase dummy values in the end of buffer
-    byte[] buffer = Arrays.copyOfRange(buff, 0, n);
+    byte[] buffer = Arrays.copyOfRange(buff, 0, bytesRead);
 
     assertArrayEquals(text, buffer);
-    assertEquals(text.length, n);
+    assertEquals(text.length, bytesRead);
   }
 
   /**
@@ -142,7 +142,7 @@ public class StreamSourceTest {
     ss.open();
     ss.close();
     byte[] buff = new byte[text.length];
-    int n = ss.read(buff);
+    ss.read(buff);
   }
 
   /**
@@ -156,12 +156,12 @@ public class StreamSourceTest {
     int start = 5;
     int end = 10;
 
-    int n = ss.read(buff, start, end);
+    int bytesRead = ss.read(buff, start, end);
     byte[] file = Arrays.copyOfRange(text, 0, end - start);
     byte[] buffer = Arrays.copyOfRange(buff, start, end);
 
     assertArrayEquals(file, buffer);
-    assertEquals(end, n);
+    assertEquals(end, bytesRead);
   }
 
   /**
@@ -192,7 +192,7 @@ public class StreamSourceTest {
     int start = 5;
     int end = 10;
 
-    int n = ss.read(buff, start, end);
+    ss.read(buff, start, end);
   }
 
   /**
@@ -207,9 +207,9 @@ public class StreamSourceTest {
     ss.moveTo(readPosition);
     ss.open();
 
-    int n = ss.read(buff);
+    int bytesRead = ss.read(buff);
     assertEquals(text[readPosition], buff[0]);
-    assertEquals(buff.length, n);
+    assertEquals(buff.length, bytesRead);
   }
 
   /**
@@ -231,14 +231,14 @@ public class StreamSourceTest {
     ss.open();
     ss.close();
 
-    int n = -1;
+    int bytesRead = -1;
     try {
       byte[] buff = new byte[1];
-      n = ss.read(buff);
+      bytesRead = ss.read(buff);
     } catch (IOException ignored) {
     }
 
-    assertEquals(-1, n);
+    assertEquals(-1, bytesRead);
   }
 
   /** Purpose: Get MIME type Input: no Expected: return "txt" */

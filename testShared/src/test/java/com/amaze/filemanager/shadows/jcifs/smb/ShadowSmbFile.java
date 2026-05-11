@@ -39,6 +39,7 @@ public class ShadowSmbFile {
   private File file = null;
 
   @Implementation
+  @SuppressWarnings("PMD")
   public void __constructor__(URL url, NtlmPasswordAuthentication auth) {
     // intentionally empty
   }

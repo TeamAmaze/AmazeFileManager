@@ -102,7 +102,7 @@ public class FileUtils {
 
   private static final String[] COMPRESSED_FILE_EXTENSIONS =
       new String[] {
-        "zip", "rar", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"
+        "zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z", "rar"
       };
 
   public static final String FILE_PROVIDER_PREFIX = "storage_root";

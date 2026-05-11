@@ -829,7 +829,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
             && (meta.path.contains(OTGUtil.PREFIX_OTG)
                 || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
-            && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
+            && SingletonUsbOtg.INSTANCE.getUsbOtgRoot() == null) {
           MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
           dialog
               .getActionButton(DialogAction.POSITIVE)

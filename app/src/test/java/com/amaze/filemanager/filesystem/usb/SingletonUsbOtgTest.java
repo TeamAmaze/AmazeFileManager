@@ -58,11 +58,11 @@ public class SingletonUsbOtgTest {
 
     Uri rootBefore = Uri.parse("ssh://testuser:testpassword@127.0.0.1:22222");
 
-    SingletonUsbOtg.getInstance().setUsbOtgRoot(rootBefore);
+    SingletonUsbOtg.INSTANCE.setUsbOtgRoot(rootBefore);
 
     controller.pause().resume().get();
 
-    Uri rootAfter = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+    Uri rootAfter = SingletonUsbOtg.INSTANCE.getUsbOtgRoot();
 
     assertEquals(
         "Uris are different: (before:) " + rootBefore + " (after:) " + rootAfter,

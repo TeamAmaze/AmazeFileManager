@@ -115,11 +115,11 @@ public class CloudStreamSourceTest {
   @Test
   public void read() throws IOException {
     byte[] buff = new byte[10];
-    int n = cs.read(buff);
+    int bytesRead = cs.read(buff);
     byte[] temp = Arrays.copyOfRange(text, 0, buff.length);
 
     assertArrayEquals(temp, buff);
-    assertEquals(buff.length, n);
+    assertEquals(buff.length, bytesRead);
   }
 
   /**
@@ -129,12 +129,12 @@ public class CloudStreamSourceTest {
   @Test
   public void readExceed() throws IOException {
     byte[] buff = new byte[100];
-    int n = cs.read(buff);
+    int bytesRead = cs.read(buff);
     // erase dummy values in the end of buffer
-    byte[] buffer = Arrays.copyOfRange(buff, 0, n);
+    byte[] buffer = Arrays.copyOfRange(buff, 0, bytesRead);
 
     assertArrayEquals(text, buffer);
-    assertEquals(len, n);
+    assertEquals(len, bytesRead);
   }
 
   /**
@@ -145,7 +145,7 @@ public class CloudStreamSourceTest {
   public void readClosedException() throws IOException {
     cs.close();
     byte[] buff = new byte[(int) len];
-    int n = cs.read(buff);
+    cs.read(buff);
   }
 
   /**
@@ -158,12 +158,12 @@ public class CloudStreamSourceTest {
     int start = 5;
     int end = 10;
 
-    int n = cs.read(buff, start, end);
+    int bytesRead = cs.read(buff, start, end);
     byte[] file = Arrays.copyOfRange(text, 0, end - start);
     byte[] buffer = Arrays.copyOfRange(buff, start, end);
 
     assertArrayEquals(file, buffer);
-    assertEquals(end, n);
+    assertEquals(end, bytesRead);
   }
 
   /**
@@ -191,7 +191,7 @@ public class CloudStreamSourceTest {
     int start = 5;
     int end = 10;
 
-    int n = cs.read(buff, start, end);
+    cs.read(buff, start, end);
   }
 
   /**
@@ -206,9 +206,9 @@ public class CloudStreamSourceTest {
     cs.moveTo(readPosition);
     cs.open();
 
-    int n = cs.read(buff);
+    int bytesRead = cs.read(buff);
     assertEquals(text[readPosition], buff[0]);
-    assertEquals(buff.length, n);
+    assertEquals(buff.length, bytesRead);
   }
 
   /**
@@ -229,14 +229,14 @@ public class CloudStreamSourceTest {
   public void close() {
     cs.close();
 
-    int n = -1;
+    int bytesRead = -1;
     try {
       byte[] buff = new byte[1];
-      n = cs.read(buff);
+      bytesRead = cs.read(buff);
     } catch (IOException ignored) {
     }
 
-    assertEquals(-1, n);
+    assertEquals(-1, bytesRead);
   }
 
   /** Purpose: Get length of the text from a file Input: no Expected: return len */

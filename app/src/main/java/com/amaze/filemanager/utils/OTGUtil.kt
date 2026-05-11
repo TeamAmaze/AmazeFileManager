@@ -93,7 +93,7 @@ object OTGUtil {
         fileFound: OnFileFound,
     ) {
         val rootUriString =
-            SingletonUsbOtg.getInstance().usbOtgRoot
+            SingletonUsbOtg.getUsbOtgRoot()
                 ?: throw NullPointerException("USB OTG root not set!")
         return getDocumentFiles(rootUriString, path, context, OpenMode.OTG, fileFound)
     }
@@ -163,7 +163,7 @@ object OTGUtil {
         createRecursive: Boolean,
     ): DocumentFile? {
         val rootUriString =
-            SingletonUsbOtg.getInstance().usbOtgRoot
+            SingletonUsbOtg.getUsbOtgRoot()
                 ?: throw NullPointerException("USB OTG root not set!")
 
         return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
@@ -208,7 +208,7 @@ object OTGUtil {
     @RequiresApi(api = KITKAT)
     @JvmStatic
     fun isUsbUriAccessible(context: Context?): Boolean {
-        val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
+        val rootUriString = SingletonUsbOtg.getUsbOtgRoot()
         return DocumentsContract.isDocumentUri(context, rootUriString)
     }
 
