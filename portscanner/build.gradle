@@ -5,7 +5,7 @@ apply plugin: 'kotlin-parcelize'
 
 android {
     namespace 'com.stealthcopter.networktools'
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdk tools.versions.compileSdk.get().toInteger()
 
     defaultConfig {
         minSdk libs.versions.minSdk.get().toInteger()
@@ -28,7 +28,7 @@ android {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(tools.versions.jvmTarget.get().toInteger())
 }
 
 dependencies {

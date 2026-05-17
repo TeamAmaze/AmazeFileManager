@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Setup script for Rust Android development
 # This script:
@@ -35,11 +35,25 @@ find_android_sdk() {
     fi
 }
 
-# Function to find the latest NDK version
+# Function to find the NDK version (from tools.versions.toml or latest)
 find_ndk_version() {
     local sdk_path="$1"
     local ndk_dir="$sdk_path/ndk"
-    
+    local version_catalog="../gradle/tools.versions.toml"
+
+    # First, try to read NDK version from tools.versions.toml
+    if [ -f "$version_catalog" ]; then
+        local ndk_version=$(grep "^ndk" "$version_catalog" | cut -d '"' -f 2)
+        if [ -n "$ndk_version" ] && [ -d "$ndk_dir/$ndk_version" ]; then
+            echo "$ndk_version"
+            return
+        elif [ -n "$ndk_version" ]; then
+            echo "⚠️  Warning: NDK version $ndk_version specified in tools.versions.toml not found in $ndk_dir" >&2
+            echo "   Falling back to latest available version..." >&2
+        fi
+    fi
+
+    # Fall back to finding the latest version
     if [ -d "$ndk_dir" ]; then
         # Find the latest version (highest version number)
         ls -1 "$ndk_dir" | sort -V | tail -n 1

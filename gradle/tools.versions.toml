@@ -1,0 +1,4 @@
+[versions]
+compileSdk = "34"
+jvmTarget = "17"
+ndk = "27.3.13750724" #r27d LTS

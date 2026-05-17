@@ -2,15 +2,16 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+apply from: "../gradle/setupRustAndroidLocal.gradle"
 
 android {
     namespace "com.amaze.filemanager.fileoperations"
-    compileSdk libs.versions.compileSdk.get().toInteger()
-    ndkVersion libs.versions.ndk.get()
+    compileSdk tools.versions.compileSdk.get().toInteger()
+    ndkVersion tools.versions.ndk.get()
 
     defaultConfig {
         minSdkVersion libs.versions.minSdk.get().toInteger()
-        ndkVersion libs.versions.ndk.get()
+        ndkVersion tools.versions.ndk.get()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -43,7 +44,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = tools.versions.jvmTarget.get()
     }
 }
 
@@ -61,7 +62,7 @@ cargo {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(tools.versions.jvmTarget.get().toInteger())
 }
 
 // Ensure Rust libraries are built before Android tasks
@@ -135,4 +136,10 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation libs.androidX.appcompat
+}
+
+tasks.matching {
+    it.name.startsWith('cargoBuild')
+}.configureEach {
+    it.dependsOn 'setupRustAndroidLocal'
 }

@@ -1,9 +1,7 @@
 [versions]
-compileSdk = "34"
 minSdk = "21"
 targetSdk = "35"
 kotlin = "1.9.25"
-ndk = "28.2.13676358" #r28c
 
 jacocoAndroid = "0.2.1"
 gradle = "8.5.2"

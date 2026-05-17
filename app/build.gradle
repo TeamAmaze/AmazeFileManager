@@ -8,7 +8,7 @@ apply plugin: 'com.google.devtools.ksp'
 
 android {
     namespace "com.amaze.filemanager"
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdk tools.versions.compileSdk.get().toInteger()
     packagingOptions {
         resources {
             excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF']
@@ -99,7 +99,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = tools.versions.jvmTarget.get()
     }
 
     testOptions {
@@ -336,5 +336,4 @@ repositories {
     google()
     mavenCentral()
     maven { url "https://jitpack.io" }
-    maven { url "https://jcenter.bintray.com" }
 }

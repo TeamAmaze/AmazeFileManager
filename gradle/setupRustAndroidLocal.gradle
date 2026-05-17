@@ -1,0 +1,46 @@
+tasks.register("setupRustAndroidLocal") {
+
+    onlyIf { System.getenv("GITHUB_ACTIONS") == null }
+
+    doFirst {
+        println("Setting up Rust for Android build...")
+    }
+
+    // Detect existence of rustup.
+    def rustupExists = {
+
+        // First check common installation path
+        def isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
+        def home = System.getProperty("user.home")
+        def rustupPath = isWindows
+            ? new File(home, ".cargo/bin/rustup.exe")
+            : new File(home, ".cargo/bin/rustup")
+
+        if (rustupPath.exists() && rustupPath.canExecute()) {
+            return true
+        }
+
+        // If not, check on user $PATH/%PATH%
+        try {
+            def process = new ProcessBuilder("rustup")
+                .redirectErrorStream(true)
+                .start()
+            process.waitFor()
+            return process.exitValue() == 0
+        } catch (IOException ignored) {
+            return false
+        }
+    }()
+
+    if (!rustupExists) {
+        throw new GradleException("rustup is not installed or not found in PATH. Please install rustup from https://rustup.rs/ and ensure it is accessible.")
+    }
+
+    doLast {
+        exec {
+            workingDir file(rootProject.project("file_operations").projectDir)
+            commandLine("env", "bash", "setup_rust_android.sh")
+        }
+        println("Rust targets for Android have been set up successfully.")
+    }
+}

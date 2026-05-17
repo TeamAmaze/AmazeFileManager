@@ -1,3 +1,11 @@
 include ':file_operations'
 include ':portscanner'
 include ':app', ':commons_compress_7z'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("tools") {
+            from(files("gradle/tools.versions.toml"))
+        }
+    }
+}
