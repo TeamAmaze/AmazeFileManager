@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ftpserver.filesystem
 
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
@@ -50,30 +51,79 @@ class AndroidFtpFile(
         return path
     }
 
+    /**
+     * @see FtpFile.getName
+     * @see DocumentFile.getName
+     */
     override fun getName(): String = backingDocument?.name ?: path.substringAfterLast('/')
 
+    /**
+     * @see FtpFile.isHidden
+     */
     override fun isHidden(): Boolean = name.startsWith(".") && name != "."
 
+    /**
+     * @see FtpFile.isDirectory
+     * @see DocumentFile.isDirectory
+     */
     override fun isDirectory(): Boolean = backingDocument?.isDirectory ?: false
 
+    /**
+     * @see FtpFile.isFile
+     * @see DocumentFile.isFile
+     */
     override fun isFile(): Boolean = backingDocument?.isFile ?: false
 
+    /**
+     * @see FtpFile.doesExist
+     * @see DocumentFile.exists
+     */
     override fun doesExist(): Boolean = backingDocument?.exists() ?: false
 
+    /**
+     * @see FtpFile.isReadable
+     * @see DocumentFile.canRead
+     */
     override fun isReadable(): Boolean = backingDocument?.canRead() ?: false
 
+    /**
+     * @see FtpFile.isWritable
+     * @see DocumentFile.canWrite
+     */
     override fun isWritable(): Boolean = backingDocument?.canWrite() ?: true
 
+    /**
+     * @see FtpFile.isRemovable
+     * @see DocumentFile.canWrite
+     */
     override fun isRemovable(): Boolean = backingDocument?.canWrite() ?: true
 
+    /**
+     * @see FtpFile.getOwnerName
+     */
     override fun getOwnerName(): String = "user"
 
+    /**
+     * @see FtpFile.getGroupName
+     */
     override fun getGroupName(): String = "user"
 
+    /**
+     * @see FtpFile.getLinkCount
+     */
     override fun getLinkCount(): Int = 0
 
+    /**
+     * @see FtpFile.getLastModified
+     * @see DocumentFile.lastModified
+     */
     override fun getLastModified(): Long = backingDocument?.lastModified() ?: 0L
 
+    /**
+     * @see FtpFile.setLastModified
+     * @see DocumentsContract.Document.COLUMN_LAST_MODIFIED
+     * @see ContentResolver.update
+     */
     override fun setLastModified(time: Long): Boolean {
         return if (doesExist()) {
             val updateValues =
@@ -94,16 +144,39 @@ class AndroidFtpFile(
         }
     }
 
+    /**
+     * @see FtpFile.getSize
+     * @see DocumentFile.length
+     */
     override fun getSize(): Long = backingDocument?.length() ?: 0L
 
+    /**
+     * @see FtpFile.getPhysicalFile
+     */
     override fun getPhysicalFile(): Any = backingDocument!!
 
+    /**
+     * @see FtpFile.mkdir
+     * @see DocumentFile.createDirectory
+     */
     override fun mkdir(): Boolean = parentDocument.createDirectory(name) != null
 
+    /**
+     * @see FtpFile.delete
+     * @see DocumentFile.delete
+     */
     override fun delete(): Boolean = backingDocument?.delete() ?: false
 
+    /**
+     * @see FtpFile.move
+     * @see DocumentFile.renameTo
+     */
     override fun move(destination: FtpFile): Boolean = backingDocument?.renameTo(destination.name) ?: false
 
+    /**
+     * @see FtpFile.listFiles
+     * @see DocumentFile.listFiles
+     */
     override fun listFiles(): MutableList<out FtpFile> =
         if (doesExist()) {
             backingDocument!!.listFiles().map {
@@ -113,6 +186,11 @@ class AndroidFtpFile(
             mutableListOf()
         }
 
+    /**
+     * @see FtpFile.createOutputStream
+     * @see ContentResolver.openOutputStream
+     * @see DocumentFile.createFile
+     */
     override fun createOutputStream(offset: Long): OutputStream? =
         runCatching {
             val uri =
@@ -125,6 +203,10 @@ class AndroidFtpFile(
             context.contentResolver.openOutputStream(uri)
         }.getOrThrow()
 
+    /**
+     * @see FtpFile.createInputStream
+     * @see ContentResolver.openInputStream
+     */
     override fun createInputStream(offset: Long): InputStream? =
         runCatching {
             if (doesExist()) {

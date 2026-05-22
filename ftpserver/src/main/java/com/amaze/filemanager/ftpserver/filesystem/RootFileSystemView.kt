@@ -43,6 +43,7 @@ class RootFileSystemView(
     init {
         requireNotNull(user.homeDirectory) { "User home directory can not be null" }
 
+        // add last '/' if necessary
         var rootDir = user.homeDirectory
         rootDir = normalizeSeparateChar(rootDir)
         rootDir = appendSlash(rootDir)
@@ -72,12 +73,14 @@ class RootFileSystemView(
     override fun changeWorkingDirectory(dirArg: String): Boolean {
         var dir = dirArg
 
+        // not a directory - return false
         dir = getPhysicalName(rootDir, currDir, dir)
         val dirObj = fileFactory.create(dir)
         if (!dirObj.isDirectory) {
             return false
         }
 
+        // strip user root and add last '/' if necessary
         dir = dir.substring(rootDir.length - 1)
         if (dir[dir.length - 1] != '/') {
             dir = "$dir/"
@@ -88,9 +91,11 @@ class RootFileSystemView(
     }
 
     override fun getFile(file: String): FtpFile {
+        // get actual file object
         val physicalName = getPhysicalName(rootDir, currDir, file)
         val fileObj = fileFactory.create(physicalName)
 
+        // strip the root directory and return
         val userFileName = physicalName.substring(rootDir.length - 1)
         return RootFtpFile(userFileName, fileObj, user)
     }
@@ -99,34 +104,58 @@ class RootFileSystemView(
 
     override fun dispose() = Unit
 
+    /**
+     * Get the physical canonical file name. It works like
+     * File.getCanonicalPath().
+     *
+     * @param rootDir
+     * The root directory.
+     * @param currDir
+     * The current directory. It will always be with respect to the
+     * root directory.
+     * @param fileName
+     * The input file name.
+     * @return The return string will always begin with the root directory. It
+     * will never be null.
+     */
     private fun getPhysicalName(
         rootDir: String,
         currDir: String,
         fileName: String,
     ): String {
+        // normalize root dir
         var normalizedRootDir: String = normalizeSeparateChar(rootDir)
         normalizedRootDir = appendSlash(normalizedRootDir)
 
+        // normalize file name
         val normalizedFileName = normalizeSeparateChar(fileName)
         var result: String?
 
+        // if file name is relative, set resArg to root dir + curr dir
+        // if file name is absolute, set resArg to root dir
         result =
             if (normalizedFileName[0] != '/') {
+                // file name is relative
                 val normalizedCurrDir = normalize(currDir)
                 normalizedRootDir + normalizedCurrDir.substring(1)
             } else {
                 normalizedRootDir
             }
 
+        // strip last '/'
         result = trimTrailingSlash(result)
 
+        // replace ., ~ and ..
+        // in this loop resArg will never end with '/'
         val st = StringTokenizer(normalizedFileName, "/")
         while (st.hasMoreTokens()) {
             val tok = st.nextToken()
 
+            // . => current directory
             if (tok == ".") {
-                // ignore
+                // ignore and move on
             } else if (tok == "..") {
+                // .. => parent directory (if not root)
                 if (result!!.startsWith(normalizedRootDir)) {
                     val slashIndex = result.lastIndexOf('/')
                     if (slashIndex != -1) {
@@ -134,6 +163,7 @@ class RootFileSystemView(
                     }
                 }
             } else if (tok == "~") {
+                // ~ => home directory (in this case the root directory)
                 result = trimTrailingSlash(normalizedRootDir)
                 continue
             } else {
@@ -141,16 +171,21 @@ class RootFileSystemView(
             }
         }
 
+        // add last slash if necessary
         if (result!!.length + 1 == normalizedRootDir.length) {
             result += '/'
         }
 
+        // make sure we did not end up above root dir
         if (!result.startsWith(normalizedRootDir)) {
             result = normalizedRootDir
         }
         return result
     }
 
+    /**
+     * Append trailing slash ('/') if missing
+     */
     private fun appendSlash(path: String): String {
         return if (!path.endsWith("/")) {
             "$path/"
@@ -159,6 +194,9 @@ class RootFileSystemView(
         }
     }
 
+    /**
+     * Prepend leading slash ('/') if missing
+     */
     private fun prependSlash(path: String): String {
         return if (!path.startsWith("/")) {
             "/$path"
@@ -167,6 +205,9 @@ class RootFileSystemView(
         }
     }
 
+    /**
+     * Trim trailing slash ('/') if existing
+     */
     private fun trimTrailingSlash(path: String?): String {
         return if (path!![path.length - 1] == '/') {
             path.substring(0, path.length - 1)
@@ -175,12 +216,19 @@ class RootFileSystemView(
         }
     }
 
+    /**
+     * Normalize separate character. Separate character should be '/' always.
+     */
     private fun normalizeSeparateChar(pathName: String): String {
         return pathName
             .replace(File.separatorChar, '/')
             .replace('\\', '/')
     }
 
+    /**
+     * Normalize separator char, append and prepend slashes. Default to
+     * defaultPath if null or empty
+     */
     private fun normalize(pathArg: String?): String {
         var path: String? = pathArg
         if (path == null || path.trim { it <= ' ' }.isEmpty()) {
@@ -192,16 +240,18 @@ class RootFileSystemView(
     }
 
     /**
-     * Factory for creating SuFile instances.
+     * Interface responsible for creating [SuFile] instances.
+     *
+     * Mainly for facilitating tests.
      */
     interface SuFileFactory {
         /**
-         * Create a SuFile instance for the given pathname.
+         * Create SuFile.
          */
         fun create(pathname: String): SuFile = SuFile(pathname)
 
         /**
-         * Create a SuFile instance for the given parent and child paths.
+         * Create SuFile.
          */
         fun create(
             parent: String,
@@ -209,7 +259,7 @@ class RootFileSystemView(
         ): SuFile = SuFile(parent, child)
 
         /**
-         * Create a SuFile instance for the given parent File and child path.
+         * Create SuFile.
          */
         fun create(
             parent: File,
@@ -217,14 +267,13 @@ class RootFileSystemView(
         ): SuFile = SuFile(parent, child)
 
         /**
-         * Create a SuFile instance for the given URI.
+         * Create SuFile.
          */
         fun create(uri: URI): SuFile = SuFile(uri)
     }
 
     /**
-     * Default implementation of SuFileFactory that creates SuFile instances using the default
-     * constructors.
+     * Marker class as default implementation of [SuFileFactory].
      */
     class DefaultSuFileFactory : SuFileFactory
 }

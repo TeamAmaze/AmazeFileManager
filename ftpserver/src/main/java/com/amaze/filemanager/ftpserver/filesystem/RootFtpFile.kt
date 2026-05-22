@@ -73,15 +73,17 @@ class RootFtpFile(
     }
 
     override fun isRemovable(): Boolean {
+        // root cannot be deleted
         if ("/" == fileName) {
             return false
         }
 
         val fullName = absolutePath
+        // we check FTPServer's write permission for this file.
         if (user.authorize(WriteRequest(fullName)) == null) {
             return false
         }
-
+        // In order to maintain consistency, when possible we delete the last '/' character in the String
         val indexOfSlash = fullName.lastIndexOf('/')
         val parentFullName: String =
             if (indexOfSlash == 0) {
@@ -90,6 +92,7 @@ class RootFtpFile(
                 fullName.take(indexOfSlash)
             }
 
+        // we check if the parent FileObject is writable.
         return backingFile.absoluteFile.parentFile?.run {
             RootFtpFile(
                 parentFullName,

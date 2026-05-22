@@ -39,6 +39,9 @@ class FtpServerFragmentBatteryOptimizationTest {
     private lateinit var context: Context
     private lateinit var shadowPowerManager: ShadowPowerManager
 
+    /**
+     * setup before tests.
+     */
     @Before
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
@@ -51,6 +54,9 @@ class FtpServerFragmentBatteryOptimizationTest {
             .apply()
     }
 
+    /**
+     * clean up after tests.
+     */
     @After
     fun tearDown() {
         PreferenceManager.getDefaultSharedPreferences(context)
