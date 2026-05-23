@@ -133,6 +133,113 @@ ftpserver/
 │       └── org.mockito.plugins.MockMaker
 ```
 
+### FTP Server Class Diagram
+
+```mermaid
+classDiagram
+direction LR
+
+namespace server_core {
+   class FileServer {
+      <<interface>>
+   }
+   class ServerPreferences {
+      <<interface>>
+   }
+   class ServerNotification {
+      <<interface>>
+   }
+   class ServerEvent {
+      <<sealed>>
+   }
+   class ServerRegistry
+   class ServerProvider {
+      <<interface>>
+   }
+}
+
+namespace ftpserver_service {
+   class FtpServerProvider
+   class FtpServerEngine
+   class FtpServerService {
+      <<abstract>>
+   }
+   class FtpReceiver {
+      <<abstract>>
+   }
+   class FtpEventBus
+   class FtpPreferences
+   class FtpCommandFactoryFactory
+   class FtpCipherSuites
+}
+
+namespace ftpserver_ui {
+   class BaseFtpServerFragment {
+      <<abstract>>
+   }
+   class FtpServerNotification
+}
+
+namespace ftpserver_filesystem {
+   class AndroidFileSystemFactory
+   class AndroidFtpFileSystemView
+   class AndroidFtpFile
+   class RootFileSystemFactory
+   class RootFileSystemView
+   class RootFtpFile
+}
+
+namespace ftpserver_commands {
+   class AVBL
+   class FEAT
+   class PWD
+}
+
+namespace app_integration {
+   class AppFtpService
+   class AppFtpReceiver
+   class FtpServerFragment
+   class FtpTileService
+   class FtpNotification
+}
+
+FtpServerProvider ..|> ServerProvider
+FtpServerProvider ..> ServerPreferences
+FtpServerProvider ..> FileServer
+ServerRegistry --> ServerProvider : registers
+
+FtpServerService --> FtpServerEngine : owns
+FtpServerService --> FtpEventBus : publishes
+FtpReceiver --> FtpServerEngine : start/stop
+FtpServerEngine ..> FtpPreferences : reads config
+FtpServerEngine ..> FtpCommandFactoryFactory : command factory
+FtpCommandFactoryFactory ..> AVBL
+FtpCommandFactoryFactory ..> FEAT
+FtpCommandFactoryFactory ..> PWD
+FtpServerEngine ..> FtpCipherSuites
+
+FtpServerEngine ..> AndroidFileSystemFactory
+FtpServerEngine ..> RootFileSystemFactory
+AndroidFileSystemFactory --> AndroidFtpFileSystemView
+AndroidFtpFileSystemView --> AndroidFtpFile
+RootFileSystemFactory --> RootFileSystemView
+RootFileSystemView --> RootFtpFile
+
+FtpServerNotification ..|> ServerNotification
+BaseFtpServerFragment --> FtpServerNotification
+BaseFtpServerFragment ..> FtpEventBus : observes
+BaseFtpServerFragment ..> FtpPreferences
+BaseFtpServerFragment ..> FtpServerEngine
+BaseFtpServerFragment ..> ServerEvent
+
+AppFtpService --|> FtpServerService
+AppFtpReceiver --|> FtpReceiver
+FtpServerFragment --|> BaseFtpServerFragment
+FtpTileService ..> FtpServerEngine
+FtpTileService ..> FtpEventBus
+FtpNotification ..> FtpServerNotification
+```
+
 ### Further Considerations
 
 1. **Dependency inversion** — ✅ Done: `ftpserver` now depends on `server-core`, and `app` depends on both.

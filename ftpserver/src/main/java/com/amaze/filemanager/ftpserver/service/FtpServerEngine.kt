@@ -23,7 +23,7 @@ package com.amaze.filemanager.ftpserver.service
 import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
-import com.amaze.filemanager.ftpserver.commands.AVBL
+import com.amaze.filemanager.ftpserver.commands.FtpCommandMessageProvider
 import com.amaze.filemanager.ftpserver.filesystem.AndroidFileSystemFactory
 import com.amaze.filemanager.ftpserver.filesystem.RootFileSystemFactory
 import kotlinx.coroutines.CoroutineScope
@@ -74,8 +74,7 @@ object FtpServerEngine {
         val useRootFilesystem: Boolean = false,
         val keyStoreInputStream: InputStream? = null,
         val keyStorePassword: String = "",
-        val errorMessageProvider: AVBL.ErrorMessageProvider? = null,
-        val featResponseProvider: (() -> String)? = null,
+        val ftpCommandMessageProvider: FtpCommandMessageProvider,
         val startedByTile: Boolean = false,
     )
 
@@ -128,14 +127,11 @@ object FtpServerEngine {
                     }
 
                 // Configure commands
-                if (config.errorMessageProvider != null && config.featResponseProvider != null) {
-                    commandFactory =
-                        FtpCommandFactoryFactory.create(
-                            config.useSafFilesystem,
-                            config.errorMessageProvider,
-                            config.featResponseProvider,
-                        )
-                }
+                commandFactory =
+                    FtpCommandFactoryFactory.create(
+                        config.useSafFilesystem,
+                        config.ftpCommandMessageProvider,
+                    )
 
                 // Configure user
                 val user = BaseUser()

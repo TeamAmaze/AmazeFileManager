@@ -26,7 +26,7 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
-import com.amaze.filemanager.ftpserver.commands.AVBL
+import com.amaze.filemanager.ftpserver.commands.FtpCommandMessageProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -92,12 +92,7 @@ abstract class FtpServerService : Service() {
     /**
      * Get error message provider for AVBL command
      */
-    abstract fun getErrorMessageProvider(): AVBL.ErrorMessageProvider
-
-    /**
-     * Get FEAT response string
-     */
-    abstract fun getFeatResponse(): String
+    abstract fun getMessageProvider(): FtpCommandMessageProvider
 
     override fun onCreate() {
         super.onCreate()
@@ -177,8 +172,7 @@ abstract class FtpServerService : Service() {
                 useRootFilesystem = isRootModeEnabled(),
                 keyStoreInputStream = if (FtpPreferences.isSecure(this)) getKeyStoreInputStream() else null,
                 keyStorePassword = getKeyStorePassword(),
-                errorMessageProvider = getErrorMessageProvider(),
-                featResponseProvider = { getFeatResponse() },
+                ftpCommandMessageProvider = getMessageProvider(),
                 startedByTile = isStartedByTile,
             )
 

@@ -25,7 +25,7 @@ import android.content.res.Resources
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
-import com.amaze.filemanager.ftpserver.commands.AVBL
+import com.amaze.filemanager.ftpserver.commands.FtpCommandMessageProvider
 import com.amaze.filemanager.ftpserver.service.FtpServerService
 import com.amaze.filemanager.server.ServerRegistry
 import com.amaze.filemanager.server.ServerType
@@ -94,13 +94,14 @@ class AppFtpService : FtpServerService() {
         return preferences.getBoolean(PREFERENCE_ROOTMODE, false)
     }
 
-    override fun getErrorMessageProvider(): AVBL.ErrorMessageProvider {
-        return object : AVBL.ErrorMessageProvider {
-            override fun getErrorMessage(
-                subId: String,
+    override fun getMessageProvider(): FtpCommandMessageProvider {
+        return object : FtpCommandMessageProvider {
+            override fun getMessage(
+                command: String,
                 fileName: String?,
             ): String {
-                return when (subId) {
+                return when (command) {
+                    "FEAT" -> getString(R.string.ftp_command_FEAT)
                     "AVBL.notimplemented" -> getString(R.string.ftp_error_AVBL_notimplemented)
                     "AVBL.accessdenied" -> getString(R.string.ftp_error_AVBL_accessdenied)
                     "AVBL.isafile" -> getString(R.string.ftp_error_AVBL_isafile)
@@ -109,9 +110,5 @@ class AppFtpService : FtpServerService() {
                 }
             }
         }
-    }
-
-    override fun getFeatResponse(): String {
-        return getString(R.string.ftp_command_FEAT)
     }
 }

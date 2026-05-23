@@ -46,22 +46,10 @@ import java.io.File
  * See [Draft spec](https://www.ietf.org/archive/id/draft-peterson-streamlined-ftp-command-extensions-10.txt)
  */
 class AVBL(
-    private val errorMessageProvider: ErrorMessageProvider,
+    private val ftpCommandMessageProvider: FtpCommandMessageProvider,
 ) : AbstractCommand() {
-    /**
-     * Interface for providing localized error messages
-     */
-    interface ErrorMessageProvider {
-        /**
-         * Returns a localized error message based on the provided subId and optional filename.
-         */
-        fun getErrorMessage(
-            subId: String,
-            fileName: String? = null,
-        ): String
-    }
-
     companion object {
+        @JvmStatic
         private val LOG: Logger = LoggerFactory.getLogger(AVBL::class.java)
     }
 
@@ -131,13 +119,13 @@ class AVBL(
     private fun doWriteReply(
         session: FtpIoSession,
         code: Int,
-        subId: String,
+        command: String,
         fileName: String? = null,
     ) {
         session.write(
             DefaultFtpReply(
                 code,
-                errorMessageProvider.getErrorMessage(subId, fileName),
+                ftpCommandMessageProvider.getMessage(command, fileName),
             ),
         )
     }
