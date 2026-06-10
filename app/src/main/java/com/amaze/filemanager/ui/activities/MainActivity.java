@@ -2025,7 +2025,7 @@ public class MainActivity extends PermissionsActivity
   public void renameBookmark(final String title, final String path) {
     if (dataUtils.containsBooks(new String[] {title, path}) != -1) {
       RenameBookmark renameBookmark = RenameBookmark.getInstance(title, path, getAccent());
-      if (renameBookmark != null) renameBookmark.show(getFragmentManager(), "renamedialog");
+      if (renameBookmark != null) renameBookmark.show(getSupportFragmentManager(), "renamedialog");
     }
   }
 
