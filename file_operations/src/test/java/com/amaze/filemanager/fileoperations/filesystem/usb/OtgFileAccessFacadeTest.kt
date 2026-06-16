@@ -12,9 +12,16 @@ import org.junit.Test
 import org.mockito.Mockito
 import java.io.File
 
+/**
+ * Tests for [OtgFileAccessFacade].
+ */
+@Suppress("StringLiteralDuplication")
 class OtgFileAccessFacadeTest {
     private lateinit var context: Context
 
+    /**
+     * Setup before tests.
+     */
     @Before
     fun setUp() {
         context = Mockito.mock(Context::class.java)
@@ -112,6 +119,10 @@ class OtgFileAccessFacadeTest {
         testDir.delete()
     }
 
+    /**
+     * Test that direct access works when the mount point is readable.
+     * This simulates a normal OTG device with proper permissions.
+     */
     @Test
     fun testDirectAccessSuccess() {
         val deviceKey = "vol:test"
@@ -131,6 +142,10 @@ class OtgFileAccessFacadeTest {
         testDir.delete()
     }
 
+    /**
+     * Test that direct access fails when the mount point is not readable.
+     * This simulates a device with permission issues, and should fallback to SAF stub.
+     */
     @Test
     fun testDirectAccessNoPermission() {
         val deviceKey = "vol:test"
@@ -149,6 +164,9 @@ class OtgFileAccessFacadeTest {
         testDir.delete()
     }
 
+    /**
+     * Test that when the device is not found, listFiles returns empty (SAF stub).
+     */
     @Test
     fun testDeviceNotFoundFallback() {
         val deviceKey = "vol:missing"
@@ -160,6 +178,9 @@ class OtgFileAccessFacadeTest {
         }
     }
 
+    /**
+     * Test that getFile returns the correct File object when direct access is available.
+     */
     @Test
     fun testGetFileDirectAccess() {
         val deviceKey = "vol:test"

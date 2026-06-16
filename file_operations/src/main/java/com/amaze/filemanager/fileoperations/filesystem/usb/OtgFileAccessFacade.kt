@@ -34,7 +34,7 @@ object OtgFileAccessFacade {
             val dir = File(mountPath)
             // Check if path exists and is readable - detects unplugged devices
             dir.exists() && dir.canRead() && dir.canExecute()
-        } catch (e: Exception) {
+        } catch (e: SecurityException) {
             Log.w(TAG, "Mount point check failed for $mountPath", e)
             false
         }

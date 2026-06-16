@@ -55,16 +55,16 @@ fun interface DeviceDisconnectedListener {
 object UsbOtgManager {
     private const val TAG = "UsbOtgManager"
 
-    /** Map of device key to StorageDeviceRepresentation */
+    // Map of device key to StorageDeviceRepresentation
     private val connectedDevices: MutableMap<String, StorageDeviceRepresentation> = ConcurrentHashMap()
 
-    /** Map of device key to SAF root URI */
+    // Map of device key to SAF root URI
     private val deviceRoots: MutableMap<String, Uri> = ConcurrentHashMap()
 
-    /** Flag to track if migration has been performed */
+    // Flag to track if migration has been performed
     private var migrationPerformed = false
 
-    /** Listeners for device disconnection events */
+    // Listeners for device disconnection events
     private val disconnectionListeners: MutableList<DeviceDisconnectedListener> = CopyOnWriteArrayList()
 
     /**
@@ -380,9 +380,9 @@ object UsbOtgManager {
             if (device != null) {
                 Log.d(TAG, "Device disconnected: $key")
                 disconnectionListeners.forEach { listener ->
-                    try {
+                    runCatching {
                         listener.onDeviceDisconnected(key, device)
-                    } catch (e: Exception) {
+                    }.onFailure { e ->
                         Log.e(TAG, "Error notifying disconnection listener", e)
                     }
                 }
@@ -532,11 +532,9 @@ object UsbOtgManager {
 
         val afterTree = path.removePrefix(treePrefix)
         val decoded =
-            try {
+            runCatching {
                 URLDecoder.decode(afterTree, "UTF-8")
-            } catch (e: Exception) {
-                afterTree
-            }
+            }.getOrDefault(afterTree)
 
         // Format is now: {uuid}:{path} or just {uuid}:
         val colonIndex = decoded.indexOf(':')

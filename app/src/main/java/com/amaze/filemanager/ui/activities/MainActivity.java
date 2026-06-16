@@ -365,6 +365,62 @@ public class MainActivity extends PermissionsActivity
   private static final String INTENT_ACTION_OPEN_APP_MANAGER =
       "com.amaze.filemanager.openAppManager";
 
+  // Listener for device disconnection events - redirects tabs viewing disconnected devices
+  private final DeviceDisconnectedListener deviceDisconnectedListener =
+      (deviceKey, device) -> {
+        runOnUiThread(
+            () -> {
+              TabFragment tabFragment = getTabFragment();
+              if (tabFragment != null) {
+                tabFragment.redirectTabsOnDeviceDisconnected(deviceKey, device.getFilePath());
+                Toast.makeText(
+                        MainActivity.this,
+                        getString(R.string.usb_device_disconnected),
+                        Toast.LENGTH_SHORT)
+                    .show();
+              }
+              drawer.refreshDrawer();
+            });
+      };
+
+  // Listener for storage device changes (attach/detach)
+  private final OnDeviceChangeListener deviceChangeListener =
+      devices -> {
+        // Update device list with newly detected devices
+        UsbOtgManager.updateDevices(devices);
+
+        // Restore any previously persisted SAF URI permissions for newly connected devices
+        UsbOtgManager.restorePersistedUriPermissions(MainActivity.this);
+
+        runOnUiThread(
+            () -> {
+              drawer.refreshDrawer();
+
+              // If current path is on a device that was detached, go to main
+              executeWithMainFragment(
+                  mainFragment -> {
+                    String currentPath = mainFragment.getCurrentPath();
+                    if (currentPath != null) {
+                      if (currentPath.startsWith(OTGUtil.PREFIX_OTG)) {
+                        String deviceKey = OTGUtil.extractDeviceKeyFromPath(currentPath);
+                        if (deviceKey != null && !UsbOtgManager.isDeviceConnected(deviceKey)) {
+                          goToMain(null);
+                        }
+                      } else if (!currentPath.startsWith("/storage/emulated")) {
+                        // For direct filesystem paths (e.g. /storage/XXXX-XXXX,
+                        // /mnt/media_rw/XXXX-XXXX) — check if still accessible
+                        File pathFile = new File(currentPath);
+                        if (!pathFile.exists() || !pathFile.canRead()) {
+                          goToMain(null);
+                        }
+                      }
+                    }
+                    return null;
+                  },
+                  false);
+            });
+      };
+
   /** Called when the activity is first created. */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -1447,7 +1503,7 @@ public class MainActivity extends PermissionsActivity
       // Unregister storage device change callback (new facade approach)
       StorageDeviceManager.unregisterChangeCallback(this);
       // Unregister device disconnection listener
-      UsbOtgManager.removeDisconnectionListener(mDeviceDisconnectedListener);
+      UsbOtgManager.removeDisconnectionListener(deviceDisconnectedListener);
     }
 
     final Toast toast = this.toast.get();
@@ -1537,78 +1593,21 @@ public class MainActivity extends PermissionsActivity
 
     // Validate that existing SAF roots are still accessible
     for (String deviceKey : UsbOtgManager.getDeviceKeys()) {
-      if (UsbOtgManager.hasUsbOtgRoot(deviceKey)) {
-        if (!OTGUtil.isUsbUriAccessible(this, deviceKey)) {
-          // Root is no longer accessible, clear it
-          UsbOtgManager.setUsbOtgRoot(deviceKey, null);
-        }
+      if (UsbOtgManager.hasUsbOtgRoot(deviceKey)
+          && (!OTGUtil.isUsbUriAccessible(this, deviceKey))) {
+        // Root is no longer accessible, clear it
+        UsbOtgManager.setUsbOtgRoot(deviceKey, null);
       }
     }
 
     drawer.refreshDrawer();
 
     // Register for device disconnection events to redirect tabs
-    UsbOtgManager.addDisconnectionListener(mDeviceDisconnectedListener);
+    UsbOtgManager.addDisconnectionListener(deviceDisconnectedListener);
 
     // Register for device change events using the facade
-    StorageDeviceManager.registerChangeCallback(this, mDeviceChangeListener);
+    StorageDeviceManager.registerChangeCallback(this, deviceChangeListener);
   }
-
-  /** Listener for device disconnection events - redirects tabs viewing disconnected devices */
-  private final DeviceDisconnectedListener mDeviceDisconnectedListener =
-      (deviceKey, device) -> {
-        runOnUiThread(
-            () -> {
-              TabFragment tabFragment = getTabFragment();
-              if (tabFragment != null) {
-                tabFragment.redirectTabsOnDeviceDisconnected(deviceKey, device.getFilePath());
-                Toast.makeText(
-                        MainActivity.this,
-                        getString(R.string.usb_device_disconnected),
-                        Toast.LENGTH_SHORT)
-                    .show();
-              }
-              drawer.refreshDrawer();
-            });
-      };
-
-  /** Listener for storage device changes (attach/detach) */
-  private final OnDeviceChangeListener mDeviceChangeListener =
-      devices -> {
-        // Update device list with newly detected devices
-        UsbOtgManager.updateDevices(devices);
-
-        // Restore any previously persisted SAF URI permissions for newly connected devices
-        UsbOtgManager.restorePersistedUriPermissions(MainActivity.this);
-
-        runOnUiThread(
-            () -> {
-              drawer.refreshDrawer();
-
-              // If current path is on a device that was detached, go to main
-              executeWithMainFragment(
-                  mainFragment -> {
-                    String currentPath = mainFragment.getCurrentPath();
-                    if (currentPath != null) {
-                      if (currentPath.startsWith(OTGUtil.PREFIX_OTG)) {
-                        String deviceKey = OTGUtil.extractDeviceKeyFromPath(currentPath);
-                        if (deviceKey != null && !UsbOtgManager.isDeviceConnected(deviceKey)) {
-                          goToMain(null);
-                        }
-                      } else if (!currentPath.startsWith("/storage/emulated")) {
-                        // For direct filesystem paths (e.g. /storage/XXXX-XXXX,
-                        // /mnt/media_rw/XXXX-XXXX) — check if still accessible
-                        File pathFile = new File(currentPath);
-                        if (!pathFile.exists() || !pathFile.canRead()) {
-                          goToMain(null);
-                        }
-                      }
-                    }
-                    return null;
-                  },
-                  false);
-            });
-      };
 
   /**
    * Legacy receiver to check if a USB device is connected at the runtime of application.

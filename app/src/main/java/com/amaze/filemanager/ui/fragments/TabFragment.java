@@ -636,15 +636,10 @@ public class TabFragment extends Fragment {
     }
 
     // Also check PREFIX_MEDIA_REMOVABLE paths
-    if (path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
-      // Extract the volume part from path and compare
-      // Path format: /mnt/media_rw/VOLUME_LABEL/...
-      if (deviceFilePath != null && path.startsWith(deviceFilePath)) {
-        return true;
-      }
-    }
-
-    return false;
+    return path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)
+        // Extract the volume part from path and compare
+        // Path format: /mnt/media_rw/VOLUME_LABEL/...
+        && (deviceFilePath != null && path.startsWith(deviceFilePath));
   }
 
   @NonNull

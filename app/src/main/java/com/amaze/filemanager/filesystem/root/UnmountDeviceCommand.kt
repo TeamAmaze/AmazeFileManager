@@ -40,7 +40,7 @@ object UnmountDeviceCommand : IRootCommand() {
      */
     @Throws(ShellNotRunningException::class)
     fun unmountDevice(mountPoint: String): Boolean {
-        return try {
+        return runCatching {
             LOG.info("Attempting to unmount device at: $mountPoint")
 
             // First, try graceful unmount
@@ -55,7 +55,7 @@ object UnmountDeviceCommand : IRootCommand() {
                 // Graceful unmount succeeded or other non-busy error
                 gracefulResult.isEmpty() || !gracefulResult[0].contains("No such file")
             }
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             LOG.error("Failed to unmount device: ${e.message}", e)
             false
         }

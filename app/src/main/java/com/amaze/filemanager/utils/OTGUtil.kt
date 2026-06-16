@@ -82,12 +82,7 @@ object OTGUtil {
         getDocumentFiles(
             path,
             context,
-            object : OnFileFound {
-                override fun onFileFound(file: HybridFileParcelable) {
-                    files.add(file)
-                }
-            },
-        )
+        ) { file -> files.add(file) }
         return files
     }
 
@@ -361,10 +356,10 @@ object OTGUtil {
         }
 
         // Try to access the tree root to verify it's actually accessible
-        return try {
+        return runCatching {
             val docFile = DocumentFile.fromTreeUri(context, treeUri)
             docFile?.exists() == true
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Log.w(TAG, "Failed to access tree URI: $treeUri", e)
             false
         }

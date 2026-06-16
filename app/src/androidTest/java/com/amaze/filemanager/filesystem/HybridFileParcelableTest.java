@@ -207,7 +207,7 @@ public class HybridFileParcelableTest {
    * <p>Expected: No exception thrown; getFullUri returns null.
    */
   @Test
-  public void setFullUriNull_doesNotThrowNPE() {
+  public void setFullUriNullDoesNotThrowNPE() {
     // Must not throw NullPointerException
     file.setFullUri(null);
     // getFullUri only returns non-null for DOCUMENT_FILE mode; file is OpenMode.FILE
@@ -219,7 +219,7 @@ public class HybridFileParcelableTest {
    * Expected: getFullUri returns the URI when mode is DOCUMENT_FILE.
    */
   @Test
-  public void setFullUriContentScheme_storedForDocumentFileMode() {
+  public void setFullUriContentSchemeStoredForDocumentFileMode() {
     HybridFileParcelable docFile =
         new HybridFileParcelable(
             "content://com.android.externalstorage.documents/tree/1234-ABCD%3A",
@@ -235,7 +235,7 @@ public class HybridFileParcelableTest {
    * getFullUri returns null for non-content scheme URIs.
    */
   @Test
-  public void setFullUriNonContentScheme_ignored() {
+  public void setFullUriNonContentSchemeIgnored() {
     HybridFileParcelable docFile =
         new HybridFileParcelable("file:///storage/emulated/0/test.txt", "rw", 0L, 0L, false);
     docFile.setMode(OpenMode.DOCUMENT_FILE);

@@ -119,10 +119,10 @@ data class UsbStorageDevice(
             }
         }
 
-    /**
-     * Creates a UsbStorageDevice from a legacy UsbOtgRepresentation.
-     */
     companion object {
+        /**
+         * Creates a UsbStorageDevice from a legacy UsbOtgRepresentation.
+         */
         @JvmStatic
         fun fromLegacy(legacy: UsbOtgRepresentation): UsbStorageDevice {
             return UsbStorageDevice(

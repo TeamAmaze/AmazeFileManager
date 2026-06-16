@@ -36,9 +36,11 @@ import org.robolectric.annotation.Config
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.P])
+@Suppress("StringLiteralDuplication")
 class OTGUtilDeviceKeyTest {
-    // ============ extractDeviceKeyFromPath tests ============
-
+    /**
+     * Test extracting device keys from OTG paths with vendor:product format.
+     */
     @Test
     fun testExtractDeviceKeyFromPath_withVendorProductKey() {
         // Standard vendor:product format
@@ -56,6 +58,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting device keys from OTG paths with vendor:product:serial format.
+     */
     @Test
     fun testExtractDeviceKeyFromPath_withSerialNumber() {
         // vendor:product:serial format
@@ -74,6 +79,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test legacy OTG paths without device keys return null.
+     */
     @Test
     fun testExtractDeviceKeyFromPath_legacyFormatReturnsNull() {
         // Legacy paths without device key should return null
@@ -83,6 +91,9 @@ class OTGUtilDeviceKeyTest {
         assertNull(OTGUtil.extractDeviceKeyFromPath("otg:/Documents/report.pdf"))
     }
 
+    /**
+     * Test non-OTG paths return null when extracting device keys.
+     */
     @Test
     fun testExtractDeviceKeyFromPath_invalidPathsReturnNull() {
         // Non-OTG paths
@@ -93,6 +104,9 @@ class OTGUtilDeviceKeyTest {
         assertNull(OTGUtil.extractDeviceKeyFromPath("file:///sdcard/"))
     }
 
+    /**
+     * Test edge cases for device key extraction.
+     */
     @Test
     fun testExtractDeviceKeyFromPath_edgeCases() {
         // Single segment with colon - technically matches the pattern (has colon, splits to 2+ parts)
@@ -102,8 +116,9 @@ class OTGUtilDeviceKeyTest {
         assertNull(OTGUtil.extractDeviceKeyFromPath("otg:/12345/folder"))
     }
 
-    // ============ buildOtgPath tests ============
-
+    /**
+     * Test building OTG paths from device keys and sub-paths.
+     */
     @Test
     fun testBuildOtgPath_withEmptySubPath() {
         assertEquals(
@@ -116,6 +131,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test building OTG paths with sub-paths appended to device keys.
+     */
     @Test
     fun testBuildOtgPath_withSubPath() {
         assertEquals(
@@ -132,6 +150,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test building OTG paths with leading slashes in sub-paths.
+     */
     @Test
     fun testBuildOtgPath_withLeadingSlashInSubPath() {
         // Leading slash should be trimmed
@@ -145,6 +166,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test building OTG paths with device keys that include serial numbers.
+     */
     @Test
     fun testBuildOtgPath_withSerialInDeviceKey() {
         assertEquals(
@@ -157,8 +181,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
-    // ============ getSubPathFromOtgPath tests ============
-
+    /**
+     * Test extracting sub-paths from OTG paths with device keys.
+     */
     @Test
     fun testGetSubPathFromOtgPath_withDeviceKey() {
         assertEquals(
@@ -179,6 +204,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting sub-paths from OTG paths with device keys that include serial numbers.
+     */
     @Test
     fun testGetSubPathFromOtgPath_withSerialInDeviceKey() {
         assertEquals(
@@ -191,6 +219,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting sub-paths from legacy OTG paths without device keys.
+     */
     @Test
     fun testGetSubPathFromOtgPath_legacyFormat() {
         // Legacy paths without device key
@@ -208,6 +239,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting sub-paths from non-OTG paths returns the path as-is.
+     */
     @Test
     fun testGetSubPathFromOtgPath_nonOtgPath() {
         // Non-OTG paths should be returned as-is
@@ -221,8 +255,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
-    // ============ Round-trip tests ============
-
+    /**
+     * Test round-trip of building and extracting device keys and sub-paths.
+     */
     @Test
     fun testRoundTrip_buildAndExtract() {
         val deviceKey = "1234:5678"
@@ -236,6 +271,9 @@ class OTGUtilDeviceKeyTest {
         assertEquals(subPath, extractedSubPath)
     }
 
+    /**
+     * Test round-trip of building and extracting device keys with serial numbers.
+     */
     @Test
     fun testRoundTrip_buildAndExtractWithSerial() {
         val deviceKey = "1234:5678:SERIAL"
@@ -249,6 +287,9 @@ class OTGUtilDeviceKeyTest {
         assertEquals(subPath, extractedSubPath)
     }
 
+    /**
+     * Test round-trip of building and extracting device keys with an empty sub-path.
+     */
     @Test
     fun testRoundTrip_emptySubPath() {
         val deviceKey = "9999:8888"
@@ -262,8 +303,9 @@ class OTGUtilDeviceKeyTest {
         assertEquals(subPath, extractedSubPath)
     }
 
-    // ============ Integration-style tests ============
-
+    /**
+     * Test simulating path traversal and filtering of OTG paths.
+     */
     @Test
     fun testPathTraversalSimulation() {
         // Simulate how path parts would be processed during file traversal
@@ -282,6 +324,9 @@ class OTGUtilDeviceKeyTest {
         assertEquals(listOf("Documents", "Photos", "image.jpg"), parts)
     }
 
+    /**
+     * Test paths for different devices are distinguishable even if they have the same sub-path.
+     */
     @Test
     fun testMultipleDevicesPathDistinction() {
         // Verify that paths for different devices are distinguishable
@@ -301,8 +346,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
-    // ============ New format device keys (vol: and usb: prefixes) ============
-
+    /**
+     * Test extracting device keys from OTG paths with "vol:" prefix (volume-based keys).
+     */
     @Test
     fun testExtractDeviceKeyFromPath_withVolPrefix() {
         // Volume-based device keys (API 24+)
@@ -324,6 +370,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting device keys from OTG paths with "usb:" prefix (USB-based keys).
+     */
     @Test
     fun testExtractDeviceKeyFromPath_withUsbPrefix() {
         // USB-based device keys (API 21-23)
@@ -341,6 +390,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test building OTG paths with "vol:" prefix device keys.
+     */
     @Test
     fun testBuildOtgPath_withVolPrefix() {
         assertEquals(
@@ -357,6 +409,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test building OTG paths with "usb:" prefix device keys.
+     */
     @Test
     fun testBuildOtgPath_withUsbPrefix() {
         assertEquals(
@@ -369,6 +424,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting sub-paths from OTG paths with "vol:" prefix device keys.
+     */
     @Test
     fun testGetSubPathFromOtgPath_withVolPrefix() {
         assertEquals(
@@ -385,6 +443,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test extracting sub-paths from OTG paths with "usb:" prefix device keys.
+     */
     @Test
     fun testGetSubPathFromOtgPath_withUsbPrefix() {
         assertEquals(
@@ -401,6 +462,9 @@ class OTGUtilDeviceKeyTest {
         )
     }
 
+    /**
+     * Test round-trip of building and extracting OTG paths with "vol:" prefix device keys.
+     */
     @Test
     fun testRoundTrip_volPrefixDeviceKey() {
         val deviceKey = "vol:ABCD-1234"
@@ -414,6 +478,9 @@ class OTGUtilDeviceKeyTest {
         assertEquals(subPath, extractedSubPath)
     }
 
+    /**
+     * Test round-trip of building and extracting OTG paths with "usb:" prefix device keys.
+     */
     @Test
     fun testRoundTrip_usbPrefixDeviceKey() {
         val deviceKey = "usb:4660:22136:SN123"
@@ -426,8 +493,6 @@ class OTGUtilDeviceKeyTest {
         assertEquals(deviceKey, extractedKey)
         assertEquals(subPath, extractedSubPath)
     }
-
-    // ============ Direct-access path regression tests ============
 
     /**
      * Regression test: getDocumentFiles must NOT throw NullPointerException when

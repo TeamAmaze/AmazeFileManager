@@ -29,13 +29,20 @@ import org.junit.Test
  * Unit tests for UnmountDeviceCommand
  * Tests the root unmount functionality for OTG devices
  */
+@Suppress("StringLiteralDuplication")
 class UnmountDeviceCommandTest {
+    /**
+     * Test UnmountDeviceCommand object is properly initialized
+     */
     @Test
     fun testUnmountDeviceCommandExists() {
         // Verify the command object is properly initialized
         assertNotNull(UnmountDeviceCommand)
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle various mount point formats
+     */
     @Test
     fun testMountPointFormatValidation() {
         // Test that the command can handle various mount point formats
@@ -54,6 +61,9 @@ class UnmountDeviceCommandTest {
         }
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle invalid mount point formats
+     */
     @Test
     fun testMediaRemovableMountPoint() {
         // Test detection of /mnt/media_rw mount points
@@ -61,6 +71,9 @@ class UnmountDeviceCommandTest {
         assertTrue(mediaRemovablePath.startsWith("/mnt/media_rw"))
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle /storage mount points
+     */
     @Test
     fun testStorageMountPoint() {
         // Test detection of /storage mount points
@@ -68,6 +81,9 @@ class UnmountDeviceCommandTest {
         assertTrue(storagePath.startsWith("/storage"))
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle /storage/emulated mount points
+     */
     @Test
     fun testMountPointWithoutLeadingSlash() {
         // Mount points should always start with /
@@ -75,6 +91,9 @@ class UnmountDeviceCommandTest {
         assertFalse(invalidPath.startsWith("/"))
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle deeper nested mount points
+     */
     @Test
     fun testDeepNestedMountPoint() {
         // Test mount points with deeper nesting
@@ -82,6 +101,9 @@ class UnmountDeviceCommandTest {
         assertTrue(deepPath.contains("/mnt/media_rw"))
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle empty mount points
+     */
     @Test
     fun testEmptyMountPoint() {
         // Empty mount point should not be valid
@@ -89,6 +111,9 @@ class UnmountDeviceCommandTest {
         assertTrue(emptyPath.isEmpty())
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle various USB device key formats
+     */
     @Test
     fun testUsbDeviceKeyFormat() {
         // Test various USB device key formats that may appear in mount points
@@ -106,6 +131,9 @@ class UnmountDeviceCommandTest {
         }
     }
 
+    /**
+     * Test UnmountDeviceCommand can handle mount points with trailing slashes
+     */
     @Test
     fun testMountPointSlashHandling() {
         // Test handling of trailing and leading slashes
