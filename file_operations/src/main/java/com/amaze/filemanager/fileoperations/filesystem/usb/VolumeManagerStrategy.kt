@@ -154,9 +154,9 @@ internal class VolumeManagerStrategy : StorageDeviceStrategy {
             context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
                 ?: return
 
-        try {
+        runCatching {
             storageManager.unregisterStorageVolumeCallback(callback)
-        } catch (e: Exception) {
+        }.onFailure { e ->
             Log.w(TAG, "Failed to unregister storage volume callback", e)
         }
         storageVolumeCallback = null
@@ -256,7 +256,7 @@ internal class VolumeManagerStrategy : StorageDeviceStrategy {
      * Get the mount path of a StorageVolume using reflection (not always available via public API).
      */
     private fun getVolumePath(volume: StorageVolume): String? {
-        return try {
+        return runCatching {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 volume.directory?.absolutePath
             } else {
@@ -265,7 +265,7 @@ internal class VolumeManagerStrategy : StorageDeviceStrategy {
                 field.isAccessible = true
                 (field.get(volume) as? File)?.absolutePath
             }
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Log.d(TAG, "Could not get volume path", e)
             null
         }

@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.fileoperations.filesystem.usb
 
 import android.content.Context
@@ -12,9 +32,16 @@ import org.junit.Test
 import org.mockito.Mockito
 import java.io.File
 
+/**
+ * Tests for [OtgFileAccessFacade].
+ */
+@Suppress("StringLiteralDuplication")
 class OtgFileAccessFacadeTest {
     private lateinit var context: Context
 
+    /**
+     * Setup before tests.
+     */
     @Before
     fun setUp() {
         context = Mockito.mock(Context::class.java)
@@ -112,6 +139,10 @@ class OtgFileAccessFacadeTest {
         testDir.delete()
     }
 
+    /**
+     * Test that direct access works when the mount point is readable.
+     * This simulates a normal OTG device with proper permissions.
+     */
     @Test
     fun testDirectAccessSuccess() {
         val deviceKey = "vol:test"
@@ -131,6 +162,10 @@ class OtgFileAccessFacadeTest {
         testDir.delete()
     }
 
+    /**
+     * Test that direct access fails when the mount point is not readable.
+     * This simulates a device with permission issues, and should fallback to SAF stub.
+     */
     @Test
     fun testDirectAccessNoPermission() {
         val deviceKey = "vol:test"
@@ -149,6 +184,9 @@ class OtgFileAccessFacadeTest {
         testDir.delete()
     }
 
+    /**
+     * Test that when the device is not found, listFiles returns empty (SAF stub).
+     */
     @Test
     fun testDeviceNotFoundFallback() {
         val deviceKey = "vol:missing"
@@ -160,6 +198,9 @@ class OtgFileAccessFacadeTest {
         }
     }
 
+    /**
+     * Test that getFile returns the correct File object when direct access is available.
+     */
     @Test
     fun testGetFileDirectAccess() {
         val deviceKey = "vol:test"

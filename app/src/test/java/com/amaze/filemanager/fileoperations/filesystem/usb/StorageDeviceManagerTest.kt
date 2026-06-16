@@ -40,21 +40,29 @@ import org.robolectric.annotation.Config
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28])
+@Suppress("StringLiteralDuplication")
 class StorageDeviceManagerTest {
+    /**
+     * Setup before tests.
+     */
     @Before
     fun setUp() {
         UsbOtgManager.resetAll()
         UsbOtgManager.resetMigrationFlag()
     }
 
+    /**
+     * Cleanup after tests.
+     */
     @After
     fun tearDown() {
         UsbOtgManager.resetAll()
         UsbOtgManager.resetMigrationFlag()
     }
 
-    // ==================== StorageDeviceRepresentation Tests ====================
-
+    /**
+     * Test UsbStorageDevice deviceKey format without serial number.
+     */
     @Test
     fun `test UsbStorageDevice deviceKey format without serial`() {
         val device =
@@ -72,6 +80,9 @@ class StorageDeviceManagerTest {
         assertFalse(StorageDeviceRepresentation.isLegacyKey(device.deviceKey))
     }
 
+    /**
+     * Test UsbStorageDevice deviceKey format with serial number.
+     */
     @Test
     fun `test UsbStorageDevice deviceKey format with serial`() {
         val device =
@@ -86,6 +97,9 @@ class StorageDeviceManagerTest {
         assertEquals("usb:4660:22136:ABC123", device.deviceKey)
     }
 
+    /**
+     * Test UsbStorageDevice displayName with manufacturer and product.
+     */
     @Test
     fun `test UsbStorageDevice displayName with manufacturer and product`() {
         val device =
@@ -100,6 +114,9 @@ class StorageDeviceManagerTest {
         assertEquals("SanDisk Ultra USB", device.displayName)
     }
 
+    /**
+     * Test UsbStorageDevice displayName fallback when manufacturer and product are null.
+     */
     @Test
     fun `test UsbStorageDevice displayName fallback`() {
         val device =
@@ -114,6 +131,9 @@ class StorageDeviceManagerTest {
         assertEquals("USB Device (1234:5678)", device.displayName)
     }
 
+    /**
+     * Test VolumeStorageDevice deviceKey format.
+     */
     @Test
     fun `test VolumeStorageDevice deviceKey format`() {
         val device =
@@ -129,6 +149,9 @@ class StorageDeviceManagerTest {
         assertFalse(StorageDeviceRepresentation.isLegacyKey(device.deviceKey))
     }
 
+    /**
+     * Test VolumeStorageDevice displayName with description.
+     */
     @Test
     fun `test VolumeStorageDevice displayName`() {
         val device =
@@ -141,6 +164,9 @@ class StorageDeviceManagerTest {
         assertEquals("My USB Drive", device.displayName)
     }
 
+    /**
+     * Test VolumeStorageDevice displayName fallback when description is empty.
+     */
     @Test
     fun `test VolumeStorageDevice displayName fallback`() {
         val device =
@@ -153,6 +179,9 @@ class StorageDeviceManagerTest {
         assertEquals("Removable Storage (1234-5678)", device.displayName)
     }
 
+    /**
+     * Test StorageDeviceRepresentation key detection methods.
+     */
     @Test
     fun `test isLegacyKey detects legacy format`() {
         assertTrue(StorageDeviceRepresentation.isLegacyKey("1234:5678"))
@@ -161,6 +190,9 @@ class StorageDeviceManagerTest {
         assertFalse(StorageDeviceRepresentation.isLegacyKey("vol:1234-5678"))
     }
 
+    /**
+     * Test StorageDeviceRepresentation key detection methods for USB keys.
+     */
     @Test
     fun `test UsbStorageDevice fromLegacy conversion`() {
         val legacy =
@@ -182,6 +214,9 @@ class StorageDeviceManagerTest {
         assertEquals("usb:1234:5678:SERIAL123", converted.deviceKey)
     }
 
+    /**
+     * Test StorageDeviceRepresentation key detection methods for USB volume keys.
+     */
     @Test
     fun `test parseIdsFromKey with USB key`() {
         val result = UsbStorageDevice.parseIdsFromKey("usb:1234:5678")
@@ -190,6 +225,9 @@ class StorageDeviceManagerTest {
         assertEquals(5678, result?.second)
     }
 
+    /**
+     * Test StorageDeviceRepresentation key detection methods for legacy USB volume keys.
+     */
     @Test
     fun `test parseIdsFromKey with legacy key`() {
         val result = UsbStorageDevice.parseIdsFromKey("1234:5678")
@@ -198,26 +236,36 @@ class StorageDeviceManagerTest {
         assertEquals(5678, result?.second)
     }
 
+    /**
+     * Test StorageDeviceRepresentation key detection methods for invalid keys.
+     */
     @Test
     fun `test parseIdsFromKey with invalid key`() {
         assertNull(UsbStorageDevice.parseIdsFromKey("invalid"))
         assertNull(UsbStorageDevice.parseIdsFromKey("vol:1234-5678"))
     }
 
+    /**
+     * Test key detection methods for volume keys with parseUuidFromKey().
+     */
     @Test
     fun `test parseUuidFromKey with volume key`() {
         val result = VolumeStorageDevice.parseUuidFromKey("vol:1234-5678")
         assertEquals("1234-5678", result)
     }
 
+    /**
+     * Test key detection methods for non-volume keys with parseUuidFromKey().
+     */
     @Test
     fun `test parseUuidFromKey with non-volume key`() {
         assertNull(VolumeStorageDevice.parseUuidFromKey("usb:1234:5678"))
         assertNull(VolumeStorageDevice.parseUuidFromKey("1234:5678"))
     }
 
-    // ==================== DeviceKeyMigration Tests ====================
-
+    /**
+     * Test migrateKey() returns AlreadyMigrated for new USB format.
+     */
     @Test
     fun `test migrateKey returns AlreadyMigrated for new USB format`() {
         val result = DeviceKeyMigration.migrateKey("usb:1234:5678", emptyList())
@@ -225,12 +273,18 @@ class StorageDeviceManagerTest {
         assertEquals("usb:1234:5678", (result as DeviceKeyMigration.MigrationResult.AlreadyMigrated).key)
     }
 
+    /**
+     * Test migrateKey() returns AlreadyMigrated for volume format.
+     */
     @Test
     fun `test migrateKey returns AlreadyMigrated for volume format`() {
         val result = DeviceKeyMigration.migrateKey("vol:1234-5678", emptyList())
         assertTrue(result is DeviceKeyMigration.MigrationResult.AlreadyMigrated)
     }
 
+    /**
+     * Test migrateKey() returns NoMatch for legacy key when no devices match.
+     */
     @Test
     fun `test migrateKey migrates legacy key to USB key when device matches`() {
         val device =
@@ -246,6 +300,9 @@ class StorageDeviceManagerTest {
         assertEquals("usb:1234:5678", (result as DeviceKeyMigration.MigrationResult.Migrated).newKey)
     }
 
+    /**
+     * Test migrateKey() returns NoMatch for legacy key with serial when no devices match.
+     */
     @Test
     fun `test migrateKey migrates legacy key with serial`() {
         val device =
@@ -261,6 +318,9 @@ class StorageDeviceManagerTest {
         assertEquals("usb:1234:5678:SERIAL123", (result as DeviceKeyMigration.MigrationResult.Migrated).newKey)
     }
 
+    /**
+     * Test migrateKey() returns NoMatch when no devices match the legacy key.
+     */
     @Test
     fun `test migrateKey returns NoMatch when no device matches`() {
         val device =
@@ -274,12 +334,18 @@ class StorageDeviceManagerTest {
         assertTrue(result is DeviceKeyMigration.MigrationResult.NoMatch)
     }
 
+    /**
+     * Test migrateKey() returns NoMatch for invalid legacy key format.
+     */
     @Test
     fun `test migrateKey returns NoMatch for invalid legacy key`() {
         val result = DeviceKeyMigration.migrateKey("invalid", emptyList())
         assertTrue(result is DeviceKeyMigration.MigrationResult.NoMatch)
     }
 
+    /**
+     * Test migrateKey() migrates to volume key when there's exactly one volume device.
+     */
     @Test
     fun `test migrateKey migrates to volume when single volume device`() {
         val device =
@@ -295,6 +361,9 @@ class StorageDeviceManagerTest {
         assertEquals("vol:1234-5678", (result as DeviceKeyMigration.MigrationResult.Migrated).newKey)
     }
 
+    /**
+     * Test migrateKey() returns NoMatch when there are multiple volume devices.
+     */
     @Test
     fun `test uriMatchesDevice with volume key`() {
         val uri = Uri.parse("content://com.android.externalstorage.documents/tree/1234-5678%3A")
@@ -303,6 +372,9 @@ class StorageDeviceManagerTest {
         assertFalse(DeviceKeyMigration.uriMatchesDevice(uri, "vol:9999-0000"))
     }
 
+    /**
+     * Test uriMatchesDevice() returns false for USB keys since they can't be reliably matched to URIs.
+     */
     @Test
     fun `test uriMatchesDevice with USB key always returns false`() {
         val uri = Uri.parse("content://com.android.externalstorage.documents/tree/1234-5678%3A")
@@ -311,8 +383,9 @@ class StorageDeviceManagerTest {
         assertFalse(DeviceKeyMigration.uriMatchesDevice(uri, "usb:1234:5678"))
     }
 
-    // ==================== UsbOtgManager Tests ====================
-
+    /**
+     * Test uriMatchesDevice() returns false for invalid keys.
+     */
     @Test
     fun `test addDevice and getStorageDevice`() {
         val device =
@@ -328,6 +401,9 @@ class StorageDeviceManagerTest {
         assertEquals(device.deviceKey, retrieved?.deviceKey)
     }
 
+    /**
+     * Test removeDevice() removes the device from the manager.
+     */
     @Test
     fun `test removeDevice`() {
         val device =
@@ -343,6 +419,9 @@ class StorageDeviceManagerTest {
         assertFalse(UsbOtgManager.isDeviceConnected(device.deviceKey))
     }
 
+    /**
+     * Test getStorageDevices() returns all connected devices.
+     */
     @Test
     fun `test getStorageDevices returns all devices`() {
         val device1 = UsbStorageDevice(vendorId = 1111, productId = 2222)
@@ -357,6 +436,9 @@ class StorageDeviceManagerTest {
         assertTrue(devices.any { it.deviceKey == device2.deviceKey })
     }
 
+    /**
+     * Test setUsbOtgRoot() and getUsbOtgRoot().
+     */
     @Test
     fun `test setUsbOtgRoot and getUsbOtgRoot`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -369,6 +451,9 @@ class StorageDeviceManagerTest {
         assertTrue(UsbOtgManager.hasUsbOtgRoot(device.deviceKey))
     }
 
+    /**
+     * Test setUsbOtgRoot() with null removes root.
+     */
     @Test
     fun `test setUsbOtgRoot with null removes root`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -382,6 +467,9 @@ class StorageDeviceManagerTest {
         assertFalse(UsbOtgManager.hasUsbOtgRoot(device.deviceKey))
     }
 
+    /**
+     * Test setUsbOtgRoot() throws IllegalStateException for non-connected device.
+     */
     @Test(expected = IllegalStateException::class)
     fun `test setUsbOtgRoot throws for non-connected device`() {
         UsbOtgManager.setUsbOtgRoot(
@@ -390,6 +478,9 @@ class StorageDeviceManagerTest {
         )
     }
 
+    /**
+     * Test updateDevices() adds new devices and removes disconnected ones.
+     */
     @Test
     fun `test updateDevices adds new devices`() {
         val device1 = UsbStorageDevice(vendorId = 1111, productId = 2222)
@@ -402,6 +493,9 @@ class StorageDeviceManagerTest {
         assertTrue(UsbOtgManager.isDeviceConnected(device2.deviceKey))
     }
 
+    /**
+     * Test updateDevices() removes devices that are no longer connected.
+     */
     @Test
     fun `test updateDevices removes disconnected devices`() {
         val device1 = UsbStorageDevice(vendorId = 1111, productId = 2222)
@@ -417,6 +511,9 @@ class StorageDeviceManagerTest {
         assertFalse(UsbOtgManager.isDeviceConnected(device2.deviceKey))
     }
 
+    /**
+     * Test updateDevices() preserves SAF roots for existing devices.
+     */
     @Test
     fun `test updateDevices preserves SAF roots for existing devices`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -432,6 +529,9 @@ class StorageDeviceManagerTest {
         assertEquals(uri, UsbOtgManager.getUsbOtgRoot(device.deviceKey))
     }
 
+    /**
+     * Test updateDevices() removes SAF roots for disconnected devices.
+     */
     @Test
     fun `test updateDevices removes SAF roots for disconnected devices`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -446,6 +546,9 @@ class StorageDeviceManagerTest {
         assertNull(UsbOtgManager.getUsbOtgRoot(device.deviceKey))
     }
 
+    /**
+     * Test anyUsbOtgRoot returns the first available root.
+     */
     @Test
     fun `test anyUsbOtgRoot returns first available root`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -459,6 +562,9 @@ class StorageDeviceManagerTest {
         assertEquals(uri, UsbOtgManager.anyUsbOtgRoot)
     }
 
+    /**
+     * Test anyStorageDevice returns the first available device.
+     */
     @Test
     fun `test anyStorageDevice returns first device`() {
         assertNull(UsbOtgManager.anyStorageDevice)
@@ -470,6 +576,9 @@ class StorageDeviceManagerTest {
         assertEquals(device.deviceKey, UsbOtgManager.anyStorageDevice?.deviceKey)
     }
 
+    /**
+     * Test resetAll() clears all devices and roots.
+     */
     @Test
     fun `test resetAll clears everything`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -484,6 +593,9 @@ class StorageDeviceManagerTest {
         assertNull(UsbOtgManager.anyUsbOtgRoot)
     }
 
+    /**
+     * Test findDeviceKeyByRoot() returns the correct device key for a given SAF root URI.
+     */
     @Test
     fun `test findDeviceKeyByRoot`() {
         val device = UsbStorageDevice(vendorId = 1234, productId = 5678)
@@ -496,15 +608,16 @@ class StorageDeviceManagerTest {
         assertNull(UsbOtgManager.findDeviceKeyByRoot(Uri.parse("content://other")))
     }
 
-    // ==================== URI Permission Restoration Tests ====================
-
+    /**
+     * Test extractVolumeUuidFromUri() correctly extracts the UUID from a SAF URI.
+     */
     @Test
     fun `test extractVolumeUuidFromUri with encoded URI`() {
         // Test various URI formats
         // Format: content://com.android.externalstorage.documents/tree/{uuid}%3A[path]
-        val uri1 = Uri.parse("content://com.android.externalstorage.documents/tree/1234-5678%3A")
-        val uri2 = Uri.parse("content://com.android.externalstorage.documents/tree/ABCD-EF01%3Afolder%2Fsubfolder")
-        val uri3 = Uri.parse("content://com.android.externalstorage.documents/tree/9999-8888%3A")
+        Uri.parse("content://com.android.externalstorage.documents/tree/1234-5678%3A")
+        Uri.parse("content://com.android.externalstorage.documents/tree/ABCD-EF01%3Afolder%2Fsubfolder")
+        Uri.parse("content://com.android.externalstorage.documents/tree/9999-8888%3A")
 
         // We can test the extraction indirectly by adding a device and checking restore logic
         val device1 = VolumeStorageDevice(uuid = "1234-5678", description = "USB Drive")
@@ -514,6 +627,9 @@ class StorageDeviceManagerTest {
         assertTrue(UsbOtgManager.isDeviceConnected("vol:1234-5678"))
     }
 
+    /**
+     * Test that a VolumeStorageDevice can be added and retrieved using its volume key.
+     */
     @Test
     fun `test volume device key matching with UUID`() {
         val volumeDevice = VolumeStorageDevice(uuid = "ABCD-1234", description = "Test USB")
@@ -530,6 +646,9 @@ class StorageDeviceManagerTest {
         assertEquals("ABCD-1234", (retrieved as VolumeStorageDevice).uuid)
     }
 
+    /**
+     * Test that multiple VolumeStorageDevices with different UUIDs can coexist and be managed.
+     */
     @Test
     fun `test multiple volume devices with different UUIDs`() {
         val device1 = VolumeStorageDevice(uuid = "1111-2222", description = "USB Drive 1")
@@ -549,8 +668,9 @@ class StorageDeviceManagerTest {
         assertEquals(uri2, UsbOtgManager.getUsbOtgRoot("vol:3333-4444"))
     }
 
-    // ==================== Multi-Partition USB Device Tests ====================
-
+    /**
+     * Test that a multi-partition USB device can be represented with different volume labels.
+     */
     @Test
     fun `test multi-partition USB device with different volume labels`() {
         // Simulating a USB drive with two partitions (like a dual-partition USB stick)
@@ -582,6 +702,9 @@ class StorageDeviceManagerTest {
         assertEquals("BACKUP", retrieved2?.displayName)
     }
 
+    /**
+     * Test that a multi-partition USB device can have separate SAF roots for each partition.
+     */
     @Test
     fun `test multi-partition USB device with SAF roots`() {
         // Two partitions on the same physical USB device
@@ -606,6 +729,9 @@ class StorageDeviceManagerTest {
         assertEquals(uri2, UsbOtgManager.getUsbOtgRoot("vol:1234-0002"))
     }
 
+    /**
+     * Test VolumeStorageDevice displayName falls back to UUID when description is blank or empty.
+     */
     @Test
     fun `test VolumeStorageDevice displayName with blank description falls back to UUID`() {
         val deviceWithLabel = VolumeStorageDevice(uuid = "AAAA-BBBB", description = "My USB")

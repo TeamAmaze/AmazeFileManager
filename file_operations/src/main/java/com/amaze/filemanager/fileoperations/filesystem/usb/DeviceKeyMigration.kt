@@ -162,9 +162,9 @@ object DeviceKeyMigration {
             val root = UsbOtgManager.getUsbOtgRoot(oldKey)
             if (root != null) {
                 // Remove old entry
-                try {
+                runCatching {
                     UsbOtgManager.removeDevice(oldKey)
-                } catch (e: Exception) {
+                }.onFailure { e ->
                     Log.w(TAG, "Failed to remove old device entry: $oldKey", e)
                 }
 

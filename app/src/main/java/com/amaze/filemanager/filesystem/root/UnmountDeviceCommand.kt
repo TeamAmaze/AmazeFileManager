@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2014-2024 Arpit Khurana, Vishal Nehra,
- * Emmanuel Messulam, Raymond Lai and Contributors.
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -15,7 +15,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.amaze.filemanager.filesystem.root
@@ -40,7 +40,7 @@ object UnmountDeviceCommand : IRootCommand() {
      */
     @Throws(ShellNotRunningException::class)
     fun unmountDevice(mountPoint: String): Boolean {
-        return try {
+        return runCatching {
             LOG.info("Attempting to unmount device at: $mountPoint")
 
             // First, try graceful unmount
@@ -55,7 +55,7 @@ object UnmountDeviceCommand : IRootCommand() {
                 // Graceful unmount succeeded or other non-busy error
                 gracefulResult.isEmpty() || !gracefulResult[0].contains("No such file")
             }
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             LOG.error("Failed to unmount device: ${e.message}", e)
             false
         }
