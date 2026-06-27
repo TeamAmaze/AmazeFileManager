@@ -238,8 +238,8 @@
     <string name="databasereader">डेटाबेस रीडर</string>
     <string name="show_dividers">डिव्हायडर्स दाखवा</string>
     <string name="needs_access">लिहिण्याची परवानगी आवश्यक</string>
-    <string name="needs_access_summary">कृपया रूट डिरेक्टरी निवडा \t</string>
-    <string name="needs_access_summary1">\tला लिहिण्याची परवानगी देण्यासाठी </string>
+    <string name="needs_access_summary">कृपया रूट डिरेक्टरी निवडा </string>
+    <string name="needs_access_summary1"> ला लिहिण्याची परवानगी देण्यासाठी</string>
     <string name="smb_connection">SMB कनेक्शन</string>
     <string name="smb_server">SMB सर्व्हर होस्टनेम</string>
     <string name="server_address">सर्व्हर IP अॅड्रेस</string>
