@@ -32,7 +32,7 @@
     <string name="uninstall">अनइंस्टॉल करा</string>
     <string name="play">Play स्टोअर</string>
     <string name="properties">प्रॉपर्टीज</string>
-    <string name="copyingapks">%d APK फाइल्स %s मध्ये कॉपी होत आहेत</string>
+    <string name="copyingapks">%1$d APK फाइल्स %2$s मध्ये कॉपी होत आहेत</string>
     <string name="delbook">बुकमार्क हटवा</string>
     <string name="add_to_bookmarks">बुकमार्कमध्ये जोडा</string>
     <string name="enterpath">पाथ टाका</string>
@@ -655,7 +655,7 @@
     <string name="donation_thanks">देणगीसाठी धन्यवाद, हे आम्हाला प्रेरित ठेवते! (:</string>
     <string name="enable_marquee_filename">फाइल नावांसाठी मार्की इफेक्ट सक्षम करा</string>
     <string name="archive_password_prompt">कृपया आर्काइव्ह पासवर्ड टाका:</string>
-    <string name="cannot_extract_archive">आर्काइव्ह "%s" एक्सट्रॅक्ट करू शकत नाही: %s</string>
+    <string name="cannot_extract_archive">आर्काइव्ह "%1$s" एक्सट्रॅक्ट करू शकत नाही: %2$s</string>
     <string name="archive_unsupported_or_corrupt">आर्काइव्ह "%s" उघडू शकत नाही. आम्ही आर्काइव्ह उघडू शकत नाही, किंवा आर्काइव्ह खराब झाले आहे.</string>
     <string name="close">बंद करा</string>
     <string name="bookmark_exists">बुकमार्क अस्तित्वात आहे</string>
@@ -700,8 +700,8 @@
     <string name="disableIpcSignature">IPC सायनिंग तपासणी बंद करा (जुन्या SMBv1 सर्व्हर्ससाठी - असुरक्षित!)</string>
     <string name="cannot_delete_file">फाइल हटवता येत नाही </string>
     <string name="cannot_delete_file_with_reason">फाइल हटवता येत नाही - %s </string>
-    <string name="cannot_rename_file">फाइलचे नाव बदलता येत नाही %s - %s</string>
-    <string name="cannot_read_directory">डिरेक्टरी वाचता येत नाही %s - %s</string>
+    <string name="cannot_rename_file">फाइलचे नाव बदलता येत नाही %1$s - %2$s</string>
+    <string name="cannot_read_directory">डिरेक्टरी वाचता येत नाही %1$s - %2$s</string>
     <string name="just_once">फक्त एकदा</string>
     <string name="always">नेहमी</string>
     <string name="choose_different_app">वेगळे अॅप्लिकेशन निवडा</string>
@@ -714,7 +714,7 @@
     <string name="ftp_prompt_restart_server">बदल लागू होण्यासाठी तुम्हाला FTP सर्व्हर रीस्टार्ट करावा लागेल.</string>
     <string name="error_permission_denied">परवानगी नाकारली</string>
     <string name="error_archive_password_incorrect">चुकीचा आर्काइव्ह पासवर्ड.</string>
-    <string name="error_archive_cannot_extract">आर्काइव्ह एंट्री "%s" "%s" मध्ये एक्सट्रॅक्ट करता येत नाही.</string>
+    <string name="error_archive_cannot_extract">आर्काइव्ह एंट्री "%1$s" "%2$s" मध्ये एक्सट्रॅक्ट करता येत नाही.</string>
     <string name="drag_and_drop_preference">ड्रॅग अँड ड्रॉप प्रेफरन्स निवडा (एक्सपेरिमेंटल)</string>
     <string name="drag_to_move_copy">फाइल्स मूव्ह किंवा कॉपी करण्यासाठी स्पर्श करून ओढा</string>
     <string name="drag_to_select">फाइल्स निवडण्यासाठी स्पर्श करून ओढा</string>
@@ -741,8 +741,8 @@
     <string name="compressed_explorer_fragment_error_open_uri">वाचण्यासाठी URI "%s" उघडण्यात एरर.</string>
     <string name="error_empty_archive">"%s" एक रिकामे आर्काइव्ह आहे.</string>
     <string name="error_bad_archive_without_info">"%s" एक खराब आर्काइव्ह आहे.</string>
-    <string name="error_bad_archive_with_info">"%s" एक खराब आर्काइव्ह आहे.
-एक्सट्रॅक्टरचा संदेश: "%s"</string>
+    <string name="error_bad_archive_with_info">"%1$s" एक खराब आर्काइव्ह आहे.
+एक्सट्रॅक्टरचा संदेश: "%2$s"</string>
     <string name="security_error">या अॅपद्वारे फाइल उघडता आली नाही</string>
     <string name="cloud_drive_tooltip">अमेझ फाइल मॅनेजरमधून फाइल्स मॅनेज करण्यासाठी Google Drive™ कनेक्शन तयार करा.</string>
     <string name="signin_with_google_title">Google Drive™ वापरण्यासाठी प्रमाणित करा</string>
@@ -797,19 +797,19 @@
     <string name="open_file_confirmation">तुम्हाला खात्री आहे की तुम्ही खालील फाइल उघडायची आहे?
 
 नाव:
-%s
+%1$s
 
 स्थान:
-%s
+%2$s
 
 आकार:
-%s
+%3$s
 
 MD5:
-%s
+%4$s
 
 SHA256:
-%s
+%5$s
 
 </string>
     <string name="error_google_play_cannot_update_myself">Google Play च्या धोरणानुसार, अॅप्स स्वतःहून स्वतःला अपडेट करू शकत नाहीत. कृपया Google Play वरून अॅप अपडेट करा.</string>
@@ -825,8 +825,8 @@ SHA256:
     <string name="importing_completed">इम्पोर्ट पूर्ण झाले</string>
     <string name="invalid_backup_file">अवैध बॅकअप फाइल</string>
     <string name="import_failed_for">यासाठी इम्पोर्ट अयशस्वी झाले:</string>
-    <string name="free_of">%s
-%s मधील %s रिकामी</string>
+    <string name="free_of">%1$s
+%2$s मधील %3$s रिकामी</string>
     <string name="cloud_error_fdroid">F-Droid व्हर्जनमध्ये Amaze Cloud Plugin समर्थित नाही. कृपया अमेझचे Play Store व्हर्जन वापरा.</string>
     <string name="disable_player_intent_filters">प्लेयर इंटेंट फिल्टर्स अक्षम करा</string>
     <string name="disable_player_intent_filters_summary">फाइल चूझरमधून अमेझचे इनबिल्ट मीडिया प्लेयर्स अक्षम करते</string>
@@ -849,7 +849,7 @@ SHA256:
     <string name="preference_language_dialog_title">भाषा निवडा</string>
     <string name="preference_language_system_default">सिस्टम डिफॉल्ट</string>
     <string name="error.listfile.smb.title">SMB फाइल लिस्ट लोड करण्यात असमर्थ</string>
-    <string name="error.listfile.smb">%s वर फाइल्स लिस्ट करण्यात एरर: %s</string>
+    <string name="error.listfile.smb">%1$s वर फाइल्स लिस्ट करण्यात एरर: %2$s</string>
     <string name="error.listfile.smb.noipcshare">%s वर फाइल्स लिस्ट करण्यात एरर - बहुधा SMB सर्व्हर IPC$ शेअरवर अनोनिमस अॅक्सेसला परवानगी देत नाही. तुम्ही कनेक्शन सेटिंग्जमध्ये थेट शेअरचे नाव निर्दिष्ट करण्याचा प्रयत्न करू शकता.</string>
     <string name="trash_bin">ट्रॅश बिन</string>
     <string name="delete_permanently_checkbox">कायमचे हटवा</string>
