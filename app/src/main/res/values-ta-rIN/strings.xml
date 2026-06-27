@@ -580,11 +580,11 @@
     <string name="ftps_connection">FTP over SSL இணைப்பு</string>
     <string name="ftps_enable_explicit_tls">வெளிப்படையான TLS</string>
     <string name="scp_port">போர்ட்</string>
-    <string name="ssh_host_key_verification_prompt">ஹோஸ்ட் '%1$s' இன் நம்பகத்தன்மையை நிறுவ முடியவில்லை.
+    <string name="ssh_host_key_verification_prompt">ஹோஸ்ட் \'%1$s\' இன் நம்பகத்தன்மையை நிறுவ முடியவில்லை.
 
 %2$s கீ-கைரேகை %3$s ஆகும்.
 
-அடையாளத்தை உறுதிப்படுத்த "ஆம்" அழுத்தவும்; இல்லையெனில் "இல்லை" அழுத்தவும்.</string>
+அடையாளத்தை உறுதிப்படுத்த \"ஆம்\" அழுத்தவும்; இல்லையெனில் \"இல்லை\" அழுத்தவும்.</string>
     <string name="ssh_host_key_verification_prompt_title">ஹோஸ்டை சரிபார்க்கவும்</string>
     <string name="ssh_select_pem_button">SSH ப்ரைவேட் கீ</string>
     <string name="ssh_pem_key_parse_error">தேர்ந்தெடுக்கப்பட்ட PEM-ஐப் படிக்க முடியவில்லை: %s</string>
@@ -641,9 +641,9 @@
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">என்க்ரிப்ட் செய்யப்பட்ட கோப்புகள் கோப்பு நீட்டிப்பாக \".aze\"-ஐப் பயன்படுத்த வேண்டும்.</string>
     <string name="encrypt_file_must_end_with_aes">என்க்ரிப்ட் செய்யப்பட்ட கோப்புகள் கோப்பு நீட்டிப்பாக \".aes\"-ஐப் பயன்படுத்த வேண்டும்.</string>
-    <string name="error_aescrypt_decrypt_failed">'%1$s'-ஐ டிக்ரிப்ட் செய்ய முடியவில்லை: '%2$s'</string>
+    <string name="error_aescrypt_decrypt_failed">\'%1$s\'-ஐ டிக்ரிப்ட் செய்ய முடியவில்லை: \'%2$s\'</string>
     <string name="cannot_overwrite">கோப்பை மேலெழுத முடியவில்லை.</string>
-    <string name="saved_single_file">கோப்பு '%s' ஆக சேமிக்கப்பட்டது.</string>
+    <string name="saved_single_file">கோப்பு \'%s\' ஆக சேமிக்கப்பட்டது.</string>
     <string name="saved_multi_files">%d கோப்புகள் சேமிக்கப்பட்டன.</string>
     <string name="create_hidden_file_warn">உருவாக்கப்பட்ட கோப்பு கோப்புப் பட்டியலில் மறைக்கப்பட்டிருக்கும்.</string>
     <string name="grant_apkinstall_permission">தொடர ஆப்பிற்கு ஆப்களை நிறுவும் அனுமதி தேவை.</string>
@@ -655,8 +655,8 @@
     <string name="donation_thanks">நன்கொடைக்கு நன்றி, இது எங்களைத் தொடர்ந்து உற்சாகப்படுத்துகிறது! (:</string>
     <string name="enable_marquee_filename">கோப்பு பெயர்களுக்கு மார்க்கீ விளைவை இயக்கு</string>
     <string name="archive_password_prompt">காப்பக கடவுச்சொல்லை உள்ளிடவும்:</string>
-    <string name="cannot_extract_archive">காப்பகம் "%s"-ஐ பிரித்தெடுக்க முடியவில்லை: %s</string>
-    <string name="archive_unsupported_or_corrupt">காப்பகம் "%s"-ஐ திறக்க முடியவில்லை. காப்பகத்தைத் திறக்க முடியவில்லை, அல்லது காப்பகம் சேதமடைந்துள்ளது.</string>
+    <string name="cannot_extract_archive">காப்பகம் \"%s\"-ஐ பிரித்தெடுக்க முடியவில்லை: %s</string>
+    <string name="archive_unsupported_or_corrupt">காப்பகம் \"%s\"-ஐ திறக்க முடியவில்லை. காப்பகத்தைத் திறக்க முடியவில்லை, அல்லது காப்பகம் சேதமடைந்துள்ளது.</string>
     <string name="close">மூடு</string>
     <string name="bookmark_exists">புக்மார்க் ஏற்கனவே உள்ளது</string>
     <string name="hide_media">மீடியா உலாவியிலிருந்து மறை</string>
@@ -710,11 +710,11 @@
     <string name="ftp_readonly">படிக்க மட்டும் அணுகல்</string>
     <string name="legacy_listing_title">ரூட்டிற்கு பழைய பட்டியலிடல் முறையைப் பயன்படுத்து</string>
     <string name="legacy_listing_summary">இயக்கப்பட்டால், கோப்புகளைப் பட்டியலிட பழைய முறையைப் பயன்படுத்துகிறது</string>
-    <string name="error_unsupported_v5_rar">RAR காப்பகம் "%s" ஆதரிக்கப்படாத RAR v5 காப்பகமாகும்.</string>
+    <string name="error_unsupported_v5_rar">RAR காப்பகம் \"%s\" ஆதரிக்கப்படாத RAR v5 காப்பகமாகும்.</string>
     <string name="ftp_prompt_restart_server">மாற்றங்கள் செயல்படுத்த FTP சர்வரை மீண்டும் தொடங்க வேண்டும்.</string>
     <string name="error_permission_denied">அனுமதி மறுக்கப்பட்டது</string>
     <string name="error_archive_password_incorrect">தவறான காப்பக கடவுச்சொல்.</string>
-    <string name="error_archive_cannot_extract">காப்பக என்ட்ரி "%s"-ஐ "%s"-இல் பிரித்தெடுக்க முடியவில்லை.</string>
+    <string name="error_archive_cannot_extract">காப்பக என்ட்ரி \"%s\"-ஐ \"%s\"-இல் பிரித்தெடுக்க முடியவில்லை.</string>
     <string name="drag_and_drop_preference">இழுத்து விடும் முன்னுரிமையைத் தேர்ந்தெடுக்கவும் (சோதனைக்குரியது)</string>
     <string name="drag_to_move_copy">கோப்புகளை நகர்த்த அல்லது நகலெடுக்க தொட்டு இழுக்கவும்</string>
     <string name="drag_to_select">கோப்புகளைத் தேர்ந்தெடுக்க தொட்டு இழுக்கவும்</string>
@@ -728,7 +728,7 @@
 பகிர புதிய இடத்தைத் தேர்ந்தெடுக்கும் வரை, இதை ஒரு முறை மட்டும் செய்ய வேண்டும்.</string>
     <string name="android_data_prompt_saf_access">Android 10 முதல், Android சில டைரக்டரிகளுக்கு கட்டுப்பாடுகளை விதித்துள்ளது, அவற்றை சேமிப்பக அணுகல் கட்டமைப்புடன் அணுக வேண்டும்.
 
-"Allow Access"-ஐத் தட்டி சிஸ்டம் ஃபைல் மேனேஜரிலிருந்து டைரக்டரியை அணுக அமேஸுக்கு அனுமதி வழங்கவும்.</string>
+\"Allow Access\"-ஐத் தட்டி சிஸ்டம் ஃபைல் மேனேஜரிலிருந்து டைரக்டரியை அணுக அமேஸுக்கு அனுமதி வழங்கவும்.</string>
     <string name="android_data_prompt_saf_access_title">SAF அணுகலை அனுமதிக்கவும்</string>
     <string name="ftp_preference_saf_filesystem_title">பழைய கோப்பு அமைப்பைப் பயன்படுத்து</string>
     <string name="ftp_preference_saf_filesystem">புதிய Android பதிப்புகளில் சாதனத்தின் வெளி சேமிப்பக ஆதரவிற்கு இதை இயக்கவும்</string>
@@ -738,11 +738,11 @@
     <string name="ftp_server_root_filesystem_warning">ரூட் அணுகல் தேவைப்படும் பாதையை நீங்கள் தேர்ந்தெடுக்கிறீர்கள், இது உங்கள் சாதனத்தின் முழு கோப்பு அமைப்பிலும் படி/எழுது செயல்பாடுகளை இயக்குகிறது, இது ஆபத்தானது - கவனக்குறைவான தவறுகள் உங்கள் சாதனத்தை ப்ரிக் ஆக்கக்கூடும்!
 
 நிச்சயமாக தொடர விரும்புகிறீர்களா?</string>
-    <string name="compressed_explorer_fragment_error_open_uri">படிக்க URI "%s"-ஐ திறப்பதில் பிழை.</string>
-    <string name="error_empty_archive">"%s" ஒரு வெற்று காப்பகம்.</string>
-    <string name="error_bad_archive_without_info">"%s" ஒரு கெட்ட காப்பகம்.</string>
-    <string name="error_bad_archive_with_info">"%s" ஒரு கெட்ட காப்பகம்.
-பிரித்தெடுப்பானின் செய்தி: "%s"</string>
+    <string name="compressed_explorer_fragment_error_open_uri">படிக்க URI \"%s\"-ஐ திறப்பதில் பிழை.</string>
+    <string name="error_empty_archive">\"%s\" ஒரு வெற்று காப்பகம்.</string>
+    <string name="error_bad_archive_without_info">\"%s\" ஒரு கெட்ட காப்பகம்.</string>
+    <string name="error_bad_archive_with_info">\"%s\" ஒரு கெட்ட காப்பகம்.
+பிரித்தெடுப்பானின் செய்தி: \"%s\"</string>
     <string name="security_error">இந்த ஆப் மூலம் கோப்பைத் திறக்க முடியவில்லை</string>
     <string name="cloud_drive_tooltip">அமேஸ் ஃபைல் மேனேஜரிலிருந்து கோப்புகளை நிர்வகிக்க Google Drive™ இணைப்பை உருவாக்கவும்.</string>
     <string name="signin_with_google_title">Google Drive™-ஐப் பயன்படுத்த அங்கீகரிக்கவும்</string>
@@ -813,7 +813,7 @@ SHA256:
 
 </string>
     <string name="error_google_play_cannot_update_myself">Google Play கொள்கையின்படி, ஆப்கள் தங்களை தாமே புதுப்பிக்க முடியாது. Google Play-இலிருந்து ஆப்பைப் புதுப்பிக்கவும்.</string>
-    <string name="error_cannot_get_package_info">கோப்பு "%s"-இலிருந்து தொகுப்புத் தகவலைப் பெற முடியவில்லை. குறிப்பிட்ட கோப்பு APK அல்ல, அல்லது தொகுப்புக் கோப்பு சேதமடைந்துள்ளது.</string>
+    <string name="error_cannot_get_package_info">கோப்பு \"%s\"-இலிருந்து தொகுப்புத் தகவலைப் பெற முடியவில்லை. குறிப்பிட்ட கோப்பு APK அல்ல, அல்லது தொகுப்புக் கோப்பு சேதமடைந்துள்ளது.</string>
     <string name="preference_delete_confirmation">அழிப்பு உறுதிப்படுத்தல்</string>
     <string name="preference_delete_confirmation_summary">கோப்புகளை அழிப்பதற்கு முன் உறுதிப்படுத்தலைக் கேள். இதை முடக்குவது மிகவும் ஊக்கப்படுத்தப்படாதது!</string>
     <string name="preference_delete_permanently_without_confirmation">நிரந்தரமாக அழி (குப்பைத்தொட்டியை முடக்கு)</string>
