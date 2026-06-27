@@ -238,8 +238,8 @@
     <string name="databasereader">डेटाबेस रीडर</string>
     <string name="show_dividers">डिवाइडर दिखाएं</string>
     <string name="needs_access">लिखने की अनुमति आवश्यक है</string>
-    <string name="needs_access_summary">कृपया रूट डायरेक्टरी चुनें </string>
-    <string name="needs_access_summary1">को लिखने की अनुमति देने के लिए </string>
+    <string name="needs_access_summary">कृपया रूट डायरेक्टरी चुनें \t</string>
+    <string name="needs_access_summary1">\tको लिखने की अनुमति देने के लिए </string>
     <string name="smb_connection">SMB कनेक्शन</string>
     <string name="smb_server">SMB सर्वर होस्टनेम</string>
     <string name="server_address">सर्वर IP एड्रेस</string>
@@ -580,11 +580,11 @@
     <string name="ftps_connection">FTP over SSL कनेक्शन</string>
     <string name="ftps_enable_explicit_tls">एक्सप्लिसिट TLS</string>
     <string name="scp_port">पोर्ट</string>
-    <string name="ssh_host_key_verification_prompt">होस्ट '%1$s' की प्रामाणिकता स्थापित नहीं हो सकी।
+    <string name="ssh_host_key_verification_prompt">होस्ट \'%1$s\' की प्रामाणिकता स्थापित नहीं हो सकी।
 
 %2$s की-फिंगरप्रिंट %3$s है।
 
-पहचान की पुष्टि करने के लिए कृपया "हाँ" दबाएं; अन्यथा कृपया "नहीं" दबाएं।</string>
+पहचान की पुष्टि करने के लिए कृपया \"हाँ\" दबाएं; अन्यथा कृपया \"नहीं\" दबाएं।</string>
     <string name="ssh_host_key_verification_prompt_title">होस्ट वेरिफाई करें</string>
     <string name="ssh_select_pem_button">SSH प्राइवेट की</string>
     <string name="ssh_pem_key_parse_error">चुनी गई PEM पढ़ने में असमर्थ: %s</string>
@@ -641,9 +641,9 @@
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">एन्क्रिप्टेड फ़ाइलों को फ़ाइल एक्सटेंशन के रूप में \".aze\" का उपयोग करना चाहिए।</string>
     <string name="encrypt_file_must_end_with_aes">एन्क्रिप्टेड फ़ाइलों को फ़ाइल एक्सटेंशन के रूप में \".aes\" का उपयोग करना चाहिए।</string>
-    <string name="error_aescrypt_decrypt_failed">'%1$s' डिक्रिप्ट नहीं हो सकी: '%2$s'</string>
+    <string name="error_aescrypt_decrypt_failed">\'%1$s\' डिक्रिप्ट नहीं हो सकी: \'%2$s\'</string>
     <string name="cannot_overwrite">फ़ाइल को ओवरराइट नहीं किया जा सकता।</string>
-    <string name="saved_single_file">फ़ाइल '%s' के रूप में सहेजी गई।</string>
+    <string name="saved_single_file">फ़ाइल \'%s\' के रूप में सहेजी गई।</string>
     <string name="saved_multi_files">%d फ़ाइलें सहेजी गईं।</string>
     <string name="create_hidden_file_warn">बनाई गई फ़ाइल फ़ाइल लिस्ट में छिपी रहेगी।</string>
     <string name="grant_apkinstall_permission">जारी रखने के लिए ऐप को ऐप इंस्टॉल करने की अनुमति चाहिए।</string>
@@ -655,8 +655,8 @@
     <string name="donation_thanks">डोनेशन के लिए धन्यवाद, यह हमें प्रेरित रखता है! (:</string>
     <string name="enable_marquee_filename">फ़ाइल नामों के लिए मार्की इफेक्ट सक्षम करें</string>
     <string name="archive_password_prompt">कृपया आर्काइव पासवर्ड दर्ज करें:</string>
-    <string name="cannot_extract_archive">आर्काइव "%s" एक्सट्रैक्ट नहीं हो सकती: %s</string>
-    <string name="archive_unsupported_or_corrupt">आर्काइव "%s" नहीं खुल सकती। या तो हम आर्काइव नहीं खोल सकते, या आर्काइव खराब हो गई थी।</string>
+    <string name="cannot_extract_archive">आर्काइव \"%s\" एक्सट्रैक्ट नहीं हो सकती: %s</string>
+    <string name="archive_unsupported_or_corrupt">आर्काइव \"%s\" नहीं खुल सकती। या तो हम आर्काइव नहीं खोल सकते, या आर्काइव खराब हो गई थी।</string>
     <string name="close">बंद करें</string>
     <string name="bookmark_exists">बुकमार्क मौजूद है</string>
     <string name="hide_media">मीडिया ब्राउज़र से छिपाएं</string>
@@ -710,11 +710,11 @@
     <string name="ftp_readonly">केवल पढ़ने की अनुमति</string>
     <string name="legacy_listing_title">रूट के लिए लेगेसी लिस्टिंग उपयोग करें</string>
     <string name="legacy_listing_summary">सक्षम करने पर, फ़ाइलें सूचीबद्ध करने के लिए लेगेसी तरीके का उपयोग करता है</string>
-    <string name="error_unsupported_v5_rar">RAR आर्काइव "%s" एक असमर्थित RAR v5 आर्काइव है।</string>
+    <string name="error_unsupported_v5_rar">RAR आर्काइव \"%s\" एक असमर्थित RAR v5 आर्काइव है।</string>
     <string name="ftp_prompt_restart_server">परिवर्तन प्रभावी होने के लिए आपको FTP सर्वर को पुनः आरंभ करना होगा।</string>
     <string name="error_permission_denied">अनुमति अस्वीकृत</string>
     <string name="error_archive_password_incorrect">गलत आर्काइव पासवर्ड।</string>
-    <string name="error_archive_cannot_extract">आर्काइव एंट्री "%s" को "%s" में एक्सट्रैक्ट नहीं किया जा सकता।</string>
+    <string name="error_archive_cannot_extract">आर्काइव एंट्री \"%s\" को \"%s\" में एक्सट्रैक्ट नहीं किया जा सकता।</string>
     <string name="drag_and_drop_preference">ड्रैग एंड ड्रॉप प्रेफरेंस चुनें (एक्सपेरिमेंटल)</string>
     <string name="drag_to_move_copy">फ़ाइलें मूव या कॉपी करने के लिए छूकर खींचें</string>
     <string name="drag_to_select">फ़ाइलें चुनने के लिए छूकर खींचें</string>
@@ -728,7 +728,7 @@
 जब तक आप शेयर करने के लिए कोई नया स्थान नहीं चुनते, तब तक आपको यह केवल एक बार करना होगा।</string>
     <string name="android_data_prompt_saf_access">Android 10 के बाद से, Android ने कुछ डायरेक्टरीज़ पर प्रतिबंध लगा दिया है, और उन्हें स्टोरेज एक्सेस फ्रेमवर्क के साथ एक्सेस करने की आवश्यकता है।
 
-कृपया "एक्सेस की अनुमति दें" पर टैप करके सिस्टम के फाइल मैनेजर से डायरेक्टरी एक्सेस करने के लिए अमेज़ को अनुमति दें।</string>
+कृपया \"एक्सेस की अनुमति दें\" पर टैप करके सिस्टम के फाइल मैनेजर से डायरेक्टरी एक्सेस करने के लिए अमेज़ को अनुमति दें।</string>
     <string name="android_data_prompt_saf_access_title">SAF एक्सेस की अनुमति दें</string>
     <string name="ftp_preference_saf_filesystem_title">लेगेसी फाइलसिस्टम उपयोग करें</string>
     <string name="ftp_preference_saf_filesystem">नए Android वर्शन पर डिवाइस की एक्सटर्नल स्टोरेज के समर्थन के लिए इसे सक्षम करें</string>
@@ -738,11 +738,11 @@
     <string name="ftp_server_root_filesystem_warning">आप एक ऐसा पथ चुन रहे हैं जिसके लिए रूट एक्सेस की आवश्यकता है, जो आपके डिवाइस की पूरी फाइलसिस्टम पर रीड/राइट ऑपरेशन सक्षम करता है, और यह खतरनाक है - लापरवाही से की गई गलतियां आपके डिवाइस को ब्रिक कर सकती हैं!
 
 क्या आप वाकई करना चाहते हैं?</string>
-    <string name="compressed_explorer_fragment_error_open_uri">पढ़ने के लिए URI "%s" खोलने में त्रुटि।</string>
-    <string name="error_empty_archive">"%s" एक खाली आर्काइव है।</string>
-    <string name="error_bad_archive_without_info">"%s" एक खराब आर्काइव है।</string>
-    <string name="error_bad_archive_with_info">"%s" एक खराब आर्काइव है।
-एक्सट्रैक्टर का संदेश: "%s"</string>
+    <string name="compressed_explorer_fragment_error_open_uri">पढ़ने के लिए URI \"%s\" खोलने में त्रुटि।</string>
+    <string name="error_empty_archive">\"%s\" एक खाली आर्काइव है।</string>
+    <string name="error_bad_archive_without_info">\"%s\" एक खराब आर्काइव है।</string>
+    <string name="error_bad_archive_with_info">\"%s\" एक खराब आर्काइव है।
+एक्सट्रैक्टर का संदेश: \"%s\"</string>
     <string name="security_error">इस ऐप के द्वारा फ़ाइल नहीं खोली जा सकी</string>
     <string name="cloud_drive_tooltip">अमेज़ फाइल मैनेजर के भीतर से फ़ाइलें मैनेज करने के लिए Google Drive™ कनेक्शन बनाएं।</string>
     <string name="signin_with_google_title">Google Drive™ का उपयोग करने के लिए प्रमाणित करें</string>
@@ -813,7 +813,7 @@ SHA256:
 
 </string>
     <string name="error_google_play_cannot_update_myself">Google Play की पॉलिसी के अनुसार, ऐप्स को स्वयं को अपडेट करने की अनुमति नहीं है। कृपया Google Play से ऐप अपडेट करें।</string>
-    <string name="error_cannot_get_package_info">फ़ाइल "%s" से पैकेज जानकारी प्राप्त करने में असमर्थ। या तो निर्दिष्ट फ़ाइल APK नहीं है, या पैकेज फ़ाइल खराब है।</string>
+    <string name="error_cannot_get_package_info">फ़ाइल \"%s\" से पैकेज जानकारी प्राप्त करने में असमर्थ। या तो निर्दिष्ट फ़ाइल APK नहीं है, या पैकेज फ़ाइल खराब है।</string>
     <string name="preference_delete_confirmation">हटाने की पुष्टि</string>
     <string name="preference_delete_confirmation_summary">फ़ाइलें हटाने से पहले पुष्टि के लिए पूछें। इसे अक्षम करना अत्यधिक अनुचित है!</string>
     <string name="preference_delete_permanently_without_confirmation">स्थायी रूप से हटाएं (ट्रैशबिन अक्षम करें)</string>
