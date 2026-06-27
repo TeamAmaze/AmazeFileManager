@@ -580,11 +580,11 @@
     <string name="ftps_connection">FTP over SSL সংযোগ</string>
     <string name="ftps_enable_explicit_tls">এক্সপ্লিসিট TLS</string>
     <string name="scp_port">পোর্ট</string>
-    <string name="ssh_host_key_verification_prompt">হোস্ট '%1$s'-এর সত্যতা যাচাই করা যাচ্ছে না।
+    <string name="ssh_host_key_verification_prompt">হোস্ট \'%1$s\'-এর সত্যতা যাচাই করা যাচ্ছে না।
 
 %2$s কী-ফিঙ্গারপ্রিন্ট হলো %3$s।
 
-পরিচয় নিশ্চিত করতে অনুগ্রহ করে "হ্যাঁ" চাপুন; অন্যথায় "না" চাপুন।</string>
+পরিচয় নিশ্চিত করতে অনুগ্রহ করে \"হ্যাঁ\" চাপুন; অন্যথায় \"না\" চাপুন।</string>
     <string name="ssh_host_key_verification_prompt_title">হোস্ট যাচাই করুন</string>
     <string name="ssh_select_pem_button">SSH প্রাইভেট কী</string>
     <string name="ssh_pem_key_parse_error">নির্বাচিত PEM পড়া যাচ্ছে না: %s</string>
@@ -641,9 +641,9 @@
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">এনক্রিপ্টেড ফাইলে এক্সটেনশন হিসেবে \".aze\" থাকতে হবে।</string>
     <string name="encrypt_file_must_end_with_aes">এনক্রিপ্টেড ফাইলে এক্সটেনশন হিসেবে \".aes\" থাকতে হবে।</string>
-    <string name="error_aescrypt_decrypt_failed">'%1$s' ডিক্রিপ্ট করা যায়নি: '%2$s'</string>
+    <string name="error_aescrypt_decrypt_failed">\'%1$s\' ডিক্রিপ্ট করা যায়নি: \'%2$s\'</string>
     <string name="cannot_overwrite">ফাইল ওভাররাইট করা যায়নি।</string>
-    <string name="saved_single_file">ফাইলটি '%s' নামে সংরক্ষিত হয়েছে।</string>
+    <string name="saved_single_file">ফাইলটি \'%s\' নামে সংরক্ষিত হয়েছে।</string>
     <string name="saved_multi_files">%d ফাইল সংরক্ষিত হয়েছে।</string>
     <string name="create_hidden_file_warn">তৈরি করা ফাইলটি ফাইল তালিকায় লুকানো থাকবে।</string>
     <string name="grant_apkinstall_permission">চালিয়ে যাওয়ার জন্য অ্যাপের অ্যাপ ইনস্টল করার অনুমতি প্রয়োজন।</string>
@@ -655,8 +655,8 @@
     <string name="donation_thanks">অনুদানের জন্য ধন্যবাদ, এটি আমাদের অনুপ্রাণিত রাখে! (:</string>
     <string name="enable_marquee_filename">ফাইলের নামের জন্য মার্কি এফেক্ট সক্ষম করুন</string>
     <string name="archive_password_prompt">অনুগ্রহ করে আর্কাইভ পাসওয়ার্ড লিখুন:</string>
-    <string name="cannot_extract_archive">আর্কাইভ "%s" এক্সট্র্যাক্ট করা যায়নি: %s</string>
-    <string name="archive_unsupported_or_corrupt">আর্কাইভ "%s" খোলা যায়নি। হয় আমরা আর্কাইভটি খুলতে পারিনি, বা আর্কাইভটি ক্ষতিগ্রস্ত হয়েছে।</string>
+    <string name="cannot_extract_archive">আর্কাইভ \"%s\" এক্সট্র্যাক্ট করা যায়নি: %s</string>
+    <string name="archive_unsupported_or_corrupt">আর্কাইভ \"%s\" খোলা যায়নি। হয় আমরা আর্কাইভটি খুলতে পারিনি, বা আর্কাইভটি ক্ষতিগ্রস্ত হয়েছে।</string>
     <string name="close">বন্ধ করুন</string>
     <string name="bookmark_exists">বুকমার্ক বিদ্যমান</string>
     <string name="hide_media">মিডিয়া ব্রাউজার থেকে লুকান</string>
@@ -710,11 +710,11 @@
     <string name="ftp_readonly">শুধুমাত্র পাঠ অ্যাক্সেস</string>
     <string name="legacy_listing_title">রুটের জন্য লিগ্যাসি লিস্টিং ব্যবহার করুন</string>
     <string name="legacy_listing_summary">সক্ষম করা হলে, ফাইল তালিকাভুক্ত করতে লিগ্যাসি পদ্ধতি ব্যবহার করে</string>
-    <string name="error_unsupported_v5_rar">RAR আর্কাইভ "%s" একটি অসমর্থিত RAR v5 আর্কাইভ।</string>
+    <string name="error_unsupported_v5_rar">RAR আর্কাইভ \"%s\" একটি অসমর্থিত RAR v5 আর্কাইভ।</string>
     <string name="ftp_prompt_restart_server">পরিবর্তন কার্যকর করতে আপনাকে FTP সার্ভার পুনরায় চালু করতে হবে।</string>
     <string name="error_permission_denied">অনুমতি প্রত্যাখ্যাত</string>
     <string name="error_archive_password_incorrect">ভুল আর্কাইভ পাসওয়ার্ড।</string>
-    <string name="error_archive_cannot_extract">আর্কাইভ এন্ট্রি "%s" "%s"-এ এক্সট্র্যাক্ট করা যায়নি।</string>
+    <string name="error_archive_cannot_extract">আর্কাইভ এন্ট্রি \"%s\" \"%s\"-এ এক্সট্র্যাক্ট করা যায়নি।</string>
     <string name="drag_and_drop_preference">ড্র্যাগ অ্যান্ড ড্রপ পছন্দ নির্বাচন করুন (পরীক্ষামূলক)</string>
     <string name="drag_to_move_copy">ফাইল মুভ বা কপি করতে স্পর্শ করে টানুন</string>
     <string name="drag_to_select">ফাইল নির্বাচন করতে স্পর্শ করে টানুন</string>
@@ -728,7 +728,7 @@
 যতক্ষণ না আপনি শেয়ার করার জন্য নতুন কোনো স্থান নির্বাচন করছেন, ততক্ষণ আপনাকে এটি কেবল একবারই করতে হবে।</string>
     <string name="android_data_prompt_saf_access">Android 10 থেকে, Android কিছু ডিরেক্টরিতে সীমাবদ্ধতা আরোপ করেছে, এবং সেগুলো স্টোরেজ অ্যাক্সেস ফ্রেমওয়ার্কের মাধ্যমে অ্যাক্সেস করতে হবে।
 
-"Allow Access" চেপে সিস্টেমের ফাইল ম্যানেজার থেকে ডিরেক্টরি অ্যাক্সেস করার জন্য অনুগ্রহ করে অ্যামেজকে অনুমতি দিন।</string>
+\"Allow Access\" চেপে সিস্টেমের ফাইল ম্যানেজার থেকে ডিরেক্টরি অ্যাক্সেস করার জন্য অনুগ্রহ করে অ্যামেজকে অনুমতি দিন।</string>
     <string name="android_data_prompt_saf_access_title">SAF অ্যাক্সেসের অনুমতি দিন</string>
     <string name="ftp_preference_saf_filesystem_title">লিগ্যাসি ফাইল সিস্টেম ব্যবহার করুন</string>
     <string name="ftp_preference_saf_filesystem">নতুন Android সংস্করণে ডিভাইসের এক্সটার্নাল স্টোরেজ সমর্থনের জন্য এটি সক্ষম করুন</string>
@@ -738,11 +738,11 @@
     <string name="ftp_server_root_filesystem_warning">আপনি এমন একটি পাথ বেছে নিচ্ছেন যার জন্য রুট অ্যাক্সেস প্রয়োজন, যা আপনার ডিভাইসের পুরো ফাইল সিস্টেমে রিড/রাইট অপারেশন সক্ষম করে, এবং এটি বিপজ্জনক - অসাবধানতাজনিত ভুল আপনার ডিভাইস ব্রিক করে দিতে পারে!
 
 আপনি কি নিশ্চিত?</string>
-    <string name="compressed_explorer_fragment_error_open_uri">পড়ার জন্য URI "%s" খুলতে ত্রুটি।</string>
-    <string name="error_empty_archive">"%s" একটি খালি আর্কাইভ।</string>
-    <string name="error_bad_archive_without_info">"%s" একটি ক্ষতিগ্রস্ত আর্কাইভ।</string>
-    <string name="error_bad_archive_with_info">"%s" একটি ক্ষতিগ্রস্ত আর্কাইভ।
-এক্সট্র্যাক্টরের বার্তা: "%s"</string>
+    <string name="compressed_explorer_fragment_error_open_uri">পড়ার জন্য URI \"%s\" খুলতে ত্রুটি।</string>
+    <string name="error_empty_archive">\"%s\" একটি খালি আর্কাইভ।</string>
+    <string name="error_bad_archive_without_info">\"%s\" একটি ক্ষতিগ্রস্ত আর্কাইভ।</string>
+    <string name="error_bad_archive_with_info">\"%s\" একটি ক্ষতিগ্রস্ত আর্কাইভ।
+এক্সট্র্যাক্টরের বার্তা: \"%s\"</string>
     <string name="security_error">এই অ্যাপ দিয়ে ফাইলটি খোলা যায়নি</string>
     <string name="cloud_drive_tooltip">অ্যামেজ ফাইল ম্যানেজারের মধ্য থেকে ফাইল পরিচালনার জন্য একটি Google Drive™ সংযোগ তৈরি করুন।</string>
     <string name="signin_with_google_title">Google Drive™ ব্যবহার করতে যাচাই করুন</string>
@@ -813,7 +813,7 @@ SHA256:
 
 </string>
     <string name="error_google_play_cannot_update_myself">Google Play পলিসি অনুযায়ী, অ্যাপগুলো নিজেরাই নিজেদের আপডেট করতে পারে না। অনুগ্রহ করে Google Play থেকে অ্যাপ আপডেট করুন।</string>
-    <string name="error_cannot_get_package_info">ফাইল "%s" থেকে প্যাকেজ তথ্য পাওয়া যায়নি। নির্দিষ্ট ফাইলটি হয় একটি APK নয়, বা প্যাকেজ ফাইলটি ক্ষতিগ্রস্ত।</string>
+    <string name="error_cannot_get_package_info">ফাইল \"%s\" থেকে প্যাকেজ তথ্য পাওয়া যায়নি। নির্দিষ্ট ফাইলটি হয় একটি APK নয়, বা প্যাকেজ ফাইলটি ক্ষতিগ্রস্ত।</string>
     <string name="preference_delete_confirmation">মুছে ফেলার নিশ্চিতকরণ</string>
     <string name="preference_delete_confirmation_summary">ফাইল মুছার আগে নিশ্চিতকরণ চান। এটি নিষ্ক্রিয় করা অত্যন্ত নিরুৎসাহিত!</string>
     <string name="preference_delete_permanently_without_confirmation">স্থায়ীভাবে মুছুন (ট্র্যাশবিন নিষ্ক্রিয় করুন)</string>
