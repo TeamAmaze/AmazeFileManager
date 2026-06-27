@@ -238,8 +238,8 @@
     <string name="databasereader">డేటాబేస్ రీడర్</string>
     <string name="show_dividers">డివైడర్‌లను చూపండి</string>
     <string name="needs_access">రైట్ యాక్సెస్ అవసరం</string>
-    <string name="needs_access_summary">దయచేసి రూట్ డైరెక్టరీని ఎంచుకోండి </string>
-    <string name="needs_access_summary1">కు రైట్ యాక్సెస్ ఇవ్వడానికి </string>
+    <string name="needs_access_summary">దయచేసి రూట్ డైరెక్టరీని ఎంచుకోండి \t</string>
+    <string name="needs_access_summary1">\tకు రైట్ యాక్సెస్ ఇవ్వడానికి </string>
     <string name="smb_connection">SMB కనెక్షన్</string>
     <string name="smb_server">SMB సర్వర్ హోస్ట్‌నేమ్</string>
     <string name="server_address">సర్వర్ IP చిరునామా</string>
@@ -580,11 +580,11 @@
     <string name="ftps_connection">FTP over SSL కనెక్షన్</string>
     <string name="ftps_enable_explicit_tls">ఎక్స్‌ప్లిసిట్ TLS</string>
     <string name="scp_port">పోర్ట్</string>
-    <string name="ssh_host_key_verification_prompt">హోస్ట్ '%1$s' యొక్క ప్రామాణికత నిర్ధారించబడలేదు.
+    <string name="ssh_host_key_verification_prompt">హోస్ట్ \'%1$s\' యొక్క ప్రామాణికత నిర్ధారించబడలేదు.
 
 %2$s కీ-ఫింగర్‌ప్రింట్ %3$s.
 
-దయచేసి గుర్తింపును నిర్ధారించడానికి "అవును" నొక్కండి; లేకుంటే దయచేసి "కాదు" నొక్కండి.</string>
+దయచేసి గుర్తింపును నిర్ధారించడానికి \"అవును\" నొక్కండి; లేకుంటే దయచేసి \"కాదు\" నొక్కండి.</string>
     <string name="ssh_host_key_verification_prompt_title">హోస్ట్‌ను నిర్ధారించండి</string>
     <string name="ssh_select_pem_button">SSH ప్రైవేట్ కీ</string>
     <string name="ssh_pem_key_parse_error">ఎంచుకున్న PEM చదవలేకపోయింది: %s</string>
@@ -641,9 +641,9 @@
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">ఎన్‌క్రిప్ట్ చేయబడిన ఫైల్‌లు ఫైల్ ఎక్స్‌టెన్షన్‌గా \".aze\"ను ఉపయోగించాలి.</string>
     <string name="encrypt_file_must_end_with_aes">ఎన్‌క్రిప్ట్ చేయబడిన ఫైల్‌లు ఫైల్ ఎక్స్‌టెన్షన్‌గా \".aes\"ను ఉపయోగించాలి.</string>
-    <string name="error_aescrypt_decrypt_failed">'%1$s'ను డిక్రిప్ట్ చేయలేకపోయింది: '%2$s'</string>
+    <string name="error_aescrypt_decrypt_failed">\'%1$s\'ను డిక్రిప్ట్ చేయలేకపోయింది: \'%2$s\'</string>
     <string name="cannot_overwrite">ఫైల్‌ను ఓవర్‌రైట్ చేయలేకపోయింది.</string>
-    <string name="saved_single_file">ఫైల్ '%s'గా సేవ్ చేయబడింది.</string>
+    <string name="saved_single_file">ఫైల్ \'%s\'గా సేవ్ చేయబడింది.</string>
     <string name="saved_multi_files">%d ఫైల్‌లు సేవ్ చేయబడ్డాయి.</string>
     <string name="create_hidden_file_warn">సృష్టించిన ఫైల్ ఫైల్ జాబితాలో దాచబడి ఉంటుంది.</string>
     <string name="grant_apkinstall_permission">కొనసాగించడానికి యాప్‌కు యాప్‌లను ఇన్‌స్టాల్ చేసే అనుమతి అవసరం.</string>
@@ -655,8 +655,8 @@
     <string name="donation_thanks">విరాళం ఇచ్చినందుకు ధన్యవాదాలు, ఇది మమ్మల్ని ప్రేరేపిస్తూ ఉంటుంది! (:</string>
     <string name="enable_marquee_filename">ఫైల్ పేర్ల కోసం మార్క్వీ ఎఫెక్ట్‌ను ప్రారంభించండి</string>
     <string name="archive_password_prompt">దయచేసి ఆర్కైవ్ పాస్‌వర్డ్‌ను నమోదు చేయండి:</string>
-    <string name="cannot_extract_archive">ఆర్కైవ్ "%s"ను ఎక్స్‌ట్రాక్ట్ చేయలేకపోయింది: %s</string>
-    <string name="archive_unsupported_or_corrupt">ఆర్కైవ్ "%s"ను తెరవలేకపోయింది. మేము ఆర్కైవ్‌ను తెరవలేకపోయాము, లేదా ఆర్కైవ్ పాడైపోయింది.</string>
+    <string name="cannot_extract_archive">ఆర్కైవ్ \"%s\"ను ఎక్స్‌ట్రాక్ట్ చేయలేకపోయింది: %s</string>
+    <string name="archive_unsupported_or_corrupt">ఆర్కైవ్ \"%s\"ను తెరవలేకపోయింది. మేము ఆర్కైవ్‌ను తెరవలేకపోయాము, లేదా ఆర్కైవ్ పాడైపోయింది.</string>
     <string name="close">మూసివేయండి</string>
     <string name="bookmark_exists">బుక్‌మార్క్ ఉంది</string>
     <string name="hide_media">మీడియా బ్రౌజర్ నుండి దాచండి</string>
@@ -710,11 +710,11 @@
     <string name="ftp_readonly">చదవడానికి మాత్రమే యాక్సెస్</string>
     <string name="legacy_listing_title">రూట్ కోసం లెగసీ లిస్టింగ్‌ను ఉపయోగించండి</string>
     <string name="legacy_listing_summary">ప్రారంభించబడితే, ఫైల్‌లను జాబితా చేయడానికి లెగసీ పద్ధతిని ఉపయోగిస్తుంది</string>
-    <string name="error_unsupported_v5_rar">RAR ఆర్కైవ్ "%s" ఒక మద్దతు లేని RAR v5 ఆర్కైవ్.</string>
+    <string name="error_unsupported_v5_rar">RAR ఆర్కైవ్ \"%s\" ఒక మద్దతు లేని RAR v5 ఆర్కైవ్.</string>
     <string name="ftp_prompt_restart_server">మార్పులు అమలులోకి వచ్చేందుకు మీరు FTP సర్వర్‌ను రీస్టార్ట్ చేయాల్సి ఉంటుంది.</string>
     <string name="error_permission_denied">అనుమతి తిరస్కరించబడింది</string>
     <string name="error_archive_password_incorrect">తప్పు ఆర్కైవ్ పాస్‌వర్డ్.</string>
-    <string name="error_archive_cannot_extract">ఆర్కైవ్ ఎంట్రీ "%s"ను "%s"కు ఎక్స్‌ట్రాక్ట్ చేయలేకపోయింది.</string>
+    <string name="error_archive_cannot_extract">ఆర్కైవ్ ఎంట్రీ \"%s\"ను \"%s\"కు ఎక్స్‌ట్రాక్ట్ చేయలేకపోయింది.</string>
     <string name="drag_and_drop_preference">డ్రాగ్ అండ్ డ్రాప్ ప్రాధాన్యతను ఎంచుకోండి (ప్రయోగాత్మకమైనది)</string>
     <string name="drag_to_move_copy">ఫైల్‌లను తరలించడానికి లేదా కాపీ చేయడానికి తాకి లాగండి</string>
     <string name="drag_to_select">ఫైల్‌లను ఎంచుకోవడానికి తాకి లాగండి</string>
@@ -728,7 +728,7 @@
 మీరు షేర్ చేయడానికి కొత్త స్థానాన్ని ఎంచుకునే వరకు, మీరు దీన్ని ఒక్కసారి మాత్రమే చేయాల్సి ఉంటుంది.</string>
     <string name="android_data_prompt_saf_access">Android 10 నుండి, Android కొన్ని డైరెక్టరీలపై పరిమితులు విధించింది, మరియు వాటిని స్టోరేజ్ యాక్సెస్ ఫ్రేమ్‌వర్క్‌తో యాక్సెస్ చేయాల్సి ఉంటుంది.
 
-దయచేసి "Allow Access"ను నొక్కి సిస్టమ్ ఫైల్ మేనేజర్ నుండి డైరెక్టరీని యాక్సెస్ చేయడానికి అమేజ్‌కు అనుమతి ఇవ్వండి.</string>
+దయచేసి \"Allow Access\"ను నొక్కి సిస్టమ్ ఫైల్ మేనేజర్ నుండి డైరెక్టరీని యాక్సెస్ చేయడానికి అమేజ్‌కు అనుమతి ఇవ్వండి.</string>
     <string name="android_data_prompt_saf_access_title">SAF యాక్సెస్‌ను అనుమతించండి</string>
     <string name="ftp_preference_saf_filesystem_title">లెగసీ ఫైల్‌సిస్టమ్‌ను ఉపయోగించండి</string>
     <string name="ftp_preference_saf_filesystem">కొత్త Android వెర్షన్‌లలో డివైజ్ యొక్క బాహ్య స్టోరేజ్ మద్దతు కోసం దీన్ని ప్రారంభించండి</string>
@@ -738,11 +738,11 @@
     <string name="ftp_server_root_filesystem_warning">మీరు రూట్ యాక్సెస్ అవసరమైన పాత్‌ను ఎంచుకుంటున్నారు, ఇది మీ డివైజ్ యొక్క మొత్తం ఫైల్‌సిస్టమ్‌లో రీడ్/రైట్ ఆపరేషన్‌లను ప్రారంభిస్తుంది, మరియు ఇది ప్రమాదకరం - అజాగ్రత్త తప్పులు మీ డివైజ్‌ను బ్రిక్ చేయవచ్చు!
 
 మీరు ఖచ్చితంగా చేయాలనుకుంటున్నారా?</string>
-    <string name="compressed_explorer_fragment_error_open_uri">చదవడానికి URI "%s"ను తెరవడంలో ఎర్రర్.</string>
-    <string name="error_empty_archive">"%s" ఒక ఖాళీ ఆర్కైవ్.</string>
-    <string name="error_bad_archive_without_info">"%s" ఒక చెడు ఆర్కైవ్.</string>
-    <string name="error_bad_archive_with_info">"%s" ఒక చెడు ఆర్కైవ్.
-ఎక్స్‌ట్రాక్టర్ సందేశం: "%s"</string>
+    <string name="compressed_explorer_fragment_error_open_uri">చదవడానికి URI \"%s\"ను తెరవడంలో ఎర్రర్.</string>
+    <string name="error_empty_archive">\"%s\" ఒక ఖాళీ ఆర్కైవ్.</string>
+    <string name="error_bad_archive_without_info">\"%s\" ఒక చెడు ఆర్కైవ్.</string>
+    <string name="error_bad_archive_with_info">\"%s\" ఒక చెడు ఆర్కైవ్.
+ఎక్స్‌ట్రాక్టర్ సందేశం: \"%s\"</string>
     <string name="security_error">ఈ యాప్ ద్వారా ఫైల్‌ను తెరవలేకపోయింది</string>
     <string name="cloud_drive_tooltip">అమేజ్ ఫైల్ మేనేజర్ నుండి ఫైల్‌లను నిర్వహించడానికి Google Drive™ కనెక్షన్‌ను సృష్టించండి.</string>
     <string name="signin_with_google_title">Google Drive™ను ఉపయోగించడానికి ప్రామాణీకరించండి</string>
@@ -813,7 +813,7 @@ SHA256:
 
 </string>
     <string name="error_google_play_cannot_update_myself">Google Play పాలిసీ ప్రకారం, యాప్‌లు తమను తాము అప్‌డేట్ చేసుకోలేరు. దయచేసి Google Play నుండి యాప్‌ను అప్‌డేట్ చేయండి.</string>
-    <string name="error_cannot_get_package_info">ఫైల్ "%s" నుండి ప్యాకేజీ సమాచారాన్ని పొందలేకపోయింది. పేర్కొన్న ఫైల్ APK కాదు, లేదా ప్యాకేజీ ఫైల్ పాడైపోయింది.</string>
+    <string name="error_cannot_get_package_info">ఫైల్ \"%s\" నుండి ప్యాకేజీ సమాచారాన్ని పొందలేకపోయింది. పేర్కొన్న ఫైల్ APK కాదు, లేదా ప్యాకేజీ ఫైల్ పాడైపోయింది.</string>
     <string name="preference_delete_confirmation">తొలగింపు నిర్ధారణ</string>
     <string name="preference_delete_confirmation_summary">ఫైల్‌లను తొలగించే ముందు నిర్ధారణను అడగండి. దీన్ని నిలిపివేయడం చాలా నిరుత్సాహపరచబడింది!</string>
     <string name="preference_delete_permanently_without_confirmation">శాశ్వతంగా తొలగించండి (ట్రాష్‌బిన్‌ను నిలిపివేయండి)</string>
