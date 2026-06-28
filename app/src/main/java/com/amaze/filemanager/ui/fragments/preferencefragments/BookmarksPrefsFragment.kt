@@ -152,7 +152,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         path: String,
     ): Pair<Boolean, Int> {
         return when {
-            name.isEmpty() -> Pair(false, R.string.invalid_name)
+            name.isEmpty() || path.isEmpty() -> Pair(false, R.string.invalid_name)
             dataUtils.containsBooks(arrayOf(name, path)) != -1 -> Pair(false, R.string.bookmark_exists)
             !FileUtils.isPathAccessible(path, activity.prefs) -> Pair(false, R.string.ftp_path_change_error_invalid)
             else -> Pair(true, 0)
@@ -190,6 +190,17 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             .setOnClickListener {
                 val oldName = p.title.toString()
                 val oldPath = p.summary.toString()
+
+                val result = isValidBookmark(editText1.text.toString(), editText2.text.toString())
+                if (!result.first) {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(result.second),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    return@setOnClickListener
+                }
+
                 dataUtils.removeBook(position[p]!!)
                 position.remove(p)
                 bookmarksList?.removePreference(p)
