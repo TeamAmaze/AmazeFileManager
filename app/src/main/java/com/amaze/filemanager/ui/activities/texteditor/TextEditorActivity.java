@@ -68,6 +68,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -89,6 +90,7 @@ public class TextEditorActivity extends ThemedActivity
   private androidx.appcompat.widget.Toolbar toolbar;
   ScrollView scrollView;
   private WebView markdownWebView;
+  private ProgressBar windowLoadingIndicator;
 
   private SearchTextTask searchTextTask;
   private static final String KEY_MODIFIED_TEXT = "modified";
@@ -156,6 +158,7 @@ public class TextEditorActivity extends ThemedActivity
     scrollView = findViewById(R.id.textEditorScrollView);
     markdownWebView = findViewById(R.id.textEditorMarkdownWebView);
     markdownWebView.getSettings().setJavaScriptEnabled(false);
+    windowLoadingIndicator = findViewById(R.id.textEditorWindowLoadingIndicator);
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
@@ -217,6 +220,7 @@ public class TextEditorActivity extends ThemedActivity
 
     // Observe windowed-mode LiveData for new window content
     observeWindowContent();
+    observeWindowLoadingIndicator();
   }
 
   @Override
@@ -289,8 +293,12 @@ public class TextEditorActivity extends ThemedActivity
   private static void load(final TextEditorActivity activity) {
     activity.dismissLoadingSnackbar();
 
+    // Use LENGTH_INDEFINITE (dismissed manually via dismissLoadingSnackbar()) rather than
+    // LENGTH_SHORT: for large files the read can legitimately take several seconds, and a
+    // LENGTH_SHORT snackbar would disappear long before loading actually finishes, making the
+    // app look like it's stuck/unresponsive.
     activity.loadingSnackbar =
-        Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
+        Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_INDEFINITE);
     activity.loadingSnackbar.show();
 
     final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(activity);
@@ -354,11 +362,13 @@ public class TextEditorActivity extends ThemedActivity
 
     if (item.getItemId() == android.R.id.home) {
       checkUnsavedChanges();
+      return true;
     } else if (item.getItemId() == R.id.save) {
       // Make sure EditText is visible before saving!
       if (mainTextView.getText() != null) {
         saveFile(this, mainTextView.getText().toString());
       }
+      return true;
     } else if (item.getItemId() == R.id.details) {
       if (editableFileAbstraction.scheme.equals(FILE)
           && editableFileAbstraction.hybridFileParcelable.getFile() != null
@@ -377,6 +387,7 @@ public class TextEditorActivity extends ThemedActivity
       } else {
         Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
       }
+      return true;
     } else if (item.getItemId() == R.id.openwith) {
       if (editableFileAbstraction != null && editableFileAbstraction.scheme.equals(FILE)) {
         File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
@@ -389,19 +400,26 @@ public class TextEditorActivity extends ThemedActivity
       } else {
         Toast.makeText(this, R.string.reopen_from_source, Toast.LENGTH_SHORT).show();
       }
+      return true;
     } else if (item.getItemId() == R.id.find) {
       if (searchViewLayout.isShown()) hideSearchView();
       else revealSearchView();
+      return true;
     } else if (item.getItemId() == R.id.monofont) {
+      // NOTE: for a checkable menu item, the Android framework itself toggles the item's
+      // checked state right after this callback returns *if this method returns false*
+      // (i.e. the event is considered unhandled). Returning true here is required, otherwise
+      // the checked flag gets silently flipped back by the framework and the font can never
+      // be switched back to the default (see PR #4576 review feedback).
       item.setChecked(!item.isChecked());
       mainTextView.setTypeface(item.isChecked() ? inputTypefaceMono : inputTypefaceDefault);
+      return true;
     } else if (item.getItemId() == R.id.markdown_preview) {
       boolean newState = !item.isChecked();
       item.setChecked(newState);
       viewModel.setMarkdownPreviewEnabled(newState);
       toggleMarkdownPreview(newState);
-    } else {
-      return false;
+      return true;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -687,6 +705,25 @@ public class TextEditorActivity extends ThemedActivity
   // ── Sliding Window Helpers ──────────────────────────────────────────
 
   /**
+   * Observe the ViewModel's isLoadingWindow LiveData to show/hide a small progress indicator
+   * whenever a window (initial chunk or a subsequent forward/backward slide) is being read from
+   * disk. Without this, large/slow reads (e.g. root-cached files, content providers, or simply big
+   * files) can appear as if the app has frozen.
+   */
+  private void observeWindowLoadingIndicator() {
+    viewModel
+        .isLoadingWindow()
+        .observe(
+            this,
+            loading -> {
+              if (windowLoadingIndicator != null) {
+                windowLoadingIndicator.setVisibility(
+                    Boolean.TRUE.equals(loading) ? View.VISIBLE : View.GONE);
+              }
+            });
+  }
+
+  /**
    * Observe the ViewModel's windowContent LiveData. When a new window is loaded, replace the
    * EditText content and adjust the scroll position for visual continuity.
    */
@@ -698,10 +735,15 @@ public class TextEditorActivity extends ThemedActivity
             result -> {
               if (result == null) return;
 
-              // Capture the currently visible text as an anchor before replacing content
-              String anchorText = null;
+              // Capture the scroll anchor as an absolute byte offset in the file (rather than a
+              // text snippet). This is both correct and fast: a text-snippet search
+              // (indexOf-based) is ambiguous for repetitive content (e.g. sequential numbers,
+              // log files) and can degrade to O(n * matches) on the main thread for large
+              // windows, causing visible jumps and ANRs on large files.
               int oldScrollY = scrollView.getScrollY();
               int viewportHeight = scrollView.getHeight();
+
+              long anchorAbsoluteByte = -1L;
 
               Layout oldLayout = mainTextView.getLayout();
               if (oldLayout != null && mainTextView.getText() != null) {
@@ -711,19 +753,20 @@ public class TextEditorActivity extends ThemedActivity
 
                 if (anchorLine >= 0 && anchorLine < oldLayout.getLineCount()) {
                   int lineStart = oldLayout.getLineStart(anchorLine);
-                  int lineEnd = oldLayout.getLineEnd(anchorLine);
-                  if (lineStart < lineEnd && lineEnd <= mainTextView.getText().length()) {
-                    // Get a distinctive snippet (up to 80 chars) from this line
-                    int snippetEnd = Math.min(lineEnd, lineStart + 80);
-                    anchorText =
-                        mainTextView.getText().subSequence(lineStart, snippetEnd).toString();
+                  String oldText = mainTextView.getText().toString();
+                  if (lineStart <= oldText.length()) {
+                    long byteOffsetInOldWindow = byteOffsetForCharIndex(oldText, lineStart);
+                    anchorAbsoluteByte =
+                        viewModel.getPreviousWindowStartByte() + byteOffsetInOldWindow;
                   }
                 }
               }
 
               // Replace text (TextWatcher will fire but windowed-mode guard skips modification
               // tracking)
-              final String savedAnchorText = anchorText;
+              final long finalAnchorAbsoluteByte = anchorAbsoluteByte;
+              final long newStartByte = result.getStartByte();
+              final long newEndByte = result.getEndByte();
               final TextEditorActivityViewModel.Direction lastDirection =
                   viewModel.getLastLoadDirection();
               isApplyingWindowContent = true;
@@ -740,7 +783,12 @@ public class TextEditorActivity extends ThemedActivity
 
                     int targetY =
                         resolveWindowedTargetScrollY(
-                            newLayout, savedAnchorText, viewportHeight, lastDirection);
+                            newLayout,
+                            finalAnchorAbsoluteByte,
+                            newStartByte,
+                            newEndByte,
+                            viewportHeight,
+                            lastDirection);
 
                     suppressWindowLoadsUntilMs =
                         SystemClock.uptimeMillis() + WINDOW_LOAD_SUPPRESSION_MS;
@@ -772,71 +820,80 @@ public class TextEditorActivity extends ThemedActivity
 
   private int resolveWindowedTargetScrollY(
       Layout newLayout,
-      String savedAnchorText,
+      long anchorAbsoluteByte,
+      long newStartByte,
+      long newEndByte,
       int viewportHeight,
       TextEditorActivityViewModel.Direction lastDirection) {
-    if (savedAnchorText != null && mainTextView.getText() != null) {
+    if (anchorAbsoluteByte >= newStartByte
+        && anchorAbsoluteByte <= newEndByte
+        && mainTextView.getText() != null) {
       String newText = mainTextView.getText().toString();
-      int anchorIndex = findAnchorNearExpectedPosition(newText, savedAnchorText, lastDirection);
-
-      if (anchorIndex >= 0) {
-        int anchorLine = newLayout.getLineForOffset(anchorIndex);
-        int anchorLineTop = newLayout.getLineTop(anchorLine);
-        return Math.max(0, anchorLineTop - viewportHeight / 2);
-      }
+      long relativeByteOffset = anchorAbsoluteByte - newStartByte;
+      int anchorIndex = charIndexForByteOffset(newText, relativeByteOffset);
+      anchorIndex = Math.min(anchorIndex, newText.length());
+      int anchorLine = newLayout.getLineForOffset(anchorIndex);
+      int anchorLineTop = newLayout.getLineTop(anchorLine);
+      return Math.max(0, anchorLineTop - viewportHeight / 2);
     }
 
     return inferScrollPositionFallback(newLayout, viewportHeight, lastDirection);
   }
 
   /**
-   * Find the anchor text in the new content, preferring the occurrence closest to where it is
-   * expected given the load direction and 60% overlap.
-   *
-   * <p>For a FORWARD load the old viewport-center content should end up in roughly the first 30–40%
-   * of the new window (because 60% overlaps). For a BACKWARD load it should be in the last 30–40%.
-   * We estimate an expected char offset and pick the occurrence nearest to it.
-   *
-   * <p>This avoids the problem with naive {@code indexOf}/{@code lastIndexOf} picking a wrong
-   * duplicate occurrence in files with many repeated lines (e.g. log files).
+   * Counts the number of UTF-8 bytes needed to encode the first {@code charIndex} chars of {@code
+   * text}. Runs in O(charIndex) without allocating a byte array.
    */
-  private static int findAnchorNearExpectedPosition(
-      String newText, String anchor, TextEditorActivityViewModel.Direction direction) {
-    if (newText.isEmpty() || anchor.isEmpty()) return -1;
-
-    // Estimate where in the new text the anchor should be
-    int expectedPos;
-    if (direction == TextEditorActivityViewModel.Direction.FORWARD) {
-      // After a 40% forward shift with 60% overlap, the old viewport center
-      // (≈50% of old window) maps to ≈ (50%-40%) / (100%) ≈ first 10-30% of new window
-      expectedPos = (int) (newText.length() * 0.20);
-    } else {
-      // After a 40% backward shift, the old viewport center maps to ≈ last 70-80%
-      expectedPos = (int) (newText.length() * 0.80);
+  private static long byteOffsetForCharIndex(String text, int charIndex) {
+    long byteCount = 0;
+    int limit = Math.min(charIndex, text.length());
+    int i = 0;
+    while (i < limit) {
+      int codePoint = text.codePointAt(i);
+      byteCount += utf8ByteLength(codePoint);
+      i += Character.charCount(codePoint);
     }
-
-    int bestIndex = -1;
-    int bestDistance = Integer.MAX_VALUE;
-    int searchFrom = 0;
-
-    while (searchFrom <= newText.length() - anchor.length()) {
-      int idx = newText.indexOf(anchor, searchFrom);
-      if (idx < 0) break;
-
-      int distance = Math.abs(idx - expectedPos);
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestIndex = idx;
-      }
-      searchFrom = idx + 1;
-    }
-
-    return bestIndex;
+    return byteCount;
   }
 
   /**
-   * Fallback method when anchor text is not found. Keep the viewport in the middle band so edge
-   * thresholds do not immediately trigger another opposite-direction window load.
+   * Finds the char index in {@code text} whose UTF-8 byte offset is closest to (but not past)
+   * {@code targetByteOffset}. Runs in O(text.length()) without allocating a byte array.
+   */
+  private static int charIndexForByteOffset(String text, long targetByteOffset) {
+    if (targetByteOffset <= 0) return 0;
+
+    long byteCount = 0;
+    int i = 0;
+    int length = text.length();
+    while (i < length) {
+      int codePoint = text.codePointAt(i);
+      long byteLen = utf8ByteLength(codePoint);
+      if (byteCount + byteLen > targetByteOffset) {
+        return i;
+      }
+      byteCount += byteLen;
+      i += Character.charCount(codePoint);
+    }
+    return length;
+  }
+
+  private static int utf8ByteLength(int codePoint) {
+    if (codePoint <= 0x7F) {
+      return 1;
+    } else if (codePoint <= 0x7FF) {
+      return 2;
+    } else if (codePoint <= 0xFFFF) {
+      return 3;
+    } else {
+      return 4;
+    }
+  }
+
+  /**
+   * Fallback method when the anchor byte offset falls outside the newly loaded window (should be
+   * rare). Keep the viewport in the middle band so edge thresholds do not immediately trigger
+   * another opposite-direction window load.
    */
   private int inferScrollPositionFallback(
       Layout newLayout, int viewportHeight, TextEditorActivityViewModel.Direction direction) {

@@ -85,6 +85,15 @@ class TextEditorActivityViewModel : ViewModel() {
     /** Byte offset just past the end of the currently displayed window. */
     var windowEndByte: Long = 0L
 
+    /**
+     * Byte offset of the start of the window that was displayed *before* the most recently
+     * loaded window. Used by the Activity to translate a scroll anchor position (captured while
+     * the previous window's text was still on screen) into an absolute byte offset in the file,
+     * so the new window's scroll position can be resolved precisely without doing an expensive
+     * (and ambiguous, for repetitive content) text search.
+     */
+    var previousWindowStartByte: Long = 0L
+
     /** Total file size in bytes. */
     var totalFileSize: Long = 0L
 
@@ -95,6 +104,14 @@ class TextEditorActivityViewModel : ViewModel() {
 
     /** Observed by the Activity to update the EditText when a new window is loaded. */
     val windowContent: LiveData<FileWindowReader.WindowResult> = _windowContent
+
+    private val _isLoadingWindow = MutableLiveData(false)
+
+    /**
+     * Observed by the Activity to show/hide a progress indicator while a window (initial or
+     * subsequent) is being loaded from disk.
+     */
+    val isLoadingWindow: LiveData<Boolean> = _isLoadingWindow
 
     private var windowLoadJob: Job? = null
 
@@ -133,16 +150,24 @@ class TextEditorActivityViewModel : ViewModel() {
                 }
             }
 
+        val startOfCurrentWindow = windowStartByte
+
         windowLoadJob =
             viewModelScope.launch {
-                val result =
-                    withContext(ioDispatcher) {
-                        reader.readWindow(targetOffset, ReadTextFileCallable.MAX_FILE_SIZE_CHARS)
-                    }
-                windowStartByte = result.startByte
-                windowEndByte = result.endByte
-                lastLoadDirection = direction
-                _windowContent.value = result
+                _isLoadingWindow.value = true
+                try {
+                    val result =
+                        withContext(ioDispatcher) {
+                            reader.readWindow(targetOffset, ReadTextFileCallable.MAX_FILE_SIZE_CHARS)
+                        }
+                    previousWindowStartByte = startOfCurrentWindow
+                    windowStartByte = result.startByte
+                    windowEndByte = result.endByte
+                    lastLoadDirection = direction
+                    _windowContent.value = result
+                } finally {
+                    _isLoadingWindow.value = false
+                }
             }
     }
 
