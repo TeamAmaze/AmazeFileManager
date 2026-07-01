@@ -47,6 +47,15 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
   public static final int MAX_FILE_SIZE_CHARS = 100 * 1024;
 
+  /**
+   * Maximum number of characters rendered in the editor for a large file.
+   *
+   * <p>This is deliberately smaller than {@link #MAX_FILE_SIZE_CHARS}: the latter is the threshold
+   * for switching to read-only windowed mode, while this limit keeps the main-thread text layout
+   * small enough to remain responsive when a window changes.
+   */
+  public static final int WINDOW_SIZE_CHARS = 16 * 1024;
+
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
   private final File externalCacheDir;
@@ -128,6 +137,7 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
     }
 
     FileWindowReader fileWindowReader = null;
+    FileWindowReader.WindowResult initialWindow = null;
     long totalFileSize = 0L;
 
     if (tooLong) {
@@ -152,10 +162,19 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
           totalFileSize = 0L;
         }
       }
+
+      if (fileWindowReader != null) {
+        initialWindow = fileWindowReader.readWindow(0L, WINDOW_SIZE_CHARS);
+      }
     }
 
     return new ReturnedValueOnReadFile(
-        fileContents, cachedFile, tooLong, fileWindowReader, totalFileSize);
+        initialWindow != null ? initialWindow.getText() : fileContents,
+        cachedFile,
+        tooLong,
+        fileWindowReader,
+        totalFileSize,
+        initialWindow);
   }
 
   private InputStream loadFile(File file) throws ShellNotRunningException, IOException {

@@ -134,10 +134,10 @@ class ReadTextFileTask(
             viewModel.isWindowed = true
             viewModel.fileWindowReader = value.fileWindowReader
             viewModel.totalFileSize = value.totalFileSize
-            viewModel.windowStartByte = 0L
-            // Estimate the end byte from the initial content
+            viewModel.windowStartByte = value.initialWindow?.startByte ?: 0L
             viewModel.windowEndByte =
-                value.fileContents.toByteArray(Charsets.UTF_8).size.toLong()
+                value.initialWindow?.endByte
+                    ?: value.fileContents.toByteArray(Charsets.UTF_8).size.toLong()
 
             val snackbar =
                 Snackbar.make(

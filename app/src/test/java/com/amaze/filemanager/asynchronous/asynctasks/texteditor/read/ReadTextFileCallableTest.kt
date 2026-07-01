@@ -28,13 +28,18 @@ import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.MAX_FILE_SIZE_CHARS
+import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.WINDOW_SIZE_CHARS
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -77,7 +82,7 @@ class ReadTextFileCallableTest {
                 false,
             )
         val result = task.call()
-        Assert.assertEquals(
+        assertEquals(
             result,
             ReturnedValueOnReadFile("", null, false),
         )
@@ -111,7 +116,7 @@ class ReadTextFileCallableTest {
                 false,
             )
         val result = task.call()
-        Assert.assertEquals(
+        assertEquals(
             result,
             ReturnedValueOnReadFile(fileContents, null, false),
         )
@@ -145,7 +150,7 @@ class ReadTextFileCallableTest {
                 false,
             )
         val result = task.call()
-        Assert.assertEquals(
+        assertEquals(
             result,
             ReturnedValueOnReadFile(fileContents.substring(0, MAX_FILE_SIZE_CHARS), null, true),
         )
@@ -182,18 +187,21 @@ class ReadTextFileCallableTest {
             )
         val result = task.call()
 
-        Assert.assertTrue("File should be too long", result.fileIsTooLong)
-        Assert.assertEquals(
-            bigContent.substring(0, MAX_FILE_SIZE_CHARS),
-            result.fileContents,
+        assertTrue("File should be too long", result.fileIsTooLong)
+        assertEquals(bigContent.substring(0, WINDOW_SIZE_CHARS), result.fileContents)
+        assertNotNull("FileWindowReader should be created for file:// URI", result.fileWindowReader)
+        assertEquals(file.length(), result.totalFileSize)
+        assertNotNull("Initial window should be available for windowed mode", result.initialWindow)
+        assertEquals(0L, result.initialWindow!!.startByte)
+        assertEquals(
+            result.fileContents.toByteArray().size.toLong(),
+            result.initialWindow!!.endByte,
         )
-        Assert.assertNotNull("FileWindowReader should be created for file:// URI", result.fileWindowReader)
-        Assert.assertEquals(file.length(), result.totalFileSize)
 
         // Verify the reader works
         val windowResult = result.fileWindowReader!!.readWindow(0, 100)
-        Assert.assertTrue(windowResult.text.isNotEmpty())
-        Assert.assertTrue(windowResult.isStartOfFile)
+        assertTrue(windowResult.text.isNotEmpty())
+        assertTrue(windowResult.isStartOfFile)
 
         result.fileWindowReader!!.close()
     }
@@ -219,10 +227,10 @@ class ReadTextFileCallableTest {
             )
         val result = task.call()
 
-        Assert.assertFalse("File should not be too long", result.fileIsTooLong)
-        Assert.assertEquals(content, result.fileContents)
-        Assert.assertNull("FileWindowReader should be null for small files", result.fileWindowReader)
-        Assert.assertEquals(0L, result.totalFileSize)
+        assertFalse("File should not be too long", result.fileIsTooLong)
+        assertEquals(content, result.fileContents)
+        assertNull("FileWindowReader should be null for small files", result.fileWindowReader)
+        assertEquals(0L, result.totalFileSize)
     }
 
     /**
@@ -243,13 +251,13 @@ class ReadTextFileCallableTest {
         val task = ReadTextFileCallable(cr, EditableFileAbstraction(ctx, uri), null, false)
         val result = task.call()
 
-        Assert.assertTrue("File should be too long", result.fileIsTooLong)
+        assertTrue("File should be too long", result.fileIsTooLong)
         // Content provider shadow doesn't support openFileDescriptor,
         // so FileWindowReader creation should have failed gracefully
-        Assert.assertNull(
+        assertNull(
             "FileWindowReader should be null when content provider doesn't support seek",
             result.fileWindowReader,
         )
-        Assert.assertEquals(0L, result.totalFileSize)
+        assertEquals(0L, result.totalFileSize)
     }
 }

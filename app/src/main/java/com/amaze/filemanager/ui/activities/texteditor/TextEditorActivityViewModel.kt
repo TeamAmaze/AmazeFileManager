@@ -158,7 +158,7 @@ class TextEditorActivityViewModel : ViewModel() {
                 try {
                     val result =
                         withContext(ioDispatcher) {
-                            reader.readWindow(targetOffset, ReadTextFileCallable.MAX_FILE_SIZE_CHARS)
+                            reader.readWindow(targetOffset, ReadTextFileCallable.WINDOW_SIZE_CHARS)
                         }
                     previousWindowStartByte = startOfCurrentWindow
                     windowStartByte = result.startByte

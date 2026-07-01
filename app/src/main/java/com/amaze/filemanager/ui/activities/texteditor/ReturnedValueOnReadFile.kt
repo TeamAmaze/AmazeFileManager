@@ -31,4 +31,6 @@ data class ReturnedValueOnReadFile(
     val fileWindowReader: FileWindowReader? = null,
     /** Total file size in bytes, set when fileIsTooLong. */
     val totalFileSize: Long = 0L,
+    /** Initial bounded window, when windowed mode has seekable access to the file. */
+    val initialWindow: FileWindowReader.WindowResult? = null,
 )
