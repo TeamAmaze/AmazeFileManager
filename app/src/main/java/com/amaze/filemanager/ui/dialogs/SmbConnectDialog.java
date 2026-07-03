@@ -32,7 +32,6 @@ import static java.net.URLEncoder.encode;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.GeneralSecurityException;
 
 import org.slf4j.Logger;
@@ -55,6 +54,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.net.Uri;
 import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.text.Editable;
@@ -257,7 +257,7 @@ public class SmbConnectDialog extends DialogFragment {
 
       conName.setText(name);
       try {
-        URL a = new URL(path);
+        Uri a = Uri.parse(path);
         String userinfo = a.getUserInfo();
         if (userinfo != null) {
           String inf = decode(userinfo, Charsets.UTF_8.name());
@@ -295,8 +295,6 @@ public class SmbConnectDialog extends DialogFragment {
         }
       } catch (UnsupportedEncodingException | IllegalArgumentException e) {
         LOG.warn("failed to load smb dialog info for path {}", path, e);
-      } catch (MalformedURLException e) {
-        LOG.warn("failed to load smb dialog info", e);
       }
 
     } else if (path != null && path.length() > 0) {

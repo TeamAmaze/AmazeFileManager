@@ -36,6 +36,7 @@ import com.amaze.filemanager.utils.smb.SmbUtil
 import io.mockk.confirmVerified
 import io.mockk.spyk
 import io.mockk.verify
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.robolectric.shadows.ShadowDialog
@@ -45,6 +46,64 @@ import org.robolectric.shadows.ShadowLooper
  * Tests [SmbConnectDialog].
  */
 class SmbConnectDialogTest : AbstractMainActivityTestBase() {
+    /**
+     * Test editing an existing connection pre-fills all dialog fields.
+     * Regression test for https://github.com/TeamAmaze/AmazeFileManager/issues/4543
+     */
+    @Test
+    fun testEditConnectionPreFillsAllFields() {
+        val listener = spyk<SmbConnectionListener>()
+        val encryptedPath =
+            SmbUtil.getSmbEncryptedPath(
+                AppConfig.getInstance(),
+                "smb://user:password@192.168.1.100/share",
+            )
+        doTestWithDialog(
+            listener = listener,
+            arguments =
+                Bundle().also {
+                    it.putString(ARG_NAME, "My SMB Connection")
+                    it.putString(ARG_PATH, encryptedPath)
+                    it.putBoolean(ARG_EDIT, true)
+                },
+            withDialog = { dialog, _ ->
+                dialog.binding.run {
+                    assertEquals("My SMB Connection", this.connectionET.text.toString())
+                    assertEquals("192.168.1.100", this.ipET.text.toString())
+                    assertEquals("share", this.shareET.text.toString())
+                    assertEquals("user", this.usernameET.text.toString())
+                    assertEquals("password", this.passwordET.text.toString())
+                }
+            },
+        )
+    }
+
+    /**
+     * Test editing an anonymous connection checks the anonymous checkbox.
+     * Regression test for https://github.com/TeamAmaze/AmazeFileManager/issues/4543
+     */
+    @Test
+    fun testEditAnonymousConnectionSetsAnonymousCheckbox() {
+        val listener = spyk<SmbConnectionListener>()
+        doTestWithDialog(
+            listener = listener,
+            arguments =
+                Bundle().also {
+                    it.putString(ARG_NAME, "Anonymous SMB")
+                    it.putString(ARG_PATH, "smb://192.168.1.100/share")
+                    it.putBoolean(ARG_EDIT, true)
+                },
+            withDialog = { dialog, _ ->
+                dialog.binding.run {
+                    assertEquals("Anonymous SMB", this.connectionET.text.toString())
+                    assertEquals("192.168.1.100", this.ipET.text.toString())
+                    assertEquals("share", this.shareET.text.toString())
+                    assertTrue(this.chkSmbAnonymous.isChecked)
+                }
+            },
+        )
+    }
+
     /**
      * Test call to [SmbConnectionListener.addConnection] is encrypted path.
      */
