@@ -27,6 +27,7 @@ import android.view.View.VISIBLE
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -74,8 +75,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
      * MainActivity setup.
      */
     @Before
-    override fun setUp() {
-        super.setUp()
+    fun setUp() {
         file =
             File(
                 Environment.getExternalStorageDirectory(),
@@ -90,8 +90,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
      * Post test cleanup.
      */
     @After
-    override fun tearDown() {
-        super.tearDown()
+    fun tearDown() {
         PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
             .edit().putBoolean(
                 PREFERENCE_CRYPT_FINGERPRINT,
@@ -328,6 +327,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
         callback: EncryptDecryptUtils.EncryptButtonCallbackInterface =
             object : EncryptDecryptUtils.EncryptButtonCallbackInterface {},
     ) {
+        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             Intent().putExtra(TAG_SOURCE, HybridFileParcelable(file.absolutePath)).let { intent ->
                 EncryptWithPresetPasswordSaveAsDialog.show(
@@ -358,6 +358,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
                     }
                 } ?: fail("Dialog cannot be seen?")
             }
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 }
