@@ -22,11 +22,9 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.ui.activities.AbstractMainActivityTestBase
-import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_EDIT
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_NAME
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.ARG_PATH
@@ -87,7 +85,7 @@ class SmbConnectDialogTest : AbstractMainActivityTestBase() {
         listener: SmbConnectionListener,
         withDialog: (SmbConnectDialog, MaterialDialog) -> Unit,
     ) {
-        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val scenario = activityRule.scenario
         ShadowLooper.idleMainLooper()
         scenario.moveToState(Lifecycle.State.STARTED)
         scenario.onActivity { activity ->
@@ -100,7 +98,6 @@ class SmbConnectDialogTest : AbstractMainActivityTestBase() {
                 withDialog.invoke(this, ShadowDialog.getLatestDialog() as MaterialDialog)
             }
             scenario.moveToState(Lifecycle.State.DESTROYED)
-            scenario.close()
         }
     }
 }

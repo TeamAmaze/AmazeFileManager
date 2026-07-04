@@ -159,7 +159,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -808,7 +807,7 @@ public class MainActivity extends PermissionsActivity
   /**
    * @return All available storage volumes (including internal storage, SD-Cards and USB devices)
    */
-  @TargetApi(N)
+  @RequiresApi(N)
   public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesNew() {
     // Final set of paths
     ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();

@@ -27,8 +27,7 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.shadows.ShadowFileUtils
@@ -36,9 +35,10 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils.initializeInternalStorage
 import com.amaze.filemanager.ui.activities.MainActivity
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
+import org.junit.rules.ExternalResource
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
@@ -47,11 +47,15 @@ import org.robolectric.annotation.Config
  */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFileUtils::class],
+    shadows = [
+        ShadowMultiDex::class,
+        ShadowTabHandler::class,
+        ShadowFileUtils::class,
+    ],
     sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractEncryptDialogTests {
-    protected lateinit var scenario: ActivityScenario<MainActivity>
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Rule
     @JvmField
@@ -60,21 +64,19 @@ abstract class AbstractEncryptDialogTests {
         GrantPermissionRule
             .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
-    /**
-     * MainActivity setup.
-     */
-    @Before
-    open fun setUp() {
-        if (SDK_INT >= N) initializeInternalStorage()
-        scenario = ActivityScenario.launch(MainActivity::class.java)
-        scenario.moveToState(Lifecycle.State.STARTED)
-    }
+    // ActivityScenarioRule launches MainActivity before @Before runs, so initialize storage here.
+    private val initializeStorageRule: ExternalResource =
+        object : ExternalResource() {
+            override fun before() {
+                if (SDK_INT >= N) {
+                    initializeInternalStorage()
+                }
+            }
+        }
 
-    /**
-     * Post test cleanup.
-     */
-    @After
-    open fun tearDown() {
-        scenario.close()
-    }
+    @get:Rule
+    val ruleChain: TestRule =
+        RuleChain.outerRule(initializeStorageRule)
+            .around(allFilesPermissionRule)
+            .around(activityRule)
 }
