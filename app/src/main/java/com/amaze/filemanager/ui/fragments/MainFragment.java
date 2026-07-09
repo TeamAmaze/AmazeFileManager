@@ -1084,8 +1084,10 @@ public class MainFragment extends Fragment
               } else if (text.length() < 1) {
                 return new WarnableTextInputValidator.ReturnState(
                     WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-              } else if (text.equals(f.getName(getMainActivity()))) {       
-                return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_WARNING,R.string.no_changes_while_rename);                       
+              } else if (text.equals(f.getName(getMainActivity()))) {
+                return new WarnableTextInputValidator.ReturnState(
+                    WarnableTextInputValidator.ReturnState.STATE_WARNING,
+                    R.string.no_changes_while_rename);
               }
 
               return new WarnableTextInputValidator.ReturnState();
