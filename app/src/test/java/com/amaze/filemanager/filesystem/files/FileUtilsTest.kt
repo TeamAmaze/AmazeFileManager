@@ -256,6 +256,25 @@ class FileUtilsTest {
     }
 
     /**
+     * Test FileUtils.getPathsInPath() with an URI that is just a scheme.
+     *
+     * @see FileUtils.getPathsInPath
+     */
+    @Test
+    fun testGetPathsInPathOnlyScheme() {
+        getPathsInPath("file:///").run {
+            assertEquals(2, size)
+            assertArrayEquals(
+                arrayOf(
+                    "file://",
+                    "file:///",
+                ),
+                this,
+            )
+        }
+    }
+
+    /**
      * Test FileUtils.getPathsInPath() with SMB URI
      *
      * @see FileUtils.getPathsInPath
