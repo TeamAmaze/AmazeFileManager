@@ -575,6 +575,7 @@
     <string name="encrypt_option_use_aze">Amaze titkosítási formátum használata</string>
     <string name="encrypt_file_must_end_with_aze">A titkosított fájloknak az \".aze\" kiterjesztést kell használniuk.</string>
     <string name="encrypt_file_must_end_with_aes">A titkosított fájloknak fájlkiterjesztésként az \".aes\" kiterjesztést kell használniuk.</string>
+    <string name="error_aescrypt_decrypt_failed">A(z) \'%1$s\' nem fejthető vissza: \'%2$s\'</string>
     <string name="cannot_overwrite">Nem lehet felülírni a fájlt.</string>
     <string name="saved_single_file">Fájl mentve \'%s\'-ként.</string>
     <string name="saved_multi_files">%d fájl mentve.</string>
