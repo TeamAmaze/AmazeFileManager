@@ -577,6 +577,7 @@
     <string name="encrypt_option_use_aze">Amaze-Verschlüsselungsformat verwenden</string>
     <string name="encrypt_file_must_end_with_aze">Verschlüsselte Dateien müssen \".aze\" als Dateierweiterung verwenden.</string>
     <string name="encrypt_file_must_end_with_aes">Verschlüsselte Dateien müssen \".aes\" als Dateierweiterung verwenden.</string>
+    <string name="error_aescrypt_decrypt_failed">\'%1$s\': \'%2$s\' kann nicht entschlüsselt werden</string>
     <string name="cannot_overwrite">Datei kann nicht überschrieben werden.</string>
     <string name="saved_single_file">Datei als \'%s\' gespeichert.</string>
     <string name="saved_multi_files">%d Dateien gespeichert.</string>
