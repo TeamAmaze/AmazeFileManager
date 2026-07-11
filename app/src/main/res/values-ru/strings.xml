@@ -575,6 +575,7 @@
     <string name="encrypt_option_use_aze">Использовать формат шифрования Amaze.</string>
     <string name="encrypt_file_must_end_with_aze">Зашифрованные файлы должны иметь расширение \".aze\".</string>
     <string name="encrypt_file_must_end_with_aes">Зашифрованные файлы должны иметь расширение \".aes\".</string>
+    <string name="error_aescrypt_decrypt_failed">Невозможно расшифровать \'%1$s\': \'%2$s\'</string>
     <string name="cannot_overwrite">Невозможно перезаписать файл.</string>
     <string name="saved_single_file">Файл сохранён как \'%s\'.</string>
     <string name="saved_multi_files">%d файлов сохранено.</string>
