@@ -575,6 +575,7 @@
     <string name="encrypt_option_use_aze">Χρήση μορφής κρυπτογράφησης Amaze</string>
     <string name="encrypt_file_must_end_with_aze">Τα κρυπτογραφημένα αρχεία πρέπει να χρησιμοποιούν \".aze\" ως επέκταση αρχείου.</string>
     <string name="encrypt_file_must_end_with_aes">Τα κρυπτογραφημένα αρχεία πρέπει να χρησιμοποιούν \".aes\" ως επέκταση αρχείου.</string>
+    <string name="error_aescrypt_decrypt_failed">Αδύνατη η αποκρυπτογράφηση \'%1$s\': \'%2$s\'</string>
     <string name="cannot_overwrite">Αδύνατη η αντικατάσταση αρχείου.</string>
     <string name="saved_single_file">Το αρχείο αποθηκεύτηκε ως \'%s\'.</string>
     <string name="saved_multi_files">%d αποθηκευμένα αρχεία.</string>
