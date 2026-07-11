@@ -573,6 +573,7 @@
     <string name="encrypt_option_use_aze">Amaze Şifreleme Biçimini Kullan</string>
     <string name="encrypt_file_must_end_with_aze">Şİfrelenmiş dosyalar \'\'.aze\'\' uzantısını kullanmak zorundadır.</string>
     <string name="encrypt_file_must_end_with_aes">Şifrelenmiş dosyalar, dosya uzantısı olarak \".aes\" kullanmalıdır.</string>
+    <string name="error_aescrypt_decrypt_failed">Şifresi çözülemiyor \'%1$s\': \'%2$s\'</string>
     <string name="cannot_overwrite">Dosya üzerine yazılamıyor.</string>
     <string name="saved_single_file">Dosya %s olarak kaydedildi.</string>
     <string name="saved_multi_files">%d dosya kaydedildi.</string>
