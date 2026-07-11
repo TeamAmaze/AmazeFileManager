@@ -575,6 +575,7 @@
     <string name="encrypt_option_use_aze">Utilice el formato de cifrado Amaze</string>
     <string name="encrypt_file_must_end_with_aze">Archivos encriptados deben tener .aze como extensión.</string>
     <string name="encrypt_file_must_end_with_aes">Los archivos cifrados deben tener \".aes\" como extensión.</string>
+    <string name="error_aescrypt_decrypt_failed">No se puede desencriptar \'%1$s\': \'%2$s\'</string>
     <string name="cannot_overwrite">No se puede sobreescribir el archivo.</string>
     <string name="saved_single_file">Archivo guardado como \'%s\'.</string>
     <string name="saved_multi_files">%d archivos guardados.</string>
