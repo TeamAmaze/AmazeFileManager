@@ -573,6 +573,7 @@
     <string name="encrypt_option_use_aze">Gunakan Format Enkripsi Amaze</string>
     <string name="encrypt_file_must_end_with_aze">Berkas yang dienkripsi harus menggunakan \".aze\" sebagai ekstensi berkas.</string>
     <string name="encrypt_file_must_end_with_aes">Berkas yang dienkripsi harus menggunakan \".aes\" sebagai ekstensi berkas.</string>
+    <string name="error_aescrypt_decrypt_failed">Tidak bisa mendekripsi \'%1$s\': \'%2$s\'</string>
     <string name="cannot_overwrite">Tidak bisa menimpa berkas.</string>
     <string name="saved_single_file">Berkas disimpan sebagai \'%s\'.</string>
     <string name="saved_multi_files">%d berkas disimpan.</string>
