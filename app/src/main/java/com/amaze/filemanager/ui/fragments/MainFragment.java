@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Arjun Thirumani<arjunthirumani@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -208,16 +207,7 @@ public class MainFragment extends Fragment
     utilsProvider = requireMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
     mainFragmentViewModel.initBundleArguments(getArguments());
-    if (savedInstanceState != null) {
-      String savedPath = savedInstanceState.getString(KEY_SAVED_CURRENT_PATH);
-      if (savedPath != null) {
-        mainFragmentViewModel.setCurrentPath(savedPath);
-      }
-      int savedOpenMode = savedInstanceState.getInt(KEY_SAVED_OPEN_MODE, -1);
-      if (savedOpenMode != -1) {
-        mainFragmentViewModel.setOpenMode(OpenMode.getOpenMode(savedOpenMode));
-      }
-    }
+    restoreSavedState(savedInstanceState);
     mainFragmentViewModel.initIsList();
     mainFragmentViewModel.initColumns(sharedPref);
     mainFragmentViewModel.initSortModes(
@@ -229,6 +219,22 @@ public class MainFragment extends Fragment
         requireMainActivity().getCurrentColorPreference().getPrimarySecondTab());
     if (getArguments() != null) {
       hideFab = getArguments().getBoolean(BUNDLE_HIDE_FAB, false);
+    }
+  }
+
+  private void restoreSavedState(Bundle savedInstanceState) {
+    if (savedInstanceState == null) {
+      return;
+    }
+
+    String savedPath = savedInstanceState.getString(KEY_SAVED_CURRENT_PATH);
+    if (savedPath != null) {
+      mainFragmentViewModel.setCurrentPath(savedPath);
+    }
+
+    int savedOpenMode = savedInstanceState.getInt(KEY_SAVED_OPEN_MODE, -1);
+    if (savedOpenMode != -1) {
+      mainFragmentViewModel.setOpenMode(OpenMode.getOpenMode(savedOpenMode));
     }
   }
 
@@ -318,10 +324,8 @@ public class MainFragment extends Fragment
       if (mainFragmentViewModel.getCurrentPath() != null) {
         outState.putString(KEY_SAVED_CURRENT_PATH, mainFragmentViewModel.getCurrentPath());
       }
-      try {
+      if (mainFragmentViewModel.getOpenMode() != null) {
         outState.putInt(KEY_SAVED_OPEN_MODE, mainFragmentViewModel.getOpenMode().ordinal());
-      } catch (Exception e) {
-        LOG.warn("Failed to save openMode", e);
       }
     }
   }

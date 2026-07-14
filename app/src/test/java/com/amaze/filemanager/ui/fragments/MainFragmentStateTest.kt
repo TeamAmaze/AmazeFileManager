@@ -57,9 +57,11 @@ import org.robolectric.shadows.ShadowStorageManager
     ],
 )
 class MainFragmentStateTest {
-
     private lateinit var scenario: ActivityScenario<MainActivity>
 
+    /**
+     * Sets up the RxJava and RxAndroid schedulers to run synchronously for testing.
+     */
     @Before
     fun setUp() {
         RxJavaPlugins.reset()
@@ -70,6 +72,9 @@ class MainFragmentStateTest {
         ShadowSQLiteConnection.reset()
     }
 
+    /**
+     * Cleans up the Rx schedulers and releases the activity scenario.
+     */
     @After
     fun tearDown() {
         if (::scenario.isInitialized) {
@@ -82,20 +87,24 @@ class MainFragmentStateTest {
 
     private fun MainActivity.firstMainFragment(): MainFragment? = getTabFragment()?.getFragmentAtIndex(0) as? MainFragment
 
+    /**
+     * Verifies that the MainFragment correctly persists its internal state
+     * (currentPath and openMode) across activity recreation (e.g., rotation).
+     */
     @Test
     fun testMainFragmentSavesAndRestoresState() {
         scenario = ActivityScenario.launch(MainActivity::class.java)
         ShadowLooper.idleMainLooper()
         scenario.moveToState(Lifecycle.State.RESUMED)
-        
+
         scenario.onActivity { activity ->
             val mainFragment = activity.firstMainFragment()
             assertNotNull("MainFragment must be attached", mainFragment)
             val viewModel = mainFragment!!.mainFragmentViewModel
-            
+
             // Set custom state that is different from default
-            viewModel.currentPath = "0"
-            viewModel.openMode = OpenMode.CUSTOM
+            viewModel!!.currentPath = "0"
+            viewModel!!.openMode = OpenMode.CUSTOM
         }
 
         // Trigger recreation (simulates configuration change/process death)
@@ -106,9 +115,9 @@ class MainFragmentStateTest {
             val mainFragment = activity.firstMainFragment()
             assertNotNull("MainFragment must be restored", mainFragment)
             val viewModel = mainFragment!!.mainFragmentViewModel
-            
-            assertEquals("Path should be restored after recreation", "0", viewModel.currentPath)
-            assertEquals("OpenMode should be restored after recreation", OpenMode.CUSTOM, viewModel.openMode)
+
+            assertEquals("Path should be restored after recreation", "0", viewModel!!.currentPath)
+            assertEquals("OpenMode should be restored after recreation", OpenMode.CUSTOM, viewModel!!.openMode)
         }
     }
 }
