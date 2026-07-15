@@ -58,7 +58,7 @@ class SevenZipHelperCallable(
             entries.addAll(
                 consolidate(
                     entriesMap.keys.filter {
-                        it.startsWith(relativePath)
+                        CompressedHelper.isEntryPathValid(it) && it.startsWith(relativePath)
                     },
                     if (relativePath == "") {
                         0
@@ -101,7 +101,7 @@ class SevenZipHelperCallable(
         } catch (e: PasswordRequiredException) {
             // this is so that the caller can use onError to ask the user for the password
             throw e
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             throw ArchiveException(String.format("7zip archive %s is corrupt", filePath))
         }
     }

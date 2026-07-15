@@ -20,10 +20,64 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
+import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarLzmaExtractor
+import org.junit.Assert.assertFalse
+import org.junit.Assert.fail
+import org.junit.Test
+import java.io.File
+import java.io.IOException
 
+/**
+ * Tests for [TarLzmaExtractor].
+ */
 class TarLzmaExtractorTest : AbstractArchiveExtractorTest() {
     override val archiveType: String = "tar.lzma"
 
     override fun extractorClass(): Class<out Extractor?> = TarLzmaExtractor::class.java
+
+    /**
+     * Test extracting a malicious tar.lzma archive does not allow path traversal.
+     */
+    @Test
+    fun testExtractMaliciousTarLzma() {
+        val maliciousArchive = File(Environment.getExternalStorageDirectory(), "malicious.tar.lzma")
+        val outputDir = Environment.getExternalStorageDirectory()
+        val extractor =
+            TarLzmaExtractor(
+                ApplicationProvider.getApplicationContext(),
+                maliciousArchive.absolutePath,
+                outputDir.absolutePath,
+                object : Extractor.OnUpdate {
+                    override fun onStart(
+                        totalBytes: Long,
+                        firstEntryName: String,
+                    ) = Unit
+
+                    override fun onUpdate(entryPath: String) = Unit
+
+                    override fun isCancelled(): Boolean = false
+
+                    override fun onFinish() = Unit
+                },
+                ServiceWatcherUtil.UPDATE_POSITION,
+            )
+
+        try {
+            extractor.extractEverything()
+            fail("Expected IOException: canonical-path guard must reject the traversal entry")
+        } catch (e: IOException) {
+            assertFalse(
+                "Exception must not be a BadArchiveNotice",
+                e is Extractor.BadArchiveNotice,
+            )
+        }
+
+        assertFalse(
+            "Malicious file must not escape the output directory",
+            File(outputDir.parentFile, "POC_ZIPSLIP_PROOF.txt").exists(),
+        )
+    }
 }

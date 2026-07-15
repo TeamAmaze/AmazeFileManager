@@ -49,6 +49,7 @@ import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
@@ -95,6 +96,11 @@ class ExtractServiceTest {
     private val tarXzfile: File
     private val tarBz2file: File
     private val sevenZipfile: File
+    private val maliciousTarGzFile: File
+    private val maliciousTarBz2File: File
+    private val maliciousTarXzFile: File
+    private val maliciousTarLzmaFile: File
+    private val maliciousSevenZipFile: File
     private val passwordProtectedZipfile: File
     private val passwordProtected7Zipfile: File
     private val listPasswordProtected7Zipfile: File
@@ -126,6 +132,11 @@ class ExtractServiceTest {
             tarXzfile = File(this, "test-archive.tar.xz")
             tarBz2file = File(this, "test-archive.tar.bz2")
             sevenZipfile = File(this, "test-archive.7z")
+            maliciousTarGzFile = File(this, "malicious.tar.gz")
+            maliciousTarBz2File = File(this, "malicious.tar.bz2")
+            maliciousTarXzFile = File(this, "malicious.tar.xz")
+            maliciousTarLzmaFile = File(this, "malicious.tar.lzma")
+            maliciousSevenZipFile = File(this, "malicious.7z")
             passwordProtectedZipfile = File(this, "test-archive-encrypted.zip")
             passwordProtected7Zipfile = File(this, "test-archive-encrypted.7z")
             listPasswordProtected7Zipfile = File(this, "test-archive-encrypted-list.7z")
@@ -163,6 +174,11 @@ class ExtractServiceTest {
             getResourceAsStream("test-archive.tar.xz").copyTo(FileOutputStream(tarXzfile))
             getResourceAsStream("test-archive.tar.bz2").copyTo(FileOutputStream(tarBz2file))
             getResourceAsStream("test-archive.7z").copyTo(FileOutputStream(sevenZipfile))
+            getResourceAsStream("malicious.tar.gz").copyTo(FileOutputStream(maliciousTarGzFile))
+            getResourceAsStream("malicious.tar.bz2").copyTo(FileOutputStream(maliciousTarBz2File))
+            getResourceAsStream("malicious.tar.xz").copyTo(FileOutputStream(maliciousTarXzFile))
+            getResourceAsStream("malicious.tar.lzma").copyTo(FileOutputStream(maliciousTarLzmaFile))
+            getResourceAsStream("malicious.7z").copyTo(FileOutputStream(maliciousSevenZipFile))
             getResourceAsStream("test-archive-encrypted.zip")
                 .copyTo(FileOutputStream(passwordProtectedZipfile))
             getResourceAsStream("test-archive-encrypted.7z")
@@ -324,6 +340,72 @@ class ExtractServiceTest {
         performTest(sevenZipfile)
         assertNull(ShadowToast.getLatestToast())
         assertNull(ShadowToast.getTextOfLatestToast())
+    }
+
+    /**
+     * Test malicious 7z extraction exits with a regular error toast.
+     */
+    @Test
+    fun testExtractMalicious7z() {
+        performTest(maliciousSevenZipFile)
+        ShadowLooper.idleMainLooper()
+        await().atMost(10, TimeUnit.SECONDS).until { ShadowToast.getLatestToast() != null }
+        assertErrorOrInvalidEntriesToast()
+    }
+
+    /**
+     * Test malicious tar.gz extraction exits with a regular error toast.
+     */
+    @Test
+    fun testExtractMaliciousTarGz() {
+        performTest(maliciousTarGzFile)
+        ShadowLooper.idleMainLooper()
+        await().atMost(10, TimeUnit.SECONDS).until { ShadowToast.getLatestToast() != null }
+        assertErrorOrInvalidEntriesToast()
+    }
+
+    /**
+     * Test malicious tar.bz2 extraction exits with a regular error toast.
+     */
+    @Test
+    fun testExtractMaliciousTarBz2() {
+        performTest(maliciousTarBz2File)
+        ShadowLooper.idleMainLooper()
+        await().atMost(10, TimeUnit.SECONDS).until { ShadowToast.getLatestToast() != null }
+        assertErrorOrInvalidEntriesToast()
+    }
+
+    /**
+     * Test malicious tar.xz extraction exits with a regular error toast.
+     */
+    @Test
+    fun testExtractMaliciousTarXz() {
+        performTest(maliciousTarXzFile)
+        ShadowLooper.idleMainLooper()
+        await().atMost(10, TimeUnit.SECONDS).until { ShadowToast.getLatestToast() != null }
+        assertErrorOrInvalidEntriesToast()
+    }
+
+    /**
+     * Test malicious tar.lzma extraction exits with a regular error toast.
+     */
+    @Test
+    fun testExtractMaliciousTarLzma() {
+        performTest(maliciousTarLzmaFile)
+        ShadowLooper.idleMainLooper()
+        await().atMost(10, TimeUnit.SECONDS).until { ShadowToast.getLatestToast() != null }
+        assertErrorOrInvalidEntriesToast()
+    }
+
+    private fun assertErrorOrInvalidEntriesToast() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val latestToastText = ShadowToast.getTextOfLatestToast()
+        assertTrue(
+            setOf(
+                context.getString(R.string.error),
+                context.getString(R.string.multiple_invalid_archive_entries),
+            ).contains(latestToastText),
+        )
     }
 
     /**

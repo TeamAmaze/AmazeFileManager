@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR_CHAR;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,6 +111,27 @@ public abstract class Extractor {
       return entryName.replaceAll("^/+", "");
     } else {
       return entryName;
+    }
+  }
+
+  /**
+   * Verifies that {@code outputFile} is contained within {@code outputDir}, guarding against
+   * zip-slip / path-traversal attacks.
+   *
+   * @throws IOException if the resolved canonical path of {@code outputFile} would land outside
+   *     {@code outputDir}.
+   */
+  protected static void checkEntryPath(File outputFile, String outputDir) throws IOException {
+    String canonicalOutput = outputFile.getCanonicalPath();
+    String canonicalDir = new File(outputDir).getCanonicalPath() + File.separator;
+    if (!canonicalOutput.startsWith(canonicalDir)
+        && !canonicalOutput.equals(new File(outputDir).getCanonicalPath())) {
+      throw new IOException(
+          "Refusing to extract entry '"
+              + outputFile.getName()
+              + "' outside target directory '"
+              + canonicalDir
+              + "'");
     }
   }
 

@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
+/**
+ * Tests for [TarBzip2Extractor], but with .tbz extension instead of .tar.bz2.
+ */
 class TarBzip2ExtractorTest2 : TarBzip2ExtractorTest() {
     override val archiveType: String = "tbz"
 }

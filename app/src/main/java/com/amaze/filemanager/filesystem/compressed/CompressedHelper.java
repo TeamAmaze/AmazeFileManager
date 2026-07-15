@@ -164,10 +164,6 @@ public abstract class CompressedHelper {
       // without the compression extension
       decompressor = new UnknownCompressedFileDecompressor(context);
     } else {
-      if (BuildConfig.DEBUG) {
-        throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
-      }
-
       LOG.error("The compressed file has no way of opening it: " + file);
       decompressor = null;
     }
@@ -228,8 +224,27 @@ public abstract class CompressedHelper {
     }
   }
 
-  public static final boolean isEntryPathValid(String entryPath) {
-    return !entryPath.startsWith("..\\") && !entryPath.startsWith("../") && !entryPath.equals("..");
+  public static boolean isEntryPathValid(String entryPath) {
+    if (entryPath == null || entryPath.isEmpty()) {
+      return false;
+    }
+    // Normalize path separators to handle both Unix and Windows-style paths.
+    String normalized = entryPath.replace('\\', '/');
+    // Walk the path segments, tracking depth to detect escaping the archive root.
+    // A path like "dir/sub/.." is valid (it resolves to "dir"), but "../../evil" is not.
+    int depth = 0;
+    for (String segment : normalized.split("/")) {
+      if ("..".equals(segment)) {
+        depth--;
+        if (depth < 0) {
+          // Path would escape the archive root.
+          return false;
+        }
+      } else if (!segment.isEmpty() && !".".equals(segment)) {
+        depth++;
+      }
+    }
+    return true;
   }
 
   private static boolean isZip(String type) {

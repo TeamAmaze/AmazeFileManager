@@ -77,9 +77,11 @@ class RarExtractor(
                             MainHeaderNullException::class.java.isAssignableFrom(it::class.java) -> {
                             throw BadArchiveNotice(it)
                         }
+
                         UnsupportedRarV5Exception::class.java.isAssignableFrom(it::class.java) -> {
                             throw it
                         }
+
                         else -> {
                             throw PasswordRequiredException(filePath)
                         }
@@ -144,11 +146,7 @@ class RarExtractor(
                 CompressedHelper.SEPARATOR,
             )
         val outputFile = File(outputDir, name)
-        if (!outputFile.canonicalPath.startsWith(outputDir) &&
-            (isRobolectricTest && !outputFile.canonicalPath.startsWith("/private$outputDir"))
-        ) {
-            throw IOException("Incorrect RAR FileHeader path!")
-        }
+        checkEntryPath(outputFile, outputDir)
         if (entry.isDirectory) {
             MakeDirectoryOperation.mkdir(outputFile, context)
             outputFile.setLastModified(entry.mTime.time)
@@ -232,7 +230,12 @@ class RarExtractor(
                             "\\\\".toRegex(),
                             CompressedHelper.SEPARATOR,
                         )
-                    extractEntry(context, archive, header, context.externalCacheDir!!.absolutePath)
+                    extractEntry(
+                        context,
+                        archive,
+                        header,
+                        context.externalCacheDir!!.absolutePath,
+                    )
                     return "${context.externalCacheDir!!.absolutePath}/$filename"
                 }
             }

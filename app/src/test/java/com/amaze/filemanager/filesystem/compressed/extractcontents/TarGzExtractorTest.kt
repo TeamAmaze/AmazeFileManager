@@ -20,10 +20,67 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
+import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarGzExtractor
+import org.junit.Assert.assertFalse
+import org.junit.Assert.fail
+import org.junit.Test
+import java.io.File
+import java.io.IOException
 
 open class TarGzExtractorTest : AbstractArchiveExtractorTest() {
     override val archiveType: String = "tar.gz"
 
     override fun extractorClass(): Class<out Extractor?> = TarGzExtractor::class.java
+
+    /**
+     * Verify that a tar.gz archive carrying a path-traversal entry
+     * (../POC_ZIPSLIP_PROOF.txt) is blocked by the canonical-path guard
+     * in AbstractCommonsArchiveExtractor:
+     *  - extractEverything() must throw IOException
+     *  - no file is written outside the designated output directory
+     */
+    @Test
+    fun testExtractMaliciousTarGz() {
+        val maliciousArchive = File(Environment.getExternalStorageDirectory(), "malicious.tar.gz")
+        val outputDir = Environment.getExternalStorageDirectory()
+        val extractor =
+            TarGzExtractor(
+                ApplicationProvider.getApplicationContext(),
+                maliciousArchive.absolutePath,
+                outputDir.absolutePath,
+                object : Extractor.OnUpdate {
+                    override fun onStart(
+                        totalBytes: Long,
+                        firstEntryName: String,
+                    ) = Unit
+
+                    override fun onUpdate(entryPath: String) = Unit
+
+                    override fun isCancelled(): Boolean = false
+
+                    override fun onFinish() = Unit
+                },
+                ServiceWatcherUtil.UPDATE_POSITION,
+            )
+
+        try {
+            extractor.extractEverything()
+            fail("Expected IOException: canonical-path guard must reject the traversal entry")
+        } catch (e: IOException) {
+            // Confirm the guard fired (not a generic bad-archive error)
+            assertFalse(
+                "Exception must not be a BadArchiveNotice",
+                e is Extractor.BadArchiveNotice,
+            )
+        }
+
+        // The malicious file must NOT have been written outside the output directory
+        assertFalse(
+            "Malicious file must not escape the output directory",
+            File(outputDir.parentFile, "POC_ZIPSLIP_PROOF.txt").exists(),
+        )
+    }
 }

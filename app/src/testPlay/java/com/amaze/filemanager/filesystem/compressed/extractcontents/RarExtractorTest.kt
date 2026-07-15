@@ -27,6 +27,8 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor
 import com.github.junrar.Archive
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
 import java.io.File
@@ -87,6 +89,56 @@ class RarExtractorTest : AbstractArchiveExtractorTest() {
             assertEquals(this.absolutePath, verify)
             assertEquals(2, this.length())
         }
+    }
+
+    /**
+     * Verify that a RAR4 archive carrying a path-traversal entry
+     * (foo//../../POC_RAR_PROOF.txt/POC_RAR_PROOF.txt) is handled safely:
+     *  - extraction completes without an exception
+     *  - the offending entry is recorded in invalidArchiveEntries
+     *  - no file is written outside the designated output directory
+     */
+    @Test
+    fun testExtractMaliciousRar() {
+        val maliciousArchive = File(Environment.getExternalStorageDirectory(), "malicious.rar")
+        val outputDir = Environment.getExternalStorageDirectory()
+        val extractor =
+            RarExtractor(
+                ApplicationProvider.getApplicationContext(),
+                maliciousArchive.absolutePath,
+                outputDir.absolutePath,
+                object : Extractor.OnUpdate {
+                    override fun onStart(
+                        totalBytes: Long,
+                        firstEntryName: String,
+                    ) = Unit
+
+                    override fun onUpdate(entryPath: String) = Unit
+
+                    override fun isCancelled(): Boolean = false
+
+                    override fun onFinish() = Unit
+                },
+                ServiceWatcherUtil.UPDATE_POSITION,
+            )
+
+        // Extraction must succeed — path-traversal entries are quarantined, not thrown
+        extractor.extractEverything()
+
+        // The traversal entry must be recorded as invalid …
+        assertTrue(
+            "Malicious path-traversal entry must be captured in invalidArchiveEntries",
+            extractor.invalidArchiveEntries.isNotEmpty(),
+        )
+        assertTrue(
+            "invalidArchiveEntries must contain the POC entry",
+            extractor.invalidArchiveEntries.any { "POC_RAR_PROOF" in it },
+        )
+        // … and must NOT have been written outside the output directory
+        assertFalse(
+            "Malicious file must not escape the output directory",
+            File(outputDir.parentFile, "POC_RAR_PROOF.txt").exists(),
+        )
     }
 
     @Test @Ignore

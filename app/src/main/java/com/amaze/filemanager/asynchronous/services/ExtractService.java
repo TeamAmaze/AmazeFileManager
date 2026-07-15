@@ -373,8 +373,7 @@ public class ExtractService extends AbstractProgressiveService {
           } else {
             LOG.error("Error while extracting file " + compressedPath, e);
             AppConfig.toast(getApplicationContext(), extractService.getString(R.string.error));
-            paused = true;
-            publishProgress(e);
+            return false;
           }
         } catch (Throwable unhandledException) {
           LOG.error("Unhandled exception thrown", unhandledException);

@@ -105,12 +105,12 @@ class SevenZipExtractor(
         entry: SevenZArchiveEntry,
         outputDir: String,
     ) {
-        val name = entry.name
+        val outputFile = File(outputDir, entry.name)
+        checkEntryPath(outputFile, outputDir)
         if (entry.isDirectory) {
-            MakeDirectoryOperation.mkdir(File(outputDir, name), context)
+            MakeDirectoryOperation.mkdir(File(outputDir, entry.name), context)
             return
         }
-        val outputFile = File(outputDir, name)
         if (!outputFile.parentFile.exists()) {
             MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }

@@ -67,7 +67,7 @@ abstract class AbstractCommonsArchiveExtractor(
                     }
                 }
             }
-            if (archiveEntries.size > 0) {
+            if (archiveEntries.isNotEmpty()) {
                 listener.onStart(totalBytes, archiveEntries[0].name)
                 inputStream.close()
                 inputStream = createFrom(FileInputStream(filePath))
@@ -96,11 +96,12 @@ abstract class AbstractCommonsArchiveExtractor(
         entry: ArchiveEntry,
         outputDir: String,
     ) {
+        val outputFile = File(outputDir, entry.name)
+        checkEntryPath(outputFile, outputDir)
         if (entry.isDirectory) {
             MakeDirectoryOperation.mkdir(File(outputDir, entry.name), context)
             return
         }
-        val outputFile = File(outputDir, entry.name)
         if (false == outputFile.parentFile?.exists()) {
             MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }

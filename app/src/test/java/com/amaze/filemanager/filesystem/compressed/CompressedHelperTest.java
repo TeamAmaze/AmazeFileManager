@@ -279,4 +279,46 @@ public class CompressedHelperTest {
     // no path
     assertEquals("", CompressedHelper.getFileName(""));
   }
+
+  /**
+   * isEntryPathValid() tests.
+   *
+   * <p>Validates that paths which resolve within the archive root are accepted, and that paths
+   * which would escape the archive root are rejected — including cases where {@code ..} components
+   * appear in the middle of an otherwise valid path.
+   */
+  @Test
+  public void isEntryPathValidTest() {
+    // null / empty are always invalid
+    assertFalse(CompressedHelper.isEntryPathValid(null));
+    assertFalse(CompressedHelper.isEntryPathValid(""));
+
+    // simple valid paths
+    assertTrue(CompressedHelper.isEntryPathValid("test.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("dir/file.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("dir/sub/file.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("dir/"));
+
+    // ".." that resolves back inside the root is VALID
+    // e.g. "dir/sub/.." resolves to "dir" — still inside the archive
+    assertTrue(CompressedHelper.isEntryPathValid("dir/sub/.."));
+    assertTrue(CompressedHelper.isEntryPathValid("dir/sub/../file.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("a/b/c/../../file.txt"));
+
+    // paths that escape the archive root are INVALID
+    assertFalse(CompressedHelper.isEntryPathValid("../evil.txt"));
+    assertFalse(CompressedHelper.isEntryPathValid("../../evil.txt"));
+    assertFalse(CompressedHelper.isEntryPathValid("foo/../../evil.txt"));
+    assertFalse(CompressedHelper.isEntryPathValid("foo/../../../evil.txt"));
+
+    // Windows-style separators are normalised first
+    assertFalse(CompressedHelper.isEntryPathValid("..\\evil.txt"));
+    assertFalse(CompressedHelper.isEntryPathValid("foo\\..\\..\\evil.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("dir\\sub\\file.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("dir\\sub\\..\\file.txt"));
+
+    // "." segments are ignored (current directory)
+    assertTrue(CompressedHelper.isEntryPathValid("./test.txt"));
+    assertTrue(CompressedHelper.isEntryPathValid("dir/./file.txt"));
+  }
 }
