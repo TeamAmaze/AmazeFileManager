@@ -198,6 +198,8 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                         requireContext().getString(result.second),
                         Toast.LENGTH_SHORT,
                     ).show()
+
+                    @Suppress("LabeledExpression")
                     return@setOnClickListener
                 }
 
