@@ -44,6 +44,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
+import com.android.billingclient.api.QueryProductDetailsResult
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Callable
 
@@ -59,12 +60,27 @@ class Billing(private val activity: BasicActivity) :
     private lateinit var productDetails: List<ProductDetails>
 
     // create new donations client
-    private lateinit var billingClient: BillingClient
+    private var billingClient: BillingClient
 
     // True if billing service is connected
     private var isServiceConnected = false
 
     private lateinit var donationDialog: MaterialDialog
+
+    init {
+        productList =
+            listOf(
+                createProductWith("donations"),
+                createProductWith("donations_2"),
+                createProductWith("donations_3"),
+                createProductWith("donations_4"),
+            )
+        billingClient =
+            BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases(
+                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
+            ).build()
+        initiatePurchaseFlow()
+    }
 
     override fun onPurchasesUpdated(
         response: BillingResult,
@@ -93,11 +109,11 @@ class Billing(private val activity: BasicActivity) :
 
                 billingClient.queryProductDetailsAsync(
                     params.build(),
-                ) { responseCode: BillingResult, queryResult: List<ProductDetails> ->
-                    if (queryResult.isNotEmpty()) {
+                ) { responseCode: BillingResult, queryResult: QueryProductDetailsResult ->
+                    if (queryResult.productDetailsList.isNotEmpty()) {
                         // Successfully fetched product details
-                        productDetails = queryResult
-                        popProductsList(responseCode, queryResult)
+                        productDetails = queryResult.productDetailsList
+                        popProductsList(responseCode, queryResult.productDetailsList)
                     } else {
                         AppConfig.toast(activity, R.string.error_fetching_google_play_product_list)
                         @Suppress("ktlint:standard:max-line-length")
@@ -197,21 +213,6 @@ class Billing(private val activity: BasicActivity) :
                 destroyBillingInstance()
             }
         }
-
-    init {
-        productList =
-            listOf(
-                createProductWith("donations"),
-                createProductWith("donations_2"),
-                createProductWith("donations_3"),
-                createProductWith("donations_4"),
-            )
-        billingClient =
-            BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases(
-                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
-            ).build()
-        initiatePurchaseFlow()
-    }
 
     /**
      * We executes a connection request to Google Play
