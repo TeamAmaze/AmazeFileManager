@@ -49,13 +49,14 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
     companion object {
         private val dataUtils = DataUtils.getInstance()!!
     }
+
     private val itemOnEditListener = { it: PathSwitchPreference ->
         showBookmarkDialog(it, R.string.edit_bookmark, R.string.edit) { bookmarkData ->
             updateBookmark(
                 it,
                 bookmarkData.name,
                 bookmarkData.path,
-                AppConfig.getInstance().utilsHandler
+                AppConfig.getInstance().utilsHandler,
             )
         }
     }
@@ -74,12 +75,12 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             Preference.OnPreferenceClickListener {
                 showBookmarkDialog(
                     title = R.string.create_bookmark,
-                    positiveTxt = R.string.create
+                    positiveTxt = R.string.create,
                 ) { bookmarkData ->
                     createBookmark(
                         bookmarkData.name,
                         bookmarkData.path,
-                        AppConfig.getInstance().utilsHandler
+                        AppConfig.getInstance().utilsHandler,
                     )
                 }
                 true
@@ -106,7 +107,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
     private fun DialogTwoedittextsBinding.bookmarkData(): BookmarkData {
         return BookmarkData(
             text1.text.toString().trim(),
-            text2.text.toString().trim()
+            text2.text.toString().trim(),
         )
     }
 
@@ -114,7 +115,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         bookmark: PathSwitchPreference? = null,
         @StringRes title: Int,
         @StringRes positiveTxt: Int,
-        action: (BookmarkData) -> Unit
+        action: (BookmarkData) -> Unit,
     ) {
         val isEdit = bookmark != null
         val fabSkin = activity.accent
@@ -128,21 +129,23 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             nameEt.setText(it.title)
             pathEt.setText(it.summary)
         }
-        val dialog = MaterialDialog.Builder(requireActivity())
-            .title(title)
-            .theme(activity.appTheme.getMaterialDialogTheme())
-            .positiveColor(fabSkin)
-            .positiveText(positiveTxt)
-            .negativeColor(fabSkin)
-            .negativeText(android.R.string.cancel)
-            .customView(binding.root, false)
-            .build()
+        val dialog =
+            MaterialDialog.Builder(requireActivity())
+                .title(title)
+                .theme(activity.appTheme.getMaterialDialogTheme())
+                .positiveColor(fabSkin)
+                .positiveText(positiveTxt)
+                .negativeColor(fabSkin)
+                .negativeText(android.R.string.cancel)
+                .customView(binding.root, false)
+                .build()
 
         dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-            if (isEdit)
+            if (isEdit) {
                 FileUtils.isPathAccessible(pathEt.text.toString(), activity.prefs)
-            else
+            } else {
                 false
+            }
 
         disableButtonIfTitleEmpty(nameEt, dialog)
         disableButtonIfNotPath(pathEt, dialog)
@@ -151,7 +154,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             requireContext(),
             nameEt,
             binding.textInput1,
-            dialog.getActionButton(DialogAction.POSITIVE)
+            dialog.getActionButton(DialogAction.POSITIVE),
         ) {
             bookmarksViewModel.isValidBookmarkName(nameEt.text.toString())
         }
@@ -159,23 +162,23 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             requireContext(),
             pathEt,
             binding.textInput2,
-            dialog.getActionButton(DialogAction.POSITIVE)
+            dialog.getActionButton(DialogAction.POSITIVE),
         ) {
             bookmarksViewModel.isValidBookmarkPath(
                 nameEt.text.toString(),
                 pathEt.text.toString(),
                 dataUtils,
-                activity.prefs
+                activity.prefs,
             )
         }
         dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener {
             val bookmarkData = binding.bookmarkData()
             val result = bookmarksViewModel.isValidBookmark(bookmarkData, dataUtils, activity.prefs)
-            if (result.first!=null) {
+            if (result.first != null) {
                 Toast.makeText(
                     requireContext(),
                     getString(result.second.text),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 return@setOnClickListener
             }
@@ -185,11 +188,10 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         dialog.show()
     }
 
-
     private fun createBookmark(
         name: String,
         path: String,
-        utilsHandler: UtilsHandler
+        utilsHandler: UtilsHandler,
     ) {
         val preference =
             PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
@@ -206,8 +208,8 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
             OperationData(
                 UtilsHandler.Operation.BOOKMARKS,
                 name,
-                path
-            )
+                path,
+            ),
         ).subscribe()
     }
 
@@ -215,7 +217,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         preference: PathSwitchPreference,
         newName: String,
         newPath: String,
-        utilsHandler: UtilsHandler
+        utilsHandler: UtilsHandler,
     ) {
         val oldName = preference.title.toString()
         val oldPath = preference.summary.toString()
@@ -226,7 +228,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         preference.title = newName
         preference.summary = newPath
 
-        bookmarksViewModel.position[preference] =bookmarksViewModel. position.size
+        bookmarksViewModel.position[preference] = bookmarksViewModel.position.size
         bookmarksViewModel.bookmarksList?.addPreference(preference)
 
         dataUtils.addBook(arrayOf(newName, newPath))
@@ -236,7 +238,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                 oldName,
                 oldPath,
                 newName,
-                newPath
+                newPath,
             )
         }
     }
