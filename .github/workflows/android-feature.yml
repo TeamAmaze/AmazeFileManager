@@ -86,3 +86,18 @@ jobs:
         run: ./gradlew assembledebug --stacktrace
       - name: Run test cases
         run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info
+      # 1. ขั้นตอนการบิลด์ APK แบบจัดเต็ม (ระบุ Flavor ให้ตรงกับ Test)
+      - name: 🔨 Build Debug APK
+        run: ./gradlew assemblePlayDebug --stacktrace
+      # 2. ขั้นตอนการดึงไฟล์ APK มาแพ็กเป็น Artifact ให้เราดาวน์โหลด
+      - name: 📦 Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AmazeFileManager-Debug-APK
+          # ใช้ Wildcard (**) เพื่อกวาดหาไฟล์ .apk ทุกตัวในโฟลเดอร์ outputs ไม่ว่ามันจะซ้อนอยู่ในโฟลเดอร์ flavor ไหนก็ตาม
+          path: app/build/outputs/apk/**/*.apk
+          # ตั้งค่าให้เก็บไฟล์ไว้กี่วัน (แนะนำ 7 วันเพื่อไม่ให้เปลืองพื้นที่ GitHub มากเกินไป)
+          retention-days: 7
+          # ถ้าหาไฟล์ไม่เจอ ให้แจ้ง Error ทันที จะได้รู้ตัวว่าบิลด์พัง
+          if-no-files-found: error
+          
