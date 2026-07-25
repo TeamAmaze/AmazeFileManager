@@ -1,6 +1,7 @@
 name: Android Feature CI
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - 'master'
