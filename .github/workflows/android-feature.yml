@@ -88,6 +88,8 @@ jobs:
       # 1. สั่งบิลด์ APK (อันนี้ผ่านอยู่แล้ว)
       - name: Build with Gradle
         run: ./gradlew assemblePlayDebug --stacktrace
+      - name: Run test cases
+        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info
 
       # 2. ✅ เพิ่มโค้ด 1 บล็อกนี้เข้าไปต่อท้ายสุดแทน เพื่อดูดไฟล์ APK มาให้เราโหลด!
       - name: 📦 Upload APK Artifact
