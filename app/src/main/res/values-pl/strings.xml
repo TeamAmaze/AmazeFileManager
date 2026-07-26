@@ -36,7 +36,7 @@
     <string name="uninstall">Odinstaluj</string>
     <string name="play">Sklep Play</string>
     <string name="properties">Właściwości</string>
-    <string name="copyingapks">Kopiowanie %d plików APK do%s</string>
+    <string name="copyingapks" formatted="false">Kopiowanie %d plików APK do%s</string>
     <string name="delbook">Usuń zakładkę</string>
     <string name="add_to_bookmarks">Dodaj do zakładek</string>
     <string name="enterpath">Wprowadź ścieżkę</string>
@@ -588,7 +588,7 @@
     <string name="donation_thanks">Dziękujemy za darowiznę, to nas motywuje! (:</string>
     <string name="enable_marquee_filename">Włącz efekt markizy dla nazw plików</string>
     <string name="archive_password_prompt">Proszę podać hasło do archiwum:</string>
-    <string name="cannot_extract_archive">Nie można rozpakować archiwum „%s”: %s</string>
+    <string name="cannot_extract_archive" formatted="false">Nie można rozpakować archiwum „%s”: %s</string>
     <string name="archive_unsupported_or_corrupt">Nie można otworzyć archiwum \"%s\". Albo nie możemy otworzyć archiwum, albo archiwum zostało uszkodzone.</string>
     <string name="close">Zamknij</string>
     <string name="bookmark_exists">Zakładka istnieje</string>
@@ -629,8 +629,8 @@
     <string name="disableIpcSignature">Wyłącz sprawdzanie podpisów IPC (dla starszych serwerów SMBv1 — NIEBEZPIECZNE!)</string>
     <string name="cannot_delete_file">Nie można usunąć pliku</string>
     <string name="cannot_delete_file_with_reason">Nie można usunąć pliku - %s</string>
-    <string name="cannot_rename_file">Nie można zmienić nazwy pliku %s - %s</string>
-    <string name="cannot_read_directory">Nie można odczytać katalogu %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Nie można zmienić nazwy pliku %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Nie można odczytać katalogu %s - %s</string>
     <string name="just_once">Tylko raz</string>
     <string name="always">Zawsze</string>
     <string name="choose_different_app">Wybierz inną aplikację</string>
@@ -643,7 +643,7 @@
     <string name="ftp_prompt_restart_server">Będziesz musiał ponownie uruchomić serwer FTP, aby zmiany zaczęły obowiązywać.</string>
     <string name="error_permission_denied">Odmowa zezwolenia</string>
     <string name="error_archive_password_incorrect">Nieprawidłowe hasło do archiwum.</string>
-    <string name="error_archive_cannot_extract">Nie można wyodrębnić pozycji archiwum \"%s\" do \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Nie można wyodrębnić pozycji archiwum \"%s\" do \"%s\".</string>
     <string name="drag_and_drop_preference">Wybierz preferencje przeciągania i upuszczania (eksperymentalnie)</string>
     <string name="drag_to_move_copy">Dotknij i przeciągnij, aby przenieść lub skopiować pliki</string>
     <string name="drag_to_select">Dotknij i przeciągnij, aby wybrać pliki</string>

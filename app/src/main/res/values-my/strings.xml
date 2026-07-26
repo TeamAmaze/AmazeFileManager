@@ -36,7 +36,7 @@
     <string name="uninstall">ဖျက်ရန်</string>
     <string name="play">ပလေးစတိုး</string>
     <string name="properties">Properties</string>
-    <string name="copyingapks">Copying %d APK files to %s</string>
+    <string name="copyingapks" formatted="false">Copying %d APK files to %s</string>
     <string name="delbook">Delete Bookmark</string>
     <string name="add_to_bookmarks">Add to Bookmarks</string>
     <string name="enterpath">Enter Path</string>
@@ -599,7 +599,7 @@
     <string name="donation_thanks">Thank you for the donation, this keeps us motivated! (:</string>
     <string name="enable_marquee_filename">Enable marquee effect for file names</string>
     <string name="archive_password_prompt">Please enter archive password:</string>
-    <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Cannot extract archive \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Cannot open archive \"%s\". Either we cannot open the archive, or the archive was damaged.</string>
     <string name="close">Close</string>
     <string name="bookmark_exists">Bookmark exists</string>
@@ -642,8 +642,8 @@
     <string name="disableIpcSignature">Disable IPC signing check (For legacy SMBv1 servers - UNSAFE!)</string>
     <string name="cannot_delete_file">Cannot delete file </string>
     <string name="cannot_delete_file_with_reason">Cannot delete file - %s </string>
-    <string name="cannot_rename_file">Cannot rename file %s - %s</string>
-    <string name="cannot_read_directory">Cannot read directory %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Cannot rename file %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Cannot read directory %s - %s</string>
     <string name="just_once">Just Once</string>
     <string name="always">Always</string>
     <string name="choose_different_app">Choose different application</string>
@@ -656,7 +656,7 @@
     <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
     <string name="error_permission_denied">Permission denied</string>
     <string name="error_archive_password_incorrect">Wrong archive password.</string>
-    <string name="error_archive_cannot_extract">Cannot extract archive entry \"%s\" to \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Cannot extract archive entry \"%s\" to \"%s\".</string>
     <string name="drag_and_drop_preference">Select drag and drop preference (Experimental)</string>
     <string name="drag_to_move_copy">Touch and drag to move or copy files</string>
     <string name="drag_to_select">Touch and drag to select files</string>
@@ -678,7 +678,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
     <string name="error_bad_archive_without_info">\"%s\" is a corrupted archive.</string>
-    <string name="error_bad_archive_with_info">%s\" is a corrupted archive.\nMessage from extractor: \"%s</string>
+    <string name="error_bad_archive_with_info" formatted="false">%s\" is a corrupted archive.\nMessage from extractor: \"%s</string>
     <string name="security_error">File could not be opened using this app</string>
     <string name="cloud_drive_tooltip">Create a Google Drive™ connection for managing files from within Amaze File Manager.</string>
     <string name="signin_with_google_title">Authenticate to use Google Drive™</string>
@@ -714,7 +714,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="share_logs_summary">Share captured logs via email / telegram</string>
     <string name="open_with_amaze">Open with Amaze</string>
     <string name="confirmation">Confirmation</string>
-    <string name="open_file_confirmation">Are you sure you want to open following file?\n\nName:\n%s\n\nLocation:\n%s\n\nSize:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="open_file_confirmation" formatted="false">Are you sure you want to open following file?\n\nName:\n%s\n\nLocation:\n%s\n\nSize:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
     <string name="error_google_play_cannot_update_myself">Per Google Play policy mandates, apps are not allowed to update itself on its own. Please update app from Google Play.</string>
     <string name="error_cannot_get_package_info">Unable to get package info from file \"%s\". Either the specified file is not an APK, or the package file is corrupt.</string>
     <string name="preference_delete_confirmation">Delete confirmation</string>

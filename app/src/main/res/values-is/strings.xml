@@ -577,7 +577,7 @@
     <string name="donation_thanks">Takk kærlega fyrir framlagið, þetta heldur okkur við efnið! (:</string>
     <string name="enable_marquee_filename">Virkja áherslubrellu fyrir skráaheiti</string>
     <string name="archive_password_prompt">Settu inn lykilorð safnskrárinnar:</string>
-    <string name="cannot_extract_archive">Gat ekki afþjappað safnskrána \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Gat ekki afþjappað safnskrána \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Gat ekki opnað safnskrána \"%s\". Annað hvort er ekki hægt að opna hana, eða þá að safnskráin er skemmd.</string>
     <string name="close">Loka</string>
     <string name="bookmark_exists">Bókamerki er þegar til</string>

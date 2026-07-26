@@ -36,7 +36,7 @@
     <string name="uninstall">لقو پۊرنیڌن</string>
     <string name="play">فۊرۊشگا گۊگل پلی</string>
     <string name="properties">دووسمندیا</string>
-    <string name="copyingapks">لف گیری فایل APK ز %d و %s</string>
+    <string name="copyingapks" formatted="false">لف گیری فایل APK ز %d و %s</string>
     <string name="delbook">پاک کردن نشووک</string>
     <string name="add_to_bookmarks">ٱووردن و نشووکا</string>
     <string name="enterpath">تور ت دیاری کوݩ</string>
@@ -556,8 +556,8 @@
     <string name="crash_report_copied">گوزارش خراوی منه ویرگه لف گیری وابی</string>
     <string name="cannot_delete_file">پاک کردن فایل مومکن نؽ</string>
     <string name="cannot_delete_file_with_reason">پاک کردن فایل مومکن نؽ - %s</string>
-    <string name="cannot_rename_file">آلشت نوم فایل مومکن نؽ %s - %s</string>
-    <string name="cannot_read_directory">خوندن تور مومکن نؽ %s - %s </string>
+    <string name="cannot_rename_file" formatted="false">آلشت نوم فایل مومکن نؽ %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">خوندن تور مومکن نؽ %s - %s </string>
     <string name="just_once">تینا سی ی کرت</string>
     <string name="always">همیشه</string>
     <string name="choose_different_app">پسند ی برنومه پؽش فرز دی</string>

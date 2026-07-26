@@ -36,7 +36,7 @@
     <string name="uninstall">Copot</string>
     <string name="play">Play store</string>
     <string name="properties">Properti</string>
-    <string name="copyingapks">Menyalin %d berkas APK ke %s</string>
+    <string name="copyingapks" formatted="false">Menyalin %d berkas APK ke %s</string>
     <string name="delbook">Hapus Marka</string>
     <string name="add_to_bookmarks">Tambah ke Marka</string>
     <string name="enterpath">Masukkan Jalur</string>
@@ -587,7 +587,7 @@
     <string name="donation_thanks">Terima kasih atas donasi Anda, ini membuat kami tetap termotivasi! (:</string>
     <string name="enable_marquee_filename">Aktifkan efek marquee untuk nama berkas</string>
     <string name="archive_password_prompt">Silakan masukkan sandi arsip:</string>
-    <string name="cannot_extract_archive">Tidak bisa mengekstrak arsip \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Tidak bisa mengekstrak arsip \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Tidak bisa membuka arsip \"%s\". Arsip rusak, atau aplikasi memang tidak bisa membuka arsip.</string>
     <string name="close">Tutup</string>
     <string name="bookmark_exists">Markah sudah ada</string>
@@ -628,8 +628,8 @@
     <string name="disableIpcSignature">Nonaktifkan pemeriksaaan tanda tangan IPC (Untuk server SMBv1 lama - TIDAK AMAN!)</string>
     <string name="cannot_delete_file">Tidak bisa menghapus berkas</string>
     <string name="cannot_delete_file_with_reason">Tidak bisa menghapus berkas - %s </string>
-    <string name="cannot_rename_file">Tidak bisa mengubah nama berkas %s - %s</string>
-    <string name="cannot_read_directory">Tidak bisa membaca direktori %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Tidak bisa mengubah nama berkas %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Tidak bisa membaca direktori %s - %s</string>
     <string name="just_once">Hanya Sekali</string>
     <string name="always">Selalu</string>
     <string name="choose_different_app">Pilih aplikasi lainnya</string>
@@ -642,7 +642,7 @@
     <string name="ftp_prompt_restart_server">Anda perlu memulai ulang server FTP agar perubahan terdampak.</string>
     <string name="error_permission_denied">Perizinan ditolak</string>
     <string name="error_archive_password_incorrect">Sandi arsip salah.</string>
-    <string name="error_archive_cannot_extract">Tidak bisa mengekstrak entri arsip \"%s\" ke \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Tidak bisa mengekstrak entri arsip \"%s\" ke \"%s\".</string>
     <string name="drag_and_drop_preference">Pilih preferensi seret dan jatuhkan (Eksperimental)</string>
     <string name="drag_to_move_copy">Sentuh dan seret untuk memindahkan atau menyalin berkas</string>
     <string name="drag_to_select">Sentuh dan seret untuk memilih berkas</string>

@@ -576,7 +576,7 @@
     <string name="donation_thanks">寄付をありがとうございます。これは私たちのモチベーションを維持します! (:</string>
     <string name="enable_marquee_filename">ファイル名のマーキー効果を有効にする</string>
     <string name="archive_password_prompt">アーカイブのパスワードを入力ください。</string>
-    <string name="cannot_extract_archive">アーカイブ \"%s\" を抽出できません: %s</string>
+    <string name="cannot_extract_archive" formatted="false">アーカイブ \"%s\" を抽出できません: %s</string>
     <string name="archive_unsupported_or_corrupt">アーカイブ \"%s\" を開くことができません。 アーカイブを開くことができないか、アーカイブが破損しています。</string>
     <string name="close">閉じる</string>
     <string name="bookmark_exists">ブックマークは存在します</string>
@@ -612,7 +612,7 @@
     <string name="crash_report_copied">クラッシュ報告がクリップボードにコピーしました</string>
     <string name="cannot_delete_file">ファイルを削除できません</string>
     <string name="cannot_delete_file_with_reason">ファイルを削除できません - %s </string>
-    <string name="cannot_rename_file">ファイル %s 名前を変更できません - %s</string>
+    <string name="cannot_rename_file" formatted="false">ファイル %s 名前を変更できません - %s</string>
     <string name="just_once">一回だけ</string>
     <string name="always">常に</string>
     <string name="choose_different_app">別にAppを選ぶ</string>

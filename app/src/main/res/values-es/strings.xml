@@ -36,7 +36,7 @@
     <string name="uninstall">Desinstalar</string>
     <string name="play">Play Store</string>
     <string name="properties">Propiedades</string>
-    <string name="copyingapks">Copiando el apk %d a %s</string>
+    <string name="copyingapks" formatted="false">Copiando el apk %d a %s</string>
     <string name="delbook">Borrar marcador</string>
     <string name="add_to_bookmarks">Añadir a marcadores</string>
     <string name="enterpath">Introduzca la ruta</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">¡Gracias por la donación, esto nos mantiene motivados! (:</string>
     <string name="enable_marquee_filename">Habilitar el efecto de marquesina para los nombres de archivo</string>
     <string name="archive_password_prompt">Por favor, introduzca la contraseña del archivo:</string>
-    <string name="cannot_extract_archive">No se puede extraer el archivo \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">No se puede extraer el archivo \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">No se puede abrir el archivo \"%s\". O no podemos abrir el archivo o el archivo está dañado.</string>
     <string name="close">Cerrar</string>
     <string name="bookmark_exists">Marcador existe</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">Desactive la verificación de firma de IPC (para servidores SMBv1 heredados - ¡INSEGURO!) </string>
     <string name="cannot_delete_file">No se puede eliminar el archivo</string>
     <string name="cannot_delete_file_with_reason">No se puede eliminar el archivo - %s</string>
-    <string name="cannot_rename_file">No se puede renombrar el archivo %s - %s</string>
-    <string name="cannot_read_directory">No se puede leer el  directorio %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">No se puede renombrar el archivo %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">No se puede leer el  directorio %s - %s</string>
     <string name="just_once">Sólo una vez</string>
     <string name="always">Siempre</string>
     <string name="choose_different_app">Elige una aplicación diferente</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">Necesitas reiniciar el servidor FTP para que los cambios tengan efecto.</string>
     <string name="error_permission_denied">Permiso denegado</string>
     <string name="error_archive_password_incorrect">Contraseña del archivador inválida.</string>
-    <string name="error_archive_cannot_extract">No se puede extraer la entrada del archivo \"%s\" en \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">No se puede extraer la entrada del archivo \"%s\" en \"%s\".</string>
     <string name="drag_and_drop_preference">Seleccionar los ajustes de arrastrar y soltar (Experimental)</string>
     <string name="drag_to_move_copy">Toca y arrastra para mover o copiar archivos</string>
     <string name="drag_to_select">Toca y arrastra para seleccionar archivos</string>

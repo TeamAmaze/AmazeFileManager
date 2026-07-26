@@ -36,7 +36,7 @@
     <string name="uninstall">卸載</string>
     <string name="play">入 Google Play睇</string>
     <string name="properties">屬性</string>
-    <string name="copyingapks">正复制%d个 APK 文件至%s</string>
+    <string name="copyingapks" formatted="false">正复制%d个 APK 文件至%s</string>
     <string name="delbook">刪除書籤</string>
     <string name="add_to_bookmarks">添加到書籤</string>
     <string name="enterpath">请输入路径</string>
@@ -587,7 +587,7 @@
     <string name="donation_thanks">多謝支持。我哋定當繼續努力 (:</string>
     <string name="enable_marquee_filename">用走馬燈方式顯示檔案名稱</string>
     <string name="archive_password_prompt">請輸入壓縮檔密碼：</string>
-    <string name="cannot_extract_archive">不能解压文件“%s”： %s</string>
+    <string name="cannot_extract_archive" formatted="false">不能解压文件“%s”： %s</string>
     <string name="archive_unsupported_or_corrupt">无法打开压缩文件 “%s”。我们无法打开压缩文件，或是压缩文件已损坏。</string>
     <string name="close">關閉</string>
     <string name="bookmark_exists">條書籤已經喺度啦喎</string>
@@ -628,8 +628,8 @@
     <string name="disableIpcSignature">關閉 IPC簽名檢查（對應舊式嘅 SMBv1伺服器 - 唔安全㗎！）</string>
     <string name="cannot_delete_file">无法删除文件</string>
     <string name="cannot_delete_file_with_reason">无法删除文件 - %s</string>
-    <string name="cannot_rename_file">无法重命名文件%s-%s</string>
-    <string name="cannot_read_directory">无法读取文件夹%s-%s</string>
+    <string name="cannot_rename_file" formatted="false">无法重命名文件%s-%s</string>
+    <string name="cannot_read_directory" formatted="false">无法读取文件夹%s-%s</string>
     <string name="just_once">仅本次</string>
     <string name="always">总是</string>
     <string name="choose_different_app">揀過第二個 app</string>
@@ -642,7 +642,7 @@
     <string name="ftp_prompt_restart_server">要使設定生效，請重新啟動 FTP伺服器</string>
     <string name="error_permission_denied">权限不足</string>
     <string name="error_archive_password_incorrect">解压密码有误</string>
-    <string name="error_archive_cannot_extract">无法将压缩文件中的目标\"%s\"提取到\"%s\"。</string>
+    <string name="error_archive_cannot_extract" formatted="false">无法将压缩文件中的目标\"%s\"提取到\"%s\"。</string>
     <string name="drag_and_drop_preference">拖拉動作設定（實驗中）</string>
     <string name="drag_to_move_copy">拖拉動作代表移動/複製檔案</string>
     <string name="drag_to_select">拖拉動作代表選擇檔案</string>
@@ -731,7 +731,7 @@
     <string name="preference_language_dialog_title">选择语言</string>
     <string name="preference_language_system_default">系统默认</string>
     <string name="error.listfile.smb.title">无法加载 SMB 文件列表</string>
-    <string name="error.listfile.smb">在 %s : %s 列出文件出错</string>
+    <string name="error.listfile.smb" formatted="false">在 %s : %s 列出文件出错</string>
     <string name="error.listfile.smb.noipcshare">在 %s 列出文件列表失败——SMB 服务器可能不允许匿名访问 IPC$ 共享。您可以尝试在连接设置中直接指定共享名称。</string>
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久删除</string>

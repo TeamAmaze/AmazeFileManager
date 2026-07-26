@@ -36,7 +36,7 @@
     <string name="uninstall">解除安裝</string>
     <string name="play">在 Play 商店中檢視</string>
     <string name="properties">屬性</string>
-    <string name="copyingapks">正複製%d個 APK 檔案至%s</string>
+    <string name="copyingapks" formatted="false">正複製%d個 APK 檔案至%s</string>
     <string name="delbook">刪除書籤</string>
     <string name="add_to_bookmarks">新增至書籤</string>
     <string name="enterpath">輸入路徑</string>
@@ -587,7 +587,7 @@
     <string name="donation_thanks">感謝你的捐款，這對我們是很好的鼓勵！ (:</string>
     <string name="enable_marquee_filename">檔案名稱以走馬燈方式顯示</string>
     <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
-    <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
+    <string name="cannot_extract_archive" formatted="false">不能開啟壓縮檔 \"%s\"： %s</string>
     <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>
     <string name="close">關閉</string>
     <string name="bookmark_exists">書籤已存在</string>
@@ -628,8 +628,8 @@
     <string name="disableIpcSignature">關閉 IPC數位簽名檢查（適用於舊式 SMBv1伺服器—不安全！）</string>
     <string name="cannot_delete_file">無法刪除檔案</string>
     <string name="cannot_delete_file_with_reason">無法刪除檔案 - %s</string>
-    <string name="cannot_rename_file">無法重新命名檔案 %s - %s</string>
-    <string name="cannot_read_directory">無法讀取檔案夾 %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">無法重新命名檔案 %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">無法讀取檔案夾 %s - %s</string>
     <string name="just_once">只此一次</string>
     <string name="always">總是</string>
     <string name="choose_different_app">選擇另外的應用程式</string>
@@ -642,7 +642,7 @@
     <string name="ftp_prompt_restart_server">請重新啟動 FTP伺服器以套用新設定。</string>
     <string name="error_permission_denied">拒絕存取</string>
     <string name="error_archive_password_incorrect">錯誤的壓縮檔密碼。</string>
-    <string name="error_archive_cannot_extract">不能把壓縮檔內的 \"%s\" 解壓到 \"%s\"。</string>
+    <string name="error_archive_cannot_extract" formatted="false">不能把壓縮檔內的 \"%s\" 解壓到 \"%s\"。</string>
     <string name="drag_and_drop_preference">拖放動作設定（實驗性）</string>
     <string name="drag_to_move_copy">點選並拖拉以移動/複製檔案</string>
     <string name="drag_to_select">點選並拖拉以選擇檔案</string>
@@ -731,7 +731,7 @@
     <string name="preference_language_dialog_title">選擇語言</string>
     <string name="preference_language_system_default">系統預設</string>
     <string name="error.listfile.smb.title">無法載入 SMB 檔案列表</string>
-    <string name="error.listfile.smb">在 %s : %s 列出檔案出錯</string>
+    <string name="error.listfile.smb" formatted="false">在 %s : %s 列出檔案出錯</string>
     <string name="error.listfile.smb.noipcshare">在 %s 列出檔案列表失敗——SMB 伺服器可能不允許匿名訪問 IPC$ 共享。您可以嘗試在連線設定中直接指定共享名稱。</string>
     <string name="trash_bin">回收站</string>
     <string name="delete_permanently_checkbox">永久刪除</string>

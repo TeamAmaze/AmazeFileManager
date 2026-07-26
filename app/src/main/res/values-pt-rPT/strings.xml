@@ -36,7 +36,7 @@
     <string name="uninstall">Desinstalar</string>
     <string name="play">Google Play</string>
     <string name="properties">Propriedades</string>
-    <string name="copyingapks">Copiando %d arquivos APK para %s</string>
+    <string name="copyingapks" formatted="false">Copiando %d arquivos APK para %s</string>
     <string name="delbook">Apagar Marcador</string>
     <string name="add_to_bookmarks">Adicionar aos marcadores</string>
     <string name="enterpath">Digite o caminho</string>
@@ -670,7 +670,7 @@
     <string name="donation_thanks">Obrigado pela doação, isto nos mantém motivados! (:</string>
     <string name="enable_marquee_filename">Ativar o efeito de letreiro para nomes de arquivos</string>
     <string name="archive_password_prompt">Por favor, insira arquivo</string>
-    <string name="cannot_extract_archive">Não foi possível extrair o arquivo \"1%s\": \'%s</string>
+    <string name="cannot_extract_archive" formatted="false">Não foi possível extrair o arquivo \"1%s\": \'%s</string>
     <string name="archive_unsupported_or_corrupt">Não foi possível abrir arquivo \"1%s\". Ou não podemos abrir o arquivo ou o arquivo está danificado</string>
     <string name="close">Fechar</string>
     <string name="bookmark_exists">Favorito existe</string>
@@ -711,8 +711,8 @@
     <string name="disableIpcSignature">Desative a verificação de assinatura IPC (Para servidores SMBv1 legados - INSEGURO!)</string>
     <string name="cannot_delete_file">Não foi possível deletar o arquivo</string>
     <string name="cannot_delete_file_with_reason">Não foi possível deletar o arquivo%s</string>
-    <string name="cannot_rename_file">Não foi possível renomear o arquivo%s%s</string>
-    <string name="cannot_read_directory">Não foi possível acessar o diretório%s%s</string>
+    <string name="cannot_rename_file" formatted="false">Não foi possível renomear o arquivo%s%s</string>
+    <string name="cannot_read_directory" formatted="false">Não foi possível acessar o diretório%s%s</string>
     <string name="just_once">Apenas uma vez</string>
     <string name="always">Sempre</string>
     <string name="choose_different_app">Escolha uma aplicação diferente</string>
@@ -725,7 +725,7 @@
     <string name="ftp_prompt_restart_server">Você precisa reiniciar o servidor FTP para aplicar as mudanças.</string>
     <string name="error_permission_denied">Permissão negada</string>
     <string name="error_archive_password_incorrect">Senha incorreta do arquivo.</string>
-    <string name="error_archive_cannot_extract">Não é possível extrair \"%s\" para \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Não é possível extrair \"%s\" para \"%s\".</string>
     <string name="drag_and_drop_preference">Selecionar a preferência de arrastar e soltar (Experimental)</string>
     <string name="drag_to_move_copy">Pressionar e arrastar para mover ou copiar arquivos</string>
     <string name="drag_to_select">Pressionar e arrastar para selecionar arquivos</string>
@@ -819,7 +819,7 @@
     <string name="preference_language_dialog_title">Selecionar Idioma</string>
     <string name="preference_language_system_default">Sistema Padrão</string>
     <string name="error.listfile.smb.title">Incapaz de carregar a lista de arquivos SMB</string>
-    <string name="error.listfile.smb">Erro ao listar arquivos em %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Erro ao listar arquivos em %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Erro ao listar arquivos em %s - provavelmente o servidor SMB não permite acesso anônimo para compartilhamento IPC$. Você pode tentar especificar o nome do compartilhamento diretamente nas configurações de conexão.</string>
     <string name="trash_bin">Lixeira</string>
     <string name="delete_permanently_checkbox">Excluir permanentemente</string>

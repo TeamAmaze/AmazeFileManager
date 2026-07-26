@@ -36,7 +36,7 @@
     <string name="uninstall">Απεγκατάσταση</string>
     <string name="play">Play store</string>
     <string name="properties">Ιδιότητες</string>
-    <string name="copyingapks">Αντιγραφή  %d αρχείων APK σε %s</string>
+    <string name="copyingapks" formatted="false">Αντιγραφή  %d αρχείων APK σε %s</string>
     <string name="delbook">Διαγραφή σελιδοδείκτη</string>
     <string name="add_to_bookmarks">Προσθήκη σε σελιδοδείκτη</string>
     <string name="enterpath">Εισάγετε διαδρομή</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">Σας ευχαριστούμε για τη δωρεά, αυτό μας δίνει κίνητρο! (:</string>
     <string name="enable_marquee_filename">Ενεργοποίηση εφέ μαρκαρίσματος για ονόματα αρχείων</string>
     <string name="archive_password_prompt">Παρακαλώ εισάγετε τον κωδικό αρχειοθήκης:</string>
-    <string name="cannot_extract_archive">Αδύνατη η εξαγωγή της αρχειοθήκης \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Αδύνατη η εξαγωγή της αρχειοθήκης \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Δεν είναι δυνατό το άνοιγμα της αρχειοθήκης \"%s\". Είτε δεν μπορεί να ανοίξει, είτε έχει καταστραφεί.</string>
     <string name="close">Κλείσιμο</string>
     <string name="bookmark_exists">Ο Σελιδοδείκτης υπάρχει</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">Απενεργοποίηση ελέγχου υπογραφής IPC (Για παλαιούς διακομιστές SMBv1 - UNSAFE!)</string>
     <string name="cannot_delete_file">Αδύνατη η διαγραφή αρχείου</string>
     <string name="cannot_delete_file_with_reason">Αδύνατη η διαγραφή αρχείου - %s </string>
-    <string name="cannot_rename_file">Αδύνατη η μετονομασία αρχείου %s - %s</string>
-    <string name="cannot_read_directory">Αδύνατη η ανάγνωση του καταλόγου %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Αδύνατη η μετονομασία αρχείου %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Αδύνατη η ανάγνωση του καταλόγου %s - %s</string>
     <string name="just_once">Μια φορά μόνο</string>
     <string name="always">Πάντα</string>
     <string name="choose_different_app">Επιλογή διαφορετικής εφαρμογής</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">Θα χρειαστεί να επανεκκινήσετε το διακομιστή FTP για να τεθούν σε ισχύ οι αλλαγές.</string>
     <string name="error_permission_denied">Απορριφθείσα άδεια</string>
     <string name="error_archive_password_incorrect">Λάθος κωδικός πρόσβασης αρχείου.</string>
-    <string name="error_archive_cannot_extract">Δεν είναι δυνατή η εξαγωγή εγγραφής αρχείου \"%s\" σε \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Δεν είναι δυνατή η εξαγωγή εγγραφής αρχείου \"%s\" σε \"%s\".</string>
     <string name="drag_and_drop_preference">Επιλογή προτίμησης μεταφοράς και απόθεσης (Πειραματική)</string>
     <string name="drag_to_move_copy">Αγγίξτε και σύρετε για να μετακινήσετε ή να αντιγράψετε αρχεία</string>
     <string name="drag_to_select">Αγγίξτε και σύρετε για να επιλέξετε αρχεία</string>
@@ -738,7 +738,7 @@
     <string name="preference_language_dialog_title">Επιλογή Γλώσσας</string>
     <string name="preference_language_system_default">Προεπιλογή Συστήματος</string>
     <string name="error.listfile.smb.title">Αδυναμία φόρτωσης λίστας αρχείων SMB</string>
-    <string name="error.listfile.smb">Σφάλμα λίστας αρχείων σε %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Σφάλμα λίστας αρχείων σε %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Σφάλμα λίστας αρχείων στο %s - πιθανότατα ο διακομιστής SMB δεν επιτρέπει την ανώνυμη πρόσβαση κοινής χρήσης σε IPC$. Μπορείτε να δοκιμάσετε να καθορίσετε το όνομα της κοινής χρήσης απευθείας στις ρυθμίσεις σύνδεσης.</string>
     <string name="trash_bin">Κάδος Απορριμμάτων</string>
     <string name="delete_permanently_checkbox">Μόνιμη Διαγραφή</string>
