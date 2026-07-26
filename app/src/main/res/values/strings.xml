@@ -284,6 +284,7 @@
     <string name="creatingfile">Creating File</string>
     <string name="creatingfolder">Creating Folder</string>
     <string name="renaming">Renaming</string>
+    <string name="no_changes_while_rename">No changes were made as the new name matches the old name.</string>
     <string name="cant_be_empty">%s cannot be empty</string>
     <string name="ip">Address</string>
     <string name="connection_name">Connection name</string>

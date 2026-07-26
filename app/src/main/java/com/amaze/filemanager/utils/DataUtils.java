@@ -284,20 +284,25 @@ public class DataUtils {
     clear();
   }
 
-  int contains(String a, ArrayList<String[]> b) {
+  /**
+   * Searches pair list of {@code {name, path}} pairs for an entry that matches the given pair by
+   * <em>either</em> name or path. An entry is considered pair match when its name (index 0) equals
+   * {@code pair[0]} or its path (index 1) equals {@code pair[1]}.
+   *
+   * <p>Both should be unique since we cannot have two items with the same name. But this prevents
+   * two bookmarks / servers pointing to the same path with different names.
+   *
+   * @param pair the {@code {name, path}} pair to search for
+   * @param list the list to search; each element is expected to be pair two-element {@code {name,
+   *     path}} array. May be {@code null}.
+   * @return the index of the first matching entry, or {@code -1} if {@code list} is {@code null} or
+   *     no entry matches
+   */
+  int contains(String[] pair, ArrayList<String[]> list) {
+    if (list == null) return -1;
     int i = 0;
-    for (String[] x : b) {
-      if (x[1].equals(a)) return i;
-      i++;
-    }
-    return -1;
-  }
-
-  int contains(String[] a, ArrayList<String[]> b) {
-    if (b == null) return -1;
-    int i = 0;
-    for (String[] x : b) {
-      if (x[0].equals(a[0]) && x[1].equals(a[1])) return i;
+    for (String[] item : list) {
+      if (item[0].equals(pair[0]) || item[1].equals(pair[1])) return i;
       i++;
     }
     return -1;

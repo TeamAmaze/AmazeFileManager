@@ -283,6 +283,7 @@
     <string name="creatingfile">Creazione file in corso</string>
     <string name="creatingfolder">Creazione cartella in corso</string>
     <string name="renaming">Ridenominazione in corso</string>
+    <string name="no_changes_while_rename">Non è stata apportata alcuna modifica, poiché il nuovo nome corrisponde a quello precedente.</string>
     <string name="cant_be_empty">%s non può essere vuoto</string>
     <string name="ip">Indirizzo</string>
     <string name="connection_name">Nome connessione</string>

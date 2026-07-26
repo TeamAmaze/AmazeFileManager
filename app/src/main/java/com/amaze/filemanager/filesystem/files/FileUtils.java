@@ -586,27 +586,55 @@ public class FileUtils {
    * ["smb://user;workgroup:passw0rd@12.3.4", "smb://user;workgroup:passw0rd@12.3.4/user", "smb://user;workgroup:passw0rd@12.3.4/user/Documents", "smb://user;workgroup:passw0rd@12.3.4/user/Documents/flare.doc"]
    * </code>
    *
-   * @param path
+   * @param pathParam
    * @return string array of incremental path segments
    */
-  public static String[] getPathsInPath(String path) {
+  public static String[] getPathsInPath(String pathParam) {
+    String path = pathParam;
+    path = path.trim();
+    if (path.isEmpty()) {
+      return new String[0];
+    }
+    if (path.equals("/")) {
+      return new String[] {"/"};
+    }
     if (path.endsWith("/")) {
       path = path.substring(0, path.length() - 1);
     }
     path = path.trim();
 
-    ArrayList<String> paths = new ArrayList<>();
     @Nullable String urlPrefix = null;
     @Nullable Pair<String, String> splitUri = splitUri(path);
     if (splitUri != null) {
       urlPrefix = splitUri.first;
       path = splitUri.second;
+
+      if (path == null) {
+        return new String[] {urlPrefix};
+      }
     }
 
     if (!path.startsWith("/")) {
       path = "/" + path;
     }
 
+    ArrayList<String> paths = buildPaths(path, urlPrefix);
+
+    paths.add(urlPrefix != null ? urlPrefix : "/");
+    Collections.reverse(paths);
+
+    return paths.toArray(new String[0]);
+  }
+
+  /**
+   * Splits a given path to URI prefix (if exists) and path.
+   *
+   * @param pathParam
+   * @return string array of incremental path segments
+   */
+  public static ArrayList<String> buildPaths(String pathParam, String urlPrefix) {
+    ArrayList<String> paths = new ArrayList<>();
+    String path = pathParam;
     while (path.length() > 0) {
       if (urlPrefix != null) {
         paths.add(urlPrefix + path);
@@ -619,15 +647,7 @@ public class FileUtils {
         break;
       }
     }
-
-    if (urlPrefix != null) {
-      paths.add(urlPrefix);
-    } else {
-      paths.add("/");
-    }
-    Collections.reverse(paths);
-
-    return paths.toArray(new String[0]);
+    return paths;
   }
 
   /**

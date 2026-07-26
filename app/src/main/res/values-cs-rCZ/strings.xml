@@ -575,6 +575,7 @@
     <string name="encrypt_option_use_aze">Použít šifrovací formát Amaze</string>
     <string name="encrypt_file_must_end_with_aze">Šifrované soubory musí mít \".aze\" jako příponu souboru.</string>
     <string name="encrypt_file_must_end_with_aes">Šifrované soubory musí mít \".aes\" jako příponu souboru.</string>
+    <string name="error_aescrypt_decrypt_failed">Nelze dešifrovat \'%1$s\': \'%2$s\'</string>
     <string name="cannot_overwrite">Nelze přepsat soubor.</string>
     <string name="saved_single_file">Soubor uložen jako \'%s\'.</string>
     <string name="saved_multi_files">%d souborů uloženo.</string>

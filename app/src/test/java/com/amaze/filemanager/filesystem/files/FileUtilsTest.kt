@@ -42,6 +42,75 @@ import java.util.TimeZone
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class FileUtilsTest {
     /**
+     * Test FileUtils.getPathsInPath() with empty
+     *
+     * @see FileUtils.getPathsInPath
+     */
+    @Test
+    fun testGetPathsInPathForEmpty() {
+        getPathsInPath("").run {
+            assertEquals(0, size)
+            assertArrayEquals(
+                arrayOf(),
+                this,
+            )
+        }
+    }
+
+    /**
+     * Test FileUtils.getPathsInPath() with just whitespace
+     *
+     * @see FileUtils.getPathsInPath
+     */
+    @Test
+    fun testGetPathsInPathForWhitespace() {
+        getPathsInPath(" ").run {
+            assertEquals(0, size)
+            assertArrayEquals(
+                arrayOf(),
+                this,
+            )
+        }
+    }
+
+    /**
+     * Test FileUtils.getPathsInPath() with single slash
+     *
+     * @see FileUtils.getPathsInPath
+     */
+    @Test
+    fun testGetPathsInPathForSingleSlash() {
+        getPathsInPath("/").run {
+            assertEquals(1, size)
+            assertArrayEquals(
+                arrayOf(
+                    "/",
+                ),
+                this,
+            )
+        }
+    }
+
+    /**
+     * Test FileUtils.getPathsInPath() for folder with slash at end
+     *
+     * @see FileUtils.getPathsInPath
+     */
+    @Test
+    fun testGetPathsInPathForSingleFolderWithSlashAtEnd() {
+        getPathsInPath("/dir/").run {
+            assertEquals(2, size)
+            assertArrayEquals(
+                arrayOf(
+                    "/",
+                    "/dir",
+                ),
+                this,
+            )
+        }
+    }
+
+    /**
      * Test FileUtils.getPathsInPath() for directory
      *
      * @see FileUtils.getPathsInPath
@@ -180,6 +249,25 @@ class FileUtilsTest {
                     "/some/nasty/path/without/slash  ",
                     "/some/nasty/path/without/slash  /as",
                     "/some/nasty/path/without/slash  /as/  prefix",
+                ),
+                this,
+            )
+        }
+    }
+
+    /**
+     * Test FileUtils.getPathsInPath() with an URI that is just a scheme.
+     *
+     * @see FileUtils.getPathsInPath
+     */
+    @Test
+    fun testGetPathsInPathOnlyScheme() {
+        getPathsInPath("file:///").run {
+            assertEquals(2, size)
+            assertArrayEquals(
+                arrayOf(
+                    "file://",
+                    "file:///",
                 ),
                 this,
             )
