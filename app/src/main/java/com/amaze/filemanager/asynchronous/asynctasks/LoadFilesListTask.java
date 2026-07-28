@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,6 @@ import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.trashbin.TrashBin;
@@ -72,7 +72,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
@@ -88,10 +87,100 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import kotlin.collections.CollectionsKt;
 
-public class LoadFilesListTask
-    extends AsyncTask<Void, Throwable, Pair<OpenMode, List<LayoutElementParcelable>>> {
+public class LoadFilesListTask {
 
   private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
+
+  public Pair<OpenMode, List<LayoutElementParcelable>> load() throws Exception {
+
+    final MainFragment mainFragment = this.mainFragmentReference.get();
+    final Context context = this.context.get();
+
+    if (mainFragment == null
+        || context == null
+        || mainFragment.getMainFragmentViewModel() == null
+        || mainFragment.getMainActivityViewModel() == null
+        || path == null) {
+
+      throw new CancellationException();
+    }
+
+    HybridFile hFile = null;
+
+    MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
+
+    MainActivityViewModel mainActivityViewModel = mainFragment.getMainActivityViewModel();
+
+    if (OpenMode.UNKNOWN.equals(openmode)
+        || OpenMode.CUSTOM.equals(openmode)
+        || OpenMode.TRASH_BIN.equals(openmode)) {
+
+      hFile = new HybridFile(openmode, path);
+
+      hFile.generateMode(mainFragment.getActivity());
+
+      openmode = hFile.getMode();
+
+      if (hFile.isSmb()) {
+        mainFragmentViewModel.setSmbPath(path);
+      }
+    }
+
+    mainFragmentViewModel.setFolderCount(0);
+    mainFragmentViewModel.setFileCount(0);
+
+    final List<LayoutElementParcelable> list;
+
+    switch (openmode) {
+      case SMB:
+        list = listSmb(hFile, mainActivityViewModel, mainFragment);
+        break;
+
+      case FTP:
+      case SFTP:
+        list = listSftp(mainActivityViewModel);
+        break;
+
+      case CUSTOM:
+      case TRASH_BIN:
+        list = getCachedMediaList(mainActivityViewModel);
+        break;
+
+      case OTG:
+        list = listOtg();
+        openmode = OpenMode.OTG;
+        break;
+
+      case DOCUMENT_FILE:
+        list = listDocumentFiles(mainActivityViewModel);
+        openmode = OpenMode.DOCUMENT_FILE;
+        break;
+
+      case DROPBOX:
+      case BOX:
+      case GDRIVE:
+      case ONEDRIVE:
+        list = listCloud(mainActivityViewModel);
+        break;
+
+      case ANDROID_DATA:
+        list = listAppDataDirectories(path);
+        break;
+
+      default:
+        list = listDefault(mainActivityViewModel, mainFragment);
+        break;
+    }
+
+    if (list != null
+        && !(openmode == OpenMode.CUSTOM
+            && ("5".equals(path) || "6".equals(path) || "7".equals(path)))) {
+
+      postListCustomPathProcess(list, mainFragmentViewModel);
+    }
+
+    return new Pair<>(openmode, list);
+  }
 
   private String path;
   private WeakReference<MainFragment> mainFragmentReference;
@@ -99,7 +188,6 @@ public class LoadFilesListTask
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
   private DataUtils dataUtils = DataUtils.getInstance();
-  private OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> listener;
   private boolean forceReload;
 
   public LoadFilesListTask(
@@ -109,112 +197,17 @@ public class LoadFilesListTask
       OpenMode openmode,
       boolean showThumbs,
       boolean showHiddenFiles,
-      boolean forceReload,
-      OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> l) {
+      boolean forceReload) {
     this.path = path;
     this.mainFragmentReference = new WeakReference<>(mainFragment);
     this.openmode = openmode;
     this.context = new WeakReference<>(context);
     this.showThumbs = showThumbs;
     this.showHiddenFiles = showHiddenFiles;
-    this.listener = l;
     this.forceReload = forceReload;
   }
 
-  @Override
-  @SuppressWarnings({"PMD.NPathComplexity", "ComplexMethod", "LongMethod"})
-  protected @Nullable Pair<OpenMode, List<LayoutElementParcelable>> doInBackground(Void... p) {
-    final MainFragment mainFragment = this.mainFragmentReference.get();
-    final Context context = this.context.get();
-
-    if (mainFragment == null
-        || context == null
-        || mainFragment.getMainFragmentViewModel() == null
-        || mainFragment.getMainActivityViewModel() == null
-        || path == null) {
-      cancel(true);
-      return null;
-    }
-
-    HybridFile hFile = null;
-    MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
-    MainActivityViewModel mainActivityViewModel = mainFragment.getMainActivityViewModel();
-
-    if (OpenMode.UNKNOWN.equals(openmode)
-        || OpenMode.CUSTOM.equals(openmode)
-        || OpenMode.TRASH_BIN.equals(openmode)) {
-      hFile = new HybridFile(openmode, path);
-      hFile.generateMode(mainFragment.getActivity());
-      openmode = hFile.getMode();
-
-      if (hFile.isSmb()) {
-        mainFragmentViewModel.setSmbPath(path);
-      }
-    }
-
-    if (isCancelled()) return null;
-
-    mainFragmentViewModel.setFolderCount(0);
-    mainFragmentViewModel.setFileCount(0);
-    final List<LayoutElementParcelable> list;
-
-    switch (openmode) {
-      case SMB:
-        list = listSmb(hFile, mainActivityViewModel, mainFragment);
-        break;
-      case FTP:
-      case SFTP:
-        list = listSftp(mainActivityViewModel);
-        break;
-      case CUSTOM:
-      case TRASH_BIN:
-        list = getCachedMediaList(mainActivityViewModel);
-        break;
-      case OTG:
-        list = listOtg();
-        openmode = OpenMode.OTG;
-        break;
-      case DOCUMENT_FILE:
-        list = listDocumentFiles(mainActivityViewModel);
-        openmode = OpenMode.DOCUMENT_FILE;
-        break;
-      case DROPBOX:
-      case BOX:
-      case GDRIVE:
-      case ONEDRIVE:
-        try {
-          list = listCloud(mainActivityViewModel);
-        } catch (CloudPluginException e) {
-          LOG.warn("failed to load cloud files", e);
-          AppConfig.toast(context, context.getResources().getString(R.string.failed_no_connection));
-          return new Pair<>(openmode, Collections.emptyList());
-        }
-        break;
-      case ANDROID_DATA:
-        list = listAppDataDirectories(path);
-        break;
-      default:
-        // we're neither in OTG not in SMB, load the list based on root/general filesystem
-        list = listDefault(mainActivityViewModel, mainFragment);
-        break;
-    }
-
-    if (list != null
-        && !(openmode == OpenMode.CUSTOM
-            && (("5").equals(path) || ("6").equals(path) || ("7").equals(path)))) {
-      postListCustomPathProcess(list, mainFragmentViewModel);
-    }
-
-    return new Pair<>(openmode, list);
-  }
-
-  @Override
-  protected void onCancelled() {
-    listener.onAsyncTaskFinished(null);
-  }
-
-  @Override
-  protected void onProgressUpdate(Throwable... values) {
+  public void onProgressUpdate(Throwable... values) {
     for (Throwable exception : values) {
       if (exception instanceof SmbException) {
         if ("/".equals(Uri.parse(path).getPath())) {
@@ -246,11 +239,6 @@ public class LoadFilesListTask
         }
       }
     }
-  }
-
-  @Override
-  protected void onPostExecute(@Nullable Pair<OpenMode, List<LayoutElementParcelable>> list) {
-    listener.onAsyncTaskFinished(list);
   }
 
   private List<LayoutElementParcelable> getCachedMediaList(
@@ -339,8 +327,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (mainFragment == null || context == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     String size = "";
@@ -410,8 +397,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     Cursor cursor =
@@ -437,8 +423,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     ArrayList<LayoutElementParcelable> docs = new ArrayList<>();
@@ -499,8 +484,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     ArrayList<LayoutElementParcelable> apks = new ArrayList<>();
@@ -537,8 +521,7 @@ public class LoadFilesListTask
   private @Nullable List<LayoutElementParcelable> listRecent() {
     final MainFragment mainFragment = this.mainFragmentReference.get();
     if (mainFragment == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
@@ -566,8 +549,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     List<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
@@ -634,8 +616,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return null;
+      throw new CancellationException();
     }
 
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
@@ -729,7 +710,6 @@ public class LoadFilesListTask
           mainFragment.reauthenticateSmb();
         }
         LOG.warn("failed to load smb list, authentication issue: ", e);
-        publishProgress(e);
         return null;
       } catch (SmbException | NullPointerException e) {
         LOG.warn("Failed to load smb files for path: " + path, e);
@@ -863,8 +843,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return;
+      throw new CancellationException();
     }
 
     OTGUtil.getDocumentFiles(path, context, fileFound);
@@ -874,8 +853,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return;
+      throw new CancellationException();
     }
 
     OTGUtil.getDocumentFiles(
@@ -888,8 +866,7 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
-      cancel(true);
-      return;
+      throw new CancellationException();
     }
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) {
