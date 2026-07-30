@@ -19,8 +19,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion libs.versions.minSdk.get().toInteger()
         targetSdkVersion libs.versions.targetSdk.get().toInteger()
-        versionCode 124
-        versionName "3.11.2"
+        versionCode 125
+        versionName "3.11.3"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
