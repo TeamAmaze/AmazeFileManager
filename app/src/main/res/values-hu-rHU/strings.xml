@@ -36,7 +36,7 @@
     <string name="uninstall">Eltávolítás</string>
     <string name="play">Play áruház</string>
     <string name="properties">Tulajdonságok</string>
-    <string name="copyingapks">%d APK fájl másolása ide: %s</string>
+    <string name="copyingapks" formatted="false">%d APK fájl másolása ide: %s</string>
     <string name="delbook">Könyvjelző törlése</string>
     <string name="add_to_bookmarks">Hozzáadás a könyvjelzőkhöz</string>
     <string name="enterpath">Adja meg az elérési útvonalat</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">Köszönjük az adományt, ez motivál minket! (:</string>
     <string name="enable_marquee_filename">Fényújság hatás engedélyezése a fájlnevekhez</string>
     <string name="archive_password_prompt">Adja meg az archívum jelszavát:</string>
-    <string name="cannot_extract_archive">Nem lehet kibontani az archívumot \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Nem lehet kibontani az archívumot \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Nem sikerült megnyitni az archívumot \"%s\". Vagy nem nyitható meg az archívum, vagy sérült.</string>
     <string name="close">Bezárás</string>
     <string name="bookmark_exists">Könyvjelző létezik</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">IPC-aláírás ellenőrzés letiltása (Örökölt SMBv1-kiszolgálókhoz - UNSAFE!)</string>
     <string name="cannot_delete_file">Nem lehet törölni a fájlt</string>
     <string name="cannot_delete_file_with_reason">Nem lehet törölni a fájlt - %s </string>
-    <string name="cannot_rename_file">Nem lehet átnevezni a fájlt %s - %s</string>
-    <string name="cannot_read_directory">Nem lehet olvasni a könyvtárat %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Nem lehet átnevezni a fájlt %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Nem lehet olvasni a könyvtárat %s - %s</string>
     <string name="just_once">Csak egyszer</string>
     <string name="always">Mindig</string>
     <string name="choose_different_app">Válasszon más alkalmazást</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">A módosítások érvénybe léptetéséhez újra kell indítania az FTP-kiszolgálót.</string>
     <string name="error_permission_denied">Hozzáférés megtagadva</string>
     <string name="error_archive_password_incorrect">Rossz archívum jelszó.</string>
-    <string name="error_archive_cannot_extract">Nem lehet kibontani az archívum bejegyzést \"%s\" - \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Nem lehet kibontani az archívum bejegyzést \"%s\" - \"%s\".</string>
     <string name="drag_and_drop_preference">Válassza a fogd és vidd beállítást (Kísérleti)</string>
     <string name="drag_to_move_copy">Érintse meg és húzza a fájlok mozgatásához vagy másolásához</string>
     <string name="drag_to_select">Érintse meg és húzza a fájlok kiválasztásához</string>
@@ -738,7 +738,7 @@
     <string name="preference_language_dialog_title">Válasszon nyelvet</string>
     <string name="preference_language_system_default">Rendszer alapértelmezett</string>
     <string name="error.listfile.smb.title">Nem lehet betölteni az SMB fájllistát</string>
-    <string name="error.listfile.smb">Hiba a fájlok listázásako ebben: %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Hiba a fájlok listázásako ebben: %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Hiba a fájlok listázásakor ebben: %s - valószínűleg az SMB-kiszolgáló nem engedélyezi a névtelen hozzáférést az IPC$-megosztáshoz. Megpróbálhatja a megosztás nevét közvetlenül a kapcsolat beállításaiban megadni.</string>
     <string name="trash_bin">Kuka</string>
     <string name="delete_permanently_checkbox">Végleges törlés</string>

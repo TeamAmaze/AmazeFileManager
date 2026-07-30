@@ -36,7 +36,7 @@
     <string name="uninstall">Kaldır</string>
     <string name="play">Play Store</string>
     <string name="properties">Özellikler</string>
-    <string name="copyingapks">%d APK dosyası %s klasörüne kopyalanıyor</string>
+    <string name="copyingapks" formatted="false">%d APK dosyası %s klasörüne kopyalanıyor</string>
     <string name="delbook">Yer işaretini sil</string>
     <string name="add_to_bookmarks">Yer işaretlerine ekle</string>
     <string name="enterpath">Yolu gir</string>
@@ -587,7 +587,7 @@
     <string name="donation_thanks">Bağışınız için teşekkürler, bu bizi motive ediyor! (:</string>
     <string name="enable_marquee_filename">Dosya adları için seçim çerçevesi efektini etkinleştirin</string>
     <string name="archive_password_prompt">Lütfen arşiv şifresini girin</string>
-    <string name="cannot_extract_archive">\"%s\": %s arşivi çıkarılamıyor.</string>
+    <string name="cannot_extract_archive" formatted="false">\"%s\": %s arşivi çıkarılamıyor.</string>
     <string name="archive_unsupported_or_corrupt">\"%s\" arşivi açılamıyor. Arşiv zarar görmüş ya da biz açamıyoruz.</string>
     <string name="close">Kapat</string>
     <string name="bookmark_exists">Yer imi var</string>
@@ -628,8 +628,8 @@
     <string name="disableIpcSignature">IPC imzalama kontrolünü devre dışı bırakın (Eski SMBv1 sunucuları için - GÜVENLİ DEĞİL!)</string>
     <string name="cannot_delete_file">Dosya silinemiyor </string>
     <string name="cannot_delete_file_with_reason">Dosya silinemiyor - %s</string>
-    <string name="cannot_rename_file">Dosya yeniden adlandırılamıyor %s - %s</string>
-    <string name="cannot_read_directory">Dizin okunamıyor %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Dosya yeniden adlandırılamıyor %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Dizin okunamıyor %s - %s</string>
     <string name="just_once">Sadece Bir Kere</string>
     <string name="always">Her zaman</string>
     <string name="choose_different_app">Farklı uygulama seçin</string>
@@ -642,7 +642,7 @@
     <string name="ftp_prompt_restart_server">Değişikliklerin etkili olması için FTP sunucusunu yeniden başlatmanız gerekecek.</string>
     <string name="error_permission_denied">İzin reddedildi</string>
     <string name="error_archive_password_incorrect">Yanlış arşiv şifresi.</string>
-    <string name="error_archive_cannot_extract">\"%s\" arşiv girdisi \"%s\" konumuna çıkarılamıyor.</string>
+    <string name="error_archive_cannot_extract" formatted="false">\"%s\" arşiv girdisi \"%s\" konumuna çıkarılamıyor.</string>
     <string name="drag_and_drop_preference">Sürükle ve bırak tercihini seçin (Deneysel)</string>
     <string name="drag_to_move_copy">Dosyaları taşımak veya kopyalamak için dokunun ve sürükleyin</string>
     <string name="drag_to_select">Dosyaları seçmek için dokunun ve sürükleyin</string>

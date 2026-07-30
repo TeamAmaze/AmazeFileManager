@@ -36,7 +36,7 @@
     <string name="uninstall">Disinstalla</string>
     <string name="play">Play Store</string>
     <string name="properties">Proprietà</string>
-    <string name="copyingapks">Copia di %d file APK su %s</string>
+    <string name="copyingapks" formatted="false">Copia di %d file APK su %s</string>
     <string name="delbook">Elimina Preferito</string>
     <string name="add_to_bookmarks">Aggiungi a segnalibro</string>
     <string name="enterpath">Inserisci percorso</string>
@@ -669,7 +669,7 @@
     <string name="donation_thanks">Grazie per la donazione, ci mantiene morivati! (:</string>
     <string name="enable_marquee_filename">Abilita l\'effetto testo scorrevole per i nomi dei file</string>
     <string name="archive_password_prompt">Perfavore inserici la password d\'archivio:</string>
-    <string name="cannot_extract_archive">Impossibile estrarre l\'archivio \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Impossibile estrarre l\'archivio \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Impossibile aprire l\'archivio \"%s\". O non è possibile aprire l\'archivio, o è stato danneggiato.</string>
     <string name="close">Chiudi</string>
     <string name="bookmark_exists">Il segnalibro esiste</string>
@@ -712,8 +712,8 @@
     <string name="disableIpcSignature">Disabilita controllo firma IPC (Per i server legacy SMBv1 - NON SICURO!)</string>
     <string name="cannot_delete_file">Impossibile cancellare il file</string>
     <string name="cannot_delete_file_with_reason">Impossibile cancellare il file - %s </string>
-    <string name="cannot_rename_file">Impossibile rinominare il file %s - %s</string>
-    <string name="cannot_read_directory">Impossibile leggere la cartella %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Impossibile rinominare il file %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Impossibile leggere la cartella %s - %s</string>
     <string name="just_once">Solo una volta</string>
     <string name="always">Sempre</string>
     <string name="choose_different_app">Scegli un\'applicazione differente</string>
@@ -726,7 +726,7 @@
     <string name="ftp_prompt_restart_server">Devi riavviare il server FTP affinché le modifiche abbiano effetto.</string>
     <string name="error_permission_denied">Permesso negato</string>
     <string name="error_archive_password_incorrect">Password archivio sbagliata.</string>
-    <string name="error_archive_cannot_extract">Impossibile estrarre la voce di archivio \"%s\" in \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Impossibile estrarre la voce di archivio \"%s\" in \"%s\".</string>
     <string name="drag_and_drop_preference">Scegli preferenza drag and drop (Sperimentale)</string>
     <string name="drag_to_move_copy">Tocca e trascina per spostare o copiare i file</string>
     <string name="drag_to_select">Tocca e trascina per selezionare i file</string>
@@ -746,7 +746,7 @@
     <string name="compressed_explorer_fragment_error_open_uri">Errore di apertura URI \"%s\" in lettura.</string>
     <string name="error_empty_archive">\"%s\" è un archivio vuoto.</string>
     <string name="error_bad_archive_without_info">\"%s\" è un archivio corrotto.</string>
-    <string name="error_bad_archive_with_info">\"%s\" è un archivio corrotto. Messaggio dall\'estrattore: \"%s\"</string>
+    <string name="error_bad_archive_with_info" formatted="false">\"%s\" è un archivio corrotto. Messaggio dall\'estrattore: \"%s\"</string>
     <string name="security_error">Impossibile aprire il file usando quest\'app</string>
     <string name="cloud_drive_tooltip">Crea una connessione Google Drive™ per gestire i file da Amaze File Manager.</string>
     <string name="signin_with_google_title">Autenticati per usare Google Drive™</string>
@@ -792,7 +792,7 @@
     <string name="share_logs_summary">Condividi i log acquisiti via email / telegram</string>
     <string name="open_with_amaze">Apri con Amaze</string>
     <string name="confirmation">Conferma</string>
-    <string name="open_file_confirmation">Sicuro di aprire il seguente file\?Nome:%sPercorso:%sDimensione:%sMD5:%sSHA256:%s</string>
+    <string name="open_file_confirmation" formatted="false">Sicuro di aprire il seguente file\?Nome:%sPercorso:%sDimensione:%sMD5:%sSHA256:%s</string>
     <string name="error_google_play_cannot_update_myself">Secondo la policy di Google Play, alle app non è permesso aggiornarsi automaticamente. Per favore aggiorna l\'app tramite Google Play.</string>
     <string name="error_cannot_get_package_info">Impossibile ottenere le info dal file \"%s\". Il file specificato non è un APK, o il package è corrotto.</string>
     <string name="preference_delete_confirmation">Conferma eliminazione</string>
@@ -830,7 +830,7 @@
     <string name="preference_language_dialog_title">Selezione della lingua</string>
     <string name="preference_language_system_default">Predefinita di sistema</string>
     <string name="error.listfile.smb.title">Impossibile caricare la lista dei file SMB</string>
-    <string name="error.listfile.smb">Errore nella lista dei file a %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Errore nella lista dei file a %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Errore nella lista dei file a %s - probabilmente il server SMB non permette l\'accesso anonimo al nome di condivisione IPC$. Si può riprovare specificando direttamente il nome di condivisione direttamente nelle impostazioni di collegamento.</string>
     <string name="trash_bin">Cestino</string>
     <string name="delete_permanently_checkbox">Elimina in modo definitivo</string>

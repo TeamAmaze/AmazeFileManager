@@ -36,7 +36,7 @@
     <string name="uninstall">Desinstalatu</string>
     <string name="play">Play store</string>
     <string name="properties">Propietateak</string>
-    <string name="copyingapks">%d APK fitxategi kopiatzen hona: %s</string>
+    <string name="copyingapks" formatted="false">%d APK fitxategi kopiatzen hona: %s</string>
     <string name="delbook">Ezabatu laster-marka</string>
     <string name="add_to_bookmarks">Gehitu laster-marka</string>
     <string name="enterpath">Sartu bidea</string>
@@ -675,7 +675,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="donation_thanks">Eskerrik asko dohaintzagatik, horrek motibatuta mantentzen gaitu! (:</string>
     <string name="enable_marquee_filename">Gaitu markesina efektua fitxategi-izenentzat</string>
     <string name="archive_password_prompt">Sartu artxiboko pasahitza:</string>
-    <string name="cannot_extract_archive">Ezin izan da erauzi \"%s\" artxiboa: %s</string>
+    <string name="cannot_extract_archive" formatted="false">Ezin izan da erauzi \"%s\" artxiboa: %s</string>
     <string name="archive_unsupported_or_corrupt">Ezin izan da ireki \"%s\" artxiboa. Artxiboa ezin da  ireki, edo hondatu egin da.</string>
     <string name="close">Itxi</string>
     <string name="bookmark_exists">Laster-marka badago</string>
@@ -718,8 +718,8 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="disableIpcSignature">Desgaitu IPC sinadura egiaztapena (SMBV1 zerbitzari zaharrentzat - ARRISKUTSUA!)</string>
     <string name="cannot_delete_file">Ezin da fitxategia ezabatu</string>
     <string name="cannot_delete_file_with_reason">Ezin da fitxategia ezabatu - %s </string>
-    <string name="cannot_rename_file">Ezin da fitxategia berrizendatu %s - %s</string>
-    <string name="cannot_read_directory">Ezin da direktorioa irakurri %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Ezin da fitxategia berrizendatu %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Ezin da direktorioa irakurri %s - %s</string>
     <string name="just_once">Behin bakarrik</string>
     <string name="always">Beti</string>
     <string name="choose_different_app">Aukeratu beste aplikazio bat</string>
@@ -732,7 +732,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="ftp_prompt_restart_server">FTP zerbitzaria berrabiarazi beharko duzu aldaketak indarrean jartzeko.</string>
     <string name="error_permission_denied">Baimena ukatua</string>
     <string name="error_archive_password_incorrect">Artxiboko pasahitz okerra</string>
-    <string name="error_archive_cannot_extract">Ezin da artxiboa \"%s\"-tik \"%s\"-ra erauzi.</string>
+    <string name="error_archive_cannot_extract" formatted="false">Ezin da artxiboa \"%s\"-tik \"%s\"-ra erauzi.</string>
     <string name="drag_and_drop_preference">Hautatu arrastatu eta jaregin hobespena (esperimentala)</string>
     <string name="drag_to_move_copy">Sakatu eta arrastatu fitxategiak mugitu edo kopiatzeko</string>
     <string name="drag_to_select">Sakatu eta arrastatu fitxategiak hautatzeko</string>
@@ -752,7 +752,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="compressed_explorer_fragment_error_open_uri">Errorea \"%s\" URLa irakurtzeko irekitzean.</string>
     <string name="error_empty_archive">\"%s\" hutsa dagoen artxiboa da.</string>
     <string name="error_bad_archive_without_info">\"%s\" hondatutako artxiboa da.</string>
-    <string name="error_bad_archive_with_info">%s\" hondatutako artxiboa da.\nErauzlearen mezua: \"%s</string>
+    <string name="error_bad_archive_with_info" formatted="false">%s\" hondatutako artxiboa da.\nErauzlearen mezua: \"%s</string>
     <string name="security_error">Ezin izan da fitxategia ireki aplikazio hau erabiliz</string>
     <string name="cloud_drive_tooltip">Sortu Google Drive™ konexioa AMAZE fitxategi arakatzailearen bidez fitxategiak kudeatzeko.</string>
     <string name="signin_with_google_title">Autentifikatu Google Drive™ erabiltzeko</string>
@@ -806,7 +806,7 @@ Android 11 geroztik, Google-k Fitxategi kudeatzaileari gailuaren fitxategi guzti
     <string name="share_logs_summary">Partekatu erregistroak postaz / Telegramez</string>
     <string name="open_with_amaze">Ireki Amazerekin</string>
     <string name="confirmation">Berrespena</string>
-    <string name="open_file_confirmation">Ziur zaude fitxategi hau ireki nahi duzula\?\n\nName:\n%s\n\nLocation:\n%s\n\nSize:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="open_file_confirmation" formatted="false">Ziur zaude fitxategi hau ireki nahi duzula\?\n\nName:\n%s\n\nLocation:\n%s\n\nSize:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
     <string name="error_google_play_cannot_update_myself">Google Play-ren politiken aginduei jarraikiz, aplikazioek ezin dute beren kasa eguneratu. Mesedez, eguneratu aplikazioa Google Play-tik.</string>
     <string name="error_cannot_get_package_info">Ezin da paketearen informazioa eskuratu \"%s\" fitxategitik. Zehaztutako fitxategia ez da APK, edo pakete-fitxategia hondatuta dago.</string>
     <string name="preference_delete_confirmation">Ezabaketaren berrespena</string>
@@ -844,7 +844,7 @@ Android 11 geroztik, Google-k Fitxategi kudeatzaileari gailuaren fitxategi guzti
     <string name="preference_language_dialog_title">Hautatu hizkuntza</string>
     <string name="preference_language_system_default">Sistemaren balio lehenetsia</string>
     <string name="error.listfile.smb.title">Ezin izan da SMB fitxategi-zerrenda kargatu</string>
-    <string name="error.listfile.smb">Errorea fitxategiak zerrendatzen %s-n: %s</string>
+    <string name="error.listfile.smb" formatted="false">Errorea fitxategiak zerrendatzen %s-n: %s</string>
     <string name="error.listfile.smb.noipcshare">Errorea gertatu da fitxategiak %s-n zerrendatzean - ziurrenik SMB zerbitzariak ez du baimentzen anonimoki IPC$-ren partekatzean sartzea.  Saia zaitezke konexioaren konfigurazioan partekatze-izena zuzenean zehazten.</string>
     <string name="trash_bin">Zakarrontzia</string>
     <string name="delete_permanently_checkbox">Ezabatu betiko</string>

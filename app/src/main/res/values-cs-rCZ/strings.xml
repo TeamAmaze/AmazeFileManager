@@ -36,7 +36,7 @@
     <string name="uninstall">Odinstalovat</string>
     <string name="play">Obchod Play</string>
     <string name="properties">Předvolby</string>
-    <string name="copyingapks">Kopírování %d APK souborů do %s</string>
+    <string name="copyingapks" formatted="false">Kopírování %d APK souborů do %s</string>
     <string name="delbook">Odstranit záložku</string>
     <string name="add_to_bookmarks">Přidat do záložek</string>
     <string name="enterpath">Zadejte cestu</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">Děkujeme Vám za dar, udržuje nás motivované! (:</string>
     <string name="enable_marquee_filename">Povolit markýzový efekt pro názvy souborů</string>
     <string name="archive_password_prompt">Zadejte prosím heslo archívu:</string>
-    <string name="cannot_extract_archive">Nelze extrahovat archív \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Nelze extrahovat archív \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Nezdařilo se otevřít archív \"%s\". Buď nemůžeme archív otevřít, nebo byl archív poškozen.</string>
     <string name="close">Zavřít</string>
     <string name="bookmark_exists">Záložka existuje</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">Zakázat kontrolu IPC podpisu (pro starší SMBv1 servery - NEBEZPEČNÉ!)</string>
     <string name="cannot_delete_file">Nelze smazat soubor</string>
     <string name="cannot_delete_file_with_reason">Nelze smazat soubor - %s</string>
-    <string name="cannot_rename_file">Nelze přejmenovat soubor %s - %s</string>
-    <string name="cannot_read_directory">Nelze číst adresář %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Nelze přejmenovat soubor %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Nelze číst adresář %s - %s</string>
     <string name="just_once">Pouze jednou</string>
     <string name="always">Vždy</string>
     <string name="choose_different_app">Vybrat jinou aplikaci</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">Budete muset FTP server restartovat pro projevení změn.</string>
     <string name="error_permission_denied">Oprávněění odmítnuto</string>
     <string name="error_archive_password_incorrect">Nesprávné heslo archívu.</string>
-    <string name="error_archive_cannot_extract">Nelze extrahovat obsah archívu \"%s\" po \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Nelze extrahovat obsah archívu \"%s\" po \"%s\".</string>
     <string name="drag_and_drop_preference">Zvolte preferenci drag and drop (Experimentální)</string>
     <string name="drag_to_move_copy">Dotknout a táhnout pro přesun nebo kopírování souborů</string>
     <string name="drag_to_select">Dotknout a táhnout pro zvolení souborů</string>
@@ -738,7 +738,7 @@
     <string name="preference_language_dialog_title">Zvolte jazyk</string>
     <string name="preference_language_system_default">Dle systému</string>
     <string name="error.listfile.smb.title">Nedaří se načíst seznam souborů SMB</string>
-    <string name="error.listfile.smb">Výpis chybných souborů na %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Výpis chybných souborů na %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Chyba při výpisu souborů na %s - server SMB pravděpodobně nepovoluje anonymní přístup ke sdílené složce IPC$. Můžete zkusit zadat název sdílené složky přímo v nastavení připojení.</string>
     <string name="trash_bin">Koš</string>
     <string name="delete_permanently_checkbox">Odstranit trvale</string>

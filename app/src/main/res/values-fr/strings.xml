@@ -36,7 +36,7 @@
     <string name="uninstall">Désinstaller</string>
     <string name="play">Play store</string>
     <string name="properties">Propriétés</string>
-    <string name="copyingapks">Copie de %d fichiers APK vers %s en cours</string>
+    <string name="copyingapks" formatted="false">Copie de %d fichiers APK vers %s en cours</string>
     <string name="delbook">Supprimer le favori</string>
     <string name="add_to_bookmarks">Ajouter aux favoris</string>
     <string name="enterpath">Entrer le chemin d\'accès</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">Merci pour le don, cela nous motive ! :D</string>
     <string name="enable_marquee_filename">Activer l\'effet de sélection pour les noms de fichiers</string>
     <string name="archive_password_prompt">Veuillez saisir le mot de passe d\'archivage:</string>
-    <string name="cannot_extract_archive">Impossible d\'extraire l\'archive \"%s\":%s</string>
+    <string name="cannot_extract_archive" formatted="false">Impossible d\'extraire l\'archive \"%s\":%s</string>
     <string name="archive_unsupported_or_corrupt">Impossible d\'ouvrir l\'archive \"%s\". Soit nous ne pouvons pas ouvrir l\'archive, soit l\'archive a été endommagée.</string>
     <string name="close">Fermer</string>
     <string name="bookmark_exists">Le signet existe</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">Désactiver la vérification de la signature IPC (Pour les anciens serveurs SMBv1 - RISQUÉ!)</string>
     <string name="cannot_delete_file">Impossible de supprimer le fichier</string>
     <string name="cannot_delete_file_with_reason">Impossible de supprimer le fichier - %s</string>
-    <string name="cannot_rename_file">Impossible de renommer le fichier %s - %s</string>
-    <string name="cannot_read_directory">Impossible de lire le répertoire %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Impossible de renommer le fichier %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Impossible de lire le répertoire %s - %s</string>
     <string name="just_once">Juste une fois</string>
     <string name="always">Toujours</string>
     <string name="choose_different_app">Choisissez une application différente</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">Vous devrez redémarrer le serveur FTP pour appliquer les changements.</string>
     <string name="error_permission_denied">Permission refusée</string>
     <string name="error_archive_password_incorrect">Mot de passe erroné</string>
-    <string name="error_archive_cannot_extract">Impossible d\'extraire l\'entrée de l\'archive \"%s\" vers \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Impossible d\'extraire l\'entrée de l\'archive \"%s\" vers \"%s\".</string>
     <string name="drag_and_drop_preference">Sélectionner la méthode de glisser-déposer (Expérimental)</string>
     <string name="drag_to_move_copy">Appuyez et faites glisser pour déplacer ou copier des fichiers</string>
     <string name="drag_to_select">Appuyez et faites glisser pour sélectionner des fichiers</string>
@@ -738,7 +738,7 @@
     <string name="preference_language_dialog_title">Sélectionner la langue</string>
     <string name="preference_language_system_default">Système par défaut</string>
     <string name="error.listfile.smb.title">Impossible de charger la liste des fichiers SMB</string>
-    <string name="error.listfile.smb">Erreur lors de l\'énumération des fichiers à %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Erreur lors de l\'énumération des fichiers à %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Erreur lors de l\'énumération des fichiers à %s - le serveur SMB n\'autorise probablement pas l\'accès anonyme au partage IPC$. Vous pouvez essayer de spécifier le nom du partage directement dans les paramètres de connexion.</string>
     <string name="trash_bin">Corbeille</string>
     <string name="delete_permanently_checkbox">Supprimer définitivement</string>

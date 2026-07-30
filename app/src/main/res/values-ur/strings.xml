@@ -36,7 +36,7 @@
     <string name="uninstall">ان انسٹال کریں</string>
     <string name="play">پلے اسٹور</string>
     <string name="properties">پراپرٹیز</string>
-    <string name="copyingapks">%s میں APK 1%d فائلوں کو کاپی کیا جا رہا ہے </string>
+    <string name="copyingapks" formatted="false">%s میں APK 1%d فائلوں کو کاپی کیا جا رہا ہے </string>
     <string name="delbook">بک مارک کو حذف کریں</string>
     <string name="add_to_bookmarks">بک مارکس میں شامل کریں</string>
     <string name="enterpath">راستہ داخل کریں</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">Thank you for the donation, this keeps us motivated! (:</string>
     <string name="enable_marquee_filename">Enable marquee effect for file names</string>
     <string name="archive_password_prompt">Please enter archive password:</string>
-    <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Cannot extract archive \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Cannot open archive \"%s\". Either we cannot open the archive, or the archive was damaged.</string>
     <string name="close">Close</string>
     <string name="bookmark_exists">Bookmark exists</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">Disable IPC signing check (For legacy SMBv1 servers - UNSAFE!)</string>
     <string name="cannot_delete_file">Cannot delete file </string>
     <string name="cannot_delete_file_with_reason">Cannot delete file - %s </string>
-    <string name="cannot_rename_file">Cannot rename file %s - %s</string>
-    <string name="cannot_read_directory">Cannot read directory %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Cannot rename file %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Cannot read directory %s - %s</string>
     <string name="just_once">Just Once</string>
     <string name="always">Always</string>
     <string name="choose_different_app">Choose different application</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
     <string name="error_permission_denied">Permission denied</string>
     <string name="error_archive_password_incorrect">Wrong archive password.</string>
-    <string name="error_archive_cannot_extract">Cannot extract archive entry \"%s\" to \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Cannot extract archive entry \"%s\" to \"%s\".</string>
     <string name="drag_and_drop_preference">Select drag and drop preference (Experimental)</string>
     <string name="drag_to_move_copy">Touch and drag to move or copy files</string>
     <string name="drag_to_select">Touch and drag to select files</string>
@@ -738,7 +738,7 @@
     <string name="preference_language_dialog_title">Select Language</string>
     <string name="preference_language_system_default">System Default</string>
     <string name="error.listfile.smb.title">Unable to load SMB file list</string>
-    <string name="error.listfile.smb">Error listing files at %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Error listing files at %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Error listing files at %s - probably the SMB server does not allow anonymous access to the IPC$ share. You may try specifying the share name directly in connection settings.</string>
     <string name="trash_bin">Trash Bin</string>
     <string name="delete_permanently_checkbox">Delete Permanently</string>

@@ -36,7 +36,7 @@
     <string name="uninstall">הסרת התקנה</string>
     <string name="play">חנות Play</string>
     <string name="properties">מאפיינים</string>
-    <string name="copyingapks">%d קובצי APK מועתקים אל %s</string>
+    <string name="copyingapks" formatted="false">%d קובצי APK מועתקים אל %s</string>
     <string name="delbook">מחיקת סימנייה</string>
     <string name="add_to_bookmarks">הוספה לסימניות</string>
     <string name="enterpath">נא להקליד נתיב</string>
@@ -598,7 +598,7 @@
     <string name="donation_thanks">תודה על התרומה, זה מעלה לנו את המוטיבציה! :)</string>
     <string name="enable_marquee_filename">הפעלת אפקט גלילה לשמות קבצים</string>
     <string name="archive_password_prompt">נא להקליד את הסיסמה של הארכיון:</string>
-    <string name="cannot_extract_archive">לא ניתן לחלץ את הארכיון „%s”: %s</string>
+    <string name="cannot_extract_archive" formatted="false">לא ניתן לחלץ את הארכיון „%s”: %s</string>
     <string name="archive_unsupported_or_corrupt">לא ניתן לפתוח את הארכיון „%s”. או שאין אפשרות לפתוח את הארכיון או שהוא פגום.</string>
     <string name="close">סגירה</string>
     <string name="bookmark_exists">הסימנייה קיימת</string>
@@ -641,8 +641,8 @@
     <string name="disableIpcSignature">השבתת בדיקת חתימת IPC (לשרתי SMBv1 מיושנים - מסוכן!)</string>
     <string name="cannot_delete_file">לא ניתן למחוק קובץ</string>
     <string name="cannot_delete_file_with_reason">לא ניתן למחוק קובץ - %s </string>
-    <string name="cannot_rename_file">לא ניתן לשנות את שם הקובץ %s - %s</string>
-    <string name="cannot_read_directory">לא ניתן לקרוא את התיקייה %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">לא ניתן לשנות את שם הקובץ %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">לא ניתן לקרוא את התיקייה %s - %s</string>
     <string name="just_once">רק פעם אחת</string>
     <string name="always">תמיד</string>
     <string name="choose_different_app">לבחור ביישומון אחר</string>
@@ -655,7 +655,7 @@
     <string name="ftp_prompt_restart_server">יהיה עליך להפעיל את שרת ה־FTP מחדש כדי שהשינויים ייכנסו לתוקף.</string>
     <string name="error_permission_denied">ההרשאה נדחתה</string>
     <string name="error_archive_password_incorrect">סיסמת הארכיון שגויה.</string>
-    <string name="error_archive_cannot_extract">לא ניתן לחלץ את רשומת הארכיון „%s” אל „%s”.</string>
+    <string name="error_archive_cannot_extract" formatted="false">לא ניתן לחלץ את רשומת הארכיון „%s” אל „%s”.</string>
     <string name="drag_and_drop_preference">בחירת העדפת גרירה ועזיבה (ניסיוני)</string>
     <string name="drag_to_move_copy">יש לגעת ולגרור כדי להעביר או להעתיק קבצים</string>
     <string name="drag_to_select">יש לגעת ולגרור כדי לבחור קבצים</string>
@@ -675,7 +675,7 @@
     <string name="compressed_explorer_fragment_error_open_uri">שגיאה בפתיחת הכתובת „%s” לקריאה.</string>
     <string name="error_empty_archive">„%s” הוא ארכיון ריק.</string>
     <string name="error_bad_archive_without_info">הארכיון „%s” פגום</string>
-    <string name="error_bad_archive_with_info">„%s” הוא ארכיון פגום.\nההודעה מהמחלץ היא: „%s”</string>
+    <string name="error_bad_archive_with_info" formatted="false">„%s” הוא ארכיון פגום.\nההודעה מהמחלץ היא: „%s”</string>
     <string name="security_error">אי אפשר לפתוח את הקובץ באמצעות היישום הזה</string>
     <string name="cloud_drive_tooltip">יצירת חיבור ל־Google Drive™‎ לטובת ניהול קבצים מתוך מנהל הקבצים Amaze.</string>
     <string name="signin_with_google_title">יש לעבור אימות כדי להשתמש ב־Google Drive™‎</string>
@@ -720,7 +720,7 @@
     <string name="share_logs_summary">שיתוף היומנים שנאספו דרך דוא״ל / טלגרם</string>
     <string name="open_with_amaze">פתיחה עם Amaze</string>
     <string name="confirmation">אישור</string>
-    <string name="open_file_confirmation">לפתוח את הקובץ הבא\?\n\nשם:\n%s\n\nמקום:\n%s\n\nגודל:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="open_file_confirmation" formatted="false">לפתוח את הקובץ הבא\?\n\nשם:\n%s\n\nמקום:\n%s\n\nגודל:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
     <string name="error_google_play_cannot_update_myself">עקב אילוץ של מדיניות מצד Google Play, ליישומונים אסור לעדכן את עצמם. נא לעדכן את היישומון דרך Google Play.</string>
     <string name="error_cannot_get_package_info">לא ניתן למשוך את פרטי החבילה מהקובץ „%s”.\nאו שזה לא קובץ APK או שקובץ החבילה פגום.</string>
     <string name="preference_delete_confirmation">אישור מחיקה</string>
@@ -756,7 +756,7 @@
     <string name="preference_language_dialog_title">בחירת שפה</string>
     <string name="preference_language_system_default">ברירת המחדל של המערכת</string>
     <string name="error.listfile.smb.title">לא ניתן לטעון את רשימת קובצי ה־SMB</string>
-    <string name="error.listfile.smb">שגיאה בהצגת קבצים מתוך %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">שגיאה בהצגת קבצים מתוך %s: %s</string>
     <string name="error.listfile.smb.noipcshare">שגיאה בהצגת הקבצים תחת %s - כנראה ששרת ה־SMB לא מרשה גישה אלמונית לשיתוף ‎$IPC. אפשר לנסות לציין את שם השיתוף ישירות בהגדרות החיבור.</string>
     <string name="trash_bin">סל אשפה</string>
     <string name="delete_permanently_checkbox">מחיקה לצמיתות</string>

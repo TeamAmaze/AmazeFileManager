@@ -581,7 +581,7 @@
     <string name="donation_thanks">شكرا للتبرع ، هذا يبقينا متحفزا ! (: </string>
     <string name="enable_marquee_filename">اتاحة تأثير marquee لأسماء الملفات </string>
     <string name="archive_password_prompt">برجاء ادخال كلمة سرية التخزين : </string>
-    <string name="cannot_extract_archive">لا يمكن استخراج الأرشيف \"\ %s \"\ : %s </string>
+    <string name="cannot_extract_archive" formatted="false">لا يمكن استخراج الأرشيف \"\ %s \"\ : %s </string>
     <string name="archive_unsupported_or_corrupt">لا يمكن فتح التخزين \\" %s \\".  اما أنه لا يمكن فتح ملف التخزين ، أو أنه قد حدث تلف في التخزين. </string>
     <string name="close">اغلاق </string>
     <string name="bookmark_exists">علامة التوقف موجودة </string>
@@ -624,8 +624,8 @@
     <string name="disableIpcSignature">الغاء اتاحة التحقق من توقيع IPC (بالنسبة لوحدات خدمة SMBv1 القديمة-UNSAFE !) </string>
     <string name="cannot_delete_file">لا يمكن حذف الملف   </string>
     <string name="cannot_delete_file_with_reason">لا يمكن حذف الملف-%s   </string>
-    <string name="cannot_rename_file">لا يمكن اعادة تسمية الملف %s-%s </string>
-    <string name="cannot_read_directory">لا يمكن قراءة الدليل %s-%s </string>
+    <string name="cannot_rename_file" formatted="false">لا يمكن اعادة تسمية الملف %s-%s </string>
+    <string name="cannot_read_directory" formatted="false">لا يمكن قراءة الدليل %s-%s </string>
     <string name="just_once">مرة واحدة فقط </string>
     <string name="always">دائما </string>
     <string name="choose_different_app">اختيار تطبيق مختلف </string>
@@ -638,7 +638,7 @@
     <string name="ftp_prompt_restart_server">سيكون من الضروري اعادة بدء وحدة خدمة FTP لكي تصبح التغييرات فعالة. </string>
     <string name="error_permission_denied">تم رفض التصريح </string>
     <string name="error_archive_password_incorrect">كلمة سرية أرشيف غير صحيحة. </string>
-    <string name="error_archive_cannot_extract">لا يمكن استخراج مدخلات التخزين \\"%s \\" الى \"\ %s \"\. </string>
+    <string name="error_archive_cannot_extract" formatted="false">لا يمكن استخراج مدخلات التخزين \\"%s \\" الى \"\ %s \"\. </string>
     <string name="drag_and_drop_preference">حدد سحب ووضع تفضيلات (Expertal) </string>
     <string name="drag_to_move_copy">اللمس والسحب لنقل أو نسخ ملفات </string>
     <string name="drag_to_select">قم باللمس والسحب لاختيار الملفات </string>

@@ -36,7 +36,7 @@
     <string name="uninstall">Deinstallieren</string>
     <string name="play">Play Store</string>
     <string name="properties">Eigenschaften</string>
-    <string name="copyingapks">%d APK-Dateien nach %s kopieren</string>
+    <string name="copyingapks" formatted="false">%d APK-Dateien nach %s kopieren</string>
     <string name="delbook">Lesezeichen löschen</string>
     <string name="add_to_bookmarks">Zu Lesezeichen hinzufügen</string>
     <string name="enterpath">Pfad eingeben</string>
@@ -591,7 +591,7 @@
     <string name="donation_thanks">Vielen Dank für Ihre Spende. Das hält uns motiviert! (:</string>
     <string name="enable_marquee_filename">Lauftext für lange Dateinamen aktivieren</string>
     <string name="archive_password_prompt">Bitte geben Sie das Archivpasswort ein:</string>
-    <string name="cannot_extract_archive">Kann Archiv \"%s\":%s nicht extrahieren</string>
+    <string name="cannot_extract_archive" formatted="false">Kann Archiv \"%s\":%s nicht extrahieren</string>
     <string name="archive_unsupported_or_corrupt">Das Archiv \"%s\" kann nicht geöffnet werden. Entweder können wir das Archiv nicht öffnen oder das Archiv wurde beschädigt.</string>
     <string name="close">Schließen</string>
     <string name="bookmark_exists">Lesezeichen existiert</string>
@@ -632,8 +632,8 @@
     <string name="disableIpcSignature">IPC Signaturprüfung deaktivieren (Für veraltete SMBv1 Server - UNSICHER!)</string>
     <string name="cannot_delete_file">Datei kann nicht gelöscht werden</string>
     <string name="cannot_delete_file_with_reason">Datei %s kann nicht gelöscht werden</string>
-    <string name="cannot_rename_file">Datei %s - %s kann nicht umbenannt werden</string>
-    <string name="cannot_read_directory">Verzeichnis %s - %s kann nicht gelesen werden</string>
+    <string name="cannot_rename_file" formatted="false">Datei %s - %s kann nicht umbenannt werden</string>
+    <string name="cannot_read_directory" formatted="false">Verzeichnis %s - %s kann nicht gelesen werden</string>
     <string name="just_once">Nur einmal</string>
     <string name="always">Immer</string>
     <string name="choose_different_app">Andere Anwendung auswählen</string>
@@ -646,7 +646,7 @@
     <string name="ftp_prompt_restart_server">Sie müssen den FTP-Server neu starten, damit die Änderungen angewendet werden.</string>
     <string name="error_permission_denied">Berechtigung verweigert</string>
     <string name="error_archive_password_incorrect">Falsches Archiv-Passwort.</string>
-    <string name="error_archive_cannot_extract">Kann Archiv-Eintrag \"%s\" nicht nach \"%s\" extrahieren.</string>
+    <string name="error_archive_cannot_extract" formatted="false">Kann Archiv-Eintrag \"%s\" nicht nach \"%s\" extrahieren.</string>
     <string name="drag_and_drop_preference">Drag and Drop Präferenz auswählen (Experimentell)</string>
     <string name="drag_to_move_copy">Berühren und wischen um Dateien zu verschieben oder zu kopieren</string>
     <string name="drag_to_select">Berühren und wischen um Dateien auszuwählen</string>
@@ -740,7 +740,7 @@
     <string name="preference_language_dialog_title">Sprache auswählen</string>
     <string name="preference_language_system_default">Systemstandard</string>
     <string name="error.listfile.smb.title">SMB-Dateiliste kann nicht geladen werden</string>
-    <string name="error.listfile.smb">Fehler beim Auflisten der Dateien unter %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Fehler beim Auflisten der Dateien unter %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Fehler beim Auflisten der Dateien unter %s - wahrscheinlich erlaubt der SMB-Server keinen anonymen Zugriff auf die IPC$-Freigabe. Sie können versuchen, den Freigabenamen direkt in den Verbindungseinstellungen anzugeben.</string>
     <string name="trash_bin">Papierkorb</string>
     <string name="delete_permanently_checkbox">Unwiderruflich löschen</string>

@@ -36,7 +36,7 @@
     <string name="uninstall">Удалить</string>
     <string name="play">Открыть в Play Store</string>
     <string name="properties">Свойства</string>
-    <string name="copyingapks">Копирование %d APK-файлов в %s</string>
+    <string name="copyingapks" formatted="false">Копирование %d APK-файлов в %s</string>
     <string name="delbook">Удалить закладку</string>
     <string name="add_to_bookmarks">Добавить в закладки</string>
     <string name="enterpath">Введите путь</string>
@@ -589,7 +589,7 @@
     <string name="donation_thanks">Спасибо за пожертвование, это мотивирует нас! (:</string>
     <string name="enable_marquee_filename">Включить эффект бегущей строки для имён файлов</string>
     <string name="archive_password_prompt">Пожалуйста, введите пароль архива:</string>
-    <string name="cannot_extract_archive">Не удается извлечь архив \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Не удается извлечь архив \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Невозможно открыть архив  \"%s\". Либо мы не можем открыть архив, либо архив был поврежден.</string>
     <string name="close">Закрыть</string>
     <string name="bookmark_exists">Закладка существует</string>
@@ -630,8 +630,8 @@
     <string name="disableIpcSignature">Отключить проверку подписи IPC (для устаревших серверов SMBv1 — НЕБЕЗОПАСНО!)</string>
     <string name="cannot_delete_file">Не удаётся удалить файл</string>
     <string name="cannot_delete_file_with_reason">Не удаётся удалить файл - %s </string>
-    <string name="cannot_rename_file">Не удаётся переименовать файл %s - %s</string>
-    <string name="cannot_read_directory">Не удаётся прочитать папку%s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Не удаётся переименовать файл %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Не удаётся прочитать папку%s - %s</string>
     <string name="just_once">Только раз</string>
     <string name="always">Всегда</string>
     <string name="choose_different_app">Выбрать другое приложение</string>
@@ -644,7 +644,7 @@
     <string name="ftp_prompt_restart_server">Чтобы изменения вступили в силу, вам нужно будет перезапустить FTP-сервер.</string>
     <string name="error_permission_denied">В доступе отказано</string>
     <string name="error_archive_password_incorrect">Неверный пароль архива.</string>
-    <string name="error_archive_cannot_extract">Невозможно извлечь запись архива \"%s\" в \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Невозможно извлечь запись архива \"%s\" в \"%s\".</string>
     <string name="drag_and_drop_preference">Выберите параметр перетаскивания (экспериментальная функция)</string>
     <string name="drag_to_move_copy">Коснитесь и перетащите, чтобы переместить или скопировать файлы</string>
     <string name="drag_to_select">Коснитесь и перетащите, чтобы выбрать файлы</string>
@@ -738,7 +738,7 @@
     <string name="preference_language_dialog_title">Выбрать язык</string>
     <string name="preference_language_system_default">Как в системе</string>
     <string name="error.listfile.smb.title">Невозможно загрузить список файлов SMB</string>
-    <string name="error.listfile.smb">Ошибка при чтении списка файлов в %s: %s</string>
+    <string name="error.listfile.smb" formatted="false">Ошибка при чтении списка файлов в %s: %s</string>
     <string name="error.listfile.smb.noipcshare">Ошибка перечисления файлов в %s - вероятно, сервер SMB не разрешает анонимный доступ к ресурсу IPC$. Вы можете попробовать указать имя ресурса напрямую в настройках подключения.</string>
     <string name="trash_bin">Корзина</string>
     <string name="delete_permanently_checkbox">Удалить навсегда</string>

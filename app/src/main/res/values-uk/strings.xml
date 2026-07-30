@@ -596,8 +596,8 @@
     <string name="disableIpcSignature">Вимкнути перевірку підписання IPC (для застарілих серверів SMBv1 - НЕБЕЗПЕЧНО!)</string>
     <string name="cannot_delete_file">Не вдається видалити файл</string>
     <string name="cannot_delete_file_with_reason">Не вдається видалити файл - %s</string>
-    <string name="cannot_rename_file">Не вдається перейменувати файл %s - %s</string>
-    <string name="cannot_read_directory">Не вжається прочитати каталог %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Не вдається перейменувати файл %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Не вжається прочитати каталог %s - %s</string>
     <string name="just_once">Лише цього разу</string>
     <string name="always">Завжди</string>
     <string name="choose_different_app">Виберіть іншу програму</string>

@@ -1,6 +1,7 @@
 name: Android Feature CI
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - 'master'
@@ -79,9 +80,22 @@ jobs:
             echo "❌ .cargo/config.toml missing"
             exit 1
           fi
+          
+      # (โค้ดด้านบนปล่อยไว้เหมือนเดิม)
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
+
+      # 1. สั่งบิลด์ APK (อันนี้ผ่านอยู่แล้ว)
       - name: Build with Gradle
-        run: ./gradlew assembledebug --stacktrace
+        run: ./gradlew assemblePlayDebug --stacktrace
       - name: Run test cases
         run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info
+
+      # 2. ✅ เพิ่มโค้ด 1 บล็อกนี้เข้าไปต่อท้ายสุดแทน เพื่อดูดไฟล์ APK มาให้เราโหลด!
+      - name: 📦 Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AmazeFileManager-Debug-APK
+          path: app/build/outputs/apk/**/*.apk
+          retention-days: 7
+          if-no-files-found: error

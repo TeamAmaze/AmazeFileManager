@@ -583,7 +583,7 @@
     <string name="donation_thanks">Cảm ơn bạn đã đóng góp, điều này giúp chúng tôi có động lực! (:</string>
     <string name="enable_marquee_filename">Bật hiệu ứng marquee cho tên tệp</string>
     <string name="archive_password_prompt">Vui lòng nhập mật khẩu lưu trữ:</string>
-    <string name="cannot_extract_archive">Không thể giải nén tệp lưu trữ \"%s\": %s</string>
+    <string name="cannot_extract_archive" formatted="false">Không thể giải nén tệp lưu trữ \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Không thể mở tệp lưu trữ \"%s\". Chúng tôi không thể mở tệp lưu trữ hoặc tệp lưu trữ đã bị hỏng.</string>
     <string name="close">Thoát</string>
     <string name="bookmark_exists">Dấu trang tồn tại</string>
@@ -626,8 +626,8 @@
     <string name="disableIpcSignature">Tắt kiểm tra ký IPC (Đối với máy chủ SMBv1 cũ - KHÔNG AN TOÀN!)</string>
     <string name="cannot_delete_file">Không thể xóa tập tin</string>
     <string name="cannot_delete_file_with_reason">Không thể xóa tập tin - %s </string>
-    <string name="cannot_rename_file">Không thể đổi tên tập tin %s - %s</string>
-    <string name="cannot_read_directory">Không thể đọc thư mục %s - %s</string>
+    <string name="cannot_rename_file" formatted="false">Không thể đổi tên tập tin %s - %s</string>
+    <string name="cannot_read_directory" formatted="false">Không thể đọc thư mục %s - %s</string>
     <string name="just_once">Chỉ một lần</string>
     <string name="always">Luôn luôn</string>
     <string name="choose_different_app">Chọn ứng dụng khác</string>
@@ -640,7 +640,7 @@
     <string name="ftp_prompt_restart_server">Bạn sẽ cần khởi động lại máy chủ FTP để các thay đổi có hiệu lực.</string>
     <string name="error_permission_denied">Quyền bị từ chối</string>
     <string name="error_archive_password_incorrect">Mật khẩu lưu trữ sai.</string>
-    <string name="error_archive_cannot_extract">Không thể giải nén mục nhập lưu trữ \"%s\" đến \"%s\".</string>
+    <string name="error_archive_cannot_extract" formatted="false">Không thể giải nén mục nhập lưu trữ \"%s\" đến \"%s\".</string>
     <string name="drag_and_drop_preference">Chọn tùy chọn kéo và thả (Thử nghiệm)</string>
     <string name="drag_to_move_copy">Chạm và kéo để di chuyển hoặc sao chép tệp</string>
     <string name="drag_to_select">Chạm và kéo để chọn tệp</string>
