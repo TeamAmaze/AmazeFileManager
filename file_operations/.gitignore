@@ -1,7 +1,6 @@
 # Rust build artifacts
 target/
 **/*.rs.bk
-Cargo.lock
 
 # Auto-generated configuration (generated from template)
 .cargo/config.toml
