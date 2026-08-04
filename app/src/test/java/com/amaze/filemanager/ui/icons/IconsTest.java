@@ -48,9 +48,9 @@ public class IconsTest {
   public void setUp() {
     // By default Robolectric's MimeTypeMap is empty, we need to populate them
     ShadowMimeTypeMap mimeTypeMap = Shadows.shadowOf(MimeTypeMap.getSingleton());
-    mimeTypeMap.addExtensionMimeTypMapping("zip", "application/zip");
-    mimeTypeMap.addExtensionMimeTypMapping("rar", "application/x-rar-compressed");
-    mimeTypeMap.addExtensionMimeTypMapping("tar", "application/x-tar");
+    mimeTypeMap.addExtensionMimeTypeMapping("zip", "application/zip");
+    mimeTypeMap.addExtensionMimeTypeMapping("rar", "application/x-rar-compressed");
+    mimeTypeMap.addExtensionMimeTypeMapping("tar", "application/x-tar");
   }
 
   @Test
