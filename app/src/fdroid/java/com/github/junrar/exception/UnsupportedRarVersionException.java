@@ -18,31 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils
-
-import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.IntentFilter
-import android.os.Build
-import android.os.Build.VERSION_CODES.O
-import androidx.core.content.ContextCompat
+package com.github.junrar.exception;
 
 /**
- * Context.registerReceiver() for SDK compatibility.
- *
- * Without additional checks in original ContextCompat to prevent breaking Roboletric tests.
- * See https://github.com/robolectric/robolectric/issues/9124
+ * Thrown when the archive signature names a RAR format this library cannot read: a future format
+ * version byte ({@code 0x02}..{@code 0x04}) that the library predates (unrar {@code RARFMT_FUTURE},
+ * {@code d861246:archive.cpp:122,178-181}: "so we can return a sensible warning in case we'll want
+ * to change the archive format sometimes in the future"). The ancient RAR 1.4 format (marker {@code
+ * 52 45 7e 5e}, unrar {@code RARFMT14}) no longer throws this -- {@code Archive} reads its headers
+ * through a dedicated loop (P1, issue #293). Distinct from {@link BadRarArchiveException} (no valid
+ * signature at all).
  */
-@SuppressLint("WrongConstant")
-fun Context.registerReceiverCompat(
-    broadcastReceiver: BroadcastReceiver,
-    intentFilter: IntentFilter,
-    flag: Int = ContextCompat.RECEIVER_NOT_EXPORTED,
-) {
-    if (Build.VERSION.SDK_INT >= O) {
-        this.registerReceiver(broadcastReceiver, intentFilter, flag)
-    } else {
-        this.registerReceiver(broadcastReceiver, intentFilter)
-    }
+public class UnsupportedRarVersionException extends Exception {
+  public UnsupportedRarVersionException(Throwable cause) {
+    super(cause);
+  }
+
+  public UnsupportedRarVersionException() {}
 }

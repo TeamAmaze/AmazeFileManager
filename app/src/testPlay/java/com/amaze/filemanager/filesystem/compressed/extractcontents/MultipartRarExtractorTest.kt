@@ -28,8 +28,8 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor.OnUpdate
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor
 import com.amaze.filemanager.shadows.ShadowMultiDex
-import com.github.junrar.exception.UnsupportedRarV5Exception
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,7 +38,6 @@ import org.robolectric.shadows.ShadowEnvironment
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
@@ -87,8 +86,8 @@ class MultipartRarExtractorTest {
                 override fun onFinish() {
                     latch.countDown()
                     val verify = File(Environment.getExternalStorageDirectory(), "test.bin")
-                    Assert.assertTrue(verify.exists())
-                    Assert.assertEquals((1024 * 128).toLong(), verify.length())
+                    assertTrue(verify.exists())
+                    assertEquals((1024 * 128).toLong(), verify.length())
                 }
             },
             ServiceWatcherUtil.UPDATE_POSITION,
@@ -101,23 +100,25 @@ class MultipartRarExtractorTest {
      */
     @Test
     fun testExtractMultiVolumeV5Rar() {
-        try {
-            RarExtractor(
-                ApplicationProvider.getApplicationContext(),
-                File(
-                    Environment.getExternalStorageDirectory(),
-                    "test-multipart-archive-v5.part1.rar",
-                )
-                    .absolutePath,
-                Environment.getExternalStorageDirectory().absolutePath,
-                callback,
-                ServiceWatcherUtil.UPDATE_POSITION,
-            ).extractEverything()
-            Assert.fail("No exception was thrown")
-        } catch (expected: IOException) {
-            expected.printStackTrace()
-            Assert.assertEquals(UnsupportedRarV5Exception::class.java, expected.cause!!.javaClass)
-        }
+        val latch = CountDownLatch(1)
+        RarExtractor(
+            ApplicationProvider.getApplicationContext(),
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test-multipart-archive-v5.part1.rar",
+            ).absolutePath,
+            Environment.getExternalStorageDirectory().absolutePath,
+            object : OnUpdate by callback {
+                override fun onFinish() {
+                    latch.countDown()
+                    val verify = File(Environment.getExternalStorageDirectory(), "test.bin")
+                    assertTrue(verify.exists())
+                    assertEquals((1024 * 128).toLong(), verify.length())
+                }
+            },
+            ServiceWatcherUtil.UPDATE_POSITION,
+        ).extractEverything()
+        latch.await()
     }
 
     private fun copyArchivesToStorage() {

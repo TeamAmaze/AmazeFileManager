@@ -37,17 +37,15 @@ import com.amaze.filemanager.utils.PasswordUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import org.apache.sshd.common.NamedFactory
 import org.apache.sshd.common.config.keys.KeyUtils
 import org.apache.sshd.common.file.FileSystemFactory
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory
-import org.apache.sshd.server.Command
+import org.apache.sshd.scp.server.ScpCommandFactory
 import org.apache.sshd.server.SshServer
 import org.apache.sshd.server.auth.password.PasswordAuthenticator
 import org.apache.sshd.server.auth.pubkey.AcceptAllPublickeyAuthenticator
-import org.apache.sshd.server.scp.ScpCommandFactory
 import org.apache.sshd.server.session.ServerSession
-import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory
+import org.apache.sshd.sftp.server.SftpSubsystemFactory
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
@@ -132,7 +130,7 @@ abstract class AbstractSftpServerTest {
         server.host = HOST
         server.keyPairProvider = hostKeyProvider
         server.commandFactory = ScpCommandFactory()
-        server.subsystemFactories = listOf<NamedFactory<Command>>(SftpSubsystemFactory())
+        server.subsystemFactories = listOf(SftpSubsystemFactory())
         server.passwordAuthenticator =
             PasswordAuthenticator { username: String, password: String, _: ServerSession? ->
                 username == USERNAME && password == PASSWORD

@@ -29,7 +29,6 @@ import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.shadows.ShadowMultiDex
-import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.slot
@@ -109,8 +108,11 @@ class FtpReceiverTest {
         val intent = Intent(FtpService.ACTION_START_FTPSERVER)
         receiver.onReceive(spy, intent)
 
+        verify(exactly = 0) {
+            spy.startService(capturedIntent.captured)
+        }
+
         verify {
-            spy.startService(capturedIntent.captured)?.wasNot(Called)
             spy.startForegroundService(capturedIntent.captured)
         }
     }

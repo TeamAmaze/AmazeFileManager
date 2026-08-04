@@ -140,10 +140,10 @@ public class NotificationConstantsTest {
   public void testCreateNormalChannel() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_NORMAL_ID);
     NotificationConstants.setMetadata(context, builder, TYPE_NORMAL);
-    List<Object> channels = shadowNotificationManager.getNotificationChannels();
+    List<NotificationChannel> channels = shadowNotificationManager.getNotificationChannels();
     assertNotNull(channels);
     assertEquals(1, channels.size());
-    NotificationChannel channel = (NotificationChannel) channels.get(0);
+    NotificationChannel channel = channels.get(0);
     assertEquals(IMPORTANCE_MIN, channel.getImportance());
     assertEquals(CHANNEL_NORMAL_ID, channel.getId());
     assertEquals(context.getString(R.string.channel_name_normal), channel.getName());
@@ -155,10 +155,10 @@ public class NotificationConstantsTest {
   public void testCreateFtpChannel() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_FTP_ID);
     NotificationConstants.setMetadata(context, builder, TYPE_FTP);
-    List<Object> channels = shadowNotificationManager.getNotificationChannels();
+    List<NotificationChannel> channels = shadowNotificationManager.getNotificationChannels();
     assertNotNull(channels);
     assertEquals(1, channels.size());
-    NotificationChannel channel = (NotificationChannel) channels.get(0);
+    NotificationChannel channel = channels.get(0);
     assertEquals(IMPORTANCE_HIGH, channel.getImportance());
     assertEquals(CHANNEL_FTP_ID, channel.getId());
     assertEquals(context.getString(R.string.channel_name_ftp), channel.getName());

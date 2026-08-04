@@ -79,7 +79,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration
 import com.amaze.filemanager.ui.views.FastScroller
 import com.amaze.filemanager.utils.BottomBarButtonPath
 import com.amaze.filemanager.utils.Utils
-import com.github.junrar.exception.UnsupportedRarV5Exception
+import com.github.junrar.exception.UnsupportedRarVersionException
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import io.reactivex.Flowable
@@ -656,7 +656,10 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
     private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
         @StringRes val msg: Int =
-            if (e?.cause?.javaClass is UnsupportedRarV5Exception) {
+            if (UnsupportedRarVersionException::class.java.isAssignableFrom(
+                    e?.cause?.javaClass,
+                )
+            ) {
                 R.string.error_unsupported_v5_rar
             } else {
                 R.string.archive_unsupported_or_corrupt
@@ -774,7 +777,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         get() = isRoot(relativeDirectory)
 
     private fun isRoot(folder: String?): Boolean {
-        return folder == null || folder.isEmpty()
+        return folder.isNullOrEmpty()
     }
 
     /**

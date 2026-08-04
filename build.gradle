@@ -18,8 +18,8 @@ buildscript {
 }
 
 plugins {
-    id "com.diffplug.spotless" version "6.25.0"
-    id "com.google.devtools.ksp" version "1.9.25-1.0.20" apply false
+    id "com.diffplug.spotless" version "8.9.0"
+    id "com.google.devtools.ksp" version "2.2.20-2.0.4" apply false
 }
 
 allprojects {
@@ -53,6 +53,7 @@ spotless {
     kotlin {
         licenseHeaderFile 'amaze.license.spotless.txt'
         target '*/src/**/*.kt'
+        targetExclude 'portscanner/src/**/*.kt'
         ktlint("1.1.1").setEditorConfigPath("$projectDir/.editorconfig")
     }
 }
@@ -72,23 +73,25 @@ configurations {
     robo32
     robo33
     robo34
+    robo35
 }
 
 dependencies {
-    robo21 "org.robolectric:android-all-instrumented:5.0.2_r3-robolectric-r0-i4"
-    robo22 "org.robolectric:android-all-instrumented:5.1.1_r9-robolectric-r2-i4"
-    robo23 "org.robolectric:android-all-instrumented:6.0.1_r3-robolectric-r1-i4"
-    robo24 "org.robolectric:android-all-instrumented:7.0.0_r1-robolectric-r1-i4"
-    robo25 "org.robolectric:android-all-instrumented:7.1.0_r7-robolectric-r1-i4"
-    robo26 "org.robolectric:android-all-instrumented:8.0.0_r4-robolectric-r1-i4"
-    robo27 "org.robolectric:android-all-instrumented:8.1.0-robolectric-4611349-i4"
-    robo28 "org.robolectric:android-all-instrumented:9-robolectric-4913185-2-i4"
-    robo29 "org.robolectric:android-all-instrumented:10-robolectric-5803371-i4"
-    robo30 "org.robolectric:android-all-instrumented:11-robolectric-6757853-i4"
-    robo31 "org.robolectric:android-all-instrumented:12-robolectric-7732740-i4"
-    robo32 "org.robolectric:android-all-instrumented:12.1-robolectric-8229987-i4"
-    robo33 "org.robolectric:android-all-instrumented:13-robolectric-9030017-i4"
-    robo34 "org.robolectric:android-all-instrumented:14-robolectric-10818077-i4"
+    robo21 "org.robolectric:android-all-instrumented:5.0.2_r3-robolectric-r0-i7"
+    robo22 "org.robolectric:android-all-instrumented:5.1.1_r9-robolectric-r2-i7"
+    robo23 "org.robolectric:android-all-instrumented:6.0.1_r3-robolectric-r1-i7"
+    robo24 "org.robolectric:android-all-instrumented:7.0.0_r1-robolectric-r1-i7"
+    robo25 "org.robolectric:android-all-instrumented:7.1.0_r7-robolectric-r1-i7"
+    robo26 "org.robolectric:android-all-instrumented:8.0.0_r4-robolectric-r1-i7"
+    robo27 "org.robolectric:android-all-instrumented:8.1.0-robolectric-4611349-i7"
+    robo28 "org.robolectric:android-all-instrumented:9-robolectric-4913185-2-i7"
+    robo29 "org.robolectric:android-all-instrumented:10-robolectric-5803371-i7"
+    robo30 "org.robolectric:android-all-instrumented:11-robolectric-6757853-i7"
+    robo31 "org.robolectric:android-all-instrumented:12-robolectric-7732740-i7"
+    robo32 "org.robolectric:android-all-instrumented:12.1-robolectric-8229987-i7"
+    robo33 "org.robolectric:android-all-instrumented:13-robolectric-9030017-i7"
+    robo34 "org.robolectric:android-all-instrumented:14-robolectric-10818077-i7"
+    robo35 "org.robolectric:android-all-instrumented:15-robolectric-12650502-i7"
 }
 
 def robolectricDependencies = "${rootProject.layout.buildDirectory.get().asFile}/robolectric"
@@ -108,6 +111,7 @@ tasks.register('fetchRobolectricDependencies', Copy) {
     from configurations.robo32
     from configurations.robo33
     from configurations.robo34
+    from configurations.robo35
     into robolectricDependencies
 }
 

@@ -50,6 +50,9 @@ class ZipHelperCallable(
         try {
             fileLocation.path?.run {
                 val zipfile = ZipFile(fileLocation.path)
+                if (!zipfile.isValidZipFile || zipfile.file.length() == 0L) {
+                    throw ZipException("Zero byte or corrupt zip file")
+                }
                 val wholelist = filterValidEntryList(zipfile)
                 val strings = ArrayList<String>()
                 for (entry in wholelist) {
