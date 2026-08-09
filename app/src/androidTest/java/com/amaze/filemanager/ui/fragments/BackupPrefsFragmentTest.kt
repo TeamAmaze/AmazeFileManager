@@ -27,6 +27,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
+import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
@@ -52,18 +53,20 @@ import com.amaze.filemanager.ui.activities.PreferencesActivity
 import com.amaze.filemanager.ui.fragments.preferencefragments.BackupPrefsFragment
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import org.awaitility.Awaitility.await
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
 class BackupPrefsFragmentTest {
+    var storagePath: String = Environment.getExternalStorageDirectory().absolutePath
     var fileName = "amaze_backup.json"
 
     @Rule
@@ -113,6 +116,19 @@ class BackupPrefsFragmentTest {
     }
 
     /**
+     * Waits (with a timeout) for the given file to exist, since some writes to storage happen
+     * asynchronously on a background thread.
+     */
+    private fun waitForFile(
+        file: File,
+        timeoutSeconds: Long = 5L,
+    ) {
+        await().atMost(timeoutSeconds, TimeUnit.SECONDS).until {
+            file.exists() && file.length() > 0L
+        }
+    }
+
+    /**
      * Test whether the exported file contains the expected preference values
      */
     private fun export(
@@ -120,6 +136,7 @@ class BackupPrefsFragmentTest {
         exportFile: File,
     ) {
         val activityScenario = ActivityScenario.launch(PreferencesActivity::class.java)
+        // Espresso requires an activity to be RESUMED to dispatch view actions/clicks.
         activityScenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(withText(R.string.backup)).perform(click())
@@ -144,44 +161,58 @@ class BackupPrefsFragmentTest {
             onView(withText(R.string.home)).perform(click())
         }
 
-        onView(withText(R.string.save)).perform(click())
-
-        assertTrue(exportFile.exists())
+        lateinit var preferenceSnapshot: Map<String?, *>
 
         activityScenario.onActivity { preferencesActivity ->
             val preferences = PreferenceManager.getDefaultSharedPreferences(preferencesActivity)
-            val preferenceMap: Map<String?, *> = preferences.all
+            preferenceSnapshot = HashMap(preferences.all)
+        }
 
-            val inputString =
-                exportFile
-                    .inputStream()
-                    .bufferedReader()
-                    .use {
-                        it.readText()
-                    }
+        // Espresso's onView().perform() must run on the instrumentation/test thread, never from
+        // inside onActivity {} or runOnUiThread {} (both of which run on the main/UI thread).
+        // Espresso internally synchronizes with the UI thread itself; calling it from the UI
+        // thread can deadlock or throw IllegalStateException.
+        // exportPrefs() launches MainActivity with an ACTION_SEND intent, which shows a Snackbar
+        // with a "Save" action; that is the only view action needed here.
+        onView(withText(R.string.save)).perform(click())
 
-            val type = object : TypeToken<Map<String?, *>>() {}.type
+        // The actual write to storagePath happens asynchronously (RxJava) after the "Save" click
+        // and after MainActivity finishes, so poll for the file instead of asserting immediately.
+        waitForFile(exportFile)
 
-            val importMap: Map<String?, *> =
-                GsonBuilder()
-                    .create()
-                    .fromJson(
-                        inputString,
-                        type,
-                    )
+        val inputString =
+            exportFile
+                .inputStream()
+                .bufferedReader()
+                .use {
+                    it.readText()
+                }
 
-            for ((key, value) in preferenceMap) {
-                val importedValue = importMap[key]
-                val mapValue =
-                    if (importedValue != null && importedValue::class.simpleName.equals("Double")) {
-                        (importedValue as Double).toInt() // since Gson parses Integer as Double
-                    } else {
-                        importedValue
-                    }
+        val type = object : TypeToken<Map<String?, *>>() {}.type
 
-                assertEquals("Difference found at key $key", value, mapValue)
+        // TODO This breaks the exported file's types, all Numbers get converted to Double
+        val importMap: Map<String?, *> =
+            GsonBuilder()
+                .create()
+                .fromJson(
+                    inputString,
+                    type,
+                )
+
+        for ((key, value) in preferenceSnapshot) {
+            val importedValue = importMap[key]
+
+            if (value is Number) {
+                // HACK GsonBuilder().create().fromJson() breaks Number types
+                assertEquals("Difference found at key $key", value.toDouble(), importedValue as Double, 0.1)
+            } else {
+                assertEquals("Different type at key $key", value?.javaClass, importedValue?.javaClass)
+
+                assertEquals("Difference found at key $key", value, importedValue)
             }
         }
+
+        activityScenario.close()
     }
 
     /**
@@ -228,13 +259,14 @@ class BackupPrefsFragmentTest {
             assertFalse(preferenceMap.containsKey(null))
 
             for ((k, v) in preferenceMap) {
-                // This cast tells the kotlin type checker that fail() never returns
-                val key = k ?: (fail() as Nothing)
-                val value = v ?: (fail() as Nothing)
+                val key = requireNotNull(k) { "Preference key unexpectedly null" }
+                val value = requireNotNull(v) { "Preference value unexpectedly null for $key" }
 
                 assertTrue("checkPrefEqual($key) failed", checkPrefEqual(preferences, importMap, key, value))
             }
         }
+
+        activityScenario.close()
     }
 
     private fun checkPrefEqual(
@@ -247,15 +279,14 @@ class BackupPrefsFragmentTest {
             "Boolean" -> return importMap[key] as Boolean ==
                 preferences.getBoolean(key, false)
             "Float" ->
-                importMap[key] as Float ==
+                (importMap[key] as Number).toFloat() ==
                     preferences.getFloat(key, 0f)
             "Int" -> {
-                // since Gson parses Integer as Double
-                val toInt = (importMap[key] as Double).toInt()
+                val toInt = (importMap[key] as Number).toInt()
 
                 return toInt == preferences.getInt(key, 0)
             }
-            "Long" -> return importMap[key] as Long ==
+            "Long" -> return (importMap[key] as Number).toLong() ==
                 preferences.getLong(key, 0L)
             "String" -> return importMap[key] as String ==
                 preferences.getString(key, null)

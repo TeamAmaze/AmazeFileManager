@@ -21,6 +21,8 @@
 package com.amaze.filemanager.test
 
 import android.content.Context
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -40,6 +42,11 @@ object StoragePermissionHelper {
      */
     @JvmStatic
     fun grantManageStoragePermission() {
+        // Only need to run on Androids >= R
+        if (Build.VERSION.SDK_INT < VERSION_CODES.R) {
+            return
+        }
+
         // Ensure that an activity that has the dialog is launched
         ActivityScenario.launch(MainActivity::class.java)
 
@@ -47,9 +54,9 @@ object StoragePermissionHelper {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
         val amazeResources = context.packageManager.getResourcesForApplication(context.packageName)
-        val grantPermissionExplanation = amazeResources.getString(R.string.grant_all_files_permission)
+        val grantPermissionHeader = amazeResources.getString(R.string.grantper)
 
-        if (device.hasObject(By.text(grantPermissionExplanation))) {
+        if (device.hasObject(By.text(grantPermissionHeader))) {
             // First press Amaze's grant button
             onView(withText(R.string.grant)).perform(click())
 
