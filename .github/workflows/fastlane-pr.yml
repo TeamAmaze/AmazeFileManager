@@ -17,4 +17,4 @@ jobs:
       - uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
         with:
           fastlaneDir: ./fastlane/metadata/android # optional
-          usePlayStoreLocales: true # optional
+          usePlayStoreLocales: false # Kicks out some languages that might be supported in FDroid
