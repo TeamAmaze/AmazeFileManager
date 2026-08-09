@@ -24,6 +24,7 @@ filters:
 settings:
   language_mapping:
     sv_SE: sv
+    sat: sat-IN
     pt_PT: pt-rPT
     ko_KR: ko-rKR
     hi_IN: hi-rIN
