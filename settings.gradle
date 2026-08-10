@@ -3,4 +3,4 @@ plugins {
 }
 include ':file_operations'
 include ':portscanner'
-include ':app', ':commons_compress_7z'
+include ':app', ':commons_compress_7z', ':testShared'

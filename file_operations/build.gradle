@@ -26,10 +26,6 @@ android {
         }
     }
 
-    sourceSets {
-        test.java.srcDirs += '../testShared/src/test/java'
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
@@ -106,6 +102,7 @@ dependencies {
     //TODO some libs are not needed
 
     //For tests
+    testImplementation project(':testShared')
     testImplementation libs.junit //tests the app logic
     testImplementation libs.robolectric //tests android interaction
     testImplementation libs.robolectric.shadows.httpclient //tests android interaction
