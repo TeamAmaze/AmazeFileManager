@@ -23,7 +23,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -46,7 +46,7 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class],
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [M, P, Build.VERSION_CODES.R],
 )
 class ReadTextFileCallableTest {
     /**
