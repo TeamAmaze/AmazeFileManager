@@ -1,7 +1,7 @@
 [versions]
-compileSdk = "35"
-minSdk = "21"
-targetSdk = "35"
+compileSdk = "36"
+minSdk = "23"
+targetSdk = "36"
 kotlin = "2.2.20"
 ndk = "28.2.13676358" #r28c
 
@@ -11,14 +11,15 @@ gradle = "8.13.2"
 easylauncher = "6.1.0"
 legacySupportV13 = "1.0.0"
 systembartint = "1.0.4"
-robolectric = "4.15"
-glide = "5.0.5"
+robolectric = "4.16.1"
+glide = "5.0.7"
 sshj = "0.40.0"
 jcifs = "2.1.10"
 eventbus = "3.3.1"
 fabSpeedDial = "3.3.0"
 room = "2.5.2"
-bouncyCastle = "1.85"
+bouncyCastle = "1.85.2"
+bouncyCastlePkix = "1.85"
 awaitility = "4.3.0"
 androidXActivity = "1.7.2"
 androidXCore = "1.16.0"
@@ -47,7 +48,7 @@ apacheMina = "2.2.9"
 mockito = "5.23.0"
 mockitoInline = "5.2.0"
 mockitoKotlin = "6.3.0"
-androidBilling = "8.0.0"
+androidBilling = "9.1.0"
 cloudrailSiAndroid = "2.22.4"
 junrar = "8.1.0"
 vectordrawableAnimated = "1.2.0"
@@ -108,7 +109,7 @@ androidX-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", 
 
 auto-service = { module = "com.google.auto.service:auto-service", version.ref = "autoService" }
 
-bcpkix-jdk18on = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncyCastle" }
+bcpkix-jdk18on = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncyCastlePkix" }
 bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncyCastle" }
 
 apache-mina-core = { module = "org.apache.mina:mina-core", version.ref = "apacheMina" }
