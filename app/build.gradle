@@ -98,10 +98,6 @@ android {
         includeInBundle = false
     }
 
-    sourceSets {
-        test.java.srcDirs += '../testShared/src/test/java'
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
@@ -158,7 +154,7 @@ dependencies {
     ksp libs.androidX.annotation
 
     //For tests
-    kspTest libs.auto.service
+    testImplementation project(':testShared')
     testImplementation libs.junit//tests the app logic
     testImplementation libs.robolectric//tests android interaction
     testImplementation libs.robolectric.shadows.httpclient//tests android interaction
@@ -180,6 +176,7 @@ dependencies {
     testImplementation libs.kotlin.coroutine.test
     testImplementation libs.androidX.core.testing
     testImplementation libs.logback.classic
+    kspTest libs.auto.service
 
     androidTestImplementation libs.junit //tests the app logic
     androidTestImplementation libs.androidX.test.expresso

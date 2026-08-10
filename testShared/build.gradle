@@ -1,0 +1,81 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace "com.amaze.filemanager.test"
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions = ['static']
+
+    productFlavors {
+        fdroid {
+            dimension 'static'
+        }
+
+        play {
+            dimension 'static'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+dependencies {
+    // App module dependency for accessing app classes
+    implementation project(':app')
+    
+    // File operations module for NativeOperations
+    implementation project(':file_operations')
+
+    // Core testing dependencies
+    implementation libs.junit
+    implementation libs.robolectric
+    implementation libs.robolectric.shadows.httpclient
+    implementation libs.androidX.test.core
+    implementation libs.androidX.test.runner
+    implementation libs.androidX.test.rules
+    implementation libs.androidX.test.ext.junit
+    implementation libs.mockito.core
+    implementation libs.androidX.multidex
+    implementation libs.awaitility
+
+    // Kotlin standard library
+    implementation libs.kotlin.stdlib.jdk8
+
+    // MockK for Kotlin mocking
+    implementation libs.mockk
+
+    // RxJava for Completable and reactive types
+    implementation libs.rxjava
+    implementation libs.rxandroid
+
+    // Room for database classes
+    implementation libs.room.runtime
+
+    // SMB for shadow implementations
+    implementation libs.jcifs.ng
+
+    // Android dependencies
+    implementation libs.androidX.appcompat
+    implementation libs.androidX.fragment
+}
+
