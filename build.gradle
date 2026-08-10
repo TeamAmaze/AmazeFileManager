@@ -74,6 +74,7 @@ configurations {
     robo33
     robo34
     robo35
+    robo36
 }
 
 dependencies {
@@ -91,28 +92,24 @@ dependencies {
     robo32 "org.robolectric:android-all-instrumented:12.1-robolectric-8229987-i7"
     robo33 "org.robolectric:android-all-instrumented:13-robolectric-9030017-i7"
     robo34 "org.robolectric:android-all-instrumented:14-robolectric-10818077-i7"
-    robo35 "org.robolectric:android-all-instrumented:15-robolectric-12650502-i7"
+    robo35 "org.robolectric:android-all-instrumented:15-robolectric-13954326-i7"
+    robo36 "org.robolectric:android-all-instrumented:16-robolectric-13921718-i7"
 }
 
 def robolectricDependencies = "${rootProject.layout.buildDirectory.get().asFile}/robolectric"
+def robolectricApis = (21..36)
+
+def fetchRobolectricApiTasks = robolectricApis.collect { apiLevel ->
+    def configurationName = "robo${apiLevel}"
+    def taskName = "fetchRobolectric${apiLevel}"
+    tasks.register(taskName, Copy) {
+        from configurations.named(configurationName)
+        into robolectricDependencies
+    }
+}
 
 tasks.register('fetchRobolectricDependencies', Copy) {
-    from configurations.robo21
-    from configurations.robo22
-    from configurations.robo23
-    from configurations.robo24
-    from configurations.robo25
-    from configurations.robo26
-    from configurations.robo27
-    from configurations.robo28
-    from configurations.robo29
-    from configurations.robo30
-    from configurations.robo31
-    from configurations.robo32
-    from configurations.robo33
-    from configurations.robo34
-    from configurations.robo35
-    into robolectricDependencies
+    dependsOn fetchRobolectricApiTasks
 }
 
 subprojects {

@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.services.ftp
 
 import android.content.Intent
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
@@ -43,7 +43,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
+@Config(shadows = [ShadowMultiDex::class], sdk = [M, P, Build.VERSION_CODES.R])
 @Suppress("StringLiteralDuplication")
 class FtpReceiverTest {
     private lateinit var receiver: FtpReceiver

@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.movecopy
 
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -133,44 +132,54 @@ class PreparePasteTask(strongRefMain: MainActivity) {
             return
         }
 
-        val totalBytes = FileUtils.getTotalBytes(filesToCopy, context.get())
-        destination = HybridFile(openMode, targetPath)
-        destination.generateMode(context.get())
+        coroutineScope.launch {
+            val contextRef = context.get() ?: return@launch
+            val totalBytes = withContext(Dispatchers.IO) { FileUtils.getTotalBytes(filesToCopy, contextRef) }
+            destination =
+                withContext(Dispatchers.IO) {
+                    HybridFile(openMode, targetPath).apply { generateMode(contextRef) }
+                }
 
-        if (filesToCopy.isNotEmpty() &&
-            isMove &&
-            filesToCopy[0].getParent(context.get()) == targetPath
-        ) {
-            Toast.makeText(context.get(), R.string.same_dir_move_error, Toast.LENGTH_SHORT).show()
-            MediaConnectionUtils.scanFile(context.get() as Context, filesToCopy.toTypedArray())
-            return
-        }
+            if (filesToCopy.isNotEmpty() &&
+                isMove &&
+                filesToCopy[0].getParent(contextRef) == targetPath
+            ) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(contextRef, R.string.same_dir_move_error, Toast.LENGTH_SHORT).show()
+                }
+                MediaConnectionUtils.scanFile(contextRef, filesToCopy.toTypedArray())
+                return@launch
+            }
 
-        val isMoveSupported =
-            isMove &&
-                destination.mode == openMode &&
-                MoveFiles.getOperationSupportedFileSystem().contains(openMode)
+            val isMoveSupported =
+                isMove &&
+                    destination.mode == openMode &&
+                    MoveFiles.getOperationSupportedFileSystem().contains(openMode)
 
-        if (destination.usableSpace < totalBytes &&
-            !isMoveSupported
-        ) {
-            Toast.makeText(context.get(), R.string.in_safe, Toast.LENGTH_SHORT).show()
-            return
-        }
-        @Suppress("DEPRECATION")
-        progressDialog =
-            ProgressDialog.show(
-                context.get(),
-                "",
-                context.get()?.getString(R.string.checking_conflicts),
+            if (destination.usableSpace < totalBytes && !isMoveSupported) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(contextRef, R.string.in_safe, Toast.LENGTH_SHORT).show()
+                }
+                return@launch
+            }
+
+            withContext(Dispatchers.Main) {
+                @Suppress("DEPRECATION")
+                progressDialog =
+                    ProgressDialog.show(
+                        contextRef,
+                        "",
+                        contextRef.getString(R.string.checking_conflicts),
+                    )
+            }
+            checkConflicts(
+                isRootMode,
+                filesToCopy,
+                destination,
+                conflictingFiles,
+                conflictingDirActionMap,
             )
-        checkConflicts(
-            isRootMode,
-            filesToCopy,
-            destination,
-            conflictingFiles,
-            conflictingDirActionMap,
-        )
+        }
     }
 
     private fun checkConflicts(

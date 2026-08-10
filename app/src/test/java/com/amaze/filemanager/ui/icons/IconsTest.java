@@ -20,15 +20,15 @@
 
 package com.amaze.filemanager.ui.icons;
 
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowMimeTypeMap;
 
 import com.amaze.filemanager.shadows.ShadowMultiDex;
@@ -41,13 +41,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
+    sdk = {M, P, Build.VERSION_CODES.R})
 public class IconsTest {
 
   @Before
   public void setUp() {
     // By default Robolectric's MimeTypeMap is empty, we need to populate them
-    ShadowMimeTypeMap mimeTypeMap = Shadows.shadowOf(MimeTypeMap.getSingleton());
+    ShadowMimeTypeMap mimeTypeMap = Shadow.extract(MimeTypeMap.getSingleton());
     mimeTypeMap.addExtensionMimeTypeMapping("zip", "application/zip");
     mimeTypeMap.addExtensionMimeTypeMapping("rar", "application/x-rar-compressed");
     mimeTypeMap.addExtensionMimeTypeMapping("tar", "application/x-tar");

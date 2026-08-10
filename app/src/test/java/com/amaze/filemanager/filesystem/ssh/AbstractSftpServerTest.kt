@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh
 
 import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -63,7 +63,7 @@ import kotlin.text.Charsets.UTF_8
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [LOLLIPOP, P, VERSION_CODES.R],
+    sdk = [M, P, VERSION_CODES.R],
 )
 abstract class AbstractSftpServerTest {
     protected var encryptedPassword: String? =

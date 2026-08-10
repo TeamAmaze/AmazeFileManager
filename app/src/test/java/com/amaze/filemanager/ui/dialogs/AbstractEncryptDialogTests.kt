@@ -23,14 +23,16 @@ package com.amaze.filemanager.ui.dialogs
 import android.Manifest
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.shadows.ShadowFileUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowTabHandler
@@ -48,7 +50,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowTabHandler::class, ShadowFileUtils::class],
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [M, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractEncryptDialogTests {
     protected lateinit var scenario: ActivityScenario<MainActivity>
@@ -56,7 +58,7 @@ abstract class AbstractEncryptDialogTests {
     @Rule
     @JvmField
     @RequiresApi(Build.VERSION_CODES.R)
-    var allFilesPermissionRule =
+    var allFilesPermissionRule: GrantPermissionRule =
         GrantPermissionRule
             .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
@@ -71,10 +73,14 @@ abstract class AbstractEncryptDialogTests {
     }
 
     /**
-     * Post test cleanup.
+     * Post test cleanup. Clear all preferences.
      */
     @After
     open fun tearDown() {
         scenario.close()
+        PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
+            .edit()
+            .clear()
+            .apply()
     }
 }
