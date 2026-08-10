@@ -1,3 +1,6 @@
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
 include ':file_operations'
 include ':portscanner'
 include ':app', ':commons_compress_7z'
