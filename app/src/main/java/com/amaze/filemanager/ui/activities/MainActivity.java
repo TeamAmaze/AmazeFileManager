@@ -411,7 +411,7 @@ public class MainActivity extends PermissionsActivity
 
     String actionIntent = intent != null ? intent.getAction() : null;
 
-    if (Intent.ACTION_GET_CONTENT.equals(actionIntent)
+    if (isFilePickerIntent(actionIntent)
         || RingtoneManager.ACTION_RINGTONE_PICKER.equals(actionIntent)
         || Intent.ACTION_VIEW.equals(actionIntent)
         || Intent.ACTION_SEND.equals(actionIntent)
@@ -605,6 +605,11 @@ public class MainActivity extends PermissionsActivity
     return false;
   }
 
+  private static boolean isFilePickerIntent(@Nullable String actionIntent) {
+    return Intent.ACTION_GET_CONTENT.equals(actionIntent)
+        || Intent.ACTION_OPEN_DOCUMENT.equals(actionIntent);
+  }
+
   /** Checks for the action to take when Amaze receives an intent from external source */
   private void checkForExternalIntent(Intent intent) {
     final String actionIntent = intent.getAction();
@@ -614,7 +619,7 @@ public class MainActivity extends PermissionsActivity
 
     final String type = intent.getType();
 
-    if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
+    if (isFilePickerIntent(actionIntent)) {
       // file picker intent
       mReturnIntent = true;
       String text =
