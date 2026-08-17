@@ -1,1 +1,1 @@
-Um gerenciador de arquivos de código aberto
+Um gerenciador de arquivos de código aberto que segue as diretrizes do Material Design
