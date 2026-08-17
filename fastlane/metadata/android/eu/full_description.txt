@@ -1,0 +1,15 @@
+Fitxategien kudeatzaile arina eta leuna Materialen diseinuaren jarraibideei jarraituz.
+
+Funtzioak:
+
+- Oinarrizko funtzioak, hala nola ebaki, kopiatu, ezabatu, trinkotu, erauzi
+- Fitxa anitz produktibitatea areagotzeko
+- Gai asko eskaintzen ditu
+- Nabigazio bizkorreko nabigazio tiradera
+- Aplikazioen kudeatzailea, edozein aplikazio irekitzeko, babeskopia egiteko edo desinstalatzeko
+- Historiara azkar sartu, laster-marketan sartu edo edozein fitxategi bilatu
+- Root arakatzailea erabiltzaile adituentzat
+- Fitxategien AES zifratzea eta deszifratzea seguritaterako  (Jellybean v4.3+)
+- Hodei zerbitzuen laguntza: SMB, SSH, FTP eta SFTP (Jellybean v4.3 + / plugin gehigarria eskatzen du)
+- Barneko datu-base irakurgailua, ZIP/RAR irakurgailua, APK irakurgailua eta testu editorea
+- FTP bezeroa onartzen du
