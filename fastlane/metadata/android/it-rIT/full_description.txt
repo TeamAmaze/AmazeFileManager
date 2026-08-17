@@ -1,0 +1,15 @@
+Gestore dei file leggero e intuitivo che segue le linee guida Material Design.
+
+Caratteristiche:
+
+- Funzioni di base come taglia, copia, cancella, comprimi, estrai
+- Schede multiple per migliorare la produttività
+- Supporto per temi multipli
+- Menu a scomparsa laterale per una navigazione rapida
+- Gestore delle app per aprire, fare il backup o disinstallare direttamente qualsiasi app
+- Accesso rapido a cronologia, segnalibri o ricerca dei file
+- Gestione root per utenti avanzati
+- Crittografia e decrittografia AES dei file per la sicurezza (Jellybean v4.3+)
+- Supporto dei servizi cloud, ovvero SMB, SSH, FTP e SFTP (Jellybean v4.3+ / richiede un plug-in aggiuntivo)
+- Lettore di database, lettore di ZIP/RAR, lettore di APK ed editor di testo integrati
+- Supporto client FTP
