@@ -21,23 +21,33 @@
 package com.amaze.filemanager.ui.fragments.preferencefragments
 
 import android.os.Bundle
+import android.text.format.Formatter
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_THUMB
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_THUMB_DEFAULT
+import com.amaze.filemanager.utils.AppConstants.MEGABYTE
 import com.amaze.filemanager.utils.getLangPreferenceDropdownEntries
 
 class UiPrefsFragment : BasePrefsFragment() {
     override val title = R.string.ui
 
     private var dragAndDropPref: Preference? = null
+    private var showThumbsRemoteMaxSizePref: Preference? = null
+    private lateinit var sizes: IntArray
 
     override fun onCreatePreferences(
         savedInstanceState: Bundle?,
         rootKey: String?,
     ) {
         setPreferencesFromResource(R.xml.ui_prefs, rootKey)
+        sizes = resources.getIntArray(R.array.thumbnailDisplaySizeLimitPreference)
 
         findPreference<Preference>("sidebar_bookmarks")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
@@ -103,7 +113,7 @@ class UiPrefsFragment : BasePrefsFragment() {
         }
 
         val dragToMoveArray = resources.getStringArray(R.array.dragAndDropPreference)
-        dragAndDropPref = findPreference(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE)
+        dragAndDropPref = findPreference(PREFERENCE_DRAG_AND_DROP_PREFERENCE)
         updateDragAndDropPreferenceSummary()
         dragAndDropPref?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
@@ -137,6 +147,58 @@ class UiPrefsFragment : BasePrefsFragment() {
                 dragDialogBuilder.build().show()
                 true
             }
+        val showThumbEnabled =
+            activity.prefs.getBoolean(
+                PREFERENCE_SHOW_THUMB,
+                PREFERENCE_SHOW_THUMB_DEFAULT,
+            )
+        showThumbsRemoteMaxSizePref = findPreference(PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE)
+        updateFilePreviewMaxSizeSummary()
+        findPreference<Preference>(PREFERENCE_SHOW_THUMB)?.run {
+            this.onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    showThumbsRemoteMaxSizePref?.isEnabled = newValue as Boolean
+                    true
+                }
+        }
+        if (showThumbEnabled) {
+            showThumbsRemoteMaxSizePref?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    val currentPreference: Int =
+                        activity.prefs.getInt(
+                            PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE,
+                            PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT,
+                        )
+                    MaterialDialog.Builder(activity).theme(
+                        activity.utilsProvider.appTheme.materialDialogTheme,
+                    ).title(R.string.thumb_remote_max_size)
+                        .items(
+                            sizes.mapIndexed { index, it ->
+                                if (index == PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT) {
+                                    resources.getString(R.string.no_limit)
+                                } else {
+                                    Formatter.formatShortFileSize(
+                                        activity,
+                                        (MEGABYTE * it).toLong(),
+                                    )
+                                }
+                            },
+                        ).itemsCallbackSingleChoice(currentPreference) { dialog, _, which, _ ->
+                            activity.prefs.edit()
+                                .putInt(
+                                    PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE,
+                                    which,
+                                )
+                                .apply()
+                            updateFilePreviewMaxSizeSummary()
+                            dialog.dismiss()
+                            true
+                        }.build().show()
+                    true
+                }
+        } else {
+            showThumbsRemoteMaxSizePref?.isEnabled = false
+        }
     }
 
     private fun updateDragAndDropPreferenceSummary() {
@@ -147,5 +209,19 @@ class UiPrefsFragment : BasePrefsFragment() {
             )
         val dragToMoveArray = resources.getStringArray(R.array.dragAndDropPreference)
         dragAndDropPref?.summary = dragToMoveArray[value]
+    }
+
+    private fun updateFilePreviewMaxSizeSummary() {
+        val value =
+            activity.prefs.getInt(
+                PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE,
+                PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT,
+            )
+        showThumbsRemoteMaxSizePref?.summary =
+            if (value == PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT) {
+                resources.getString(R.string.no_limit)
+            } else {
+                Formatter.formatShortFileSize(activity, (sizes[value] * MEGABYTE).toLong())
+            }
     }
 }
