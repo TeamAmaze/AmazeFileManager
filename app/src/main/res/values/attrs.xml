@@ -23,6 +23,8 @@
     <attr name="popup" format="reference" />
     <attr name="toolbar_theme" format="reference" />
     <attr name="ripple_color" format="color" />
+    <!-- Surface colour of the rounded contextual popup menus, set per theme -->
+    <attr name="popupSurfaceColor" format="color" />
 
 
     <declare-styleable name="Indicator">
