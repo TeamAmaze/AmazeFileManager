@@ -17,14 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.activities.superclasses
 
-package com.amaze.filemanager.utils;
+import androidx.appcompat.app.AppCompatActivity
+import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
+import com.amaze.filemanager.ui.provider.UtilitiesProvider
+import com.amaze.filemanager.ui.theme.AppTheme
 
-/**
- * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 8/12/2017, at 16:33.
- */
-public class GlideConstants {
+/** Created by rpiotaix on 17/10/16.  */
+open class BasicActivity : AppCompatActivity() {
+    private val appConfig: AppConfig
+        get() = application as AppConfig
 
-  public static final int MAX_PRELOAD_FILES = 50;
-  public static final int MAX_PRELOAD_APPSADAPTER = 100;
+    val colorPreference: ColorPreferenceHelper
+        get() = appConfig.utilsProvider.colorPreference
+
+    val appTheme: AppTheme
+        get() = appConfig.utilsProvider.appTheme
+
+    val utilsProvider: UtilitiesProvider
+        get() = appConfig.utilsProvider
 }
