@@ -43,23 +43,46 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/textEditorScrollView"
+    <FrameLayout
+        android:id="@+id/textEditorContentFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/textEditorMainEditText"
+        <ScrollView
+            android:id="@+id/textEditorScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:gravity="start|top"
-            android:inputType="textCapSentences|textMultiLine"
-            android:lineSpacingExtra="1dp"
-            android:padding="16dp"
-            android:textSize="14sp" />
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-    </ScrollView>
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/textEditorMainEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:gravity="start|top"
+                android:inputType="textCapSentences|textMultiLine"
+                android:lineSpacingExtra="1dp"
+                android:padding="16dp"
+                android:textSize="14sp" />
+
+        </ScrollView>
+
+        <WebView
+            android:id="@+id/textEditorMarkdownWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/textEditorWindowLoadingIndicator"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

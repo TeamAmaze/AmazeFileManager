@@ -479,6 +479,7 @@
     <string name="copy_low_memory">メモリ不足。メモリを解放してください</string>
     <string name="cloud_token_lost">トークンを失われた。もう一度サインインしてください。</string>
     <string name="monofont">等幅フォント</string>
+    <string name="markdown_preview">Markdown プレビュー</string>
     <string name="showHeaders">ヘッダーを表示する</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->

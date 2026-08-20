@@ -45,7 +45,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
-  public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
+  public static final int MAX_FILE_SIZE_CHARS = 100 * 1024;
 
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -53,6 +53,9 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
   private final boolean isRootExplorer;
 
   private File cachedFile = null;
+
+  /** The resolved File used for reading (may be a cached copy for root files). */
+  private File resolvedFile = null;
 
   public ReadTextFileCallable(
       ContentResolver contentResolver,
@@ -83,7 +86,9 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
           if (documentFile != null && documentFile.exists() && documentFile.canWrite()) {
             inputStream = contentResolver.openInputStream(documentFile.getUri());
           } else {
-            inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+            File contentFile = FileUtils.fromContentUri(fileAbstraction.uri);
+            resolvedFile = contentFile;
+            inputStream = loadFile(contentFile);
           }
         } else {
           inputStream = contentResolver.openInputStream(fileAbstraction.uri);
@@ -94,6 +99,7 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
         Objects.requireNonNull(hybridFileParcelable);
 
         File file = hybridFileParcelable.getFile();
+        resolvedFile = file;
         inputStream = loadFile(file);
 
         break;
@@ -121,7 +127,35 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
       fileContents = String.valueOf(buffer, 0, readChars);
     }
 
-    return new ReturnedValueOnReadFile(fileContents, cachedFile, tooLong);
+    FileWindowReader fileWindowReader = null;
+    long totalFileSize = 0L;
+
+    if (tooLong) {
+      // Create a FileWindowReader for windowed mode
+      if (cachedFile != null) {
+        // Root file was cached locally
+        fileWindowReader = FileWindowReader.Companion.fromFile(cachedFile);
+        totalFileSize = cachedFile.length();
+      } else if (resolvedFile != null) {
+        fileWindowReader = FileWindowReader.Companion.fromFile(resolvedFile);
+        totalFileSize = resolvedFile.length();
+      } else if (fileAbstraction.scheme == EditableFileAbstraction.Scheme.CONTENT
+          && fileAbstraction.uri != null) {
+        try {
+          fileWindowReader =
+              FileWindowReader.Companion.fromContentUri(contentResolver, fileAbstraction.uri);
+          totalFileSize = fileWindowReader.getFileSize();
+        } catch (Exception e) {
+          // Content provider doesn't support seekable file descriptors;
+          // windowed mode won't be available but the initial chunk is still shown
+          fileWindowReader = null;
+          totalFileSize = 0L;
+        }
+      }
+    }
+
+    return new ReturnedValueOnReadFile(
+        fileContents, cachedFile, tooLong, fileWindowReader, totalFileSize);
   }
 
   private InputStream loadFile(File file) throws ShellNotRunningException, IOException {

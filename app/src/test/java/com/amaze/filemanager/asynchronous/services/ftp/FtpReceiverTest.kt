@@ -99,7 +99,7 @@ class FtpReceiverTest {
      * Test [Context.startForegroundService()] called for post-Nougat Androids.
      */
     @Test
-    @Config(minSdk = O)
+    @Config(minSdk = O, maxSdk = Build.VERSION_CODES.R)
     fun testStartForegroundServiceCalled() {
         val ctx = AppConfig.getInstance()
         val spy = spyk(ctx)

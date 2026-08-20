@@ -94,6 +94,8 @@ android {
     }
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -145,11 +147,16 @@ dependencies {
     implementation libs.androidX.constraintLayout
     implementation libs.androidX.multidex //Multiple dex files
     implementation libs.androidX.biometric
+    implementation libs.androidX.lifecycle.viewmodel.ktx
+    implementation libs.androidX.lifecycle.livedata.ktx
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
     implementation libs.room.runtime
     implementation libs.room.rxjava2
 
     ksp libs.room.compiler
     ksp libs.androidX.annotation
+    coreLibraryDesugaring libs.android.desugaring
 
     //For tests
     testImplementation libs.junit//tests the app logic
@@ -257,6 +264,10 @@ dependencies {
 
     implementation libs.gson
     implementation libs.amaze.trashBin
+
+    implementation libs.commonmark
+    implementation libs.commonmark.ext.gfm.tables
+    implementation libs.commonmark.ext.gfm.strikethrough
 }
 
 kotlin {

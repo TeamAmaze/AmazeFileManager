@@ -567,6 +567,7 @@
     <string name="copy_low_memory">Running out of memory, please clear some RAM</string>
     <string name="cloud_token_lost">Token lost, please sign-in again</string>
     <string name="monofont">Monospace Font</string>
+    <string name="markdown_preview">Markdown Preview</string>
     <string name="showHeaders">Show Headers</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
