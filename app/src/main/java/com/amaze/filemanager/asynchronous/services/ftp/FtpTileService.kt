@@ -22,12 +22,15 @@ package com.amaze.filemanager.asynchronous.services.ftp
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
+import android.os.PowerManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.amaze.filemanager.R
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isRunning
+import com.amaze.filemanager.ftpserver.service.FtpEventBus
+import com.amaze.filemanager.ftpserver.service.FtpPreferences
+import com.amaze.filemanager.ftpserver.service.FtpServerEngine
 import com.amaze.filemanager.utils.NetworkUtil.isConnectedToLocalNetwork
 import com.amaze.filemanager.utils.NetworkUtil.isConnectedToWifi
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +40,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 /**
- * [FtpService] tile service to start and stop the FTP server.
+ * [AppFtpService] tile service to start and stop the FTP server.
  *
  * Created by vishal on 1/1/17.  */
 @RequiresApi(Build.VERSION_CODES.N)
@@ -65,17 +68,25 @@ class FtpTileService : TileService() {
 
     override fun onClick() {
         unlockAndRun {
-            if (isRunning()) {
+            if (FtpServerEngine.isRunning()) {
                 applicationContext
                     .sendBroadcast(
-                        Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(packageName),
+                        Intent(FtpPreferences.ACTION_STOP_FTPSERVER).setPackage(packageName),
                     )
             } else {
                 if (isConnectedToWifi(applicationContext) ||
                     isConnectedToLocalNetwork(applicationContext)
                 ) {
-                    val i = Intent(FtpService.ACTION_START_FTPSERVER).setPackage(packageName)
-                    i.putExtra(FtpService.TAG_STARTED_BY_TILE, true)
+                    val pm = getSystemService(POWER_SERVICE) as PowerManager
+                    if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                        Toast.makeText(
+                            applicationContext,
+                            R.string.ftp_battery_optimization_tile_warning,
+                            Toast.LENGTH_LONG,
+                        ).show()
+                    }
+                    val i = Intent(FtpPreferences.ACTION_START_FTPSERVER).setPackage(packageName)
+                    i.putExtra(FtpPreferences.TAG_STARTED_BY_TILE, true)
                     applicationContext.sendBroadcast(i)
                 } else {
                     Toast.makeText(
@@ -90,7 +101,7 @@ class FtpTileService : TileService() {
 
     private fun updateTileState() {
         val tile = qsTile
-        if (isRunning()) {
+        if (FtpServerEngine.isRunning()) {
             tile.state = Tile.STATE_ACTIVE
             tile.icon =
                 Icon.createWithResource(

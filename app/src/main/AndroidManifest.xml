@@ -292,7 +292,7 @@
             android:foregroundServiceType="dataSync" />
 
         <service
-            android:name=".asynchronous.services.ftp.FtpService"
+            android:name=".asynchronous.services.ftp.AppFtpService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="dataSync"
@@ -320,7 +320,7 @@
         </service>
 
         <receiver
-            android:name=".asynchronous.services.ftp.FtpReceiver"
+            android:name=".asynchronous.services.ftp.AppFtpReceiver"
             android:exported="true"
             android:permission="${applicationId}.permission.CONTROL_FTP_SERVER">
             <intent-filter>

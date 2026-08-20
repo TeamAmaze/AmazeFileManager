@@ -86,6 +86,9 @@ object PreferencesConstants {
     const val PREFERENCE_REGEX = "regex"
     const val PREFERENCE_REGEX_MATCHES = "matches"
 
+    // ftp preferences
+    const val PREFERENCE_FTP_BATTERY_OPTIMIZATION_ASKED = "ftp_battery_optimization_asked"
+
     // security_prefs.xml
     const val PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint"
     const val PREFERENCE_CRYPT_MASTER_PASSWORD = "crypt_password"

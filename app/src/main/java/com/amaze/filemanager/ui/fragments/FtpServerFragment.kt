@@ -34,10 +34,12 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
+import android.os.PowerManager
 import android.os.Process
 import android.provider.DocumentsContract
 import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.provider.Settings
+import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
 import android.text.InputType
 import android.text.Spanned
 import android.view.KeyEvent
@@ -72,17 +74,16 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.services.ftp.FtpEventBus
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_PATH
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_ROOT_FILESYSTEM
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isRunning
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
 import com.amaze.filemanager.databinding.FragmentFtpBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
+import com.amaze.filemanager.ftpserver.service.FtpEventBus
+import com.amaze.filemanager.ftpserver.service.FtpPreferences
+import com.amaze.filemanager.ftpserver.service.FtpServerEngine
+import com.amaze.filemanager.ftpserver.service.FtpServerEvent
+import com.amaze.filemanager.server.ServerRegistry
+import com.amaze.filemanager.server.ServerType
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.runIfDocumentsUIExists
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.NetworkUtil.getLocalInetAddress
@@ -101,8 +102,7 @@ import java.io.IOException
 import java.security.GeneralSecurityException
 
 /**
- * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed
- * FTP Server while usi
+ * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017
  */
 @Suppress("TooManyFunctions")
 class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
@@ -123,6 +123,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private var spannedStatusSecure: Spanned? = null
     private var spannedStatusNotRunning: Spanned? = null
     private var snackbar: Snackbar? = null
+    private var pendingBatteryOptimizationResult = false
 
     private var _binding: FragmentFtpBinding? = null
     private val binding get() = _binding!!
@@ -181,7 +182,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     }
 
     private fun ftpBtnOnClick() {
-        if (!isRunning()) {
+        if (!FtpServerEngine.isRunning()) {
             if (isConnectedToWifi(requireContext()) ||
                 isConnectedToLocalNetwork(requireContext())
             ) {
@@ -324,7 +325,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 )
                 timeoutBuilder.input(
                     (
-                        FtpService.DEFAULT_TIMEOUT.toString() +
+                        FtpPreferences.DEFAULT_TIMEOUT.toString() +
                             " " +
                             resources.getString(R.string.ftp_seconds)
                     ),
@@ -341,7 +342,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                         }
                     ftpTimeout =
                         if (input.isEmpty() || !isInputInteger) {
-                            FtpService.DEFAULT_TIMEOUT
+                            FtpPreferences.DEFAULT_TIMEOUT
                         } else {
                             Integer.valueOf(input.toString())
                         }
@@ -374,7 +375,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun shouldUseSafFileSystem(): Boolean {
         return mainActivity.prefs.getBoolean(
-            FtpService.KEY_PREFERENCE_SAF_FILESYSTEM,
+            FtpPreferences.KEY_PREFERENCE_SAF_FILESYSTEM,
             false,
         ) &&
             SDK_INT >= M
@@ -404,13 +405,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     /**
      * Handles messages sent from [FtpEventBus].
      *
-     * @param signal as [FtpReceiverActions]
+     * @param signal as [FtpServerEvent]
      */
     @Suppress("StringLiteralDuplication")
-    private fun onFtpReceiveActions(signal: FtpReceiverActions) {
+    private fun onFtpReceiveActions(signal: FtpServerEvent) {
         updateSpans()
         when (signal) {
-            FtpReceiverActions.STARTED, FtpReceiverActions.STARTED_FROM_TILE -> {
+            FtpServerEvent.Started, FtpServerEvent.StartedFromTile -> {
                 statusText.text =
                     if (securePreference) {
                         spannedStatusSecure
@@ -420,18 +421,20 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
                 url.text = spannedStatusUrl
                 ftpBtn.text = resources.getString(R.string.stop_ftp).uppercase()
-                FtpNotification.updateNotification(
-                    context,
-                    FtpReceiverActions.STARTED_FROM_TILE == signal,
-                )
+                ServerRegistry.getProvider(ServerType.FTP)
+                    ?.getNotification()
+                    ?.updateRunningNotification(
+                        requireContext() ?: return,
+                        FtpServerEvent.StartedFromTile == signal,
+                    )
             }
-            FtpReceiverActions.FAILED_TO_START -> {
+            FtpServerEvent.FailedToStart -> {
                 statusText.text = spannedStatusNotRunning
                 Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_LONG).show()
                 ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
                 url.text = "URL: "
             }
-            FtpReceiverActions.STOPPED -> {
+            FtpServerEvent.Stopped -> {
                 statusText.text = spannedStatusNotRunning
                 url.text = "URL: "
                 ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
@@ -456,11 +459,58 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
     }
 
+    /**
+     * On API 23+, checks whether the app is exempt from battery optimizations before starting
+     * the FTP server. If already exempt, or if the user has previously dismissed the prompt,
+     * [callback] is invoked directly. Otherwise a [MaterialDialog] is shown with options to
+     * open battery optimization settings, skip, or suppress future prompts.
+     */
+    private fun checkBatteryOptimizationIfNecessary(callback: () -> Unit) {
+        if (SDK_INT < M) {
+            callback()
+            return
+        }
+        val pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+        val alreadyAsked =
+            FtpPreferences.getPreferences(requireContext())
+                .getBoolean(FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED, false)
+        if (pm.isIgnoringBatteryOptimizations(requireContext().packageName) || alreadyAsked) {
+            callback()
+            return
+        }
+        MaterialDialog.Builder(requireContext())
+            .title(R.string.ftp_battery_optimization_title)
+            .content(R.string.ftp_battery_optimization_message)
+            .positiveText(R.string.ftp_battery_optimization_action_settings)
+            .negativeText(R.string.ftp_battery_optimization_action_skip)
+            .neutralText(R.string.ftp_battery_optimization_action_dont_ask)
+            .onPositive { dialog, _ ->
+                pendingBatteryOptimizationResult = true
+                startActivity(
+                    Intent(ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS),
+                )
+                dialog.dismiss()
+            }
+            .onNegative { dialog, _ ->
+                dialog.dismiss()
+                callback()
+            }
+            .onNeutral { dialog, _ ->
+                FtpPreferences.getPreferences(requireContext()).edit {
+                    putBoolean(FtpPreferences.KEY_PREFERENCE_BATTERY_OPTIMIZATION_ASKED, true)
+                }
+                dialog.dismiss()
+                callback()
+            }
+            .build()
+            .show()
+    }
+
     /** Check URI access. Prompt user to DocumentsUI if necessary */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {
         val directoryUri: String =
             mainActivity.prefs
-                .getString(KEY_PREFERENCE_PATH, defaultPathFromPreferences)!!
+                .getString(FtpPreferences.KEY_PREFERENCE_PATH, defaultPathFromPreferences)!!
         if (shouldUseSafFileSystem()) {
             directoryUri.toUri().run {
                 if (requireContext().checkUriPermission(
@@ -533,22 +583,24 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     /** Sends a broadcast to start ftp server  */
     private fun startServer() {
-        checkUriAccessIfNecessary {
-            doStartServer()
+        checkBatteryOptimizationIfNecessary {
+            checkUriAccessIfNecessary {
+                doStartServer()
+            }
         }
     }
 
     /** Sends a broadcast to stop ftp server  */
     private fun stopServer() {
         requireContext().sendBroadcast(
-            Intent(FtpService.ACTION_STOP_FTPSERVER)
+            Intent(FtpPreferences.ACTION_STOP_FTPSERVER)
                 .setPackage(requireContext().packageName),
         )
     }
 
     private fun doStartServer() =
         requireContext().sendBroadcast(
-            Intent(FtpService.ACTION_START_FTPSERVER)
+            Intent(FtpPreferences.ACTION_START_FTPSERVER)
                 .setPackage(requireContext().packageName),
         )
 
@@ -561,6 +613,17 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             wifiFilter,
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
+        if (pendingBatteryOptimizationResult) {
+            pendingBatteryOptimizationResult = false
+            if (SDK_INT >= M) {
+                val pm = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+                if (pm.isIgnoringBatteryOptimizations(requireContext().packageName) &&
+                    (isConnectedToWifi(requireContext()) || isConnectedToLocalNetwork(requireContext()))
+                ) {
+                    checkUriAccessIfNecessary { doStartServer() }
+                }
+            }
+        }
         updateStatus()
     }
 
@@ -572,7 +635,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     /** Update UI widgets after change in shared preferences  */
     private fun updateStatus() {
-        if (!isRunning()) {
+        if (!FtpServerEngine.isRunning()) {
             if (!isConnectedToWifi(requireContext()) &&
                 !isConnectedToLocalNetwork(requireContext())
             ) {
@@ -582,7 +645,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 statusText.text = spannedStatusNotRunning
                 ftpBtn.isEnabled = true
             }
-            url.text = "URL: "
+            url.text = getString(R.string.ftp_url_label, "")
             ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
         } else {
             accentColor = mainActivity.accent
@@ -638,7 +701,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         port.text = "${resources.getString(R.string.ftp_port)}: $defaultPortFromPreferences"
         updatePathText()
 
-        if (defaultPathFromPreferences == FtpService.defaultPath(requireContext())) {
+        if (defaultPathFromPreferences == FtpPreferences.defaultPath(requireContext())) {
             sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         } else {
             sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_all, 0)
@@ -676,9 +739,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun resetFTPPath() {
         mainActivity.prefs
-            .edit()
-            .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
-            .apply()
+            .edit {
+                putString(
+                    FtpPreferences.KEY_PREFERENCE_PATH,
+                    FtpPreferences.defaultPath(requireContext()),
+                )
+            }
     }
 
     /** Updates the status spans  */
@@ -702,7 +768,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         spannedStatusUrl =
             HtmlCompat.fromHtml(
-                "URL:&nbsp;$ftpAddress",
+                getString(R.string.ftp_url_label, ftpAddress),
                 FROM_HTML_MODE_COMPACT,
             )
         spannedStatusNoConnection =
@@ -727,11 +793,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     "${resources.getString(R.string.ftp_status_secure_connection)}</font></b>",
                 FROM_HTML_MODE_COMPACT,
             )
-        spannedStatusUrl =
-            HtmlCompat.fromHtml(
-                "URL:&nbsp;$ftpAddress",
-                FROM_HTML_MODE_COMPACT,
-            )
     }
 
     private fun initLoginDialogViews(loginDialogView: DialogFtpLoginBinding) {
@@ -744,7 +805,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
 
         // init dialog views as per preferences
-        if (usernameFromPreferences == FtpService.DEFAULT_USERNAME) {
+        if (usernameFromPreferences == FtpPreferences.DEFAULT_USERNAME) {
             anonymousCheckBox.isChecked = true
         } else {
             usernameEditText.setText(usernameFromPreferences)
@@ -817,9 +878,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             return (
                 (
                     if (securePreference) {
-                        FtpService.INITIALS_HOST_SFTP
+                        FtpPreferences.INITIALS_HOST_SFTP
                     } else {
-                        FtpService.INITIALS_HOST_FTP
+                        FtpPreferences.INITIALS_HOST_FTP
                     }
                 ) +
                     ia.hostAddress +
@@ -831,11 +892,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val defaultPortFromPreferences: Int
         get() =
             mainActivity.prefs
-                .getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT)
+                .getInt(FtpPreferences.PORT_PREFERENCE_KEY, FtpPreferences.DEFAULT_PORT)
     private val usernameFromPreferences: String
         get() =
             mainActivity.prefs
-                .getString(FtpService.KEY_PREFERENCE_USERNAME, FtpService.DEFAULT_USERNAME)!!
+                .getString(FtpPreferences.KEY_PREFERENCE_USERNAME, FtpPreferences.DEFAULT_USERNAME)!!
 
     // can't decrypt the password saved in preferences, remove the preference altogether
     private val passwordFromPreferences: String?
@@ -843,7 +904,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             runCatching {
                 val encryptedPassword: String =
                     mainActivity.prefs.getString(
-                        FtpService.KEY_PREFERENCE_PASSWORD,
+                        FtpPreferences.KEY_PREFERENCE_PASSWORD,
                         "",
                     )!!
                 if (encryptedPassword == "") {
@@ -854,13 +915,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             }.onFailure {
                 log.warn("failed to decrypt ftp server password", it)
                 Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
-                mainActivity.prefs.edit { putString(FtpService.KEY_PREFERENCE_PASSWORD, "") }
+                mainActivity.prefs.edit { putString(FtpPreferences.KEY_PREFERENCE_PASSWORD, "") }
             }.getOrNull()
 
     private val defaultPathFromPreferences: String
         get() {
             return PreferenceManager.getDefaultSharedPreferences(mainActivity)
-                .getString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))!!
+                .getString(FtpPreferences.KEY_PREFERENCE_PATH, FtpPreferences.defaultPath(requireContext()))!!
         }
 
     private fun pathToDisplayString(path: String): String {
@@ -880,7 +941,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     }
 
     private fun changeFTPServerPort(port: Int) {
-        mainActivity.prefs.edit { putInt(FtpService.PORT_PREFERENCE_KEY, port) }
+        mainActivity.prefs.edit { putInt(FtpPreferences.PORT_PREFERENCE_KEY, port) }
 
         // first update spans which will point to an updated status
         updateSpans()
@@ -896,9 +957,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     fun changeFTPServerPath(path: String) {
         PreferenceManager.getDefaultSharedPreferences(mainActivity).edit {
             if (FileUtils.isRunningAboveStorage(path)) {
-                putBoolean(KEY_PREFERENCE_ROOT_FILESYSTEM, true)
+                putBoolean(FtpPreferences.KEY_PREFERENCE_ROOT_FILESYSTEM, true)
             }
-            putString(KEY_PREFERENCE_PATH, path)
+            putString(FtpPreferences.KEY_PREFERENCE_PATH, path)
         }
         updateStatus()
     }
@@ -907,7 +968,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         mainActivity
             .prefs
             .edit {
-                putString(FtpService.KEY_PREFERENCE_USERNAME, username)
+                putString(FtpPreferences.KEY_PREFERENCE_USERNAME, username)
             }
         updateStatus()
     }
@@ -920,7 +981,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     .prefs
                     .edit {
                         putString(
-                            FtpService.KEY_PREFERENCE_PASSWORD,
+                            FtpPreferences.KEY_PREFERENCE_PASSWORD,
                             PasswordUtil.encryptPassword(this@run, password),
                         )
                     }
@@ -942,46 +1003,46 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         get() =
             mainActivity
                 .prefs
-                .getInt(FtpService.KEY_PREFERENCE_TIMEOUT, FtpService.DEFAULT_TIMEOUT)
+                .getInt(FtpPreferences.KEY_PREFERENCE_TIMEOUT, FtpPreferences.DEFAULT_TIMEOUT)
         private set(seconds) {
-            mainActivity.prefs.edit { putInt(FtpService.KEY_PREFERENCE_TIMEOUT, seconds) }
+            mainActivity.prefs.edit { putInt(FtpPreferences.KEY_PREFERENCE_TIMEOUT, seconds) }
         }
 
     private var securePreference: Boolean
         get() =
             mainActivity
                 .prefs
-                .getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE)
+                .getBoolean(FtpPreferences.KEY_PREFERENCE_SECURE, FtpPreferences.DEFAULT_SECURE)
         private set(isSecureEnabled) {
             mainActivity
                 .prefs
                 .edit {
-                    putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)
+                    putBoolean(FtpPreferences.KEY_PREFERENCE_SECURE, isSecureEnabled)
                 }
         }
 
     private var readonlyPreference: Boolean
-        get() = mainActivity.prefs.getBoolean(FtpService.KEY_PREFERENCE_READONLY, false)
+        get() = mainActivity.prefs.getBoolean(FtpPreferences.KEY_PREFERENCE_READONLY, false)
         private set(isReadonly) {
             mainActivity
                 .prefs
                 .edit {
-                    putBoolean(FtpService.KEY_PREFERENCE_READONLY, isReadonly)
+                    putBoolean(FtpPreferences.KEY_PREFERENCE_READONLY, isReadonly)
                 }
         }
 
     private var legacyFileSystemPreference: Boolean
-        get() = mainActivity.prefs.getBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, false)
+        get() = mainActivity.prefs.getBoolean(FtpPreferences.KEY_PREFERENCE_SAF_FILESYSTEM, false)
         private set(useSafFileSystem) {
             mainActivity
                 .prefs
                 .edit {
-                    putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, useSafFileSystem)
+                    putBoolean(FtpPreferences.KEY_PREFERENCE_SAF_FILESYSTEM, useSafFileSystem)
                 }
         }
 
     private fun promptUserToRestartServer() {
-        if (isRunning()) AppConfig.toast(context, R.string.ftp_prompt_restart_server)
+        if (FtpServerEngine.isRunning()) AppConfig.toast(context, R.string.ftp_prompt_restart_server)
     }
 
     private fun promptUserToEnableWireless() {

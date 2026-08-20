@@ -29,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
+import com.amaze.filemanager.filesystem.ftp.SSHClientImpl
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
@@ -42,6 +43,7 @@ import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.common.DisconnectReason
 import net.schmizz.sshj.userauth.UserAuthException
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -79,6 +81,24 @@ class SshAuthenticationTaskTest {
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxAndroidPlugins.reset()
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+    }
+
+    /**
+     * Post-test cleanup to prevent Robolectric sandbox state pollution.
+     *
+     * Resets [NetCopyClientConnectionPool.sshClientFactory] to the default implementation and
+     * clears the connections pool, so that tests sharing the same Robolectric sandbox (same
+     * [org.robolectric.annotation.Config]) are not affected by the mock factory set up here.
+     */
+    @After
+    fun tearDown() {
+        NetCopyClientConnectionPool.sshClientFactory =
+            NetCopyClientConnectionPool.DefaultSSHClientFactory()
+        NetCopyClientConnectionPool::class.java.getDeclaredField("connections").run {
+            this.isAccessible = true
+            @Suppress("UNCHECKED_CAST")
+            (this.get(NetCopyClientConnectionPool) as MutableMap<String, *>).clear()
+        }
     }
 
     /**
@@ -342,7 +362,7 @@ class SshAuthenticationTaskTest {
             this.set(
                 NetCopyClientConnectionPool,
                 mutableMapOf(
-                    Pair("ssh://user:password@127.0.0.1:22222", sshClient),
+                    Pair("ssh://user:password@127.0.0.1:22222", SSHClientImpl(sshClient)),
                 ),
             )
         }

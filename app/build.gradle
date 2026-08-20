@@ -248,6 +248,8 @@ dependencies {
     implementation project(':commons_compress_7z')
     implementation project(':file_operations')
     implementation project(':portscanner')
+    implementation project(':server-core')
+    implementation project(':ftpserver')
 
     implementation libs.kotlin.stdlib.jdk8
     implementation libs.acra.core
