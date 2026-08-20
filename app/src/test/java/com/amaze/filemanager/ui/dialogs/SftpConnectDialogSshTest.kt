@@ -22,8 +22,6 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.os.Bundle
 import android.util.Base64
-import androidx.test.core.app.ApplicationProvider
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -78,7 +76,7 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
         verify.putBoolean("edit", true)
         verify.putString(
             "password",
-            PasswordUtil.encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
+            PasswordUtil.encryptPassword("12345678", Base64.URL_SAFE)
                 ?.replace("\n", ""),
         )
         testOpenSftpConnectDialog(uri, verify)
@@ -103,7 +101,7 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
         verify.putString("defaultPath", "/data/incoming")
         verify.putString(
             "password",
-            PasswordUtil.encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
+            PasswordUtil.encryptPassword("12345678", Base64.URL_SAFE)
                 ?.replace("\n", ""),
         )
         testOpenSftpConnectDialog(uri, verify)
@@ -133,7 +131,7 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
         )
         verify.putString(
             "password",
-            PasswordUtil.encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
+            PasswordUtil.encryptPassword("12345678", Base64.URL_SAFE)
                 ?.replace("\n", ""),
         )
         testOpenSftpConnectDialog(uri, verify)
@@ -168,7 +166,6 @@ class SftpConnectDialogSshTest : AbstractSftpConnectDialogTests() {
                     assertEquals(
                         verify.getString(key),
                         PasswordUtil.decryptPassword(
-                            ApplicationProvider.getApplicationContext(),
                             mocked.arguments!!.getString(key)!!,
                             Base64.URL_SAFE,
                         ),

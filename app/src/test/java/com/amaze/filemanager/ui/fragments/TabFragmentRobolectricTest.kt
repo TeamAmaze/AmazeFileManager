@@ -1,5 +1,6 @@
 package com.amaze.filemanager.ui.fragments
 
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.viewpager2.widget.ViewPager2
 import com.amaze.filemanager.R
@@ -24,7 +25,7 @@ class TabFragmentRobolectricTest : AbstractMainActivityTestBase() {
     @Before
     override fun setUp() {
         super.setUp()
-        scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario = activityRule.scenario
     }
 
     /**
@@ -33,7 +34,6 @@ class TabFragmentRobolectricTest : AbstractMainActivityTestBase() {
     @After
     override fun tearDown() {
         super.tearDown()
-        scenario.close()
     }
 
     /**
@@ -49,6 +49,7 @@ class TabFragmentRobolectricTest : AbstractMainActivityTestBase() {
 
             // Trigger configuration change as if the screen was rotated
             activity.recreate()
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 
@@ -68,6 +69,7 @@ class TabFragmentRobolectricTest : AbstractMainActivityTestBase() {
 
             // Trigger configuration save
             activity.recreate()
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 
@@ -89,6 +91,7 @@ class TabFragmentRobolectricTest : AbstractMainActivityTestBase() {
 
             // Trigger configuration save
             activity.recreate()
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 }

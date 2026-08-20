@@ -155,7 +155,6 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import com.topjohnwu.superuser.Shell;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -433,7 +432,7 @@ public class MainActivity extends PermissionsActivity
 
               ExtensionsKt.updateAUAlias(
                   this,
-                  !PackageUtils.Companion.appInstalledOrNot(
+                  !PackageUtils.appInstalledOrNot(
                           AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager())
                       && !getBoolean(
                           PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS));
@@ -809,7 +808,7 @@ public class MainActivity extends PermissionsActivity
   /**
    * @return All available storage volumes (including internal storage, SD-Cards and USB devices)
    */
-  @TargetApi(N)
+  @RequiresApi(N)
   public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesNew() {
     // Final set of paths
     ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();

@@ -24,7 +24,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSHClientFactory
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
@@ -101,10 +100,7 @@ class NetCopyClientConnectionPoolSshTest {
                 PORT,
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 "testuser",
-                PasswordUtil.encryptPassword(
-                    AppConfig.getInstance(),
-                    "testpassword",
-                ),
+                PasswordUtil.encryptPassword("testpassword"),
                 null,
             ),
         )
@@ -115,10 +111,7 @@ class NetCopyClientConnectionPoolSshTest {
                 PORT,
                 SecurityUtils.getFingerprint(hostKeyPair.public),
                 "invaliduser",
-                PasswordUtil.encryptPassword(
-                    AppConfig.getInstance(),
-                    "invalidpassword",
-                ),
+                PasswordUtil.encryptPassword("invalidpassword"),
                 null,
             ),
         )
@@ -321,10 +314,7 @@ class NetCopyClientConnectionPoolSshTest {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val encodedPassword = encode(validPassword, UTF_8.name())
         val encryptedPassword =
-            PasswordUtil.encryptPassword(
-                AppConfig.getInstance(),
-                encodedPassword,
-            )?.replace("\n", "")
+            PasswordUtil.encryptPassword(encodedPassword)?.replace("\n", "")
         val mock = createSshServer(validUsername, validPassword)
         TestUtils.saveSshConnectionSettings(
             hostKeyPair,

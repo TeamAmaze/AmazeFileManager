@@ -30,6 +30,7 @@ import android.os.storage.StorageManager
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -42,6 +43,9 @@ import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.rules.ExternalResource
+import org.junit.rules.RuleChain
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -69,19 +73,35 @@ import org.robolectric.shadows.ShadowStorageManager
  */
 @LooperMode(LooperMode.Mode.PAUSED)
 abstract class AbstractMainActivityTestBase {
-    @Rule
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
     @NonNull
     @JvmField
     @RequiresApi(Build.VERSION_CODES.R)
     val allFilesPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
+    // ActivityScenarioRule launches MainActivity before @Before runs, so initialize storage here.
+    private val initializeStorageRule: ExternalResource =
+        object : ExternalResource() {
+            override fun before() {
+                if (Build.VERSION.SDK_INT >= VERSION_CODES.N) {
+                    TestUtils.initializeInternalStorage()
+                }
+            }
+        }
+
+    @get:Rule
+    val ruleChain: TestRule =
+        RuleChain.outerRule(initializeStorageRule)
+            .around(allFilesPermissionRule)
+            .around(activityRule)
+
     /**
      * Setups before test.
      */
     @Before
     open fun setUp() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) TestUtils.initializeInternalStorage()
         RxJavaPlugins.reset()
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxAndroidPlugins.reset()

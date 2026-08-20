@@ -43,7 +43,7 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
         AppConfig.getInstance().run {
             progressDialog =
                 ProgressDialog.show(
-                    this.mainActivityContext,
+                    requireNotNull(this.mainActivityContext),
                     "",
                     this.resources.getString(R.string.processing),
                 )

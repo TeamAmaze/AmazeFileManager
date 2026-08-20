@@ -26,6 +26,7 @@ import android.hardware.fingerprint.FingerprintManager
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
+import androidx.lifecycle.Lifecycle
 import androidx.test.filters.SdkSuppress
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.application.AppConfig
@@ -74,8 +75,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
      * MainActivity setup.
      */
     @Before
-    override fun setUp() {
-        super.setUp()
+    fun setUp() {
         file =
             File(
                 Environment.getExternalStorageDirectory(),
@@ -143,6 +143,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
         callback: EncryptDecryptUtils.DecryptButtonCallbackInterface =
             object : EncryptDecryptUtils.DecryptButtonCallbackInterface {},
     ) {
+        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             DecryptFingerprintDialog.show(
                 activity,
@@ -161,6 +162,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
                     testContent.invoke()
                 }
             }
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 

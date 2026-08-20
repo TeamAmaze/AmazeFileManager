@@ -27,7 +27,6 @@ import com.amaze.filemanager.asynchronous.asynctasks.Task
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import org.apache.commons.net.ftp.FTPClient
 import org.json.JSONObject
-import java.net.ConnectException
 import java.net.SocketException
 import java.net.SocketTimeoutException
 
@@ -62,8 +61,7 @@ class FtpAuthenticationTask(
 
     @MainThread
     override fun onError(error: Throwable) {
-        if (error is SocketException || error is SocketTimeoutException || error is ConnectException
-        ) {
+        if (error is SocketException || error is SocketTimeoutException) {
             AppConfig.toast(
                 AppConfig.getInstance(),
                 AppConfig.getInstance()
@@ -79,7 +77,5 @@ class FtpAuthenticationTask(
     }
 
     @MainThread
-    override fun onFinish(value: FTPClient) {
-        android.util.Log.d("TEST", value.toString())
-    }
+    override fun onFinish(value: FTPClient) = Unit
 }

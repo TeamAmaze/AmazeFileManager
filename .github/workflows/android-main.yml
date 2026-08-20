@@ -37,6 +37,8 @@ jobs:
     name: Build debug, Jacoco test and publish to codacy
     runs-on: ubuntu-latest
     steps:
+      - name: Increase fs.inotify.max_user_instances limit
+        run: echo 512 | sudo tee /proc/sys/fs/inotify/max_user_instances
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
@@ -106,6 +108,8 @@ jobs:
       matrix:
         api-level: [ 21, 28 ]
     steps:
+      - name: Increase fs.inotify.max_user_instances limit
+        run: echo 512 | sudo tee /proc/sys/fs/inotify/max_user_instances
       - name: checkout
         uses: actions/checkout@v6
       - name: Java 17
