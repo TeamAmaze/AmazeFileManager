@@ -166,6 +166,10 @@ public class DeleteTask
       case OTG:
         DocumentFile documentFile =
             OTGUtil.getDocumentFile(file.getPath(), applicationContext, false);
+        if (documentFile == null) {
+          LOG.warn("OTG DocumentFile is null for delete - permission may not be granted");
+          return false;
+        }
         return documentFile.delete();
       case DOCUMENT_FILE:
         documentFile =
@@ -175,6 +179,10 @@ public class DeleteTask
                 applicationContext,
                 OpenMode.DOCUMENT_FILE,
                 false);
+        if (documentFile == null) {
+          LOG.warn("DocumentFile is null for delete");
+          return false;
+        }
         return documentFile.delete();
       case DROPBOX:
       case BOX:

@@ -28,6 +28,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,6 +84,41 @@ public class CustomNavigationView extends NavigationView
   public @Nullable MenuItem getSelected() {
     if (checkedId == -1) return null;
     return getMenu().findItem(checkedId);
+  }
+
+  /**
+   * Get the actual View for a MenuItem in the NavigationView
+   *
+   * @param item the MenuItem to get the view for
+   * @return the View for the MenuItem, or null if not found
+   */
+  public @Nullable View getMenuItemView(@NonNull MenuItem item) {
+    // Try to find the view by traversing the navigation menu view
+    try {
+      // Get the NavigationMenuView which contains the actual menu item views
+      for (int i = 0; i < getChildCount(); i++) {
+        View child = getChildAt(i);
+        if (child instanceof android.view.ViewGroup) {
+          android.view.ViewGroup group = (android.view.ViewGroup) child;
+          for (int j = 0; j < group.getChildCount(); j++) {
+            View subChild = group.getChildAt(j);
+            if (subChild instanceof android.view.ViewGroup) {
+              android.view.ViewGroup subGroup = (android.view.ViewGroup) subChild;
+              for (int k = 0; k < subGroup.getChildCount(); k++) {
+                View menuItemView = subGroup.getChildAt(k);
+                if (menuItemView.getId() == item.getItemId()
+                    || (menuItemView.getTag() != null && menuItemView.getTag().equals(item))) {
+                  return menuItemView;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      // If anything goes wrong, just return null
+    }
+    return null;
   }
 
   @Override

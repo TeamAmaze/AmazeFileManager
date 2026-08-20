@@ -182,7 +182,14 @@ public class Operations {
             errorCallBack.exists(file);
             return null;
           }
-          safCreateDirectory.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
+          DocumentFile parentDocFile =
+              OTGUtil.getDocumentFile(parentFile.getPath(), context, false);
+          if (parentDocFile == null) {
+            LOG.warn("OTG parent DocumentFile is null - permission may not be granted");
+            errorCallBack.done(file, false);
+            return null;
+          }
+          safCreateDirectory.apply(parentDocFile);
           return null;
         }
         if (file.isDocumentFile()) {
@@ -190,13 +197,19 @@ public class Operations {
             errorCallBack.exists(file);
             return null;
           }
-          safCreateDirectory.apply(
+          DocumentFile docFile =
               OTGUtil.getDocumentFile(
                   parentFile.getPath(),
                   SafRootHolder.getUriRoot(),
                   context,
                   OpenMode.DOCUMENT_FILE,
-                  false));
+                  false);
+          if (docFile == null) {
+            LOG.warn("DocumentFile is null for mkdir");
+            errorCallBack.done(file, false);
+            return null;
+          }
+          safCreateDirectory.apply(docFile);
           return null;
         } else if (file.isDropBoxFile()) {
           CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -401,20 +414,33 @@ public class Operations {
             errorCallBack.exists(file);
             return null;
           }
-          safCreateFile.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
+          DocumentFile parentDocFileForMkfile =
+              OTGUtil.getDocumentFile(parentFile.getPath(), context, false);
+          if (parentDocFileForMkfile == null) {
+            LOG.warn("OTG parent DocumentFile is null for mkfile - permission may not be granted");
+            errorCallBack.done(file, false);
+            return null;
+          }
+          safCreateFile.apply(parentDocFileForMkfile);
           return null;
         } else if (file.isDocumentFile()) {
           if (checkDocumentFileNewFileExists(file, context)) {
             errorCallBack.exists(file);
             return null;
           }
-          safCreateFile.apply(
+          DocumentFile docFileForMkfile =
               OTGUtil.getDocumentFile(
                   parentFile.getPath(),
                   SafRootHolder.getUriRoot(),
                   context,
                   OpenMode.DOCUMENT_FILE,
-                  false));
+                  false);
+          if (docFileForMkfile == null) {
+            LOG.warn("DocumentFile is null for mkfile");
+            errorCallBack.done(file, false);
+            return null;
+          }
+          safCreateFile.apply(docFileForMkfile);
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
@@ -688,20 +714,32 @@ public class Operations {
             errorCallBack.exists(newFile);
             return null;
           }
-          safRenameFile.apply(OTGUtil.getDocumentFile(oldFile.getPath(), context, false));
+          DocumentFile oldDocFile = OTGUtil.getDocumentFile(oldFile.getPath(), context, false);
+          if (oldDocFile == null) {
+            LOG.warn("OTG DocumentFile is null for rename - permission may not be granted");
+            errorCallBack.done(newFile, false);
+            return null;
+          }
+          safRenameFile.apply(oldDocFile);
           return null;
         } else if (oldFile.isDocumentFile()) {
           if (checkDocumentFileNewFileExists(newFile, context)) {
             errorCallBack.exists(newFile);
             return null;
           }
-          safRenameFile.apply(
+          DocumentFile oldDocFileForRename =
               OTGUtil.getDocumentFile(
                   oldFile.getPath(),
                   SafRootHolder.getUriRoot(),
                   context,
                   OpenMode.DOCUMENT_FILE,
-                  false));
+                  false);
+          if (oldDocFileForRename == null) {
+            LOG.warn("DocumentFile is null for rename");
+            errorCallBack.done(newFile, false);
+            return null;
+          }
+          safRenameFile.apply(oldDocFileForRename);
           return null;
         } else {
           File file = new File(oldFile.getPath());
