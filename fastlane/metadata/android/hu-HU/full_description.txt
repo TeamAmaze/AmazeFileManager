@@ -1,0 +1,15 @@
+Könnyű és letisztult fájlkezelő, amely a Material Design irányelveit követi.
+
+Funkciók:
+
+- Alapvető funkciók, mint a kivágás, másolás, törlés, tömörítés, kibontás
+- Több lapos nézet a hatékonyság növeléséért
+- Többféle téma támogatása
+- Navigációs menü a gyors navigációhoz
+- Alkalmazáskezelő az alkalmazások megnyitásához, biztonsági mentéséhez vagy közvetlen eltávolításához
+- Gyors hozzáférés az előzményekhez, könyvjelzőkhöz vagy bármely fájl kereséséhez
+- Root böngésző haladó felhasználók számára
+- AES titkosítás és visszafejtés a fájlok biztonságáért (Jelly Bean v4.3+)
+- Felhőszolgáltatások támogatása, úgymint SMB, SSH, FTP és SFTP (Jelly Bean v4.3+ / külön bővítmény szükséges)
+- Beépített adatbázis-olvasó, ZIP/RAR olvasó, APK olvasó és szövegszerkesztő
+- FTP kliens támogatás

@@ -20,14 +20,19 @@
 
 package com.amaze.filemanager.ui.activities
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.utils.smb.SmbUtil.getSmbDecryptedPath
 import com.amaze.filemanager.utils.smb.SmbUtil.getSmbEncryptedPath
 import org.awaitility.Awaitility.await
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.robolectric.shadows.ShadowLooper
 import java.util.concurrent.TimeUnit
@@ -37,6 +42,59 @@ import java.util.concurrent.TimeUnit
  */
 @Suppress("StringLiteralDuplication")
 class MainActivityTest : AbstractMainActivityTestBase() {
+    /** Test Amaze is advertised as a document picker. */
+    @Test
+    fun testOpenDocumentIntentResolvesToMainActivity() {
+        val context = ApplicationProvider.getApplicationContext<AppConfig>()
+        val intent =
+            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = MimeTypes.ALL_MIME_TYPES
+                setPackage(context.packageName)
+            }
+
+        val handlers =
+            context.packageManager.queryIntentActivities(
+                intent,
+                PackageManager.MATCH_DEFAULT_ONLY,
+            )
+
+        assertTrue(
+            "MainActivity must handle ACTION_OPEN_DOCUMENT",
+            handlers.any { it.activityInfo.name == MainActivity::class.java.name },
+        )
+    }
+
+    /** Test OPEN_DOCUMENT starts the existing file-picking flow. */
+    @Test
+    fun testOpenDocumentIntentEnablesFilePicking() {
+        val context = ApplicationProvider.getApplicationContext<AppConfig>()
+        val intent =
+            Intent(context, MainActivity::class.java).apply {
+                action = Intent.ACTION_OPEN_DOCUMENT
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = MimeTypes.ALL_MIME_TYPES
+            }
+        val scenario = ActivityScenario.launch<MainActivity>(intent)
+
+        try {
+            ShadowLooper.idleMainLooper()
+            scenario.moveToState(Lifecycle.State.STARTED)
+            scenario.onActivity { activity ->
+                assertTrue(
+                    "OPEN_DOCUMENT must enable file-picking mode",
+                    activity.mReturnIntent,
+                )
+                assertFalse(
+                    "OPEN_DOCUMENT must not enable ringtone-picking mode",
+                    activity.mRingtonePickerIntent,
+                )
+            }
+        } finally {
+            scenario.close()
+        }
+    }
+
     /**
      * Test update SMB connection should never throw [NullPointerException] i.e. the correct
      * connection is updated.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This file was generated automatically by Sonnet 4.6.
+# This filepath was generated automatically by Sonnet 4.6.
 #
 # convert_fastlane_locale_folders.sh
 #
@@ -122,17 +122,22 @@ convert_locale_folders() {
     new_path="${target_dir}/${new_name}"
 
     if [[ -e "${new_path}" ]]; then
-      log "Warning: '${new_name}' already exists, skipping '${base_name}'" force
-      skipped_count=$((skipped_count + 1))
-      continue
+      log "Warning: '${new_name}' already exists, overwriting in '${target_dir}'" force
     fi
 
-    if [[ "${DRY_RUN}" -eq 1 ]]; then
-      log "[dry-run] Would rename '${base_name}' -> '${new_name}'" force
-    else
-      mv -- "${entry%/}" "${new_path}"
-      log "Renamed '${base_name}' -> '${new_name}'" force
-    fi
+    for filepath in ${entry}*; do
+      local new_filepath
+      new_filepath="${new_path}/$(basename "${filepath}")"
+
+      if [[ "${DRY_RUN}" -eq 1 ]]; then
+        log "[dry-run] Would try to create '${new_path}'"
+        log "[dry-run] Would move '${filepath}' -> '${new_filepath}" force
+      else
+        mkdir -p "${new_path}"
+        mv -- "${filepath}" "${new_filepath}" && rm -r -- "${entry}"
+        log "Moved '${filepath}' -> '${new_filepath}'" force
+      fi
+    done
     renamed_count=$((renamed_count + 1))
   done
 
