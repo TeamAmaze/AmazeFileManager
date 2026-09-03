@@ -40,6 +40,7 @@ import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.DocumentsContract
 import androidx.core.app.ServiceCompat
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
@@ -107,7 +108,7 @@ class FtpService : Service(), Runnable {
                 attempts--
                 try {
                     Thread.sleep(1000)
-                } catch (ignored: InterruptedException) {
+                } catch (_: InterruptedException) {
                 }
             } else {
                 return START_STICKY
@@ -148,12 +149,12 @@ class FtpService : Service(), Runnable {
             val connectionConfigFactory = ConnectionConfigFactory()
             val shouldUseAndroidFileSystem =
                 preferences.getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
-            if (SDK_INT >= KITKAT && shouldUseAndroidFileSystem) {
-                fileSystem = AndroidFileSystemFactory(applicationContext)
+            fileSystem = if (SDK_INT >= KITKAT && shouldUseAndroidFileSystem) {
+                AndroidFileSystemFactory(applicationContext)
             } else if (preferences.getBoolean(PREFERENCE_ROOTMODE, false)) {
-                fileSystem = RootFileSystemFactory()
+                RootFileSystemFactory()
             } else {
-                fileSystem = NativeFileSystemFactory()
+                NativeFileSystemFactory()
             }
 
             commandFactory = CommandFactoryFactory.create(shouldUseAndroidFileSystem)
@@ -175,7 +176,9 @@ class FtpService : Service(), Runnable {
                 }.onFailure {
                     log.warn("failed to decrypt password in ftp service", it)
                     AppConfig.toast(applicationContext, R.string.error)
-                    preferences.edit().putString(KEY_PREFERENCE_PASSWORD, "").apply()
+                    preferences.edit {
+                        putString(KEY_PREFERENCE_PASSWORD, "")
+                    }
                     isPasswordProtected = false
                 }
             }
@@ -223,10 +226,14 @@ class FtpService : Service(), Runnable {
                             "ftpserver",
                         )
                     fac.isImplicitSsl = true
-                } catch (e: GeneralSecurityException) {
-                    preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply()
-                } catch (e: IOException) {
-                    preferences.edit().putBoolean(KEY_PREFERENCE_SECURE, false).apply()
+                } catch (_: GeneralSecurityException) {
+                    preferences.edit {
+                        putBoolean(KEY_PREFERENCE_SECURE, false)
+                    }
+                } catch (_: IOException) {
+                    preferences.edit {
+                        putBoolean(KEY_PREFERENCE_SECURE, false)
+                    }
                 }
             }
             fac.port = getPort(preferences)
@@ -312,38 +319,33 @@ class FtpService : Service(), Runnable {
         const val TAG_STARTED_BY_TILE = "started_by_tile"
         // attribute of action_started, used by notification
 
-        private lateinit var _enabledCipherSuites: Array<String>
-
-        init {
-            _enabledCipherSuites =
-                LinkedList<String>().apply {
-                    if (SDK_INT >= Q) {
-                        add("TLS_AES_128_GCM_SHA256")
-                        add("TLS_AES_256_GCM_SHA384")
-                        add("TLS_CHACHA20_POLY1305_SHA256")
-                    }
-                    if (SDK_INT >= N) {
-                        add("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")
-                        add("TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256")
-                    }
-                    if (SDK_INT >= LOLLIPOP) {
-                        add("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")
-                        add("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")
-                        add("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")
-                        add("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")
-                        add("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")
-                        add("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")
-                        add("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")
-                        add("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
-                        add("TLS_RSA_WITH_AES_128_GCM_SHA256")
-                        add("TLS_RSA_WITH_AES_256_GCM_SHA384")
-                    }
-                    if (SDK_INT < LOLLIPOP) {
-                        add("TLS_RSA_WITH_AES_128_CBC_SHA")
-                        add("TLS_RSA_WITH_AES_256_CBC_SHA")
-                    }
-                }.toTypedArray()
-        }
+        private var _enabledCipherSuites: Array<String> = LinkedList<String>().apply {
+            if (SDK_INT >= Q) {
+                add("TLS_AES_128_GCM_SHA256")
+                add("TLS_AES_256_GCM_SHA384")
+                add("TLS_CHACHA20_POLY1305_SHA256")
+            }
+            if (SDK_INT >= N) {
+                add("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")
+                add("TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256")
+            }
+            if (SDK_INT >= LOLLIPOP) {
+                add("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")
+                add("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")
+                add("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")
+                add("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")
+                add("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")
+                add("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")
+                add("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")
+                add("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
+                add("TLS_RSA_WITH_AES_128_GCM_SHA256")
+                add("TLS_RSA_WITH_AES_256_GCM_SHA384")
+            }
+            if (SDK_INT < LOLLIPOP) {
+                add("TLS_RSA_WITH_AES_128_CBC_SHA")
+                add("TLS_RSA_WITH_AES_256_CBC_SHA")
+            }
+        }.toTypedArray()
 
         /**
          * Return a list of available ciphers for ftpserver.
@@ -390,7 +392,7 @@ class FtpService : Service(), Runnable {
         }
 
         private fun getPort(preferences: SharedPreferences): Int {
-            return preferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT)
+            return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
         }
     }
 }
