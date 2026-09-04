@@ -147,7 +147,7 @@ open class FtpHybridFileTest {
      * Shutdown FTP server.
      */
     @After
-    fun tearDown() {
+    open fun tearDown() {
         if (!ftpServer.isStopped) {
             ftpServer.stop()
         }

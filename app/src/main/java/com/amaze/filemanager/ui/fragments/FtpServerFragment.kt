@@ -107,7 +107,6 @@ import java.security.GeneralSecurityException
 @Suppress("TooManyFunctions")
 class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val log: Logger = LoggerFactory.getLogger(FtpServerFragment::class.java)
-
     private val statusText: AppCompatTextView get() = binding.textViewFtpStatus
     private val url: AppCompatTextView get() = binding.textViewFtpUrl
     private val username: AppCompatTextView get() = binding.textViewFtpUsername
@@ -116,6 +115,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val sharedPath: AppCompatTextView get() = binding.textViewFtpPath
     private val ftpBtn: AppCompatButton get() = binding.startStopButton
     private val ftpPasswordVisibleButton: AppCompatImageButton get() = binding.ftpPasswordVisible
+    private val ftpSslCertificateViewButton: AppCompatButton get() = binding.buttonViewCert
     private var accentColor = 0
     private var spannedStatusNoConnection: Spanned? = null
     private var spannedStatusConnected: Spanned? = null
@@ -176,6 +176,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     onFtpReceiveActions(event)
                 }
             }
+        }
+
+        ftpSslCertificateViewButton.setOnClickListener {
+            displaySslCertInfoDialog()
         }
         return binding.root
     }
@@ -305,6 +309,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 item.isChecked = shouldSecure
                 securePreference = shouldSecure
                 promptUserToRestartServer()
+                ftpSslCertificateViewButton.visibility = if(shouldSecure) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
                 return true
             }
             R.id.checkbox_ftp_legacy_filesystem -> {
@@ -584,6 +593,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             }
             url.text = "URL: "
             ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
+            ftpSslCertificateViewButton.isEnabled = false
         } else {
             accentColor = mainActivity.accent
             url.text = spannedStatusUrl
@@ -603,7 +613,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             ResourcesCompat.getDrawable(
                 resources,
                 R.drawable.ic_eye_grey600_24dp,
-                mainActivity.theme,
+                mainActivity.theme
             ),
         )
         ftpPasswordVisibleButton.visibility =
@@ -620,7 +630,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.ic_eye_off_grey600_24dp,
-                        mainActivity.theme,
+                        mainActivity.theme
                     ),
                 )
             } else {
@@ -630,7 +640,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.ic_eye_grey600_24dp,
-                        mainActivity.theme,
+                        mainActivity.theme
                     ),
                 )
             }
@@ -827,6 +837,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     defaultPortFromPreferences
             )
         }
+
+    private fun displaySslCertInfoDialog(): Unit = if (isRunning() && securePreference) {
+
+    } else Unit
+
 
     private val defaultPortFromPreferences: Int
         get() =
