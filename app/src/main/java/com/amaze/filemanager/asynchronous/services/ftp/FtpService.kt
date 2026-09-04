@@ -45,6 +45,7 @@ import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService.getPendingIntentFlag
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider.FTPS_CERT_ALIAS
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
@@ -221,7 +222,7 @@ class FtpService : Service(), Runnable {
                             ClientAuth.WANT,
                             "TLS",
                             enabledCipherSuites,
-                            "ftpserver",
+                            FTPS_CERT_ALIAS,
                         )
                     fac.isImplicitSsl = true
                 } catch (_: GeneralSecurityException) {

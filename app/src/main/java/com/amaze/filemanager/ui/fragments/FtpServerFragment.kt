@@ -22,6 +22,8 @@ package com.amaze.filemanager.ui.fragments
 
 import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -57,7 +59,9 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.net.toUri
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.fragment.app.Fragment
@@ -67,6 +71,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider.FTPS_CERT_ALIAS
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_PATH
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_ROOT_FILESYSTEM
@@ -85,6 +91,12 @@ import com.amaze.filemanager.utils.NetworkUtil.isConnectedToWifi
 import com.amaze.filemanager.utils.OneCharacterCharSequence
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.Utils
+import com.amaze.filemanager.utils.X509CertificateUtil
+import com.amaze.filemanager.utils.X509CertificateUtil.FINGERPRINT
+import com.amaze.filemanager.utils.X509CertificateUtil.ISSUER
+import com.amaze.filemanager.utils.X509CertificateUtil.SUBJECT
+import com.amaze.filemanager.utils.X509CertificateUtil.VALID_FROM
+import com.amaze.filemanager.utils.X509CertificateUtil.VALID_TO
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
@@ -94,6 +106,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
+import java.security.KeyStore
+import java.security.cert.X509Certificate
 
 /**
  * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed
@@ -683,9 +697,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun resetFTPPath() {
         mainActivity.prefs
-            .edit()
-            .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
-            .apply()
+            .edit {
+                putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
+            }
     }
 
     /** Updates the status spans  */
@@ -835,11 +849,48 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         }
 
-    private fun displaySslCertInfoDialog(): Unit =
+    private fun displaySslCertInfoDialog() {
         if (isRunning() && securePreference) {
-        } else {
-            Unit
+            val keyEntry =
+                FtpServerSslKeyStoreProvider.getKeyStore()
+                    .getEntry(FTPS_CERT_ALIAS, null) as KeyStore.PrivateKeyEntry
+            val certificate = keyEntry.certificateChain.first() as X509Certificate
+            val certInfo = X509CertificateUtil.parse(certificate)
+            val content =
+                mainActivity.getString(
+                    R.string.ftp_server_ssl_cert_info,
+                    certInfo[SUBJECT],
+                    certInfo[ISSUER],
+                    certInfo[VALID_FROM],
+                    certInfo[VALID_TO],
+                    certInfo[FINGERPRINT],
+                )
+            MaterialDialog.Builder(mainActivity)
+                .title(R.string.ftp_server_ssl_cert_info_title)
+                .content(content)
+                .cancelable(false)
+                .autoDismiss(false)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.copy)
+                .onPositive { dialog, _ -> dialog.dismiss() }
+                .onNegative { _, _ ->
+                    val clipboard = mainActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip =
+                        ClipData.newPlainText(
+                            mainActivity.getString(R.string.ftp_server_ssl_cert_info_title),
+                            content,
+                        )
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(
+                        mainActivity,
+                        R.string.ftp_server_ssl_cert_info_copied_to_clipboard,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                .build()
+                .show()
         }
+    }
 
     private val defaultPortFromPreferences: Int
         get() =
@@ -867,7 +918,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             }.onFailure {
                 log.warn("failed to decrypt ftp server password", it)
                 Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
-                mainActivity.prefs.edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply()
+                mainActivity.prefs.edit { putString(FtpService.KEY_PREFERENCE_PASSWORD, "") }
             }.getOrNull()
 
     private val defaultPathFromPreferences: String
@@ -882,7 +933,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 path.substringAfter("file://")
             }
             path.startsWith("content://") -> {
-                return Uri.parse(path).let {
+                return path.toUri().let {
                     "/storage${it.path?.substringAfter("/tree")?.replace(':', '/')}"
                 }
             }
@@ -893,7 +944,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     }
 
     private fun changeFTPServerPort(port: Int) {
-        mainActivity.prefs.edit().putInt(FtpService.PORT_PREFERENCE_KEY, port).apply()
+        mainActivity.prefs.edit { putInt(FtpService.PORT_PREFERENCE_KEY, port) }
 
         // first update spans which will point to an updated status
         updateSpans()
@@ -907,21 +958,21 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
      * <code>file:///</code> or <code>content://</code> as prefix
      */
     fun changeFTPServerPath(path: String) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity).edit()
-        if (FileUtils.isRunningAboveStorage(path)) {
-            preferences.putBoolean(KEY_PREFERENCE_ROOT_FILESYSTEM, true)
+        mainActivity.prefs.edit {
+            if (FileUtils.isRunningAboveStorage(path)) {
+                putBoolean(KEY_PREFERENCE_ROOT_FILESYSTEM, true)
+            }
+            putString(KEY_PREFERENCE_PATH, path)
         }
-        preferences.putString(KEY_PREFERENCE_PATH, path)
-        preferences.apply()
         updateStatus()
     }
 
     private fun setFTPUsername(username: String) {
         mainActivity
             .prefs
-            .edit()
-            .putString(FtpService.KEY_PREFERENCE_USERNAME, username)
-            .apply()
+            .edit {
+                putString(FtpService.KEY_PREFERENCE_USERNAME, username)
+            }
         updateStatus()
     }
 
@@ -930,12 +981,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             context?.run {
                 mainActivity
                     .prefs
-                    .edit()
-                    .putString(
-                        FtpService.KEY_PREFERENCE_PASSWORD,
-                        PasswordUtil.encryptPassword(this, password),
-                    )
-                    .apply()
+                    .edit {
+                        putString(
+                            FtpService.KEY_PREFERENCE_PASSWORD,
+                            PasswordUtil.encryptPassword(this@run, password),
+                        )
+                    }
             }
         } catch (e: GeneralSecurityException) {
             log.warn("failed to set ftp password", e)
@@ -956,7 +1007,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 .prefs
                 .getInt(FtpService.KEY_PREFERENCE_TIMEOUT, FtpService.DEFAULT_TIMEOUT)
         private set(seconds) {
-            mainActivity.prefs.edit().putInt(FtpService.KEY_PREFERENCE_TIMEOUT, seconds).apply()
+            mainActivity.prefs.edit { putInt(FtpService.KEY_PREFERENCE_TIMEOUT, seconds) }
         }
 
     private var securePreference: Boolean
@@ -967,9 +1018,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         private set(isSecureEnabled) {
             mainActivity
                 .prefs
-                .edit()
-                .putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)
-                .apply()
+                .edit {
+                    putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)
+                }
         }
 
     private var readonlyPreference: Boolean
@@ -977,9 +1028,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         private set(isReadonly) {
             mainActivity
                 .prefs
-                .edit()
-                .putBoolean(FtpService.KEY_PREFERENCE_READONLY, isReadonly)
-                .apply()
+                .edit {
+                    putBoolean(FtpService.KEY_PREFERENCE_READONLY, isReadonly)
+                }
         }
 
     private var legacyFileSystemPreference: Boolean
@@ -987,9 +1038,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         private set(useSafFileSystem) {
             mainActivity
                 .prefs
-                .edit()
-                .putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, useSafFileSystem)
-                .apply()
+                .edit {
+                    putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, useSafFileSystem)
+                }
         }
 
     private fun promptUserToRestartServer() {
