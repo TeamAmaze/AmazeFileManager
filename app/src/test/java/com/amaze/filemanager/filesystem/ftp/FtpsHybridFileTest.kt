@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.FtpServerSslKeyStoreProvider
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils
 import com.amaze.filemanager.utils.X509CertificateUtil

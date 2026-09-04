@@ -295,11 +295,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 item.isChecked = shouldSecure
                 securePreference = shouldSecure
                 promptUserToRestartServer()
-                ftpSslCertificateViewButton.visibility = if(shouldSecure) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
+                ftpSslCertificateViewButton.visibility =
+                    if (shouldSecure) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
                 return true
             }
             R.id.checkbox_ftp_legacy_filesystem -> {
@@ -598,11 +599,18 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         username.text = "${resources.getString(R.string.username)}: $usernameFromPreferences"
         password.text = "${resources.getString(R.string.password)}: $passwordBulleted"
+        ftpSslCertificateViewButton.visibility =
+            if (securePreference) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        ftpSslCertificateViewButton.isEnabled = isRunning() && securePreference
         ftpPasswordVisibleButton.setImageDrawable(
             ResourcesCompat.getDrawable(
                 resources,
                 R.drawable.ic_eye_grey600_24dp,
-                mainActivity.theme
+                mainActivity.theme,
             ),
         )
         ftpPasswordVisibleButton.visibility =
@@ -619,7 +627,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.ic_eye_off_grey600_24dp,
-                        mainActivity.theme
+                        mainActivity.theme,
                     ),
                 )
             } else {
@@ -629,7 +637,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.ic_eye_grey600_24dp,
-                        mainActivity.theme
+                        mainActivity.theme,
                     ),
                 )
             }
@@ -827,10 +835,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         }
 
-    private fun displaySslCertInfoDialog(): Unit = if (isRunning() && securePreference) {
-
-    } else Unit
-
+    private fun displaySslCertInfoDialog(): Unit =
+        if (isRunning() && securePreference) {
+        } else {
+            Unit
+        }
 
     private val defaultPortFromPreferences: Int
         get() =
