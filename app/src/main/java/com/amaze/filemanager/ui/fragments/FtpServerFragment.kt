@@ -22,6 +22,8 @@ package com.amaze.filemanager.ui.fragments
 
 import android.app.Activity.RESULT_OK
 import android.content.BroadcastReceiver
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -73,6 +75,8 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.services.ftp.FtpEventBus
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider.FTPS_CERT_ALIAS
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_PATH
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_ROOT_FILESYSTEM
@@ -92,6 +96,12 @@ import com.amaze.filemanager.utils.OneCharacterCharSequence
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.Utils
 import com.amaze.filemanager.utils.registerReceiverCompat
+import com.amaze.filemanager.utils.X509CertificateUtil
+import com.amaze.filemanager.utils.X509CertificateUtil.FINGERPRINT
+import com.amaze.filemanager.utils.X509CertificateUtil.ISSUER
+import com.amaze.filemanager.utils.X509CertificateUtil.SUBJECT
+import com.amaze.filemanager.utils.X509CertificateUtil.VALID_FROM
+import com.amaze.filemanager.utils.X509CertificateUtil.VALID_TO
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -99,6 +109,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
+import java.security.KeyStore
+import java.security.cert.X509Certificate
 
 /**
  * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed
@@ -694,9 +706,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun resetFTPPath() {
         mainActivity.prefs
-            .edit()
-            .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
-            .apply()
+            .edit {
+                putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
+            }
     }
 
     /** Updates the status spans  */
@@ -846,11 +858,48 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             )
         }
 
-    private fun displaySslCertInfoDialog(): Unit =
+    private fun displaySslCertInfoDialog() {
         if (isRunning() && securePreference) {
-        } else {
-            Unit
+            val keyEntry =
+                FtpServerSslKeyStoreProvider.getKeyStore()
+                    .getEntry(FTPS_CERT_ALIAS, null) as KeyStore.PrivateKeyEntry
+            val certificate = keyEntry.certificateChain.first() as X509Certificate
+            val certInfo = X509CertificateUtil.parse(certificate)
+            val content =
+                mainActivity.getString(
+                    R.string.ftp_server_ssl_cert_info,
+                    certInfo[SUBJECT],
+                    certInfo[ISSUER],
+                    certInfo[VALID_FROM],
+                    certInfo[VALID_TO],
+                    certInfo[FINGERPRINT],
+                )
+            MaterialDialog.Builder(mainActivity)
+                .title(R.string.ftp_server_ssl_cert_info_title)
+                .content(content)
+                .cancelable(false)
+                .autoDismiss(false)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.copy)
+                .onPositive { dialog, _ -> dialog.dismiss() }
+                .onNegative { _, _ ->
+                    val clipboard = mainActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip =
+                        ClipData.newPlainText(
+                            mainActivity.getString(R.string.ftp_server_ssl_cert_info_title),
+                            content,
+                        )
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(
+                        mainActivity,
+                        R.string.ftp_server_ssl_cert_info_copied_to_clipboard,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                .build()
+                .show()
         }
+    }
 
     private val defaultPortFromPreferences: Int
         get() =
@@ -893,7 +942,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 path.substringAfter("file://")
             }
             path.startsWith("content://") -> {
-                return Uri.parse(path).let {
+                return path.toUri().let {
                     "/storage${it.path?.substringAfter("/tree")?.replace(':', '/')}"
                 }
             }
@@ -918,7 +967,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
      * <code>file:///</code> or <code>content://</code> as prefix
      */
     fun changeFTPServerPath(path: String) {
-        PreferenceManager.getDefaultSharedPreferences(mainActivity).edit {
+        mainActivity.prefs.edit {
             if (FileUtils.isRunningAboveStorage(path)) {
                 putBoolean(KEY_PREFERENCE_ROOT_FILESYSTEM, true)
             }

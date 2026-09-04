@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Build.VERSION_CODES.P
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
 import androidx.annotation.VisibleForTesting
 import com.amaze.filemanager.application.AppConfig
 import org.bouncycastle.asn1.x500.X500Name
@@ -24,9 +22,7 @@ import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertificateExpiredException
 import java.security.cert.X509Certificate
-import java.security.spec.RSAKeyGenParameterSpec
 import java.util.Calendar
-import javax.security.auth.x500.X500Principal
 
 /**
  * Provides the FTPS keystore with an overridable factory for testing.
@@ -43,12 +39,13 @@ internal object FtpServerSslKeyStoreProvider {
     private const val FTPS_KEY_ALGORITHM = "RSA"
     private const val FTPS_KEY_SIZE = 2048
     private const val FTPS_KEY_DN = "CN=ftpserver, OU=Amaze File Manager, O=Team Amaze"
-    private const val FTPS_CERT_VALIDITY_DAYS = 7300 // ~20 years
+    private const val FTPS_CERT_VALIDITY_DAYS = 3650 // ~10 years
 
     private val strongBoxSupported
-        get() = Build.VERSION.SDK_INT >= P &&
+        get() =
+            Build.VERSION.SDK_INT >= P &&
                 AppConfig.getInstance().packageManager.hasSystemFeature(
-                    PackageManager.FEATURE_STRONGBOX_KEYSTORE
+                    PackageManager.FEATURE_STRONGBOX_KEYSTORE,
                 )
 
     /**
@@ -152,7 +149,11 @@ internal object FtpServerSslKeyStoreProvider {
         builder.addExtension(
             Extension.keyUsage,
             true,
-            KeyUsage(KeyUsage.digitalSignature or KeyUsage.keyEncipherment or KeyUsage.dataEncipherment),
+            KeyUsage(
+                KeyUsage.digitalSignature
+                    or KeyUsage.keyEncipherment
+                    or KeyUsage.dataEncipherment,
+            ),
         )
 
         val signer: ContentSigner =
@@ -162,6 +163,7 @@ internal object FtpServerSslKeyStoreProvider {
         val bcCert = builder.build(signer)
         val cert: X509Certificate =
             JcaX509CertificateConverter()
+                .setProvider("BC")
                 .getCertificate(bcCert)
 
         // Store in keystore
@@ -178,35 +180,9 @@ internal object FtpServerSslKeyStoreProvider {
         // Generate RSA-2048 key pair
         // BouncyCastle provider is loaded at CustomSshJConfig via AppConfig
         val keyPairGenerator = KeyPairGenerator.getInstance(FTPS_KEY_ALGORITHM)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val builder = KeyGenParameterSpec.Builder(
-                FTPS_CERT_ALIAS,
-                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY,
-            )
-                .setAlgorithmParameterSpec(
-                    RSAKeyGenParameterSpec(
-                        FTPS_KEY_SIZE,
-                        RSAKeyGenParameterSpec.F4
-                    )
-                )
-                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
-                .setUserAuthenticationRequired(false)
-                .setCertificateSubject(X500Principal(FTPS_KEY_DN))
-                .setCertificateSerialNumber(BigInteger.valueOf(SecureRandom().nextLong()))
-                .setCertificateNotBefore(Calendar.getInstance().time)
-                .setCertificateNotAfter(
-                    Calendar.getInstance().apply {
-                        add(Calendar.DAY_OF_YEAR, FTPS_CERT_VALIDITY_DAYS)
-                    }.time,
-                )
-            if (strongBoxSupported) {
-                builder.setIsStrongBoxBacked(true)
-            }
-            keyPairGenerator.initialize(builder.build())
-        } else {
-            keyPairGenerator.initialize(FTPS_KEY_SIZE, SecureRandom())
-        }
+        // Using the previously proved and simpler method to generate key.
+        // KeyGenParameterSpec.Builder method didn't work for ftpserver
+        keyPairGenerator.initialize(FTPS_KEY_SIZE, SecureRandom())
         val keyPair: KeyPair = keyPairGenerator.generateKeyPair()
         return keyPair
     }
