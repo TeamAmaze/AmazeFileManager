@@ -20,9 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
-import com.amaze.filemanager.BuildConfig
-import com.amaze.filemanager.R
-import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.FtpServerSslKeyStoreProvider
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils
 import com.amaze.filemanager.utils.X509CertificateUtil
@@ -31,6 +29,7 @@ import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.ClientAuth
 import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration
 import org.json.JSONObject
+import org.junit.After
 import org.junit.Ignore
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
@@ -41,7 +40,6 @@ import javax.net.ssl.TrustManagerFactory
 @Ignore
 open class FtpsHybridFileTest : FtpHybridFileTest() {
     private lateinit var keyStore: KeyStore
-    private lateinit var keyStorePassword: CharArray
     protected lateinit var certInfo: JSONObject
 
     override val ftpPrefix: String
@@ -54,12 +52,14 @@ open class FtpsHybridFileTest : FtpHybridFileTest() {
     }
 
     override fun setUp() {
-        keyStore = KeyStore.getInstance("BKS")
-        keyStorePassword = BuildConfig.FTP_SERVER_KEYSTORE_PASSWORD.toCharArray()
-        keyStore.load(
-            AppConfig.getInstance().resources.openRawResource(R.raw.key),
-            keyStorePassword,
-        )
+        FtpServerSslKeyStoreProvider.keyStoreFactory = {
+            KeyStore.getInstance("BKS").apply {
+                load(null, null)
+            }
+        }
+
+        keyStore = FtpServerSslKeyStoreProvider.getKeyStore()
+        keyStore.load(null, null)
         certInfo =
             JSONObject(
                 X509CertificateUtil.parse(
@@ -73,13 +73,18 @@ open class FtpsHybridFileTest : FtpHybridFileTest() {
         super.setUp()
     }
 
+    @After
+    override fun tearDown() {
+        FtpServerSslKeyStoreProvider.reset()
+    }
+
     override fun saveConnectionSettings() = TestUtils.saveFtpConnectionSettings(USERNAME, PASSWORD, certInfo, PORT)
 
     override fun createDefaultFtpServerListener(): Listener {
         val keyManagerFactory =
             KeyManagerFactory
                 .getInstance(KeyManagerFactory.getDefaultAlgorithm())
-        keyManagerFactory.init(keyStore, keyStorePassword)
+        keyManagerFactory.init(keyStore, null)
         val trustManagerFactory =
             TrustManagerFactory
                 .getInstance(TrustManagerFactory.getDefaultAlgorithm())

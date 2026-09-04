@@ -44,12 +44,25 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:textSize="@dimen/material_generic_title"
-                android:paddingBottom="@dimen/padding_normal"
-                android:paddingLeft="@dimen/padding_normal"
-                android:paddingRight="@dimen/padding_normal"
+                android:padding="@dimen/padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_view_ftp_status"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_view_cert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/material_generic_title"
+                android:paddingBottom="@dimen/padding_normal"
+                android:paddingLeft="@dimen/padding_normal"
+                android:paddingRight="@dimen/padding_normal"
+                android:visibility="gone"
+                android:enabled="false"
+                android:text="View SSL Certificate details"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_url" />
 
             <View
                 android:id="@+id/divider_ftp_status"
@@ -60,7 +73,7 @@
                 android:paddingRight="@dimen/padding_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_view_ftp_url" />
+                app:layout_constraintTop_toBottomOf="@id/button_view_cert" />
 
             <!-- username -->
             <androidx.appcompat.widget.AppCompatTextView
