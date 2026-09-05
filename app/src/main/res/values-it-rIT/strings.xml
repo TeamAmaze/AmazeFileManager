@@ -661,7 +661,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="ftp_readonly">Accesso di sola lettura</string>
     <string name="legacy_listing_title">Usa elenco legacy per root</string>
     <string name="legacy_listing_summary">Se attivo, usa il metodo legacy per l\'elenco dei file</string>
-    <string name="error_unsupported_v5_rar">L\'archivio RAR \"%s\" non è un archivio RAR v5 supportato.</string>
+    <string name="error_unsupported_rar_version">L\'archivio RAR \"%s\" non è un archivio RAR v5 supportato.</string>
     <string name="ftp_prompt_restart_server">Devi riavviare il server FTP affinché le modifiche abbiano effetto.</string>
     <string name="error_permission_denied">Permesso negato</string>
     <string name="error_archive_password_incorrect">Password archivio sbagliata.</string>

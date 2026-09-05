@@ -659,7 +659,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_readonly">Nur-Lesen Zugriff</string>
     <string name="legacy_listing_title">Alte Auflistung für Root verwenden</string>
     <string name="legacy_listing_summary">Wenn aktiviert, wird die Legacy-Methode für die Auflistung von Dateien verwendet</string>
-    <string name="error_unsupported_v5_rar">RAR-Archiv \"%s\" ist ein nicht unterstütztes RAR v5-Archiv.</string>
+    <string name="error_unsupported_rar_version">RAR-Archiv \"%s\" ist ein nicht unterstütztes RAR v5-Archiv.</string>
     <string name="ftp_prompt_restart_server">Sie müssen den FTP-Server neu starten, damit die Änderungen angewendet werden.</string>
     <string name="error_permission_denied">Berechtigung verweigert</string>
     <string name="error_archive_password_incorrect">Falsches Archiv-Passwort.</string>

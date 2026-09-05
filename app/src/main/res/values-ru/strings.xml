@@ -641,7 +641,7 @@
     <string name="ftp_readonly">Доступ только для чтения</string>
     <string name="legacy_listing_title">Использовать устаревший вид список для root</string>
     <string name="legacy_listing_summary">Если включить, будет использоваться устаревший метод для вывода списка файлов</string>
-    <string name="error_unsupported_v5_rar">Архив RAR \"%s\" не поддерживается архивом RAR v5.</string>
+    <string name="error_unsupported_rar_version">Архив RAR \"%s\" не поддерживается архивом RAR v5.</string>
     <string name="ftp_prompt_restart_server">Чтобы изменения вступили в силу, вам нужно будет перезапустить FTP-сервер.</string>
     <string name="error_permission_denied">В доступе отказано</string>
     <string name="error_archive_password_incorrect">Неверный пароль архива.</string>

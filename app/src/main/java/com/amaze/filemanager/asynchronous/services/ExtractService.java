@@ -368,7 +368,7 @@ public class ExtractService extends AbstractProgressiveService {
             LOG.error(compressedPath + " is an unsupported RAR archive", e);
             AppConfig.toast(
                 getApplicationContext(),
-                extractService.getString(R.string.error_unsupported_v5_rar, compressedPath));
+                extractService.getString(R.string.error_unsupported_rar_version, compressedPath));
             return false;
           } else {
             LOG.error("Error while extracting file " + compressedPath, e);

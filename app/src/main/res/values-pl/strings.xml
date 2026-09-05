@@ -644,7 +644,7 @@
     <string name="ftp_readonly">Dostęp tylko do odczytu</string>
     <string name="legacy_listing_title">Użyj starszej listy dla root</string>
     <string name="legacy_listing_summary">Jeśli ta opcja jest włączona, używa starszej metody do wyświetlania listy plików</string>
-    <string name="error_unsupported_v5_rar">Archiwum RAR „%s” jest nieobsługiwanym archiwum RAR v5.</string>
+    <string name="error_unsupported_rar_version">Archiwum RAR „%s” jest nieobsługiwanym archiwum RAR v5.</string>
     <string name="ftp_prompt_restart_server">Będziesz musiał ponownie uruchomić serwer FTP, aby zmiany zaczęły obowiązywać.</string>
     <string name="error_permission_denied">Odmowa zezwolenia</string>
     <string name="error_archive_password_incorrect">Nieprawidłowe hasło do archiwum.</string>

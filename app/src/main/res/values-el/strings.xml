@@ -654,7 +654,7 @@
     <string name="ftp_readonly">Πρόσβαση μόνο για ανάγνωση</string>
     <string name="legacy_listing_title">Χρήση παλαιού καταλόγου για root</string>
     <string name="legacy_listing_summary">Εάν είναι ενεργή, χρησιμοποιεί την παλαιά μέθοδο για τη λίστα αρχείων</string>
-    <string name="error_unsupported_v5_rar">Το αρχείο RAR \"%s\" είναι μη υποστηριζόμενο αρχείο RAR v5.</string>
+    <string name="error_unsupported_rar_version">Το αρχείο RAR \"%s\" είναι μη υποστηριζόμενο αρχείο RAR v5.</string>
     <string name="ftp_prompt_restart_server">Θα χρειαστεί να επανεκκινήσετε το διακομιστή FTP για να τεθούν σε ισχύ οι αλλαγές.</string>
     <string name="error_permission_denied">Απορριφθείσα άδεια</string>
     <string name="error_archive_password_incorrect">Λάθος κωδικός πρόσβασης αρχείου.</string>

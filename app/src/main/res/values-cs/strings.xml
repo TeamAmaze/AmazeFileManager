@@ -650,7 +650,7 @@
     <string name="ftp_readonly">Přístup pouze pro čtení</string>
     <string name="legacy_listing_title">Použít starší výpis souborů pro root</string>
     <string name="legacy_listing_summary">Pokud je povoleno, používá k výpisu souborů starší metodu</string>
-    <string name="error_unsupported_v5_rar">RAR archív \"%s\" je nepodporovaný RAR v5 archív.</string>
+    <string name="error_unsupported_rar_version">RAR archív \"%s\" je nepodporovaný RAR v5 archív.</string>
     <string name="ftp_prompt_restart_server">Budete muset FTP server restartovat pro projevení změn.</string>
     <string name="error_permission_denied">Oprávněění odmítnuto</string>
     <string name="error_archive_password_incorrect">Nesprávné heslo archívu.</string>

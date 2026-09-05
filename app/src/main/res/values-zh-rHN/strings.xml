@@ -651,7 +651,7 @@
     <string name="ftp_readonly">唯讀模式</string>
     <string name="legacy_listing_title">喺 Root模式使用舊有方式列出文件</string>
     <string name="legacy_listing_summary">開啟呢個設定嘅話，Amaze會用番原有嘅方法列出文件</string>
-    <string name="error_unsupported_v5_rar">RAR 压缩文件\"%s\"是尚未支持的RAR v5 文件。</string>
+    <string name="error_unsupported_rar_version">RAR 压缩文件\"%s\"是尚未支持的 RAR文件。</string>
     <string name="ftp_prompt_restart_server">要使設定生效，請重新啟動 FTP伺服器</string>
     <string name="error_permission_denied">权限不足</string>
     <string name="error_archive_password_incorrect">解压密码有误</string>

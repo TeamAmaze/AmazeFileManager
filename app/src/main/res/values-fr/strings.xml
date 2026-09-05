@@ -653,7 +653,7 @@
     <string name="ftp_readonly">Accès en lecture seule</string>
     <string name="legacy_listing_title">Utiliser l\'ancien affichage pour root</string>
     <string name="legacy_listing_summary">Si cette option est activée, l\'ancienne méthode est utilisée pour lister les fichiers.</string>
-    <string name="error_unsupported_v5_rar">L\'archive RAR \"%s\" est une archive RAR v5 non prise en charge.</string>
+    <string name="error_unsupported_rar_version">L\'archive RAR \"%s\" est une archive RAR v5 non prise en charge.</string>
     <string name="ftp_prompt_restart_server">Vous devrez redémarrer le serveur FTP pour appliquer les changements.</string>
     <string name="error_permission_denied">Permission refusée</string>
     <string name="error_archive_password_incorrect">Mot de passe erroné</string>
