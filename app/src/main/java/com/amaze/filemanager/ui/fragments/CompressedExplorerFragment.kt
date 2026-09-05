@@ -660,7 +660,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     e?.cause?.javaClass,
                 )
             ) {
-                R.string.error_unsupported_v5_rar
+                R.string.error_unsupported_rar_version
             } else {
                 R.string.archive_unsupported_or_corrupt
             }

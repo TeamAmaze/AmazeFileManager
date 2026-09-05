@@ -62,6 +62,7 @@ import java.util.LinkedList
  * is a directory, the conflicts are resolved by inserting a node in [CopyNode] tree and then doing
  * BFS on this tree.
  */
+@Suppress("LabeledExpression")
 class PreparePasteTask(strongRefMain: MainActivity) {
     private lateinit var targetPath: String
     private var isMove = false

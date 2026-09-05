@@ -20,6 +20,14 @@
 
 package com.github.junrar.exception;
 
+/*
+ * This file is extracted from junrar library (https://github.com/junrar/junrar).
+ * The file exist to comply with F-Droid's requirement that no proprietary archive formats can be
+ * supported.
+ *
+ * - TranceLove
+ */
+
 /**
  * Thrown when the archive signature names a RAR format this library cannot read: a future format
  * version byte ({@code 0x02}..{@code 0x04}) that the library predates (unrar {@code RARFMT_FUTURE},
