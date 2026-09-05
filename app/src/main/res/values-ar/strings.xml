@@ -635,7 +635,7 @@
     <string name="ftp_readonly">امكانية توصل للقراءة فقط </string>
     <string name="legacy_listing_title">استخدام كشف التركة للدليل الرئيسي </string>
     <string name="legacy_listing_summary">اذا تم اتاحته ، استخدم الطريقة المتوارثة لعرض الملفات </string>
-    <string name="error_unsupported_v5_rar">ملف تخزين RAR \" %s \" لا يتم دعم أرشيف RAR v5. </string>
+    <string name="error_unsupported_rar_version">ملف تخزين RAR \" %s \" لا يتم دعم أرشيف RAR v5. </string>
     <string name="ftp_prompt_restart_server">سيكون من الضروري اعادة بدء وحدة خدمة FTP لكي تصبح التغييرات فعالة. </string>
     <string name="error_permission_denied">تم رفض التصريح </string>
     <string name="error_archive_password_incorrect">كلمة سرية أرشيف غير صحيحة. </string>

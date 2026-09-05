@@ -29,7 +29,6 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.fromTask
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PreparePasteTask.CopyNode
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
 import com.amaze.filemanager.databinding.CopyDialogBinding
@@ -63,6 +62,7 @@ import java.util.LinkedList
  * is a directory, the conflicts are resolved by inserting a node in [CopyNode] tree and then doing
  * BFS on this tree.
  */
+@Suppress("LabeledExpression")
 class PreparePasteTask(strongRefMain: MainActivity) {
     private lateinit var targetPath: String
     private var isMove = false

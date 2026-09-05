@@ -51,7 +51,7 @@ class ZipHelperCallable(
             fileLocation.path?.run {
                 val zipfile = ZipFile(fileLocation.path)
                 if (!zipfile.isValidZipFile || zipfile.file.length() == 0L) {
-                    throw ZipException("Zero byte or corrupt zip file")
+                    throw ArchiveException("Zero byte or corrupt zip file")
                 }
                 val wholelist = filterValidEntryList(zipfile)
                 val strings = ArrayList<String>()
@@ -110,7 +110,7 @@ class ZipHelperCallable(
                                 strings.add(y)
                             }
                         } else if (y.startsWith("$relativeDirectory/") &&
-                            y.length > relativeDirectory.length + 1
+                            (y.length > (relativeDirectory.length + 1))
                         ) {
                             val path1 = y.substring(relativeDirectory.length + 1, y.length)
                             val index = relativeDirectory.length + 1 + path1.indexOf("/")

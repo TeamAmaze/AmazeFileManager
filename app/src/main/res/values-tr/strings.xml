@@ -657,7 +657,7 @@ Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı aya
     <string name="ftp_readonly">Salt okunur erişim</string>
     <string name="legacy_listing_title">Root için eski listeyi kullan</string>
     <string name="legacy_listing_summary">Etkinleştirilirse, dosyaları listelemek için eski yöntemi kullanır</string>
-    <string name="error_unsupported_v5_rar">\"%s\" RAR arşivi desteklenmeyen RAR v5 arşividir.</string>
+    <string name="error_unsupported_rar_version">\"%s\" RAR arşivi desteklenmeyen RAR v5 arşividir.</string>
     <string name="ftp_prompt_restart_server">Değişikliklerin etkili olması için FTP sunucusunu yeniden başlatmanız gerekecek.</string>
     <string name="error_permission_denied">İzin reddedildi</string>
     <string name="error_archive_password_incorrect">Yanlış arşiv şifresi.</string>

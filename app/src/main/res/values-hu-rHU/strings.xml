@@ -658,7 +658,7 @@
     <string name="ftp_readonly">Csak olvasási hozzáférés</string>
     <string name="legacy_listing_title">Örökölt lista használata a gyökérhez</string>
     <string name="legacy_listing_summary">Ha engedélyezve van, az örökölt módszer lesz használva a fájlok listázására</string>
-    <string name="error_unsupported_v5_rar">A(z) \"%s\" RAR egy nem támogatott RAR V5 archívum.</string>
+    <string name="error_unsupported_rar_version">A(z) \"%s\" RAR egy nem támogatott RAR V5 archívum.</string>
     <string name="ftp_prompt_restart_server">A módosítások érvénybe léptetéséhez újra kell indítania az FTP-kiszolgálót.</string>
     <string name="error_permission_denied">Hozzáférés megtagadva</string>
     <string name="error_archive_password_incorrect">Rossz archívum jelszó.</string>

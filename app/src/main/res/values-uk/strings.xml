@@ -606,5 +606,6 @@
     <string name="error_permission_denied">Дозвіл відмовлено</string>
     <string name="error_archive_password_incorrect">Не вірний пароль архіву.</string>
     <string name="disable">Вимкнено</string>
-    </resources>
+    <string name="error_unsupported_rar_version">Архів RAR \"%s\" є архіву RAR, який не підтримується</string>
+</resources>
 

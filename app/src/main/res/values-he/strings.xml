@@ -708,7 +708,7 @@
     <string name="ftp_readonly">גישה לקריאה בלבד</string>
     <string name="legacy_listing_title">להשתמש בתצוגה מיושנת למשתמש על (root)</string>
     <string name="legacy_listing_summary">אם פעיל, ייעשה שימוש בשיטה מיושנת להצגת קבצים</string>
-    <string name="error_unsupported_v5_rar">ארכיון ה־RAR ‏„%s” הוא ארכיון RAR v5 שאינו נתמך.</string>
+    <string name="error_unsupported_rar_version">ארכיון ה־RAR ‏„%s” הוא ארכיון RAR v5 שאינו נתמך.</string>
     <string name="ftp_prompt_restart_server">יהיה עליך להפעיל את שרת ה־FTP מחדש כדי שהשינויים ייכנסו לתוקף.</string>
     <string name="error_permission_denied">ההרשאה נדחתה</string>
     <string name="error_archive_password_incorrect">סיסמת הארכיון שגויה.</string>

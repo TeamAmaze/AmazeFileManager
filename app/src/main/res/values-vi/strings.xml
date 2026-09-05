@@ -637,7 +637,7 @@
     <string name="ftp_readonly">Truy cập chỉ đọc</string>
     <string name="legacy_listing_title">Sử dụng danh sách cũ cho root</string>
     <string name="legacy_listing_summary">Nếu được bật, sẽ sử dụng phương pháp cũ để liệt kê các tệp</string>
-    <string name="error_unsupported_v5_rar">Lưu trữ RAR \"%s\" là lưu trữ RAR v5 không được hỗ trợ.</string>
+    <string name="error_unsupported_rar_version">Lưu trữ RAR \"%s\" là lưu trữ RAR v5 không được hỗ trợ.</string>
     <string name="ftp_prompt_restart_server">Bạn sẽ cần khởi động lại máy chủ FTP để các thay đổi có hiệu lực.</string>
     <string name="error_permission_denied">Quyền bị từ chối</string>
     <string name="error_archive_password_incorrect">Mật khẩu lưu trữ sai.</string>
