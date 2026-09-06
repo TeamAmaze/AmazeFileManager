@@ -114,7 +114,7 @@ class ExtractServiceTest {
     @Rule
     @JvmField
     @RequiresApi(VERSION_CODES.R)
-    val allFilesPermissionRule =
+    val allFilesPermissionRule: GrantPermissionRule =
         GrantPermissionRule
             .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
@@ -465,11 +465,8 @@ class ExtractServiceTest {
         if (BuildConfig.FLAVOR == "play") {
             performTest(multiVolumeRarFileV5Part1)
             ShadowLooper.idleMainLooper()
-            await()
-                .atMost(10, TimeUnit.SECONDS)
-                .until {
-                    ShadowToast.getLatestToast() != null
-                }
+            assertNull(ShadowToast.getLatestToast())
+            assertNull(ShadowToast.getTextOfLatestToast())
         }
     }
 

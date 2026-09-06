@@ -52,7 +52,7 @@ import kotlin.random.Random
  */
 @Config(
     sdk = [
-        Build.VERSION_CODES.LOLLIPOP,
+        Build.VERSION_CODES.M,
         Build.VERSION_CODES.N,
         Build.VERSION_CODES.P,
         Build.VERSION_CODES.R,

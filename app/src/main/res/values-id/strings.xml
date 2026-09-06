@@ -652,7 +652,7 @@
     <string name="ftp_readonly">Akses baca-saja</string>
     <string name="legacy_listing_title">Gunakan tampilan lama untuk root</string>
     <string name="legacy_listing_summary">Jika diaktifkan, gunakan metode lama untuk menampilkan berkas</string>
-    <string name="error_unsupported_v5_rar">Arsip RAR \"%s\" adalah arsip RAR v5 yang tidak didukung.</string>
+    <string name="error_unsupported_rar_version">Arsip RAR \"%s\" adalah arsip RAR yang tidak didukung.</string>
     <string name="ftp_prompt_restart_server">Anda perlu memulai ulang server FTP agar perubahan terdampak.</string>
     <string name="error_permission_denied">Perizinan ditolak</string>
     <string name="error_archive_password_incorrect">Sandi arsip salah.</string>

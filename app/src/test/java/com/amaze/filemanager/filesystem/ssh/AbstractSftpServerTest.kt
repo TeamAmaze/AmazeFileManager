@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh
 
 import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -37,17 +37,15 @@ import com.amaze.filemanager.utils.PasswordUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import org.apache.sshd.common.NamedFactory
 import org.apache.sshd.common.config.keys.KeyUtils
 import org.apache.sshd.common.file.FileSystemFactory
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory
-import org.apache.sshd.server.Command
+import org.apache.sshd.scp.server.ScpCommandFactory
 import org.apache.sshd.server.SshServer
 import org.apache.sshd.server.auth.password.PasswordAuthenticator
 import org.apache.sshd.server.auth.pubkey.AcceptAllPublickeyAuthenticator
-import org.apache.sshd.server.scp.ScpCommandFactory
 import org.apache.sshd.server.session.ServerSession
-import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory
+import org.apache.sshd.sftp.server.SftpSubsystemFactory
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
@@ -65,7 +63,7 @@ import kotlin.text.Charsets.UTF_8
 @RunWith(AndroidJUnit4::class)
 @Config(
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
-    sdk = [LOLLIPOP, P, VERSION_CODES.R],
+    sdk = [M, P, VERSION_CODES.R],
 )
 abstract class AbstractSftpServerTest {
     protected var encryptedPassword: String? =
@@ -132,7 +130,7 @@ abstract class AbstractSftpServerTest {
         server.host = HOST
         server.keyPairProvider = hostKeyProvider
         server.commandFactory = ScpCommandFactory()
-        server.subsystemFactories = listOf<NamedFactory<Command>>(SftpSubsystemFactory())
+        server.subsystemFactories = listOf(SftpSubsystemFactory())
         server.passwordAuthenticator =
             PasswordAuthenticator { username: String, password: String, _: ServerSession? ->
                 username == USERNAME && password == PASSWORD

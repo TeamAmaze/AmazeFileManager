@@ -26,7 +26,7 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Environment
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
@@ -64,7 +64,7 @@ import kotlin.random.Random
 
 @Ignore("Pending fix for testing against newer Androids")
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [LOLLIPOP], shadows = [ShadowMultiDex::class])
+@Config(sdk = [M], shadows = [ShadowMultiDex::class])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("StringLiteralDuplication")
 class FtpServiceAndroidFileSystemIntegrationTest {

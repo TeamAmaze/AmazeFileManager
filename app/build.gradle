@@ -8,10 +8,21 @@ apply plugin: 'com.google.devtools.ksp'
 
 android {
     namespace "com.amaze.filemanager"
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
     packagingOptions {
         resources {
-            excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF']
+            excludes += [
+                'proguard-project.txt',
+                'project.properties',
+                'META-INF/LICENSE.txt',
+                'META-INF/LICENSE.md',
+                'META-INF/LICENSE',
+                'META-INF/NOTICE.txt',
+                'META-INF/NOTICE',
+                'META-INF/DEPENDENCIES.txt',
+                'META-INF/DEPENDENCIES',
+                'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+            ]
         }
     }
 
@@ -44,7 +55,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
             testProguardFile 'tests-proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
             buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
@@ -56,7 +67,7 @@ android {
             signingConfig signingConfigs.release
 
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
             buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
         }
@@ -89,17 +100,9 @@ android {
         includeInBundle = false
     }
 
-    sourceSets {
-        test.java.srcDirs += '../testShared/src/test/java'
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     testOptions {
@@ -133,6 +136,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation libs.systembarTint
 
+    implementation libs.androidX.activity
     implementation libs.androidX.vectordrawable.animated
     implementation libs.androidX.legacySupportV13
     implementation libs.androidX.material
@@ -152,6 +156,7 @@ dependencies {
     ksp libs.androidX.annotation
 
     //For tests
+    testImplementation project(':testShared')
     testImplementation libs.junit//tests the app logic
     testImplementation libs.robolectric//tests android interaction
     testImplementation libs.robolectric.shadows.httpclient//tests android interaction
@@ -164,14 +169,16 @@ dependencies {
     testImplementation libs.mockito.inline
     testImplementation libs.mockito.kotlin
     testImplementation libs.apache.sshd
+    testImplementation libs.apache.sshd.scp
+    testImplementation libs.apache.sshd.sftp
     testImplementation libs.awaitility
     testImplementation libs.jsoup
     testImplementation libs.room.migration
     testImplementation libs.mockk
     testImplementation libs.kotlin.coroutine.test
     testImplementation libs.androidX.core.testing
+    testImplementation libs.logback.classic
     kspTest libs.auto.service
-    testImplementation 'ch.qos.logback:logback-classic:1.4.14'
 
     androidTestImplementation libs.junit //tests the app logic
     androidTestImplementation libs.androidX.test.expresso
@@ -262,7 +269,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 configurations.configureEach {
@@ -270,6 +277,7 @@ configurations.configureEach {
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") using module("commons-logging:commons-logging:1.1.1")
             substitute module("com.android.support:support-annotations:27.1.1") using module("com.android.support:support-annotations:27.0.2")
+            substitute module("org.bouncycastle:bcprov-jdk18on:1.80.2") using module("org.bouncycastle:bcprov-jdk18on:1.85")
             // These two lines are added to prevent possible class clashes between awaitility (which uses hamcrest 2.1) and junit (which uses hamcrest 1.3).
             substitute module('org.hamcrest:hamcrest-core:1.3') using module("org.hamcrest:hamcrest:2.1")
             substitute module('org.hamcrest:hamcrest-library:1.3') using module("org.hamcrest:hamcrest:2.1")

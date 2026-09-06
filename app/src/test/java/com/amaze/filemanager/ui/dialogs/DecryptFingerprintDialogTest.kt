@@ -49,6 +49,7 @@ import org.junit.Before
 import org.junit.Test
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadow.api.Shadow
 import org.robolectric.shadows.ShadowDialog
 import org.robolectric.shadows.ShadowFingerprintManager
 import java.io.File
@@ -96,7 +97,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
     fun testDecryptFingerprintDialogSuccess() {
         performTest(
             testContent = {
-                shadowOf(
+                Shadow.extract<ShadowFingerprintManager>(
                     AppConfig.getInstance().getSystemService(FingerprintManager::class.java),
                 ).run {
                     setDefaultFingerprints(1)
@@ -121,7 +122,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
     fun testDecryptFingerprintDialogFailed() {
         performTest(
             testContent = {
-                shadowOf(
+                Shadow.extract<ShadowFingerprintManager>(
                     AppConfig.getInstance().getSystemService(FingerprintManager::class.java),
                 ).run {
                     setDefaultFingerprints(1)

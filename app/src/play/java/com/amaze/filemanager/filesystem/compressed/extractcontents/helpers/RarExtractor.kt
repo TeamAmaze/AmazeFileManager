@@ -32,10 +32,11 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.compressed.isPasswordProtectedCompat
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import com.github.junrar.Archive
+import com.github.junrar.exception.BadRarArchiveException
 import com.github.junrar.exception.CorruptHeaderException
 import com.github.junrar.exception.MainHeaderNullException
 import com.github.junrar.exception.RarException
-import com.github.junrar.exception.UnsupportedRarV5Exception
+import com.github.junrar.exception.UnsupportedRarVersionException
 import com.github.junrar.rarfile.FileHeader
 import org.apache.commons.compress.PasswordRequiredException
 import java.io.BufferedInputStream
@@ -58,13 +59,14 @@ class RarExtractor(
     override fun extractWithFilter(filter: Filter) {
         try {
             var totalBytes: Long = 0
+            val file = File(filePath)
             val rarFile =
                 runCatching {
                     ArchivePasswordCache.getInstance()[filePath]?.let {
-                        Archive(File(filePath), it).also { archive ->
+                        Archive(file, it).also { archive ->
                             archive.password = it
                         }
-                    } ?: Archive(File(filePath))
+                    } ?: Archive(file)
                 }.onFailure {
                     when {
                         // Hack. CorruptHeaderException will throw if archive is really corrupt or
@@ -78,7 +80,11 @@ class RarExtractor(
                             throw BadArchiveNotice(it)
                         }
 
-                        UnsupportedRarV5Exception::class.java.isAssignableFrom(it::class.java) -> {
+                        BadRarArchiveException::class.java.isAssignableFrom(it::class.java) -> {
+                            throw BadArchiveNotice(it)
+                        }
+
+                        UnsupportedRarVersionException::class.java.isAssignableFrom(it::class.java) -> {
                             throw it
                         }
 
