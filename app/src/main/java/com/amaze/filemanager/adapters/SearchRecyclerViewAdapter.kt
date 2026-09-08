@@ -21,12 +21,14 @@
 package com.amaze.filemanager.adapters
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -91,11 +93,14 @@ class SearchRecyclerViewAdapter :
         holder.filePathTV.text = file.path.substring(0, file.path.lastIndexOf("/"))
 
         holder.colorView.setBackgroundColor(getRandomColor(holder.colorView.context))
+        holder.teleportIV.setColorFilter(colorPreference.accent, PorterDuff.Mode.SRC_ATOP)
 
         if (file.isDirectory) {
             holder.colorView.setBackgroundColor(colorPreference.primaryFirstTab)
+            holder.teleportIV.visibility = View.GONE
         } else {
             holder.colorView.setBackgroundColor(colorPreference.accent)
+            holder.teleportIV.visibility = View.VISIBLE
         }
     }
 
@@ -103,12 +108,14 @@ class SearchRecyclerViewAdapter :
         val fileNameTV: AppCompatTextView
         val filePathTV: AppCompatTextView
         val colorView: View
+        val teleportIV: AppCompatImageView
 
         init {
 
             fileNameTV = view.findViewById(R.id.searchItemFileNameTV)
             filePathTV = view.findViewById(R.id.searchItemFilePathTV)
             colorView = view.findViewById(R.id.searchItemSampleColorView)
+            teleportIV = view.findViewById(R.id.searchItemTeleportIV)
 
             view.setOnClickListener {
 
@@ -126,6 +133,14 @@ class SearchRecyclerViewAdapter :
 
                 (AppConfig.getInstance().mainActivityContext as MainActivity?)
                     ?.appbar?.searchView?.hideSearchView()
+            }
+            teleportIV.setOnClickListener {
+                val (file, _) = getItem(adapterPosition)
+                if (!file.isDirectory) {
+                    val activity = AppConfig.getInstance().mainActivityContext as MainActivity?
+                    activity?.teleportToFile(file)
+                    activity?.appbar?.searchView?.hideSearchView()
+                }
             }
         }
     }
