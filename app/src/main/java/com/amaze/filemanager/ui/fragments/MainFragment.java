@@ -965,17 +965,22 @@ public class MainFragment extends Fragment
 
           String fileName = requireMainActivity().getScrollToFileName();
 
-          if (fileName != null)
+          if (fileName != null) {
+            // Consume the value immediately so it only triggers a highlight once,
+            // instead of re-highlighting this file on every future reload.
+            requireMainActivity().setScrollToFileName(null);
             mainFragmentViewModel
                 .getScrollPosition(fileName)
                 .observe(
                     getViewLifecycleOwner(),
                     scrollPosition -> {
-                      if (scrollPosition != -1)
+                      if (scrollPosition != -1) {
                         listView.scrollToPosition(
                             Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
-                      adapter.notifyItemChanged(scrollPosition);
+                        adapter.notifyItemChanged(scrollPosition);
+                      }
                     });
+          }
         });
   }
 
