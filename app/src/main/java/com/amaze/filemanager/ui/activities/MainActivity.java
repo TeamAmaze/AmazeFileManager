@@ -2551,6 +2551,10 @@ public class MainActivity extends PermissionsActivity
     return this.scrollToFileName;
   }
 
+  public void setScrollToFileName(String scrollToFileName) {
+    this.scrollToFileName = scrollToFileName;
+  }
+
   /**
    * Set list item selected value
    *
