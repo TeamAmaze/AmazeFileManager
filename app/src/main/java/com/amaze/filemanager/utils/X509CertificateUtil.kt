@@ -23,6 +23,7 @@ package com.amaze.filemanager.utils
 import net.schmizz.sshj.common.ByteArrayUtils
 import org.json.JSONObject
 import java.security.MessageDigest
+import java.text.DateFormat
 import java.util.WeakHashMap
 
 object X509CertificateUtil {
@@ -30,6 +31,10 @@ object X509CertificateUtil {
     const val ISSUER = "issuer"
     const val SERIAL = "serial"
     const val FINGERPRINT = "sha256Fingerprint"
+    const val VALID_FROM = "validFrom"
+    const val VALID_TO = "validTo"
+
+    private val dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
 
     private fun colonSeparatedHex(array: ByteArray) = ByteArrayUtils.toHex(array).chunked(2).joinToString(":")
 
@@ -50,6 +55,8 @@ object X509CertificateUtil {
             MessageDigest.getInstance("sha-256").run {
                 colonSeparatedHex(digest(certificate.encoded))
             }
+        retval[VALID_FROM] = dateTimeFormat.format(certificate.notBefore)
+        retval[VALID_TO] = dateTimeFormat.format(certificate.notAfter)
         return retval
     }
 
@@ -70,6 +77,8 @@ object X509CertificateUtil {
             MessageDigest.getInstance("sha-256").run {
                 colonSeparatedHex(digest(certificate.encoded))
             }
+        retval[VALID_FROM] = dateTimeFormat.format(certificate.notBefore)
+        retval[VALID_TO] = dateTimeFormat.format(certificate.notAfter)
         return retval
     }
 }

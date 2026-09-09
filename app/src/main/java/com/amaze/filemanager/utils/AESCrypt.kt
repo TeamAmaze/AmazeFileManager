@@ -21,9 +21,8 @@
 package com.amaze.filemanager.utils
 
 import android.util.Log
+import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
-import com.amaze.filemanager.utils.AESCrypt.DecryptFailureException
-import com.amaze.filemanager.utils.AESCrypt.IncorrectEncryptedDataException
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -86,9 +85,14 @@ class AESCrypt(password: String) {
     private lateinit var ivSpec2: IvParameterSpec
     private lateinit var aesKey2: SecretKeySpec
 
-    /*******************
-     * PRIVATE METHODS *
+    /**
+     * Shorthand for [Log.v] with checks for debug build, so it only logs in debug build.
      */
+    private fun log(msg: String) {
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, msg)
+        }
+    }
 
     /**
      * Generates a pseudo-random byte array.
@@ -197,7 +201,6 @@ class AESCrypt(password: String) {
      */
     private fun setPassword(password: String) {
         this.password = password.toByteArray(UTF_16LE)
-        Log.v(TAG, "Using password: $password")
     }
 
     /**************
@@ -221,15 +224,14 @@ class AESCrypt(password: String) {
         out: OutputStream,
         progressHandler: ProgressHandler,
     ) {
-        var text: ByteArray?
         ivSpec1 = IvParameterSpec(generateIv1())
         aesKey1 = SecretKeySpec(generateAESKey1(ivSpec1.iv, password), CRYPT_ALG)
         ivSpec2 = IvParameterSpec(generateIV2())
         aesKey2 = SecretKeySpec(generateAESKey2(), CRYPT_ALG)
-        Log.v(TAG, "IV1: ${ivSpec1.iv.toHex()}")
-        Log.v(TAG, "AES1: ${aesKey1.encoded.toHex()}")
-        Log.v(TAG, "IV2: ${ivSpec2.iv.toHex()}")
-        Log.v(TAG, "AES2: ${aesKey2.encoded.toHex()}")
+        log("IV1: ${ivSpec1.iv.toHex()}")
+        log("AES1: ${aesKey1.encoded.toHex()}")
+        log("IV2: ${ivSpec2.iv.toHex()}")
+        log("AES2: ${aesKey2.encoded.toHex()}")
         out.write(AESCRYPT_HEADER.toByteArray(UTF_8)) // Heading.
         out.write(version) // Version.
         out.write(0) // Reserved.
@@ -238,16 +240,16 @@ class AESCrypt(password: String) {
             out.write(0)
         }
         out.write(ivSpec1.iv) // Initialization Vector.
-        text = ByteArray(BLOCK_SIZE + KEY_SIZE)
+        var text = ByteArray(BLOCK_SIZE + KEY_SIZE)
         cipher.init(Cipher.ENCRYPT_MODE, aesKey1, ivSpec1)
         cipher.update(ivSpec2.iv, 0, BLOCK_SIZE, text)
         cipher.doFinal(aesKey2.encoded, 0, KEY_SIZE, text, BLOCK_SIZE)
         out.write(text) // Crypted IV and key.
-        Log.v(TAG, "IV2 + AES2 ciphertext: ${text.toHex()}")
+        log("IV2 + AES2 ciphertext: ${text.toHex()}")
         hmac.init(SecretKeySpec(aesKey1.encoded, HMAC_ALG))
         text = hmac.doFinal(text)
         out.write(text) // HMAC from previous cyphertext.
-        Log.v(TAG, "HMAC1: ${text.toHex()}")
+        log("HMAC1: ${text.toHex()}")
         cipher.init(Cipher.ENCRYPT_MODE, aesKey2, ivSpec2)
         hmac.init(SecretKeySpec(aesKey2.encoded, HMAC_ALG))
         text = ByteArray(BLOCK_SIZE)
@@ -264,10 +266,10 @@ class AESCrypt(password: String) {
         }
         last = last and 0x0f
         out.write(last) // Last block size mod 16.
-        Log.v(TAG, "Last block size mod 16: $last")
+        log("Last block size mod 16: $last")
         text = hmac.doFinal()
         out.write(text) // HMAC from previous cyphertext.
-        Log.v(TAG, "HMAC2: ${text.toHex()}")
+        log("HMAC2: ${text.toHex()}")
 
         out.flush()
         `in`.close()
@@ -310,7 +312,7 @@ class AESCrypt(password: String) {
         if (version < 1 || version > 2) {
             throw IncorrectEncryptedDataException("Unsupported version number: $version")
         }
-        Log.v(TAG, "Version: $version")
+        log("Version: $version")
         `in`.read() // Reserved.
         if (version == 2) { // Extensions.
             text = ByteArray(2)
@@ -329,17 +331,17 @@ class AESCrypt(password: String) {
         `in`.read(text) // Initialization Vector.
         ivSpec1 = IvParameterSpec(text)
         aesKey1 = SecretKeySpec(generateAESKey1(ivSpec1.iv, password), CRYPT_ALG)
-        Log.v(TAG, "IV1: ${ivSpec1.iv.toHex()}")
-        Log.v(TAG, "AES1: ${aesKey1.encoded.toHex()}")
+        log("IV1: ${ivSpec1.iv.toHex()}")
+        log("AES1: ${aesKey1.encoded.toHex()}")
         cipher.init(Cipher.DECRYPT_MODE, aesKey1, ivSpec1)
         var backup = ByteArray(BLOCK_SIZE + KEY_SIZE)
         `in`.read(backup) // IV and key to decrypt file contents.
-        Log.v(TAG, "IV2 + AES2 ciphertext: ${backup.toHex()}")
+        log("IV2 + AES2 ciphertext: ${backup.toHex()}")
         text = cipher.doFinal(backup)
         ivSpec2 = IvParameterSpec(text, 0, BLOCK_SIZE)
         aesKey2 = SecretKeySpec(text, BLOCK_SIZE, KEY_SIZE, CRYPT_ALG)
-        Log.v(TAG, "IV2: ${ivSpec2.iv.toHex()}")
-        Log.v(TAG, "AES2: ${aesKey2.encoded.toHex()}")
+        log("IV2: ${ivSpec2.iv.toHex()}")
+        log("AES2: ${aesKey2.encoded.toHex()}")
         hmac.init(SecretKeySpec(aesKey1.encoded, HMAC_ALG))
         backup = hmac.doFinal(backup)
         text = ByteArray(SHA_SIZE)
@@ -347,7 +349,7 @@ class AESCrypt(password: String) {
         if (!backup.contentEquals(text)) {
             throw DecryptFailureException("Message has been altered or password incorrect")
         }
-        Log.v(TAG, "HMAC1: ${text.toHex()}")
+        log("HMAC1: ${text.toHex()}")
         total = inSize - total // Payload size.
         if (total % BLOCK_SIZE != 0L) {
             throw DecryptFailureException(
@@ -357,7 +359,7 @@ class AESCrypt(password: String) {
         if (total == 0L) { // Hack: empty files won't enter block-processing for-loop below.
             `in`.read() // Skip last block size mod 16.
         }
-        Log.v(TAG, "Payload size: $total")
+        log("Payload size: $total")
         cipher.init(Cipher.DECRYPT_MODE, aesKey2, ivSpec2)
         hmac.init(SecretKeySpec(aesKey2.encoded, HMAC_ALG))
         backup = ByteArray(BLOCK_SIZE)
@@ -383,7 +385,7 @@ class AESCrypt(password: String) {
         if (!backup.contentEquals(text)) {
             throw DecryptFailureException("Message has been altered or password incorrect")
         }
-        Log.v(TAG, "HMAC2: ${text.toHex()}")
+        log("HMAC2: ${text.toHex()}")
         out.flush()
         `in`.close()
         out.close()
