@@ -976,6 +976,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         updateStatus()
     }
 
+    @Suppress("LabeledExpression")
     private fun setFTPPassword(password: String) {
         try {
             context?.run {
