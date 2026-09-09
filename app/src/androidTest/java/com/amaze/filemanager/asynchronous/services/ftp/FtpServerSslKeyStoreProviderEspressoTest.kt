@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2025 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,8 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.services.ftp
 
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.M
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import org.junit.After
@@ -29,7 +27,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +34,7 @@ import java.security.KeyStore
 import java.security.cert.X509Certificate
 
 /**
- * Instrumentation test for [FtpServerSslKeyStoreProvider].
+ * Tests for [FtpServerSslKeyStoreProvider].
  *
  * Robolectric does not support AndroidKeyStore well enough for this code path, so this test uses
  * a real device/emulator-backed keystore.
@@ -45,13 +42,18 @@ import java.security.cert.X509Certificate
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class FtpServerSslKeyStoreProviderEspressoTest {
+    /**
+     * Setup before tests.
+     */
     @Before
     fun setUp() {
-        assumeTrue(SDK_INT >= M)
         clearAliasFromAndroidKeyStore()
         FtpServerSslKeyStoreProvider.reset()
     }
 
+    /**
+     * Cleanup after tests.
+     */
     @After
     fun tearDown() {
         runCatching {
@@ -60,6 +62,9 @@ class FtpServerSslKeyStoreProviderEspressoTest {
         FtpServerSslKeyStoreProvider.reset()
     }
 
+    /**
+     * Test [FtpServerSslKeyStoreProvider.getKeyStore] generates a valid certificate in keystore.
+     */
     @Test
     fun testGeneratesValidCertificateInAndroidKeyStore() {
         val keyStore = FtpServerSslKeyStoreProvider.getKeyStore()
@@ -82,6 +87,9 @@ class FtpServerSslKeyStoreProviderEspressoTest {
         assertTrue(certificate.subjectX500Principal.name.contains("O=Team Amaze"))
     }
 
+    /**
+     * Test [FtpServerSslKeyStoreProvider.clear].
+     */
     @Test
     fun testClearRemovesGeneratedCertificateFromAndroidKeyStore() {
         FtpServerSslKeyStoreProvider.getKeyStore()

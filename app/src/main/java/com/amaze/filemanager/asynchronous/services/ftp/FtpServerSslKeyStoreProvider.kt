@@ -10,16 +10,19 @@ import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x509.BasicConstraints
 import org.bouncycastle.asn1.x509.Extension
 import org.bouncycastle.asn1.x509.KeyUsage
+import org.bouncycastle.cert.CertIOException
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder
 import org.bouncycastle.operator.ContentSigner
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 import org.slf4j.LoggerFactory
 import java.math.BigInteger
+import java.security.GeneralSecurityException
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.SecureRandom
+import java.security.cert.CertificateException
 import java.security.cert.CertificateExpiredException
 import java.security.cert.X509Certificate
 import java.util.Calendar
@@ -81,15 +84,17 @@ internal object FtpServerSslKeyStoreProvider {
                     }
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: GeneralSecurityException) {
             log.warn("Existing FTPS certificate is corrupt; regenerating", e)
         }
 
         // Generate new certificate
         try {
             generateFtpsCertificate(keyStore)
-        } catch (e: Exception) {
-            throw RuntimeException("Failed to generate FTPS certificate", e)
+        } catch (e: CertIOException) {
+            throw CertificateException("Failed to generate FTPS certificate", e)
+        } catch (e: GeneralSecurityException) {
+            throw CertificateException("Failed to generate FTPS certificate", e)
         }
 
         return keyStore
