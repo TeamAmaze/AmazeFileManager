@@ -761,6 +761,9 @@ You only need to do this once, until the next time you select a new location for
     <string name="ftp_server_reset_notify">FTP server shared path had been reset to internal storage</string>
     <string name="ftp_server_root_unavailable">You are choosing a path which requires root access. Please enable root explorer in settings if your device is rooted.</string>
     <string name="ftp_server_root_filesystem_warning">You are choosing a path which requires root access, which enables read/write operations in the whole filesystem on your device, and it is dangerous - careless mistakes could brick your device!\n\nAre you sure?</string>
+    <string name="ftp_server_ssl_cert_info_title">FTP SSL Certificate Information</string>
+    <string name="ftp_server_ssl_cert_info">Subject: %s\nIssuer: %s\nNot Valid Before: %s\nNot Valid After: %s\n\nSHA-256 Fingerprint: %s</string>
+    <string name="ftp_server_ssl_cert_info_copied_to_clipboard">FTP SSL Certificate information copied to clipboard</string>
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
     <string name="error_bad_archive_without_info">\"%s\" is a corrupted archive.</string>
