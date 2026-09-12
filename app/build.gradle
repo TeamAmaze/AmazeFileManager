@@ -47,7 +47,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             testProguardFile 'tests-proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
-            buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
             debuggable true //For "debug" banner on icon
             enableUnitTestCoverage true
         }
@@ -58,7 +57,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
-            buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
         }
     }
 
