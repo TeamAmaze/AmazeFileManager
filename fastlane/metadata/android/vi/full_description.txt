@@ -5,7 +5,7 @@ Tính năng:
 - Các tính năng cơ bản như cắt, sao chép, xóa, nén, giải nén.
 - Hỗ trợ nhiều tab để tối ưu hiệu suất làm việc.
 - Hỗ trợ nhiều chủ đề.
-- Navigation drawer for quick navigation
+- Ngăn kéo truy cập nhanh cho phép truy cập nhanh các mục.
 - Trình quản lý ứng dụng để mở, sao lưu hoặc gỡ cài đặt trực tiếp bất kỳ ứng dụng nào.
 - Truy cập nhanh lịch sử, dấu trang hoặc tìm kiếm bất kỳ tệp nào.
 - Trình khám phá root dành cho người dùng nâng cao.
