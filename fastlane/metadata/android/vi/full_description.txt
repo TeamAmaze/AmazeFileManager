@@ -1,0 +1,15 @@
+Trình quản lý tệp nhẹ và mượt mà, tuân thủ các nguyên tắc Material Design.
+
+Tính năng:
+
+- Các tính năng cơ bản như cắt, sao chép, xóa, nén, giải nén.
+- Hỗ trợ nhiều tab để tối ưu hiệu suất làm việc.
+- Hỗ trợ nhiều chủ đề.
+- Navigation drawer for quick navigation
+- Trình quản lý ứng dụng để mở, sao lưu hoặc gỡ cài đặt trực tiếp bất kỳ ứng dụng nào.
+- Truy cập nhanh lịch sử, dấu trang hoặc tìm kiếm bất kỳ tệp nào.
+- Trình khám phá root dành cho người dùng nâng cao.
+Mã hóa và giải mã tệp bằng AES cho nhu cầu bảo mật (Jellybean v4.3+).
+- Hỗ trợ các dịch vụ đám mây, cụ thể là SMB, SSH, FTP và SFTP (Jellybean v4.3 trở lên / yêu cầu bổ sung plug-in).
+- Tích hợp trình đọc cơ sở dữ liệu, đọc ZIP/RAR, đọc APK và trình soạn thảo văn bản.
+- Hỗ trợ máy khách FTP.
