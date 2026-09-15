@@ -25,8 +25,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
+import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import android.util.Log
@@ -68,7 +68,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
+@Config(shadows = [ShadowMultiDex::class], sdk = [M, P, Build.VERSION_CODES.R])
 class EncryptServiceTest {
     private lateinit var service: EncryptService
     private lateinit var notificationManager: ShadowNotificationManager
@@ -128,7 +128,9 @@ class EncryptServiceTest {
             assertTrue(notificationManager.activeNotifications.isNotEmpty())
             notificationManager.activeNotifications.first().let {
                 assertEquals(NotificationConstants.ENCRYPT_ID, it.id)
-                assertEquals(NotificationConstants.CHANNEL_NORMAL_ID, it.notification.channelId)
+                if (SDK_INT >= O) {
+                    assertEquals(NotificationConstants.CHANNEL_NORMAL_ID, it.notification.channelId)
+                }
             }
             await().atMost(10, TimeUnit.SECONDS).until {
                 targetFile.length() > 0 && notificationManager.activeNotifications.isEmpty()
@@ -171,7 +173,9 @@ class EncryptServiceTest {
             assertTrue(notificationManager.activeNotifications.isNotEmpty())
             notificationManager.activeNotifications.first().let {
                 assertEquals(NotificationConstants.ENCRYPT_ID, it.id)
-                assertEquals(NotificationConstants.CHANNEL_NORMAL_ID, it.notification.channelId)
+                if (SDK_INT >= O) {
+                    assertEquals(NotificationConstants.CHANNEL_NORMAL_ID, it.notification.channelId)
+                }
             }
             await().atMost(10, TimeUnit.SECONDS).until {
                 targetFile.length() > 0 && notificationManager.activeNotifications.isEmpty()
