@@ -688,8 +688,8 @@
 
     <string name="quick_desc">Archivos a los que se ha accedido recientemente a través de Amaze</string>
     <string name="recent_desc">Archivos creados o modificados recientemente</string>
-    <string name="error_unsupported_rar_version">El archivo RAR \"%s\" es un tipo de archivo RAR no compatible.</string>
     <string name="not_found_enabled_webview">No se encontró un navegador disponible</string>
+    <string name="error_unsupported_rar_version">El archivo RAR \"%s\" es un tipo de archivo RAR no compatible.</string>
     <string name="error_cannot_find_way_open">No se pudo encontrar la manera de abrir el archivo</string>
     <string name="error_cant_decompress_that_file">No se puede procesar el archivo</string>
     <string name="analyse_storage">Analizar almacenamiento</string>
