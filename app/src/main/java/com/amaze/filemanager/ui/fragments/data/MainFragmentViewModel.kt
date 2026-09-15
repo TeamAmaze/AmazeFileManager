@@ -228,20 +228,14 @@ class MainFragmentViewModel : ViewModel() {
     /**
      * Get the position of an item
      */
-    fun getScrollPosition(title: String): MutableLiveData<Int> {
-        val mutableLiveData: MutableLiveData<Int> = MutableLiveData(-1)
-
-        viewModelScope.launch(Dispatchers.IO) {
-            adapterListItems?.forEachIndexed { index, item ->
-                if (item.layoutElementParcelable != null &&
-                    item.layoutElementParcelable?.title.equals(title)
-                ) {
-                    item.setChecked(true)
-                    mutableLiveData.postValue(index)
-                }
+    fun getScrollPosition(title: String): Int {
+       adapterListItems?.forEachIndexed { index, item ->
+            if (item.layoutElementParcelable?.title == title) {
+                item.setChecked(true)
+                return index
             }
         }
-        return mutableLiveData
+        return -1
     }
 
     /**
