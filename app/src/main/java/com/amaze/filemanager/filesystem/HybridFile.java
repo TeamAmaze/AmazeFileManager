@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem;
 
+import android.util.Log;
+
 import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DATA_DIRS;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
@@ -133,6 +135,8 @@ import net.schmizz.sshj.sftp.SFTPException;
 
 /** Hybrid file for handeling all types of files */
 public class HybridFile {
+  private static final String TAG = "HybridFile";
+
 
   private static final Logger LOG = LoggerFactory.getLogger(HybridFile.class);
 
@@ -1117,7 +1121,7 @@ public class HybridFile {
                           LOG.debug("Closing input stream for {}", getPath());
                           super.close();
                         } catch (Throwable e) {
-                          e.printStackTrace();
+                          Log.e(TAG, "HybridFile error", e);
                         } finally {
                           LOG.debug("Closing client for {}", getPath());
                           rf.close();

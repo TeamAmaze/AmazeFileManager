@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.fileoperations.filesystem.cloud;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -186,7 +188,7 @@ public abstract class CloudStreamServer {
                         try {
                           session.join();
                         } catch (InterruptedException e) {
-                              e.printStackTrace();
+                              Log.e(TAG, "Cloud stream error", e);
                         }
                     }
                   */
@@ -214,7 +216,7 @@ public abstract class CloudStreamServer {
                             try {
                                     session.join();
                             } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    Log.e(TAG, "Cloud stream error", e);
                             }
                     }
                   */
