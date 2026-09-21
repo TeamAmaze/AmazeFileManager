@@ -68,7 +68,7 @@ class ZipExtractor(
                     invalidArchiveEntries.add(fileHeader.fileName)
                 }
             }
-            if (entriesToExtract.size > 0) {
+            if (entriesToExtract.isNotEmpty()) {
                 listener.onStart(totalBytes, entriesToExtract[0].fileName)
                 for (entry in entriesToExtract) {
                     if (!listener.isCancelled) {
@@ -77,6 +77,9 @@ class ZipExtractor(
                     }
                 }
             } else {
+                if (zipfile.file.length() == 0L) {
+                    throw ZipException("Zero byte or corrupt zip file")
+                }
                 throw EmptyArchiveNotice()
             }
             listener.onFinish()

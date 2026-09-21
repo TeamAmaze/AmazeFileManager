@@ -135,7 +135,7 @@ class DragAndDropDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         safeLet(
             context,
-            mainActivity?.appTheme?.getMaterialDialogTheme(),
+            mainActivity?.appTheme?.materialDialogTheme,
             mainActivity?.accent,
             pasteLocation,
             operationFiles,
@@ -146,7 +146,7 @@ class DragAndDropDialog : DialogFragment() {
                     .title(getString(R.string.choose_operation))
                     .customView(R.layout.dialog_drag_drop, true)
                     .theme(dialogTheme)
-                    .negativeText(getString(R.string.cancel).toUpperCase())
+                    .negativeText(getString(R.string.cancel).uppercase())
                     .negativeColor(accent)
                     .cancelable(false)
                     .onNeutral { _: MaterialDialog?, _: DialogAction? ->

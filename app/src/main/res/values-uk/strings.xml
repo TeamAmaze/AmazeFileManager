@@ -603,8 +603,9 @@
     <string name="clear_open_file">Очистити кеш</string>
     <string name="clear_open_file_summary">Очищає вибрані програми відкриття файлів за замовчуванням</string>
     <string name="legacy_listing_title">Використовуйте застарілий список для root</string>
+    <string name="error_unsupported_rar_version">Архів RAR \"%s\" є архівом RAR, який не підтримується.</string>
     <string name="error_permission_denied">Дозвіл відмовлено</string>
     <string name="error_archive_password_incorrect">Не вірний пароль архіву.</string>
     <string name="disable">Вимкнено</string>
-    </resources>
+</resources>
 
