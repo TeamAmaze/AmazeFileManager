@@ -1117,7 +1117,7 @@ public class HybridFile {
                           LOG.debug("Closing input stream for {}", getPath());
                           super.close();
                         } catch (Throwable e) {
-                          e.printStackTrace();
+                          LOG.error("Error closing input stream for {}", getPath(), e);
                         } finally {
                           LOG.debug("Closing client for {}", getPath());
                           rf.close();
