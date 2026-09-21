@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace "com.amaze.filemanager.filesystem.compressed.sevenz"
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
         minSdkVersion libs.versions.minSdk.get().toInteger()
@@ -19,8 +19,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
 }

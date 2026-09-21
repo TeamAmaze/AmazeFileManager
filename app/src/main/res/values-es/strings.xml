@@ -640,7 +640,6 @@
     <string name="ftp_readonly">Acceso de solo lectura</string>
     <string name="legacy_listing_title">Usar listado heredado para root</string>
     <string name="legacy_listing_summary">Si se habilita, usa el método tradicional para listar archivos</string>
-    <string name="error_unsupported_v5_rar">El archivador RAR \"1%s\" es un archivador RAR v5, no soportado</string>
     <string name="ftp_prompt_restart_server">Necesitas reiniciar el servidor FTP para que los cambios tengan efecto.</string>
     <string name="error_permission_denied">Permiso denegado</string>
     <string name="error_archive_password_incorrect">Contraseña del archivador inválida.</string>
@@ -689,6 +688,8 @@
 
     <string name="quick_desc">Archivos a los que se ha accedido recientemente a través de Amaze</string>
     <string name="recent_desc">Archivos creados o modificados recientemente</string>
+    <string name="not_found_enabled_webview">No se encontró un navegador disponible</string>
+    <string name="error_unsupported_rar_version">El archivo RAR \"%s\" es un tipo de archivo RAR no compatible.</string>
     <string name="error_cannot_find_way_open">No se pudo encontrar la manera de abrir el archivo</string>
     <string name="error_cant_decompress_that_file">No se puede procesar el archivo</string>
     <string name="analyse_storage">Analizar almacenamiento</string>
@@ -732,5 +733,5 @@
     <string name="same_dir_move_error">La carpeta de destino y origen no deben ser iguales para mover.</string>
     <string name="checking_conflicts">Comprobar si hay conflictos</string>
     <string name="same_dir_overwrite_error">La carpeta de destino y la de origen no deben ser iguales para sobrescribir.</string>
-    </resources>
+</resources>
 

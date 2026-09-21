@@ -5,7 +5,7 @@ apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
 
 android {
     namespace "com.amaze.filemanager.fileoperations"
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
     ndkVersion libs.versions.ndk.get()
     packagingOptions {
         resources {
@@ -31,13 +31,9 @@ android {
         }
     }
 
-    sourceSets {
-        test.java.srcDirs += '../testShared/src/test/java'
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     testOptions {
@@ -45,10 +41,6 @@ android {
             includeAndroidResources = true
             returnDefaultValues = true
         }
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
     }
 }
 
@@ -66,7 +58,7 @@ cargo {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 // Ensure Rust libraries are built before Android tasks
@@ -115,6 +107,7 @@ dependencies {
     //TODO some libs are not needed
 
     //For tests
+    testImplementation project(':testShared')
     testImplementation libs.junit //tests the app logic
     testImplementation libs.robolectric //tests android interaction
     testImplementation libs.robolectric.shadows.httpclient //tests android interaction
