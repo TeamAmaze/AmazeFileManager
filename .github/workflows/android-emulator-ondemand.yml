@@ -32,10 +32,13 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 17
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Set up NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
-          toolchain: stable
+          ndk-version: r30
+          link-to-sdk: true
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1.98.1
       - name: Cache Rust dependencies
         uses: actions/cache@v5
         with:

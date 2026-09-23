@@ -18,7 +18,7 @@ jobs:
           reactions: '+1'
       - name: Github API Request
         id: request
-        uses: octokit/request-action@v3
+        uses: octokit/request-action@b91aabaa861c777dcdb14e2387e30eddf04619ae
         with:
           route: ${{ github.event.issue.pull_request.url }}
         env:
@@ -41,13 +41,12 @@ jobs:
           distribution: "temurin"
           java-version: 17
       - name: Set up NDK
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
           ndk-version: r28c
           link-to-sdk: true
-          local-cache: true
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.98.1
         with:
           toolchain: stable
       - name: Cache Rust dependencies
@@ -79,10 +78,10 @@ jobs:
             echo "❌ .cargo/config.toml missing"
             exit 1
           fi
-      - name: Build with Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          arguments: assembleDebug --stacktrace
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug --stacktrace
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v7
         id: artifact-upload-fdroid
@@ -105,7 +104,7 @@ jobs:
           echo "PR_Number: $PR_NUMBER"
           echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_OUTPUT"
       - name: Notify the user with a comment once the APK is uploaded
-        uses: peter-evans/create-or-update-comment@v5
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           issue-number: ${{ steps.find-pr-id.outputs.PR_NUMBER }}
           body: |
