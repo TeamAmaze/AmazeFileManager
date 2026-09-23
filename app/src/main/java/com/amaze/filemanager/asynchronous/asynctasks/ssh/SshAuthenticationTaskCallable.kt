@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig
 import com.amaze.filemanager.utils.PasswordUtil
@@ -74,13 +73,7 @@ class SshAuthenticationTaskCallable(
             } else {
                 sshClient.authPassword(
                     decode(username, UTF_8.name()),
-                    decode(
-                        PasswordUtil.decryptPassword(
-                            AppConfig.getInstance(),
-                            password!!,
-                        ),
-                        UTF_8.name(),
-                    ),
+                    decode(PasswordUtil.decryptPassword(password!!), UTF_8.name()),
                 )
                 sshClient
             }

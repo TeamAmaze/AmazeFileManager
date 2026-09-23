@@ -2,10 +2,8 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.ui.activities.AbstractMainActivityTestBase
-import com.amaze.filemanager.ui.activities.MainActivity
 import org.junit.Assert.assertTrue
 import org.robolectric.shadows.ShadowDialog
 import org.robolectric.shadows.ShadowLooper
@@ -24,7 +22,7 @@ abstract class AbstractSftpConnectDialogUiTests : AbstractMainActivityTestBase()
         arguments: Bundle,
         withDialog: (SftpConnectDialog, MaterialDialog) -> Unit,
     ) {
-        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        val scenario = activityRule.scenario
         ShadowLooper.idleMainLooper()
         scenario.moveToState(Lifecycle.State.STARTED)
         scenario.onActivity { activity ->
@@ -36,7 +34,6 @@ abstract class AbstractSftpConnectDialogUiTests : AbstractMainActivityTestBase()
                 withDialog.invoke(this, ShadowDialog.getLatestDialog() as MaterialDialog)
             }
             scenario.moveToState(Lifecycle.State.DESTROYED)
-            scenario.close()
         }
     }
 }

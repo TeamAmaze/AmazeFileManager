@@ -2,7 +2,6 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.os.Bundle
 import android.util.Base64
-import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.TLS_EXPLICIT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils
@@ -144,7 +143,6 @@ class SftpConnectDialogFtpTest : AbstractSftpConnectDialogTests() {
                         assertEquals(
                             verify.getString(key),
                             PasswordUtil.decryptPassword(
-                                ApplicationProvider.getApplicationContext(),
                                 args.getString(key)!!,
                                 Base64.URL_SAFE,
                             ),

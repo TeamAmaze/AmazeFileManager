@@ -106,13 +106,11 @@ class UtilitiesDatabaseMigrationTest {
             helper.createDatabase(TEST_DB, 5)
         val password1 =
             PasswordUtil.encryptPassword(
-                InstrumentationRegistry.getInstrumentation().targetContext,
                 "passw0rd",
                 Base64.DEFAULT,
             )
         val password2 =
             PasswordUtil.encryptPassword(
-                InstrumentationRegistry.getInstrumentation().targetContext,
                 "\\password/%&*()",
                 Base64.DEFAULT,
             )
@@ -150,10 +148,7 @@ class UtilitiesDatabaseMigrationTest {
         smbEntries.find { it.name == "test" }?.run {
             assertEquals(
                 "smb://user:passw0rd@127.0.0.1/user",
-                SmbUtil.getSmbDecryptedPath(
-                    InstrumentationRegistry.getInstrumentation().targetContext,
-                    this.path,
-                ),
+                SmbUtil.getSmbDecryptedPath(this.path),
             )
         }
 //        smbEntries.find { it.name == "test anonymous" }?.run {

@@ -21,6 +21,10 @@
 package com.amaze.filemanager.filesystem.ftp
 
 import android.annotation.SuppressLint
+import android.util.LruCache
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.auth.FtpAuthenticationTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairObservable
@@ -44,11 +48,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.security.KeyPair
 import java.util.concurrent.Callable
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
-object NetCopyClientConnectionPool {
+object NetCopyClientConnectionPool : DefaultLifecycleObserver {
     const val FTP_DEFAULT_PORT = 21
     const val FTPS_DEFAULT_PORT = 990
     const val SSH_DEFAULT_PORT = 22
@@ -57,7 +59,20 @@ object NetCopyClientConnectionPool {
     const val SSH_URI_PREFIX = "ssh://"
     const val CONNECT_TIMEOUT = 30000
 
-    private var connections: MutableMap<String, NetCopyClient<*>> = ConcurrentHashMap()
+    private var connections: LruCache<String, NetCopyClient<*>> =
+        object : LruCache<String, NetCopyClient<*>>(32) {
+            override fun entryRemoved(
+                evicted: Boolean,
+                key: String,
+                oldValue: NetCopyClient<*>,
+                newValue: NetCopyClient<*>?,
+            ) {
+                super.entryRemoved(evicted, key, oldValue, newValue)
+                if (evicted) {
+                    oldValue.expire()
+                }
+            }
+        }
 
     @JvmStatic
     private val LOG: Logger = LoggerFactory.getLogger(NetCopyClientConnectionPool::class.java)
@@ -68,6 +83,44 @@ object NetCopyClientConnectionPool {
     @JvmField
     var ftpClientFactory: FTPClientFactory = DefaultFTPClientFactory()
 
+    init {
+        // Register this object as a lifecycle observer
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+    }
+
+    // Called when app is destroyed
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        shutdown()
+    }
+
+    private fun closeAllConnections() {
+        Single.create<Unit> { emitter ->
+            if (connections.size() > 0) {
+                connections.snapshot().values.forEach {
+                    it.expire()
+                }
+            }
+            connections.evictAll()
+            emitter.onSuccess(Unit)
+        }.subscribeOn(Schedulers.io())
+            .subscribe()
+    }
+
+    /**
+     * A no-op method to force eager initialization.
+     *
+     * @see [AppConfig.onCreate]
+     */
+    fun initialize() = Unit
+
+    /**
+     * Lifecycle method called when the app is going to be destroyed.
+     */
+    fun shutdown() {
+        closeAllConnections()
+    }
+
     /**
      * Obtain a [NetCopyClient] connection from the underlying connection pool.
      *
@@ -75,33 +128,37 @@ object NetCopyClientConnectionPool {
      * put it into the connection pool.
      *
      * @param url SSH connection URL, in the form of `
-     * ssh://<username>:<password>@<host>:<port>` or `
-     * ssh://<username>@<host>:<port>`
+     * ssh://<username>:<password>@<host>:<port>[/path]` or `
+     * ssh://<username>@<host>:<port>[/path]`
      * @return [NetCopyClient] connection, already opened and authenticated
      * @throws IOException IOExceptions that occur during connection setup
      */
     fun <ClientType> getConnection(url: String): NetCopyClient<ClientType>? {
-        var client = connections[url]
-        if (client == null) {
-            client = createNetCopyClient.invoke(url)
-            if (client != null) {
-                connections[extractBaseUriFrom(url)] = client
-            }
-        } else {
-            if (!validate(client)) {
-                LOG.debug("Connection no longer usable. Reconnecting...")
-                expire(client)
-                connections.remove(url)
+        // Extract base URI first to ensure consistent cache key
+        val baseUri = extractBaseUriFrom(url)
+        synchronized(connections) {
+            var client = connections[baseUri]
+            if (client == null) {
                 client = createNetCopyClient.invoke(url)
                 if (client != null) {
-                    connections[extractBaseUriFrom(url)] = client
+                    connections.put(baseUri, client)
+                }
+            } else {
+                if (!validate(client)) {
+                    LOG.debug("Connection no longer usable. Reconnecting...")
+                    expire(client)
+                    connections.remove(baseUri)
+                    client = createNetCopyClient.invoke(url)
+                    if (client != null) {
+                        connections.put(baseUri, client)
+                    }
                 }
             }
-        }
-        return if (client != null) {
-            client as NetCopyClient<ClientType>?
-        } else {
-            null
+            return if (client != null) {
+                client as NetCopyClient<ClientType>?
+            } else {
+                null
+            }
         }
     }
 
@@ -146,30 +203,34 @@ object NetCopyClientConnectionPool {
                 password,
                 explicitTls,
             )
-        var client = connections[url]
-        if (client == null) {
-            client =
-                createNetCopyClientInternal(
-                    protocol,
-                    host,
-                    port,
-                    hostFingerprint,
-                    username,
-                    password,
-                    keyPair,
-                    explicitTls,
-                )
-            if (client != null) connections[url] = client
-        } else {
-            if (!validate(client)) {
-                LOG.debug("Connection no longer usable. Reconnecting...")
-                expire(client)
-                connections.remove(url)
-                client = createNetCopyClient(url)
-                if (client != null) connections[url] = client
+        // Extract base URI to ensure consistent cache key with getConnection(String)
+        val baseUri = extractBaseUriFrom(url)
+        synchronized(connections) {
+            var client = connections[baseUri]
+            if (client == null) {
+                client =
+                    createNetCopyClientInternal(
+                        protocol,
+                        host,
+                        port,
+                        hostFingerprint,
+                        username,
+                        password,
+                        keyPair,
+                        explicitTls,
+                    )
+                if (client != null) connections.put(baseUri, client)
+            } else {
+                if (!validate(client)) {
+                    LOG.debug("Connection no longer usable. Reconnecting...")
+                    client.expire()
+                    connections.remove(baseUri)
+                    client = createNetCopyClient(url)
+                    if (client != null) connections.put(baseUri, client)
+                }
             }
+            return client
         }
-        return client
     }
 
     private val createNetCopyClient: (String) -> NetCopyClient<*>? = { url ->
@@ -189,21 +250,22 @@ object NetCopyClientConnectionPool {
         String?,
         KeyPair?,
         Boolean,
-    ) -> NetCopyClient<*>? = { protocol, host, port, hostFingerprint, username, password, keyPair, explicitTls ->
-        if (protocol == SSH_URI_PREFIX) {
-            createSshClient(host, port, hostFingerprint!!, username, password, keyPair)
-        } else {
-            createFtpClient(
-                protocol,
-                host,
-                port,
-                hostFingerprint?.let { JSONObject(it) },
-                username,
-                password,
-                explicitTls,
-            )
+    ) -> NetCopyClient<*>? =
+        { protocol, host, port, hostFingerprint, username, password, keyPair, explicitTls ->
+            if (protocol == SSH_URI_PREFIX) {
+                createSshClient(host, port, hostFingerprint!!, username, password, keyPair)
+            } else {
+                createFtpClient(
+                    protocol,
+                    host,
+                    port,
+                    hostFingerprint?.let { JSONObject(it) },
+                    username,
+                    password,
+                    explicitTls,
+                )
+            }
         }
-    }
 
     /**
      * Remove specified connection from connection pool. Disconnects from server before removing.
@@ -220,27 +282,11 @@ object NetCopyClientConnectionPool {
         url: String,
         callback: () -> Unit,
     ) {
-        Maybe.fromCallable(AsyncRemoveConnection(url))
+        val baseUri = extractBaseUriFrom(url)
+        Maybe.fromCallable(AsyncRemoveConnection(baseUri))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { callback.invoke() }
-    }
-
-    /**
-     * Kill any connection that is still in place. Used by MainActivity.
-     *
-     * @see MainActivity.onDestroy
-     * @see MainActivity.exit
-     */
-    fun shutdown() {
-        AppConfig.getInstance().runInBackground {
-            if (connections.isNotEmpty()) {
-                connections.values.forEach {
-                    it.expire()
-                }
-                connections.clear()
-            }
-        }
     }
 
     private fun validate(client: NetCopyClient<*>): Boolean {
@@ -312,7 +358,7 @@ object NetCopyClientConnectionPool {
         )
     }
 
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "TooGenericExceptionCaught")
     private fun createSshClientInternal(
         host: String,
         port: Int,
@@ -330,21 +376,20 @@ object NetCopyClientConnectionPool {
                 password = password,
                 privateKey = keyPair,
             )
-        val latch = CountDownLatch(1)
-        var retval: SSHClient? = null
-        Maybe.fromCallable(task.getTask())
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                retval = it
-                latch.countDown()
-            }, {
-                latch.countDown()
-                task.onError(it)
-            })
-        latch.await()
-        return retval?.let {
-            SSHClientImpl(it)
-        }
+
+        return runCatching {
+            Single.create { emitter ->
+                try {
+                    val retval = task.getTask().call()
+                    emitter.onSuccess(retval)
+                } catch (e: Exception) {
+                    emitter.onError(e)
+                }
+            }.map { sshClient -> SSHClientImpl(sshClient) }
+                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .blockingGet()
+        }.getOrNull()
     }
 
     private fun createFtpClient(url: String): NetCopyClient<FTPClient>? {
@@ -368,7 +413,7 @@ object NetCopyClientConnectionPool {
         }
     }
 
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "TooGenericExceptionCaught")
     private fun createFtpClient(
         protocol: String,
         host: String,
@@ -388,31 +433,30 @@ object NetCopyClientConnectionPool {
                 password,
                 explicitTls,
             )
-        val latch = CountDownLatch(1)
-        var result: FTPClient? = null
-        Single.fromCallable(task.getTask())
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                result = it
-                latch.countDown()
-            }, {
-                latch.countDown()
-                task.onError(it)
-            })
-        latch.await()
-        return result?.let { ftpClient ->
-            FTPClientImpl(ftpClient)
-        }
+
+        return kotlin.runCatching {
+            Single.create { emitter ->
+                try {
+                    val retval = task.getTask().call()
+                    emitter.onSuccess(retval)
+                } catch (e: Exception) {
+                    emitter.onError(e)
+                }
+            }.map { ftpClient -> FTPClientImpl(ftpClient) }
+                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .blockingGet()
+        }.getOrNull()
     }
 
     class AsyncRemoveConnection internal constructor(
-        private val url: String,
+        private val baseUri: String,
     ) : Callable<Unit> {
         override fun call() {
-            extractBaseUriFrom(url).run {
-                if (connections.containsKey(this)) {
-                    connections[this]?.expire()
-                    connections.remove(this)
+            synchronized(connections) {
+                connections[baseUri]?.apply {
+                    this.expire()
+                    connections.remove(baseUri)
                 }
             }
         }
@@ -460,7 +504,8 @@ object NetCopyClientConnectionPool {
                     FTPSClient(
                         "TLS",
                         !uri.contains(QUESTION_MARK) ||
-                            !uri.substringAfter(QUESTION_MARK).contains("$ARG_TLS=$TLS_EXPLICIT"),
+                            !uri.substringAfter(QUESTION_MARK)
+                                .contains("$ARG_TLS=$TLS_EXPLICIT"),
                     )
                 } else {
                     FTPClient()

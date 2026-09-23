@@ -182,7 +182,6 @@ class FtpService : Service(), Runnable {
                 runCatching {
                     password =
                         PasswordUtil.decryptPassword(
-                            applicationContext,
                             preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!,
                         )
                     isPasswordProtected = true

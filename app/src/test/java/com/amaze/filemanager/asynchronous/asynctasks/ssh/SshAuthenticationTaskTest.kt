@@ -24,11 +24,13 @@ import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
+import android.util.LruCache
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
-import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.filesystem.ftp.NetCopyClient
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
+import com.amaze.filemanager.filesystem.ftp.SSHClientImpl
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
@@ -102,7 +104,7 @@ class SshAuthenticationTaskTest {
                 hostname = "127.0.0.1",
                 port = 22222,
                 username = "user",
-                password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password"),
+                password = PasswordUtil.encryptPassword("password"),
             )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
@@ -298,7 +300,7 @@ class SshAuthenticationTaskTest {
                 hostname = "127.0.0.1",
                 port = 22222,
                 username = "user",
-                password = PasswordUtil.encryptPassword(AppConfig.getInstance(), "password"),
+                password = PasswordUtil.encryptPassword("password"),
             )
         val latch = CountDownLatch(1)
         var e: Throwable? = null
@@ -341,9 +343,12 @@ class SshAuthenticationTaskTest {
             this.isAccessible = true
             this.set(
                 NetCopyClientConnectionPool,
-                mutableMapOf(
-                    Pair("ssh://user:password@127.0.0.1:22222", sshClient),
-                ),
+                LruCache<String, NetCopyClient<SSHClient>>(1).also {
+                    it.put(
+                        "ssh://user:password@127.0.0.1:22222",
+                        SSHClientImpl(sshClient),
+                    )
+                },
             )
         }
 

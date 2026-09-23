@@ -25,7 +25,6 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.shutdown
@@ -69,7 +68,7 @@ import kotlin.text.Charsets.UTF_8
 )
 abstract class AbstractSftpServerTest {
     protected var encryptedPassword: String? =
-        PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)?.replace("\n", "")
+        PasswordUtil.encryptPassword(PASSWORD)?.replace("\n", "")
     protected var serverPort = 0
     private lateinit var server: SshServer
 
@@ -101,7 +100,7 @@ abstract class AbstractSftpServerTest {
      */
     @After
     @Throws(IOException::class)
-    fun tearDown() {
+    open fun tearDown() {
         shutdown()
         if (server.isOpen) {
             server.stop(true)
@@ -116,7 +115,7 @@ abstract class AbstractSftpServerTest {
             serverPort,
             hostFingerprint,
             USERNAME,
-            PasswordUtil.encryptPassword(AppConfig.getInstance(), PASSWORD)?.replace("\n", ""),
+            PasswordUtil.encryptPassword(PASSWORD)?.replace("\n", ""),
             null,
         )
     }
@@ -135,7 +134,8 @@ abstract class AbstractSftpServerTest {
         server.subsystemFactories = listOf<NamedFactory<Command>>(SftpSubsystemFactory())
         server.passwordAuthenticator =
             PasswordAuthenticator { username: String, password: String, _: ServerSession? ->
-                username == USERNAME && password == PASSWORD
+                validUsers.containsKey(username) &&
+                    validUsers[username] == password
             }
         return try {
             server.port = startPort
@@ -155,6 +155,13 @@ abstract class AbstractSftpServerTest {
 
         @JvmStatic
         protected val PASSWORD = "testpassword"
+
+        private val validUsers =
+            mapOf(
+                USERNAME to PASSWORD,
+                "testuser2" to "testpassword2",
+                "testuser3" to "testpassword3",
+            )
 
         protected lateinit var hostKeyProvider: TestKeyProvider
 

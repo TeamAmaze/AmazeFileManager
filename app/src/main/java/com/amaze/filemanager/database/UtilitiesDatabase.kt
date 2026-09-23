@@ -29,7 +29,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.daos.BookmarkEntryDao
 import com.amaze.filemanager.database.daos.GridEntryDao
 import com.amaze.filemanager.database.daos.HiddenEntryDao
@@ -441,13 +440,11 @@ abstract class UtilitiesDatabase : RoomDatabase() {
                             try {
                                 val oldPassword =
                                     decryptPassword(
-                                        AppConfig.getInstance(),
                                         password,
                                         Base64.DEFAULT,
                                     )
                                 val newPassword =
                                     encryptPassword(
-                                        AppConfig.getInstance(),
                                         oldPassword,
                                         Base64.URL_SAFE,
                                     )

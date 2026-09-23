@@ -94,10 +94,7 @@ class UtilsHandlerTest {
             OperationData(
                 UtilsHandler.Operation.SMB,
                 "SMB Connection 1",
-                SmbUtil.getSmbEncryptedPath(
-                    AppConfig.getInstance(),
-                    path,
-                ),
+                SmbUtil.getSmbEncryptedPath(path),
             )
         AppConfig.getInstance().run {
             utilsHandler.run {
@@ -105,10 +102,7 @@ class UtilsHandlerTest {
                 val verify = smbList
                 assertEquals(1, verify.size)
                 assertEquals(
-                    SmbUtil.getSmbEncryptedPath(
-                        AppConfig.getInstance(),
-                        path,
-                    ),
+                    SmbUtil.getSmbEncryptedPath(path),
                     verify[0][1],
                 )
             }
@@ -130,10 +124,7 @@ class UtilsHandlerTest {
             OperationData(
                 UtilsHandler.Operation.SMB,
                 "SMB Connection 1",
-                SmbUtil.getSmbEncryptedPath(
-                    AppConfig.getInstance(),
-                    path,
-                ),
+                SmbUtil.getSmbEncryptedPath(path),
             )
         AppConfig.getInstance().run {
             utilsHandler.run {

@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
 import androidx.annotation.WorkerThread
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.CONNECT_TIMEOUT
@@ -55,7 +54,7 @@ open class FtpAuthenticationTaskCallable(
                 ftpClient.login(
                     decode(username, UTF_8.name()),
                     decode(
-                        PasswordUtil.decryptPassword(AppConfig.getInstance(), password),
+                        PasswordUtil.decryptPassword(password),
                         UTF_8.name(),
                     ),
                 )

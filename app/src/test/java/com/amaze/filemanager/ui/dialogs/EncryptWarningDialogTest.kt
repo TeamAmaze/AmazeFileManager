@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.dialogs
 
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -42,6 +43,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
      */
     @Test
     fun testDisplayDialog() {
+        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             EncryptWarningDialog.show(activity, activity.appTheme)
             assertEquals(1, ShadowDialog.getShownDialogs().size)
@@ -63,6 +65,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
                     .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 
@@ -71,6 +74,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
      */
     @Test
     fun testDisplayDialogNeverShowAgain() {
+        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             EncryptWarningDialog.show(activity, activity.appTheme)
             assertEquals(1, ShadowDialog.getShownDialogs().size)
@@ -82,6 +86,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
                     .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 }

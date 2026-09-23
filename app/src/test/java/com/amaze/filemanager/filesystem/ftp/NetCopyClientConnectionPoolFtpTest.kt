@@ -24,7 +24,6 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.shutdown
@@ -39,6 +38,7 @@ import org.apache.commons.net.ftp.FTPClient
 import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -88,11 +88,7 @@ class NetCopyClientConnectionPoolFtpTest {
                 host = HOST,
                 port = PORT,
                 username = "testuser",
-                password =
-                    PasswordUtil.encryptPassword(
-                        AppConfig.getInstance(),
-                        "testpassword",
-                    ),
+                password = PasswordUtil.encryptPassword("testpassword"),
             ),
         )
         assertNull(
@@ -101,11 +97,7 @@ class NetCopyClientConnectionPoolFtpTest {
                 host = HOST,
                 port = PORT,
                 username = "invaliduser",
-                password =
-                    PasswordUtil.encryptPassword(
-                        AppConfig.getInstance(),
-                        "invalidpassword",
-                    ),
+                password = PasswordUtil.encryptPassword("invalidpassword"),
             ),
         )
         verify(mock, times(2)).connect(HOST, PORT)
@@ -204,6 +196,38 @@ class NetCopyClientConnectionPoolFtpTest {
         doRunTest(validUsername, validPassword)
     }
 
+    /**
+     * Test that FTP connections with same base URI but different paths reuse
+     * the same pooled connection object
+     */
+    @Test
+    fun testGetConnectionWithSameBaseUriDifferentPaths() {
+        val validUsername = "testuser"
+        val validPassword = "testpassword"
+        val encodedUsername = encode(validUsername, UTF_8.name())
+        val encodedPassword = encode(validPassword, UTF_8.name())
+        val encryptedPassword =
+            PasswordUtil.encryptPassword(encodedPassword)?.replace("\n", "")
+        val mock = createFTPClient(validUsername, validPassword)
+        TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
+
+        val uri1 = "ftp://$encodedUsername:$encryptedPassword@127.0.0.1:22222"
+        val uri2 = "ftp://$encodedUsername:$encryptedPassword@127.0.0.1:22222/home/testuser"
+        val uri3 = "ftp://$encodedUsername:$encryptedPassword@127.0.0.1:22222/var/www/html"
+
+        val client1 = getConnection<FTPClient>(uri1)
+        val client2 = getConnection<FTPClient>(uri2)
+        val client3 = getConnection<FTPClient>(uri3)
+
+        assertNotNull(client1)
+        assertNotNull(client2)
+        assertNotNull(client3)
+        assertTrue(client1 === client2)
+        assertTrue(client1 === client3)
+        // Should only connect once since connection is reused
+        verify(mock, times(1)).connect(HOST, PORT)
+    }
+
     private fun doRunTest(
         validUsername: String,
         validPassword: String,
@@ -211,10 +235,7 @@ class NetCopyClientConnectionPoolFtpTest {
         val encodedUsername = encode(validUsername, UTF_8.name())
         val encodedPassword = encode(validPassword, UTF_8.name())
         val encryptedPassword =
-            PasswordUtil.encryptPassword(
-                AppConfig.getInstance(),
-                encodedPassword,
-            )?.replace("\n", "")
+            PasswordUtil.encryptPassword(encodedPassword)?.replace("\n", "")
         val mock = createFTPClient(validUsername, validPassword)
         TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
         assertNotNull(
@@ -240,6 +261,8 @@ class NetCopyClientConnectionPoolFtpTest {
         val mock = Mockito.mock(FTPClient::class.java)
         doNothing().`when`(mock).connect(HOST, PORT)
         doNothing().`when`(mock).disconnect()
+        `when`(mock.isConnected).thenReturn(true)
+        `when`(mock.isAvailable).thenReturn(true)
         `when`(mock.login(validUsername, validPassword)).thenReturn(true)
         `when`(
             mock.login(

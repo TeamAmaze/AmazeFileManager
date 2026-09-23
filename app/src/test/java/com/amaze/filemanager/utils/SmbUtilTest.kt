@@ -23,7 +23,6 @@ package com.amaze.filemanager.utils
 import android.os.Build
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.P
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
@@ -56,11 +55,11 @@ class SmbUtilTest {
     @Test
     fun testEncryptDecryptSmb() {
         val path = "smb://root:toor@127.0.0.1"
-        val encrypted = getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path)
+        val encrypted = getSmbEncryptedPath(path)
         assertNotEquals(path, encrypted)
         assertTrue(encrypted.startsWith("smb://root:"))
         assertTrue(encrypted.endsWith("@127.0.0.1"))
-        val decrypted = getSmbDecryptedPath(ApplicationProvider.getApplicationContext(), encrypted)
+        val decrypted = getSmbDecryptedPath(encrypted)
         assertEquals(path, decrypted)
     }
 
@@ -70,11 +69,11 @@ class SmbUtilTest {
     @Test
     fun testEncryptDecryptFtps() {
         val path = "ftps://root:toor@127.0.0.1"
-        val encrypted = getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path)
+        val encrypted = getSmbEncryptedPath(path)
         assertNotEquals(path, encrypted)
         assertTrue(encrypted.startsWith("ftps://root:"))
         assertTrue(encrypted.endsWith("@127.0.0.1"))
-        val decrypted = getSmbDecryptedPath(ApplicationProvider.getApplicationContext(), encrypted)
+        val decrypted = getSmbDecryptedPath(encrypted)
         assertEquals(path, decrypted)
     }
 
@@ -84,11 +83,11 @@ class SmbUtilTest {
     @Test
     fun testEncryptDecryptFtpsWithExtraParams() {
         val path = "ftps://root:toor@127.0.0.1?tls=explicit"
-        val encrypted = getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path)
+        val encrypted = getSmbEncryptedPath(path)
         assertNotEquals(path, encrypted)
         assertTrue(encrypted.startsWith("ftps://root:"))
         assertTrue(encrypted.endsWith("@127.0.0.1?tls=explicit"))
-        val decrypted = getSmbDecryptedPath(ApplicationProvider.getApplicationContext(), encrypted)
+        val decrypted = getSmbDecryptedPath(encrypted)
         assertEquals(path, decrypted)
     }
 
@@ -98,10 +97,7 @@ class SmbUtilTest {
     @Test
     fun testEncryptWithoutCredentials() {
         val path = "smb://127.0.0.1"
-        assertEquals(
-            path,
-            getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
-        )
+        assertEquals(path, getSmbEncryptedPath(path))
     }
 
     /**
@@ -110,10 +106,7 @@ class SmbUtilTest {
     @Test
     fun testEncryptWithoutPassword() {
         val path = "smb://toor@127.0.0.1"
-        assertEquals(
-            path,
-            getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
-        )
+        assertEquals(path, getSmbEncryptedPath(path))
     }
 
     /**

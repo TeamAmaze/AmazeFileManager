@@ -26,6 +26,7 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -78,8 +79,7 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
      * MainActivity setup.
      */
     @Before
-    override fun setUp() {
-        super.setUp()
+    fun setUp() {
         file =
             File(
                 Environment.getExternalStorageDirectory(),
@@ -338,6 +338,7 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
         callback: EncryptDecryptUtils.EncryptButtonCallbackInterface =
             object : EncryptDecryptUtils.EncryptButtonCallbackInterface {},
     ) {
+        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             Intent().putExtra(TAG_SOURCE, HybridFileParcelable(file.absolutePath))
                 .putExtra(TAG_OPEN_MODE, OpenMode.FILE).let { intent ->
@@ -387,6 +388,7 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                         }
                     } ?: fail("Dialog cannot be seen?")
                 }
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 }

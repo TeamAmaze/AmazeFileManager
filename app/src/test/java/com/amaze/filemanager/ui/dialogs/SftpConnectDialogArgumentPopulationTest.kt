@@ -1,7 +1,6 @@
 package com.amaze.filemanager.ui.dialogs
 
 import android.os.Bundle
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl.Companion.ARG_TLS
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog.Companion.ARG_ADDRESS
@@ -38,13 +37,7 @@ class SftpConnectDialogArgumentPopulationTest : AbstractSftpConnectDialogUiTests
                     it.putString(ARG_ADDRESS, "127.0.0.1")
                     it.putInt(ARG_PORT, 2121)
                     it.putString(ARG_USERNAME, "root")
-                    it.putString(
-                        ARG_PASSWORD,
-                        PasswordUtil.encryptPassword(
-                            AppConfig.getInstance(),
-                            "abcdefgh",
-                        ),
-                    )
+                    it.putString(ARG_PASSWORD, PasswordUtil.encryptPassword("abcdefgh"))
                     it.putBoolean(ARG_HAS_PASSWORD, true)
                     it.putBoolean(ARG_EDIT, true)
                 },
@@ -77,13 +70,7 @@ class SftpConnectDialogArgumentPopulationTest : AbstractSftpConnectDialogUiTests
                     it.putInt(ARG_PORT, 2121)
                     it.putString(ARG_USERNAME, "root")
                     it.putString(ARG_DEFAULT_PATH, "/root/Private")
-                    it.putString(
-                        ARG_PASSWORD,
-                        PasswordUtil.encryptPassword(
-                            AppConfig.getInstance(),
-                            "abcdefgh",
-                        ),
-                    )
+                    it.putString(ARG_PASSWORD, PasswordUtil.encryptPassword("abcdefgh"))
                     it.putBoolean(ARG_HAS_PASSWORD, true)
                     it.putBoolean(ARG_EDIT, true)
                 },
@@ -145,13 +132,7 @@ class SftpConnectDialogArgumentPopulationTest : AbstractSftpConnectDialogUiTests
                     it.putString(ARG_ADDRESS, "127.0.0.1")
                     it.putInt(ARG_PORT, 2121)
                     it.putString(ARG_USERNAME, "root")
-                    it.putString(
-                        ARG_PASSWORD,
-                        PasswordUtil.encryptPassword(
-                            AppConfig.getInstance(),
-                            "abcdefgh",
-                        ),
-                    )
+                    it.putString(ARG_PASSWORD, PasswordUtil.encryptPassword("abcdefgh"))
                     it.putBoolean(ARG_HAS_PASSWORD, true)
                     it.putString(ARG_TLS, "explicit")
                     it.putBoolean(ARG_EDIT, true)
@@ -184,13 +165,7 @@ class SftpConnectDialogArgumentPopulationTest : AbstractSftpConnectDialogUiTests
                     it.putString(ARG_ADDRESS, "127.0.0.1")
                     it.putInt(ARG_PORT, 2121)
                     it.putString(ARG_USERNAME, "root")
-                    it.putString(
-                        ARG_PASSWORD,
-                        PasswordUtil.encryptPassword(
-                            AppConfig.getInstance(),
-                            "abcdefgh",
-                        ),
-                    )
+                    it.putString(ARG_PASSWORD, PasswordUtil.encryptPassword("abcdefgh"))
                     it.putString(ARG_DEFAULT_PATH, "/root/Documents")
                     it.putBoolean(ARG_HAS_PASSWORD, true)
                     it.putString(ARG_TLS, "explicit")

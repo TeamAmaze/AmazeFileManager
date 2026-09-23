@@ -20,10 +20,9 @@
 
 package com.amaze.filemanager.utils.smb
 
-import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
-import com.amaze.filemanager.application.AppConfig
+import androidx.core.net.toUri
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo
@@ -55,23 +54,17 @@ object SmbUtil {
 
     /** Parse path to decrypt smb password  */
     @JvmStatic
-    fun getSmbDecryptedPath(
-        context: Context,
-        path: String,
-    ): String {
+    fun getSmbDecryptedPath(path: String): String {
         return buildPath(path, withPassword = {
-            PasswordUtil.decryptPassword(context, it.urlDecoded())
+            PasswordUtil.decryptPassword(it.urlDecoded())
         })
     }
 
     /** Parse path to encrypt smb password  */
     @JvmStatic
-    fun getSmbEncryptedPath(
-        context: Context,
-        path: String,
-    ): String {
+    fun getSmbEncryptedPath(path: String): String {
         return buildPath(path, withPassword = {
-            PasswordUtil.encryptPassword(context, it)
+            PasswordUtil.encryptPassword(it)
         })
     }
 
@@ -114,7 +107,7 @@ object SmbUtil {
     @JvmStatic
     @Throws(MalformedURLException::class)
     fun create(path: String): SmbFile {
-        val uri = Uri.parse(getSmbDecryptedPath(AppConfig.getInstance(), path))
+        val uri = getSmbDecryptedPath(path).toUri()
         val disableIpcSigningCheck =
             uri.getQueryParameter(
                 PARAM_DISABLE_IPC_SIGNING_CHECK,

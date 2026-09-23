@@ -849,7 +849,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 if (encryptedPassword == "") {
                     ""
                 } else {
-                    PasswordUtil.decryptPassword(requireContext(), encryptedPassword)
+                    PasswordUtil.decryptPassword(encryptedPassword)
                 }
             }.onFailure {
                 log.warn("failed to decrypt ftp server password", it)
@@ -921,7 +921,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     .edit {
                         putString(
                             FtpService.KEY_PREFERENCE_PASSWORD,
-                            PasswordUtil.encryptPassword(this@run, password),
+                            PasswordUtil.encryptPassword(password),
                         )
                     }
             }
