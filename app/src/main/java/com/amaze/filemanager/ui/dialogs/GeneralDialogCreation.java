@@ -161,6 +161,8 @@ public class GeneralDialogCreation {
       dialog
           .getContentView()
           .setText(HtmlCompat.fromHtml(themedActivity.getString(content), FROM_HTML_MODE_COMPACT));
+    } else {
+      dialog.getContentView().setText(themedActivity.getString(content));
     }
     return dialog;
   }
