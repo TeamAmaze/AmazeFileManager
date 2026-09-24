@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+apply from: "../gradle/setupRustAndroidLocal.gradle"
 
 android {
     namespace "com.amaze.filemanager.fileoperations"
@@ -27,8 +28,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
+        targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
     }
 
     testOptions {
@@ -53,7 +54,7 @@ cargo {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(libs.versions.jvmTarget.get().toInteger())
 }
 
 // Ensure Rust libraries are built before Android tasks
@@ -128,4 +129,10 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation libs.androidX.appcompat
+}
+
+tasks.matching {
+    it.name.startsWith('cargoBuild')
+}.configureEach {
+    it.dependsOn 'setupRustAndroidLocal'
 }

@@ -99,8 +99,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
+        targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
     }
 
     testOptions {
@@ -267,7 +267,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(libs.versions.jvmTarget.get().toInteger())
 }
 
 configurations.configureEach {
