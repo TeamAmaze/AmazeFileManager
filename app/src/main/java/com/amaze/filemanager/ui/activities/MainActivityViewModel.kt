@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.activities
 
 import android.app.Application
 import android.content.Intent
-import android.provider.MediaStore
 import androidx.collection.LruCache
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -138,22 +137,17 @@ class MainActivityViewModel(val applicationContext: Application) :
         mainActivity: MainActivity,
         query: String,
     ): LiveData<List<SearchResult>> {
-        val projection =
-            arrayOf(
-                MediaStore.Files.FileColumns.DATA,
-                MediaStore.Files.FileColumns.DISPLAY_NAME,
-            )
-        val cursor =
-            mainActivity
-                .contentResolver
-                .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
-                ?: return MutableLiveData()
-
         val searchParameters = createSearchParameters(mainActivity)
 
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
 
-        val indexedSearch = IndexedSearch(query, path, searchParameters, cursor)
+        val indexedSearch =
+            IndexedSearch(
+                query,
+                path,
+                searchParameters,
+                applicationContext.contentResolver,
+            )
 
         lastSearchJob =
             viewModelScope.launch(Dispatchers.IO) {
