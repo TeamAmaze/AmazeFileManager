@@ -1074,6 +1074,17 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
+  public void teleportToFile(HybridFile file) {
+    String parentPath = file.getParent(this);
+    if (parentPath == null) {
+      scrollToFileName = null;
+      goToMain(file.getPath());
+      return;
+    }
+    scrollToFileName = file.getName(this);
+    goToMain(parentPath);
+  }
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater menuInflater = getMenuInflater();
@@ -2456,11 +2467,11 @@ public class MainActivity extends PermissionsActivity
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *
+   * @param dialog
+   * @param folder selected folder
    * @see FtpServerFragment#changeFTPServerPath(String)
    * @see FolderChooserDialog
    * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
-   * @param dialog
-   * @param folder selected folder
    */
   @Override
   public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
@@ -2540,6 +2551,10 @@ public class MainActivity extends PermissionsActivity
     return this.scrollToFileName;
   }
 
+  public void setScrollToFileName(String scrollToFileName) {
+    this.scrollToFileName = scrollToFileName;
+  }
+
   /**
    * Set list item selected value
    *
@@ -2552,8 +2567,8 @@ public class MainActivity extends PermissionsActivity
   /**
    * Do nothing other than dismissing the folder selection dialog.
    *
-   * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
    * @param dialog
+   * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
    */
   @Override
   public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
