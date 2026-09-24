@@ -71,6 +71,7 @@
     <string name="about">About</string>
     <string name="extract">Extract</string>
     <string name="compress">Compress</string>
+    <string name="open_in_terminal">Open in Terminal</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="info_glyph" translatable="false">&#9432;</string>
@@ -673,6 +674,7 @@
     <string name="saved_multi_files">%d files saved.</string>
     <string name="create_hidden_file_warn">The created file will be hidden in the file list.</string>
     <string name="grant_apkinstall_permission">App needs permission to install apps continue.</string>
+    <string name="grant_terminal_permission">App needs permission to execute commands with the selected Terminal app.</string>
     <string name="time_remaining">Time remaining</string>
     <string name="transfer_rate">Transfer rate</string>
     <string name="unknown">unknown</string>
@@ -877,5 +879,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
     <string name="file_deletion">File Deletion</string>
     <string name="error_mediastore_query_uri">Error querying content URI of selected media file. Refresh the MediaStore and try again.</string>
+    <string name="no_terminal_apps">No Terminal Apps installed</string>
+    <string name="no_terminal_apps_message"><![CDATA[<p>No terminal apps can be found on this device.</p>\n<p>Please install one of the following terminal app first to use this feature:\n<ul>\n<li><a href=\"https://termoneplus.com/\">Termone Plus</a></li>\n<li><a href=\"https://termux.dev\">Termux</a> (You may need <a href=\"https://github.com/termux/termux-tasker#allow-external-apps-property-optional\">additional configuration</a> too)</li>\n<li><a href=\"https://github.com/jackpal/Android-Terminal-Emulator\">Jack Palovich\'s Android Terminal Emulator</a> (no longer in development)</li>\n</ul>\n</p>]]></string>
 </resources>
 
