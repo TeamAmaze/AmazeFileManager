@@ -485,6 +485,7 @@
     <string name="copy_low_memory">執行記憶體不足，請清除一些背景處理程式</string>
     <string name="cloud_token_lost">許可權遺失，請重新登入</string>
     <string name="monofont">等寬字型</string>
+    <string name="markdown_preview">Markdown 預覽</string>
     <string name="showHeaders">顯示標頭</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
