@@ -47,6 +47,7 @@ object PreferencesConstants {
 
     // ui_prefs.xml
     const val PREFERENCE_SHOW_THUMB = "showThumbs"
+    const val PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE = "showRemoteThumbsMaxSize"
     const val PREFERENCE_SHOW_FILE_SIZE = "showFileSize"
     const val PREFERENCE_SHOW_PERMISSIONS = "showPermissions"
     const val PREFERENCE_SHOW_GOBACK_BUTTON = "goBack_checkbox"
@@ -55,6 +56,9 @@ object PreferencesConstants {
     const val PREFERENCE_DRAG_AND_DROP_PREFERENCE = "dragAndDropPreference"
     const val PREFERENCE_DRAG_AND_DROP_REMEMBERED = "dragOperationRemembered"
     const val PREFERENCE_LANGUAGE = "language"
+
+    const val PREFERENCE_SHOW_THUMB_DEFAULT = true
+    const val PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT = 0
 
     // drag and drop
     const val PREFERENCE_DRAG_DEFAULT = 0

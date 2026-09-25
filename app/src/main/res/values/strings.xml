@@ -158,6 +158,7 @@
     <string name="general">General</string>
     <string name="thumb_summary">Show Thumbnails of apps and images</string>
     <string name="thumb">Show Thumbnails</string>
+    <string name="thumb_remote_max_size">Show Remote Thumbnail Max File Size</string>
     <string name="hidden">Show Hidden Files and Folders</string>
     <string name="lastModifiedSummary">Show the date and time of last modification</string>
     <string name="lastModifiedPref">Show Last Modified Date and Time</string>
@@ -748,6 +749,7 @@
     <string name="drag_to_move_copy">Touch and drag to move or copy files</string>
     <string name="drag_to_select">Touch and drag to select files</string>
     <string name="disable">Disable</string>
+    <string name="no_limit">No limit</string>
     <string name="choose_operation">Choose operation to perform</string>
     <string name="remember">Remember for next time</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Grant SAF access for FTP server</string>
