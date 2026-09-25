@@ -166,7 +166,9 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -193,6 +195,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
+import androidx.appcompat.widget.Toolbar;
 import androidx.arch.core.util.Function;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
@@ -1078,6 +1081,8 @@ public class MainActivity extends PermissionsActivity
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater menuInflater = getMenuInflater();
     menuInflater.inflate(R.menu.activity_extra, menu);
+    // Tint the search / view / overflow icons to sit on the app bar surface.
+    tintMenuIcons(menu, getOnAppBarColor());
     /*
     SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
     SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
@@ -1801,6 +1806,76 @@ public class MainActivity extends PermissionsActivity
     mainActivity.getSupportActionBar().setBackgroundDrawable(colorDrawable);
 
     drawer.setBackgroundColor(colorDrawable.getColor());
+  }
+
+  /**
+   * Recolours the top app bar chrome (toolbar, status bar, path breadcrumb) to a surface colour —
+   * white in light mode, an elevated grey in dark/black — instead of the primary colour, and lifts
+   * it with a small elevation so it reads as sitting above the file listing. The drawer header
+   * keeps the primary colour. Re-applied after action mode exits so selection mode can still
+   * recolour the bar. Scoped to this activity's shared toolbar; other activities are unaffected.
+   */
+  public void applyAppBarSurface() {
+    if (appbar == null) {
+      return;
+    }
+    final int surface = getAppBarSurfaceColor();
+    final int onSurface = getOnAppBarColor();
+    final Toolbar toolbar = getAppbar().getToolbar();
+    final AppBarLayout appBarLayout = getAppbar().getAppbarLayout();
+
+    appBarLayout.setBackgroundColor(surface);
+    toolbar.setBackgroundColor(surface);
+    if (SDK_INT >= LOLLIPOP) {
+      // Constant elevation (drop the scroll-driven lift) so the bar always casts a shadow.
+      appBarLayout.setStateListAnimator(null);
+      appBarLayout.setElevation(getResources().getDimension(R.dimen.app_bar_elevation));
+    }
+
+    toolbar.setTitleTextColor(onSurface);
+    toolbar.setSubtitleTextColor(onSurface);
+    tintDrawable(toolbar.getNavigationIcon(), onSurface);
+    tintDrawable(toolbar.getOverflowIcon(), onSurface);
+    tintMenuIcons(toolbar.getMenu(), onSurface);
+
+    getAppbar().getBottomBar().setBackgroundColor(surface);
+    getAppbar().getBottomBar().setPathTextColor(onSurface);
+
+    if (SDK_INT >= LOLLIPOP) {
+      getWindow().setStatusBarColor(surface);
+    }
+  }
+
+  /** App bar surface colour for the current theme (white / elevated grey / near-black). */
+  public int getAppBarSurfaceColor() {
+    if (getAppTheme().equals(AppTheme.LIGHT)) {
+      return Utils.getColor(this, R.color.app_bar_light);
+    } else if (getAppTheme().equals(AppTheme.BLACK)) {
+      return Utils.getColor(this, R.color.app_bar_black);
+    }
+    return Utils.getColor(this, R.color.app_bar_dark);
+  }
+
+  /** Title / icon / path colour that reads on {@link #getAppBarSurfaceColor()}. */
+  public int getOnAppBarColor() {
+    return getAppTheme().equals(AppTheme.LIGHT)
+        ? Utils.getColor(this, R.color.on_app_bar_light)
+        : Utils.getColor(this, R.color.on_app_bar_dark);
+  }
+
+  private void tintDrawable(@Nullable Drawable drawable, int color) {
+    if (drawable != null) {
+      drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+    }
+  }
+
+  void tintMenuIcons(@Nullable Menu menu, int color) {
+    if (menu == null) {
+      return;
+    }
+    for (int i = 0; i < menu.size(); i++) {
+      tintDrawable(menu.getItem(i).getIcon(), color);
+    }
   }
 
   void initialiseFab() {

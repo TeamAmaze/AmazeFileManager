@@ -130,4 +130,38 @@
 
     <color name="navy_blue_alt">#262a3e</color>
 
+    <!-- ============ File listing redesign ============ -->
+    <!-- Page surface sitting behind the section cards -->
+    <color name="page_background_light">#F4F4F6</color>
+    <color name="page_background_dark">#121212</color>
+    <!-- Section card surface (rows/items sit on this) -->
+    <color name="card_surface_light">#FFFFFF</color>
+    <color name="card_surface_dark">#1E1E1E</color>
+    <color name="card_surface_black">#161616</color>
+    <!-- Pressed / selected state tint for a card row -->
+    <color name="card_selected_light">#E4E5EA</color>
+    <color name="card_selected_dark">#2E2E2E</color>
+    <color name="card_selected_black">#242424</color>
+    <!-- Muted "Folders" / "Files" section header label -->
+    <color name="section_header_light">#8A8A8E</color>
+    <color name="section_header_dark">#9AA0A6</color>
+    <!-- Folder icon: plain grey glyph, no coloured circle (matches the mockup) -->
+    <color name="folder_icon_light">#5F6368</color>
+    <color name="folder_icon_dark">#C4C7C5</color>
+    <!-- Subtle section-card dividers that blend with the surface instead of standing out -->
+    <color name="grid_divider_light">#ECECEC</color>
+    <color name="grid_divider_dark">#2A2A2A</color>
+    <color name="grid_divider_black">#202020</color>
+    <!-- App bar surface: white in light, elevated grey in dark (instead of the primary colour) -->
+    <color name="app_bar_light">#FFFFFF</color>
+    <color name="app_bar_dark">#242424</color>
+    <color name="app_bar_black">#0D0D0D</color>
+    <!-- Title / icons / path text sitting on the app bar surface -->
+    <color name="on_app_bar_light">#202124</color>
+    <color name="on_app_bar_dark">#FFFFFF</color>
+    <!-- Rounded contextual popup menu surface -->
+    <color name="popup_surface_light">#F1F1F1</color>
+    <color name="popup_surface_dark">#2E2E2E</color>
+    <color name="popup_surface_black">#1C1C1C</color>
+
 </resources>

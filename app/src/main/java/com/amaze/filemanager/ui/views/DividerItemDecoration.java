@@ -80,6 +80,15 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         continue;
       }
 
+      // Only draw a divider between two consecutive rows of the same section. When the following
+      // row is a header or the trailing empty spacer, this row is the last of its section, so a
+      // divider below it would dangle with nothing beneath it.
+      final View next = parent.getChildAt(i + 1);
+      final int nextViewType = parent.getChildViewHolder(next).getItemViewType();
+      if (nextViewType != RecyclerAdapter.TYPE_ITEM && nextViewType != RecyclerAdapter.TYPE_BACK) {
+        continue;
+      }
+
       final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
       final int top = child.getBottom() + params.bottomMargin;
       final int bottom = top + mDivider.getIntrinsicHeight();

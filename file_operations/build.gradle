@@ -59,10 +59,12 @@ cargo {
     targets = ["arm", "arm64", "x86", "x86_64"]
     profile = "release"
     
-    // Optional: Use cargo and rustc from the path
-    rustcCommand = "rustc"
-    cargoCommand = "cargo"
-    pythonCommand = "python3"
+    // Resolve the Rust toolchain from PATH by default. Absolute paths can be supplied via
+    // gradle properties (e.g. in ~/.gradle/gradle.properties) so IDE-launched builds, whose
+    // daemon does not inherit the shell PATH, can still locate cargo/rustc.
+    rustcCommand = project.findProperty("rust.rustcCommand") ?: "rustc"
+    cargoCommand = project.findProperty("rust.cargoCommand") ?: "cargo"
+    pythonCommand = project.findProperty("rust.pythonCommand") ?: "python3"
 }
 
 kotlin {

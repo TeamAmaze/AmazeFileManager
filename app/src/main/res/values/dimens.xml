@@ -47,7 +47,7 @@
     <dimen name="spacebetweenitems_properties_dialog">10dp</dimen>
 
     <dimen name="list_header_height">48dp</dimen>
-    <dimen name="list_header_textsize">16sp</dimen>
+    <dimen name="list_header_textsize">13sp</dimen>
     <dimen name="text_size_22sp">22sp</dimen>
 
     <!-- Copy value from material-dialogs library -->
@@ -62,4 +62,19 @@
     <dimen name="eighteen_sp">18sp</dimen>
     <dimen name="twenty_four_sp">24sp</dimen>
     <dimen name="eight_dp">8dp</dimen>
+
+    <!-- File listing redesign -->
+    <dimen name="list_card_corner_radius">16dp</dimen>
+    <dimen name="list_card_horizontal_margin">12dp</dimen>
+    <dimen name="list_card_content_padding">12dp</dimen>
+    <dimen name="section_header_padding_start">12dp</dimen>
+    <dimen name="grid_folder_cell_height">56dp</dimen>
+    <dimen name="grid_folder_icon_size">32dp</dimen>
+    <dimen name="grid_thumb_corner_radius">12dp</dimen>
+    <dimen name="grid_thumb_inset">8dp</dimen>
+    <dimen name="app_bar_elevation">4dp</dimen>
+    <dimen name="popup_menu_corner_radius">18dp</dimen>
+    <!-- Overrides afollestad MaterialDialog's corner radius so all dialogs (New folder, Properties,
+         Warning, etc.) get rounded corners to match the Material You look. -->
+    <dimen name="md_bg_corner_radius">18dp</dimen>
 </resources>

@@ -24,6 +24,42 @@
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <!-- Rounded contextual popup menus (per-item overflow and toolbar overflow) -->
+    <style name="PopupMenuRounded" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+    </style>
+    <style name="OverflowMenuRounded" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+        <item name="android:overlapAnchor">false</item>
+        <item name="overlapAnchor">false</item>
+    </style>
+
+    <!--
+     Popup theme overlays applied both as the toolbar's popupTheme and (wrapped) around the
+     per-item PopupMenu, so both contextual menus get the rounded surface in every theme.
+    -->
+    <style name="PopupThemeOverlayLight" parent="@style/ThemeOverlay.AppCompat.Light">
+        <item name="popupSurfaceColor">@color/popup_surface_light</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+    </style>
+    <style name="PopupThemeOverlayDark" parent="@style/ThemeOverlay.AppCompat.Dark">
+        <item name="popupSurfaceColor">@color/popup_surface_dark</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+    </style>
+    <style name="PopupThemeOverlayBlack" parent="@style/ThemeOverlay.AppCompat.Dark">
+        <item name="popupSurfaceColor">@color/popup_surface_black</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+    </style>
+
     <!-- appCompat -->
     <!-- light -->
     <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
@@ -31,8 +67,12 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="popup">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="popup">@style/PopupThemeOverlayLight</item>
         <item name="toolbar_theme">@style/overflow_light</item>
+        <item name="popupSurfaceColor">@color/popup_surface_light</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
 
     </style>
     <style name="overflow_light" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -42,6 +82,9 @@
         <item name="android:textColorHint">#ffffff</item>
         <item name="actionModeStyle">@style/custom_action_mode_light</item>
         <item name="android:actionModeStyle">@style/custom_action_mode_light</item>
+        <item name="popupSurfaceColor">@color/popup_surface_light</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
 
     </style>
     <style name="custom_action_mode_light" parent="Widget.AppCompat.ActionMode">
@@ -56,14 +99,19 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="popup">@style/Theme.AppCompat</item>
+        <item name="popup">@style/PopupThemeOverlayDark</item>
         <item name="toolbar_theme">@style/overflow_dark</item>
+        <item name="popupSurfaceColor">@color/popup_surface_dark</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="popupMenuStyle">@style/PopupMenuRounded</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
     </style>
 
     <!-- black -->
     <style name="appCompatBlack" parent="appCompatDark">
         <item name="android:windowBackground">@android:color/black</item>
-        <item name="popup">@style/overflow_black</item>
+        <item name="popup">@style/PopupThemeOverlayBlack</item>
+        <item name="popupSurfaceColor">@color/popup_surface_black</item>
     </style>
 
     <!-- about activity -->
@@ -86,6 +134,9 @@
         <item name="android:textColorHint">#ffffff</item>
         <item name="actionModeStyle">@style/custom_action_mode_dark</item>
         <item name="android:actionModeStyle">@style/custom_action_mode_dark</item>
+        <item name="popupSurfaceColor">@color/popup_surface_dark</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
     </style>
 
     <style name="custom_action_mode_dark" parent="Widget.AppCompat.ActionMode">
@@ -100,6 +151,9 @@
         <item name="android:colorBackground">@android:color/black</item>
         <item name="android:colorBackgroundCacheHint">@color/abc_background_cache_hint_selector_material_light</item>
         <item name="colorBackgroundFloating">@color/background_floating_material_light</item>
+        <item name="popupSurfaceColor">@color/popup_surface_black</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuRounded</item>
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

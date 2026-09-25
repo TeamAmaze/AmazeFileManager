@@ -12,8 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
-        android:paddingLeft="@dimen/icon_width"
-        android:paddingRight="@dimen/icon_width"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.02"
+        android:paddingLeft="@dimen/section_header_padding_start"
+        android:paddingStart="@dimen/section_header_padding_start"
+        android:paddingRight="@dimen/section_header_padding_start"
+        android:paddingEnd="@dimen/section_header_padding_start"
         android:textSize="@dimen/list_header_textsize">
     </androidx.appcompat.widget.AppCompatTextView>
 

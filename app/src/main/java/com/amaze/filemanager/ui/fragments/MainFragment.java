@@ -108,6 +108,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -121,6 +122,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -253,11 +255,9 @@ public class MainFragment extends Fragment
 
     mSwipeRefreshLayout.setOnRefreshListener(() -> updateList(true));
 
-    // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
-    mToolbarContainer.setBackgroundColor(
-        MainActivity.currentTab == 1
-            ? mainFragmentViewModel.getPrimaryTwoColor()
-            : mainFragmentViewModel.getPrimaryColor());
+    // The app bar is a white/grey surface that sits above the listing rather than the primary
+    // colour; MainActivity owns the recolour so the shared toolbar stays consistent.
+    requireMainActivity().applyAppBarSurface();
 
     //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(),
     // listView.getPaddingBottom());
@@ -268,11 +268,7 @@ public class MainFragment extends Fragment
     f.generateMode(getActivity());
     getMainActivity().getAppbar().getBottomBar().setClickListener();
 
-    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !mainFragmentViewModel.isList()) {
-      listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
-    } else {
-      listView.setBackgroundDrawable(null);
-    }
+    applyListViewBackground();
     listView.setHasFixedSize(true);
     if (mainFragmentViewModel.isList()) {
       mLayoutManager = new CustomScrollLinearLayoutManager(getContext());
@@ -291,7 +287,11 @@ public class MainFragment extends Fragment
     // 23/5/2017 use or delete
     dividerItemDecoration =
         new DividerItemDecoration(requireActivity(), false, getBoolean(PREFERENCE_SHOW_DIVIDERS));
-    listView.addItemDecoration(dividerItemDecoration);
+    // Only list view uses row dividers; grid folders carry their own dividers inside the unified
+    // section container, so keep the decoration off the grid.
+    if (mainFragmentViewModel.isList()) {
+      listView.addItemDecoration(dividerItemDecoration);
+    }
     mSwipeRefreshLayout.setColorSchemeColors(mainFragmentViewModel.getAccentColor());
     DefaultItemAnimator animator = new DefaultItemAnimator();
     listView.setItemAnimator(animator);
@@ -339,14 +339,61 @@ public class MainFragment extends Fragment
         });
   }
 
+  /**
+   * Applies the file-listing page background that sits behind the section cards, honouring the
+   * current app theme. Centralised so the initial load and list/grid switches stay consistent, and
+   * so future background work (patterned "graffiti" surface) has a single hook.
+   */
+  private void applyListViewBackground() {
+    final AppTheme theme = utilsProvider.getAppTheme();
+    final int pageColor;
+    final int patternRes;
+    // Tint strength: darker themes need a touch more of the colour to read as a tint.
+    final float tintFraction;
+    if (theme.equals(AppTheme.LIGHT)) {
+      pageColor = Utils.getColor(getContext(), R.color.page_background_light);
+      patternRes = R.drawable.bg_file_pattern_light;
+      tintFraction = 0.12f;
+    } else if (theme.equals(AppTheme.BLACK)) {
+      pageColor = Color.BLACK;
+      patternRes = R.drawable.bg_file_pattern_dark;
+      tintFraction = 0.08f;
+    } else {
+      pageColor = Utils.getColor(getContext(), R.color.page_background_dark);
+      patternRes = R.drawable.bg_file_pattern_dark;
+      tintFraction = 0.08f;
+    }
+
+    // Mirrors the drawer banner: a wash of the user's primary (app bar) colour over the page
+    // surface, with the tilted, translucent graffiti pattern on top. The list itself is transparent
+    // so this shows through the gaps around the section cards.
+    final int primaryColor =
+        MainActivity.currentTab == 1
+            ? mainFragmentViewModel.getPrimaryTwoColor()
+            : mainFragmentViewModel.getPrimaryColor();
+    final int tintedBase = ColorUtils.blendARGB(pageColor, primaryColor, tintFraction);
+
+    final View listBackground = rootView.findViewById(R.id.list_background);
+    if (listBackground != null) {
+      listBackground.setBackgroundColor(tintedBase);
+    }
+    final ImageView listBackgroundPattern = rootView.findViewById(R.id.list_background_pattern);
+    if (listBackgroundPattern != null) {
+      listBackgroundPattern.setImageResource(patternRes);
+    }
+    listView.setBackgroundColor(Color.TRANSPARENT);
+
+    // Left/right gutter so the section cards float with breathing room and the patterned surface
+    // shows through the edges. Applied on the list rather than per-row so folders/files stay flush.
+    final int gutter = (int) getResources().getDimension(R.dimen.list_card_horizontal_margin);
+    listView.setPadding(gutter, listView.getPaddingTop(), gutter, listView.getPaddingBottom());
+    listView.setClipToPadding(false);
+  }
+
   void switchToGrid() {
     mainFragmentViewModel.setList(false);
 
-    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-
-      // will always be grid, set alternate white background
-      listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
-    }
+    applyListViewBackground();
 
     if (mLayoutManagerGrid == null)
       if (mainFragmentViewModel.getColumns() == -1 || mainFragmentViewModel.getColumns() == 0)
@@ -365,10 +412,7 @@ public class MainFragment extends Fragment
   void switchToList() {
     mainFragmentViewModel.setList(true);
 
-    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-
-      listView.setBackgroundDrawable(null);
-    }
+    applyListViewBackground();
 
     if (mLayoutManager == null) mLayoutManager = new CustomScrollLinearLayoutManager(getActivity());
     listView.setLayoutManager(mLayoutManager);

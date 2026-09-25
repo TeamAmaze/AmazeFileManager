@@ -78,6 +78,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -101,6 +102,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.graphics.ColorUtils;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.legacy.app.ActionBarDrawerToggle;
@@ -224,7 +226,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     // mDrawerLayout.setStatusBarBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo :
     // skin)));
     drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
-    // drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
+    // Colour the banner with the user's theme colour on load (kept in sync per-tab elsewhere).
+    setBackgroundColor(mainActivity.getPrimary());
     if (mainActivity.findViewById(R.id.tab_frame) != null) {
       isOnTablet = true;
       mDrawerLayout.setScrimColor(Color.TRANSPARENT);
@@ -949,7 +952,13 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public void setBackgroundColor(@ColorInt int color) {
     mDrawerLayout.setStatusBarBackgroundColor(color);
-    drawerHeaderParent.setBackgroundColor(color);
+    // Banner follows the user's theme colour as a subtle diagonal gradient; the translucent Amaze
+    // header (logo + mountains) sits on top.
+    GradientDrawable bannerGradient =
+        new GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            new int[] {color, ColorUtils.blendARGB(color, Color.BLACK, 0.25f)});
+    drawerHeaderParent.setBackground(bannerGradient);
   }
 
   public void resetPendingPath() {

@@ -291,8 +291,9 @@ public class TabFragment extends Fragment {
       @ColorInt
       int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
 
-      colorDrawable.setColor(color);
-      requireMainActivity().updateViews(colorDrawable);
+      // The app bar is a fixed white/grey surface now; only the drawer header follows the per-tab
+      // colour as panes are swiped, so the toolbar no longer flashes back to the primary colour.
+      requireMainActivity().getDrawer().setBackgroundColor(color);
     }
 
     @Override
