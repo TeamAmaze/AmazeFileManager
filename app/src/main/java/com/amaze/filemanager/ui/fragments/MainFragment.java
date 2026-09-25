@@ -436,6 +436,7 @@ public class MainFragment extends Fragment
       };
 
   public void home() {
+    setHideFab(false);
     loadlist((mainFragmentViewModel.getHome()), false, OpenMode.FILE, false);
   }
 
