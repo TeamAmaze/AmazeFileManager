@@ -29,7 +29,7 @@
     <string name="apps">應用程式管理員</string>
     <string name="ftp">FTP 伺服器</string>
     <string name="setting">設定</string>
-    <string name="select">選擇專案</string>
+    <string name="select">選擇項目</string>
     <string name="press_again">再按一次即可退出</string>
     <string name="open">開啟</string>
     <string name="backup">備份</string>
@@ -76,9 +76,9 @@
     <string name="dialog_delete_category_directories">目錄</string>
     <string name="dialog_delete_category_files">近期檔案</string>
     <string name="dialog_delete_disclaimer">刪除以下專案將永久將其從裝置中刪除，並且無法恢復。</string>
-    <string name="dialog_delete_temporarily_disclaimer">您確定要刪除以下專案嗎？</string>
-    <string name="dialog_restore_disclaimer">您確定要恢復以下專案嗎？</string>
-    <string name="dialog_delete_title">永久刪除專案？</string>
+    <string name="dialog_delete_temporarily_disclaimer">您確定要刪除以下項目嗎？</string>
+    <string name="dialog_restore_disclaimer">您確定要恢復以下項目嗎？</string>
+    <string name="dialog_delete_title">永久刪除項目？</string>
     <string name="deleting">正在刪除</string>
     <string name="question_set_path_as_home">您要將此頁籤的目前路徑設為首頁嗎？</string>
     <string name="directorysort">目錄排序方式</string>
@@ -97,6 +97,8 @@
     <string name="root_mode">Root 檔案總管</string>
     <string name="root_mode_summary">僅供已獲取 root 許可權的裝置使用</string>
     <string name="root_failure">無法取得 Root 許可權</string>
+    <string name="otg_native_access_title">優先使用原生檔案系統存取 OTG USB 儲存裝置</string>
+    <string name="otg_native_access_summary">啟用時，將繞過Storage Access Framework（SAF），在支援的裝置上實現更快速的OTG USB存取。若需強制使用SAF存取進行疑難排解，請關閉此功能。</string>
     <string name="select_all">選擇全部</string>
     <string name="delete">刪除</string>
     <string name="set_as_home">設為為首頁目錄</string>
@@ -488,16 +490,16 @@
     <string name="showHeaders">顯示標頭</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-	<string name="no_items">無專案</string>
-	<string name="item">專案</string>
-	<string name="items">個專案</string>
+	<string name="no_items">無項目</string>
+	<string name="item">項目</string>
+	<string name="items">個項目</string>
 	
 	<string name="byte_singular">位元組</string>
 	<string name="bytes">位元組</string>
     <!-- end of plurals -->
 
     <string name="no_name">檔案必須要有名稱</string>
-    <string name="add_item">新增專案</string>
+    <string name="add_item">新增項目</string>
     <string name="failed_smb_decrypt_path">載入 SMB 連線失敗</string>
     <string name="failed_cloud_new_connection">新增雲端硬碟失敗</string>
     <string name="failed_cloud_api_key">認證雲端硬碟套件失敗</string>

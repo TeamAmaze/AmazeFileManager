@@ -93,6 +93,8 @@
     <string name="root_mode">Root Explorer</string>
     <string name="root_mode_summary">Тільки для пристроїв з рут правами. Використовуйте з обережністю, якщо впевнені у своїх діях.</string>
     <string name="root_failure">Рут доступ не надано</string>
+    <string name="otg_native_access_title">Віддавати перевагу доступу до вбудованої файлової системи перед OTG USB-накопичувачем</string>
+    <string name="otg_native_access_summary">Якщо ввімкнено, обходить SAF для швидшого доступу до OTG USB на підтримуваних пристроях. Вимкніть, щоб примусово ввімкнути доступ до SAF для усунення несправностей.</string>
     <string name="select_all">Вибрати все</string>
     <string name="delete">Видалити</string>
     <string name="set_as_home">Зробити домашньою текою</string>

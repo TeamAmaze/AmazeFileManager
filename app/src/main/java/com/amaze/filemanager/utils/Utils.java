@@ -75,6 +75,7 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 /**
  * Contains useful functions and methods (NOTHING HERE DEALS WITH FILES)
@@ -270,7 +271,8 @@ public class Utils {
           return Uri.fromFile(new File(baseFile.getPath()));
         }
       case OTG:
-        return OTGUtil.getDocumentFile(baseFile.getPath(), context, true).getUri();
+        DocumentFile otgDocFile = OTGUtil.getDocumentFile(baseFile.getPath(), context, true);
+        return otgDocFile != null ? otgDocFile.getUri() : null;
       case SMB:
       case DROPBOX:
       case GDRIVE:

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -98,6 +98,8 @@
     <string name="root_mode">Root Explorer</string>
     <string name="root_mode_summary">For rooted device only. Check it only if you are sure about it.</string>
     <string name="root_failure">Root Access not granted</string>
+    <string name="otg_native_access_title">Prefer native filesystem access to OTG USB storage</string>
+    <string name="otg_native_access_summary">When enabled, bypasses SAF for faster OTG USB access on supported devices. ⚠️ Risk: Unplugging device during operations may cause data loss. For safety, keep disabled.</string>
     <string name="select_all">Select All</string>
     <string name="delete">Delete</string>
     <string name="set_as_home">Set As Home</string>
@@ -678,6 +680,7 @@
     <string name="unknown">unknown</string>
     <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
     <string name="saf_otg_explanation">You\'ll now go to Android\'s filesystem for security reasons. Please select the USB device from the list on the left.</string>
+    <string name="usb_device_disconnected">USB device disconnected</string>
     <string name="donation_thanks">Thank you for the donation, this keeps us motivated! (:</string>
     <string name="enable_marquee_filename">Enable marquee effect for file names</string>
     <string name="archive_password_prompt">Please enter archive password:</string>
@@ -877,5 +880,13 @@ You only need to do this once, until the next time you select a new location for
     <string name="trash_bin_cleanup_interval_summary">Trigger auto-cleanup interval (hours)</string>
     <string name="file_deletion">File Deletion</string>
     <string name="error_mediastore_query_uri">Error querying content URI of selected media file. Refresh the MediaStore and try again.</string>
+
+    <!-- OTG Eject Feature -->
+    <string name="otg_eject_title">Eject USB Storage</string>
+    <string name="otg_eject_message">Ejecting USB storage is recommended before removal to prevent data loss from pending writes. Please use DocumentsUI to safely eject the device.</string>
+    <string name="otg_eject_action">Open Storage Settings</string>
+    <string name="otg_eject_root_option">Unmount Now (Root)</string>
+    <string name="otg_eject_root_success">USB storage unmounted successfully</string>
+    <string name="otg_eject_root_failed">Failed to unmount USB storage</string>
 </resources>
 

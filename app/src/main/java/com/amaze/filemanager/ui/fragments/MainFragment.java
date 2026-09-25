@@ -861,7 +861,12 @@ public class MainFragment extends Fragment
       if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(true);
     }
 
-    boolean isOtg = (OTGUtil.PREFIX_OTG + "/").equals(mainFragmentViewModel.getCurrentPath());
+    // Check if we're at the OTG root (either legacy "otg:/" or new "otg:/deviceKey/")
+    String currentPath = mainFragmentViewModel.getCurrentPath();
+    boolean isOtg =
+        currentPath != null
+            && currentPath.startsWith(OTGUtil.PREFIX_OTG)
+            && OTGUtil.getSubPathFromOtgPath(currentPath).isEmpty();
 
     if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
         && !"/".equals(mainFragmentViewModel.getCurrentPath())

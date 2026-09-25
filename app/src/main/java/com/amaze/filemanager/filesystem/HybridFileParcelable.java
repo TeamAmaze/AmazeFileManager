@@ -176,6 +176,10 @@ public class HybridFileParcelable extends HybridFile implements Parcelable, Comp
   }
 
   public void setFullUri(Uri fullUri) {
+    if (fullUri == null) {
+      this.fullUri = null;
+      return;
+    }
     if (!ContentResolver.SCHEME_CONTENT.equals(fullUri.getScheme())) {
       // TODO: throw IllegalArgumentException is not a good idea here?
       // FIXME: OpenMode is mutable (which is a bad idea) hence check for OpenMode.DOCUMENT_FILE
