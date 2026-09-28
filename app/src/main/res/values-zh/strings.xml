@@ -741,9 +741,11 @@
     <string name="restore">恢复</string>
     <string name="restore_files">恢复文件</string>
     <string name="restoring">正在恢复……</string>
+    <string name="trash_bin_retention_num_of_files_title">按文件数量保留回收站文件</string>
     <string name="trash_bin_retention_num_of_files_summary">回收站可以存储文件的最大数量</string>
     <string name="trash_bin_retention_days_title">保留天数</string>
     <string name="trash_bin_retention_days_summary">回收站可以存储文件的最大天数</string>
+    <string name="trash_bin_retention_bytes_title">按天数保留回收站文件</string>
     <string name="trash_bin_retention_bytes_summary">回收站可存储的最大大小（MB）</string>
     <string name="trash_bin_cleanup_interval_title">清洁间隔</string>
     <string name="trash_bin_cleanup_interval_summary">触发自动清洁间隔（小时）</string>
