@@ -121,6 +121,7 @@
     <string name="sort_name">名稱</string>
     <string name="lastModified">最后修改时间</string>
     <string name="sort_size">大小</string>
+    <string name="sort_relevance">相关性</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">選擇一個檔案</string>
@@ -185,6 +186,7 @@
     <string name="circular_images">對圖片和影片使用圓形圖示</string>
     <string name="circular_icons">使用圓形圖示</string>
     <string name="follow_battery_saver_title">跟随省电模式</string>
+    <string name="follow_battery_saver_desc">选中该选项后，如果开启省电模式，主题将更改为深色主题。</string>
     <string name="back_title">显示返回选项</string>
     <string name="back_summary">在列表的頂部顯示返回選項</string>
     <string name="details">详细信息</string>
@@ -723,6 +725,7 @@
     <string name="try_indexed_search">尝试索引（Indexed）搜索！</string>
     <string name="search_recent">最近的</string>
     <string name="results">结果</string>
+    <string name="error_unsupported_or_null_uri">提供了无效的、不支持的 URI，或者未提供 URI</string>
     <string name="complete_paste_warning">请首先完成粘贴操作</string>
     <string name="same_dir_move_error">要移动的目标文件夹和源文件夹相同。</string>
     <string name="checking_conflicts">冲突检查</string>
