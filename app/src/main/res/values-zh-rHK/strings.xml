@@ -121,6 +121,7 @@
     <string name="sort_name">名稱</string>
     <string name="lastModified">日期</string>
     <string name="sort_size">大小</string>
+    <string name="sort_relevance">相关性</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">揀個檔案</string>
@@ -185,6 +186,7 @@
     <string name="circular_images">對圖像和視頻使用圓形圖示</string>
     <string name="circular_icons">使用圓形圖示</string>
     <string name="follow_battery_saver_title">跟隨省電模式</string>
+    <string name="follow_battery_saver_desc">选中该选项后，如果开启省电模式，主题将更改为深色主题。</string>
     <string name="back_title">顯示返回選項</string>
     <string name="back_summary">在列表的頂部顯示返回選項</string>
     <string name="details">詳細</string>
@@ -723,6 +725,8 @@
     <string name="try_indexed_search">嘗試索引（Indexed）搜索！</string>
     <string name="search_recent">最近的</string>
     <string name="results">結果</string>
+    <string name="grant_notification_permission">Amaze 需要通知权限来显示文件操作进度，以及提供一个启动/停止 FTP 服务器的快捷面板。</string>
+    <string name="error_unsupported_or_null_uri">提供了无效的、不支持的 URI，或者未提供 URI</string>
     <string name="complete_paste_warning">請首先完成粘貼操作</string>
     <string name="same_dir_move_error">要移動的目標文件夾和源文件夾相同。</string>
     <string name="checking_conflicts">衝突檢查</string>
@@ -738,9 +742,11 @@
     <string name="restore">恢復</string>
     <string name="restore_files">恢復文件</string>
     <string name="restoring">正在恢復……</string>
+    <string name="trash_bin_retention_num_of_files_title">按文件数量保留回收站文件</string>
     <string name="trash_bin_retention_num_of_files_summary">回收站最多可以存儲</string>
     <string name="trash_bin_retention_days_title">保留天數</string>
     <string name="trash_bin_retention_days_summary">回收站可以存儲文件的最大天數</string>
+    <string name="trash_bin_retention_bytes_title">按天数保留回收站文件</string>
     <string name="trash_bin_retention_bytes_summary">回收站可存儲的最大大小（MB）</string>
     <string name="trash_bin_cleanup_interval_title">清潔間隔</string>
     <string name="trash_bin_cleanup_interval_summary">觸發自動清潔間隔（小時）</string>

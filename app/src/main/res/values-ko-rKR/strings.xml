@@ -22,18 +22,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Amaze File Manager</string>
+    <string name="app_name">Amaze 파일 관리자</string>
     <string name="drawer_open">네비게이션 창 열기</string>
     <string name="drawer_close">네비게이션 창 닫기</string>
     <string name="icon">아이콘</string>
-    <string name="apps">애플리케이션 매니저</string>
+    <string name="apps">앱 매니저</string>
     <string name="ftp">FTP 서버</string>
     <string name="setting">설정</string>
-    <string name="select">항목 선택</string>
-    <string name="press_again">한번 더 누르시면 종료됩니다.</string>
+    <string name="select">아이템 선택</string>
+    <string name="press_again">종료하려면 다시 누르십시오</string>
     <string name="open">열기</string>
     <string name="backup">백업</string>
-    <string name="uninstall">삭제</string>
+    <string name="uninstall">제거</string>
     <string name="play">플레이 스토어</string>
     <string name="properties">상세정보</string>
     <string name="copyingapks">복사중 %d 개의 APK 파일을 %s</string>
@@ -92,7 +92,7 @@
     <string name="colorize_summary">아이콘에 색상을 입힙니다.</string>
     <string name="home">홈</string>
     <string name="paste">붙여넣기</string>
-    <string name="history">기록</string>
+    <string name="history">역사</string>
     <string name="copy">복사</string>
     <string name="root_mode">루트 탐색기</string>
     <string name="root_mode_summary">루팅된 기기만 사용 가능합니다.</string>
@@ -131,7 +131,7 @@
     <string name="no_file_overwrite">파일이 덮어쓰여지지 않았습니다.</string>
     <string name="skip">건너뛰기</string>
     <string name="overwrite">덮어쓰기</string>
-    <string name="not_allowed">허용되지 않았습니다.</string>
+    <string name="not_allowed">허용되지 않음</string>
     <string name="searching">%s 검색 중</string>
     <string name="done">완료되었습니다.</string>
     <string name="set">설정</string>
@@ -425,7 +425,7 @@
     <string name="width">너비</string>
     <string name="height">높이</string>
     <string name="date_modified">수정한 날짜</string>
-    <string name="software">프로그램 이름</string>
+    <string name="software">소프트웨어</string>
     <string name="creator">만든 이</string>
     <string name="camera_brand">카메라 제조업체</string>
     <string name="camera_model">카메라 모델</string>
@@ -752,8 +752,7 @@
     <string name="compressed_explorer_fragment_error_open_uri">\"%s\" URI를 읽기 위해 여는 중 오류가 발생했습니다.</string>
     <string name="error_empty_archive">\"%s\"은(는) 빈 압축 파일입니다.</string>
     <string name="error_bad_archive_without_info">\"%s\"은(는) 손상된 압축 파일입니다.</string>
-    <string name="error_bad_archive_with_info">"%s"은(는) 손상된 압축 파일입니다.
-압축 해제 도구 메시지: "%s"</string>
+    <string name="error_bad_archive_with_info">\"%s\"은(는) 손상된 압축 파일입니다.\n압축 해제 도구 메시지: \"%s\"</string>
     <string name="security_error">이 앱을 사용해 파일을 열 수 없습니다</string>
     <string name="cloud_drive_tooltip">Amaze 파일 관리자를 통해 파일을 관리할 Google Drive™ 연결을 만듭니다.</string>
     <string name="signin_with_google_title">Google Drive™ 사용을 위해 인증</string>
@@ -777,7 +776,7 @@ Android 11부터 Google은 파일 관리자가 기기의 모든 파일을 관리
     <string name="user_apps">사용자 앱</string>
     <string name="appearance">모양</string>
     <string name="behavior">행동</string>
-    <string name="appearance_summary">파일 관리자의 테마, 색상 및 모양을 사용자 정의합니다</string>
+    <string name="appearance_summary">파일 관리자의 테마, 색상 및 모양을 사용자 정의합니다.</string>
     <string name="ui_summary">표시할 정보를 제어하고, 사이드바를 사용자 정의하고, UI 기본 설정을 전환합니다</string>
     <string name="behavior_summary">고급 검색 및 새 작업으로 파일 열기 여부와 같은 행동을 수정합니다</string>
     <string name="security_summary">비밀번호 및 암호화를 설정합니다</string>
