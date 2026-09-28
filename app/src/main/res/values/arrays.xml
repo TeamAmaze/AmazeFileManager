@@ -78,4 +78,12 @@
         <item>@string/protocol_ftps</item>
     </string-array>
 
+    <integer-array name="thumbnailDisplaySizeLimitPreference">
+        <item>-1</item>
+        <item>1</item>
+        <item>4</item>
+        <item>10</item>
+        <item>100</item>
+    </integer-array>
+
 </resources>

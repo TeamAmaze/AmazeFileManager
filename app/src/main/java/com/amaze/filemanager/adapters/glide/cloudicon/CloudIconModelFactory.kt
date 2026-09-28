@@ -18,31 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.adapters.glide.apkimage;
+package com.amaze.filemanager.adapters.glide.cloudicon
 
-import com.bumptech.glide.load.model.ModelLoader;
-import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import android.content.Context
+import android.graphics.Bitmap
+import com.bumptech.glide.load.model.ModelLoader
+import com.bumptech.glide.load.model.ModelLoaderFactory
+import com.bumptech.glide.load.model.MultiModelLoaderFactory
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+/** Created by Vishal Nehra on 3/27/2018.  */
+class CloudIconModelFactory(private val context: Context) : ModelLoaderFactory<String, Bitmap> {
+    override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<String, Bitmap> = CloudIconModelLoader(context)
 
-/**
- * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:21.
- */
-public class ApkImageModelLoaderFactory implements ModelLoaderFactory<String, Drawable> {
-
-  private Context context;
-
-  public ApkImageModelLoaderFactory(Context context) {
-    this.context = context;
-  }
-
-  @Override
-  public ModelLoader<String, Drawable> build(MultiModelLoaderFactory multiFactory) {
-    return new ApkImageModelLoader(context);
-  }
-
-  @Override
-  public void teardown() {}
+    override fun teardown() = Unit
 }
