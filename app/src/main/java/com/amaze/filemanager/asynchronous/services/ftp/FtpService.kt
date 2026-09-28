@@ -238,7 +238,6 @@ class FtpService : Service(), Runnable {
                             "ftpserver",
                         )
                     fac.sslConfiguration = sslConfiguration
-                    fac.isImplicitSsl = true
                     fac.dataConnectionConfiguration =
                         DataConnectionConfigurationFactory().apply {
                             this.isImplicitSsl = true
