@@ -725,6 +725,7 @@
     <string name="try_indexed_search">嘗試索引（Indexed）搜尋！</string>
     <string name="search_recent">最近的</string>
     <string name="results">結果</string>
+    <string name="grant_notification_permission">Amaze 需要通知权限来显示文件操作进度，以及提供一个启动/停止 FTP 服务器的快捷面板。</string>
     <string name="error_unsupported_or_null_uri">提供了无效的、不支持的 URI，或者未提供 URI</string>
     <string name="complete_paste_warning">請首先完成貼上操作</string>
     <string name="same_dir_move_error">要移動的目標資料夾和原始檔夾相同。</string>
