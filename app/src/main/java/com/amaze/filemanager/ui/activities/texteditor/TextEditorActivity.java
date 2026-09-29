@@ -53,17 +53,22 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -84,12 +89,15 @@ public class TextEditorActivity extends ThemedActivity
   private Typeface inputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
   ScrollView scrollView;
+  private WebView markdownWebView;
+  private ProgressBar windowLoadingIndicator;
 
   private SearchTextTask searchTextTask;
   private static final String KEY_MODIFIED_TEXT = "modified";
   private static final String KEY_INDEX = "index";
   private static final String KEY_ORIGINAL_TEXT = "original";
   private static final String KEY_MONOFONT = "monofont";
+  private static final String KEY_MARKDOWN_PREVIEW = "markdown_preview";
 
   private ConstraintLayout searchViewLayout;
   public AppCompatImageButton upButton;
@@ -98,6 +106,25 @@ public class TextEditorActivity extends ThemedActivity
   private Snackbar loadingSnackbar;
 
   private TextEditorActivityViewModel viewModel;
+
+  /** Scroll listener reference for windowed mode (so it can be removed if needed). */
+  private ViewTreeObserver.OnScrollChangedListener windowedScrollListener;
+
+  /** Pre-draw listener used to position a freshly loaded window before it is first drawn. */
+  private ViewTreeObserver.OnPreDrawListener pendingWindowApplyPreDrawListener;
+
+  /** True while replacing window content and restoring scroll programmatically. */
+  private boolean isApplyingWindowContent;
+
+  /** Suppress edge-triggered loads briefly after programmatic scroll changes. */
+  private long suppressWindowLoadsUntilMs;
+
+  /**
+   * Duration (ms) to suppress edge-triggered window loads after a programmatic scroll change. Must
+   * be long enough to cover the layout pass after setText() + the scroll restoration; 400ms is a
+   * safe margin on most devices.
+   */
+  private static final long WINDOW_LOAD_SUPPRESSION_MS = 400L;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +156,9 @@ public class TextEditorActivity extends ThemedActivity
     }
     mainTextView = findViewById(R.id.textEditorMainEditText);
     scrollView = findViewById(R.id.textEditorScrollView);
+    markdownWebView = findViewById(R.id.textEditorMarkdownWebView);
+    markdownWebView.getSettings().setJavaScriptEnabled(false);
+    windowLoadingIndicator = findViewById(R.id.textEditorWindowLoadingIndicator);
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
@@ -173,10 +203,24 @@ public class TextEditorActivity extends ThemedActivity
       if (savedInstanceState.getBoolean(KEY_MONOFONT)) {
         mainTextView.setTypeface(inputTypefaceMono);
       }
+      // Restore markdown preview state
+      if (savedInstanceState.getBoolean(KEY_MARKDOWN_PREVIEW, false)) {
+        viewModel.setMarkdownPreviewEnabled(true);
+        toggleMarkdownPreview(true);
+      }
+      // Restore windowed mode state after rotation
+      if (viewModel.isWindowed()) {
+        setReadOnly();
+        initWindowedScrollListener();
+      }
     } else {
       load(this);
     }
     initStatusBarResources(findViewById(R.id.textEditorRootView));
+
+    // Observe windowed-mode LiveData for new window content
+    observeWindowContent();
+    observeWindowLoadingIndicator();
   }
 
   @Override
@@ -190,11 +234,18 @@ public class TextEditorActivity extends ThemedActivity
     outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
     outState.putBoolean(KEY_MONOFONT, inputTypefaceMono.equals(mainTextView.getTypeface()));
+    outState.putBoolean(KEY_MARKDOWN_PREVIEW, viewModel.getMarkdownPreviewEnabled());
   }
 
   private void checkUnsavedChanges() {
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
+    // In windowed mode, the file is read-only — no unsaved changes possible
+    if (viewModel.isWindowed()) {
+      finish();
+      return;
+    }
 
     if (viewModel.getOriginal() != null
         && mainTextView.isShown()
@@ -242,8 +293,12 @@ public class TextEditorActivity extends ThemedActivity
   private static void load(final TextEditorActivity activity) {
     activity.dismissLoadingSnackbar();
 
+    // Use LENGTH_INDEFINITE (dismissed manually via dismissLoadingSnackbar()) rather than
+    // LENGTH_SHORT: for large files the read can legitimately take several seconds, and a
+    // LENGTH_SHORT snackbar would disappear long before loading actually finishes, making the
+    // app look like it's stuck/unresponsive.
     activity.loadingSnackbar =
-        Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
+        Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_INDEFINITE);
     activity.loadingSnackbar.show();
 
     final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(activity);
@@ -282,7 +337,19 @@ public class TextEditorActivity extends ThemedActivity
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    menu.findItem(R.id.save).setVisible(viewModel.getModified());
+    boolean windowed = viewModel.isWindowed();
+
+    // Hide save in windowed mode; otherwise show based on modification state
+    menu.findItem(R.id.save).setVisible(!windowed && viewModel.getModified());
+
+    // Hide search in windowed mode (search only works on in-memory text)
+    menu.findItem(R.id.find).setVisible(!windowed);
+
+    // Show markdown preview item only for .md/.markdown files
+    MenuItem markdownItem = menu.findItem(R.id.markdown_preview);
+    markdownItem.setVisible(isMarkdownFile());
+    markdownItem.setChecked(viewModel.getMarkdownPreviewEnabled());
+
     menu.findItem(R.id.monofont).setChecked(inputTypefaceMono.equals(mainTextView.getTypeface()));
     return super.onPrepareOptionsMenu(menu);
   }
@@ -295,11 +362,13 @@ public class TextEditorActivity extends ThemedActivity
 
     if (item.getItemId() == android.R.id.home) {
       checkUnsavedChanges();
+      return true;
     } else if (item.getItemId() == R.id.save) {
       // Make sure EditText is visible before saving!
       if (mainTextView.getText() != null) {
         saveFile(this, mainTextView.getText().toString());
       }
+      return true;
     } else if (item.getItemId() == R.id.details) {
       if (editableFileAbstraction.scheme.equals(FILE)
           && editableFileAbstraction.hybridFileParcelable.getFile() != null
@@ -318,6 +387,7 @@ public class TextEditorActivity extends ThemedActivity
       } else {
         Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
       }
+      return true;
     } else if (item.getItemId() == R.id.openwith) {
       if (editableFileAbstraction != null && editableFileAbstraction.scheme.equals(FILE)) {
         File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
@@ -330,20 +400,33 @@ public class TextEditorActivity extends ThemedActivity
       } else {
         Toast.makeText(this, R.string.reopen_from_source, Toast.LENGTH_SHORT).show();
       }
+      return true;
     } else if (item.getItemId() == R.id.find) {
       if (searchViewLayout.isShown()) hideSearchView();
       else revealSearchView();
+      return true;
     } else if (item.getItemId() == R.id.monofont) {
+      // NOTE: for a checkable menu item, the Android framework itself toggles the item's
+      // checked state right after this callback returns *if this method returns false*
+      // (i.e. the event is considered unhandled). Returning true here is required, otherwise
+      // the checked flag gets silently flipped back by the framework and the font can never
+      // be switched back to the default (see PR #4576 review feedback).
       item.setChecked(!item.isChecked());
       mainTextView.setTypeface(item.isChecked() ? inputTypefaceMono : inputTypefaceDefault);
-    } else {
-      return false;
+      return true;
+    } else if (item.getItemId() == R.id.markdown_preview) {
+      boolean newState = !item.isChecked();
+      item.setChecked(newState);
+      viewModel.setMarkdownPreviewEnabled(newState);
+      toggleMarkdownPreview(newState);
+      return true;
     }
     return super.onOptionsItemSelected(item);
   }
 
   @Override
   public void onDestroy() {
+    clearPendingWindowApplyPreDrawListener();
     super.onDestroy();
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
@@ -378,6 +461,10 @@ public class TextEditorActivity extends ThemedActivity
         && charSequence.hashCode() == mainTextView.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
+      // Skip modification tracking in windowed mode (text changes are window loads, not edits)
+      if (viewModel.isWindowed()) return;
+
       final Timer oldTimer = viewModel.getTimer();
       viewModel.setTimer(null);
 
@@ -613,5 +700,286 @@ public class TextEditorActivity extends ThemedActivity
         mainTextView.getText().removeSpan(colorSpan);
       }
     }
+  }
+
+  // ── Sliding Window Helpers ──────────────────────────────────────────
+
+  /**
+   * Observe the ViewModel's isLoadingWindow LiveData to show/hide a small progress indicator
+   * whenever a window (initial chunk or a subsequent forward/backward slide) is being read from
+   * disk. Without this, large/slow reads (e.g. root-cached files, content providers, or simply big
+   * files) can appear as if the app has frozen.
+   */
+  private void observeWindowLoadingIndicator() {
+    viewModel
+        .isLoadingWindow()
+        .observe(
+            this,
+            loading -> {
+              if (windowLoadingIndicator != null) {
+                windowLoadingIndicator.setVisibility(
+                    Boolean.TRUE.equals(loading) ? View.VISIBLE : View.GONE);
+              }
+            });
+  }
+
+  /**
+   * Observe the ViewModel's windowContent LiveData. When a new window is loaded, replace the
+   * EditText content and adjust the scroll position for visual continuity.
+   */
+  private void observeWindowContent() {
+    viewModel
+        .getWindowContent()
+        .observe(
+            this,
+            result -> {
+              if (result == null) return;
+
+              // Capture the scroll anchor as an absolute byte offset in the file (rather than a
+              // text snippet). This is both correct and fast: a text-snippet search
+              // (indexOf-based) is ambiguous for repetitive content (e.g. sequential numbers,
+              // log files) and can degrade to O(n * matches) on the main thread for large
+              // windows, causing visible jumps and ANRs on large files.
+              int oldScrollY = scrollView.getScrollY();
+              int viewportHeight = scrollView.getHeight();
+
+              long anchorAbsoluteByte = -1L;
+
+              Layout oldLayout = mainTextView.getLayout();
+              if (oldLayout != null && mainTextView.getText() != null) {
+                // Find the line at the middle of the viewport
+                int anchorY = oldScrollY + viewportHeight / 2;
+                int anchorLine = oldLayout.getLineForVertical(anchorY);
+
+                if (anchorLine >= 0 && anchorLine < oldLayout.getLineCount()) {
+                  int lineStart = oldLayout.getLineStart(anchorLine);
+                  String oldText = mainTextView.getText().toString();
+                  if (lineStart <= oldText.length()) {
+                    long byteOffsetInOldWindow = byteOffsetForCharIndex(oldText, lineStart);
+                    anchorAbsoluteByte =
+                        viewModel.getPreviousWindowStartByte() + byteOffsetInOldWindow;
+                  }
+                }
+              }
+
+              // Replace text (TextWatcher will fire but windowed-mode guard skips modification
+              // tracking)
+              final long finalAnchorAbsoluteByte = anchorAbsoluteByte;
+              final long newStartByte = result.getStartByte();
+              final long newEndByte = result.getEndByte();
+              final TextEditorActivityViewModel.Direction lastDirection =
+                  viewModel.getLastLoadDirection();
+              isApplyingWindowContent = true;
+              suppressWindowLoadsUntilMs = SystemClock.uptimeMillis() + WINDOW_LOAD_SUPPRESSION_MS;
+              clearPendingWindowApplyPreDrawListener();
+              mainTextView.setText(result.getText());
+
+              pendingWindowApplyPreDrawListener =
+                  () -> {
+                    Layout newLayout = mainTextView.getLayout();
+                    if (newLayout == null) {
+                      return true; // layout not ready yet, let the draw pass proceed
+                    }
+
+                    int targetY =
+                        resolveWindowedTargetScrollY(
+                            newLayout,
+                            finalAnchorAbsoluteByte,
+                            newStartByte,
+                            newEndByte,
+                            viewportHeight,
+                            lastDirection);
+
+                    suppressWindowLoadsUntilMs =
+                        SystemClock.uptimeMillis() + WINDOW_LOAD_SUPPRESSION_MS;
+                    scrollView.scrollTo(0, targetY);
+                    clearPendingWindowApplyPreDrawListener();
+                    scrollView.post(() -> isApplyingWindowContent = false);
+                    invalidateOptionsMenu();
+                    return true; // proceed with this draw pass using the corrected scroll
+                  };
+
+              ViewTreeObserver observer = scrollView.getViewTreeObserver();
+              if (observer.isAlive()) {
+                observer.addOnPreDrawListener(pendingWindowApplyPreDrawListener);
+              } else {
+                isApplyingWindowContent = false;
+              }
+            });
+  }
+
+  private void clearPendingWindowApplyPreDrawListener() {
+    if (pendingWindowApplyPreDrawListener == null) return;
+
+    ViewTreeObserver observer = scrollView.getViewTreeObserver();
+    if (observer.isAlive()) {
+      observer.removeOnPreDrawListener(pendingWindowApplyPreDrawListener);
+    }
+    pendingWindowApplyPreDrawListener = null;
+  }
+
+  private int resolveWindowedTargetScrollY(
+      Layout newLayout,
+      long anchorAbsoluteByte,
+      long newStartByte,
+      long newEndByte,
+      int viewportHeight,
+      TextEditorActivityViewModel.Direction lastDirection) {
+    if (anchorAbsoluteByte >= newStartByte
+        && anchorAbsoluteByte <= newEndByte
+        && mainTextView.getText() != null) {
+      String newText = mainTextView.getText().toString();
+      long relativeByteOffset = anchorAbsoluteByte - newStartByte;
+      int anchorIndex = charIndexForByteOffset(newText, relativeByteOffset);
+      anchorIndex = Math.min(anchorIndex, newText.length());
+      int anchorLine = newLayout.getLineForOffset(anchorIndex);
+      int anchorLineTop = newLayout.getLineTop(anchorLine);
+      return Math.max(0, anchorLineTop - viewportHeight / 2);
+    }
+
+    return inferScrollPositionFallback(newLayout, viewportHeight, lastDirection);
+  }
+
+  /**
+   * Counts the number of UTF-8 bytes needed to encode the first {@code charIndex} chars of {@code
+   * text}. Runs in O(charIndex) without allocating a byte array.
+   */
+  private static long byteOffsetForCharIndex(String text, int charIndex) {
+    long byteCount = 0;
+    int limit = Math.min(charIndex, text.length());
+    int i = 0;
+    while (i < limit) {
+      int codePoint = text.codePointAt(i);
+      byteCount += utf8ByteLength(codePoint);
+      i += Character.charCount(codePoint);
+    }
+    return byteCount;
+  }
+
+  /**
+   * Finds the char index in {@code text} whose UTF-8 byte offset is closest to (but not past)
+   * {@code targetByteOffset}. Runs in O(text.length()) without allocating a byte array.
+   */
+  private static int charIndexForByteOffset(String text, long targetByteOffset) {
+    if (targetByteOffset <= 0) return 0;
+
+    long byteCount = 0;
+    int i = 0;
+    int length = text.length();
+    while (i < length) {
+      int codePoint = text.codePointAt(i);
+      long byteLen = utf8ByteLength(codePoint);
+      if (byteCount + byteLen > targetByteOffset) {
+        return i;
+      }
+      byteCount += byteLen;
+      i += Character.charCount(codePoint);
+    }
+    return length;
+  }
+
+  private static int utf8ByteLength(int codePoint) {
+    if (codePoint <= 0x7F) {
+      return 1;
+    } else if (codePoint <= 0x7FF) {
+      return 2;
+    } else if (codePoint <= 0xFFFF) {
+      return 3;
+    } else {
+      return 4;
+    }
+  }
+
+  /**
+   * Fallback method when the anchor byte offset falls outside the newly loaded window (should be
+   * rare). Keep the viewport in the middle band so edge thresholds do not immediately trigger
+   * another opposite-direction window load.
+   */
+  private int inferScrollPositionFallback(
+      Layout newLayout, int viewportHeight, TextEditorActivityViewModel.Direction direction) {
+    int targetLine = newLayout.getLineCount() / 2;
+    if (direction == TextEditorActivityViewModel.Direction.BACKWARD) {
+      targetLine = (newLayout.getLineCount() * 55) / 100;
+    } else if (direction == TextEditorActivityViewModel.Direction.FORWARD) {
+      targetLine = (newLayout.getLineCount() * 45) / 100;
+    }
+    return Math.max(0, newLayout.getLineTop(targetLine) - viewportHeight / 2);
+  }
+
+  /**
+   * Called by ReadTextFileTask after initializing windowed mode. Sets up a scroll listener that
+   * triggers window loads when the user scrolls near the top or bottom edge.
+   */
+  public void initWindowedScrollListener() {
+    if (windowedScrollListener != null) return; // already initialized
+
+    windowedScrollListener =
+        () -> {
+          if (!viewModel.isWindowed()) return;
+          if (isApplyingWindowContent) return;
+          if (SystemClock.uptimeMillis() < suppressWindowLoadsUntilMs) return;
+
+          int scrollY = scrollView.getScrollY();
+          int viewportHeight = scrollView.getHeight();
+          int contentHeight = mainTextView.getHeight();
+
+          if (contentHeight <= 0 || viewportHeight <= 0) return;
+
+          // Threshold: 20% of viewport
+          int threshold = viewportHeight / 5;
+
+          int distanceFromBottom = contentHeight - scrollY - viewportHeight;
+          int distanceFromTop = scrollY;
+
+          if (distanceFromBottom < threshold) {
+            viewModel.loadWindow(TextEditorActivityViewModel.Direction.FORWARD);
+          } else if (distanceFromTop < threshold) {
+            viewModel.loadWindow(TextEditorActivityViewModel.Direction.BACKWARD);
+          }
+        };
+
+    scrollView.getViewTreeObserver().addOnScrollChangedListener(windowedScrollListener);
+  }
+
+  // ── Markdown Preview Helpers ────────────────────────────────────────
+
+  /** Returns true if the currently opened file has a Markdown extension (.md or .markdown). */
+  private boolean isMarkdownFile() {
+    EditableFileAbstraction file = viewModel.getFile();
+    if (file == null) return false;
+    return MarkdownHtmlGenerator.isMarkdownFile(file.name);
+  }
+
+  /**
+   * Toggle between Markdown preview (WebView) and the normal EditText editor.
+   *
+   * @param enabled true to show the WebView with rendered Markdown; false to show EditText
+   */
+  private void toggleMarkdownPreview(boolean enabled) {
+    if (enabled) {
+      renderMarkdownToWebView();
+      scrollView.setVisibility(View.GONE);
+      markdownWebView.setVisibility(View.VISIBLE);
+    } else {
+      markdownWebView.setVisibility(View.GONE);
+      scrollView.setVisibility(View.VISIBLE);
+    }
+    invalidateOptionsMenu();
+  }
+
+  /**
+   * Parse the current EditText content as Markdown using commonmark, render to HTML, and load it
+   * into the WebView.
+   */
+  private void renderMarkdownToWebView() {
+    String markdownSource = "";
+    if (mainTextView.getText() != null) {
+      markdownSource = mainTextView.getText().toString();
+    }
+
+    String bodyHtml = MarkdownHtmlGenerator.renderToHtml(markdownSource);
+    boolean isDark = getAppTheme().equals(AppTheme.DARK) || getAppTheme().equals(AppTheme.BLACK);
+    String fullHtml = MarkdownHtmlGenerator.wrapWithBaseHtml(bodyHtml, isDark);
+    markdownWebView.loadDataWithBaseURL(null, fullHtml, "text/html", "UTF-8", null);
   }
 }

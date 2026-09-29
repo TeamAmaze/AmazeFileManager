@@ -42,4 +42,10 @@
         android:title="@string/monofont"
         android:checkable="true"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/markdown_preview"
+        android:title="@string/markdown_preview"
+        android:checkable="true"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>
