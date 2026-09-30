@@ -51,7 +51,7 @@ import com.amaze.filemanager.utils.PreferenceUtils
  * @author Emmanuel on 24/8/2017, at 23:13.
  */
 open class PreferenceActivity : BasicActivity() {
-    private var sharedPrefs: SharedPreferences? = null
+    private lateinit var sharedPrefs: SharedPreferences
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         // Fragments are created before the super call returns, so we must
@@ -61,7 +61,7 @@ open class PreferenceActivity : BasicActivity() {
     }
 
     val prefs: SharedPreferences
-        get() = sharedPrefs!!
+        get() = sharedPrefs
 
     val isRootExplorer: Boolean
         get() = getBoolean(PREFERENCE_ROOTMODE)
@@ -106,6 +106,6 @@ open class PreferenceActivity : BasicActivity() {
                 -> true
                 else -> throw IllegalArgumentException("Please map '$key'")
             }
-        return sharedPrefs!!.getBoolean(key, defaultValue)
+        return sharedPrefs.getBoolean(key, defaultValue)
     }
 }

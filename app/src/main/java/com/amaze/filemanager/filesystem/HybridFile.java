@@ -127,6 +127,7 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -649,10 +650,13 @@ public class HybridFile {
                   @Override
                   public Boolean execute(@NonNull SFTPClient client) {
                     try {
-                      return client
-                          .stat(NetCopyClientUtils.extractRemotePathFrom(path))
-                          .getType()
-                          .equals(FileMode.Type.DIRECTORY);
+                      FileAttributes attrs =
+                          client.stat(NetCopyClientUtils.extractRemotePathFrom(path));
+                      if (attrs == null) {
+                        LOG.warn("SFTP stat returned null for path: {}", path);
+                        return false;
+                      }
+                      return attrs.getType().equals(FileMode.Type.DIRECTORY);
                     } catch (IOException notFound) {
                       LOG.error("Fail to execute isDirectory for SFTP path :" + path, notFound);
                       return false;
