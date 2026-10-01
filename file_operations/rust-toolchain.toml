@@ -1,0 +1,4 @@
+[toolchain]
+channel = "1.98.1"
+profile = "default"
+targets = ["aarch64-linux-android", "armv7-linux-androideabi", "i686-linux-android", "x86_64-linux-android"]

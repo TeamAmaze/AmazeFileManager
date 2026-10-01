@@ -13,7 +13,7 @@ jobs:
     # required to run on Linux because this is a docker container action
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
         with:
           fastlaneDir: ./fastlane/metadata/android # optional
