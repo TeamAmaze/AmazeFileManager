@@ -16,21 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
           distribution: "temurin"
-          java-version: 17
+          java-version: 21
       - name: Set up NDK
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
-          ndk-version: r28c
+          ndk-version: r30
           link-to-sdk: true
-          local-cache: true
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@1.98.1
       - name: Cache Rust dependencies
         uses: actions/cache@v5
         with:
@@ -63,6 +60,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Check formatting using spotless
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: ./gradlew spotlessCheck --stacktrace
 
   build:
@@ -70,15 +69,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
           distribution: "temurin"
-          java-version: 17
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+          java-version: 21
+      - name: Set up NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
-          toolchain: stable
+          ndk-version: r30
+          link-to-sdk: true
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1.98.1
       - name: Cache Rust dependencies
         uses: actions/cache@v5
         with:
@@ -111,4 +113,4 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
-        run: ./gradlew assembledebug --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
