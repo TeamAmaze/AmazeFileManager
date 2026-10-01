@@ -20,13 +20,10 @@
 
 package com.amaze.filemanager.ui.notifications;
 
-import static android.app.NotificationManager.IMPORTANCE_HIGH;
 import static android.app.NotificationManager.IMPORTANCE_MIN;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.P;
-import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_FTP_ID;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_NORMAL_ID;
-import static com.amaze.filemanager.ui.notifications.NotificationConstants.TYPE_FTP;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.TYPE_NORMAL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -82,10 +79,6 @@ public class NotificationConstantsTest {
     NotificationConstants.setMetadata(context, builder, -1);
     NotificationConstants.setMetadata(context, builder, 2);
     NotificationConstants.setMetadata(context, builder, Integer.MAX_VALUE);
-    builder = new NotificationCompat.Builder(context, CHANNEL_FTP_ID);
-    NotificationConstants.setMetadata(context, builder, -1);
-    NotificationConstants.setMetadata(context, builder, 2);
-    NotificationConstants.setMetadata(context, builder, Integer.MAX_VALUE);
   }
 
   @Test
@@ -112,30 +105,6 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(sdk = {LOLLIPOP}) // max sdk is N
-  public void testFtpNotification() {
-    NotificationCompat.Builder builder =
-        new NotificationCompat.Builder(context, CHANNEL_FTP_ID)
-            .setContentTitle("FTP server test")
-            .setContentText("FTP listening at 127.0.0.1:22")
-            .setSmallIcon(R.drawable.ic_ftp_light)
-            .setTicker(context.getString(R.string.ftp_notif_starting))
-            .setOngoing(true)
-            .setOnlyAlertOnce(true);
-    NotificationConstants.setMetadata(context, builder, TYPE_FTP);
-    Notification result = builder.build();
-    if (Build.VERSION.SDK_INT >= LOLLIPOP) {
-      assertEquals(Notification.CATEGORY_SERVICE, result.category);
-      assertEquals(Notification.VISIBILITY_PUBLIC, result.visibility);
-    }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-      assertEquals(Notification.PRIORITY_MAX, result.priority);
-    } else {
-      assertEquals(Notification.PRIORITY_DEFAULT, result.priority);
-    }
-  }
-
-  @Test
   @Config(sdk = {P}) // min sdk is O
   public void testCreateNormalChannel() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_NORMAL_ID);
@@ -148,20 +117,5 @@ public class NotificationConstantsTest {
     assertEquals(CHANNEL_NORMAL_ID, channel.getId());
     assertEquals(context.getString(R.string.channel_name_normal), channel.getName());
     assertEquals(context.getString(R.string.channel_description_normal), channel.getDescription());
-  }
-
-  @Test
-  @Config(sdk = {P}) // min sdk is O
-  public void testCreateFtpChannel() {
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_FTP_ID);
-    NotificationConstants.setMetadata(context, builder, TYPE_FTP);
-    List<Object> channels = shadowNotificationManager.getNotificationChannels();
-    assertNotNull(channels);
-    assertEquals(1, channels.size());
-    NotificationChannel channel = (NotificationChannel) channels.get(0);
-    assertEquals(IMPORTANCE_HIGH, channel.getImportance());
-    assertEquals(CHANNEL_FTP_ID, channel.getId());
-    assertEquals(context.getString(R.string.channel_name_ftp), channel.getName());
-    assertEquals(context.getString(R.string.channel_description_ftp), channel.getDescription());
   }
 }

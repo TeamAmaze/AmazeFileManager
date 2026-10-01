@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FTP Server strings - using ftpmod_ prefix to avoid collision with app module -->
+    <string name="ftpmod_start">START</string>
+    <string name="ftpmod_stop">STOP</string>
+    <string name="ftpmod_status_label">Status:</string>
+    <string name="ftpmod_status_running">FTP Server Running</string>
+    <string name="ftpmod_status_not_running">FTP Server Not Running</string>
+    <string name="ftpmod_status_no_connection">No network connection</string>
+    <string name="ftpmod_status_secure_connection">Secure Connection (FTPS)</string>
+    <string name="ftpmod_url_label">URL: %s</string>
+    <string name="ftpmod_username_label">Username: </string>
+    <string name="ftpmod_password_label">Password: </string>
+    <string name="ftpmod_port_label">Port: </string>
+    <string name="ftpmod_path_label">Path: </string>
+    <string name="ftpmod_anonymous">Anonymous</string>
+
+    <!-- Menu items -->
+    <string name="ftpmod_port_edit_menu_title">FTP port</string>
+    <string name="ftpmod_path">FTP path</string>
+    <string name="ftpmod_login">FTP login</string>
+    <string name="ftpmod_readonly">Read-only</string>
+    <string name="ftpmod_timeout">Timeout</string>
+    <string name="ftpmod_preference_saf_filesystem_title">Use SAF filesystem</string>
+    <string name="ftpmod_seconds">seconds</string>
+
+    <!-- Dialogs -->
+    <string name="ftpmod_port_change_success">Port changed successfully</string>
+    <string name="ftpmod_port_change_error_invalid">Invalid port number (must be >= 1024)</string>
+    <string name="ftpmod_prompt_restart_server">Please restart the server to apply changes</string>
+    <string name="ftpmod_server_prompt_connect_to_network">Connect to a network to start FTP server</string>
+    <string name="ftpmod_server_open_settings">Settings</string>
+    <string name="ftpmod_no_wifi">No Wi-Fi or Ethernet connection</string>
+    <string name="ftpmod_prompt_accept_first_start_saf_access">Grant access to the storage location for FTP server</string>
+    <string name="ftpmod_prompt_accept_first_start_saf_access_title">Storage Access Required</string>
+
+    <!-- FEAT command response -->
+    <string name="ftpmod_command_FEAT">Extensions supported:\n AVBL\n UTF8</string>
+
+    <!-- Error messages for AVBL command -->
+    <string name="ftpmod_error_AVBL_notimplemented">Command not implemented for this filesystem</string>
+    <string name="ftpmod_error_AVBL_accessdenied">Access denied</string>
+    <string name="ftpmod_error_AVBL_isafile">Path is a file, not a directory</string>
+    <string name="ftpmod_error_AVBL_missing">Path not found: %1$s</string>
+
+    <!-- Notification strings -->
+    <string name="ftpmod_notification_channel_desc">FTP server status notifications</string>
+    <string name="ftpmod_notification_title">FTP Server</string>
+    <string name="ftpmod_notification_starting">Starting FTP server…</string>
+    <string name="ftpmod_notification_running_title">FTP Server Running</string>
+    <string name="ftpmod_notification_running_text">FTP server is running at %1$s</string>
+    <string name="ftpmod_notification_stop_server">Stop</string>
+    <string name="ftpmod_notification_error_address_not_found">Address not found</string>
+
+    <!-- Common -->
+    <string name="ftpmod_ok">OK</string>
+    <string name="ftpmod_cancel">Cancel</string>
+    <string name="ftpmod_set">Set</string>
+    <string name="ftpmod_change">Change</string>
+    <string name="ftpmod_choose_folder">Choose folder</string>
+    <string name="ftpmod_folder_go_up_one_level">Go up one level</string>
+    <string name="ftpmod_error">Error</string>
+    <string name="ftpmod_unknown_error">Unknown error occurred</string>
+</resources>

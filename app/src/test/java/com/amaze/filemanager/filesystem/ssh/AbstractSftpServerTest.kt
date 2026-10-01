@@ -26,6 +26,7 @@ import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.shutdown
@@ -79,6 +80,11 @@ abstract class AbstractSftpServerTest {
     @Before
     @Throws(IOException::class)
     open fun setUp() {
+        // Reset sshClientFactory to the default implementation to prevent cross-test pollution
+        // from other test classes sharing the same Robolectric sandbox (e.g.
+        // SshAuthenticationTaskTest).
+        NetCopyClientConnectionPool.sshClientFactory =
+            NetCopyClientConnectionPool.DefaultSSHClientFactory()
         serverPort =
             createSshServer(
                 VirtualFileSystemFactory(
@@ -141,7 +147,7 @@ abstract class AbstractSftpServerTest {
             server.port = startPort
             server.start()
             startPort
-        } catch (ifPortIsUnavailable: BindException) {
+        } catch (_: BindException) {
             createSshServer(fileSystemFactory, startPort + 1)
         }
     }

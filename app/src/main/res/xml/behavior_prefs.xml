@@ -105,4 +105,11 @@
             app:summary="@string/root_mode_summary"
             app:title="@string/root_mode" />
     </PreferenceCategory>
+    <PreferenceCategory app:title="@string/ftp_server_preferences">
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            app:defaultValue="false"
+            app:key="ftp_battery_optimization_asked"
+            app:summary="@string/ftp_battery_optimization_pref_summary"
+            app:title="@string/ftp_battery_optimization_pref_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

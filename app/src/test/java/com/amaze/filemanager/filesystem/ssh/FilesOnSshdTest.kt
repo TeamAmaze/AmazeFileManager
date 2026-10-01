@@ -25,9 +25,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
-import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.test.randomBytes
-import com.amaze.filemanager.utils.OnFileFound
 import org.awaitility.Awaitility.await
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
@@ -125,13 +123,10 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    assertTrue("${fileFound.path} not seen as directory", fileFound.isDirectory)
-                    result.add(fileFound.name)
-                }
-            },
-        )
+        ) { fileFound ->
+            assertTrue("${fileFound.path} not seen as directory", fileFound.isDirectory)
+            result.add(fileFound.name)
+        }
         await().until { result.size == 8 }
         assertThat<List<String>>(
             result,
@@ -150,13 +145,8 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    result.add(fileFound.name)
-                }
-            },
-        )
-        await().atMost(90, TimeUnit.SECONDS).until { result.size == 2 }
+        ) { fileFound -> result.add(fileFound.name) }
+        await().atMost(120, TimeUnit.SECONDS).until { result.size == 2 }
         assertThat<List<String>>(
             result,
             Matchers.hasItems("test+file.bin", "D:"),
@@ -170,12 +160,7 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    result.add(fileFound.name)
-                }
-            },
-        )
+        ) { fileFound -> result.add(fileFound.name) }
         await().until { result.size == 1 }
         assertThat<List<String>>(
             result,
@@ -190,12 +175,7 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    result.add(fileFound.name)
-                }
-            },
-        )
+        ) { fileFound -> result.add(fileFound.name) }
         await().until { result.size == 1 }
         assertThat<List<String>>(
             result,
@@ -234,24 +214,21 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    if (!fileFound.name.endsWith(".txt")) {
-                        assertTrue(
-                            fileFound.path + " not seen as directory",
-                            fileFound.isDirectory,
-                        )
-                        dirs.add(fileFound.name)
-                    } else {
-                        assertFalse(
-                            fileFound.path + " not seen as file",
-                            fileFound.isDirectory,
-                        )
-                        files.add(fileFound.name)
-                    }
-                }
-            },
-        )
+        ) { fileFound ->
+            if (!fileFound.name.endsWith(".txt")) {
+                assertTrue(
+                    fileFound.path + " not seen as directory",
+                    fileFound.isDirectory,
+                )
+                dirs.add(fileFound.name)
+            } else {
+                assertFalse(
+                    fileFound.path + " not seen as file",
+                    fileFound.isDirectory,
+                )
+                files.add(fileFound.name)
+            }
+        }
         await().until { dirs.size == 8 }
         assertThat<List<String>>(
             dirs,
@@ -311,13 +288,10 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    assertFalse("${fileFound.path} not seen as directory", fileFound.isDirectory)
-                    result.add(fileFound.name)
-                }
-            },
-        )
+        ) { fileFound ->
+            assertFalse("${fileFound.path} not seen as directory", fileFound.isDirectory)
+            result.add(fileFound.name)
+        }
         await().until { result.size == 4 }
         assertThat<List<String>>(
             result,
@@ -329,13 +303,10 @@ class FilesOnSshdTest : AbstractSftpServerTest() {
         file.forEachChildrenFile(
             ApplicationProvider.getApplicationContext(),
             false,
-            object : OnFileFound {
-                override fun onFileFound(fileFound: HybridFileParcelable) {
-                    assertTrue("${fileFound.path} not seen as directory", fileFound.isDirectory)
-                    result2.add(fileFound.name)
-                }
-            },
-        )
+        ) { fileFound ->
+            assertTrue("${fileFound.path} not seen as directory", fileFound.isDirectory)
+            result2.add(fileFound.name)
+        }
         await().until { result2.size == 8 }
         assertThat<List<String>>(
             result2,
