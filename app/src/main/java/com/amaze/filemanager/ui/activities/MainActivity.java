@@ -2467,11 +2467,11 @@ public class MainActivity extends PermissionsActivity
   /**
    * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
    *
-   * @param dialog
-   * @param folder selected folder
    * @see FtpServerFragment#changeFTPServerPath(String)
    * @see FolderChooserDialog
    * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
+   * @param dialog
+   * @param folder selected folder
    */
   @Override
   public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
@@ -2551,7 +2551,7 @@ public class MainActivity extends PermissionsActivity
     return this.scrollToFileName;
   }
 
-  public void setScrollToFileName(String scrollToFileName) {
+  public void setScrollToFileName(@Nullable String scrollToFileName) {
     this.scrollToFileName = scrollToFileName;
   }
 
@@ -2567,8 +2567,8 @@ public class MainActivity extends PermissionsActivity
   /**
    * Do nothing other than dismissing the folder selection dialog.
    *
-   * @param dialog
    * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
+   * @param dialog
    */
   @Override
   public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {

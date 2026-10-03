@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.adapters.holders
 
+import android.animation.ValueAnimator
 import android.view.View
 import android.widget.RelativeLayout
 import androidx.appcompat.widget.AppCompatImageButton
@@ -79,4 +80,10 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     @JvmField
     val dummyView: View? = view.findViewById(R.id.dummy_view)
+
+    @JvmField
+    var teleportHighlightAnimator: ValueAnimator? = null
+
+    @JvmField
+    var teleportRestoreAction: Runnable? = null
 }
