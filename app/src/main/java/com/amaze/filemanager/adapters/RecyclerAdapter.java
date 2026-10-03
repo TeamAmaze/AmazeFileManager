@@ -813,7 +813,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
-            clearActiveTeleportHighlight();
+          clearActiveTeleportHighlight();
           if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
@@ -836,7 +836,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnClickListener(
         v -> {
-            clearActiveTeleportHighlight();
+          clearActiveTeleportHighlight();
           mainFragment.onListItemClicked(
               isBackButton, holder.getAdapterPosition(), rowItem, holder.checkImageView);
         });
@@ -1073,28 +1073,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       }
     }
   }
-    /** Clears any active teleport highlight, restoring its view immediately if currently bound. */
-    private void clearActiveTeleportHighlight() {
-        for (int i = 0; i < getItemsDigested().size(); i++) {
-            ListItem item = getItemsDigested().get(i);
-            if (item.isTeleportHighlighted()) {
-                item.setTeleportHighlighted(false);
-                RecyclerView.ViewHolder vh = recyclerView.findViewHolderForAdapterPosition(i);
-                if (vh instanceof ItemViewHolder) {
-                    ItemViewHolder ivh = (ItemViewHolder) vh;
-                    if (ivh.teleportHighlightAnimator != null) {
-                        ivh.teleportHighlightAnimator.cancel();
-                        ivh.teleportHighlightAnimator = null;
-                    }
-                    if (ivh.teleportRestoreAction != null) {
-                        ivh.teleportRestoreAction.run();
-                        ivh.teleportRestoreAction = null;
-                    }
-                }
-                break;
-            }
+
+  /** Clears any active teleport highlight, restoring its view immediately if currently bound. */
+  private void clearActiveTeleportHighlight() {
+    for (int i = 0; i < getItemsDigested().size(); i++) {
+      ListItem item = getItemsDigested().get(i);
+      if (item.isTeleportHighlighted()) {
+        item.setTeleportHighlighted(false);
+        RecyclerView.ViewHolder vh = recyclerView.findViewHolderForAdapterPosition(i);
+        if (vh instanceof ItemViewHolder) {
+          ItemViewHolder ivh = (ItemViewHolder) vh;
+          if (ivh.teleportHighlightAnimator != null) {
+            ivh.teleportHighlightAnimator.cancel();
+            ivh.teleportHighlightAnimator = null;
+          }
+          if (ivh.teleportRestoreAction != null) {
+            ivh.teleportRestoreAction.run();
+            ivh.teleportRestoreAction = null;
+          }
         }
+        break;
+      }
     }
+  }
 
   private void bindViewHolderGrid(@NonNull final ItemViewHolder holder, int position) {
     final boolean isBackButton = getItemsDigested().get(position).specialType == TYPE_BACK;
@@ -1104,7 +1105,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
-            clearActiveTeleportHighlight();
+          clearActiveTeleportHighlight();
           if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
@@ -1129,7 +1130,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     holder.checkImageViewGrid.setColorFilter(accentColor);
     holder.baseItemView.setOnClickListener(
         v -> {
-            clearActiveTeleportHighlight();
+          clearActiveTeleportHighlight();
           mainFragment.onListItemClicked(
               isBackButton, holder.getAdapterPosition(), rowItem, holder.checkImageViewGrid);
         });
