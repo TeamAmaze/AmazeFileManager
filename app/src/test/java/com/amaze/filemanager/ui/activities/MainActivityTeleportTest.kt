@@ -22,14 +22,12 @@ package com.amaze.filemanager.ui.activities
 
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
-import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.database.TabHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowSmbUtil
+import com.amaze.filemanager.test.ShadowTabHandlerWithTabs
 import org.junit.Assert.assertEquals
 import org.junit.Assume
-import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
@@ -49,58 +47,8 @@ import java.io.File
  * failing assertion in one test can leave a connection open and cause unrelated failures (or
  * Windows-specific file-lock crashes during Robolectric's temp directory cleanup) in later tests.
  */
-@Config(shadows = [ShadowSmbUtil::class])
+@Config(shadows = [ShadowSmbUtil::class, ShadowTabHandlerWithTabs::class])
 class MainActivityTeleportTest : AbstractMainActivityTestBase() {
-    /**
-     * TabHandler is a Bill-Pugh singleton whose `database` field is captured once,
-     * at class-load time, pointing at whatever ExplorerDatabase / SQLite connection
-     * existed in the Application at that moment.
-     *
-     * Robolectric tears down and rebuilds the Application (and its SQLite connections)
-     * between test methods, but this JVM-wide singleton survives across tests in the
-     * same run and keeps holding a stale connection -- causing an
-     * "Illegal connection pointer" IllegalStateException once a second test launches
-     * an Activity that touches TabHandler (via TabFragment.refactorDrawerStorages ->
-     * getAllTabs()).
-     *
-     * Since TabHandler is shared/upstream code, we refresh its internal `database`
-     * reference via reflection before every test instead of modifying it, pointing it
-     * at the current test's fresh ExplorerDatabase instance. Test-only workaround.
-     */
-    @Before
-    fun refreshTabHandlerDatabaseReference() {
-        runCatching {
-            val tabHandler = TabHandler.getInstance()
-            val databaseField = TabHandler::class.java.getDeclaredField("database")
-            databaseField.isAccessible = true
-
-            val unsafeClass = Class.forName("sun.misc.Unsafe")
-            val unsafeField = unsafeClass.getDeclaredField("theUnsafe")
-            unsafeField.isAccessible = true
-            val unsafe: Any = unsafeField.get(null)
-
-            val objectFieldOffsetMethod =
-                unsafeClass.getMethod("objectFieldOffset", java.lang.reflect.Field::class.java)
-            val offset = objectFieldOffsetMethod.invoke(unsafe, databaseField) as Long
-
-            val putObjectMethod =
-                unsafeClass.getMethod(
-                    "putObject",
-                    Any::class.java,
-                    Long::class.javaPrimitiveType,
-                    Any::class.java,
-                )
-            putObjectMethod.invoke(
-                unsafe,
-                tabHandler,
-                offset,
-                AppConfig.getInstance().explorerDatabase,
-            )
-        }.onFailure {
-            println("WARN: failed to refresh TabHandler database reference via reflection: ${it.message}")
-        }
-    }
-
     /**
      * Verifies teleporting to a normal local file sets scrollToFileName and navigates
      * to the file's parent directory.
@@ -163,7 +111,7 @@ class MainActivityTeleportTest : AbstractMainActivityTestBase() {
      */
     @Test
     fun testTeleportToFtpFile() {
-        Assume.assumeFalse(System.getProperty("os.name").lowercase().contains("win"))
+        Assume.assumeFalse(System.getProperty("os.name").orEmpty().lowercase().contains("win"))
 
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.moveToState(Lifecycle.State.STARTED)
