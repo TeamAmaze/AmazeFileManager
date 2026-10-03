@@ -20,42 +20,55 @@
 
 package com.amaze.filemanager.ui.activities
 
+import android.content.Intent
+import android.os.SystemClock
+import android.view.View
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.PerformException
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.espresso.util.HumanReadables
+import androidx.test.espresso.util.TreeIterables
 import androidx.test.filters.LargeTest
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode
-import com.amaze.filemanager.filesystem.HybridFile
+import com.amaze.filemanager.R
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import java.util.concurrent.TimeoutException
 
 /**
- * Instrumented (emulator/device) test verifying that [MainActivity.teleportToFile]
- * actually scrolls the target file into view within the real file-list RecyclerView,
- * on top of the headless assertions in [MainActivityTeleportTest].
+ * Instrumented (emulator/device) test verifying that searching for a file and pressing
+ * the teleport button on its result actually scrolls the file into view within the real
+ * file-list RecyclerView, on top of the headless assertions in [MainActivityTeleportTest].
  *
  * Uses plain Espresso view matching (checking the target file's name is displayed on
  * screen) rather than accessing MainFragment's `listView`/`adapter` fields directly,
  * since those are private -- this keeps the test decoupled from internal implementation
  * details, following the same style as the existing TextEditorActivityEspressoTest.
+ *
+ * Animations must be disabled on the device and in Gradle (`animationsDisabled = true`).
  */
 @LargeTest
 class MainActivityTeleportScrollInstrumentedTest {
-    @get:Rule
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
-
     private lateinit var testDir: File
     private lateinit var targetFile: File
 
     /**
-     * Creates a temp directory (inside the app's own external files dir, which needs no
-     * runtime permission) with enough files that the target file starts off-screen and a
-     * real scroll is required to bring it into view.
+     * Creates a directory in the shared storage root with enough files that the target
+     * file starts off-screen and a real scroll is required to bring it into view.
      */
     @Before
     fun setUp() {
@@ -92,19 +105,76 @@ class MainActivityTeleportScrollInstrumentedTest {
     }
 
     /**
-     * Verifies the target file's row becomes visible on screen after teleportToFile is called.
+     * Searches for the target file from inside the test directory, presses the teleport
+     * button on its search result and verifies the file shows up in the main file list.
      */
     @Test
-    fun testTeleportScrollsTargetFileIntoView() {
-        activityRule.scenario.onActivity { activity ->
-            val file = HybridFile(OpenMode.FILE, targetFile.absolutePath)
-            activity.teleportToFile(file)
+    fun testSearchResultTeleportButtonScrollsTargetFileIntoView() {
+        // The search result list shows the same name, so restrict matching to the main list.
+        val targetInMainList =
+            allOf(
+                withText(targetFile.name),
+                isDescendantOfA(withId(R.id.listView)),
+            )
+        val startIntent =
+            Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
+                .putExtra("path", testDir.absolutePath)
+
+        ActivityScenario.launch<MainActivity>(startIntent).use {
+            onView(targetInMainList).check(doesNotExist())
+
+            onView(withId(R.id.search)).perform(click())
+            // replaceText instead of typeText: SearchView only searches when at least 3
+            onView(withId(R.id.search_edit_text))
+                .perform(replaceText(targetFile.nameWithoutExtension))
+            waitUntilDisplayed(withId(R.id.searchItemTeleportIV))
+            onView(withId(R.id.searchItemTeleportIV)).perform(click())
+
+            waitUntilDisplayed(targetInMainList)
         }
+    }
 
-        // Give the async directory load + scroll a moment to complete before asserting.
-        Thread.sleep(2000)
+    /**
+     * Polls the view hierarchy until a view matching [matcher] is displayed.
+     *
+     * Search results are produced by coroutines, which Espresso does not track as idle,
+     * so there is no built-in signal to wait on.
+     */
+    private fun waitUntilDisplayed(
+        matcher: Matcher<View>,
+        timeoutMillis: Long = 5_000,
+    ) {
+        val actionDescription = "wait up to $timeoutMillis ms for $matcher"
+        onView(isRoot()).perform(
+            object : ViewAction {
+                override fun getConstraints(): Matcher<View> = isRoot()
 
-        onView(withText(targetFile.name))
-            .check(matches(isDisplayed()))
+                override fun getDescription(): String = actionDescription
+
+                override fun perform(
+                    uiController: UiController,
+                    view: View,
+                ) {
+                    val deadline = SystemClock.uptimeMillis() + timeoutMillis
+                    do {
+                        val found =
+                            TreeIterables.breadthFirstViewTraversal(view)
+                                .any { matcher.matches(it) && isDisplayed().matches(it) }
+                        if (found) return
+                        uiController.loopMainThreadForAtLeast(POLL_INTERVAL_MILLIS)
+                    } while (SystemClock.uptimeMillis() < deadline)
+
+                    throw PerformException.Builder()
+                        .withActionDescription(actionDescription)
+                        .withViewDescription(HumanReadables.describe(view))
+                        .withCause(TimeoutException())
+                        .build()
+                }
+            },
+        )
+    }
+
+    private companion object {
+        const val POLL_INTERVAL_MILLIS = 50L
     }
 }
