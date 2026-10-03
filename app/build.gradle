@@ -107,6 +107,7 @@ android {
             includeAndroidResources = true
             returnDefaultValues = true
         }
+        animationsDisabled = true
     }
     lint {
         abortOnError false

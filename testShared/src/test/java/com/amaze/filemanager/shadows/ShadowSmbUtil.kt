@@ -186,6 +186,17 @@ class ShadowSmbUtil {
                 `when`(it.name).thenReturn(path.substring(path.lastIndexOf('/') + 1))
                 `when`(it.path).thenReturn(path)
                 `when`(it.context).thenReturn(SingletonContext.getInstance())
+                val parentPath =
+                    if (path.lastIndexOf('/') != -1) {
+                        path.substring(0, path.lastIndexOf('/'))
+                    } else {
+                        null
+                    }
+                `when`(it.parent).thenReturn(parentPath)
+                // By default, Mockito returns null for methods returning arrays.
+                // We mock listFiles() to return an empty array to prevent a NullPointerException
+                // in MainFragment.addToSmb when LoadFilesListTask executes during headless tests.
+                `when`(it.listFiles()).thenReturn(emptyArray<SmbFile>())
             }
         }
     }
