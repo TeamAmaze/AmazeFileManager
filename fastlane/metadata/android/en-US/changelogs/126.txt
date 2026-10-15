@@ -1,0 +1,3 @@
+* Library upgrades and SDK 36 adaptation
+* Improve FTP server security
+* Build & CI improvements
