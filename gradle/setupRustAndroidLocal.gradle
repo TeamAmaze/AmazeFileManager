@@ -22,7 +22,7 @@ tasks.register("setupRustAndroidLocal") {
 
         // If not, check on user $PATH/%PATH%
         try {
-            def process = new ProcessBuilder("rustup")
+            def process = new ProcessBuilder("rustup", "--version")
                     .redirectErrorStream(true)
                     .start()
             process.waitFor()

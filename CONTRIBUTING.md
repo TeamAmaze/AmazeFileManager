@@ -39,6 +39,7 @@ If we feel your PR is a significant help to us, we'll award you a bounty with an
  - Please follow [Android/JAVA code style](https://source.android.com/docs/setup/contribute/code-style) for writing any code. Please see [this](https://github.com/TeamAmaze/AmazeFileManager/issues/986) issue too.
  - Also, follow [Android Material Design guidelines](https://m3.material.io/get-started) in case you make changes to any UI element.
  - The `file_operations` module contains native code in Rust. Please see [file_operations/src/main/rust/README.md](file_operations/src/main/rust/README.md) for more details on how to work with it.
+ - You would want to install NDK version `30.0.16248370` from Android Studio to build the project 
 
 ## PS: please make sure to
 
