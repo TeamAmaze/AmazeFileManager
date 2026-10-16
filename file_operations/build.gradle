@@ -57,21 +57,27 @@ kotlin {
     jvmToolchain(libs.versions.jvmTarget.get().toInteger())
 }
 
-def rustReleaseLibraries = [
-        "aarch64-linux-android",
-        "armv7-linux-androideabi",
-        "i686-linux-android",
-        "x86_64-linux-android",
-].collect { target -> file("target/${target}/release/librootoperations.so") }
-def rustReleaseJniLibraries = [
-        "arm64-v8a",
-        "armeabi-v7a",
-        "x86",
-        "x86_64",
-].collect { abi -> file("build/rustJniLibs/android/${abi}/librootoperations.so") }
+def rustTargets = [
+        "aarch64-linux-android": "arm64-v8a",
+        "armv7-linux-androideabi": "armeabi-v7a",
+        "i686-linux-android": "x86",
+        "x86_64-linux-android": "x86_64",
+]
+
+def rustReleaseDir = layout.buildDirectory.dir("rustReleaseJniLibs")
+
+tasks.register("copyRustReleaseLibraries", Copy) {
+    dependsOn "cargoBuild"
+
+    rustTargets.each { target, abi ->
+        from("target/${target}/release/librootoperations.so")
+        into("${rustReleaseDir.get().asFile}/android/${abi}")
+        rename { "librootoperations.so" }
+    }
+}
 
 tasks.register("stripRustReleaseDebugSymbols") {
-    dependsOn "cargoBuild"
+    dependsOn "copyRustReleaseLibraries"
 
     doLast {
         def llvmStrip = fileTree(new File(android.ndkDirectory, "toolchains/llvm/prebuilt")) {
@@ -81,22 +87,18 @@ tasks.register("stripRustReleaseDebugSymbols") {
 
         exec {
             commandLine llvmStrip.absolutePath, "--strip-unneeded",
-                    *(rustReleaseLibraries + rustReleaseJniLibraries)*.absolutePath
+            *fileTree(rustReleaseDir).matching {
+                include "**/librootoperations.so"
+            }.files.collect { it.absolutePath }
         }
     }
 }
 
-// Ensure Rust libraries are built before Android tasks
 afterEvaluate {
     android.libraryVariants.all { variant ->
-        variant.outputs.all { output ->
-            def buildTask = tasks.findByName("cargoBuild")
-            if (buildTask) {
-                tasks.getByName("merge${variant.name.capitalize()}JniLibFolders").dependsOn buildTask
-            }
-            if (variant.buildType.name == "release") {
-                tasks.getByName("merge${variant.name.capitalize()}JniLibFolders").dependsOn "stripRustReleaseDebugSymbols"
-            }
+        if (variant.name == "release") {
+            tasks.getByName("mergeReleaseJniLibFolders")
+                    .dependsOn "stripRustReleaseDebugSymbols"
         }
     }
 }
