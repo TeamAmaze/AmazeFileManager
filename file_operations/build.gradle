@@ -57,6 +57,35 @@ kotlin {
     jvmToolchain(libs.versions.jvmTarget.get().toInteger())
 }
 
+def rustReleaseLibraries = [
+        "aarch64-linux-android",
+        "armv7-linux-androideabi",
+        "i686-linux-android",
+        "x86_64-linux-android",
+].collect { target -> file("target/${target}/release/librootoperations.so") }
+def rustReleaseJniLibraries = [
+        "arm64-v8a",
+        "armeabi-v7a",
+        "x86",
+        "x86_64",
+].collect { abi -> file("build/rustJniLibs/android/${abi}/librootoperations.so") }
+
+tasks.register("stripRustReleaseDebugSymbols") {
+    dependsOn "cargoBuild"
+
+    doLast {
+        def llvmStrip = fileTree(new File(android.ndkDirectory, "toolchains/llvm/prebuilt")) {
+            include "*/bin/llvm-strip"
+            include "*/bin/llvm-strip.exe"
+        }.singleFile
+
+        exec {
+            commandLine llvmStrip.absolutePath, "--strip-unneeded",
+                    *(rustReleaseLibraries + rustReleaseJniLibraries)*.absolutePath
+        }
+    }
+}
+
 // Ensure Rust libraries are built before Android tasks
 afterEvaluate {
     android.libraryVariants.all { variant ->
@@ -64,6 +93,9 @@ afterEvaluate {
             def buildTask = tasks.findByName("cargoBuild")
             if (buildTask) {
                 tasks.getByName("merge${variant.name.capitalize()}JniLibFolders").dependsOn buildTask
+            }
+            if (variant.buildType.name == "release") {
+                tasks.getByName("merge${variant.name.capitalize()}JniLibFolders").dependsOn "stripRustReleaseDebugSymbols"
             }
         }
     }
