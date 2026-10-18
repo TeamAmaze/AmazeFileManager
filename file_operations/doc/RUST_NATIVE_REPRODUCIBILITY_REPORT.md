@@ -97,7 +97,7 @@ application configuration and signing, not Rust compiler or linker flags.
 The following command completed successfully:
 
 ```shell
-./gradlew :file_operations:mergeReleaseJniLibFolders --rerun-tasks --max-workers=2
+./gradlew :file_operations:mergeReleaseJniLibFolders --rerun-tasks
 ```
 
 The merged Rust JNI libraries were:

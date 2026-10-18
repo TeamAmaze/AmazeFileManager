@@ -68,11 +68,13 @@ def rustReleaseDir = layout.buildDirectory.dir("rustReleaseJniLibs")
 
 tasks.register("copyRustReleaseLibraries", Copy) {
     dependsOn "cargoBuild"
+    into(rustReleaseDir)
 
     rustTargets.each { target, abi ->
-        from("target/${target}/release/librootoperations.so")
-        into("${rustReleaseDir.get().asFile}/android/${abi}")
-        rename { "librootoperations.so" }
+        from("target/${target}/release") {
+            include "librootoperations.so"
+            into "android/${abi}"
+        }
     }
 }
 
@@ -84,21 +86,24 @@ tasks.register("stripRustReleaseDebugSymbols") {
             include "*/bin/llvm-strip"
             include "*/bin/llvm-strip.exe"
         }.singleFile
+        def rustLibraries = fileTree(rustReleaseDir).matching {
+            include "**/librootoperations.so"
+        }.files.collect { it.absolutePath }
 
-        exec {
-            commandLine llvmStrip.absolutePath, "--strip-unneeded",
-            *fileTree(rustReleaseDir).matching {
-                include "**/librootoperations.so"
-            }.files.collect { it.absolutePath }
+        if (!rustLibraries.isEmpty()) {
+            exec {
+                commandLine([llvmStrip.absolutePath, "--strip-unneeded"] + rustLibraries)
+            }
         }
     }
 }
 
 afterEvaluate {
-    android.libraryVariants.all { variant ->
+    android.libraryVariants.configureEach { variant ->
         if (variant.name == "release") {
-            tasks.getByName("mergeReleaseJniLibFolders")
-                    .dependsOn "stripRustReleaseDebugSymbols"
+            tasks.named("mergeReleaseJniLibFolders") {
+                dependsOn "stripRustReleaseDebugSymbols"
+            }
         }
     }
 }
