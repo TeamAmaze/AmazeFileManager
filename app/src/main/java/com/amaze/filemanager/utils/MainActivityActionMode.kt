@@ -135,6 +135,9 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             }
             val textView: AppCompatTextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
+            menu.findItem(R.id.about).isVisible =
+                checkedItems.size == 1 ||
+                (checkedItems.size > 1 && mainFragmentViewModel.openMode == OpenMode.FILE)
 
             if (mainActivity.mReturnIntent &&
                 !mainActivity.intent.getBooleanExtra(
@@ -222,14 +225,28 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 mainActivity, checkedItems ->
             return when (item.itemId) {
                 R.id.about -> {
-                    val x = checkedItems[0]
-                    mainActivity.currentMainFragment?.also {
-                        GeneralDialogCreation.showPropertiesDialogWithPermissions(
-                            x.generateBaseFile(),
-                            x.permissions,
+                    if (checkedItems.isEmpty()) return false
+                    if (checkedItems.size == 1) {
+                        val x = checkedItems[0]
+                        mainActivity.currentMainFragment?.also {
+                            GeneralDialogCreation.showPropertiesDialogWithPermissions(
+                                x.generateBaseFile(),
+                                x.permissions,
+                                mainActivity,
+                                it,
+                                mainActivity.isRootExplorer,
+                                mainActivity.utilsProvider.appTheme,
+                            )
+                        }
+                    } else {
+                        if (mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode !=
+                            OpenMode.FILE
+                        ) {
+                            return false
+                        }
+                        GeneralDialogCreation.showBatchPropertiesDialog(
+                            ArrayList(checkedItems.map { it.generateBaseFile() }),
                             mainActivity,
-                            it,
-                            mainActivity.isRootExplorer,
                             mainActivity.utilsProvider.appTheme,
                         )
                     }
