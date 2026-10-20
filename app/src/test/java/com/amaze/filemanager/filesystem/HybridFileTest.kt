@@ -32,7 +32,11 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import java.io.File
@@ -43,6 +47,63 @@ import kotlin.random.Random
 @Config(shadows = [ShadowMultiDex::class], sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
 @Suppress("StringLiteralDuplication")
 class HybridFileTest {
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
+    /**
+     * Test [HybridFile.toTrashBinFile] includes nested file bytes in directory metadata.
+     */
+    @Test
+    fun testToTrashBinFileIncludesNestedDirectoryContentsSize() {
+        val directory = tempFolder.newFolder("folder with spaces あいうえお")
+        File(directory, "first.bin").writeBytes(ByteArray(57))
+        val nestedDirectory = File(directory, "nested").apply { mkdir() }
+        File(nestedDirectory, "second.bin").writeBytes(ByteArray(4099))
+        File(nestedDirectory, "empty").mkdir()
+
+        val trashBinFile =
+            HybridFile(OpenMode.FILE, directory.absolutePath)
+                .toTrashBinFile(AppConfig.getInstance())
+
+        assertEquals(4156L, trashBinFile.sizeBytes)
+        assertTrue(trashBinFile.isDirectory)
+        assertEquals(directory.name, trashBinFile.fileName)
+        assertEquals(directory.absolutePath, trashBinFile.path)
+    }
+
+    /**
+     * Test [HybridFile.toTrashBinFile] records zero bytes for an empty directory.
+     */
+    @Test
+    fun testToTrashBinFileEmptyDirectoryHasZeroSize() {
+        val directory = tempFolder.newFolder("empty")
+
+        val trashBinFile =
+            HybridFile(OpenMode.FILE, directory.absolutePath)
+                .toTrashBinFile(AppConfig.getInstance())
+
+        assertEquals(0L, trashBinFile.sizeBytes)
+        assertTrue(trashBinFile.isDirectory)
+    }
+
+    /**
+     * Test [HybridFile.toTrashBinFile] preserves regular file size, name, path and type.
+     */
+    @Test
+    fun testToTrashBinFilePreservesRegularFileMetadata() {
+        val file = tempFolder.newFile("file with spaces あいうえお.bin")
+        file.writeBytes(ByteArray(57))
+
+        val trashBinFile =
+            HybridFile(OpenMode.FILE, file.absolutePath)
+                .toTrashBinFile(AppConfig.getInstance())
+
+        assertEquals(57L, trashBinFile.sizeBytes)
+        assertFalse(trashBinFile.isDirectory)
+        assertEquals(file.name, trashBinFile.fileName)
+        assertEquals(file.absolutePath, trashBinFile.path)
+    }
+
     /**
      * Test [HybridFile.getParent]
      */
