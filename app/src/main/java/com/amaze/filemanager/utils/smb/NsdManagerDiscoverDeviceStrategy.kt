@@ -47,8 +47,8 @@ class NsdManagerDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDevi
             LoggerFactory.getLogger(NsdManagerDiscoverDeviceStrategy::class.java)
     }
 
-    private val wifiManager: WifiManager =
-        AppConfig.getInstance().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+    private val wifiManager: WifiManager? =
+        AppConfig.getInstance().applicationContext.getSystemService(WIFI_SERVICE) as? WifiManager
     private val nsdManager: NsdManager =
         AppConfig.getInstance().applicationContext.getSystemService(NSD_SERVICE) as NsdManager
 
@@ -57,7 +57,7 @@ class NsdManagerDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDevi
 
     override fun discoverDevices(callback: (ComputerParcelable) -> Unit) {
         multicastLock =
-            wifiManager.createMulticastLock("smb_mdns_discovery").apply {
+            wifiManager?.createMulticastLock("smb_mdns_discovery")?.apply {
                 setReferenceCounted(true)
             }
         multicastLock?.acquire()
