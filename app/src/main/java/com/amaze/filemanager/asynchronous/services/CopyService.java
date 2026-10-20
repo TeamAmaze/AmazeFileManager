@@ -481,10 +481,6 @@ public class CopyService extends AbstractProgressiveService {
         if (progressHandler.getCancelled()) return;
         if (sourceFile.isDirectory()) {
 
-          if (!targetFile.exists()) {
-            targetFile.mkdir(c);
-          }
-
           // various checks
           // 1. source file and target file doesn't end up in loop
           // 2. source file has a valid name or not
@@ -492,6 +488,9 @@ public class CopyService extends AbstractProgressiveService {
               || Operations.isCopyLoopPossible(sourceFile, targetFile)) {
             failedFOps.add(sourceFile);
             return;
+          }
+          if (!targetFile.exists()) {
+            targetFile.mkdir(c);
           }
           targetFile.setLastModified(sourceFile.lastModified());
 
