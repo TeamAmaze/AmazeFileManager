@@ -116,6 +116,11 @@ import androidx.core.text.TextUtilsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.preference.PreferenceManager;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.SerialDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * Here are a lot of function that create material dialogs
  *
@@ -646,6 +651,52 @@ public class GeneralDialogCreation {
       categoryFiles.setTextColor(accentColor);
     }
     dialog.show();
+  }
+
+  /** Shows the recursive total for a snapshot of selected local files without changing them. */
+  public static void showBatchPropertiesDialog(
+      @NonNull List<HybridFileParcelable> selectedFiles,
+      @NonNull ThemedActivity themedActivity,
+      @NonNull AppTheme appTheme) {
+    if (selectedFiles.isEmpty()) return;
+
+    final ArrayList<HybridFileParcelable> files = new ArrayList<>(selectedFiles);
+    final Context context = themedActivity.getApplicationContext();
+    final MaterialDialog dialog =
+        new MaterialDialog.Builder(themedActivity)
+            .title(R.string.properties)
+            .content(R.string.calculating)
+            .theme(appTheme.getMaterialDialogTheme())
+            .positiveText(R.string.ok)
+            .positiveColor(themedActivity.getAccent())
+            .build();
+
+    SerialDisposable calculation = new SerialDisposable();
+    dialog.setOnDismissListener(ignored -> calculation.dispose());
+    dialog.show();
+    calculation.set(
+        Single.fromCallable(() -> FileUtils.getTotalBytes(files, context))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                size -> {
+                  if (dialog.isShowing()) {
+                    dialog.setContent(
+                        files.size()
+                            + " "
+                            + context
+                                .getResources()
+                                .getQuantityString(R.plurals.items, files.size())
+                            + "\n"
+                            + context.getString(R.string.total)
+                            + " "
+                            + Formatter.formatFileSize(context, size));
+                  }
+                },
+                error -> {
+                  LOG.warn("Failed to calculate the batch properties total", error);
+                  if (dialog.isShowing()) dialog.setContent(R.string.error);
+                }));
   }
 
   public static void showPropertiesDialogWithPermissions(
