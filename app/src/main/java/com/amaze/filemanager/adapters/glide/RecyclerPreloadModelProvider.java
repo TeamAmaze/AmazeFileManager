@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.adapters.glide;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,8 +29,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 
 import android.graphics.drawable.Drawable;
+import android.system.ErrnoException;
+import android.system.Os;
+import android.system.StructStat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,7 +74,26 @@ public class RecyclerPreloadModelProvider
   public RequestBuilder<Drawable> getPreloadRequestBuilder(IconDataParcelable iconData) {
     RequestBuilder<Drawable> requestBuilder;
     if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
-      requestBuilder = request.load(iconData.path);
+      requestBuilder = request.clone().load(iconData.path);
+      if (iconData.path != null && new File(iconData.path).isAbsolute()) {
+        try {
+          StructStat stat = Os.stat(iconData.path);
+          requestBuilder =
+              requestBuilder.signature(
+                  new ObjectKey(
+                      stat.st_dev
+                          + ":"
+                          + stat.st_ino
+                          + ":"
+                          + stat.st_size
+                          + ":"
+                          + stat.st_mtime
+                          + ":"
+                          + new File(iconData.path).lastModified()));
+        } catch (ErrnoException | SecurityException ignored) {
+          // Keep Glide's normal loading/error behavior when local metadata is unavailable.
+        }
+      }
     } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
       requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
     } else {
