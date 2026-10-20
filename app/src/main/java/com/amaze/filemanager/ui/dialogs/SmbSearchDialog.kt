@@ -44,9 +44,11 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.ComputerParcelable
+import com.amaze.filemanager.utils.NetworkUtil
 import com.amaze.filemanager.utils.smb.SmbDeviceScannerObservable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 
@@ -56,7 +58,7 @@ class SmbSearchDialog : DialogFragment() {
     private lateinit var listViewAdapter: ListViewAdapter
     private val viewModel = ComputerParcelableViewModel()
     private var accentColor = 0
-    private lateinit var subnetScannerObserver: Disposable
+    private var subnetScannerObserver: Disposable = Disposables.empty()
 
     override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
@@ -95,6 +97,9 @@ class SmbSearchDialog : DialogFragment() {
         }
         builder.positiveText(R.string.smb_manual_enter_host)
         builder.positiveColor(accentColor)
+        if (!NetworkUtil.isConnectedToLocalNetwork(requireContext())) {
+            return builder.content(R.string.smb_search_network_required).build()
+        }
         viewModel.valHolder.postValue(ComputerParcelable("-1", "-1"))
         listViewAdapter = ListViewAdapter(requireActivity())
         val observable = SmbDeviceScannerObservable()
