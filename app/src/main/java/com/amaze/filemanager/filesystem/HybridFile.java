@@ -64,11 +64,13 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.files.MediaConnectionUtils;
@@ -1587,9 +1589,34 @@ public class HybridFile {
     }
   }
 
+  /**
+   * Rename a local file and finish moving its Amaze metadata before the worker reports success.
+   * Restore the source if its metadata could not be moved.
+   */
+  public static boolean renameWithEncryptedMetadata(File source, File dest) {
+    if (!source.renameTo(dest)) {
+      return false;
+    }
+    if (source.getName().endsWith(CryptUtil.CRYPT_EXTENSION)
+        || dest.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+      try {
+        CryptHandler.INSTANCE.moveEntry(source.getPath(), dest.getPath());
+      } catch (RuntimeException e) {
+        LOG.warn("Failed to move encrypted metadata", e);
+        if (!dest.renameTo(source)) {
+          LOG.error("Failed to restore file after metadata move failure", e);
+          throw e;
+        }
+        return false;
+      }
+    }
+    return true;
+  }
+
   public boolean moveToBin(Context context) {
     List<TrashBinFile> trashBinFiles = Collections.singletonList(this.toTrashBinFile(context));
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    AtomicBoolean wasMoved = new AtomicBoolean(false);
     if (trashBin != null) {
       trashBin.moveToBin(
           trashBinFiles,
@@ -1597,15 +1624,16 @@ public class HybridFile {
           (originalFilePath, trashBinDestination) -> {
             File source = new File(originalFilePath);
             File dest = new File(trashBinDestination);
-            return source.renameTo(dest);
+            wasMoved.set(renameWithEncryptedMetadata(source, dest));
+            return wasMoved.get();
           });
     }
-    return true;
+    return wasMoved.get();
   }
 
   public boolean deletePermanentlyFromBin(Context context) {
-    List<TrashBinFile> trashBinFiles =
-        Collections.singletonList(this.toTrashBinRestoreFile(context));
+    TrashBinFile originalFile = this.toTrashBinRestoreFile(context);
+    List<TrashBinFile> trashBinFiles = Collections.singletonList(originalFile);
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     AtomicBoolean isDelete = new AtomicBoolean(false);
     if (trashBin != null) {
@@ -1614,6 +1642,11 @@ public class HybridFile {
           s -> {
             LOG.info("deleting from bin at path " + s);
             isDelete.set(DeleteOperation.deleteFile(getFile(), context));
+            if (isDelete.get()
+                && originalFile != null
+                && originalFile.getPath().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+              CryptHandler.INSTANCE.clear(getPath());
+            }
             return isDelete.get();
           },
           true);

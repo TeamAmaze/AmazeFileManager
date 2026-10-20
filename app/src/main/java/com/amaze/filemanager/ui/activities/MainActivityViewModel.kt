@@ -227,7 +227,7 @@ class MainActivityViewModel(val applicationContext: Application) :
                     ): Boolean {
                         val source = File(originalFilePath)
                         val dest = File(trashBinDestination)
-                        if (!source.renameTo(dest)) {
+                        if (!HybridFile.renameWithEncryptedMetadata(source, dest)) {
                             return false
                         }
                         val hybridFile =
@@ -284,7 +284,7 @@ class MainActivityViewModel(val applicationContext: Application) :
                         if (destFile.parentFile != null && !destFile.parentFile!!.exists()) {
                             destFile.parentFile?.mkdirs()
                         }
-                        if (!sourceFile.renameTo(destFile)) {
+                        if (!HybridFile.renameWithEncryptedMetadata(sourceFile, destFile)) {
                             return false
                         }
                         val hybridFile =

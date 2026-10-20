@@ -57,6 +57,17 @@ object CryptHandler {
     }
 
     /**
+     * Move stored paths without changing entry IDs or passwords. Called from file-operation workers;
+     * finish before returning so an immediate restore can find the entry at its new path.
+     */
+    fun moveEntry(
+        oldPath: String,
+        newPath: String,
+    ) {
+        database.encryptedEntryDao().move(oldPath, newPath).blockingAwait()
+    }
+
+    /**
      * Find [EncryptedEntry] of specified path. Returns null if not exist.
      */
     fun findEntry(path: String): EncryptedEntry? {

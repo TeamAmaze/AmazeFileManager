@@ -121,12 +121,6 @@ public class DeleteTask
         if (FileUtils.NOMEDIA_FILE.equals(file.getName()))
           MediaConnectionUtils.scanFile(applicationContext, file.getParent(applicationContext));
       }
-
-      // delete file entry from encrypted database
-      if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-        CryptHandler handler = CryptHandler.INSTANCE;
-        handler.clear(file.getPath());
-      }
     }
 
     return new AsyncTaskResult<>(wasDeleted);
@@ -162,11 +156,15 @@ public class DeleteTask
   }
 
   private boolean doDeleteFile(@NonNull HybridFileParcelable file) throws Exception {
+    boolean isEncrypted =
+        !file.isTrashBin() && file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION);
+    boolean wasDeleted;
     switch (file.getMode()) {
       case OTG:
         DocumentFile documentFile =
             OTGUtil.getDocumentFile(file.getPath(), applicationContext, false);
-        return documentFile.delete();
+        wasDeleted = documentFile.delete();
+        break;
       case DOCUMENT_FILE:
         documentFile =
             OTGUtil.getDocumentFile(
@@ -175,7 +173,8 @@ public class DeleteTask
                 applicationContext,
                 OpenMode.DOCUMENT_FILE,
                 false);
-        return documentFile.delete();
+        wasDeleted = documentFile.delete();
+        break;
       case DROPBOX:
       case BOX:
       case GDRIVE:
@@ -183,11 +182,12 @@ public class DeleteTask
         CloudStorage cloudStorage = dataUtils.getAccount(file.getMode());
         try {
           cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
-          return true;
+          wasDeleted = true;
         } catch (Exception e) {
           LOG.warn("failed to delete cloud files", e);
-          return false;
+          wasDeleted = false;
         }
+        break;
       default:
         try {
           /* SMB and SFTP (or any remote files that may support in the future) should not be
@@ -198,11 +198,15 @@ public class DeleteTask
               && !OpenMode.SFTP.equals(file.getMode())) {
             return file.moveToBin(applicationContext);
           }
-          return file.delete(applicationContext, rootMode);
+          wasDeleted = file.delete(applicationContext, rootMode);
         } catch (ShellNotRunningException | SmbException e) {
           LOG.warn("failed to delete files", e);
           throw e;
         }
     }
+    if (wasDeleted && isEncrypted) {
+      CryptHandler.INSTANCE.clear(file.getPath());
+    }
+    return wasDeleted;
   }
 }
