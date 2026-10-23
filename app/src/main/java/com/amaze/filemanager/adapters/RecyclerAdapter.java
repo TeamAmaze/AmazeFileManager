@@ -91,6 +91,10 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -168,6 +172,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private final int dragAndDropPreference;
   private final boolean isGrid;
 
+  @NonNull private final RecyclerView recyclerView;
+
   @IntDef({VIEW_GENERIC, VIEW_PICTURE, VIEW_APK, VIEW_THUMB})
   public @interface ViewType {}
 
@@ -197,6 +203,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
             PreferencesConstants.PREFERENCE_DRAG_DEFAULT);
     this.isGrid = isGrid;
+    this.recyclerView = recyclerView;
 
     mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     accentColor = mainFragment.getMainActivity().getAccent();
@@ -806,6 +813,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
+          clearActiveTeleportHighlight();
           if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
@@ -828,6 +836,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnClickListener(
         v -> {
+          clearActiveTeleportHighlight();
           mainFragment.onListItemClicked(
               isBackButton, holder.getAdapterPosition(), rowItem, holder.checkImageView);
         });
@@ -997,6 +1006,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
       }
     }
+    if (getItemsDigested().get(position).isTeleportHighlighted()) {
+      boolean isLightTheme = utilsProvider.getAppTheme().equals(AppTheme.LIGHT);
+      animateTeleportHighlight(
+          holder,
+          () -> {
+            holder.baseItemView.setBackgroundResource(
+                isLightTheme ? R.drawable.safr_ripple_white : R.drawable.safr_ripple_black);
+            int adapterPosition = holder.getAdapterPosition();
+            boolean isNowChecked =
+                adapterPosition != RecyclerView.NO_POSITION
+                    && getItemsDigested().get(adapterPosition).getChecked() == ListItem.CHECKED;
+            holder.baseItemView.setSelected(isNowChecked);
+          });
+    }
+
     if (getBoolean(PREFERENCE_SHOW_PERMISSIONS)) {
       holder.perm.setText(rowItem.permissions);
     }
@@ -1013,6 +1037,66 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
   }
 
+  private void animateTeleportHighlight(ItemViewHolder holder, Runnable onFlashEnd) {
+    if (holder.teleportHighlightAnimator != null) {
+      holder.teleportHighlightAnimator.cancel();
+    }
+    holder.teleportRestoreAction = onFlashEnd;
+
+    int transparent = Color.TRANSPARENT;
+    ValueAnimator animator =
+        ValueAnimator.ofObject(
+            new ArgbEvaluator(), transparent, accentColor, transparent, accentColor);
+    animator.setDuration(900);
+    animator.addUpdateListener(
+        anim -> holder.baseItemView.setBackgroundColor((int) anim.getAnimatedValue()));
+    animator.addListener(
+        new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            holder.teleportHighlightAnimator = null;
+          }
+        });
+    holder.teleportHighlightAnimator = animator;
+    animator.start();
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+    super.onViewRecycled(holder);
+    if (holder instanceof ItemViewHolder) {
+      ItemViewHolder itemHolder = (ItemViewHolder) holder;
+      if (itemHolder.teleportHighlightAnimator != null) {
+        itemHolder.teleportHighlightAnimator.cancel();
+        itemHolder.teleportHighlightAnimator = null;
+        itemHolder.teleportRestoreAction = null;
+      }
+    }
+  }
+
+  /** Clears any active teleport highlight, restoring its view immediately if currently bound. */
+  private void clearActiveTeleportHighlight() {
+    for (int i = 0; i < getItemsDigested().size(); i++) {
+      ListItem item = getItemsDigested().get(i);
+      if (item.isTeleportHighlighted()) {
+        item.setTeleportHighlighted(false);
+        RecyclerView.ViewHolder vh = recyclerView.findViewHolderForAdapterPosition(i);
+        if (vh instanceof ItemViewHolder) {
+          ItemViewHolder ivh = (ItemViewHolder) vh;
+          if (ivh.teleportHighlightAnimator != null) {
+            ivh.teleportHighlightAnimator.cancel();
+            ivh.teleportHighlightAnimator = null;
+          }
+          if (ivh.teleportRestoreAction != null) {
+            ivh.teleportRestoreAction.run();
+            ivh.teleportRestoreAction = null;
+          }
+        }
+        break;
+      }
+    }
+  }
+
   private void bindViewHolderGrid(@NonNull final ItemViewHolder holder, int position) {
     final boolean isBackButton = getItemsDigested().get(position).specialType == TYPE_BACK;
     @Nullable
@@ -1021,6 +1105,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     holder.baseItemView.setOnLongClickListener(
         p1 -> {
+          clearActiveTeleportHighlight();
           if (hasPendingPasteOperation()) return false;
           if (!isBackButton) {
             if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
@@ -1045,6 +1130,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     holder.checkImageViewGrid.setColorFilter(accentColor);
     holder.baseItemView.setOnClickListener(
         v -> {
+          clearActiveTeleportHighlight();
           mainFragment.onListItemClicked(
               isBackButton, holder.getAdapterPosition(), rowItem, holder.checkImageViewGrid);
         });
@@ -1149,6 +1235,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             .findViewById(R.id.icon_frame_grid)
             .setBackgroundColor(Utils.getColor(context, R.color.icon_background_dark));
       }
+    }
+    if (getItemsDigested().get(position).isTeleportHighlighted()) {
+      boolean isLightTheme = utilsProvider.getAppTheme().equals(AppTheme.LIGHT);
+      animateTeleportHighlight(
+          holder,
+          () -> {
+            int adapterPosition = holder.getAdapterPosition();
+            boolean isNowChecked =
+                adapterPosition != RecyclerView.NO_POSITION
+                    && getItemsDigested().get(adapterPosition).getChecked() == ListItem.CHECKED;
+            if (isNowChecked) {
+              holder.baseItemView.setBackgroundColor(
+                  Utils.getColor(context, R.color.item_background));
+            } else if (isLightTheme) {
+              holder.baseItemView.setBackgroundResource(R.drawable.item_doc_grid);
+            } else {
+              holder.baseItemView.setBackgroundResource(R.drawable.ic_grid_card_background_dark);
+            }
+          });
     }
 
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
@@ -1527,6 +1632,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private final @ListElemType int specialType;
     private boolean checked;
+    private boolean teleportHighlighted;
     private boolean animate;
     private boolean shouldToggleDragChecked = true;
 
@@ -1546,6 +1652,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setChecked(boolean checked) {
       if (specialType == TYPE_ITEM) this.checked = checked;
+    }
+
+    public void setTeleportHighlighted(boolean highlighted) {
+      if (specialType == TYPE_ITEM) this.teleportHighlighted = highlighted;
+    }
+
+    public boolean isTeleportHighlighted() {
+      return teleportHighlighted;
     }
 
     public int getChecked() {
