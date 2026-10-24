@@ -23,6 +23,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
+        android:protectionLevel="signature" />
+
+    <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER_SIMPLE"
+        android:label="@string/permission_ftp_control_simple_label"
+        android:description="@string/permission_ftp_control_simple_description"
         android:protectionLevel="dangerous" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -310,6 +315,16 @@
             <intent-filter>
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER" />
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".asynchronous.services.ftp.FtpExternalControlReceiver"
+            android:exported="true"
+            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER_SIMPLE">
+            <intent-filter>
+                <action android:name="com.amaze.filemanager.action.EXTERNAL_START_FTP" />
+                <action android:name="com.amaze.filemanager.action.EXTERNAL_STOP_FTP" />
             </intent-filter>
         </receiver>
 
