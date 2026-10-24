@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -95,13 +95,13 @@ import com.amaze.filemanager.utils.NetworkUtil.isConnectedToWifi
 import com.amaze.filemanager.utils.OneCharacterCharSequence
 import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.Utils
-import com.amaze.filemanager.utils.registerReceiverCompat
 import com.amaze.filemanager.utils.X509CertificateUtil
 import com.amaze.filemanager.utils.X509CertificateUtil.FINGERPRINT
 import com.amaze.filemanager.utils.X509CertificateUtil.ISSUER
 import com.amaze.filemanager.utils.X509CertificateUtil.SUBJECT
 import com.amaze.filemanager.utils.X509CertificateUtil.VALID_FROM
 import com.amaze.filemanager.utils.X509CertificateUtil.VALID_TO
+import com.amaze.filemanager.utils.registerReceiverCompat
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
