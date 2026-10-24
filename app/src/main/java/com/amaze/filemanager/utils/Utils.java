@@ -33,6 +33,7 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.google.android.material.snackbar.Snackbar;
@@ -262,8 +263,7 @@ public class Utils {
       case FILE:
       case ROOT:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-          return FileProvider.getUriForFile(
-              context, context.getPackageName(), new File(baseFile.getPath()));
+          return FileUtils.getShareableUri(context, new File(baseFile.getPath()));
         } else {
           return Uri.fromFile(new File(baseFile.getPath()));
         }

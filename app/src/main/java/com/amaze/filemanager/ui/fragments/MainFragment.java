@@ -134,6 +134,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import kotlin.collections.ArraysKt;
 import kotlin.collections.CollectionsKt;
 
@@ -552,20 +555,53 @@ public class MainFragment extends Fragment
    */
   public void returnIntentResults(HybridFileParcelable[] baseFiles) {
     requireMainActivity().mReturnIntent = false;
-    HashMap<HybridFileParcelable, Uri> resultUris = new HashMap<>();
-    ArrayList<String> failedPaths = new ArrayList<>();
+    final Context context = requireActivity();
+    // Resolving URIs may copy files into cache, which must not block the UI thread
+    Single.fromCallable(
+            () -> {
+              HashMap<HybridFileParcelable, Uri> uris = new HashMap<>();
+              for (HybridFileParcelable baseFile : baseFiles) {
+                @Nullable Uri resultUri = Utils.getUriForBaseFile(context, baseFile);
+                if (resultUri != null) {
+                  uris.put(baseFile, resultUri);
+                  LOG.debug(
+                      resultUri
+                          + "\t"
+                          + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                } else {
+                  LOG.warn("Unable to get URI from baseFile {}", baseFile.getPath());
+                }
+              }
+              return uris;
+            })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            uris -> {
+              if (uris.size() < baseFiles.length && getActivity() != null) {
+                Toast.makeText(
+                        getActivity(),
+                        getString(R.string.copy_error, getString(R.string.copied)),
+                        Toast.LENGTH_LONG)
+                    .show();
+              }
+              deliverIntentResults(uris);
+            },
+            e -> {
+              LOG.warn("Unable to get URIs from baseFiles", e);
+              if (getActivity() != null) {
+                Toast.makeText(
+                        getActivity(),
+                        getString(R.string.copy_error, getString(R.string.copied)),
+                        Toast.LENGTH_LONG)
+                    .show();
+                getActivity().finish();
+              }
+            });
+  }
 
-    for (HybridFileParcelable baseFile : baseFiles) {
-      @Nullable Uri resultUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
-      if (resultUri != null) {
-        resultUris.put(baseFile, resultUri);
-        LOG.debug(
-            resultUri + "\t" + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-      } else {
-        failedPaths.add(baseFile.getPath());
-      }
-    }
-
+  private void deliverIntentResults(HashMap<HybridFileParcelable, Uri> resultUris) {
+    if (getActivity() == null) return;
     if (!resultUris.isEmpty()) {
       Intent intent = new Intent();
       intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -612,9 +648,6 @@ public class MainFragment extends Fragment
       }
 
       requireActivity().setResult(FragmentActivity.RESULT_OK, intent);
-    }
-    if (!failedPaths.isEmpty()) {
-      LOG.warn("Unable to get URIs from baseFiles {}", failedPaths);
     }
     requireActivity().finish();
   }

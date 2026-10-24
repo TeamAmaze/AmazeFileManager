@@ -114,7 +114,7 @@ public class UtilsTest {
         assertEquals(
             "content://"
                 + ApplicationProvider.getApplicationContext().getPackageName()
-                + "/storage_root/storage/emulated/0/test.txt",
+                + "/storage_root/emulated/0/test.txt",
             uri.toString());
       }
     }
