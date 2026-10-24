@@ -24,11 +24,10 @@ jobs:
           java-version: 17
       - name: Set up NDK
         id: setup-ndk
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
           ndk-version: r28c
           link-to-sdk: true
-          local-cache: true
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Check formatting using spotless
@@ -46,10 +45,13 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 17
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Set up NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
-          toolchain: stable
+          ndk-version: r28c
+          link-to-sdk: true
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@1.98.1
       - name: Cache Rust dependencies
         uses: actions/cache@v5
         with:
@@ -82,6 +84,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
       - name: Build with Gradle
-        run: ./gradlew assembledebug --stacktrace
+        run: ./gradlew assembleDebug --stacktrace
       - name: Run test cases
         run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info

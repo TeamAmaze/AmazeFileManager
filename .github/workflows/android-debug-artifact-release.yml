@@ -15,11 +15,10 @@ jobs:
           distribution: "temurin"
           java-version: 17
       - name: Set up NDK
-        uses: nttld/setup-ndk@v1
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
         with:
           ndk-version: r28c
           link-to-sdk: true
-          local-cache: true
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -53,10 +52,10 @@ jobs:
             echo "❌ .cargo/config.toml missing"
             exit 1
           fi
-      - name: Build with Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          arguments: assembleDebug
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug --stacktrace
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v7
         with:
