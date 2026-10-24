@@ -20,36 +20,49 @@
 
 package com.amaze.filemanager.filesystem.files
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
-import android.net.Uri
+import androidx.core.content.FileProvider
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.files.FileUtils.getPathsInPath
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
 import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.android.plugins.RxAndroidPlugins.setInitMainThreadSchedulerHandler
 import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.plugins.RxJavaPlugins.setIoSchedulerHandler
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowToast
 import java.io.File
+import java.nio.file.Files
 import java.util.TimeZone
+import kotlin.jvm.java
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(sdk = [M, P, Build.VERSION_CODES.R])
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class FileUtilsTest {
+    private val context get() = ApplicationProvider.getApplicationContext<Context>()
+
     /**
      * Test FileUtils.getPathsInPath() for directory
      *
@@ -451,31 +464,41 @@ class FileUtilsTest {
     /** FileProvider caches path strategies statically, but Robolectric cache dir differs per test */
     @Before
     fun resetFileProviderCache() {
-        val field = androidx.core.content.FileProvider::class.java.getDeclaredField("sCache")
+        val field = FileProvider::class.java.getDeclaredField("sCache")
         field.isAccessible = true
         (field.get(null) as MutableMap<*, *>).clear()
     }
 
+    /**
+     * Reset RxJava and RxAndroid after test.
+     */
     @After
     fun resetRx() {
         RxJavaPlugins.reset()
         RxAndroidPlugins.reset()
     }
 
-    private val context get() = ApplicationProvider.getApplicationContext<android.content.Context>()
-
+    /**
+     * Test [FileUtils.fromContentUri] for storage root.
+     */
     @Test
     fun testFromContentUriStorageRoot() {
         val uri = Uri.parse("content://com.amaze.filemanager/storage_root/emulated/0/Download/a.txt")
         assertEquals("/storage/emulated/0/Download/a.txt", FileUtils.fromContentUri(uri).path)
     }
 
+    /**
+     * Test [FileUtils.fromContentUri] for media_rw.
+     */
     @Test
     fun testFromContentUriMediaRw() {
         val uri = Uri.parse("content://com.amaze.filemanager/media_rw_root/ABCD-1234/a.txt")
         assertEquals("/mnt/media_rw/ABCD-1234/a.txt", FileUtils.fromContentUri(uri).path)
     }
 
+    /**
+     * Test [FileUtils.fromContentUri] for legacy storage root.
+     */
     @Test
     fun testFromContentUriLegacyStorageRoot() {
         val uri = Uri.parse("content://com.amaze.filemanager/storage_root/etc/hosts")
@@ -483,6 +506,9 @@ class FileUtilsTest {
         assertEquals("/etc/hosts", FileUtils.fromContentUri(uri).path)
     }
 
+    /**
+     * Test [FileUtils.getShareableUri] for covered path.
+     */
     @Test
     fun testGetShareableUriForCoveredPath() {
         val uri = FileUtils.getShareableUri(context, File("/storage/emulated/0/test.txt"))
@@ -490,6 +516,9 @@ class FileUtilsTest {
         assertEquals("/storage_root/emulated/0/test.txt", uri!!.path)
     }
 
+    /**
+     * Test [FileUtils.getShareableUri] copies uncovered file.
+     */
     @Test
     fun testGetShareableUriCopiesUncoveredFile() {
         val src = File.createTempFile("amaze", ".txt")
@@ -506,10 +535,13 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test [FileUtils.getShareableUri] refuses unreadable files and directories.
+     */
     @Test
     fun testGetShareableUriRefusesUnreadableAndDirectories() {
         assertNull(FileUtils.getShareableUri(context, File("/nonexistent/secret.txt")))
-        val dir = java.nio.file.Files.createTempDirectory("amazedir").toFile()
+        val dir = Files.createTempDirectory("amazedir").toFile()
         try {
             assertNull(FileUtils.getShareableUri(context, dir))
         } finally {
@@ -517,6 +549,9 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test [FileUtils.buildIntent] does not grant write permission to other apps.
+     */
     @Test
     fun testBuildIntentDoesNotGrantToOtherApps() {
         val uri = Uri.parse("content://${context.packageName}/storage_root/emulated/0/a.txt")
@@ -529,28 +564,39 @@ class FileUtilsTest {
                 null,
                 null,
             )
-        assertEquals(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION, intent.flags and
-            (android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-        assertFalse(intent.flags and android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0)
+        assertEquals(
+            Intent.FLAG_GRANT_READ_URI_PERMISSION,
+            intent.flags and
+                (
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                ),
+        )
+        assertFalse(intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0)
     }
 
+    /**
+     * Test [FileUtils.getShareableUriAsync] emits without scheduling for covered paths.
+     */
     @Test
     fun testGetShareableUriAsyncCoveredPathEmitsWithoutScheduling() {
         val uri =
             FileUtils.getShareableUriAsync(context, File("/storage/emulated/0/test.txt"))
                 .blockingGet()
-        assertNull(org.robolectric.shadows.ShadowToast.getLatestToast())
+        assertNull(ShadowToast.getLatestToast())
         assertEquals("/storage_root/emulated/0/test.txt", uri!!.path)
     }
 
+    /**
+     * Test [FileUtils.getShareableUriAsync] copies uncovered file on IO scheduler.
+     */
     @Test
     fun testGetShareableUriAsyncCopiesOnIoScheduler() {
         val ioThreads = mutableListOf<String>()
-        RxJavaPlugins.setIoSchedulerHandler {
+        setIoSchedulerHandler {
             Schedulers.trampoline().also { ioThreads.add("io") }
         }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
         val src = File.createTempFile("amaze", ".txt")
         src.writeText("async")
         try {
@@ -558,7 +604,7 @@ class FileUtilsTest {
             assertEquals(listOf("io"), ioThreads)
             assertEquals(
                 context.getString(com.amaze.filemanager.R.string.copying),
-                org.robolectric.shadows.ShadowToast.getTextOfLatestToast(),
+                ShadowToast.getTextOfLatestToast(),
             )
             context.contentResolver.openInputStream(uri!!)!!.use {
                 assertEquals("async", it.readBytes().toString(Charsets.UTF_8))
@@ -568,19 +614,26 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test [FileUtils.getShareableUriAsync] completes empty when not shareable.
+     */
     @Test
     fun testGetShareableUriAsyncCompletesEmptyWhenNotShareable() {
-        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        setIoSchedulerHandler { Schedulers.trampoline() }
+        setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
         assertNull(
             FileUtils.getShareableUriAsync(context, File("/nonexistent/secret.txt")).blockingGet(),
         )
     }
 
+    /**
+     * Test [FileUtils.getShareableUri] does not collide when two files with the same name
+     * are copied to the cache.
+     */
     @Test
     fun testGetShareableUriSameNameDoesNotCollide() {
-        val d1 = java.nio.file.Files.createTempDirectory("amaze1").toFile()
-        val d2 = java.nio.file.Files.createTempDirectory("amaze2").toFile()
+        val d1 = Files.createTempDirectory("amaze1").toFile()
+        val d2 = Files.createTempDirectory("amaze2").toFile()
         val f1 = File(d1, "same.txt").apply { writeText("one") }
         val f2 = File(d2, "same.txt").apply { writeText("two") }
         try {
@@ -594,15 +647,19 @@ class FileUtilsTest {
         }
     }
 
+    /**
+     * Test [FileUtils.getShareableUriAsync] reports error when copy fails and cleans up any half-written copy.
+     */
     @Test
     fun testGetShareableUriAsyncReportsRootCopyFailure() {
-        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
-        androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).edit()
-            .putBoolean(
-                com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE,
+        setIoSchedulerHandler { Schedulers.trampoline() }
+        setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        PreferenceManager.getDefaultSharedPreferences(context).edit {
+            putBoolean(
+                PREFERENCE_ROOTMODE,
                 true,
-            ).commit()
+            )
+        }
         val observer =
             FileUtils.getShareableUriAsync(context, File("/nonexistent/secret.txt")).test()
         observer.assertError(FileUtils.ShareCopyException::class.java)

@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.UUID;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -64,7 +64,6 @@ import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.theme.AppTheme;
-import com.topjohnwu.superuser.io.SuFileInputStream;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
@@ -73,6 +72,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+import com.topjohnwu.superuser.io.SuFileInputStream;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -92,16 +92,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
 import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
-import jcifs.smb.SmbFile;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -550,9 +550,7 @@ public class FileUtils {
                   }
                   // DatabaseViewerActivity only accepts java.io.File paths, need to strip the URI
                   // to file's absolute path
-                  intent.putExtra(
-                      "path",
-                      fromContentUri(uri).getAbsolutePath());
+                  intent.putExtra("path", fromContentUri(uri).getAbsolutePath());
                   break;
                 case 5:
                   mimeType = MimeTypes.getMimeType(uri.getPath(), false);
@@ -732,6 +730,7 @@ public class FileUtils {
    * shared (null return).
    */
   @Nullable
+  @SuppressWarnings({"PMD.NPathComplexity", "ComplexMethod", "LongMethod"})
   private static Uri getShareableUriOrThrow(@NonNull Context context, @NonNull File file)
       throws IOException {
     try {
@@ -814,8 +813,9 @@ public class FileUtils {
 
   /**
    * Non-blocking version of {@link #getShareableUri(Context, File)}. Files covered by the provider
-   * paths emit immediately; copying to cache happens on an IO thread, and the result is delivered on
-   * the main thread, and a "copying" toast is shown on subscription. Completes empty if the file cannot be exposed.
+   * paths emit immediately; copying to cache happens on an IO thread, and the result is delivered
+   * on the main thread, and a "copying" toast is shown on subscription. Completes empty if the file
+   * cannot be exposed.
    */
   @NonNull
   public static Maybe<Uri> getShareableUriAsync(@NonNull Context context, @NonNull File file) {
@@ -823,8 +823,7 @@ public class FileUtils {
       return Maybe.just(FileProvider.getUriForFile(context, context.getPackageName(), file));
     } catch (IllegalArgumentException e) {
       return Maybe.fromCallable(() -> getShareableUriOrThrow(context, file))
-          .doOnSubscribe(
-              d -> Toast.makeText(context, R.string.copying, Toast.LENGTH_SHORT).show())
+          .doOnSubscribe(d -> Toast.makeText(context, R.string.copying, Toast.LENGTH_SHORT).show())
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread());
     }
