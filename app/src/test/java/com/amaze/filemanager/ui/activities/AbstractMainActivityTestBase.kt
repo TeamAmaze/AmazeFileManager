@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -24,7 +24,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Build.VERSION_CODES
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.storage.StorageManager
 import androidx.annotation.NonNull
@@ -54,7 +54,7 @@ import org.robolectric.shadows.ShadowStorageManager
  */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [LOLLIPOP, P, VERSION_CODES.R],
+    sdk = [M, P, VERSION_CODES.R],
     shadows = [
         ShadowMultiDex::class,
         ShadowStorageManager::class,

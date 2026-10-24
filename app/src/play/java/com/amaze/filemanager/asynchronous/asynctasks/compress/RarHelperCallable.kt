@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -25,7 +25,7 @@ import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor.Companion.convertName
 import com.github.junrar.Archive
 import com.github.junrar.exception.RarException
-import com.github.junrar.exception.UnsupportedRarV5Exception
+import com.github.junrar.exception.UnsupportedRarVersionException
 import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.io.FileNotFoundException
@@ -77,8 +77,8 @@ class RarHelperCallable(
                     )
                 }
             }
-        } catch (e: UnsupportedRarV5Exception) {
-            throw ArchiveException("RAR v5 archives are not supported", e)
+        } catch (e: UnsupportedRarVersionException) {
+            throw ArchiveException("RAR archive version not supported", e)
         } catch (e: FileNotFoundException) {
             throw ArchiveException("First part of multipart archive not found", e)
         } catch (e: RarException) {

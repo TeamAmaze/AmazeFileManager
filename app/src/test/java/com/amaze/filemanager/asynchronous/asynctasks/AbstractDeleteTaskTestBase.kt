@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -23,7 +23,7 @@ package com.amaze.filemanager.asynchronous.asynctasks
 import android.Manifest
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Looper
 import android.os.storage.StorageManager
@@ -70,7 +70,7 @@ import org.robolectric.shadows.ShadowToast
         ShadowFileUtils::class,
         ShadowPasswordUtil::class,
     ],
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [M, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractDeleteTaskTestBase {
     private var ctx: Context? = null

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -68,7 +68,7 @@ class ZipExtractor(
                     invalidArchiveEntries.add(fileHeader.fileName)
                 }
             }
-            if (entriesToExtract.size > 0) {
+            if (entriesToExtract.isNotEmpty()) {
                 listener.onStart(totalBytes, entriesToExtract[0].fileName)
                 for (entry in entriesToExtract) {
                     if (!listener.isCancelled) {
@@ -77,6 +77,9 @@ class ZipExtractor(
                     }
                 }
             } else {
+                if (zipfile.file.length() == 0L) {
+                    throw ZipException("Zero byte or corrupt zip file")
+                }
                 throw EmptyArchiveNotice()
             }
             listener.onFinish()

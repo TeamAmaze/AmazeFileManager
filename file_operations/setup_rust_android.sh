@@ -10,6 +10,10 @@ set -e
 
 echo "🦀 Setting up Rust for Android development..."
 
+# Resolve paths relative to this script so it can be run from any working directory.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VERSION_CATALOG="$SCRIPT_DIR/../gradle/libs.versions.toml"
+
 # Function to detect operating system
 detect_os() {
     case "$(uname -s)" in
@@ -35,14 +39,10 @@ find_android_sdk() {
     fi
 }
 
-# Function to find the latest NDK version
-find_ndk_version() {
-    local sdk_path="$1"
-    local ndk_dir="$sdk_path/ndk"
-    
-    if [ -d "$ndk_dir" ]; then
-        # Find the latest version (highest version number)
-        ls -1 "$ndk_dir" | sort -V | tail -n 1
+# Function to extract required NDK version from version catalog
+extract_ndk_version() {
+    if [ -f "$VERSION_CATALOG" ]; then
+        grep -E '^ndk[[:space:]]*=' "$VERSION_CATALOG" | head -n 1 | cut -d '"' -f 2
     else
         echo ""
     fi
@@ -51,13 +51,12 @@ find_ndk_version() {
 # Function to extract API level from build.gradle and version catalog
 extract_api_level() {
     local build_gradle="build.gradle"
-    local version_catalog="../gradle/libs.versions.toml"
-    
+
     # First, check if build.gradle uses version catalog
     if [ -f "$build_gradle" ] && grep -q "libs.versions.minSdk" "$build_gradle"; then
         # Extract from version catalog
-        if [ -f "$version_catalog" ]; then
-            grep "^minSdk" "$version_catalog" | cut -d '"' -f 2
+        if [ -f "$VERSION_CATALOG" ]; then
+            grep "^minSdk" "$VERSION_CATALOG" | cut -d '"' -f 2
         else
             echo "21"  # Default fallback
         fi
@@ -88,15 +87,30 @@ fi
 
 echo "📁 Found Android SDK: $ANDROID_SDK_PATH"
 
-# Find NDK version
-NDK_VERSION=$(find_ndk_version "$ANDROID_SDK_PATH")
+# Find required NDK version from version catalog
+NDK_VERSION=$(extract_ndk_version)
 if [ -z "$NDK_VERSION" ]; then
-    echo "❌ NDK not found in $ANDROID_SDK_PATH/ndk"
-    echo "   Please install NDK through Android Studio SDK Manager"
+    echo "❌ Could not read required NDK version from $VERSION_CATALOG"
+    echo "   Please ensure the 'ndk' version is defined under [versions]"
     exit 1
 fi
 
-echo "🔨 Found NDK version: $NDK_VERSION"
+NDK_DIR="$ANDROID_SDK_PATH/ndk"
+if [ ! -d "$NDK_DIR" ] || [ -z "$(ls -A "$NDK_DIR" 2>/dev/null)" ]; then
+    echo "❌ No NDK installation found in $NDK_DIR"
+    echo "   Please install NDK version $NDK_VERSION first via Android Studio SDK Manager"
+    exit 1
+fi
+
+if [ ! -d "$NDK_DIR/$NDK_VERSION" ]; then
+    echo "❌ NDK is installed, but required version $NDK_VERSION is missing."
+    echo "   Found installed versions:"
+    ls -1 "$NDK_DIR" | sed 's/^/   - /'
+    echo "   Please install NDK version $NDK_VERSION first via Android Studio SDK Manager"
+    exit 1
+fi
+
+echo "🔨 Found required NDK version: $NDK_VERSION"
 
 # Extract API level
 API_LEVEL=$(extract_api_level)

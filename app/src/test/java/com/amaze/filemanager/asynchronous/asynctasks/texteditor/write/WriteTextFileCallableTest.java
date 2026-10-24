@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.texteditor.write;
 
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -44,13 +44,13 @@ import org.robolectric.annotation.Config;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowContentResolver;
 
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
-import com.amaze.filemanager.shadows.ShadowContentResolver;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.ContentResolver;
@@ -65,7 +65,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowContentResolver.class},
-    sdk = {LOLLIPOP, P, Build.VERSION_CODES.R})
+    sdk = {M, P, Build.VERSION_CODES.R})
 public class WriteTextFileCallableTest {
 
   private static final String contents = "This is modified data";

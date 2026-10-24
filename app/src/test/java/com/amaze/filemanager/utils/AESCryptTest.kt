@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -21,7 +21,7 @@
 package com.amaze.filemanager.utils
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertArrayEquals
@@ -36,7 +36,7 @@ import kotlin.random.Random
  * Unit test for [AESCrypt]
  */
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [LOLLIPOP, P, Build.VERSION_CODES.R])
+@Config(sdk = [M, P, Build.VERSION_CODES.R])
 class AESCryptTest {
     /**
      * Simple sanity test on [AESCrypt].

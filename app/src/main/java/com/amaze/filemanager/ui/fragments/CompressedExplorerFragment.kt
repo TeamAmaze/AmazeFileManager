@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -79,7 +79,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration
 import com.amaze.filemanager.ui.views.FastScroller
 import com.amaze.filemanager.utils.BottomBarButtonPath
 import com.amaze.filemanager.utils.Utils
-import com.github.junrar.exception.UnsupportedRarV5Exception
+import com.github.junrar.exception.UnsupportedRarVersionException
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import io.reactivex.Flowable
@@ -656,8 +656,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
     private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
         @StringRes val msg: Int =
-            if (e?.cause?.javaClass is UnsupportedRarV5Exception) {
-                R.string.error_unsupported_v5_rar
+            if (UnsupportedRarVersionException::class.java.isAssignableFrom(
+                    e?.cause?.javaClass,
+                )
+            ) {
+                R.string.error_unsupported_rar_version
             } else {
                 R.string.archive_unsupported_or_corrupt
             }
@@ -774,7 +777,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         get() = isRoot(relativeDirectory)
 
     private fun isRoot(folder: String?): Boolean {
-        return folder == null || folder.isEmpty()
+        return folder.isNullOrEmpty()
     }
 
     /**

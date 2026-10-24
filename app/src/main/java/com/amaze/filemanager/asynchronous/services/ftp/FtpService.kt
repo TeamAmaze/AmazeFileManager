@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -42,10 +42,10 @@ import android.provider.DocumentsContract
 import androidx.core.app.ServiceCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
-import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService.getPendingIntentFlag
+import com.amaze.filemanager.asynchronous.services.ftp.FtpServerSslKeyStoreProvider.FTPS_CERT_ALIAS
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
@@ -70,7 +70,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
-import java.security.KeyStore
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.KeyManagerFactory
@@ -119,7 +118,7 @@ class FtpService : Service(), Runnable {
                 attempts--
                 try {
                     Thread.sleep(1000)
-                } catch (ignored: InterruptedException) {
+                } catch (_: InterruptedException) {
                 }
             } else {
                 return START_STICKY
@@ -162,13 +161,14 @@ class FtpService : Service(), Runnable {
             val connectionConfigFactory = ConnectionConfigFactory()
             val shouldUseAndroidFileSystem =
                 preferences.getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
-            if (SDK_INT >= KITKAT && shouldUseAndroidFileSystem) {
-                fileSystem = AndroidFileSystemFactory(applicationContext)
-            } else if (preferences.getBoolean(PREFERENCE_ROOTMODE, false)) {
-                fileSystem = RootFileSystemFactory()
-            } else {
-                fileSystem = NativeFileSystemFactory()
-            }
+            fileSystem =
+                if (SDK_INT >= KITKAT && shouldUseAndroidFileSystem) {
+                    AndroidFileSystemFactory(applicationContext)
+                } else if (preferences.getBoolean(PREFERENCE_ROOTMODE, false)) {
+                    RootFileSystemFactory()
+                } else {
+                    NativeFileSystemFactory()
+                }
 
             commandFactory = CommandFactoryFactory.create(shouldUseAndroidFileSystem)
 
@@ -189,7 +189,9 @@ class FtpService : Service(), Runnable {
                 }.onFailure {
                     log.warn("failed to decrypt password in ftp service", it)
                     AppConfig.toast(applicationContext, R.string.error)
-                    preferences.edit { putString(KEY_PREFERENCE_PASSWORD, "") }
+                    preferences.edit {
+                        putString(KEY_PREFERENCE_PASSWORD, "")
+                    }
                     isPasswordProtected = false
                 }
             }
@@ -216,13 +218,12 @@ class FtpService : Service(), Runnable {
             val fac = ListenerFactory()
             if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
                 try {
-                    val keyStore = KeyStore.getInstance("BKS")
-                    val keyStorePassword = BuildConfig.FTP_SERVER_KEYSTORE_PASSWORD.toCharArray()
-                    keyStore.load(resources.openRawResource(R.raw.key), keyStorePassword)
+                    val keyStore = FtpServerSslKeyStoreProvider.getKeyStore()
+                    keyStore.load(null)
                     val keyManagerFactory =
                         KeyManagerFactory
                             .getInstance(KeyManagerFactory.getDefaultAlgorithm())
-                    keyManagerFactory.init(keyStore, keyStorePassword)
+                    keyManagerFactory.init(keyStore, null)
                     val trustManagerFactory =
                         TrustManagerFactory
                             .getInstance(TrustManagerFactory.getDefaultAlgorithm())
@@ -234,13 +235,17 @@ class FtpService : Service(), Runnable {
                             ClientAuth.WANT,
                             "TLS",
                             enabledCipherSuites,
-                            "ftpserver",
+                            FTPS_CERT_ALIAS,
                         )
                     fac.isImplicitSsl = true
-                } catch (e: GeneralSecurityException) {
-                    preferences.edit { putBoolean(KEY_PREFERENCE_SECURE, false) }
-                } catch (e: IOException) {
-                    preferences.edit { putBoolean(KEY_PREFERENCE_SECURE, false) }
+                } catch (_: GeneralSecurityException) {
+                    preferences.edit {
+                        putBoolean(KEY_PREFERENCE_SECURE, false)
+                    }
+                } catch (_: IOException) {
+                    preferences.edit {
+                        putBoolean(KEY_PREFERENCE_SECURE, false)
+                    }
                 }
             }
             fac.port = getPort(preferences)
@@ -401,7 +406,7 @@ class FtpService : Service(), Runnable {
         }
 
         private fun getPort(preferences: SharedPreferences): Int {
-            return preferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT)
+            return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
         }
     }
 }
