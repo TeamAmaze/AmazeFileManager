@@ -327,6 +327,7 @@
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>
     <string name="paypal_copy_message">PayPal ID copied to clipboard</string>
+    <string name="smb_search_network_required">Device search needs a local network connection. You can enter a host address manually.</string>
     <string name="searching_devices">Searching for devices</string>
     <string name="smb_manual_enter_host">Enter Hostname Manually</string>
     <string name="bookmark_lost">Bookmark not found, recreating&#8230;</string>
