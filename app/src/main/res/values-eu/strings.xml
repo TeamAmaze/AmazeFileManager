@@ -728,7 +728,6 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="ftp_readonly">Irakurtzeko soilik sarbidea</string>
     <string name="legacy_listing_title">Erabili zerrendatze zaharra root-entzat</string>
     <string name="legacy_listing_summary">Gaituta badago, metodo zaharra erabiltzen du fitxategiak zerrendatzeko</string>
-    <string name="error_unsupported_v5_rar">\"%s\" RAR artxiboa ez da onartzen RAR v5 bertsioan.</string>
     <string name="ftp_prompt_restart_server">FTP zerbitzaria berrabiarazi beharko duzu aldaketak indarrean jartzeko.</string>
     <string name="error_permission_denied">Baimena ukatua</string>
     <string name="error_archive_password_incorrect">Artxiboko pasahitz okerra</string>
