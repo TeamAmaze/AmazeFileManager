@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Rounded background for contextual popup menus (per-item overflow and the toolbar overflow).
+    The fill follows the theme via ?attr/popupSurfaceColor so it matches light/dark/black.
+    -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="?attr/popupSurfaceColor" />
+    <corners android:radius="@dimen/popup_menu_corner_radius" />
+</shape>

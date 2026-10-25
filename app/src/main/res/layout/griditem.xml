@@ -3,9 +3,7 @@
     android:id="@+id/second"
     android:layout_width="match_parent"
     android:layout_height="170dp"
-    android:layout_margin="2dp"
-    android:background="@drawable/item_doc_grid"
-    android:foreground="@drawable/item_backgrund"
+    android:foreground="?android:attr/selectableItemBackground"
     android:focusable="true"
     android:nextFocusDown="@id/properties">
 
@@ -13,6 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingTop="@dimen/grid_thumb_inset"
+        android:paddingStart="@dimen/grid_thumb_inset"
+        android:paddingLeft="@dimen/grid_thumb_inset"
+        android:paddingEnd="@dimen/grid_thumb_inset"
+        android:paddingRight="@dimen/grid_thumb_inset"
         android:paddingBottom="6dp">
 
         <RelativeLayout

@@ -436,6 +436,9 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     )
             }
 
+            // Restore the white/grey app bar surface after selection mode recoloured it.
+            mainActivity.applyAppBarSurface()
+
             if (mainActivity.drawer.isLocked) {
                 mainActivity.drawer.unlockIfNotOnTablet()
             }
