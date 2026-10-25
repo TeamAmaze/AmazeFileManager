@@ -36,6 +36,7 @@ import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
+import com.amaze.filemanager.ui.activities.texteditor.MarkdownHtmlGenerator;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 
 import android.content.ContentResolver;
@@ -45,7 +46,30 @@ import androidx.documentfile.provider.DocumentFile;
 
 public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
-  public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
+  public static final int MAX_FILE_SIZE_CHARS = 100 * 1024;
+
+  /**
+   * Maximum number of characters loaded for Markdown files. Larger than {@link
+   * #MAX_FILE_SIZE_CHARS} because the Markdown preview renders the whole loaded text in a WebView,
+   * which cannot be windowed.
+   */
+  public static final int MAX_MARKDOWN_FILE_SIZE_CHARS = 512 * 1024;
+
+  /** Returns the character limit applicable to the file named {@code fileName}. */
+  public static int maxFileSizeChars(String fileName) {
+    return MarkdownHtmlGenerator.isMarkdownFile(fileName)
+        ? MAX_MARKDOWN_FILE_SIZE_CHARS
+        : MAX_FILE_SIZE_CHARS;
+  }
+
+  /**
+   * Maximum number of characters rendered in the editor for a large file.
+   *
+   * <p>This is deliberately smaller than {@link #MAX_FILE_SIZE_CHARS}: the latter is the threshold
+   * for switching to read-only windowed mode, while this limit keeps the main-thread text layout
+   * small enough to remain responsive when a window changes.
+   */
+  public static final int WINDOW_SIZE_CHARS = 8 * 1024;
 
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -53,6 +77,9 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
   private final boolean isRootExplorer;
 
   private File cachedFile = null;
+
+  /** The resolved File used for reading (may be a cached copy for root files). */
+  private File resolvedFile = null;
 
   public ReadTextFileCallable(
       ContentResolver contentResolver,
@@ -83,7 +110,9 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
           if (documentFile != null && documentFile.exists() && documentFile.canWrite()) {
             inputStream = contentResolver.openInputStream(documentFile.getUri());
           } else {
-            inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+            File contentFile = FileUtils.fromContentUri(fileAbstraction.uri);
+            resolvedFile = contentFile;
+            inputStream = loadFile(contentFile);
           }
         } else {
           inputStream = contentResolver.openInputStream(fileAbstraction.uri);
@@ -94,6 +123,7 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
         Objects.requireNonNull(hybridFileParcelable);
 
         File file = hybridFileParcelable.getFile();
+        resolvedFile = file;
         inputStream = loadFile(file);
 
         break;
@@ -106,7 +136,7 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
     InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
-    char[] buffer = new char[MAX_FILE_SIZE_CHARS];
+    char[] buffer = new char[maxFileSizeChars(fileAbstraction.name)];
 
     final int readChars = inputStreamReader.read(buffer);
     boolean tooLong = -1 != inputStream.read();
@@ -121,7 +151,45 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
       fileContents = String.valueOf(buffer, 0, readChars);
     }
 
-    return new ReturnedValueOnReadFile(fileContents, cachedFile, tooLong);
+    FileWindowReader fileWindowReader = null;
+    FileWindowReader.WindowResult initialWindow = null;
+    long totalFileSize = 0L;
+
+    if (tooLong) {
+      // Create a FileWindowReader for windowed mode
+      if (cachedFile != null) {
+        // Root file was cached locally
+        fileWindowReader = FileWindowReader.Companion.fromFile(cachedFile);
+        totalFileSize = cachedFile.length();
+      } else if (resolvedFile != null) {
+        fileWindowReader = FileWindowReader.Companion.fromFile(resolvedFile);
+        totalFileSize = resolvedFile.length();
+      } else if (fileAbstraction.scheme == EditableFileAbstraction.Scheme.CONTENT
+          && fileAbstraction.uri != null) {
+        try {
+          fileWindowReader =
+              FileWindowReader.Companion.fromContentUri(contentResolver, fileAbstraction.uri);
+          totalFileSize = fileWindowReader.getFileSize();
+        } catch (Exception e) {
+          // Content provider doesn't support seekable file descriptors;
+          // windowed mode won't be available but the initial chunk is still shown
+          fileWindowReader = null;
+          totalFileSize = 0L;
+        }
+      }
+
+      if (fileWindowReader != null) {
+        initialWindow = fileWindowReader.readWindow(0L, WINDOW_SIZE_CHARS);
+      }
+    }
+
+    return new ReturnedValueOnReadFile(
+        initialWindow != null ? initialWindow.getText() : fileContents,
+        cachedFile,
+        tooLong,
+        fileWindowReader,
+        totalFileSize,
+        initialWindow);
   }
 
   private InputStream loadFile(File file) throws ShellNotRunningException, IOException {

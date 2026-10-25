@@ -129,11 +129,24 @@ class ReadTextFileTask(
 
         if (value.fileIsTooLong) {
             textEditorActivity.setReadOnly()
+
+            // Initialize windowed mode in the ViewModel
+            viewModel.isWindowed = true
+            viewModel.fileWindowReader = value.fileWindowReader
+            viewModel.totalFileSize = value.totalFileSize
+            viewModel.windowStartByte = value.initialWindow?.startByte ?: 0L
+            viewModel.windowEndByte =
+                value.initialWindow?.endByte
+                    ?: value.fileContents.toByteArray(Charsets.UTF_8).size.toLong()
+
             val snackbar =
                 Snackbar.make(
                     textEditorActivity.mainTextView,
                     textEditorActivity.resources
-                        .getString(R.string.file_too_long, ReadTextFileCallable.MAX_FILE_SIZE_CHARS),
+                        .getString(
+                            R.string.file_too_long,
+                            ReadTextFileCallable.maxFileSizeChars(viewModel.file?.name),
+                        ),
                     Snackbar.LENGTH_INDEFINITE,
                 )
             snackbar.setAction(
@@ -141,6 +154,9 @@ class ReadTextFileTask(
                     .uppercase(Locale.getDefault()),
             ) { snackbar.dismiss() }
             snackbar.show()
+
+            // Initialize windowed scroll listener after content is set
+            textEditorActivity.initWindowedScrollListener()
         }
     }
 }

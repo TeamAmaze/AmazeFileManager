@@ -20,10 +20,17 @@
 
 package com.amaze.filemanager.ui.activities.texteditor
 
+import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.FileWindowReader
 import java.io.File
 
 data class ReturnedValueOnReadFile(
     val fileContents: String,
     val cachedFile: File?,
     val fileIsTooLong: Boolean,
+    /** Non-null when fileIsTooLong — provides seekable access to the full file. */
+    val fileWindowReader: FileWindowReader? = null,
+    /** Total file size in bytes, set when fileIsTooLong. */
+    val totalFileSize: Long = 0L,
+    /** Initial bounded window, when windowed mode has seekable access to the file. */
+    val initialWindow: FileWindowReader.WindowResult? = null,
 )
