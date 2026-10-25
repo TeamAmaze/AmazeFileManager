@@ -728,7 +728,6 @@
     <string name="ftp_readonly">읽기 전용 액세스</string>
     <string name="legacy_listing_title">루트에서 기존 파일 목록 방식 사용</string>
     <string name="legacy_listing_summary">활성화하면 기존 방식으로 파일 목록을 표시합니다</string>
-    <string name="error_unsupported_v5_rar">\"%s\" RAR 압축 파일은 RAR v5 형식을 사용하므로 지원되지 않습니다.</string>
     <string name="ftp_prompt_restart_server">변경 사항을 적용하려면 FTP 서버를 다시 시작해야 합니다.</string>
     <string name="error_permission_denied">권한이 거부되었습니다</string>
     <string name="error_archive_password_incorrect">압축 파일 비밀번호가 올바르지 않습니다</string>
