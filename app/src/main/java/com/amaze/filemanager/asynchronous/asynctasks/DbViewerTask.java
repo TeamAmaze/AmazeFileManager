@@ -27,6 +27,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebView;
 
@@ -100,7 +101,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
     // init schema row
     stringBuilder.append("<tr>");
     for (String s : schemaList) {
-      stringBuilder.append("<th>").append(s).append("</th>");
+      stringBuilder.append("<th>").append(TextUtils.htmlEncode(s == null ? "" : s)).append("</th>");
     }
     stringBuilder.append("</tr>");
 
@@ -108,7 +109,10 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
       // init content row
       stringBuilder.append("<tr>");
       for (int i = 0; i < strings.length; i++) {
-        stringBuilder.append("<td>").append(strings[i]).append("</td>");
+        stringBuilder
+            .append("<td>")
+            .append(TextUtils.htmlEncode(strings[i] == null ? "" : strings[i]))
+            .append("</td>");
       }
       stringBuilder.append("</tr>");
     }
