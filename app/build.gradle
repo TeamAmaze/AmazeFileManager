@@ -99,6 +99,8 @@ android {
     }
 
     compileOptions {
+        // Dependencies such as Glide use java.util.function, which is missing below API 24
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
         targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
     }
@@ -131,6 +133,8 @@ dependencies {
             replacedBy("org.bouncycastle:bcpkix-jdk18on")
         }
     }
+
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation libs.systembarTint
