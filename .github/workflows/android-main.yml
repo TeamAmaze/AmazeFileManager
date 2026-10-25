@@ -49,6 +49,11 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 21
+      - name: Set up NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
+        with:
+          ndk-version: r30
+          link-to-sdk: true
       - name: Install Rust
         uses: dtolnay/rust-toolchain@1.98.1
       - name: Cache Rust dependencies
@@ -106,7 +111,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        api-level: [ 21, 28 ]
+        api-level: [ 23, 28 ]
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -115,6 +120,11 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 21
+      - name: Set up NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
+        with:
+          ndk-version: r30
+          link-to-sdk: true
       - name: Install Rust
         uses: dtolnay/rust-toolchain@1.98.1
       - name: Cache Rust dependencies

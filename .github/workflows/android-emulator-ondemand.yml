@@ -9,9 +9,9 @@ on:
         default: 'master'
         type: string
       api-levels:
-        description: 'API levels to test (comma-separated, e.g. "21,28")'
+        description: 'API levels to test (comma-separated, e.g. "23,28")'
         required: false
-        default: '21,28'
+        default: '23,28'
         type: string
 
 jobs:
@@ -27,11 +27,16 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.branch }}
-      - name: Java 17
+      - name: Java 21
         uses: actions/setup-java@v5
         with:
           distribution: "temurin"
-          java-version: 17
+          java-version: 21
+      - name: Set up NDK
+        uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779
+        with:
+          ndk-version: r30
+          link-to-sdk: true
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
