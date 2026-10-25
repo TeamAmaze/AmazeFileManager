@@ -61,11 +61,12 @@ public class DbViewerFragment extends Fragment {
     tableName = getArguments().getString("table");
     databaseViewerActivity.setTitle(tableName);
 
+    String quotedTableName = "\"" + tableName.replace("\"", "\"\"") + "\"";
     schemaCursor =
         databaseViewerActivity.sqLiteDatabase.rawQuery(
-            "PRAGMA table_info(" + tableName + ");", null);
+            "PRAGMA table_info(" + quotedTableName + ");", null);
     contentCursor =
-        databaseViewerActivity.sqLiteDatabase.rawQuery("SELECT * FROM " + tableName, null);
+        databaseViewerActivity.sqLiteDatabase.rawQuery("SELECT * FROM " + quotedTableName, null);
 
     new DbViewerTask(schemaCursor, contentCursor, webView, this).execute();
 

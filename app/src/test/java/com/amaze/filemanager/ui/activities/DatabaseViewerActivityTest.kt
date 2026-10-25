@@ -20,15 +20,19 @@
 
 package com.amaze.filemanager.ui.activities
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import io.mockk.every
 import io.mockk.spyk
 import org.awaitility.Awaitility.await
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -104,5 +108,19 @@ class DatabaseViewerActivityTest {
 
         // Clean up
         validDbFile.delete()
+    }
+
+    /**
+     * The activity can read protected files via root, so it must not be reachable by other apps.
+     */
+    @Test
+    fun testActivityNotExported() {
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val info =
+            context.packageManager.getActivityInfo(
+                ComponentName(context, DatabaseViewerActivity::class.java),
+                PackageManager.GET_META_DATA,
+            )
+        assertFalse(info.exported)
     }
 }

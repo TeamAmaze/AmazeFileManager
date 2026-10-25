@@ -114,7 +114,8 @@ public class DatabaseViewerActivity extends ThemedActivity {
   private void load(final File file) {
     new Thread(
             () -> {
-              File file1 = getExternalCacheDir();
+              // app-private cache: the root copy must not land on shared storage
+              File file1 = getCacheDir();
 
               // if the db can't be read, and we have root enabled, try reading it by
               // first copying it in cache dir

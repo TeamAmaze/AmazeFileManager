@@ -31,6 +31,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
+import java.io.File;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -169,5 +171,43 @@ public class DbViewerTaskTest {
     assertEquals(3, headerRow.size());
 
     sqLiteDatabase.close();
+  }
+
+  @Test
+  public void testMarkupInDatabaseIsEscaped() throws Exception {
+    String scriptPayload = "<script>alert(1)</script>";
+    String headerPayload = "<img src=x onerror=alert(2)>";
+    File dbFile = File.createTempFile("injection", ".db");
+    dbFile.deleteOnExit();
+    SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbFile.getPath(), null);
+    db.execSQL("CREATE TABLE \"evil\" (\"" + headerPayload.replace("\"", "\"\"") + "\" TEXT)");
+    db.execSQL("INSERT INTO evil VALUES ('" + scriptPayload + "')");
+    db.execSQL("INSERT INTO evil VALUES (NULL)");
+
+    DbViewerFragment mock = mock(DbViewerFragment.class);
+    mock.loadingText = new AppCompatTextView(ApplicationProvider.getApplicationContext());
+    mock.databaseViewerActivity = mock(DatabaseViewerActivity.class);
+    when(mock.databaseViewerActivity.getAppTheme()).thenReturn(AppTheme.LIGHT);
+    Cursor schemaCursor = db.rawQuery("PRAGMA table_info(\"evil\");", null);
+    Cursor contentCursor = db.rawQuery("SELECT * FROM \"evil\"", null);
+
+    DbViewerTask task = new DbViewerTask(schemaCursor, contentCursor, webView, mock);
+    task.onPreExecute();
+    task.doInBackground();
+    task.onPostExecute(null);
+
+    String output = task.stringBuilder.toString();
+    assertTrue(!output.contains("<script>"));
+    assertTrue(!output.contains("<img"));
+
+    Document html = Jsoup.parse(output);
+    assertEquals(0, html.getElementsByTag("script").size());
+    assertEquals(0, html.getElementsByTag("img").size());
+    assertEquals(headerPayload, html.getElementsByTag("th").get(0).text());
+    assertEquals(scriptPayload, html.getElementsByTag("td").get(0).text());
+    assertEquals("", html.getElementsByTag("td").get(1).text());
+
+    db.close();
+    dbFile.delete();
   }
 }

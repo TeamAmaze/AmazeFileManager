@@ -168,7 +168,7 @@
 
         </activity>
         <activity
-            android:exported="true"
+            android:exported="false"
             android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
             android:theme="@style/appCompatBlack"
