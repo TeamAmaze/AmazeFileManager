@@ -1850,7 +1850,9 @@ public class HybridFile {
    * @return
    */
   public TrashBinFile toTrashBinFile(Context context) {
-    return new TrashBinFile(getName(context), isDirectory(context), path, length(context), null);
+    boolean directory = isDirectory(context);
+    long size = directory ? folderSize(context) : length(context);
+    return new TrashBinFile(getName(context), directory, path, size, null);
   }
 
   /**
