@@ -648,6 +648,50 @@ public class GeneralDialogCreation {
     dialog.show();
   }
 
+  /** Shows the recursive total for a snapshot of selected local files without changing them. */
+  public static void showBatchPropertiesDialog(
+      @NonNull List<HybridFileParcelable> selectedFiles,
+      @NonNull ThemedActivity themedActivity,
+      @NonNull AppTheme appTheme) {
+    if (selectedFiles.isEmpty()) return;
+
+    final ArrayList<HybridFileParcelable> files = new ArrayList<>(selectedFiles);
+    final Context context = themedActivity.getApplicationContext();
+    final MaterialDialog dialog =
+        new MaterialDialog.Builder(themedActivity)
+            .title(R.string.properties)
+            .content(R.string.calculating)
+            .theme(appTheme.getMaterialDialogTheme())
+            .positiveText(R.string.ok)
+            .positiveColor(themedActivity.getAccent())
+            .build();
+
+    AsyncTask<Void, Void, Long> task =
+        new AsyncTask<Void, Void, Long>() {
+          @Override
+          protected Long doInBackground(Void... params) {
+            return FileUtils.getTotalBytes(files, context);
+          }
+
+          @Override
+          protected void onPostExecute(Long size) {
+            if (!isCancelled() && dialog.isShowing()) {
+              dialog.setContent(
+                  files.size()
+                      + " "
+                      + context.getResources().getQuantityString(R.plurals.items, files.size())
+                      + "\n"
+                      + context.getString(R.string.total)
+                      + " "
+                      + Formatter.formatFileSize(context, size));
+            }
+          }
+        };
+    dialog.setOnDismissListener(ignored -> task.cancel(true));
+    dialog.show();
+    task.execute();
+  }
+
   public static void showPropertiesDialogWithPermissions(
       @NonNull HybridFileParcelable baseFile,
       @Nullable final String permissions,
