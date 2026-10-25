@@ -77,6 +77,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -87,7 +88,7 @@ public class TextEditorActivity extends ThemedActivity
   public AppCompatEditText searchEditText;
   private Typeface inputTypefaceDefault;
   private Typeface inputTypefaceMono;
-  private androidx.appcompat.widget.Toolbar toolbar;
+  private Toolbar toolbar;
   ScrollView scrollView;
   private WebView markdownWebView;
   private ProgressBar windowLoadingIndicator;
@@ -795,6 +796,10 @@ public class TextEditorActivity extends ThemedActivity
                     scrollView.scrollTo(0, targetY);
                     clearPendingWindowApplyPreDrawListener();
                     scrollView.post(() -> isApplyingWindowContent = false);
+                    // Scroll events during suppression are dropped, so a user who stopped at an
+                    // edge would otherwise have to scroll again to trigger the next slide.
+                    scrollView.postDelayed(
+                        this::loadWindowIfNearEdge, WINDOW_LOAD_SUPPRESSION_MS + 50L);
                     invalidateOptionsMenu();
                     return true; // proceed with this draw pass using the corrected scroll
                   };
@@ -913,32 +918,33 @@ public class TextEditorActivity extends ThemedActivity
   public void initWindowedScrollListener() {
     if (windowedScrollListener != null) return; // already initialized
 
-    windowedScrollListener =
-        () -> {
-          if (!viewModel.isWindowed()) return;
-          if (isApplyingWindowContent) return;
-          if (SystemClock.uptimeMillis() < suppressWindowLoadsUntilMs) return;
-
-          int scrollY = scrollView.getScrollY();
-          int viewportHeight = scrollView.getHeight();
-          int contentHeight = mainTextView.getHeight();
-
-          if (contentHeight <= 0 || viewportHeight <= 0) return;
-
-          // Threshold: 20% of viewport
-          int threshold = viewportHeight / 5;
-
-          int distanceFromBottom = contentHeight - scrollY - viewportHeight;
-          int distanceFromTop = scrollY;
-
-          if (distanceFromBottom < threshold) {
-            viewModel.loadWindow(TextEditorActivityViewModel.Direction.FORWARD);
-          } else if (distanceFromTop < threshold) {
-            viewModel.loadWindow(TextEditorActivityViewModel.Direction.BACKWARD);
-          }
-        };
+    windowedScrollListener = this::loadWindowIfNearEdge;
 
     scrollView.getViewTreeObserver().addOnScrollChangedListener(windowedScrollListener);
+  }
+
+  private void loadWindowIfNearEdge() {
+    if (!viewModel.isWindowed()) return;
+    if (isApplyingWindowContent) return;
+    if (SystemClock.uptimeMillis() < suppressWindowLoadsUntilMs) return;
+
+    int scrollY = scrollView.getScrollY();
+    int viewportHeight = scrollView.getHeight();
+    int contentHeight = mainTextView.getHeight();
+
+    if (contentHeight <= 0 || viewportHeight <= 0) return;
+
+    // Threshold: 20% of viewport
+    int threshold = viewportHeight / 5;
+
+    int distanceFromBottom = contentHeight - scrollY - viewportHeight;
+    int distanceFromTop = scrollY;
+
+    if (distanceFromBottom < threshold) {
+      viewModel.loadWindow(TextEditorActivityViewModel.Direction.FORWARD);
+    } else if (distanceFromTop < threshold) {
+      viewModel.loadWindow(TextEditorActivityViewModel.Direction.BACKWARD);
+    }
   }
 
   // ── Markdown Preview Helpers ────────────────────────────────────────

@@ -28,6 +28,7 @@ import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.MAX_FILE_SIZE_CHARS
+import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.MAX_MARKDOWN_FILE_SIZE_CHARS
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.WINDOW_SIZE_CHARS
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException
@@ -154,6 +155,42 @@ class ReadTextFileCallableTest {
             result,
             ReturnedValueOnReadFile(fileContents.substring(0, MAX_FILE_SIZE_CHARS), null, true),
         )
+    }
+
+    /**
+     * A Markdown file longer than [MAX_FILE_SIZE_CHARS] but within
+     * [MAX_MARKDOWN_FILE_SIZE_CHARS] is loaded in full, not windowed
+     */
+    @Test
+    fun testReadBigMarkdownFileWithinMarkdownLimit() {
+        val fileContents = "a".repeat(MAX_FILE_SIZE_CHARS * 2)
+        val result = readContentUri(fileContents, "foobar.md")
+        assertEquals(ReturnedValueOnReadFile(fileContents, null, false), result)
+    }
+
+    /**
+     * A Markdown file longer than [MAX_MARKDOWN_FILE_SIZE_CHARS] is truncated to that limit
+     */
+    @Test
+    fun testReadMarkdownFileBeyondMarkdownLimit() {
+        val fileContents = "a".repeat(MAX_MARKDOWN_FILE_SIZE_CHARS + 1)
+        val result = readContentUri(fileContents, "foobar.MD")
+        assertEquals(
+            ReturnedValueOnReadFile(fileContents.substring(0, MAX_MARKDOWN_FILE_SIZE_CHARS), null, true),
+            result,
+        )
+    }
+
+    private fun readContentUri(
+        fileContents: String,
+        fileName: String,
+    ): ReturnedValueOnReadFile {
+        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
+        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/$fileName")
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val cr = ctx.contentResolver
+        Shadows.shadowOf(cr).registerInputStream(uri, ByteArrayInputStream(fileContents.toByteArray()))
+        return ReadTextFileCallable(cr, EditableFileAbstraction(ctx, uri), null, false).call()
     }
 
     private fun generatePath(): Uri {

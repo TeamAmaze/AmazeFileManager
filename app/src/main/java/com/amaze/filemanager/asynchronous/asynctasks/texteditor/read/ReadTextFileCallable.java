@@ -36,6 +36,7 @@ import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
+import com.amaze.filemanager.ui.activities.texteditor.MarkdownHtmlGenerator;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 
 import android.content.ContentResolver;
@@ -48,13 +49,27 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
   public static final int MAX_FILE_SIZE_CHARS = 100 * 1024;
 
   /**
+   * Maximum number of characters loaded for Markdown files. Larger than {@link
+   * #MAX_FILE_SIZE_CHARS} because the Markdown preview renders the whole loaded text in a WebView,
+   * which cannot be windowed.
+   */
+  public static final int MAX_MARKDOWN_FILE_SIZE_CHARS = 512 * 1024;
+
+  /** Returns the character limit applicable to the file named {@code fileName}. */
+  public static int maxFileSizeChars(String fileName) {
+    return MarkdownHtmlGenerator.isMarkdownFile(fileName)
+        ? MAX_MARKDOWN_FILE_SIZE_CHARS
+        : MAX_FILE_SIZE_CHARS;
+  }
+
+  /**
    * Maximum number of characters rendered in the editor for a large file.
    *
    * <p>This is deliberately smaller than {@link #MAX_FILE_SIZE_CHARS}: the latter is the threshold
    * for switching to read-only windowed mode, while this limit keeps the main-thread text layout
    * small enough to remain responsive when a window changes.
    */
-  public static final int WINDOW_SIZE_CHARS = 16 * 1024;
+  public static final int WINDOW_SIZE_CHARS = 8 * 1024;
 
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -121,7 +136,7 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
     InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
-    char[] buffer = new char[MAX_FILE_SIZE_CHARS];
+    char[] buffer = new char[maxFileSizeChars(fileAbstraction.name)];
 
     final int readChars = inputStreamReader.read(buffer);
     boolean tooLong = -1 != inputStream.read();

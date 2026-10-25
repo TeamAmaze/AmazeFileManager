@@ -75,7 +75,7 @@ concurrentTrees = "2.6.1"
 aboutLibraries = "6.1.1"
 amazeTrashBin = "1.0.10"
 rustAndroidGradle = "0.9.6"
-commonmark = "0.27.1"
+commonmark = "0.31.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }

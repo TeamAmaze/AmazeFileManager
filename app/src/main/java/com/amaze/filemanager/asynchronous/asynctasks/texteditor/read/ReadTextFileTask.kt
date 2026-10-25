@@ -143,7 +143,10 @@ class ReadTextFileTask(
                 Snackbar.make(
                     textEditorActivity.mainTextView,
                     textEditorActivity.resources
-                        .getString(R.string.file_too_long, ReadTextFileCallable.MAX_FILE_SIZE_CHARS),
+                        .getString(
+                            R.string.file_too_long,
+                            ReadTextFileCallable.maxFileSizeChars(viewModel.file?.name),
+                        ),
                     Snackbar.LENGTH_INDEFINITE,
                 )
             snackbar.setAction(
