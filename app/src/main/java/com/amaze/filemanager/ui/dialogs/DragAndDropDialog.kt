@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -135,7 +135,7 @@ class DragAndDropDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         safeLet(
             context,
-            mainActivity?.appTheme?.getMaterialDialogTheme(),
+            mainActivity?.appTheme?.materialDialogTheme,
             mainActivity?.accent,
             pasteLocation,
             operationFiles,
@@ -146,7 +146,7 @@ class DragAndDropDialog : DialogFragment() {
                     .title(getString(R.string.choose_operation))
                     .customView(R.layout.dialog_drag_drop, true)
                     .theme(dialogTheme)
-                    .negativeText(getString(R.string.cancel).toUpperCase())
+                    .negativeText(getString(R.string.cancel).uppercase())
                     .negativeColor(accent)
                     .cancelable(false)
                     .onNeutral { _: MaterialDialog?, _: DialogAction? ->

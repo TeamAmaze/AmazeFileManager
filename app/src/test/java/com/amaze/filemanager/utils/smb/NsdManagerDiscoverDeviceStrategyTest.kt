@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -24,7 +24,7 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Build.VERSION_CODES.R
 import androidx.test.core.app.ApplicationProvider
@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit
  */
 @Suppress("LongClass", "StringLiteralDuplication")
 @RunWith(AndroidJUnit4::class)
-@Config(sdk = [LOLLIPOP, P, R])
+@Config(sdk = [M, P, R])
 class NsdManagerDiscoverDeviceStrategyTest {
     private lateinit var context: Context
     private lateinit var mockNsdManager: NsdManager

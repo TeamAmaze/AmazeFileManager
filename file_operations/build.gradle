@@ -2,10 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+apply from: "../gradle/setupRustAndroidLocal.gradle"
 
 android {
     namespace "com.amaze.filemanager.fileoperations"
-    compileSdk libs.versions.compileSdk.get().toInteger()
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
     ndkVersion libs.versions.ndk.get()
     packagingOptions {
         resources {
@@ -31,13 +32,9 @@ android {
         }
     }
 
-    sourceSets {
-        test.java.srcDirs += '../testShared/src/test/java'
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
+        targetCompatibility JavaVersion.toVersion(libs.versions.jvmTarget.get().toInteger())
     }
 
     testOptions {
@@ -45,10 +42,6 @@ android {
             includeAndroidResources = true
             returnDefaultValues = true
         }
-    }
-
-    kotlinOptions {
-        jvmTarget = '17'
     }
 }
 
@@ -66,7 +59,7 @@ cargo {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(libs.versions.jvmTarget.get().toInteger())
 }
 
 // Ensure Rust libraries are built before Android tasks
@@ -115,6 +108,7 @@ dependencies {
     //TODO some libs are not needed
 
     //For tests
+    testImplementation project(':testShared')
     testImplementation libs.junit //tests the app logic
     testImplementation libs.robolectric //tests android interaction
     testImplementation libs.robolectric.shadows.httpclient //tests android interaction
@@ -140,4 +134,10 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation libs.androidX.appcompat
+}
+
+tasks.matching {
+    it.name.startsWith('cargoBuild')
+}.configureEach {
+    it.dependsOn 'setupRustAndroidLocal'
 }

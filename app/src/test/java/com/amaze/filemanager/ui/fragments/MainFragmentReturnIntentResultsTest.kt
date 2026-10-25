@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2024 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalneham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -17,12 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.fragments
 import android.app.Activity
 import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.provider.MediaStore
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -65,7 +66,7 @@ import org.robolectric.shadows.ShadowToast
  * - When `mRingtonePickerIntent == true` but the file is NOT found in MediaStore, the activity
  *   must show an error [android.widget.Toast] and finish with RESULT_CANCELED.
  *
- * Tests run only on [LOLLIPOP] (API 21) so that `Utils.getUriForBaseFile` returns a plain
+ * Tests run only on [M] (API 23) so that `Utils.getUriForBaseFile` returns a plain
  * `file://` URI via `Uri.fromFile()` without requiring a configured
  * [androidx.core.content.FileProvider].
  *
@@ -78,8 +79,8 @@ import org.robolectric.shadows.ShadowToast
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("StringLiteralDuplication")
 @Config(
-    // API 21: Uri.fromFile() path avoids FileProvider setup complexity.
-    sdk = [LOLLIPOP],
+    // API 23 (pre-N): Uri.fromFile() path avoids FileProvider setup complexity.
+    sdk = [M],
     shadows = [
         ShadowMultiDex::class,
         ShadowStorageManager::class,
@@ -309,9 +310,9 @@ class MainFragmentReturnIntentResultsTest {
             )
             val resultData: Uri? = shadow.resultIntent?.data
             assertNotNull("Result URI must not be null for normal pick", resultData)
-            // On LOLLIPOP, Utils.getUriForBaseFile returns a file:// URI.
+            // On API 23, Utils.getUriForBaseFile returns a file:// URI.
             assertEquals(
-                "Normal pick result must use file:// scheme on API 21",
+                "Normal pick result must use file:// scheme on API 23",
                 "file",
                 resultData!!.scheme,
             )

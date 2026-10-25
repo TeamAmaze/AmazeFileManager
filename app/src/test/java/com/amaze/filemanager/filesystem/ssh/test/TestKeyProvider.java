@@ -29,6 +29,7 @@ import java.security.SecureRandom;
 import java.util.Collections;
 
 import org.apache.sshd.common.keyprovider.KeyPairProvider;
+import org.apache.sshd.common.session.SessionContext;
 
 import net.schmizz.sshj.common.KeyType;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
@@ -44,7 +45,7 @@ public class TestKeyProvider implements KeyPairProvider, KeyProvider {
   }
 
   @Override
-  public Iterable<KeyPair> loadKeys() {
+  public Iterable<KeyPair> loadKeys(SessionContext sessionContext) {
     return Collections.singleton(keyPair);
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2023 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -51,7 +51,7 @@ import org.robolectric.shadows.ShadowStorageManager
  */
 @Config(
     sdk = [
-        Build.VERSION_CODES.LOLLIPOP,
+        Build.VERSION_CODES.M,
         Build.VERSION_CODES.N,
         Build.VERSION_CODES.P,
         Build.VERSION_CODES.R,
