@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments.preferencefragments
 
+import android.os.Build
 import android.os.Bundle
 import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
@@ -50,6 +51,9 @@ class AppearancePrefsFragment : BasePrefsFragment() {
     private val onClickTheme =
         Preference.OnPreferenceClickListener {
             val builder = MaterialDialog.Builder(activity)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                builder.itemsDisabledIndices(AppThemePreference.SYSTEM_INDEX)
+            }
             builder.items(R.array.theme)
                 .itemsCallbackSingleChoice(currentTheme) { dialog, _, which, _ ->
                     val editor = activity.prefs.edit()
