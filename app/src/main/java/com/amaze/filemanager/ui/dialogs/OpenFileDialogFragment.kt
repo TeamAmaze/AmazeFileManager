@@ -157,18 +157,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             chooserIntent.setDataAndType(uri, mimeType)
 
-            for (
-                resolveInfo in context.packageManager
-                    .queryIntentActivities(
-                        chooserIntent,
-                        PackageManager.MATCH_DEFAULT_ONLY,
-                    )
-                ) context.grantUriPermission(
-                    resolveInfo.activityInfo.packageName,
-                    uri,
-                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                )
-
             if (useNewStack) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)

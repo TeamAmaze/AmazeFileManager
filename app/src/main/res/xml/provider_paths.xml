@@ -2,9 +2,11 @@
 <paths>
     <external-path path="Android/data/${applicationId}/" name="package_root" />
     <cache-path path="Android/data/${applicationId}/" name="cache" />
+    <cache-path path="open_with/" name="open_with" />
     <!--
-    root-path is suggested in https://stackoverflow.com/q/42516126
-    as a workaround to access files only accessible via root
+    Only mounted storage volumes (primary and removable) are exposed, not the whole filesystem.
+    The names are relied upon by FileUtils.fromContentUri().
     -->
-    <root-path path="." name="storage_root" />
+    <root-path path="storage/" name="storage_root" />
+    <root-path path="mnt/media_rw/" name="media_rw_root" />
 </paths>

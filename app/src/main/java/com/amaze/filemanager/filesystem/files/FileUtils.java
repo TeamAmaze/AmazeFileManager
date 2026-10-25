@@ -23,6 +23,12 @@ package com.amaze.filemanager.filesystem.files;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +64,7 @@ import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.topjohnwu.superuser.io.SuFileInputStream;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
@@ -85,11 +92,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
 import jcifs.smb.SmbFile;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -106,6 +118,9 @@ public class FileUtils {
       };
 
   public static final String FILE_PROVIDER_PREFIX = "storage_root";
+  public static final String FILE_PROVIDER_MEDIA_RW_PREFIX = "media_rw_root";
+  public static final String OPEN_WITH_CACHE_DIR = "open_with";
+  private static final long OPEN_WITH_CACHE_EXPIRY_MS = 24L * 60 * 60 * 1000;
   public static final String NOMEDIA_FILE = ".nomedia";
   public static final String DUMMY_FILE = ".DummyFile";
 
@@ -317,7 +332,6 @@ public class FileUtils {
   public static void shareFiles(
       ArrayList<File> files, Activity activity, AppTheme appTheme, int fab_skin) {
 
-    ArrayList<Uri> uris = new ArrayList<>();
     boolean isGenericFileType = false;
 
     String mime =
@@ -326,7 +340,6 @@ public class FileUtils {
             : null;
 
     for (File f : files) {
-      uris.add(FileProvider.getUriForFile(activity, activity.getPackageName(), f));
       if (!isGenericFileType
           && (mime == null || !mime.equals(MimeTypes.getMimeType(f.getPath(), f.isDirectory())))) {
         isGenericFileType = true;
@@ -334,12 +347,27 @@ public class FileUtils {
     }
 
     if (isGenericFileType || mime == null) mime = MimeTypes.ALL_MIME_TYPES;
+    final String finalMime = mime;
 
-    try {
-      new ShareTask(activity, uris, appTheme, fab_skin).execute(mime);
-    } catch (Exception e) {
-      LOG.warn("failed to get share files", e);
-    }
+    Observable.fromIterable(files)
+        .concatMapMaybe(f -> getShareableUriAsync(activity, f))
+        .toList()
+        .subscribe(
+            uris -> {
+              if (activity.isFinishing() || uris.isEmpty()) {
+                if (!activity.isFinishing()) {
+                  Toast.makeText(activity, R.string.no_app_found, Toast.LENGTH_LONG).show();
+                }
+                return;
+              }
+              try {
+                new ShareTask(activity, new ArrayList<>(uris), appTheme, fab_skin)
+                    .execute(finalMime);
+              } catch (Exception e) {
+                LOG.warn("failed to get share files", e);
+              }
+            },
+            e -> onShareCopyFailed(activity, e));
   }
 
   public static float readableFileSizeFloat(long size) {
@@ -380,20 +408,37 @@ public class FileUtils {
           () -> installApk(f, permissionsActivity), true);
     }
 
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    String type = "application/vnd.android.package-archive";
+    final String type = "application/vnd.android.package-archive";
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      Uri downloadedApk =
-          FileProvider.getUriForFile(
-              permissionsActivity.getApplicationContext(), permissionsActivity.getPackageName(), f);
-      intent.setDataAndType(downloadedApk, type);
-      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+      // Files outside the FileProvider paths (eg. root-only) are copied to cache off the UI thread
+      getShareableUriAsync(permissionsActivity, f)
+          .subscribe(
+              downloadedApk -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(downloadedApk, type);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startInstallActivity(intent, permissionsActivity);
+              },
+              e -> onShareCopyFailed(permissionsActivity, e),
+              () -> {
+                if (!permissionsActivity.isFinishing()) {
+                  Toast.makeText(
+                          permissionsActivity, R.string.failed_install_apk, Toast.LENGTH_SHORT)
+                      .show();
+                }
+              });
     } else {
+      Intent intent = new Intent(Intent.ACTION_VIEW);
       intent.setDataAndType(Uri.fromFile(f), type);
       intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startInstallActivity(intent, permissionsActivity);
     }
+  }
 
+  private static void startInstallActivity(
+      @NonNull Intent intent, @NonNull PermissionsActivity permissionsActivity) {
+    if (permissionsActivity.isFinishing()) return;
     try {
       permissionsActivity.startActivity(intent);
     } catch (Exception e) {
@@ -445,8 +490,17 @@ public class FileUtils {
   /** Method supports showing a UI to ask user to open a file without any extension/mime */
   public static void openWith(
       final File f, final PreferenceActivity activity, final boolean useNewStack) {
-    openWith(
-        FileProvider.getUriForFile(activity, activity.getPackageName(), f), activity, useNewStack);
+    getShareableUriAsync(activity, f)
+        .subscribe(
+            uri -> {
+              if (!activity.isFinishing()) openWith(uri, activity, useNewStack);
+            },
+            e -> onShareCopyFailed(activity, e),
+            () -> {
+              if (!activity.isFinishing()) {
+                Toast.makeText(activity, R.string.no_app_found, Toast.LENGTH_SHORT).show();
+              }
+            });
   }
 
   public static void openWith(
@@ -498,10 +552,7 @@ public class FileUtils {
                   // to file's absolute path
                   intent.putExtra(
                       "path",
-                      uri.getPath()
-                          .substring(
-                              uri.getPath().indexOf(FILE_PROVIDER_PREFIX) - 1,
-                              FILE_PROVIDER_PREFIX.length() + 1));
+                      fromContentUri(uri).getAbsolutePath());
                   break;
                 case 5:
                   mimeType = MimeTypes.getMimeType(uri.getPath(), false);
@@ -651,6 +702,134 @@ public class FileUtils {
     }
   }
 
+  /** Thrown when copying a file into cache for sharing failed, eg. blocked by SELinux. */
+  public static class ShareCopyException extends IOException {
+    public ShareCopyException(String message, Throwable cause) {
+      super(message, cause);
+    }
+  }
+
+  /**
+   * Gets a {@link FileProvider} URI for given file. Files outside the paths exposed by the provider
+   * (eg. files in /data, only accessible using root) are copied into the app's cache, and the URI
+   * of the copy is returned instead.
+   *
+   * @return URI, or null if the file cannot be exposed
+   */
+  @Nullable
+  public static Uri getShareableUri(@NonNull Context context, @NonNull File file) {
+    try {
+      return getShareableUriOrThrow(context, file);
+    } catch (IOException e) {
+      LOG.warn("failed to copy {} to cache for sharing", file.getPath(), e);
+      return null;
+    }
+  }
+
+  /**
+   * Same as {@link #getShareableUri(Context, File)}, but failures while copying are thrown as
+   * {@link ShareCopyException}, so callers can tell them apart from files that simply cannot be
+   * shared (null return).
+   */
+  @Nullable
+  private static Uri getShareableUriOrThrow(@NonNull Context context, @NonNull File file)
+      throws IOException {
+    try {
+      return FileProvider.getUriForFile(context, context.getPackageName(), file);
+    } catch (IllegalArgumentException e) {
+      LOG.debug("{} is not covered by FileProvider paths, copying to cache", file.getPath());
+    }
+    if (file.isDirectory()) {
+      return null;
+    }
+
+    boolean readable = file.canRead();
+    if (!readable
+        && !PreferenceManager.getDefaultSharedPreferences(context)
+            .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false)) {
+      return null;
+    }
+
+    File dir = new File(context.getCacheDir(), OPEN_WITH_CACHE_DIR);
+    if (!dir.isDirectory() && !dir.mkdirs()) {
+      throw new ShareCopyException("cannot create " + dir, null);
+    }
+    deleteExpiredCopies(dir);
+
+    // Each copy goes to its own directory, so files with the same name never overwrite each other
+    File copyDir = new File(dir, UUID.randomUUID().toString());
+    if (!copyDir.mkdirs()) {
+      throw new ShareCopyException("cannot create " + copyDir, null);
+    }
+    File copy = new File(copyDir, file.getName());
+    // Root reads the source and this app writes the copy itself, so the copy always carries the
+    // app's own SELinux label and ownership, unlike a copy made by "cp" running as root.
+    try (InputStream in = readable ? new FileInputStream(file) : SuFileInputStream.open(file);
+        OutputStream out = new FileOutputStream(copy)) {
+      byte[] buffer = new byte[8192];
+      int len;
+      while ((len = in.read(buffer)) > 0) {
+        out.write(buffer, 0, len);
+      }
+    } catch (IOException | RuntimeException e) {
+      copy.delete();
+      copyDir.delete();
+      throw new ShareCopyException("failed to copy " + file, e);
+    }
+    try {
+      return FileProvider.getUriForFile(context, context.getPackageName(), copy);
+    } catch (IllegalArgumentException e) {
+      copy.delete();
+      copyDir.delete();
+      throw new ShareCopyException("copy is not exposed by FileProvider: " + copy, e);
+    }
+  }
+
+  private static void onShareCopyFailed(@NonNull Activity activity, @NonNull Throwable e) {
+    LOG.warn("failed to prepare file for sharing", e);
+    if (!activity.isFinishing()) {
+      Toast.makeText(
+              activity,
+              activity.getString(R.string.copy_error, activity.getString(R.string.copied)),
+              Toast.LENGTH_LONG)
+          .show();
+    }
+  }
+
+  private static void deleteExpiredCopies(@NonNull File dir) {
+    long expiry = System.currentTimeMillis() - OPEN_WITH_CACHE_EXPIRY_MS;
+    File[] stale = dir.listFiles(f -> f.lastModified() < expiry);
+    if (stale != null) {
+      for (File old : stale) {
+        File[] children = old.listFiles();
+        if (children != null) {
+          for (File child : children) {
+            child.delete();
+          }
+        }
+        old.delete();
+      }
+    }
+  }
+
+  /**
+   * Non-blocking version of {@link #getShareableUri(Context, File)}. Files covered by the provider
+   * paths emit immediately; copying to cache happens on an IO thread, and the result is delivered on
+   * the main thread, and a "copying" toast is shown on subscription. Completes empty if the file cannot be exposed.
+   */
+  @NonNull
+  public static Maybe<Uri> getShareableUriAsync(@NonNull Context context, @NonNull File file) {
+    try {
+      return Maybe.just(FileProvider.getUriForFile(context, context.getPackageName(), file));
+    } catch (IllegalArgumentException e) {
+      return Maybe.fromCallable(() -> getShareableUriOrThrow(context, file))
+          .doOnSubscribe(
+              d -> Toast.makeText(context, R.string.copying, Toast.LENGTH_SHORT).show())
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread());
+    }
+  }
+
   public static boolean canListFiles(File f) {
     return f.canRead() && f.isDirectory();
   }
@@ -695,12 +874,28 @@ public class FileUtils {
       @NonNull MainActivity mainActivity,
       @NonNull String mimeType,
       @NonNull Boolean useNewStack) {
-    OpenFileDialogFragment.Companion.openFileOrShow(
-        FileProvider.getUriForFile(mainActivity, mainActivity.getPackageName(), file),
-        mimeType,
-        useNewStack,
-        mainActivity,
-        false);
+    getShareableUriAsync(mainActivity, file)
+        .subscribe(
+            uri -> {
+              if (mainActivity.isFinishing()) return;
+              try {
+                OpenFileDialogFragment.Companion.openFileOrShow(
+                    uri, mimeType, useNewStack, mainActivity, false);
+              } catch (Exception e) {
+                Toast.makeText(
+                        mainActivity,
+                        mainActivity.getString(R.string.no_app_found),
+                        Toast.LENGTH_LONG)
+                    .show();
+                openWith(uri, mainActivity, useNewStack);
+              }
+            },
+            e -> onShareCopyFailed(mainActivity, e),
+            () -> {
+              if (!mainActivity.isFinishing()) {
+                Toast.makeText(mainActivity, R.string.no_app_found, Toast.LENGTH_LONG).show();
+              }
+            });
   }
 
   private static void openFileDialogFragmentFor(
@@ -1027,11 +1222,26 @@ public class FileUtils {
     if (!CONTENT.name().equalsIgnoreCase(uri.getScheme())) {
       LOG.warn("URI must start with content://. URI was [" + uri + "]");
     }
-    File pathFile = new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
+    String uriPath = uri.getPath();
+    if (uriPath.startsWith("/" + FILE_PROVIDER_PREFIX + "/")) {
+      // root-path "storage/" is exposed as storage_root, so the "/storage" part is stripped
+      File pathFile = new File("/storage" + uriPath.substring(FILE_PROVIDER_PREFIX.length() + 1));
+      if (!pathFile.exists()) {
+        // URIs generated before the provider paths were narrowed
+        File legacy = new File(uriPath.substring(FILE_PROVIDER_PREFIX.length() + 1));
+        if (legacy.exists()) {
+          return legacy;
+        }
+        LOG.warn("Failed to navigate to the initial path: {}", pathFile.getPath());
+      }
+      return pathFile;
+    } else if (uriPath.startsWith("/" + FILE_PROVIDER_MEDIA_RW_PREFIX + "/")) {
+      return new File(
+          "/mnt/media_rw" + uriPath.substring(FILE_PROVIDER_MEDIA_RW_PREFIX.length() + 1));
+    }
+    File pathFile = new File(uriPath);
     if (!pathFile.exists()) {
       LOG.warn("Failed to navigate to the initial path: {}", pathFile.getPath());
-      pathFile = new File(uri.getPath());
-      LOG.warn("Attempting to navigate to the fallback path: {}", pathFile.getPath());
     }
     return pathFile;
   }

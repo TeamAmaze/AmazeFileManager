@@ -23,17 +23,26 @@ package com.amaze.filemanager.filesystem.files
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
+import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.files.FileUtils.getPathsInPath
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.io.File
 import java.util.TimeZone
 
 @RunWith(AndroidJUnit4::class)
@@ -437,5 +446,168 @@ class FileUtilsTest {
         }
 
         TimeZone.setDefault(systemTz)
+    }
+
+    /** FileProvider caches path strategies statically, but Robolectric cache dir differs per test */
+    @Before
+    fun resetFileProviderCache() {
+        val field = androidx.core.content.FileProvider::class.java.getDeclaredField("sCache")
+        field.isAccessible = true
+        (field.get(null) as MutableMap<*, *>).clear()
+    }
+
+    @After
+    fun resetRx() {
+        RxJavaPlugins.reset()
+        RxAndroidPlugins.reset()
+    }
+
+    private val context get() = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+    @Test
+    fun testFromContentUriStorageRoot() {
+        val uri = Uri.parse("content://com.amaze.filemanager/storage_root/emulated/0/Download/a.txt")
+        assertEquals("/storage/emulated/0/Download/a.txt", FileUtils.fromContentUri(uri).path)
+    }
+
+    @Test
+    fun testFromContentUriMediaRw() {
+        val uri = Uri.parse("content://com.amaze.filemanager/media_rw_root/ABCD-1234/a.txt")
+        assertEquals("/mnt/media_rw/ABCD-1234/a.txt", FileUtils.fromContentUri(uri).path)
+    }
+
+    @Test
+    fun testFromContentUriLegacyStorageRoot() {
+        val uri = Uri.parse("content://com.amaze.filemanager/storage_root/etc/hosts")
+        // old URI shape: /storage_root + absolute path
+        assertEquals("/etc/hosts", FileUtils.fromContentUri(uri).path)
+    }
+
+    @Test
+    fun testGetShareableUriForCoveredPath() {
+        val uri = FileUtils.getShareableUri(context, File("/storage/emulated/0/test.txt"))
+        assertNotNull(uri)
+        assertEquals("/storage_root/emulated/0/test.txt", uri!!.path)
+    }
+
+    @Test
+    fun testGetShareableUriCopiesUncoveredFile() {
+        val src = File.createTempFile("amaze", ".txt")
+        src.writeText("hello")
+        try {
+            val uri = FileUtils.getShareableUri(context, src)
+            assertNotNull(uri)
+            assertTrue(uri!!.path!!.startsWith("/open_with/"))
+            context.contentResolver.openInputStream(uri)!!.use {
+                assertEquals("hello", it.readBytes().toString(Charsets.UTF_8))
+            }
+        } finally {
+            src.delete()
+        }
+    }
+
+    @Test
+    fun testGetShareableUriRefusesUnreadableAndDirectories() {
+        assertNull(FileUtils.getShareableUri(context, File("/nonexistent/secret.txt")))
+        val dir = java.nio.file.Files.createTempDirectory("amazedir").toFile()
+        try {
+            assertNull(FileUtils.getShareableUri(context, dir))
+        } finally {
+            dir.delete()
+        }
+    }
+
+    @Test
+    fun testBuildIntentDoesNotGrantToOtherApps() {
+        val uri = Uri.parse("content://${context.packageName}/storage_root/emulated/0/a.txt")
+        val intent =
+            com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment.buildIntent(
+                context,
+                uri,
+                "text/plain",
+                false,
+                null,
+                null,
+            )
+        assertEquals(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION, intent.flags and
+            (android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+        assertFalse(intent.flags and android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0)
+    }
+
+    @Test
+    fun testGetShareableUriAsyncCoveredPathEmitsWithoutScheduling() {
+        val uri =
+            FileUtils.getShareableUriAsync(context, File("/storage/emulated/0/test.txt"))
+                .blockingGet()
+        assertNull(org.robolectric.shadows.ShadowToast.getLatestToast())
+        assertEquals("/storage_root/emulated/0/test.txt", uri!!.path)
+    }
+
+    @Test
+    fun testGetShareableUriAsyncCopiesOnIoScheduler() {
+        val ioThreads = mutableListOf<String>()
+        RxJavaPlugins.setIoSchedulerHandler {
+            Schedulers.trampoline().also { ioThreads.add("io") }
+        }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        val src = File.createTempFile("amaze", ".txt")
+        src.writeText("async")
+        try {
+            val uri = FileUtils.getShareableUriAsync(context, src).blockingGet()
+            assertEquals(listOf("io"), ioThreads)
+            assertEquals(
+                context.getString(com.amaze.filemanager.R.string.copying),
+                org.robolectric.shadows.ShadowToast.getTextOfLatestToast(),
+            )
+            context.contentResolver.openInputStream(uri!!)!!.use {
+                assertEquals("async", it.readBytes().toString(Charsets.UTF_8))
+            }
+        } finally {
+            src.delete()
+        }
+    }
+
+    @Test
+    fun testGetShareableUriAsyncCompletesEmptyWhenNotShareable() {
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        assertNull(
+            FileUtils.getShareableUriAsync(context, File("/nonexistent/secret.txt")).blockingGet(),
+        )
+    }
+
+    @Test
+    fun testGetShareableUriSameNameDoesNotCollide() {
+        val d1 = java.nio.file.Files.createTempDirectory("amaze1").toFile()
+        val d2 = java.nio.file.Files.createTempDirectory("amaze2").toFile()
+        val f1 = File(d1, "same.txt").apply { writeText("one") }
+        val f2 = File(d2, "same.txt").apply { writeText("two") }
+        try {
+            val u1 = FileUtils.getShareableUri(context, f1)!!
+            val u2 = FileUtils.getShareableUri(context, f2)!!
+            assertTrue(u1 != u2)
+            assertEquals("one", context.contentResolver.openInputStream(u1)!!.use { it.readBytes().toString(Charsets.UTF_8) })
+            assertEquals("two", context.contentResolver.openInputStream(u2)!!.use { it.readBytes().toString(Charsets.UTF_8) })
+        } finally {
+            listOf(f1, f2, d1, d2).forEach { it.delete() }
+        }
+    }
+
+    @Test
+    fun testGetShareableUriAsyncReportsRootCopyFailure() {
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+        androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).edit()
+            .putBoolean(
+                com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE,
+                true,
+            ).commit()
+        val observer =
+            FileUtils.getShareableUriAsync(context, File("/nonexistent/secret.txt")).test()
+        observer.assertError(FileUtils.ShareCopyException::class.java)
+        // no half-written copy is left behind
+        val leftovers = File(context.cacheDir, FileUtils.OPEN_WITH_CACHE_DIR).listFiles()
+        assertTrue(leftovers == null || leftovers.all { it.listFiles().isNullOrEmpty() })
     }
 }
