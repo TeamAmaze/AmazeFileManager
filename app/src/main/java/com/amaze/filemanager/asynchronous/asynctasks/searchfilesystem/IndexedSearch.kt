@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
+import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore
 import com.amaze.filemanager.filesystem.RootHelper
@@ -31,9 +32,25 @@ class IndexedSearch(
     query: String,
     path: String,
     searchParameters: SearchParameters,
-    private val cursor: Cursor,
+    private val contentResolver: ContentResolver,
 ) : FileSearch(query, path, searchParameters) {
     override suspend fun search(filter: SearchFilter) {
+        val projection =
+            arrayOf(
+                MediaStore.Files.FileColumns.DATA,
+                MediaStore.Files.FileColumns.DISPLAY_NAME,
+            )
+        contentResolver
+            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null)
+            ?.use { cursor ->
+                searchCursor(cursor, filter)
+            }
+    }
+
+    private suspend fun searchCursor(
+        cursor: Cursor,
+        filter: SearchFilter,
+    ) {
         if (cursor.count > 0 && cursor.moveToFirst()) {
             do {
                 val nextPath =
@@ -59,7 +76,5 @@ class IndexedSearch(
                 }
             } while (cursor.moveToNext() && coroutineContext.isActive)
         }
-
-        cursor.close()
     }
 }
