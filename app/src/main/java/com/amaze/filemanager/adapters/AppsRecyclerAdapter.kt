@@ -70,12 +70,17 @@ import com.amaze.filemanager.utils.safeLet
 import java.io.File
 import kotlin.math.roundToInt
 
+/**
+ * [RecyclerView.Adapter] implementation for apps lists.
+ */
 class AppsRecyclerAdapter(
     private val fragment: Fragment,
     private val modelProvider: AppsAdapterPreloadModel,
     private val isBottomSheet: Boolean,
     private val adjustListViewCallback: AdjustListViewForTv<AppHolder>,
     private val appDataParcelableList: MutableList<AppDataParcelable>,
+    // Optional, for specifying customized action on row click
+    private val onClickRowAction: ((AppDataParcelable) -> Unit)? = null,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val myChecked = SparseBooleanArray()
     private var appDataListItem: MutableList<ListItem> = mutableListOf()
@@ -209,7 +214,11 @@ class AppsRecyclerAdapter(
                 holder.rl.isClickable = true
                 holder.rl.nextFocusRightId = holder.about.id
                 holder.rl.setOnClickListener {
-                    startActivityForRowItem(rowItem)
+                    if (onClickRowAction != null) {
+                        onClickRowAction.invoke(rowItem)
+                    } else {
+                        startActivityForRowItem(rowItem)
+                    }
                 }
             }
             if (myChecked[position]) {
@@ -508,7 +517,7 @@ class AppsRecyclerAdapter(
             MaterialDialog.Builder(fragment.requireContext())
         builder1
             .theme(
-                themedActivity.appTheme.getMaterialDialogTheme(),
+                themedActivity.appTheme.materialDialogTheme,
             )
             .content(fragment.getString(R.string.unin_system_apk))
             .title(fragment.getString(R.string.warning))
