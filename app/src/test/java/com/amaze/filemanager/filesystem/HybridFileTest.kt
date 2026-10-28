@@ -32,6 +32,8 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -278,5 +280,18 @@ class HybridFileTest {
                 "smb://127.0.0.1/legacy//again/try/duplicate/////folder?disableIpcSigningCheck=true",
             ).path,
         )
+    }
+
+    /**
+     * Test [HybridFile.getName] and [HybridFile.deletePermanentlyFromBin] when constructed with
+     * [OpenMode.TRASH_BIN] and a 2-arg path constructor.
+     */
+    @Test
+    fun testTrashBinGetNameAndDeleteMissingRestoreFile() {
+        val context = ApplicationProvider.getApplicationContext<AppConfig>()
+        val file = HybridFile(OpenMode.TRASH_BIN, "/storage/emulated/0/.AmazeData/TrashBin/test.txt")
+        assertEquals("test.txt", file.getName(context))
+        assertNull(file.toTrashBinRestoreFile(context))
+        assertFalse(file.deletePermanentlyFromBin(context))
     }
 }
