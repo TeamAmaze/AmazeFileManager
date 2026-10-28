@@ -752,7 +752,13 @@ public class MainActivity extends PermissionsActivity
   private void saveExternalIntentExtras() {
     executeWithMainFragment(
         mainFragment -> {
+          if (intent == null) {
+            return null;
+          }
           Bundle extras = intent.getExtras();
+          if (extras == null) {
+            return null;
+          }
           StringBuilder data = new StringBuilder();
           if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_SUBJECT))) {
             data.append(extras.getString(Intent.EXTRA_SUBJECT));

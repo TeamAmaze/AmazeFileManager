@@ -155,4 +155,31 @@ class MainActivityTest : AbstractMainActivityTestBase() {
             }
         }
     }
+
+    /**
+     * Test [MainActivity] handling `ACTION_SEND` without extras does not throw
+     * [NullPointerException] in `saveExternalIntentExtras`.
+     */
+    @Test
+    fun testSaveExternalIntentExtrasWithNullBundleDoesNotThrowNPE() {
+        val context = ApplicationProvider.getApplicationContext<AppConfig>()
+        val intent =
+            Intent(context, MainActivity::class.java).apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+            }
+        val scenario = ActivityScenario.launch<MainActivity>(intent)
+
+        try {
+            ShadowLooper.idleMainLooper()
+            scenario.moveToState(Lifecycle.State.STARTED)
+            scenario.onActivity { activity ->
+                val method = MainActivity::class.java.getDeclaredMethod("saveExternalIntentExtras")
+                method.isAccessible = true
+                method.invoke(activity)
+            }
+        } finally {
+            scenario.close()
+        }
+    }
 }
