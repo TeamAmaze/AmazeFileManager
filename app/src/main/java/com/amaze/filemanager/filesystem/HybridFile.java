@@ -485,7 +485,10 @@ public class HybridFile {
                 path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
             .getName();
       case TRASH_BIN:
-        return name;
+        if (!Utils.isNullOrEmpty(name)) {
+          return name;
+        }
+        return getFile().getName();
       default:
         if (path.isEmpty()) {
           return "";
@@ -1604,8 +1607,11 @@ public class HybridFile {
   }
 
   public boolean deletePermanentlyFromBin(Context context) {
-    List<TrashBinFile> trashBinFiles =
-        Collections.singletonList(this.toTrashBinRestoreFile(context));
+    TrashBinFile restoreFile = this.toTrashBinRestoreFile(context);
+    if (restoreFile == null) {
+      return false;
+    }
+    List<TrashBinFile> trashBinFiles = Collections.singletonList(restoreFile);
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
     AtomicBoolean isDelete = new AtomicBoolean(false);
     if (trashBin != null) {
@@ -1859,13 +1865,21 @@ public class HybridFile {
    * @param context
    * @return
    */
+  @Nullable
   public TrashBinFile toTrashBinRestoreFile(Context context) {
     TrashBin trashBin = AppConfig.getInstance().getTrashBinInstance();
+    if (trashBin == null) {
+      return null;
+    }
     for (TrashBinFile trashBinFile : trashBin.listFilesInBin()) {
       if (trashBinFile.getDeletedPath(trashBin.getConfig()).equals(path)) {
+        String fileName = getName(context);
+        if (Utils.isNullOrEmpty(fileName)) {
+          fileName = trashBinFile.getFileName();
+        }
         // finding path to restore tof
         return new TrashBinFile(
-            getName(context), isDirectory(context), trashBinFile.getPath(), length(context), null);
+            fileName, isDirectory(context), trashBinFile.getPath(), length(context), null);
       }
     }
     return null;
