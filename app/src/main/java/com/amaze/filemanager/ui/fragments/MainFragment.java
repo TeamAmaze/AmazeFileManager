@@ -124,7 +124,6 @@ import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -145,7 +144,8 @@ public class MainFragment extends Fragment
         AdjustListViewForTv<ItemViewHolder> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
-  private static final String KEY_FRAGMENT_MAIN = "main";
+  private static final String KEY_SAVED_CURRENT_PATH = "saved_current_path";
+  private static final String KEY_SAVED_OPEN_MODE = "saved_open_mode";
 
   /** Key for boolean in arguments whether to hide the FAB if this {@link MainFragment} is shown */
   public static final String BUNDLE_HIDE_FAB = "hideFab";
@@ -207,6 +207,7 @@ public class MainFragment extends Fragment
     utilsProvider = requireMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
     mainFragmentViewModel.initBundleArguments(getArguments());
+    restoreSavedState(savedInstanceState);
     mainFragmentViewModel.initIsList();
     mainFragmentViewModel.initColumns(sharedPref);
     mainFragmentViewModel.initSortModes(
@@ -218,6 +219,22 @@ public class MainFragment extends Fragment
         requireMainActivity().getCurrentColorPreference().getPrimarySecondTab());
     if (getArguments() != null) {
       hideFab = getArguments().getBoolean(BUNDLE_HIDE_FAB, false);
+    }
+  }
+
+  private void restoreSavedState(Bundle savedInstanceState) {
+    if (savedInstanceState == null) {
+      return;
+    }
+
+    String savedPath = savedInstanceState.getString(KEY_SAVED_CURRENT_PATH);
+    if (savedPath != null) {
+      mainFragmentViewModel.setCurrentPath(savedPath);
+    }
+
+    int savedOpenMode = savedInstanceState.getInt(KEY_SAVED_OPEN_MODE, -1);
+    if (savedOpenMode != -1) {
+      mainFragmentViewModel.setOpenMode(OpenMode.getOpenMode(savedOpenMode));
     }
   }
 
@@ -303,9 +320,14 @@ public class MainFragment extends Fragment
   public void onSaveInstanceState(@NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
 
-    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-    fragmentManager.executePendingTransactions();
-    fragmentManager.putFragment(outState, KEY_FRAGMENT_MAIN, this);
+    if (mainFragmentViewModel != null) {
+      if (mainFragmentViewModel.getCurrentPath() != null) {
+        outState.putString(KEY_SAVED_CURRENT_PATH, mainFragmentViewModel.getCurrentPath());
+      }
+      if (mainFragmentViewModel.getOpenMode() != null) {
+        outState.putInt(KEY_SAVED_OPEN_MODE, mainFragmentViewModel.getOpenMode().ordinal());
+      }
+    }
   }
 
   public void stopAnimation() {
