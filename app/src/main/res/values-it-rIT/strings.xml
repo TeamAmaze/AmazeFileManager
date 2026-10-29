@@ -722,6 +722,7 @@
     <string name="ftp_readonly">Accesso di sola lettura</string>
     <string name="legacy_listing_title">Usa elenco legacy per root</string>
     <string name="legacy_listing_summary">Se attivo, usa il metodo legacy per l\'elenco dei file</string>
+    <string name="error_unsupported_rar_version">L\'archivio RAR \"%s\" non è un archivio RAR supportato.</string>
     <string name="ftp_prompt_restart_server">Devi riavviare il server FTP affinché le modifiche abbiano effetto.</string>
     <string name="error_permission_denied">Permesso negato</string>
     <string name="error_archive_password_incorrect">Password archivio sbagliata.</string>
@@ -742,6 +743,9 @@
     <string name="ftp_server_reset_notify">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna</string>
     <string name="ftp_server_root_unavailable">Stai scegliendo un percorso che richiede l\'accesso root. Abilita root explorer nelle impostazioni se il tuo dispositivo è abilitato.</string>
     <string name="ftp_server_root_filesystem_warning">Stai scegliendo un percorso che richiede l\'accesso come root, che consente operazioni di lettura/scrittura nell\'intero filesystem del tuo dispositivo, ed è pericoloso: errori causati da disattenzione potrebbero danneggiare irreparabilmente il tuo dispositivo! Vuoi continuare\?</string>
+    <string name="ftp_server_ssl_cert_info_title">Informazioni Certificato SSL per FTP</string>
+    <string name="ftp_server_ssl_cert_info">Oggetto: %s\nEmittente: %s\nValido non prima di: %s\nValido non dopo di: %s\n\nImpronta SHA-256: %s</string>
+    <string name="ftp_server_ssl_cert_info_copied_to_clipboard">Informazioni Certificato SSL per FTP copiato negli appunti</string>
     <string name="compressed_explorer_fragment_error_open_uri">Errore di apertura URI \"%s\" in lettura.</string>
     <string name="error_empty_archive">\"%s\" è un archivio vuoto.</string>
     <string name="error_bad_archive_without_info">\"%s\" è un archivio corrotto.</string>
