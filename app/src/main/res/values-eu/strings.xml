@@ -749,6 +749,9 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="ftp_server_reset_notify">FTP zerbitzariak partekatutako bide-izena barne-biltegiratzean berrezarri da</string>
     <string name="ftp_server_root_unavailable">Root sarbidea behar duen bide-izena aukeratu duzu. Mesedez gaitu root arakatzea ezarpenetan zure gailua rooteatuta badago.</string>
     <string name="ftp_server_root_filesystem_warning">Root sarbidea behar duen bide-izena aukeratu duzu. Honek zure gailuan fitxategi sistema osoa irakurri/idazteko aukera ematen du eta arriskutsua da - akats axolagabeek zure gailua bistara dezakete!\n\nZiur zaude\?</string>
+    <string name="ftp_server_ssl_cert_info_title">FTP SSL egiaztagiriaren informazioa</string>
+    <string name="ftp_server_ssl_cert_info">Gaia: %s\nBidaltzailea: %s\nHonen aurretik ez du balio: %s\nHonen ondoren ez du balio: %s\n\nSHA-256 hatz-marka: %s</string>
+    <string name="ftp_server_ssl_cert_info_copied_to_clipboard">FTP SSL egiaztagiriaren informazioa arbelean kopiatu da</string>
     <string name="compressed_explorer_fragment_error_open_uri">Errorea \"%s\" URLa irakurtzeko irekitzean.</string>
     <string name="error_empty_archive">\"%s\" hutsa dagoen artxiboa da.</string>
     <string name="error_bad_archive_without_info">\"%s\" hondatutako artxiboa da.</string>
