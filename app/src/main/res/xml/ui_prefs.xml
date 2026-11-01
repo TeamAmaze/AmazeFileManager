@@ -9,6 +9,11 @@
         app:key="showThumbs"
         app:summary="@string/thumb_summary"
         app:title="@string/thumb" />
+    <Preference
+        app:key="showRemoteThumbsMaxSize"
+        app:title="@string/thumb_remote_max_size"
+        app:defaultValue="0"
+        />
     <com.amaze.filemanager.ui.views.preference.CheckBox
         app:defaultValue="false"
         app:key="showHidden"
