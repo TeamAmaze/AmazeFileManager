@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +100,6 @@ import android.content.UriPermission;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
@@ -122,6 +123,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -133,6 +135,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
@@ -176,6 +182,7 @@ public class MainFragment extends Fragment
   private MainActivityViewModel mainActivityViewModel;
 
   private boolean hideFab = false;
+  private Disposable loadFilesDisposable;
 
   private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
@@ -388,7 +395,7 @@ public class MainFragment extends Fragment
 
   void loadViews() {
     if (!isAdded() || getView() == null) return;
-
+    if (loadFilesDisposable != null && !loadFilesDisposable.isDisposed()) return;
     if (mainFragmentViewModel.getCurrentPath() != null) {
       if (mainFragmentViewModel.getListElements().size() == 0) {
         loadlist(
@@ -640,8 +647,6 @@ public class MainFragment extends Fragment
     requireActivity().finish();
   }
 
-  LoadFilesListTask loadFilesListTask;
-
   /**
    * This loads a path into the MainFragment.
    *
@@ -668,9 +673,9 @@ public class MainFragment extends Fragment
 
     mSwipeRefreshLayout.setRefreshing(true);
 
-    if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING) {
+    if (loadFilesDisposable != null && !loadFilesDisposable.isDisposed()) {
       LOG.warn("Existing load list task running, cancel current");
-      loadFilesListTask.cancel(true);
+      loadFilesDisposable.dispose();
     }
 
     OpenMode openMode = providedOpenMode;
@@ -686,27 +691,68 @@ public class MainFragment extends Fragment
       openMode = OpenMode.FILE;
     }
 
-    loadFilesListTask =
-        new LoadFilesListTask(
-            getActivity(),
-            actualPath,
-            this,
-            openMode,
-            getBoolean(PREFERENCE_SHOW_THUMB),
-            getBoolean(PREFERENCE_SHOW_HIDDENFILES),
-            forceReload,
-            (data) -> {
-              mSwipeRefreshLayout.setRefreshing(false);
-              if (data != null && data.second != null) {
-                boolean isPathLayoutGrid =
-                    DataUtils.getInstance().getListOrGridForPath(providedPath, DataUtils.LIST)
-                        == DataUtils.GRID;
-                setListElements(data.second, back, providedPath, data.first, isPathLayoutGrid);
-              } else {
-                LOG.warn("Load list operation cancelled");
-              }
-            });
-    loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    startLoadFiles(openMode, forceReload, actualPath, providedPath, back);
+  }
+
+  private void startLoadFiles(
+      OpenMode openMode,
+      boolean forceReload,
+      String actualPath,
+      final String providedPath,
+      final boolean back) {
+    AtomicReference<LoadFilesListTask> task = new AtomicReference<>();
+    loadFilesDisposable =
+        Single.<Pair<OpenMode, List<LayoutElementParcelable>>>create(
+                emitter -> {
+                  task.set(
+                      new LoadFilesListTask(
+                          getActivity(),
+                          actualPath,
+                          this,
+                          openMode,
+                          getBoolean(PREFERENCE_SHOW_THUMB),
+                          getBoolean(PREFERENCE_SHOW_HIDDENFILES),
+                          forceReload));
+
+                  try {
+
+                    Pair<OpenMode, List<LayoutElementParcelable>> result = task.get().load();
+
+                    if (!emitter.isDisposed()) {
+                      emitter.onSuccess(result);
+                    }
+
+                  } catch (Throwable e) {
+
+                    if (!emitter.isDisposed()) {
+                      emitter.onError(e);
+                    }
+                  }
+                })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                data -> {
+                  mSwipeRefreshLayout.setRefreshing(false);
+                  if (data != null && data.second != null) {
+                    boolean isPathLayoutGrid =
+                        DataUtils.getInstance().getListOrGridForPath(providedPath, DataUtils.LIST)
+                            == DataUtils.GRID;
+
+                    setListElements(data.second, back, providedPath, data.first, isPathLayoutGrid);
+                  }
+                },
+                error -> {
+                  mSwipeRefreshLayout.setRefreshing(false);
+                  if (task.get() != null) {
+                    task.get().onProgressUpdate(error);
+                  }
+                  if (error instanceof CancellationException) {
+                    LOG.warn("Load list operation cancelled");
+                  } else {
+                    LOG.error("Failed to load files", error);
+                  }
+                });
   }
 
   @RequiresApi(api = Q)
@@ -814,7 +860,6 @@ public class MainFragment extends Fragment
    * @param back if we're coming back from any directory and want the scroll to be restored
    * @param path the path for the adapter
    * @param openMode the type of file being created
-   * @param results is the list of elements a result from search
    * @param grid whether to set grid view or list view
    */
   public void setListElements(
@@ -1381,6 +1426,14 @@ public class MainFragment extends Fragment
 
     // not guaranteed to be called unless we call #finish();
     // please move code to onStop
+  }
+
+  @Override
+  public void onDestroyView() {
+    if (loadFilesDisposable != null) {
+      loadFilesDisposable.dispose();
+    }
+    super.onDestroyView();
   }
 
   public void hide(String path) {
