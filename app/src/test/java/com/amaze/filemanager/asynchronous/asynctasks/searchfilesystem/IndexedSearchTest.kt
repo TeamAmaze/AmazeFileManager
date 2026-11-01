@@ -20,13 +20,17 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
+import android.content.ContentResolver
 import android.database.Cursor
 import android.provider.MediaStore
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert
@@ -36,6 +40,10 @@ import org.junit.Test
 import java.util.EnumSet
 
 class IndexedSearchTest {
+    companion object {
+        private const val EXTERNAL_VOLUME = "external"
+    }
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -44,6 +52,9 @@ class IndexedSearchTest {
 
     @RelaxedMockK
     lateinit var mockCursor: Cursor
+
+    @RelaxedMockK
+    lateinit var contentResolver: ContentResolver
 
     val filePath = "/test/abc.txt"
     val fileName = "abc.txt"
@@ -64,6 +75,16 @@ class IndexedSearchTest {
 
         every { mockCursor.getString(dataColumn) } returns filePath
         every { mockCursor.getString(displayNameColumn) } returns fileName
+        every { mockCursor.close() } just runs
+        every {
+            contentResolver.query(
+                MediaStore.Files.getContentUri(EXTERNAL_VOLUME),
+                any(),
+                null,
+                null,
+                null,
+            )
+        } returns mockCursor
     }
 
     /** Clean up all mocks */
@@ -87,12 +108,12 @@ class IndexedSearchTest {
                 "ab",
                 "/",
                 EnumSet.noneOf(SearchParameter::class.java),
-                mockCursor,
+                contentResolver,
             )
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
-            Assert.assertEquals(expectedNames, actualResults!!.map { (file, _) -> file.name })
-            Assert.assertEquals(expectedPaths, actualResults!!.map { (file, _) -> file.path })
+            Assert.assertEquals(expectedNames, actualResults.map { (file, _) -> file.name })
+            Assert.assertEquals(expectedPaths, actualResults.map { (file, _) -> file.path })
             Assert.assertEquals(expectedRanges, actualResults.map { it.matchRange })
         }
         runTest {
@@ -111,7 +132,7 @@ class IndexedSearchTest {
                 "ba",
                 "/",
                 EnumSet.noneOf(SearchParameter::class.java),
-                mockCursor,
+                contentResolver,
             )
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
@@ -136,7 +157,7 @@ class IndexedSearchTest {
                 "te",
                 "/",
                 EnumSet.noneOf(SearchParameter::class.java),
-                mockCursor,
+                contentResolver,
             )
         indexedSearch.foundFilesLiveData.observeForever { actualResults ->
             Assert.assertNotNull(actualResults)
@@ -147,6 +168,83 @@ class IndexedSearchTest {
         }
         runTest {
             indexedSearch.search()
+        }
+    }
+
+    /**
+     * The MediaStore query should happen as part of [IndexedSearch.search], so callers can decide
+     * the coroutine dispatcher before any provider work starts.
+     */
+    @Test
+    fun testContentResolverQueryRunsOnlyWhenSearchStarts() {
+        val indexedSearch =
+            IndexedSearch(
+                "ab",
+                "/",
+                EnumSet.noneOf(SearchParameter::class.java),
+                contentResolver,
+            )
+
+        verify(exactly = 0) {
+            contentResolver.query(
+                MediaStore.Files.getContentUri(EXTERNAL_VOLUME),
+                any(),
+                null,
+                null,
+                null,
+            )
+        }
+
+        runTest {
+            indexedSearch.search()
+        }
+
+        verify(exactly = 1) {
+            contentResolver.query(
+                MediaStore.Files.getContentUri(EXTERNAL_VOLUME),
+                any(),
+                null,
+                null,
+                null,
+            )
+        }
+    }
+
+    /**
+     * If MediaStore cannot provide a cursor, indexed search should return without crashing.
+     */
+    @Test
+    fun testNullCursorDoesNotCrash() {
+        every {
+            contentResolver.query(
+                MediaStore.Files.getContentUri(EXTERNAL_VOLUME),
+                any(),
+                null,
+                null,
+                null,
+            )
+        } returns null
+
+        val indexedSearch =
+            IndexedSearch(
+                "ab",
+                "/",
+                EnumSet.noneOf(SearchParameter::class.java),
+                contentResolver,
+            )
+
+        runTest {
+            indexedSearch.search()
+        }
+
+        verify(exactly = 1) {
+            contentResolver.query(
+                MediaStore.Files.getContentUri(EXTERNAL_VOLUME),
+                any(),
+                null,
+                null,
+                null,
+            )
         }
     }
 
