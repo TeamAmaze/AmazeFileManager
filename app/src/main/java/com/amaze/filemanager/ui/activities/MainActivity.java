@@ -1074,6 +1074,17 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
+  public void teleportToFile(HybridFile file) {
+    String parentPath = file.getParent(this);
+    if (parentPath == null) {
+      scrollToFileName = null;
+      goToMain(file.getPath());
+      return;
+    }
+    scrollToFileName = file.getName(this);
+    goToMain(parentPath);
+  }
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater menuInflater = getMenuInflater();
@@ -2538,6 +2549,10 @@ public class MainActivity extends PermissionsActivity
 
   public String getScrollToFileName() {
     return this.scrollToFileName;
+  }
+
+  public void setScrollToFileName(@Nullable String scrollToFileName) {
+    this.scrollToFileName = scrollToFileName;
   }
 
   /**
