@@ -58,7 +58,8 @@
         android:requestLegacyExternalStorage="true"
         android:banner="@drawable/about_header"
         android:localeConfig="@xml/locales_config"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:enableOnBackInvokedCallback="false">
 
         <activity
             android:exported="true"
