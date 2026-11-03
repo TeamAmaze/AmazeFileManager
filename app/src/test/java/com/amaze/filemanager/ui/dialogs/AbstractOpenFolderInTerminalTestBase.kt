@@ -20,11 +20,12 @@
 
 package com.amaze.filemanager.ui.dialogs
 
+import android.R.drawable.sym_def_app_icon
 import android.content.ComponentName
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -40,7 +41,7 @@ import org.robolectric.shadows.ShadowPackageManager
 import org.robolectric.shadows.ShadowStorageManager
 
 @Config(
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [M, P, Build.VERSION_CODES.R],
     shadows = [
         ShadowMultiDex::class,
         ShadowTabHandler::class,
@@ -75,6 +76,10 @@ abstract class AbstractOpenFolderInTerminalTestBase : AbstractMainActivityTestBa
                 IntentFilter(Intent.ACTION_MAIN).also {
                     it.addCategory(Intent.CATEGORY_LAUNCHER)
                 }
+            setApplicationIcon(
+                componentName.packageName,
+                mainActivity.getDrawable(sym_def_app_icon),
+            )
             addActivityIfNotPresent(componentName)
             addIntentFilterForActivity(componentName, intentFilter)
         }

@@ -32,7 +32,6 @@ import com.amaze.filemanager.adapters.holders.AppHolder
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment.Companion.KEY_PREFERENCES_DEFAULT
 import com.amaze.filemanager.ui.dialogs.OpenFolderInTerminalFragment.Companion.KEY_PREFERENCES_LAST
-import io.mockk.Called
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.slot
@@ -236,9 +235,13 @@ class OpenFolderInTerminalFragmentTest : AbstractOpenFolderInTerminalTestBase() 
             verify {
                 if (SDK_INT >= 26) {
                     mainActivity.startForegroundService(capturedIntent.captured)
-                    mainActivity.startService(capturedIntent.captured)?.wasNot(Called)
                 } else {
                     mainActivity.startService(capturedIntent.captured)
+                }
+            }
+            if (SDK_INT >= 26) {
+                verify(exactly = 0) {
+                    mainActivity.startService(any())
                 }
             }
 
