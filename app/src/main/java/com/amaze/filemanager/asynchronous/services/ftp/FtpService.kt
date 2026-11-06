@@ -78,7 +78,9 @@ import kotlin.concurrent.thread
  *
  * Edited by zent-co on 30-07-2019 Edited by bowiechen on 2019-10-19.
  */
-class FtpService : Service(), Runnable {
+class FtpService :
+    Service(),
+    Runnable {
     private val binder: IBinder = ObtainableServiceBinder(this)
 
     // Service will broadcast via event bus when server start/stop
@@ -137,9 +139,7 @@ class FtpService : Service(), Runnable {
         wakeLock.setReferenceCounted(false)
     }
 
-    override fun onBind(intent: Intent): IBinder {
-        return binder
-    }
+    override fun onBind(intent: Intent): IBinder = binder
 
     @Suppress("LongMethod")
     override fun run() {
@@ -243,7 +243,8 @@ class FtpService : Service(), Runnable {
                 server =
                     createServer().apply {
                         start()
-                        EventBus.getDefault()
+                        EventBus
+                            .getDefault()
                             .post(
                                 if (isStartedByTile) {
                                     FtpReceiverActions.STARTED_FROM_TILE
@@ -315,37 +316,40 @@ class FtpService : Service(), Runnable {
             "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER"
         const val ACTION_STOP_FTPSERVER =
             "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER"
+        const val ACTION_EXTERNAL_START_FTP = "com.amaze.filemanager.action.EXTERNAL_START_FTP"
+        const val ACTION_EXTERNAL_STOP_FTP = "com.amaze.filemanager.action.EXTERNAL_STOP_FTP"
         const val TAG_STARTED_BY_TILE = "started_by_tile"
         // attribute of action_started, used by notification
 
         private var _enabledCipherSuites: Array<String> =
-            LinkedList<String>().apply {
-                if (SDK_INT >= Q) {
-                    add("TLS_AES_128_GCM_SHA256")
-                    add("TLS_AES_256_GCM_SHA384")
-                    add("TLS_CHACHA20_POLY1305_SHA256")
-                }
-                if (SDK_INT >= N) {
-                    add("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")
-                    add("TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256")
-                }
-                if (SDK_INT >= LOLLIPOP) {
-                    add("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")
-                    add("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")
-                    add("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")
-                    add("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")
-                    add("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")
-                    add("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")
-                    add("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")
-                    add("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
-                    add("TLS_RSA_WITH_AES_128_GCM_SHA256")
-                    add("TLS_RSA_WITH_AES_256_GCM_SHA384")
-                }
-                if (SDK_INT < LOLLIPOP) {
-                    add("TLS_RSA_WITH_AES_128_CBC_SHA")
-                    add("TLS_RSA_WITH_AES_256_CBC_SHA")
-                }
-            }.toTypedArray()
+            LinkedList<String>()
+                .apply {
+                    if (SDK_INT >= Q) {
+                        add("TLS_AES_128_GCM_SHA256")
+                        add("TLS_AES_256_GCM_SHA384")
+                        add("TLS_CHACHA20_POLY1305_SHA256")
+                    }
+                    if (SDK_INT >= N) {
+                        add("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")
+                        add("TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256")
+                    }
+                    if (SDK_INT >= LOLLIPOP) {
+                        add("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")
+                        add("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")
+                        add("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")
+                        add("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")
+                        add("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")
+                        add("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")
+                        add("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")
+                        add("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
+                        add("TLS_RSA_WITH_AES_128_GCM_SHA256")
+                        add("TLS_RSA_WITH_AES_256_GCM_SHA384")
+                    }
+                    if (SDK_INT < LOLLIPOP) {
+                        add("TLS_RSA_WITH_AES_128_CBC_SHA")
+                        add("TLS_RSA_WITH_AES_256_CBC_SHA")
+                    }
+                }.toTypedArray()
 
         /**
          * Return a list of available ciphers for ftpserver.
@@ -369,18 +373,19 @@ class FtpService : Service(), Runnable {
          * based URI if it's running on Android 7.0 or above.
          */
         @JvmStatic
-        fun defaultPath(context: Context): String {
-            return if (PreferenceManager.getDefaultSharedPreferences(context)
+        fun defaultPath(context: Context): String =
+            if (PreferenceManager
+                    .getDefaultSharedPreferences(context)
                     .getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false) && SDK_INT > M
             ) {
-                DocumentsContract.buildTreeDocumentUri(
-                    "com.android.externalstorage.documents",
-                    "primary:",
-                ).toString()
+                DocumentsContract
+                    .buildTreeDocumentUri(
+                        "com.android.externalstorage.documents",
+                        "primary:",
+                    ).toString()
             } else {
                 Environment.getExternalStorageDirectory().absolutePath
             }
-        }
 
         /**
          * Indicator whether FTP service is running
@@ -391,8 +396,6 @@ class FtpService : Service(), Runnable {
             return !server.isStopped
         }
 
-        private fun getPort(preferences: SharedPreferences): Int {
-            return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
-        }
+        private fun getPort(preferences: SharedPreferences): Int = preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
     }
 }
