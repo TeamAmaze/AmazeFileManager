@@ -497,6 +497,18 @@ class FileUtilsTest {
     }
 
     /**
+     * Test [FileUtils.fromContentUri] for the shareable-copy cache.
+     */
+    @Test
+    fun testFromContentUriOpenWithCache() {
+        val uri = Uri.parse("content://com.amaze.filemanager/open_with/copy-id/a.db")
+        assertEquals(
+            File(context.cacheDir, "open_with/copy-id/a.db").path,
+            FileUtils.fromContentUri(uri).path,
+        )
+    }
+
+    /**
      * Test [FileUtils.fromContentUri] for legacy storage root.
      */
     @Test

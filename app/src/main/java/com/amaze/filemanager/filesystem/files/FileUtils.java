@@ -823,7 +823,7 @@ public class FileUtils {
       return Maybe.just(FileProvider.getUriForFile(context, context.getPackageName(), file));
     } catch (IllegalArgumentException e) {
       return Maybe.fromCallable(() -> getShareableUriOrThrow(context, file))
-          .doOnSubscribe(d -> Toast.makeText(context, R.string.copying, Toast.LENGTH_SHORT).show())
+          .doOnSubscribe(d -> AppConfig.toast(context, R.string.copying))
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread());
     }
@@ -879,7 +879,7 @@ public class FileUtils {
               if (mainActivity.isFinishing()) return;
               try {
                 OpenFileDialogFragment.Companion.openFileOrShow(
-                    uri, mimeType, useNewStack, mainActivity, false);
+                    uri, Uri.fromFile(file), mimeType, useNewStack, mainActivity, false);
               } catch (Exception e) {
                 Toast.makeText(
                         mainActivity,
@@ -1237,6 +1237,8 @@ public class FileUtils {
     } else if (uriPath.startsWith("/" + FILE_PROVIDER_MEDIA_RW_PREFIX + "/")) {
       return new File(
           "/mnt/media_rw" + uriPath.substring(FILE_PROVIDER_MEDIA_RW_PREFIX.length() + 1));
+    } else if (uriPath.startsWith("/" + OPEN_WITH_CACHE_DIR + "/")) {
+      return new File(AppConfig.getInstance().getCacheDir(), uriPath.substring(1));
     }
     File pathFile = new File(uriPath);
     if (!pathFile.exists()) {

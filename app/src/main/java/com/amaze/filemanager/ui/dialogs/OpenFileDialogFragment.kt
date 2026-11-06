@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory
 
 class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
     private var uri: Uri? = null
+    private var sourceUri: Uri? = null
     private var mimeType: String? = null
     private var useNewStack: Boolean? = null
     private var fragmentOpenFileDialogBinding: FragmentOpenFileDialogBinding? = null
@@ -75,6 +76,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         private val log: Logger = LoggerFactory.getLogger(OpenFileDialogFragment::class.java)
 
         private const val KEY_URI = "uri"
+        private const val KEY_SOURCE_URI = "source_uri"
         private const val KEY_MIME_TYPE = "mime_type"
         private const val KEY_USE_NEW_STACK = "use_new_stack"
         private const val KEY_PREFERENCES_DEFAULT = "_DEFAULT"
@@ -89,11 +91,26 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             useNewStack: Boolean,
             activity: PreferenceActivity,
             forceChooser: Boolean,
+        ) = openFileOrShow(uri, null, mimeType, useNewStack, activity, forceChooser)
+
+        /**
+         * Opens the file using previously set default app or shows a bottom sheet dialog, with
+         * specified source URI
+         */
+        @Suppress("LongParameterList")
+        fun openFileOrShow(
+            uri: Uri,
+            sourceUri: Uri?,
+            mimeType: String,
+            useNewStack: Boolean,
+            activity: PreferenceActivity,
+            forceChooser: Boolean,
         ) {
             if (mimeType == MimeTypes.ALL_MIME_TYPES ||
                 forceChooser ||
                 !getPreferenceAndStartActivity(
                     uri,
+                    sourceUri,
                     mimeType,
                     useNewStack,
                     activity,
@@ -105,7 +122,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                         activity.prefs,
                     )
                 }
-                val openFileDialogFragment = newInstance(uri, mimeType, useNewStack)
+                val openFileDialogFragment = newInstance(uri, sourceUri, mimeType, useNewStack)
                 openFileDialogFragment.show(
                     activity.supportFragmentManager,
                     javaClass.simpleName,
@@ -115,6 +132,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
         private fun newInstance(
             uri: Uri,
+            sourceUri: Uri?,
             mimeType: String,
             useNewStack: Boolean,
         ): OpenFileDialogFragment {
@@ -122,6 +140,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
             val fragment = OpenFileDialogFragment()
             args.putParcelable(KEY_URI, uri)
+            args.putParcelable(KEY_SOURCE_URI, sourceUri)
             args.putString(KEY_MIME_TYPE, mimeType)
             args.putBoolean(KEY_USE_NEW_STACK, useNewStack)
             fragment.arguments = args
@@ -151,11 +170,25 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             useNewStack: Boolean,
             className: String?,
             packageName: String?,
+        ) = buildIntent(context, uri, null, mimeType, useNewStack, className, packageName)
+
+        @Suppress("LongParameterList")
+        private fun buildIntent(
+            context: Context,
+            uri: Uri,
+            sourceUri: Uri?,
+            mimeType: String,
+            useNewStack: Boolean,
+            className: String?,
+            packageName: String?,
         ): Intent {
             val chooserIntent = Intent()
             chooserIntent.action = Intent.ACTION_VIEW
             chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            chooserIntent.setDataAndType(uri, mimeType)
+            chooserIntent.setDataAndType(
+                if (packageName == context.packageName) sourceUri ?: uri else uri,
+                mimeType,
+            )
 
             if (useNewStack) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -177,6 +210,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
         private fun getPreferenceAndStartActivity(
             uri: Uri,
+            sourceUri: Uri?,
             mimeType: String,
             useNewStack: Boolean,
             activity: PreferenceActivity,
@@ -196,6 +230,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                         buildIntent(
                             activity,
                             uri,
+                            sourceUri,
                             mimeType,
                             useNewStack,
                             classNameAndPackageName[0],
@@ -278,6 +313,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         uri = arguments?.getParcelable(KEY_URI)
+        sourceUri = arguments?.getParcelable(KEY_SOURCE_URI)
         mimeType = arguments?.getString(KEY_MIME_TYPE)
         useNewStack = arguments?.getBoolean(KEY_USE_NEW_STACK)
         utilsProvider = (activity as BasicActivity?)!!.utilsProvider
@@ -360,6 +396,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 buildIntent(
                     requireContext(),
                     it.openFileParcelable?.uri!!,
+                    sourceUri,
                     it.openFileParcelable?.mimeType!!,
                     it.openFileParcelable?.useNewStack!!,
                     it.openFileParcelable?.className,
@@ -439,6 +476,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 buildIntent(
                     requireContext(),
                     appDataParcelableList[0].openFileParcelable?.uri!!,
+                    sourceUri,
                     appDataParcelableList[0].openFileParcelable?.mimeType!!,
                     appDataParcelableList[0].openFileParcelable?.useNewStack!!,
                     appDataParcelableList[0].openFileParcelable?.className,
