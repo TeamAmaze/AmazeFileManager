@@ -104,5 +104,10 @@
             app:key="rootmode"
             app:summary="@string/root_mode_summary"
             app:title="@string/root_mode" />
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            app:defaultValue="false"
+            app:key="otg_native_access"
+            app:summary="@string/otg_native_access_summary"
+            app:title="@string/otg_native_access_title" />
     </PreferenceCategory>
 </PreferenceScreen>

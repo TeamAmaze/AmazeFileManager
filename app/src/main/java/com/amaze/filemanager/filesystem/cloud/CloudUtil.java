@@ -279,6 +279,11 @@ public class CloudUtil {
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile =
             OTGUtil.getDocumentFile(hybridFile.getPath(), context, false);
+        if (documentSourceFile == null) {
+          LOG.warn("OTG DocumentFile is null for thumbnail - permission may not be granted");
+          inputStream = null;
+          break;
+        }
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
