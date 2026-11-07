@@ -234,6 +234,7 @@ open class PermissionsActivity :
                     R.string.grantper,
                     R.string.grant,
                     R.string.cancel,
+                    true,
                 )
             materialDialog
                 .getActionButton(DialogAction.NEGATIVE)
