@@ -38,6 +38,9 @@ jobs:
     name: Build debug, Jacoco test and publish to codacy
     runs-on: ubuntu-latest
     steps:
+      - name: Raise inotify limits for unit tests
+        run: |
+          sudo sysctl -w fs.inotify.max_user_instances=512
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
