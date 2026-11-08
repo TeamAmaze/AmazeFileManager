@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
@@ -48,8 +50,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
 import android.os.storage.StorageVolume;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -114,7 +118,7 @@ public class UtilsTest {
         assertEquals(
             "content://"
                 + ApplicationProvider.getApplicationContext().getPackageName()
-                + "/storage_root/storage/emulated/0/test.txt",
+                + "/storage_root/emulated/0/test.txt",
             uri.toString());
       }
     }
@@ -126,6 +130,7 @@ public class UtilsTest {
       file = new HybridFileParcelable("/foo/bar/test.txt");
       file.setMode(m);
       assertNull(Utils.getUriForBaseFile(ApplicationProvider.getApplicationContext(), file));
+      Shadows.shadowOf(Looper.getMainLooper()).idle();
       assertEquals(
           ApplicationProvider.getApplicationContext().getString(R.string.smb_launch_error),
           ShadowToast.getTextOfLatestToast());
@@ -133,6 +138,30 @@ public class UtilsTest {
 
     file.setMode(OpenMode.CUSTOM);
     assertNull(Utils.getUriForBaseFile(ApplicationProvider.getApplicationContext(), file));
+  }
+
+  @Test
+  public void testBuildEmailIntentUsesShareableLogUri() throws Exception {
+    File logFile = new File(ApplicationProvider.getApplicationContext().getCacheDir(), "logs.txt");
+    java.nio.file.Files.write(logFile.toPath(), "log".getBytes());
+    try {
+      Intent emailIntent =
+          Utils.buildEmailIntent(
+              ApplicationProvider.getApplicationContext(), null, Utils.EMAIL_SUPPORT);
+      Uri logUri = emailIntent.getParcelableExtra(Intent.EXTRA_STREAM);
+      assertNotNull(logUri);
+      assertTrue(logUri.getPath().startsWith("/open_with/"));
+      try (InputStream input =
+          ApplicationProvider.getApplicationContext()
+              .getContentResolver()
+              .openInputStream(logUri)) {
+        byte[] content = new byte[3];
+        assertEquals(3, input.read(content));
+        assertEquals("log", new String(content));
+      }
+    } finally {
+      logFile.delete();
+    }
   }
 
   @Test

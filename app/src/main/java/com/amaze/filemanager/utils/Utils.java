@@ -32,7 +32,9 @@ import org.slf4j.LoggerFactory;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.google.android.material.snackbar.Snackbar;
@@ -68,7 +70,6 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -262,8 +263,7 @@ public class Utils {
       case FILE:
       case ROOT:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-          return FileProvider.getUriForFile(
-              context, context.getPackageName(), new File(baseFile.getPath()));
+          return FileUtils.getShareableUri(context, new File(baseFile.getPath()));
         } else {
           return Uri.fromFile(new File(baseFile.getPath()));
         }
@@ -274,8 +274,7 @@ public class Utils {
       case GDRIVE:
       case ONEDRIVE:
       case BOX:
-        Toast.makeText(context, context.getString(R.string.smb_launch_error), Toast.LENGTH_LONG)
-            .show();
+        AppConfig.toast(context, R.string.smb_launch_error);
         return null;
       default:
         return null;
@@ -437,12 +436,12 @@ public class Utils {
     emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
     emailIntent.putExtra(
         Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager for " + BuildConfig.VERSION_NAME);
-    Uri logUri =
-        FileProvider.getUriForFile(
-            context,
-            context.getPackageName(),
-            new File(String.format("/data/data/%s/cache/logs.txt", context.getPackageName())));
-    emailIntent.putExtra(Intent.EXTRA_STREAM, logUri);
+    Uri logUri = FileUtils.getShareableUri(context, new File(context.getCacheDir(), "logs.txt"));
+    if (logUri != null) {
+      emailIntent.putExtra(Intent.EXTRA_STREAM, logUri);
+    } else {
+      log.warn("failed to create a shareable URI for the log file");
+    }
     if (!Utils.isNullOrEmpty(text)) {
       emailIntent.putExtra(Intent.EXTRA_TEXT, text);
     }

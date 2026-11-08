@@ -33,6 +33,7 @@ import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.ContributorAdapter;
 import com.amaze.filemanager.adapters.LanguageAdapter;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -57,7 +58,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -240,14 +240,15 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
       openURL(URL_REPO_ISSUES, this);
     } else if (v.getId() == R.id.relative_layout_share_logs) {
       try {
-        File logFile =
-            new File("/data/data/" + getApplicationContext().getPackageName() + "/cache/logs.txt");
-        Uri logUri =
-            FileProvider.getUriForFile(
-                getApplicationContext(), getApplicationContext().getPackageName(), logFile);
-        ArrayList<Uri> logUriList = new ArrayList<>();
-        logUriList.add(logUri);
-        new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
+        File logFile = new File(getApplicationContext().getCacheDir(), "logs.txt");
+        Uri logUri = FileUtils.getShareableUri(getApplicationContext(), logFile);
+        if (logUri != null) {
+          ArrayList<Uri> logUriList = new ArrayList<>();
+          logUriList.add(logUri);
+          new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("*/*");
+        } else {
+          LOG.warn("failed to create a shareable URI for the log file");
+        }
       } catch (Exception e) {
         LOG.warn("failed to share logs", e);
       }
