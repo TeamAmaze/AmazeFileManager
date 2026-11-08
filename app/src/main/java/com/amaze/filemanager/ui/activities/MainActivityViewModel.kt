@@ -34,7 +34,9 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.BasicSearch
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.DeepSearch
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.FileSearch
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.IndexedSearch
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.ListElementsSearch
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchParameters
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchResult
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.searchParametersFromBoolean
@@ -117,18 +119,30 @@ class MainActivityViewModel(val applicationContext: Application) :
         query: String,
     ): LiveData<List<SearchResult>> {
         val searchParameters = createSearchParameters(mainActivity)
-
         val path = mainActivity.currentMainFragment?.currentPath ?: ""
+        val openMode =
+            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode ?: OpenMode.FILE
 
-        val basicSearch = BasicSearch(query, path, searchParameters, this.applicationContext)
+        val fileSearch: FileSearch =
+            if (openMode == OpenMode.CUSTOM || openMode == OpenMode.TRASH_BIN) {
+                ListElementsSearch(
+                    query,
+                    path,
+                    searchParameters,
+                    mainActivity.currentMainFragment?.mainFragmentViewModel?.listElements
+                        ?: emptyList(),
+                )
+            } else {
+                BasicSearch(query, path, searchParameters, this.applicationContext)
+            }
 
         lastSearchJob =
             viewModelScope.launch(Dispatchers.IO) {
-                basicSearch.search()
+                fileSearch.search()
             }
 
-        lastSearchLiveData = basicSearch.foundFilesLiveData
-        return basicSearch.foundFilesLiveData
+        lastSearchLiveData = fileSearch.foundFilesLiveData
+        return fileSearch.foundFilesLiveData
     }
 
     /**
