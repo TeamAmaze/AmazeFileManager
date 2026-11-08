@@ -1391,6 +1391,104 @@ public class GeneralDialogCreation {
         R.string.cancel);
   }
 
+  public static void showOtgEjectDialog(
+      @NonNull MainActivity mainActivity,
+      @Nullable String deviceKey,
+      @NonNull String devicePath,
+      boolean isRootAvailable) {
+    int accentColor = mainActivity.getAccent();
+
+    MaterialDialog.Builder builder =
+        new MaterialDialog.Builder(mainActivity)
+            .title(R.string.otg_eject_title)
+            .content(R.string.otg_eject_message)
+            .positiveText(R.string.otg_eject_action)
+            .positiveColor(accentColor)
+            .negativeText(android.R.string.cancel)
+            .negativeColor(accentColor)
+            .onPositive(
+                (dialog, which) -> {
+                  // Create and launch Intent to DocumentsUI
+                  final Intent safIntent;
+                  if (deviceKey != null) {
+                    try {
+                      safIntent =
+                          com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager
+                              .createSafIntent(mainActivity, deviceKey);
+                    } catch (Exception e) {
+                      final Intent fallbackIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                      ExtensionsKt.runIfDocumentsUIExists(
+                          fallbackIntent,
+                          mainActivity,
+                          () -> mainActivity.startActivity(fallbackIntent));
+                      dialog.dismiss();
+                      return;
+                    }
+                  } else {
+                    safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                  }
+
+                  ExtensionsKt.runIfDocumentsUIExists(
+                      safIntent, mainActivity, () -> mainActivity.startActivity(safIntent));
+                  dialog.dismiss();
+                });
+
+    if (isRootAvailable) {
+      builder
+          .neutralText(R.string.otg_eject_root_option)
+          .onNeutral(
+              (dialog, which) -> {
+                // Attempt root unmount
+                String mountPoint =
+                    com.amaze.filemanager.utils.OTGUtil.getMountPointForDevice(
+                        mainActivity, deviceKey, devicePath);
+                if (mountPoint != null) {
+                  new UnmountDeviceTask(mainActivity, mountPoint)
+                      .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                } else {
+                  AppConfig.toast(
+                      mainActivity, mainActivity.getString(R.string.otg_eject_root_failed));
+                }
+                dialog.dismiss();
+              });
+    }
+
+    MaterialDialog dialog = builder.build();
+    dialog.show();
+  }
+
+  /** AsyncTask for unmounting OTG device with root access */
+  private static class UnmountDeviceTask extends AsyncTask<Void, Void, Boolean> {
+    private final MainActivity mainActivity;
+    private final String mountPoint;
+
+    UnmountDeviceTask(MainActivity mainActivity, String mountPoint) {
+      this.mainActivity = mainActivity;
+      this.mountPoint = mountPoint;
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... voids) {
+      try {
+        com.amaze.filemanager.filesystem.root.UnmountDeviceCommand command =
+            com.amaze.filemanager.filesystem.root.UnmountDeviceCommand.INSTANCE;
+        return command.unmountDevice(mountPoint);
+      } catch (Exception e) {
+        LOG.error("Failed to unmount OTG device at " + mountPoint, e);
+        return false;
+      }
+    }
+
+    @Override
+    protected void onPostExecute(Boolean success) {
+      if (success) {
+        AppConfig.toast(mainActivity, mainActivity.getString(R.string.otg_eject_root_success));
+      } else {
+        AppConfig.toast(mainActivity, mainActivity.getString(R.string.otg_eject_root_failed));
+      }
+    }
+  }
+
   public static void showSignInWithGoogleDialog(@NonNull MainActivity mainActivity) {
     View customView =
         DialogSigninWithGoogleBinding.inflate(LayoutInflater.from(mainActivity)).getRoot();

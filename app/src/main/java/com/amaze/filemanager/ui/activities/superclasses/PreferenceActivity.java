@@ -27,6 +27,7 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_OTG_NATIVE_ACCESS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
@@ -96,6 +97,7 @@ public class PreferenceActivity extends BasicActivity {
       case PREFERENCE_CHANGEPATHS:
       case PREFERENCE_ROOT_LEGACY_LISTING:
       case PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS:
+      case PREFERENCE_OTG_NATIVE_ACCESS:
         defaultValue = false;
         break;
       case PREFERENCE_SHOW_FILE_SIZE:

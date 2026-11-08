@@ -41,7 +41,10 @@ import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
-import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.fileoperations.filesystem.usb.OtgFileAccessFacade;
+import com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceManager;
+import com.amaze.filemanager.fileoperations.filesystem.usb.StorageDeviceRepresentation;
+import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgManager;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
@@ -303,16 +306,39 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       storageDirectoryPaths.add(file);
 
       if (file.contains(OTGUtil.PREFIX_OTG) || file.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
-        addNewItem(
-            menu,
-            STORAGES_GROUP,
-            order++,
-            "OTG",
-            new MenuMetadata(file, false),
-            R.drawable.ic_usb_white_24dp,
-            R.drawable.ic_show_chart_black_24dp,
-            Formatter.formatFileSize(mainActivity, freeSpace),
-            Formatter.formatFileSize(mainActivity, totalSpace));
+        // Extract device key from path and get device info for display name
+        String deviceKey = OTGUtil.extractDeviceKeyFromPath(file);
+        String displayName = "OTG";
+        if (deviceKey != null) {
+          StorageDeviceRepresentation device = UsbOtgManager.getStorageDevice(deviceKey);
+          if (device != null) {
+            displayName = device.getDisplayName();
+          }
+        }
+        MenuItem otgItem =
+            addNewItem(
+                menu,
+                STORAGES_GROUP,
+                order++,
+                displayName,
+                new MenuMetadata(file, false),
+                R.drawable.ic_usb_white_24dp,
+                R.drawable.ic_show_chart_black_24dp,
+                Formatter.formatFileSize(mainActivity, freeSpace),
+                Formatter.formatFileSize(mainActivity, totalSpace));
+
+        // Add long-press handler for eject functionality
+        final String finalDeviceKey = deviceKey;
+        final String finalDevicePath = file;
+        View otgItemView = navView.getMenuItemView(otgItem);
+        if (otgItemView != null) {
+          otgItemView.setOnLongClickListener(
+              v -> {
+                GeneralDialogCreation.showOtgEjectDialog(
+                    mainActivity, finalDeviceKey, finalDevicePath, mainActivity.isRootExplorer());
+                return true;
+              });
+        }
         continue;
       }
 
@@ -676,7 +702,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     return this.donateImageView;
   }
 
-  private void addNewItem(
+  private MenuItem addNewItem(
       Menu menu,
       int group,
       int order,
@@ -684,11 +710,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
-    addNewItem(
+    return addNewItem(
         menu, group, order, mainActivity.getString(text), meta, icon, actionViewIcon, null, null);
   }
 
-  private void addNewItem(
+  private MenuItem addNewItem(
       Menu menu,
       int group,
       int order,
@@ -696,10 +722,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
-    addNewItem(menu, group, order, text, meta, icon, actionViewIcon, null, null);
+    return addNewItem(menu, group, order, text, meta, icon, actionViewIcon, null, null);
   }
 
-  private void addNewItem(
+  private MenuItem addNewItem(
       @NonNull Menu menu,
       int group,
       int order,
@@ -743,6 +769,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuItem finalItem = item;
       item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(finalItem));
     }
+
+    return item;
   }
 
   public void closeIfNotLocked() {
@@ -828,25 +856,74 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
             && (meta.path.contains(OTGUtil.PREFIX_OTG)
-                || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
-            && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
-          MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
-          dialog
-              .getActionButton(DialogAction.POSITIVE)
-              .setOnClickListener(
-                  (v) -> {
-                    Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))) {
+          // If path starts with /mnt/media_rw, it's a direct filesystem path
+          // that doesn't need SAF permission at all - just navigate directly
+          if (meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
+            pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
+            closeIfNotLocked();
+            if (isLocked()) {
+              onDrawerClosed();
+            }
+            break;
+          }
 
-                    ExtensionsKt.runIfDocumentsUIExists(
-                        safIntent,
-                        mainActivity,
-                        () ->
-                            mainActivity.startActivityForResult(
-                                safIntent, MainActivity.REQUEST_CODE_SAF));
+          // Check if we need SAF permission for this specific device
+          String deviceKey = OTGUtil.extractDeviceKeyFromPath(meta.path);
+          boolean needsSafPermission = false;
 
-                    dialog.dismiss();
-                  });
-          dialog.show();
+          if (deviceKey != null) {
+            // If this device has direct filesystem access available, no SAF needed.
+            // Must use the same check as OtgFileAccessFacade.hasDirectAccess() to avoid
+            // mismatch between drawer (asking for SAF) and file listing (using direct access).
+            StorageDeviceRepresentation device = UsbOtgManager.getStorageDevice(deviceKey);
+            if (device != null
+                && device.getFilePath() != null
+                && OtgFileAccessFacade.INSTANCE.hasDirectAccess(device.getFilePath())) {
+              needsSafPermission = false;
+            } else {
+              // Check if this specific device has SAF root
+              needsSafPermission = !UsbOtgManager.hasUsbOtgRoot(deviceKey);
+            }
+          } else {
+            // Legacy path without device key - check any device
+            needsSafPermission = UsbOtgManager.getAnyUsbOtgRoot() == null;
+          }
+
+          if (needsSafPermission) {
+            final String finalDeviceKey = deviceKey;
+            MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
+            dialog
+                .getActionButton(DialogAction.POSITIVE)
+                .setOnClickListener(
+                    (v) -> {
+                      // Use StorageDeviceManager to create the appropriate SAF intent
+                      Intent safIntent;
+                      if (finalDeviceKey != null) {
+                        safIntent =
+                            StorageDeviceManager.createSafIntent(mainActivity, finalDeviceKey);
+                      } else {
+                        safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                      }
+                      mainActivity.setPendingSafDeviceKey(finalDeviceKey);
+
+                      ExtensionsKt.runIfDocumentsUIExists(
+                          safIntent,
+                          mainActivity,
+                          () ->
+                              mainActivity.startActivityForResult(
+                                  safIntent, MainActivity.REQUEST_CODE_SAF));
+
+                      dialog.dismiss();
+                    });
+            dialog.show();
+          } else {
+            pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
+            closeIfNotLocked();
+            if (isLocked()) {
+              onDrawerClosed();
+            }
+          }
         } else {
           pendingPath = new PendingPath(meta.path, meta.hideFabInMainFragment);
           closeIfNotLocked();
