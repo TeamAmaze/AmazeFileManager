@@ -861,5 +861,5 @@ Android 11부터 Google은 파일 관리자가 기기의 모든 파일을 관리
     <string name="trash_bin_cleanup_interval_summary">자동 정리 실행 주기 (시간)</string>
     <string name="file_deletion">파일 삭제</string>
     <string name="error_mediastore_query_uri">선택한 미디어 파일의 콘텐츠 URI를 조회하는 중 오류가 발생했습니다. MediaStore를 새로 고친 뒤 다시 시도해 주세요.</string>
-</resources>
+    </resources>
 
