@@ -850,5 +850,5 @@
     <string name="trash_bin_cleanup_interval_summary">Esegui l\'intervallo di auto-pulizia (ore)</string>
     <string name="file_deletion">Eliminazione file</string>
     <string name="error_mediastore_query_uri">Errore nella richiesta dell\'URI del contenuto del file multimediale selezionato. Aggiorna il MediaStore e riprova.</string>
-</resources>
+    </resources>
 
