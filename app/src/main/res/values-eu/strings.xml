@@ -864,5 +864,5 @@ Android 11 geroztik, Google-k Fitxategi kudeatzaileari gailuaren fitxategi guzti
     <string name="trash_bin_cleanup_interval_summary">Automatikoki garbitzeko maiztasuna (orduak)</string>
     <string name="file_deletion">Fitxategia ezabatzea</string>
     <string name="error_mediastore_query_uri">Errore bat gertatu da hautatutako multimedia-fitxategiaren edukiaren URIa kontsultatzean. Freskatu MediaStore eta saiatu berriro.</string>
-</resources>
+    </resources>
 
