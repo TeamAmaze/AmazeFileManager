@@ -118,6 +118,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.Deprecated;
+import kotlin.ReplaceWith;
 import kotlin.collections.ArraysKt;
 import kotlin.io.ByteStreamsKt;
 import kotlin.text.Charsets;
@@ -125,6 +127,7 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -609,6 +612,9 @@ public class HybridFile {
    *
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
+  @Deprecated(
+      replaceWith = @ReplaceWith(expression = "isDirectory(Context)", imports = ""),
+      message = "")
   public boolean isDirectory() {
     boolean isDirectory;
     switch (mode) {
@@ -644,10 +650,13 @@ public class HybridFile {
                   @Override
                   public Boolean execute(@NonNull SFTPClient client) {
                     try {
-                      return client
-                          .stat(NetCopyClientUtils.extractRemotePathFrom(path))
-                          .getType()
-                          .equals(FileMode.Type.DIRECTORY);
+                      FileAttributes attrs =
+                          client.stat(NetCopyClientUtils.extractRemotePathFrom(path));
+                      if (attrs == null) {
+                        LOG.warn("SFTP stat returned null for path: {}", path);
+                        return false;
+                      }
+                      return attrs.getType().equals(FileMode.Type.DIRECTORY);
                     } catch (IOException notFound) {
                       LOG.error("Fail to execute isDirectory for SFTP path :" + path, notFound);
                       return false;
@@ -703,6 +712,9 @@ public class HybridFile {
   /**
    * @deprecated use {@link #folderSize(Context)}
    */
+  @Deprecated(
+      replaceWith = @ReplaceWith(expression = "folderSize(Context)", imports = ""),
+      message = "")
   public long folderSize() {
     long size = 0L;
 
@@ -1062,6 +1074,9 @@ public class HybridFile {
    *
    * @deprecated use forEachChildrenFile()
    */
+  @Deprecated(
+      replaceWith = @ReplaceWith(expression = "forEachChildrenFile", imports = ""),
+      message = "")
   public ArrayList<HybridFileParcelable> listFiles(Context context, boolean isRoot) {
     ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
     forEachChildrenFile(context, isRoot, arrayList::add);
