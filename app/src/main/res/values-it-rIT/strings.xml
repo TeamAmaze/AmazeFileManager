@@ -71,6 +71,7 @@
     <string name="about">Info</string>
     <string name="extract">Estrai</string>
     <string name="compress">Comprimi</string>
+    <string name="open_in_terminal">Apri nel Terminale</string>
     <string name="yes">Sì</string>
     <string name="no">No</string>
     <string name="dialog_delete_category_directories">Cartelle</string>
@@ -661,6 +662,7 @@
     <string name="saved_multi_files">%d file salvato.</string>
     <string name="create_hidden_file_warn">Il file creato verrà nascosto nella lista dei file.</string>
     <string name="grant_apkinstall_permission">L\'app ha bisogno del permesso di installare app per continuare.</string>
+    <string name="grant_terminal_permission">L\'app richiede l\'autorizzazione per eseguire comandi con l\'app Terminale selezionata.</string>
     <string name="time_remaining">Tempo rimanente</string>
     <string name="transfer_rate">Velocità di trasferimento</string>
     <string name="unknown">sconosciuto</string>
@@ -850,5 +852,7 @@
     <string name="trash_bin_cleanup_interval_summary">Esegui l\'intervallo di auto-pulizia (ore)</string>
     <string name="file_deletion">Eliminazione file</string>
     <string name="error_mediastore_query_uri">Errore nella richiesta dell\'URI del contenuto del file multimediale selezionato. Aggiorna il MediaStore e riprova.</string>
-    </resources>
+    <string name="no_terminal_apps">Nessuna app di terminale installata</string>
+    <string name="no_terminal_apps_message"><![CDATA[<p>Non è stato possibile trovare alcuna app di terminale su questo dispositivo.</p><p>Per usare questa funzione, installa prima una delle seguenti app di terminale:<ul><li><a href=\"https://termoneplus.com/\">Termone Plus</a></li><li><a href=\"https://termux.dev\">Termux</a> (potrebbe essere necessaria anche una <a href=\"https://github.com/termux/termux-tasker#allow-external-apps-property-optional\">configurazione aggiuntiva</a>)</li><li><a href=\"https://github.com/jackpal/Android-Terminal-Emulator\">Jack Palovich\'s Android Terminal Emulator</a> (sviluppo interrotto)</li></ul></p>]]></string>
+</resources>
 
