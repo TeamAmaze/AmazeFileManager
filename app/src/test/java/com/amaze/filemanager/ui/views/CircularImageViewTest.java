@@ -40,7 +40,7 @@ import androidx.test.core.app.ApplicationProvider;
 public class CircularImageViewTest {
 
   @Test
-  public void outlineProvider_clipsSquareViewToCircle() {
+  public void outlineProviderClipsSquareViewToCircle() {
     Context context = ApplicationProvider.getApplicationContext();
     CircularImageView view = new CircularImageView(context);
     view.layout(0, 0, 64, 64);

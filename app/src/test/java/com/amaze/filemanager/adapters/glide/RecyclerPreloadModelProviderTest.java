@@ -48,7 +48,7 @@ import androidx.fragment.app.FragmentActivity;
 public class RecyclerPreloadModelProviderTest {
 
   @Test
-  public void getPreloadRequestBuilder_usesOptionalTransformation() {
+  public void getPreloadRequestBuilderUsesOptionalTransformation() {
     verifyTransformationIsOptional(false);
     verifyTransformationIsOptional(true);
   }
