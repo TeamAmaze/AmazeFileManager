@@ -17,13 +17,14 @@ organize my files.
 
 Scenario: Folder is created with a valid name  
     Given I am viewing the internal storage  
+    And the folder "Documents" does not contain a folder named "Test Folder"  
     When I navigate to the "Documents" folder, I tap the FAB, choose folder,
         enter "Test Folder" and press create  
     Then "Test Folder" appears in the file list  
 
 Scenario: Empty name is rejected  
     Given the new folder dialog is open  
-    When I leave the name blank  
+    When I type the folder name and then clear it  
     Then the create button is disabled  
     And no folder can be created  
     And an error message shows up in the dialog
