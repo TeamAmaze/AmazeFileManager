@@ -202,7 +202,8 @@ There are three kinds of tests:
   doesn't require a phone, it allows for extensive mocking and 
   UI interaction simulation without the full UI overhead.
 - Emulator tests: Using Espresso and other tools, very heavy to
-  run, create these tests as a last resort.
+  run, create these tests as a last resort. These tests should 
+  be structured under a user story, following the reference [here](docs/tests/user_stories/README.md).
 
 ### Before Submitting:
 
