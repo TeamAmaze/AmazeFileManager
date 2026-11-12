@@ -51,7 +51,7 @@
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:id="@+id/apk_icon"/>
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.amaze.filemanager.ui.views.CircularImageView
                 android:id="@+id/picture_icon"
                 android:layout_width="@dimen/minimal_icon_size"
                 android:layout_height="@dimen/minimal_icon_size"

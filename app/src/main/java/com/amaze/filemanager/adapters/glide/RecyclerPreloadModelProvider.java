@@ -50,9 +50,9 @@ public class RecyclerPreloadModelProvider
     RequestBuilder<Drawable> incompleteRequest = Glide.with(fragment).asDrawable();
 
     if (isCircled) {
-      request = incompleteRequest.circleCrop();
+      request = incompleteRequest.optionalCircleCrop();
     } else {
-      request = incompleteRequest.centerCrop();
+      request = incompleteRequest.optionalCenterCrop();
     }
   }
 
