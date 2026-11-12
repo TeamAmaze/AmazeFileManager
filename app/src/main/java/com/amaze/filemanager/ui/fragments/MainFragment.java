@@ -852,16 +852,6 @@ public class MainFragment extends Fragment
       }
     }
 
-    if (mainFragmentViewModel.getListElements().size() == 0) {
-      if (nofilesview != null) nofilesview.setVisibility(View.VISIBLE);
-      if (listView != null) listView.setVisibility(View.GONE);
-      if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(false);
-    } else {
-      if (nofilesview != null) nofilesview.setVisibility(View.GONE);
-      if (listView != null) listView.setVisibility(View.VISIBLE);
-      if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(true);
-    }
-
     boolean isOtg = (OTGUtil.PREFIX_OTG + "/").equals(mainFragmentViewModel.getCurrentPath());
 
     if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
@@ -878,6 +868,18 @@ public class MainFragment extends Fragment
                 .size
                 .equals(getString(R.string.goback)))) {
       mainFragmentViewModel.getListElements().add(0, getBackElement());
+    }
+
+    // Update the empty state after adding the parent-directory entry.
+    // An empty directory can still display the '..' navigation item.
+    if (mainFragmentViewModel.getListElements().isEmpty()) {
+      if (nofilesview != null) nofilesview.setVisibility(View.VISIBLE);
+      if (listView != null) listView.setVisibility(View.GONE);
+      if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(false);
+    } else {
+      if (nofilesview != null) nofilesview.setVisibility(View.GONE);
+      if (listView != null) listView.setVisibility(View.VISIBLE);
+      if (mSwipeRefreshLayout != null) mSwipeRefreshLayout.setEnabled(true);
     }
 
     if (grid && mainFragmentViewModel.isList()) {
