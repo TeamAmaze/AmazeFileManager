@@ -56,6 +56,16 @@ public interface EncryptedEntryDao {
   @Update
   Completable update(EncryptedEntry entry);
 
+  @Query(
+      "UPDATE "
+          + TABLE_ENCRYPTED
+          + " SET "
+          + COLUMN_PATH
+          + " = :newPath WHERE "
+          + COLUMN_PATH
+          + " = :oldPath")
+  Completable move(String oldPath, String newPath);
+
   @Transaction
   @Query("DELETE FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_PATH + " = :path")
   Completable delete(String path);
