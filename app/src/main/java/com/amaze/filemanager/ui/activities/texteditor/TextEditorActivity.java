@@ -54,6 +54,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
@@ -575,16 +576,23 @@ public class TextEditorActivity extends ThemedActivity
   private void highlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
     SearchResultIndex keyValueNew = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
     colorSearchResult(keyValueNew, getAccent());
+    scrollToSearchResult(keyValueNew);
+  }
 
-    // scrolling to the highlighted element
-    if (getSupportActionBar() != null) {
-      scrollView.scrollTo(
-          0,
-          (Integer) keyValueNew.getLineNumber()
-              + mainTextView.getLineHeight()
-              + Math.round(mainTextView.getLineSpacingExtra())
-              - getSupportActionBar().getHeight());
+  /** Scrolls so the line holding the given search result sits in the middle of the screen. */
+  private void scrollToSearchResult(SearchResultIndex resultIndex) {
+    final Layout layout = mainTextView.getLayout();
+    if (layout == null) {
+      return;
     }
+
+    final int line = layout.getLineForOffset((Integer) resultIndex.getStartCharNumber());
+    final int lineTop =
+        mainTextView.getTop() + mainTextView.getTotalPaddingTop() + layout.getLineTop(line);
+    final int lineHeight = layout.getLineBottom(line) - layout.getLineTop(line);
+    final int target = lineTop - (scrollView.getHeight() - lineHeight) / 2;
+
+    scrollView.smoothScrollTo(0, Math.max(0, target));
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
