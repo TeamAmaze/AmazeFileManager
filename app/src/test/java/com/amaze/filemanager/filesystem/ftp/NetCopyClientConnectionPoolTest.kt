@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.ftp
 
 import android.os.Build
-import android.os.Build.VERSION_CODES.LOLLIPOP
+import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.util.LruCache
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -57,7 +57,7 @@ import org.robolectric.annotation.Config
  */
 @RunWith(AndroidJUnit4::class)
 @Config(
-    sdk = [LOLLIPOP, P, Build.VERSION_CODES.R],
+    sdk = [M, P, Build.VERSION_CODES.R],
     shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
 )
 @Suppress("StringLiteralDuplication")

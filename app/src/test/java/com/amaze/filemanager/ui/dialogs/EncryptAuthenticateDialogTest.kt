@@ -79,7 +79,8 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
      * MainActivity setup.
      */
     @Before
-    fun setUp() {
+    override fun setUp() {
+        super.setUp()
         file =
             File(
                 Environment.getExternalStorageDirectory(),
@@ -338,7 +339,6 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
         callback: EncryptDecryptUtils.EncryptButtonCallbackInterface =
             object : EncryptDecryptUtils.EncryptButtonCallbackInterface {},
     ) {
-        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             Intent().putExtra(TAG_SOURCE, HybridFileParcelable(file.absolutePath))
                 .putExtra(TAG_OPEN_MODE, OpenMode.FILE).let { intent ->

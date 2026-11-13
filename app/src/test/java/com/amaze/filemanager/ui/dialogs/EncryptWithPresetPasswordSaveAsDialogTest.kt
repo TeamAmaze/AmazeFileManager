@@ -75,7 +75,8 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
      * MainActivity setup.
      */
     @Before
-    fun setUp() {
+    override fun setUp() {
+        super.setUp()
         file =
             File(
                 Environment.getExternalStorageDirectory(),
@@ -90,7 +91,8 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
      * Post test cleanup.
      */
     @After
-    fun tearDown() {
+    override fun tearDown() {
+        super.tearDown()
         PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
             .edit().putBoolean(
                 PREFERENCE_CRYPT_FINGERPRINT,
@@ -327,7 +329,6 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
         callback: EncryptDecryptUtils.EncryptButtonCallbackInterface =
             object : EncryptDecryptUtils.EncryptButtonCallbackInterface {},
     ) {
-        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             Intent().putExtra(TAG_SOURCE, HybridFileParcelable(file.absolutePath)).let { intent ->
                 EncryptWithPresetPasswordSaveAsDialog.show(

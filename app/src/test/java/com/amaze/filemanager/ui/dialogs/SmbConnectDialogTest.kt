@@ -52,7 +52,6 @@ class SmbConnectDialogTest : AbstractMainActivityTestBase() {
         val listener = spyk<SmbConnectionListener>()
         val encryptedPath =
             SmbUtil.getSmbEncryptedPath(
-                AppConfig.getInstance(),
                 "smb://user:password@192.168.1.100/share",
             )
         doTestWithDialog(

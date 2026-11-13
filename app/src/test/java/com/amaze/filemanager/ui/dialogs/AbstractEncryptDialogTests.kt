@@ -38,10 +38,9 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils.initializeInternalStorage
 import com.amaze.filemanager.ui.activities.MainActivity
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
-import org.junit.rules.ExternalResource
-import org.junit.rules.RuleChain
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
@@ -54,7 +53,7 @@ import org.robolectric.annotation.Config
     sdk = [M, P, Build.VERSION_CODES.R],
 )
 abstract class AbstractEncryptDialogTests {
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    protected lateinit var scenario: ActivityScenario<MainActivity>
 
     @Rule
     @JvmField
@@ -63,15 +62,15 @@ abstract class AbstractEncryptDialogTests {
         GrantPermissionRule
             .grant(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
-    // ActivityScenarioRule launches MainActivity before @Before runs, so initialize storage here.
-    private val initializeStorageRule: ExternalResource =
-        object : ExternalResource() {
-            override fun before() {
-                if (SDK_INT >= N) {
-                    initializeInternalStorage()
-                }
-            }
-        }
+    /**
+     * MainActivity setup.
+     */
+    @Before
+    open fun setUp() {
+        if (SDK_INT >= N) initializeInternalStorage()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.moveToState(Lifecycle.State.STARTED)
+    }
 
     /**
      * Post test cleanup. Clear all preferences.

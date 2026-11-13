@@ -76,7 +76,8 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
      * MainActivity setup.
      */
     @Before
-    fun setUp() {
+    override fun setUp() {
+        super.setUp()
         file =
             File(
                 Environment.getExternalStorageDirectory(),
@@ -144,7 +145,6 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
         callback: EncryptDecryptUtils.DecryptButtonCallbackInterface =
             object : EncryptDecryptUtils.DecryptButtonCallbackInterface {},
     ) {
-        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             DecryptFingerprintDialog.show(
                 activity,

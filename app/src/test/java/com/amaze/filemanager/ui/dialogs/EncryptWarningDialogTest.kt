@@ -43,7 +43,6 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
      */
     @Test
     fun testDisplayDialog() {
-        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             EncryptWarningDialog.show(activity, activity.appTheme)
             assertEquals(1, ShadowDialog.getShownDialogs().size)
@@ -74,7 +73,6 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
      */
     @Test
     fun testDisplayDialogNeverShowAgain() {
-        val scenario = activityRule.scenario
         scenario.onActivity { activity ->
             EncryptWarningDialog.show(activity, activity.appTheme)
             assertEquals(1, ShadowDialog.getShownDialogs().size)

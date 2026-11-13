@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.utils.smb.SmbUtil.getSmbDecryptedPath
