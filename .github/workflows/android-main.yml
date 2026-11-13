@@ -108,6 +108,8 @@ jobs:
       matrix:
         api-level: [ 21, 28 ]
     steps:
+      - name: Increase fs.inotify.max_user_instances limit
+        run: echo 512 | sudo tee /proc/sys/fs/inotify/max_user_instances
       - name: checkout
         uses: actions/checkout@v6
       - name: Java 21

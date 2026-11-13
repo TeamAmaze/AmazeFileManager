@@ -22,28 +22,18 @@ package com.amaze.filemanager.filesystem.files;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.utils.PasswordUtil;
 
-import android.content.Context;
 import android.util.Base64;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 @RunWith(AndroidJUnit4.class)
 public class CryptUtilTest {
-
-  private Context context;
-
-  @Before
-  public void setUp() {
-    context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-  }
 
   @Test
   public void testIvValueIsCorrect() {
@@ -53,8 +43,7 @@ public class CryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws Exception {
     String password = "hackme";
-    String encrypted = PasswordUtil.INSTANCE.encryptPassword(context, password, Base64.URL_SAFE);
-    assertEquals(
-        password, PasswordUtil.INSTANCE.decryptPassword(context, encrypted, Base64.URL_SAFE));
+    String encrypted = PasswordUtil.INSTANCE.encryptPassword(password, Base64.URL_SAFE);
+    assertEquals(password, PasswordUtil.INSTANCE.decryptPassword(encrypted, Base64.URL_SAFE));
   }
 }

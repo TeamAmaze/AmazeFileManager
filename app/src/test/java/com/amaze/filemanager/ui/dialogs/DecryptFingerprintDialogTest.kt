@@ -26,6 +26,7 @@ import android.hardware.fingerprint.FingerprintManager
 import android.os.Build.VERSION_CODES.M
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
+import androidx.lifecycle.Lifecycle
 import androidx.test.filters.SdkSuppress
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.application.AppConfig
@@ -162,6 +163,7 @@ class DecryptFingerprintDialogTest : AbstractEncryptDialogTests() {
                     testContent.invoke()
                 }
             }
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 

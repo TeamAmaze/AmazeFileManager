@@ -146,7 +146,6 @@ class FtpServiceEspressoTest {
             .putString(
                 FtpService.KEY_PREFERENCE_PASSWORD,
                 PasswordUtil.encryptPassword(
-                    ApplicationProvider.getApplicationContext(),
                     "passw0rD",
                 ),
             )
