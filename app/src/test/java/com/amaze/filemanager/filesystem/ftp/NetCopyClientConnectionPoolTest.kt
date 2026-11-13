@@ -51,6 +51,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.io.ByteArrayInputStream
+import java.io.InputStream
 
 /**
  * Unit tests for [NetCopyClientConnectionPool]
@@ -89,19 +91,57 @@ class NetCopyClientConnectionPoolTest {
         // Replace the connections cache with a mock
         val connectionsField = NetCopyClientConnectionPool::class.java.getDeclaredField("connections")
         connectionsField.isAccessible = true
-        connectionsField.set(NetCopyClientConnectionPool, mockLruCache)
+        val originalCache = connectionsField.get(NetCopyClientConnectionPool)
+        try {
+            connectionsField.set(NetCopyClientConnectionPool, mockLruCache)
 
-        // Simulate lifecycle events
-        every { mockLifecycleOwner.lifecycle } returns mockLifecycle
-        every { mockLifecycle.addObserver(any()) } answers {
-            val observer = it.invocation.args[0] as DefaultLifecycleObserver
-            observer.onDestroy(mockLifecycleOwner)
+            // Simulate lifecycle events
+            every { mockLifecycleOwner.lifecycle } returns mockLifecycle
+            every { mockLifecycle.addObserver(any()) } answers {
+                val observer = it.invocation.args[0] as DefaultLifecycleObserver
+                observer.onDestroy(mockLifecycleOwner)
+            }
+            // Trigger onDestroy
+            ProcessLifecycleOwner.get().lifecycle.addObserver(NetCopyClientConnectionPool)
+            mockLifecycle.addObserver(NetCopyClientConnectionPool)
+            verify { mockLruCache.evictAll() }
+        } finally {
+            connectionsField.set(NetCopyClientConnectionPool, originalCache)
         }
+    }
 
-        // Trigger onDestroy
-        ProcessLifecycleOwner.get().lifecycle.addObserver(NetCopyClientConnectionPool)
-        mockLifecycle.addObserver(NetCopyClientConnectionPool)
-        verify { mockLruCache.evictAll() }
+    @Test
+    fun `eviction defers disconnect until a connection lease is released`() {
+        val connectionsField = NetCopyClientConnectionPool::class.java.getDeclaredField("connections")
+        connectionsField.isAccessible = true
+        val originalCache = connectionsField.get(NetCopyClientConnectionPool)
+        val cache = NetCopyClientConnectionPool.createConnectionsCache(1)
+        val mockConnection = mockk<NetCopyClient<Any>>(relaxed = true)
+        every { mockConnection.isConnectionValid() } returns true
+        val uri = "ssh://user@example.com:22"
+        val baseUri = NetCopyClientUtils.extractBaseUriFrom(uri)
+        var stream: InputStream? = null
+
+        try {
+            connectionsField.set(NetCopyClientConnectionPool, cache)
+            cache.put(baseUri, mockConnection)
+            stream =
+                NetCopyClientUtils.execute(
+                    object : NetCopyClientTemplate<Any, InputStream>(uri, closeClientOnFinish = false) {
+                        override fun execute(client: NetCopyClient<Any>) = ByteArrayInputStream(byteArrayOf())
+                    },
+                )
+
+            cache.put("another-connection", mockk<NetCopyClient<Any>>(relaxed = true))
+            verify(exactly = 0) { mockConnection.expire() }
+
+            stream?.close()
+            verify { mockConnection.expire() }
+        } finally {
+            stream?.close()
+            cache.evictAll()
+            connectionsField.set(NetCopyClientConnectionPool, originalCache)
+        }
     }
 
     /**

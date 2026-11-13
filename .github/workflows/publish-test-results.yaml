@@ -2,7 +2,7 @@ name: Publish Test Results
 
 on:
   workflow_run:
-    workflows: ["Android Build CI", "Android Feature CI"]
+    workflows: ["Android Feature CI"]
     types:
       - completed
 permissions: {}
@@ -21,8 +21,10 @@ jobs:
         uses: dawidd6/action-download-artifact@e7466d1a7587ed14867642c2ca74b5bcc1e19a2d
         with:
          run_id: ${{ github.event.workflow_run.id }}
+         name: test-results
          path: artifacts
       - name: Publish Test Results
+        if: hashFiles('artifacts/**/*.xml') != ''
         uses: EnricoMi/publish-unit-test-result-action@v2.16.1
         with:
           commit: ${{ github.event.workflow_run.head_sha }}

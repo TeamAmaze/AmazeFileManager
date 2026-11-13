@@ -33,7 +33,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_DEFA
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnectionLease
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AND
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
@@ -49,7 +49,11 @@ import net.schmizz.sshj.sftp.SFTPClient
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.slf4j.LoggerFactory
+import java.io.FilterInputStream
+import java.io.FilterOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -89,27 +93,74 @@ object NetCopyClientUtils {
      */
     @WorkerThread
     fun <ClientType, T> execute(template: NetCopyClientTemplate<ClientType, T>): T? {
-        var client = getConnection<ClientType>(extractBaseUriFrom(template.url))
-        if (client == null) {
-            client = getConnection(template.url)
-        }
-        var retval: T? = null
-        if (client != null) {
-            retval =
+        val lease =
+            getConnectionLease<ClientType>(extractBaseUriFrom(template.url))
+                ?: getConnectionLease(template.url)
+                ?: return null
+        val client = lease.client
+        var leaseTransferred = false
+        try {
+            val retval =
                 runCatching {
                     Maybe.fromCallable {
                         template.execute(client)
                     }.subscribeOn(getScheduler.invoke(client)).blockingGet()
                 }.onFailure {
                     LOG.error("Error executing template method", it)
-                }.also {
-                    if (template.closeClientOnFinish) {
-                        tryDisconnect(client)
-                    }
                 }.getOrNull()
+            if (!template.closeClientOnFinish) {
+                when (retval) {
+                    is InputStream -> {
+                        leaseTransferred = true
+                        return retainLeaseUntilClosed(retval, lease)
+                    }
+                    is OutputStream -> {
+                        leaseTransferred = true
+                        return retainLeaseUntilClosed(retval, lease)
+                    }
+                }
+            }
+            return retval
+        } finally {
+            if (!leaseTransferred) {
+                if (template.closeClientOnFinish) {
+                    lease.closeAndExpire()
+                } else {
+                    lease.close()
+                }
+            }
         }
-        return retval
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> retainLeaseUntilClosed(
+        stream: InputStream,
+        lease: NetCopyClientConnectionPool.ConnectionLease<*>,
+    ): T =
+        object : FilterInputStream(stream) {
+            override fun close() {
+                try {
+                    super.close()
+                } finally {
+                    lease.close()
+                }
+            }
+        } as T
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> retainLeaseUntilClosed(
+        stream: OutputStream,
+        lease: NetCopyClientConnectionPool.ConnectionLease<*>,
+    ): T =
+        object : FilterOutputStream(stream) {
+            override fun close() {
+                try {
+                    super.close()
+                } finally {
+                    lease.close()
+                }
+            }
+        } as T
 
     /**
      * Convenience method to call [SmbUtil.getSmbEncryptedPath] if the given
@@ -208,18 +259,6 @@ object NetCopyClientUtils {
             } else {
                 SLASH.toString()
             }
-        }
-    }
-
-    /**
-     * Disconnects the given [NetCopyClient] but wrap all exceptions beneath, so callers are free
-     * from the hassles of handling thrown exceptions.
-     *
-     * @param client [NetCopyClient] instance
-     */
-    private fun tryDisconnect(client: NetCopyClient<*>) {
-        if (client.isConnectionValid()) {
-            client.expire()
         }
     }
 
