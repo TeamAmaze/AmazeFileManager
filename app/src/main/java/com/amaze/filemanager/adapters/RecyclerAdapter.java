@@ -95,14 +95,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupMenu;
@@ -134,7 +138,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       TYPE_HEADER_FOLDERS = 1,
       TYPE_HEADER_FILES = 2,
       EMPTY_LAST_ITEM = 3,
-      TYPE_BACK = 4;
+      TYPE_BACK = 4,
+      // A folder shown in grid view: a compact icon+name+date cell that sits inside a single
+      // rounded "section container" (see createGridFolderBackground). Only used in grid mode.
+      TYPE_ITEM_GRID_FOLDER = 5;
   private final Logger LOG = LoggerFactory.getLogger(RecyclerAdapter.class);
 
   private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
@@ -171,7 +178,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   @IntDef({VIEW_GENERIC, VIEW_PICTURE, VIEW_APK, VIEW_THUMB})
   public @interface ViewType {}
 
-  @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})
+  @IntDef({
+    TYPE_ITEM,
+    TYPE_HEADER_FOLDERS,
+    TYPE_HEADER_FILES,
+    EMPTY_LAST_ITEM,
+    TYPE_BACK,
+    TYPE_ITEM_GRID_FOLDER
+  })
   public @interface ListElemType {}
 
   public RecyclerAdapter(
@@ -692,11 +706,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   @Override
   public int getItemViewType(int position) {
-    if (getItemsDigested().get(position).specialType != -1) {
-      return getItemsDigested().get(position).specialType;
-    } else {
-      return TYPE_ITEM;
+    final ListItem item = getItemsDigested().get(position);
+    // Regular file/folder rows carry specialType == TYPE_ITEM. In grid mode, folders use a compact
+    // cell so they read as one rounded section container (see createGridFolderBackground); files
+    // keep the standard grid card. Selection still keys off specialType, which is unchanged.
+    if (item.specialType == TYPE_ITEM
+        && mainFragment.getMainFragmentViewModel() != null
+        && !mainFragment.getMainFragmentViewModel().isList()
+        && item.layoutElementParcelable != null
+        && item.layoutElementParcelable.isDirectory) {
+      return TYPE_ITEM_GRID_FOLDER;
     }
+    return item.specialType;
   }
 
   @NonNull
@@ -733,9 +754,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           view = mInflater.inflate(R.layout.griditem, parent, false);
           sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
           sizeProvider.addView(VIEW_THUMB, view.findViewById(R.id.icon_thumb));
+          roundThumbnailCorners(view.findViewById(R.id.icon_frame_grid));
         }
         sizeProvider.closeOffAddition();
 
+        return new ItemViewHolder(view);
+      case TYPE_ITEM_GRID_FOLDER:
+        view = mInflater.inflate(R.layout.griditem_folder, parent, false);
+        sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
+        sizeProvider.closeOffAddition();
         return new ItemViewHolder(view);
       case EMPTY_LAST_ITEM:
         int totalFabHeight = (int) context.getResources().getDimension(R.dimen.fab_height),
@@ -781,11 +808,243 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     if (mainFragment.getMainFragmentViewModel().isList()) {
       bindViewHolderList(holder, position);
+    } else if (getItemViewType(position) == TYPE_ITEM_GRID_FOLDER) {
+      bindViewHolderGridFolder(holder, position);
     } else {
       bindViewHolderGrid(holder, position);
+      // Files in grid share one rounded section container too (the ".." back button, TYPE_BACK,
+      // stays a standalone tile with its own card background).
+      if (getItemViewType(position) == TYPE_ITEM) {
+        final boolean checked = getItemsDigested().get(position).getChecked() == ListItem.CHECKED;
+        holder.baseItemView.setBackground(
+            createGridSectionBackground(position, checked, TYPE_ITEM));
+      }
     }
 
     invalidateActionMode();
+  }
+
+  /**
+   * Whether the item at {@code position} is a regular file/folder row (or the ".." go-back row),
+   * i.e. one that belongs to a rounded section card. Headers, the trailing empty item and
+   * out-of-range positions are not card members and therefore act as card boundaries.
+   */
+  private boolean isCardGroupMember(int position) {
+    if (position < 0 || position >= getItemCount()) {
+      return false;
+    }
+    final int type = getItemViewType(position);
+    return type == TYPE_ITEM || type == TYPE_BACK;
+  }
+
+  /**
+   * Builds the rounded "section card" background for a list row. Consecutive rows between two
+   * headers share one continuous surface; only the first row rounds its top corners and only the
+   * last row rounds its bottom corners, so the run reads as a single card. The selected/pressed
+   * state keeps the row's rounded shape while tinting the surface.
+   */
+  private Drawable createListCardBackground(int position) {
+    final float radius = context.getResources().getDimension(R.dimen.list_card_corner_radius);
+    final boolean roundTop = !isCardGroupMember(position - 1);
+    final boolean roundBottom = !isCardGroupMember(position + 1);
+
+    final float[] radii = new float[8];
+    if (roundTop) {
+      radii[0] = radii[1] = radii[2] = radii[3] = radius;
+    }
+    if (roundBottom) {
+      radii[4] = radii[5] = radii[6] = radii[7] = radius;
+    }
+
+    final int surfaceColor;
+    final int selectedColor;
+    final AppTheme theme = utilsProvider.getAppTheme();
+    if (theme.equals(AppTheme.LIGHT)) {
+      surfaceColor = Utils.getColor(context, R.color.card_surface_light);
+      selectedColor = Utils.getColor(context, R.color.card_selected_light);
+    } else if (theme.equals(AppTheme.BLACK)) {
+      surfaceColor = Utils.getColor(context, R.color.card_surface_black);
+      selectedColor = Utils.getColor(context, R.color.card_selected_black);
+    } else {
+      surfaceColor = Utils.getColor(context, R.color.card_surface_dark);
+      selectedColor = Utils.getColor(context, R.color.card_selected_dark);
+    }
+
+    final GradientDrawable normal = new GradientDrawable();
+    normal.setColor(surfaceColor);
+    normal.setCornerRadii(radii);
+
+    final GradientDrawable selected = new GradientDrawable();
+    selected.setColor(selectedColor);
+    selected.setCornerRadii(radii.clone());
+
+    final StateListDrawable background = new StateListDrawable();
+    background.addState(new int[] {android.R.attr.state_selected}, selected);
+    background.addState(new int[] {android.R.attr.state_pressed}, selected);
+    background.addState(new int[] {android.R.attr.state_activated}, selected);
+    background.addState(new int[] {android.R.attr.state_focused}, selected);
+    background.addState(new int[] {}, normal);
+    return background;
+  }
+
+  /**
+   * Binds a folder shown in grid view. Folders render as a compact icon + name + date cell (like a
+   * list row) that sits flush inside the rounded section container built by {@link
+   * #createGridFolderBackground}.
+   */
+  private void bindViewHolderGridFolder(@NonNull final ItemViewHolder holder, int position) {
+    final LayoutElementParcelable rowItem =
+        getItemsDigested().get(position).layoutElementParcelable;
+
+    holder.baseItemView.setOnLongClickListener(
+        p1 -> {
+          if (hasPendingPasteOperation()) return false;
+          if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
+              || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
+                  && getItemsDigested().get(holder.getAdapterPosition()).getChecked()
+                      != ListItem.CHECKED)) {
+            mainFragment.registerListItemChecked(
+                holder.getAdapterPosition(), holder.checkImageViewGrid);
+          }
+          initDragListener(position, p1, holder);
+          return true;
+        });
+    holder.baseItemView.setOnClickListener(
+        v ->
+            mainFragment.onListItemClicked(
+                false, holder.getAdapterPosition(), rowItem, holder.checkImageViewGrid));
+
+    Glide.with(mainFragment).clear(holder.genericIcon);
+    holder.genericIcon.setVisibility(View.VISIBLE);
+    modelProvider.getPreloadRequestBuilder(rowItem.iconData).into(holder.genericIcon);
+    // Folders use a plain grey glyph with no coloured circle (matches the redesign).
+    final GradientDrawable iconBackground = (GradientDrawable) holder.genericIcon.getBackground();
+    if (iconBackground != null) {
+      iconBackground.setColor(Color.TRANSPARENT);
+    }
+    holder.genericIcon.setColorFilter(getFolderIconColor());
+
+    holder.txtTitle.setText(rowItem.title);
+    holder.txtDesc.setText("");
+    if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
+      holder.date.setText(rowItem.dateModification);
+    } else {
+      holder.date.setText("");
+    }
+
+    holder.about.setVisibility(View.VISIBLE);
+    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
+      holder.about.setColorFilter(grey_color);
+    }
+    holder.about.setOnClickListener(v -> showPopup(v, rowItem));
+
+    final boolean checked = getItemsDigested().get(position).getChecked() == ListItem.CHECKED;
+    holder.checkImageViewGrid.setColorFilter(accentColor);
+    holder.checkImageViewGrid.setVisibility(checked ? View.VISIBLE : View.INVISIBLE);
+
+    holder.baseItemView.setBackground(
+        createGridSectionBackground(position, checked, TYPE_ITEM_GRID_FOLDER));
+  }
+
+  /** Plain grey tint used for folder icons (no coloured circle), keyed to the theme. */
+  private int getFolderIconColor() {
+    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
+      return Utils.getColor(context, R.color.folder_icon_light);
+    }
+    return Utils.getColor(context, R.color.folder_icon_dark);
+  }
+
+  /** Clips a grid tile's thumbnail/icon frame to rounded corners. */
+  private void roundThumbnailCorners(final View iconFrame) {
+    if (iconFrame == null) {
+      return;
+    }
+    final float radius = context.getResources().getDimension(R.dimen.grid_thumb_corner_radius);
+    iconFrame.setClipToOutline(true);
+    iconFrame.setOutlineProvider(
+        new ViewOutlineProvider() {
+          @Override
+          public void getOutline(View view, Outline outline) {
+            outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+          }
+        });
+  }
+
+  /**
+   * Builds the unified "section container" background for a grid cell. Consecutive cells of the
+   * same {@code sectionType} (folders or files) between two headers share one rounded panel: only
+   * the four outer corners of the block are rounded, and hairline dividers separate adjacent cells.
+   */
+  private Drawable createGridSectionBackground(int position, boolean selected, int sectionType) {
+    final Integer columnsPref = mainFragment.getMainFragmentViewModel().getColumns();
+    final int columnCount = (columnsPref == null || columnsPref <= 0) ? 3 : columnsPref;
+
+    int start = position;
+    while (start - 1 >= 0 && getItemViewType(start - 1) == sectionType) {
+      start--;
+    }
+    int end = position;
+    while (end + 1 < getItemCount() && getItemViewType(end + 1) == sectionType) {
+      end++;
+    }
+    final int index = position - start;
+    final int count = end - start + 1;
+    final int col = index % columnCount;
+    final int row = index / columnCount;
+    final int lastRow = (count - 1) / columnCount;
+
+    final float radius = context.getResources().getDimension(R.dimen.list_card_corner_radius);
+    final float[] radii = new float[8];
+    if (index == 0) {
+      radii[0] = radii[1] = radius; // top-left
+    }
+    if (index == Math.min(columnCount - 1, count - 1)) {
+      radii[2] = radii[3] = radius; // top-right
+    }
+    if (index == count - 1) {
+      radii[4] = radii[5] = radius; // bottom-right
+    }
+    if (index == lastRow * columnCount) {
+      radii[6] = radii[7] = radius; // bottom-left
+    }
+
+    final int surfaceColor;
+    final int selectedColor;
+    final int dividerColor;
+    final AppTheme theme = utilsProvider.getAppTheme();
+    if (theme.equals(AppTheme.LIGHT)) {
+      surfaceColor = Utils.getColor(context, R.color.card_surface_light);
+      selectedColor = Utils.getColor(context, R.color.card_selected_light);
+      dividerColor = Utils.getColor(context, R.color.grid_divider_light);
+    } else if (theme.equals(AppTheme.BLACK)) {
+      surfaceColor = Utils.getColor(context, R.color.card_surface_black);
+      selectedColor = Utils.getColor(context, R.color.card_selected_black);
+      dividerColor = Utils.getColor(context, R.color.grid_divider_black);
+    } else {
+      surfaceColor = Utils.getColor(context, R.color.card_surface_dark);
+      selectedColor = Utils.getColor(context, R.color.card_selected_dark);
+      dividerColor = Utils.getColor(context, R.color.grid_divider_dark);
+    }
+
+    final GradientDrawable surface = new GradientDrawable();
+    surface.setColor(selected ? selectedColor : surfaceColor);
+    surface.setCornerRadii(radii);
+
+    final boolean dividerRight =
+        col < columnCount - 1 && index < count - 1 && ((index + 1) / columnCount == row);
+    final boolean dividerBottom = row < lastRow;
+    if (!dividerRight && !dividerBottom) {
+      return surface;
+    }
+
+    // A single physical pixel: a hairline that blends with the surface rather than standing out.
+    final int thickness = 1;
+    final GradientDrawable dividerLayer = new GradientDrawable();
+    dividerLayer.setColor(dividerColor);
+    dividerLayer.setCornerRadii(radii.clone());
+    final LayerDrawable background = new LayerDrawable(new Drawable[] {dividerLayer, surface});
+    background.setLayerInset(1, 0, 0, dividerRight ? thickness : 0, dividerBottom ? thickness : 0);
+    return background;
   }
 
   private void bindViewHolderList(@NonNull final ItemViewHolder holder, int position) {
@@ -948,11 +1207,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         break;
     }
 
-    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
-      holder.baseItemView.setBackgroundResource(R.drawable.safr_ripple_white);
-    } else {
-      holder.baseItemView.setBackgroundResource(R.drawable.safr_ripple_black);
-    }
+    holder.baseItemView.setBackground(createListCardBackground(position));
     holder.baseItemView.setSelected(false);
     if (getItemsDigested().get(position).getChecked() == ListItem.CHECKED) {
 
@@ -968,6 +1223,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.apkIcon.setVisibility(View.GONE);
         holder.pictureIcon.setVisibility(View.GONE);
         holder.genericIcon.setVisibility(View.VISIBLE);
+        // Reset any folder grey tint so the selected item shows the standard grey-circle highlight.
+        holder.genericIcon.clearColorFilter();
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
         gradientDrawable.setColor(goBackColor);
       }
@@ -982,18 +1239,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.genericIcon.setVisibility(View.VISIBLE);
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();
 
-        if (getBoolean(PREFERENCE_COLORIZE_ICONS)) {
-          if (rowItem.isDirectory) {
-            gradientDrawable.setColor(iconSkinColor);
-          } else {
-            ColorUtils.colorizeIcons(context, rowItem.filetype, gradientDrawable, iconSkinColor);
-          }
+        if (rowItem.isDirectory && !isBackButton) {
+          // Folders use a plain grey glyph with no coloured circle (matches the redesign).
+          gradientDrawable.setColor(Color.TRANSPARENT);
+          holder.genericIcon.setColorFilter(getFolderIconColor());
         } else {
-          gradientDrawable.setColor(iconSkinColor);
-        }
-
-        if (isBackButton) {
-          gradientDrawable.setColor(goBackColor);
+          holder.genericIcon.clearColorFilter();
+          if (getBoolean(PREFERENCE_COLORIZE_ICONS) && !rowItem.isDirectory) {
+            ColorUtils.colorizeIcons(context, rowItem.filetype, gradientDrawable, iconSkinColor);
+          } else {
+            gradientDrawable.setColor(iconSkinColor);
+          }
+          if (isBackButton) {
+            gradientDrawable.setColor(goBackColor);
+          }
         }
       }
     }
@@ -1414,10 +1673,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
     if (hasPendingPasteOperation()) return;
-    Context currentContext = this.context;
-    if (mainFragment.getMainActivity().getAppTheme() == AppTheme.BLACK) {
-      currentContext = new ContextThemeWrapper(context, R.style.overflow_black);
+    // Wrap the context with the rounded popup theme overlay so the per-item menu gets the same
+    // rounded surface as the toolbar overflow, in every theme.
+    final AppTheme appTheme = mainFragment.getMainActivity().getAppTheme();
+    final int popupThemeOverlay;
+    if (appTheme == AppTheme.LIGHT) {
+      popupThemeOverlay = R.style.PopupThemeOverlayLight;
+    } else if (appTheme == AppTheme.BLACK) {
+      popupThemeOverlay = R.style.PopupThemeOverlayBlack;
+    } else {
+      popupThemeOverlay = R.style.PopupThemeOverlayDark;
     }
+    Context currentContext = new ContextThemeWrapper(context, popupThemeOverlay);
     PopupMenu popupMenu =
         new ItemPopupMenu(
             currentContext,

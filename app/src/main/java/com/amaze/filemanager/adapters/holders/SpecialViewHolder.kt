@@ -60,9 +60,9 @@ class SpecialViewHolder(
         // if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
         //    view.setBackgroundResource(R.color.holo_dark_background);
         if (utilsProvider.appTheme == AppTheme.LIGHT) {
-            txtTitle.setTextColor(Utils.getColor(c, R.color.text_light))
+            txtTitle.setTextColor(Utils.getColor(c, R.color.section_header_light))
         } else {
-            txtTitle.setTextColor(Utils.getColor(c, R.color.text_dark))
+            txtTitle.setTextColor(Utils.getColor(c, R.color.section_header_dark))
         }
     }
 }

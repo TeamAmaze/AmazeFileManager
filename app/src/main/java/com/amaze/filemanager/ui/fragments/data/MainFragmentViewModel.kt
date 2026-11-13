@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.fragments.data
 
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -155,7 +156,22 @@ class MainFragmentViewModel : ViewModel() {
                 PREFERENCE_GRID_COLUMNS_DEFAULT,
             )
         Objects.requireNonNull(columnPreference)
-        columns = columnPreference?.toInt()
+        // Clamp to what the device can practically show, so grid cells never become too narrow to
+        // read (e.g. the default "3" on a phone, or a "6" saved before the cap existed).
+        columns = columnPreference?.toInt()?.coerceAtMost(maxGridColumns())
+    }
+
+    companion object {
+        /**
+         * Maximum number of grid columns that is practical on this device: phones cap at 2, tablets
+         * scale up to 4 based on the smallest screen width. Used to clamp both the stored preference
+         * and the options offered in settings.
+         */
+        @JvmStatic
+        fun maxGridColumns(): Int {
+            val smallestWidthDp = Resources.getSystem().configuration.smallestScreenWidthDp
+            return (smallestWidthDp / 200).coerceIn(2, 4)
+        }
     }
 
     /**

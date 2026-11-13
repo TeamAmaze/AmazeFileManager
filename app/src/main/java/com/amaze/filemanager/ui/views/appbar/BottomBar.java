@@ -95,6 +95,8 @@ public class BottomBar implements View.OnTouchListener {
   private int lastUsedFolderButton = 0;
   private Drawable arrow;
 
+  @ColorInt private int pathTextColor = Color.WHITE;
+
   private CountDownTimer timer;
   private GestureDetector gestureDetector;
 
@@ -335,7 +337,7 @@ public class BottomBar implements View.OnTouchListener {
 
     if (lastUsedFolderButton >= folderButtons.size()) {
       button = new AppCompatButton(mainActivity);
-      button.setTextColor(Utils.getColor(mainActivity, android.R.color.white));
+      button.setTextColor(pathTextColor);
       button.setTextSize(13);
       button.setLayoutParams(buttonParams);
       button.setBackgroundResource(0);
@@ -353,6 +355,29 @@ public class BottomBar implements View.OnTouchListener {
 
   public void setBackgroundColor(@ColorInt int color) {
     frame.setBackgroundColor(color);
+  }
+
+  /**
+   * Colours the path breadcrumb (text, folder buttons, storage/root icons and arrows) so it stays
+   * legible on the app bar surface. Applied by {@link MainActivity#applyAppBarSurface()}.
+   */
+  public void setPathTextColor(@ColorInt int color) {
+    pathTextColor = color;
+    pathText.setTextColor(color);
+    fullPathText.setTextColor(color);
+    fullPathAnim.setTextColor(color);
+    for (AppCompatButton folderButton : folderButtons) {
+      folderButton.setTextColor(color);
+    }
+    for (AppCompatImageView arrowButton : arrowButtons) {
+      arrowButton.setColorFilter(color);
+    }
+    if (buttonRoot != null) {
+      buttonRoot.setColorFilter(color);
+    }
+    if (buttonStorage != null) {
+      buttonStorage.setColorFilter(color);
+    }
   }
 
   public void setVisibility(int visibility) {

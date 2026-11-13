@@ -26,6 +26,24 @@
     android:layout_height="match_parent">
 
     <!--
+     Two-layer surface behind the (transparent) file list, mirroring the drawer banner:
+     list_background is a solid wash of the user's primary colour, and list_background_pattern
+     overlays the tilted, translucent graffiti icons. Both are configured at runtime in
+     MainFragment#applyListViewBackground so they follow the chosen theme and colour.
+    -->
+    <View
+        android:id="@+id/list_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/list_background_pattern"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop" />
+
+    <!--
      As the main content view, the view below consumes the entire
      space available using match_parent in both dimensions.
     -->

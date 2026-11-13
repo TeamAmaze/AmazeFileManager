@@ -24,26 +24,14 @@ import android.os.Bundle
 import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.ui.theme.AppThemePreference
-import java.util.Objects
 
 class AppearancePrefsFragment : BasePrefsFragment() {
     override val title = R.string.appearance
 
-    /**
-     * The actual value saved for the preference, to see the localized strings see [R.array.columns]
-     */
-    private val savedPreferenceValues =
-        listOf(
-            PREFERENCE_GRID_COLUMNS_DEFAULT,
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-        )
     private var currentTheme = 0
     private var gridColumnPref: Preference? = null
 
@@ -73,41 +61,35 @@ class AppearancePrefsFragment : BasePrefsFragment() {
 
     private val onClickGridColumn =
         Preference.OnPreferenceClickListener {
-            val dialog =
-                MaterialDialog.Builder(activity).also { builder ->
+            // Offer only the column counts this device can practically show: "Automatic" plus
+            // 2..maxGridColumns (2 on phones, up to 4 on tablets).
+            val maxColumns = MainFragmentViewModel.maxGridColumns()
+            val savedValues =
+                listOf(PREFERENCE_GRID_COLUMNS_DEFAULT) + (2..maxColumns).map { it.toString() }
+            val labels: List<CharSequence> =
+                listOf(getString(R.string.default_string)) + (2..maxColumns).map { it.toString() }
+
+            val saved =
+                activity.prefs.getString(PREFERENCE_GRID_COLUMNS, PREFERENCE_GRID_COLUMNS_DEFAULT)
+            val current = savedValues.indexOf(saved).coerceAtLeast(0)
+
+            MaterialDialog.Builder(activity)
+                .also { builder ->
                     builder.theme(activity.utilsProvider.appTheme.getMaterialDialogTheme())
                     builder.title(R.string.gridcolumnno)
-                    val columnsPreference =
-                        activity
-                            .prefs
-                            .getString(PREFERENCE_GRID_COLUMNS, PREFERENCE_GRID_COLUMNS_DEFAULT)
-
-                    Objects.requireNonNull(columnsPreference)
-                    val current =
-                        when (columnsPreference) {
-                            null -> {
-                                PREFERENCE_GRID_COLUMNS_DEFAULT.toInt()
-                            }
-                            else -> {
-                                columnsPreference.toInt() - 1
-                            }
-                        }
-
                     builder
-                        .items(R.array.columns)
+                        .items(labels)
                         .itemsCallbackSingleChoice(current) { dialog, _, which, _ ->
-                            val editor = activity.prefs.edit()
-                            editor.putString(
-                                PREFERENCE_GRID_COLUMNS,
-                                savedPreferenceValues[which],
-                            )
-                            editor.apply()
+                            activity.prefs
+                                .edit()
+                                .putString(PREFERENCE_GRID_COLUMNS, savedValues[which])
+                                .apply()
                             dialog.dismiss()
                             updateGridColumnSummary()
                             true
                         }
                 }.build()
-            dialog.show()
+                .show()
 
             true
         }
@@ -176,6 +158,10 @@ class AppearancePrefsFragment : BasePrefsFragment() {
                 PREFERENCE_GRID_COLUMNS,
                 PREFERENCE_GRID_COLUMNS_DEFAULT,
             )
-        gridColumnPref?.summary = preferenceColumns
+        // Show the effective (device-clamped) column count so it matches what the grid renders.
+        val effective =
+            (preferenceColumns?.toIntOrNull() ?: PREFERENCE_GRID_COLUMNS_DEFAULT.toInt())
+                .coerceAtMost(MainFragmentViewModel.maxGridColumns())
+        gridColumnPref?.summary = effective.toString()
     }
 }
