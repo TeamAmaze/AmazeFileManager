@@ -71,6 +71,7 @@
     <string name="about">Honi buruz</string>
     <string name="extract">Erauzi</string>
     <string name="compress">Konprimitu</string>
+    <string name="open_in_terminal">Ireki terminalean</string>
     <string name="yes">Bai</string>
     <string name="no">Ez</string>
     <string name="dialog_delete_category_directories">Direktorioak</string>
@@ -667,6 +668,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="saved_multi_files">%d fitxategi gorde dira.</string>
     <string name="create_hidden_file_warn">Sortutako fitxategia ezkutuan egongo da fitxategi zerrendan.</string>
     <string name="grant_apkinstall_permission">Aplikazioak instalatzeko baimena behar du aplikazioak aurrera jarraitzeko.</string>
+    <string name="grant_terminal_permission">Aplikazioak baimena behar du hautatutako Terminal aplikazioarekin komandoak exekutatzeko.</string>
     <string name="time_remaining">Gelditzen den denbora</string>
     <string name="transfer_rate">Transferentzia-abiadura</string>
     <string name="unknown">ezezaguna</string>
@@ -864,5 +866,7 @@ Android 11 geroztik, Google-k Fitxategi kudeatzaileari gailuaren fitxategi guzti
     <string name="trash_bin_cleanup_interval_summary">Automatikoki garbitzeko maiztasuna (orduak)</string>
     <string name="file_deletion">Fitxategia ezabatzea</string>
     <string name="error_mediastore_query_uri">Errore bat gertatu da hautatutako multimedia-fitxategiaren edukiaren URIa kontsultatzean. Freskatu MediaStore eta saiatu berriro.</string>
-    </resources>
+    <string name="no_terminal_apps">Ez dago Terminal aplikaziorik instalatua</string>
+    <string name="no_terminal_apps_message"><![CDATA[<p>Ez da aurkitu terminal-aplikaziorik gailu honetan.</p><p> Mesedez, instalatu lehenik terminal-aplikazio hauetako bat eginbide hau erabiltzeko: <ul><li><a href=\"https://termoneplus.com/\">Termone Plus</a></li><li><a href=\"https://termux.dev\">Termux</a> (baliteke <a href=\"https://github.com/termux/termux-tasker#allow-external-apps-property-optional\">konfigurazio gehigarria</a> ere behar izatea) </li><li><a href=\"https://github.com/jackpal/Android-Terminal-Emulator\">Jack Palovich-en Android Terminal-emuladorea</a> (jada ez da garatzen)</li></ul></p>]]></string>
+</resources>
 
