@@ -71,6 +71,7 @@
     <string name="about">Honi buruz</string>
     <string name="extract">Erauzi</string>
     <string name="compress">Konprimitu</string>
+    <string name="open_in_terminal">Ireki terminalean</string>
     <string name="yes">Bai</string>
     <string name="no">Ez</string>
     <string name="dialog_delete_category_directories">Direktorioak</string>
@@ -667,6 +668,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="saved_multi_files">%d fitxategi gorde dira.</string>
     <string name="create_hidden_file_warn">Sortutako fitxategia ezkutuan egongo da fitxategi zerrendan.</string>
     <string name="grant_apkinstall_permission">Aplikazioak instalatzeko baimena behar du aplikazioak aurrera jarraitzeko.</string>
+    <string name="grant_terminal_permission">Aplikazioak baimena behar du hautatutako Terminal aplikazioarekin komandoak exekutatzeko.</string>
     <string name="time_remaining">Gelditzen den denbora</string>
     <string name="transfer_rate">Transferentzia-abiadura</string>
     <string name="unknown">ezezaguna</string>
@@ -728,7 +730,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="ftp_readonly">Irakurtzeko soilik sarbidea</string>
     <string name="legacy_listing_title">Erabili zerrendatze zaharra root-entzat</string>
     <string name="legacy_listing_summary">Gaituta badago, metodo zaharra erabiltzen du fitxategiak zerrendatzeko</string>
-    <string name="error_unsupported_v5_rar">\"%s\" RAR artxiboa ez da onartzen RAR v5 bertsioan.</string>
+    <string name="error_unsupported_rar_version">\"%s\" RAR artxiboa onartzen ez den RAR artxibo bat da.</string>
     <string name="ftp_prompt_restart_server">FTP zerbitzaria berrabiarazi beharko duzu aldaketak indarrean jartzeko.</string>
     <string name="error_permission_denied">Baimena ukatua</string>
     <string name="error_archive_password_incorrect">Artxiboko pasahitz okerra</string>
@@ -749,6 +751,9 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="ftp_server_reset_notify">FTP zerbitzariak partekatutako bide-izena barne-biltegiratzean berrezarri da</string>
     <string name="ftp_server_root_unavailable">Root sarbidea behar duen bide-izena aukeratu duzu. Mesedez gaitu root arakatzea ezarpenetan zure gailua rooteatuta badago.</string>
     <string name="ftp_server_root_filesystem_warning">Root sarbidea behar duen bide-izena aukeratu duzu. Honek zure gailuan fitxategi sistema osoa irakurri/idazteko aukera ematen du eta arriskutsua da - akats axolagabeek zure gailua bistara dezakete!\n\nZiur zaude\?</string>
+    <string name="ftp_server_ssl_cert_info_title">FTP SSL egiaztagiriaren informazioa</string>
+    <string name="ftp_server_ssl_cert_info">Gaia: %s\nBidaltzailea: %s\nHonen aurretik ez du balio: %s\nHonen ondoren ez du balio: %s\n\nSHA-256 hatz-marka: %s</string>
+    <string name="ftp_server_ssl_cert_info_copied_to_clipboard">FTP SSL egiaztagiriaren informazioa arbelean kopiatu da</string>
     <string name="compressed_explorer_fragment_error_open_uri">Errorea \"%s\" URLa irakurtzeko irekitzean.</string>
     <string name="error_empty_archive">\"%s\" hutsa dagoen artxiboa da.</string>
     <string name="error_bad_archive_without_info">\"%s\" hondatutako artxiboa da.</string>
@@ -861,5 +866,7 @@ Android 11 geroztik, Google-k Fitxategi kudeatzaileari gailuaren fitxategi guzti
     <string name="trash_bin_cleanup_interval_summary">Automatikoki garbitzeko maiztasuna (orduak)</string>
     <string name="file_deletion">Fitxategia ezabatzea</string>
     <string name="error_mediastore_query_uri">Errore bat gertatu da hautatutako multimedia-fitxategiaren edukiaren URIa kontsultatzean. Freskatu MediaStore eta saiatu berriro.</string>
+    <string name="no_terminal_apps">Ez dago Terminal aplikaziorik instalatua</string>
+    <string name="no_terminal_apps_message"><![CDATA[<p>Ez da aurkitu terminal-aplikaziorik gailu honetan.</p><p> Mesedez, instalatu lehenik terminal-aplikazio hauetako bat eginbide hau erabiltzeko: <ul><li><a href=\"https://termoneplus.com/\">Termone Plus</a></li><li><a href=\"https://termux.dev\">Termux</a> (baliteke <a href=\"https://github.com/termux/termux-tasker#allow-external-apps-property-optional\">konfigurazio gehigarria</a> ere behar izatea) </li><li><a href=\"https://github.com/jackpal/Android-Terminal-Emulator\">Jack Palovich-en Android Terminal-emuladorea</a> (jada ez da garatzen)</li></ul></p>]]></string>
 </resources>
 

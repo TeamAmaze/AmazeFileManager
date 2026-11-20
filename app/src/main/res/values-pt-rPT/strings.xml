@@ -340,10 +340,7 @@
                         <br/>
                     </li>
                     <p style=&quot;margin-left: 40px&quot;>
-                        Abra o Painel de Controle, clique em Escolher o grupo doméstico e as opções
-                        de compartilhamento em Rede e Internet e clique em Alterar configurações de
-                        compartilhamento avançadas. Ative o recurso de compartilhamento de arquivos
-                        e impressoras.
+                        Abra o Painel de Controle, clique em Escolher o grupo doméstico e as opções de compartilhamento em Rede e Internet e clique em Alterar configurações de compartilhamento avançadas. Ative o recurso de compartilhamento de arquivos e impressoras.
                         <br/>
                         <br/>
                     </p>
@@ -353,30 +350,21 @@
                         <br/>
                     </li>
                     <p style=&quot;margin-left: 40px&quot;>
-                        Você também pode querer configurar as outras configurações de
-                        compartilhamento avançadas aqui.
+                        Você também pode querer configurar as outras configurações de compartilhamento avançadas aqui.
                         <br/>
-                        Por exemplo, você pode habilitar o acesso aos seus arquivos sem uma senha
-                        se confiar em todos os dispositivos da sua rede local. Uma vez que o
-                        compartilhamento de arquivos e impressoras estiver ativado, abra o
-                        Explorador de Arquivos ou Windows Explorer, clique com o botão direito do
-                        mouse na pasta que deseja compartilhar e selecione Propriedades.
+                        Por exemplo, você pode habilitar o acesso aos seus arquivos sem uma senha se confiar em todos os dispositivos da sua rede local. Uma vez que o compartilhamento de arquivos e impressoras estiver ativado, abra o Explorador de Arquivos ou Windows Explorer, clique com o botão direito do mouse na pasta que deseja compartilhar e selecione Propriedades.
                         <br/>
                         Clique no botão Compartilhar e disponibilize a pasta na rede.
                         <br/>
                         <br/>
-                        </p>
+                    </p>
 
                     <li>
                         <b>Certifique-se de que ambos os dispositivos estejam na mesma rede Wi-Fi</b>
                         <br/>
                     </li>
                     <p style=&quot;margin-left: 40px&quot;>
-                        Esta funcionalidade torna os arquivos disponíveis na rede local, por isso o
-                        seu PC e os dispositivos móveis têm de estar na mesma rede local. Você não
-                        pode acessar uma pasta compartilhada do Windows pela Internet ou quando o
-                        smartphone estiver utilizando dados móveis - ele precisa estar conectado ao
-                        Wi-Fi.
+                        Esta funcionalidade torna os arquivos disponíveis na rede local, por isso o seu PC e os dispositivos móveis têm de estar na mesma rede local. Você não pode acessar uma pasta compartilhada do Windows pela Internet ou quando o smartphone estiver utilizando dados móveis - ele precisa estar conectado ao Wi-Fi.
                         <br/>
                         <br/>
                     </p>
@@ -386,10 +374,7 @@
                         <br/>
                     </li>
                     <p style=&quot;margin-left: 40px&quot;>
-                        Abra o Prompt de Comando. Digite &quot;ipconfig&quot; e pressione Enter.
-                        Procure por Gateway Padrão em seu adaptador de rede para o endereço IP do
-                        seu roteador. Procure por &quot;Endereço IPv4&quot; na mesma seção do
-                        adaptador para encontrar o endereço IP do seu computador.
+                        Abra o Prompt de Comando. Digite \'ipconfig\' e pressione Enter. Procure por Gateway Padrão em seu adaptador de rede para o endereço IP do seu roteador. Procure por "Endereço IPv4" na mesma seção do adaptador para encontrar o endereço IP do seu computador.
                         <br/>
                         <br/>
                     </p>
