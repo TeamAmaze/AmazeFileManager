@@ -27,9 +27,9 @@ DRY_RUN=0
 VERBOSE=0
 TARGET_DIR=""
 
-# Files every Android-style locale folder must contain. Folders missing
-# any of these are deleted instead of renamed.
-REQUIRED_FILES=(title.txt short_description.txt long_description.txt)
+# Files every subfolder must contain. Folders missing any of these are
+# deleted.
+REQUIRED_FILES=(title.txt short_description.txt full_description.txt)
 
 # print_usage: Print help text to stdout.
 print_usage() {
@@ -39,11 +39,11 @@ Usage: ${SCRIPT_NAME} [-n] [-v] <target_directory>
 Renames subdirectories of <target_directory> from the Android locale-folder
 naming convention (en-rUS, pt-rBR, zh-rCN, ...) to the convention expected
 by fastlane (en-US, pt-BR, zh-CN, ...). Folders already in fastlane format,
-or that don't look like locale folders, are left untouched.
+or that don't look like locale folders, are not renamed.
 
-Android-style locale folders that are empty, or that are missing any of
-title.txt, short_description.txt or long_description.txt, are deleted.
-If a folder with the fastlane name already exists, it is deleted and
+Every subfolder that is empty, or that is missing any of title.txt,
+short_description.txt or long_description.txt, is deleted, whatever its
+name. If a folder with the fastlane name already exists, it is deleted and
 replaced.
 
 Options:
@@ -104,11 +104,10 @@ android_locale_to_fastlane() {
 }
 
 # convert_locale_folders: Walk every immediate subdirectory of a target
-# directory and rename any Android-style locale folders to fastlane-style
-# names. Skips folders that are already correctly named. Android-style
-# folders that are empty or missing any file in REQUIRED_FILES are
-# deleted. If the destination name already exists, the existing folder is
-# deleted first and then replaced.
+# directory. Any subfolder that is empty or missing a file in
+# REQUIRED_FILES is deleted. Remaining Android-style locale folders are
+# renamed to fastlane-style names; if the destination name already exists,
+# the existing folder is deleted first and then replaced.
 #
 # Arguments:
 #   $1 - path to the directory containing locale subfolders
@@ -122,16 +121,13 @@ convert_locale_folders() {
 
   for entry in "${target_dir}"/*/; do
     entry="${entry%/}"
+
+    # A folder may have been replaced earlier in this run.
+    [[ -d "${entry}" ]] || continue
+
     base_name="$(basename "${entry}")"
-    new_name="$(android_locale_to_fastlane "${base_name}")"
 
-    if [[ "${new_name}" == "${base_name}" ]]; then
-      log "Skipping '${base_name}' (already fastlane format or not a locale folder)"
-      skipped_count=$((skipped_count + 1))
-      continue
-    fi
-
-    # Empty source folder: nothing to move, so just delete it.
+    # Empty folder: delete it.
     if [[ -z "$(ls -A -- "${entry}")" ]]; then
       if [[ "${DRY_RUN}" -eq 1 ]]; then
         log "[dry-run] '${base_name}' is empty, would delete it" force
@@ -143,7 +139,7 @@ convert_locale_folders() {
       continue
     fi
 
-    # Incomplete source folder: delete it instead of renaming it.
+    # Incomplete folder: delete it.
     missing=""
     for required in "${REQUIRED_FILES[@]}"; do
       if [[ ! -f "${entry}/${required}" ]]; then
@@ -159,6 +155,14 @@ convert_locale_folders() {
         log "'${base_name}' is missing ${missing}, deleted it" force
       fi
       incomplete_count=$((incomplete_count + 1))
+      continue
+    fi
+
+    new_name="$(android_locale_to_fastlane "${base_name}")"
+
+    if [[ "${new_name}" == "${base_name}" ]]; then
+      log "Skipping '${base_name}' (already fastlane format or not a locale folder)"
+      skipped_count=$((skipped_count + 1))
       continue
     fi
 
