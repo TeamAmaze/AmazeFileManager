@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# This filepath was generated automatically by Sonnet 4.6.
+# This filepath was generated automatically by Opus 5.5.
 #
 # convert_fastlane_locale_folders.sh
 #
@@ -38,6 +38,9 @@ Renames subdirectories of <target_directory> from the Android locale-folder
 naming convention (en-rUS, pt-rBR, zh-rCN, ...) to the convention expected
 by fastlane (en-US, pt-BR, zh-CN, ...). Folders already in fastlane format,
 or that don't look like locale folders, are left untouched.
+
+If a folder with the fastlane name already exists, it is deleted and
+replaced. Empty Android-style locale folders are deleted.
 
 Options:
   -n    Dry run: show what would happen, make no changes.
@@ -98,8 +101,9 @@ android_locale_to_fastlane() {
 
 # convert_locale_folders: Walk every immediate subdirectory of a target
 # directory and rename any Android-style locale folders to fastlane-style
-# names. Skips folders that are already correctly named and refuses to
-# overwrite an existing folder at the destination name.
+# names. Skips folders that are already correctly named. Empty
+# Android-style folders are deleted. If the destination name already
+# exists, the existing folder is deleted first and then replaced.
 #
 # Arguments:
 #   $1 - path to the directory containing locale subfolders
@@ -110,6 +114,7 @@ convert_locale_folders() {
   local skipped_count=0
 
   for entry in "${target_dir}"/*/; do
+    entry="${entry%/}"
     base_name="$(basename "${entry}")"
     new_name="$(android_locale_to_fastlane "${base_name}")"
 
@@ -119,25 +124,32 @@ convert_locale_folders() {
       continue
     fi
 
-    new_path="${target_dir}/${new_name}"
-
-    if [[ -e "${new_path}" ]]; then
-      log "Warning: '${new_name}' already exists, overwriting in '${target_dir}'" force
+    # Empty source folder: nothing to move, so just delete it.
+    if [[ -z "$(ls -A -- "${entry}")" ]]; then
+      if [[ "${DRY_RUN}" -eq 1 ]]; then
+        log "[dry-run] '${base_name}' is empty, would delete it" force
+      else
+        rmdir -- "${entry}"
+        log "'${base_name}' is empty, deleted it" force
+      fi
+      continue
     fi
 
-    for filepath in ${entry}*; do
-      local new_filepath
-      new_filepath="${new_path}/$(basename "${filepath}")"
+    new_path="${target_dir}/${new_name}"
 
-      if [[ "${DRY_RUN}" -eq 1 ]]; then
-        log "[dry-run] Would try to create '${new_path}'"
-        log "[dry-run] Would move '${filepath}' -> '${new_filepath}" force
-      else
-        mkdir -p "${new_path}"
-        mv -- "${filepath}" "${new_filepath}" && rm -r -- "${entry}"
-        log "Moved '${filepath}' -> '${new_filepath}'" force
+    if [[ "${DRY_RUN}" -eq 1 ]]; then
+      if [[ -e "${new_path}" ]]; then
+        log "[dry-run] '${new_name}' already exists, would delete it" force
       fi
-    done
+      log "[dry-run] Would rename '${base_name}' -> '${new_name}'" force
+    else
+      if [[ -e "${new_path}" ]]; then
+        log "Warning: '${new_name}' already exists, deleting it before rename" force
+        rm -rf -- "${new_path}"
+      fi
+      mv -- "${entry}" "${new_path}"
+      log "Renamed '${base_name}' -> '${new_name}'" force
+    fi
     renamed_count=$((renamed_count + 1))
   done
 
