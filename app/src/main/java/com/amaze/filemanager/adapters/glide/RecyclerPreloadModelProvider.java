@@ -30,6 +30,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,9 +51,17 @@ public class RecyclerPreloadModelProvider
     RequestBuilder<Drawable> incompleteRequest = Glide.with(fragment).asDrawable();
 
     if (isCircled) {
-      request = incompleteRequest.circleCrop();
+      // Platform animated image drawables are available from API 28.
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        request =
+            incompleteRequest
+                .optionalCircleCrop()
+                .optionalTransform(Drawable.class, new CircularDrawableTransformation());
+      } else {
+        request = incompleteRequest.circleCrop();
+      }
     } else {
-      request = incompleteRequest.centerCrop();
+      request = incompleteRequest.optionalCenterCrop();
     }
   }
 
