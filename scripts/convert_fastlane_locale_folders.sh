@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 #
-# This filepath was generated automatically by Opus 5.5.
-#
 # convert_fastlane_locale_folders.sh
 #
 # Renames subdirectories named using Android's locale-folder convention
@@ -29,6 +27,10 @@ DRY_RUN=0
 VERBOSE=0
 TARGET_DIR=""
 
+# Files every Android-style locale folder must contain. Folders missing
+# any of these are deleted instead of renamed.
+REQUIRED_FILES=(title.txt short_description.txt long_description.txt)
+
 # print_usage: Print help text to stdout.
 print_usage() {
   cat <<EOF
@@ -39,8 +41,10 @@ naming convention (en-rUS, pt-rBR, zh-rCN, ...) to the convention expected
 by fastlane (en-US, pt-BR, zh-CN, ...). Folders already in fastlane format,
 or that don't look like locale folders, are left untouched.
 
+Android-style locale folders that are empty, or that are missing any of
+title.txt, short_description.txt or long_description.txt, are deleted.
 If a folder with the fastlane name already exists, it is deleted and
-replaced. Empty Android-style locale folders are deleted.
+replaced.
 
 Options:
   -n    Dry run: show what would happen, make no changes.
@@ -101,17 +105,20 @@ android_locale_to_fastlane() {
 
 # convert_locale_folders: Walk every immediate subdirectory of a target
 # directory and rename any Android-style locale folders to fastlane-style
-# names. Skips folders that are already correctly named. Empty
-# Android-style folders are deleted. If the destination name already
-# exists, the existing folder is deleted first and then replaced.
+# names. Skips folders that are already correctly named. Android-style
+# folders that are empty or missing any file in REQUIRED_FILES are
+# deleted. If the destination name already exists, the existing folder is
+# deleted first and then replaced.
 #
 # Arguments:
 #   $1 - path to the directory containing locale subfolders
 convert_locale_folders() {
   local target_dir="$1"
-  local entry base_name new_name new_path
+  local entry base_name new_name new_path required missing
   local renamed_count=0
   local skipped_count=0
+  local removed_count=0
+  local incomplete_count=0
 
   for entry in "${target_dir}"/*/; do
     entry="${entry%/}"
@@ -132,6 +139,26 @@ convert_locale_folders() {
         rmdir -- "${entry}"
         log "'${base_name}' is empty, deleted it" force
       fi
+      removed_count=$((removed_count + 1))
+      continue
+    fi
+
+    # Incomplete source folder: delete it instead of renaming it.
+    missing=""
+    for required in "${REQUIRED_FILES[@]}"; do
+      if [[ ! -f "${entry}/${required}" ]]; then
+        missing="${missing:+${missing}, }${required}"
+      fi
+    done
+
+    if [[ -n "${missing}" ]]; then
+      if [[ "${DRY_RUN}" -eq 1 ]]; then
+        log "[dry-run] '${base_name}' is missing ${missing}, would delete it" force
+      else
+        rm -rf -- "${entry}"
+        log "'${base_name}' is missing ${missing}, deleted it" force
+      fi
+      incomplete_count=$((incomplete_count + 1))
       continue
     fi
 
@@ -153,7 +180,7 @@ convert_locale_folders() {
     renamed_count=$((renamed_count + 1))
   done
 
-  log "Done. ${renamed_count} folder(s) renamed, ${skipped_count} skipped." force
+  log "Done. ${renamed_count} folder(s) renamed, ${removed_count} empty folder(s) deleted, ${incomplete_count} incomplete folder(s) deleted, ${skipped_count} skipped." force
 }
 
 # parse_args: Parse command-line flags and the required target directory
