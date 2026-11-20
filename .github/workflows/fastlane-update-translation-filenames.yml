@@ -1,0 +1,88 @@
+# .github/workflows/convert-locale-folders.yml
+name: Convert fastlane locale folders
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to run on (leave empty to use the branch selected above)
+        required: false
+        default: ""
+      target_dir:
+        description: Directory containing the locale folders
+        required: true
+        default: fastlane/metadata/android
+      dry_run:
+        description: Dry run (show what would change, commit nothing)
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: convert-locales-${{ inputs.branch || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ inputs.branch || github.ref_name }}
+      TARGET_DIR: ${{ inputs.target_dir }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      SCRIPT_PATH: scripts/convert_fastlane_locale_folders.sh
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.BRANCH }}
+
+      - name: Verify branch and inputs
+        shell: bash
+        run: |
+          if ! git ls-remote --exit-code --heads origin "$BRANCH" > /dev/null; then
+            echo "::error::'$BRANCH' is not a branch on origin."
+            exit 1
+          fi
+          if [[ ! -f "$SCRIPT_PATH" ]]; then
+            echo "::error::Script not found at '$SCRIPT_PATH' on branch '$BRANCH'."
+            exit 1
+          fi
+          if [[ ! -d "$TARGET_DIR" ]]; then
+            echo "::error::Target directory '$TARGET_DIR' not found on branch '$BRANCH'."
+            exit 1
+          fi
+
+      - name: Run conversion script
+        shell: bash
+        run: |
+          args=(-v)
+          if [[ "$DRY_RUN" == "true" ]]; then
+            args+=(-n)
+          fi
+          bash "$SCRIPT_PATH" "${args[@]}" "$TARGET_DIR"
+
+      - name: Commit and push changes
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        run: |
+          git add -A -- "$TARGET_DIR"
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          {
+            echo "### Locale folder changes on \`$BRANCH\`"
+            echo '```'
+            git diff --cached --stat
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Convert Android locale folders to fastlane format"
+          git push origin "HEAD:${BRANCH}"
