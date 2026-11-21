@@ -444,7 +444,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/text_view_source"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/source_title"
                         android:textSize="@dimen/material_generic_title"
@@ -452,30 +452,35 @@
                         app:layout_constraintTop_toTopOf="@+id/relative_layout_source"
                         app:layout_constraintVertical_chainStyle="packed"
                         android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintStart_toEndOf="@id/image_source"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/source_summary"
                         android:textSize="@dimen/material_generic_title_summary"
-                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_source"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintTop_toBottomOf="@+id/text_view_source"
                         app:layout_constraintStart_toStartOf="@id/text_view_source"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <View
                         android:id="@+id/relative_layout_source"
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
+                        android:layout_height="0dp"
                         android:layout_marginTop="20dp"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="onClick"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvSDevelopment" />
+                        app:layout_constraintTop_toBottomOf="@id/tvSDevelopment"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView1"
+                        app:layout_constraintHeight_min="72dp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/image_dev_1_title"
@@ -490,7 +495,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/text_view_dev_1_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/report_bugs_title"
                         android:textSize="@dimen/material_generic_title"
@@ -498,29 +503,34 @@
                         app:layout_constraintTop_toTopOf="@+id/relative_layout_issues"
                         app:layout_constraintVertical_chainStyle="packed"
                         android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintStart_toEndOf="@id/image_dev_1_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/report_bugs_summary"
                         android:textSize="@dimen/material_generic_title_summary"
-                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_issues"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintTop_toBottomOf="@+id/text_view_dev_1_title"
                         app:layout_constraintStart_toStartOf="@id/text_view_dev_1_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <View
                         android:id="@+id/relative_layout_issues"
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
+                        android:layout_height="0dp"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="onClick"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/relative_layout_source" />
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_source"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView2"
+                        app:layout_constraintHeight_min="72dp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/image_share_logs_title"
@@ -535,7 +545,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/text_view_share_logs_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/share_logs"
                         android:textSize="@dimen/material_generic_title"
@@ -543,29 +553,34 @@
                         app:layout_constraintTop_toTopOf="@+id/relative_layout_share_logs"
                         app:layout_constraintVertical_chainStyle="packed"
                         android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintStart_toEndOf="@id/image_share_logs_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView3"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/share_logs_summary"
                         android:textSize="@dimen/material_generic_title_summary"
-                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_share_logs"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintTop_toBottomOf="@+id/text_view_share_logs_title"
                         app:layout_constraintStart_toStartOf="@id/text_view_share_logs_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <View
                         android:id="@+id/relative_layout_share_logs"
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
+                        android:layout_height="0dp"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="onClick"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/relative_layout_issues" />
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_issues"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView3"
+                        app:layout_constraintHeight_min="72dp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/image_dev_2_title"
@@ -580,7 +595,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/text_view_dev_2_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/translate_title"
                         android:textSize="@dimen/material_generic_title"
@@ -588,29 +603,34 @@
                         app:layout_constraintTop_toTopOf="@+id/relative_layout_translate"
                         app:layout_constraintVertical_chainStyle="packed"
                         android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintStart_toEndOf="@id/image_dev_2_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView4"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/translate_summary"
                         android:textSize="@dimen/material_generic_title_summary"
-                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_translate"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintTop_toBottomOf="@+id/text_view_dev_2_title"
                         app:layout_constraintStart_toStartOf="@id/text_view_dev_2_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <View
                         android:id="@+id/relative_layout_translate"
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
+                        android:layout_height="0dp"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="onClick"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/relative_layout_share_logs" />
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_share_logs"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView4"
+                        app:layout_constraintHeight_min="72dp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/image_dev_4_title"
@@ -625,7 +645,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/text_view_dev_4_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/xda_title"
                         android:textSize="@dimen/material_generic_title"
@@ -633,29 +653,34 @@
                         app:layout_constraintTop_toTopOf="@+id/relative_layout_xda"
                         app:layout_constraintVertical_chainStyle="packed"
                         android:layout_marginLeft="@dimen/material_generic_medium"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintStart_toEndOf="@id/image_dev_4_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/appCompatTextView5"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/xda_summary"
                         android:textSize="@dimen/material_generic_title_summary"
-                        app:layout_constraintBottom_toBottomOf="@+id/relative_layout_xda"
+                        android:layout_marginEnd="@dimen/material_generic"
                         app:layout_constraintTop_toBottomOf="@+id/text_view_dev_4_title"
                         app:layout_constraintStart_toStartOf="@id/text_view_dev_4_title"
+                        app:layout_constraintEnd_toEndOf="parent"
                         tools:layout_editor_absoluteX="72dp" />
 
                     <View
                         android:id="@+id/relative_layout_xda"
                         android:layout_width="match_parent"
-                        android:layout_height="72dp"
+                        android:layout_height="0dp"
                         android:background="?android:attr/selectableItemBackground"
                         android:onClick="onClick"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/relative_layout_translate" />
+                        app:layout_constraintTop_toBottomOf="@id/relative_layout_translate"
+                        app:layout_constraintBottom_toBottomOf="@id/appCompatTextView5"
+                        app:layout_constraintHeight_min="72dp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/image_dev_5_title"
