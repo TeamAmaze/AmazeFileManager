@@ -24,4 +24,6 @@ object AppConstants {
     const val NEW_FILE_DELIMITER = "."
     const val NEW_FILE_EXTENSION_TXT = "txt"
     const val NEW_LINE = "\n"
+    const val KILOBYTE = 1024
+    const val MEGABYTE = KILOBYTE * KILOBYTE
 }
