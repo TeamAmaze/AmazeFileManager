@@ -26,8 +26,11 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.test.ShadowTabHandlerWithTabs
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assume
+import org.junit.Before
 import org.junit.Test
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
@@ -49,33 +52,31 @@ import java.io.File
  */
 @Config(shadows = [ShadowSmbUtil::class, ShadowTabHandlerWithTabs::class])
 class MainActivityTeleportTest : AbstractMainActivityTestBase() {
+    @Before
+    fun runIoSchedulerSynchronously() {
+        // MainActivity.onCreate loads DataUtils on Schedulers.io() and then calls goToMain(null)
+        // on the main thread. Running io work inline makes that initial navigation finish
+        // before the test teleports, instead of racing with it.
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxJavaPlugins.setErrorHandler { }
+    }
+
+    @After
+    fun resetRxPlugins() {
+        RxJavaPlugins.reset()
+    }
+
     /**
      * Verifies teleporting to a normal local file sets scrollToFileName and navigates
      * to the file's parent directory.
      */
     @Test
-    fun testTeleportToLocalFile() {
-        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
-            ShadowLooper.idleMainLooper()
-            scenario.moveToState(Lifecycle.State.STARTED)
-            scenario.onActivity { activity: MainActivity ->
-                val file = HybridFile(OpenMode.FILE, "/storage/emulated/0/Documents/report.pdf")
-
-                activity.teleportToFile(file)
-                ShadowLooper.idleMainLooper()
-
-                assertEquals("report.pdf", activity.scrollToFileName)
-                // Local (java.io.File-based) getParent() uses the host OS separator, which is
-                // "\" when this test runs on a Windows dev machine but always "/" on a real
-                // Android device. Normalize before comparing so the test is host-independent.
-                assertEquals(
-                    "/storage/emulated/0/Documents",
-                    activity.currentMainFragment?.currentPath?.replace(File.separatorChar, '/'),
-                )
-            }
-            scenario.moveToState(Lifecycle.State.DESTROYED)
-        }
-    }
+    fun testTeleportToLocalFile() =
+        assertTeleport(
+            HybridFile(OpenMode.FILE, "/storage/emulated/0/Documents/report.pdf"),
+            expectedScrollToFileName = "report.pdf",
+            expectedCurrentPath = "/storage/emulated/0/Documents",
+        )
 
     /**
      * Verifies teleporting to an SMB file sets scrollToFileName and navigates
@@ -83,74 +84,64 @@ class MainActivityTeleportTest : AbstractMainActivityTestBase() {
      * (getParent/getName resolve purely from the path string).
      */
     @Test
-    fun testTeleportToSmbFile() {
-        io.reactivex.plugins.RxJavaPlugins.setErrorHandler { }
-        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
-            ShadowLooper.idleMainLooper()
-            scenario.moveToState(Lifecycle.State.STARTED)
-            scenario.onActivity { activity: MainActivity ->
-                val file =
-                    HybridFile(OpenMode.SMB, "smb://user:password@1.2.3.4/share/folder/file.pdf")
-
-                activity.teleportToFile(file)
-                ShadowLooper.idleMainLooper()
-
-                assertEquals("file.pdf", activity.scrollToFileName)
-                assertEquals(
-                    "smb://user:password@1.2.3.4/share/folder",
-                    activity.currentMainFragment?.currentPath,
-                )
-            }
-            scenario.moveToState(Lifecycle.State.DESTROYED)
-        }
-    }
+    fun testTeleportToSmbFile() =
+        assertTeleport(
+            HybridFile(OpenMode.SMB, "smb://user:password@1.2.3.4/share/folder/file.pdf"),
+            expectedScrollToFileName = "file.pdf",
+            expectedCurrentPath = "smb://user:password@1.2.3.4/share/folder",
+        )
 
     /**
      * Verifies teleporting to an FTP file sets scrollToFileName and navigates
      * to the file's parent directory, without requiring a live FTP server.
      */
     @Test
-    fun testTeleportToFtpFile() {
-        Assume.assumeFalse(System.getProperty("os.name").orEmpty().lowercase().contains("win"))
-
-        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
-            scenario.moveToState(Lifecycle.State.STARTED)
-
-            scenario.onActivity { activity: MainActivity ->
-                val file =
-                    HybridFile(
-                        OpenMode.FTP,
-                        "ftp://user:password@127.0.0.1:22222/uploads/document.docx",
-                    )
-                activity.teleportToFile(file)
-
-                assertEquals("document.docx", activity.scrollToFileName)
-                assertEquals(
-                    "ftp://user:password@127.0.0.1:22222/uploads",
-                    activity.currentMainFragment?.currentPath,
-                )
-            }
-
-            scenario.moveToState(Lifecycle.State.DESTROYED)
-        }
-    }
+    fun testTeleportToFtpFile() =
+        assertTeleport(
+            HybridFile(OpenMode.FTP, "ftp://user:password@127.0.0.1:22222/uploads/document.docx"),
+            expectedScrollToFileName = "document.docx",
+            expectedCurrentPath = "ftp://user:password@127.0.0.1:22222/uploads",
+        )
 
     /**
      * Verifies teleporting to a file with no resolvable parent (e.g. a root-level path)
      * falls back gracefully to navigating to the file's own path, without crashing.
      */
     @Test
-    fun testTeleportToFileWithNoParentFallsBackGracefully() {
+    fun testTeleportToFileWithNoParentFallsBackGracefully() =
+        assertTeleport(
+            HybridFile(OpenMode.FILE, "/"),
+            expectedScrollToFileName = null,
+            expectedCurrentPath = null,
+            checkPath = false,
+        )
+
+    /**
+     * Launches [MainActivity], teleports to [file] and asserts both the scroll target and the
+     * directory the current [com.amaze.filemanager.ui.fragments.MainFragment] navigated to.
+     */
+    private fun assertTeleport(
+        file: HybridFile,
+        expectedScrollToFileName: String?,
+        expectedCurrentPath: String?,
+        checkPath: Boolean = true,
+    ) {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             ShadowLooper.idleMainLooper()
             scenario.moveToState(Lifecycle.State.STARTED)
             scenario.onActivity { activity: MainActivity ->
-                val file = HybridFile(OpenMode.FILE, "/")
-
-                // Should not throw, regardless of whether getParent resolves or not.
                 activity.teleportToFile(file)
                 ShadowLooper.idleMainLooper()
-                assertEquals(null, activity.scrollToFileName)
+
+                assertEquals(expectedScrollToFileName, activity.scrollToFileName)
+                if (checkPath) {
+                    // java.io.File based getParent() uses the host separator ("\" on Windows),
+                    // so normalize it to make the assertion host-independent.
+                    assertEquals(
+                        expectedCurrentPath,
+                        activity.currentMainFragment?.currentPath?.replace(File.separatorChar, '/'),
+                    )
+                }
             }
             scenario.moveToState(Lifecycle.State.DESTROYED)
         }
