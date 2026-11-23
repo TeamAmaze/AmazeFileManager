@@ -52,6 +52,10 @@ import java.io.File
  */
 @Config(shadows = [ShadowSmbUtil::class, ShadowTabHandlerWithTabs::class])
 class MainActivityTeleportTest : AbstractMainActivityTestBase() {
+    /**
+     * Runs the io scheduler inline so that the initial navigation from
+     * [MainActivity.onCreate] finishes before the test teleports.
+     */
     @Before
     fun runIoSchedulerSynchronously() {
         // MainActivity.onCreate loads DataUtils on Schedulers.io() and then calls goToMain(null)
@@ -61,6 +65,7 @@ class MainActivityTeleportTest : AbstractMainActivityTestBase() {
         RxJavaPlugins.setErrorHandler { }
     }
 
+    /** Restores the default RxJava plugins so other tests are not affected. */
     @After
     fun resetRxPlugins() {
         RxJavaPlugins.reset()

@@ -1034,9 +1034,10 @@ public class HybridFile {
                     return ftpClient.listFiles();
                   }
                 });
-        if(ftpFiles == null){
-            LOG.warn("failed to list children of ftp path {}",parseAndFormatUriForDisplay(getPath()));
-            break;
+        if (ftpFiles == null) {
+          LOG.warn(
+              "failed to list children of ftp path {}", parseAndFormatUriForDisplay(getPath()));
+          break;
         }
         for (FTPFile ftpFile : ftpFiles) {
           onFileFound.onFileFound(new HybridFileParcelable(getPath(), ftpFile));
