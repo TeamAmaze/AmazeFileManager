@@ -24,11 +24,14 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.robolectric.Shadows.shadowOf;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Duration;
+import java.util.Collections;
 
 import org.junit.After;
 import org.junit.Test;
@@ -43,15 +46,20 @@ import org.robolectric.shadows.ShadowEnvironment;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.ui.activities.texteditor.SearchResultIndex;
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
+import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivityViewModel;
 
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Looper;
+import android.widget.ScrollView;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -97,6 +105,55 @@ public class TextEditorActivityTest {
 
     generateActivity(intent);
     assertEquals(fileContents, text.getText().toString().trim());
+  }
+
+  /** Next/previous search buttons must scroll to the result (issue #4562). */
+  @Test
+  public void testSearchNavigationScrollsToResult() throws IOException {
+    File file = simulateFile();
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setData(Uri.fromFile(file));
+    ActivityController<TextEditorActivity> controller =
+        Robolectric.buildActivity(TextEditorActivity.class, intent).create().start().visible();
+    TextEditorActivity activity = controller.get();
+    shadowOf(Looper.getMainLooper()).idle();
+
+    StringBuilder longText = new StringBuilder();
+    for (int i = 0; i < 300; i++) {
+      longText.append("line ").append(i).append('\n');
+    }
+    longText.append("needle\n");
+    AppCompatEditText editText = activity.findViewById(R.id.textEditorMainEditText);
+    editText.setText(longText.toString());
+    shadowOf(Looper.getMainLooper()).idle();
+
+    int start = longText.indexOf("needle");
+    TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
+    viewModel.setSearchResultIndices(
+        Collections.singletonList(new SearchResultIndex(start, start + 6, 300)));
+    viewModel.setCurrent(-1);
+
+    ScrollView scrollView = activity.findViewById(R.id.textEditorScrollView);
+    assertEquals(0, scrollView.getScrollY());
+
+    activity.onClick(activity.findViewById(R.id.textEditorSearchNextButton));
+    shadowOf(Looper.getMainLooper()).idleFor(Duration.ofSeconds(2));
+    // Robolectric doesn't draw, so advance the smooth scroll by hand.
+    scrollView.computeScroll();
+
+    int lineTop =
+        editText.getTop()
+            + editText.getTotalPaddingTop()
+            + editText.getLayout().getLineTop(editText.getLayout().getLineForOffset(start));
+    assertTrue(
+        "expected the result line to be on screen, scrollY="
+            + scrollView.getScrollY()
+            + " lineTop="
+            + lineTop,
+        lineTop >= scrollView.getScrollY()
+            && lineTop < scrollView.getScrollY() + scrollView.getHeight());
+    activity.onDestroy();
   }
 
   private void generateActivity(Intent intent) {
