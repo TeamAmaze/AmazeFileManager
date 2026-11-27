@@ -90,9 +90,13 @@ jobs:
           ram-size: 2048M
           channel: canary
           script: echo "Generated AVD snapshot for caching."
-
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
       - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: ${{ matrix.api-level }}
           force-avd-creation: false
@@ -102,7 +106,28 @@ jobs:
           arch: x86_64
           ram-size: 2048M
           channel: canary
+          # We have to explicitly set the parameters to disable animations (probably due to a bug)
           script: |
+            adb shell settings put global window_animation_scale 0.0
+            adb shell settings put global transition_animation_scale 0.0
+            adb shell settings put global animator_duration_scale 0.0
+            
             adb logcat -c
             adb logcat *:E &
             ./gradlew :app:connectedCheck
+      - name: Print test failures
+        # Print errors without having them cut off (as the logs sometimes do)
+        if: failure()
+        shell: python3 {0}
+        run: |
+          import glob
+          import xml.etree.ElementTree as ET
+
+          paths = glob.glob("app/build/outputs/androidTest-results/**/TEST-*.xml", recursive=True)
+          if not paths:
+              print("No androidTest result XML found (did the build fail before the tests ran?)")
+          for path in paths:
+              for case in ET.parse(path).iter("testcase"):
+                  for problem in case.findall("failure") + case.findall("error"):
+                      print(f"=== {case.get('classname')}.{case.get('name')}")
+                      print(problem.text or problem.get("message"))
