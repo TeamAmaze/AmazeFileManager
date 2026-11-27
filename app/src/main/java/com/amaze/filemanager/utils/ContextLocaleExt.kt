@@ -58,7 +58,26 @@ fun Context.getLocaleListFromXml(): LocaleListCompat {
         tagsList.remove("he")
     }
 
-    return LocaleListCompat.forLanguageTags(tagsList.joinToString(","))
+    return try {
+        val seenLocales = LinkedHashSet<Locale>()
+        val dedupedTags = mutableListOf<String>()
+
+        for (tag in tagsList) {
+            val resolvedLocale = Locale.forLanguageTag(tag.toString())
+            // add() returns false if an equal Locale was already seen -
+            // this mirrors exactly what LocaleList's own dedupe check does,
+            // so anything that would crash it gets filtered out here first.
+            if (seenLocales.add(resolvedLocale)) {
+                dedupedTags.add(tag.toString())
+            }
+        }
+
+        LocaleListCompat.forLanguageTags(dedupedTags.joinToString(","))
+    } catch (e: IllegalArgumentException) {
+        // Last-resort safety net for any OEM ICU quirk we didn't anticipate above.
+        e.printStackTrace()
+        LocaleListCompat.getEmptyLocaleList()
+    }
 }
 
 /**
@@ -91,9 +110,9 @@ fun Context.getLangPreferenceDropdownEntries(): Map<String, Locale> {
                 xmlLocale.getDisplayName(Locale.getDefault())
             } else {
                 val nameInCurrentLocale =
-                    currentLocaleList.first { locale ->
+                    currentLocaleList.firstOrNull { locale ->
                         xmlLocale.getDisplayName(locale).isNotEmpty()
-                    }
+                    } ?: Locale.getDefault()
 
                 xmlLocale.getDisplayName(nameInCurrentLocale)
             }
