@@ -73,7 +73,7 @@ val contextAfter = 60
 
 // ------------------------------------------------------------------ helpers
 
-// Universal newlines, so CRLF and LF copies of a file compare equal.
+/** Read [path] as UTF-8 with universal newlines, so CRLF and LF copies compare equal. */
 fun read(path: File): String = path.readText(Charsets.UTF_8).replace("\r\n", "\n").replace('\r', '\n')
 
 /** Map string name -> raw body, exactly as written in the file. */
@@ -82,8 +82,10 @@ fun strings(content: String): Map<String, String> = stringPattern.findAll(conten
 /** The file with every <string> body blanked, to detect edits elsewhere. */
 fun skeleton(content: String): String = stringPattern.replace(content) { it.groupValues[1] + "\u2026" + it.groupValues[4] }
 
+/** Whether a string [body] is wrapped in a CDATA section. */
 fun hasCdata(body: String): Boolean = body.trim().startsWith(cdataStart)
 
+/** Return the content of the CDATA section of [body], or [body] unchanged if it has none. */
 fun stripCdata(body: String): String {
     val trimmed = body.trim()
     if (!trimmed.startsWith(cdataStart)) {
@@ -94,6 +96,13 @@ fun stripCdata(body: String): String {
     return if (end >= 0) inner.substring(0, end) else inner
 }
 
+/**
+ * Decode Android string resource escapes into the text they stand for.
+ *
+ * \n and \t become a space, because the comparison collapses whitespace
+ * anyway, \uXXXX becomes its character, and any other escaped character
+ * stands for itself.
+ */
 fun decodeAndroidEscapes(text: String): String {
     val out = StringBuilder()
     var i = 0
@@ -124,6 +133,7 @@ fun decodeAndroidEscapes(text: String): String {
     return out.toString()
 }
 
+/** Decode numeric character references and the XML and HTML entities strings use. */
 fun decodeEntities(text: String): String =
     entityPattern.replace(text) { match ->
         val entity = match.groupValues[1]
@@ -147,6 +157,7 @@ fun visibleText(body: String): String {
     return whitespaceRun.replace(text, " ").trim()
 }
 
+/** Count each opening and closing HTML tag in [body], with every form of br counted as one. */
 fun tagCounts(body: String): Map<String, Int> {
     val counts = mutableMapOf<String, Int>()
     for (match in tagPattern.findAll(stripCdata(body))) {
@@ -162,6 +173,7 @@ fun tagCounts(body: String): Map<String, Int> {
     return counts
 }
 
+/** Describe the tags whose counts differ between source and translation, or "" if none do. */
 fun tagDiff(
     sourceBody: String,
     translatedBody: String,
@@ -174,6 +186,7 @@ fun tagDiff(
         .joinToString(", ") { "$it source=${expected[it] ?: 0} translation=${actual[it] ?: 0}" }
 }
 
+/** Return the link targets in [body], whether its quotes are plain, escaped or entities. */
 fun hrefs(body: String): List<String> = hrefPattern.findAll(body).map { it.groupValues[1] }.toList()
 
 /**
@@ -199,6 +212,7 @@ fun wellFormedError(content: String): String? {
     }
 }
 
+/** Return the 1-based line where the string [name] is declared in [content], or -1. */
 fun lineOf(
     content: String,
     name: String,
@@ -207,6 +221,7 @@ fun lineOf(
     return if (index < 0) -1 else content.substring(0, index).count { it == '\n' } + 1
 }
 
+/** Show both texts around the first character where [before] and [after] differ. */
 fun firstDifference(
     before: String,
     after: String,
@@ -223,6 +238,11 @@ fun firstDifference(
 
 // -------------------------------------------------------------------- audit
 
+/**
+ * Report the translated strings under [resDir] whose CDATA or markup is broken.
+ *
+ * Return the exit code: 0 if no string needs attention, 1 otherwise.
+ */
 fun audit(resDir: File): Int {
     val source = strings(read(File(File(resDir, "values"), "strings.xml")))
     val cdataSource = source.filterValues(::hasCdata).keys
@@ -263,6 +283,7 @@ fun audit(resDir: File): Int {
     return if (problems == 0) 0 else 1
 }
 
+/** Return the issue codes of one translated [body] compared with its [sourceBody]. */
 fun stringIssues(
     sourceCdata: Boolean,
     sourceBody: String,
@@ -292,6 +313,12 @@ fun stringIssues(
 
 // ------------------------------------------------------------------- verify
 
+/**
+ * Check that [afterPath] differs from [beforePath] only in the markup of its strings.
+ *
+ * With [sourcePath], also check the changed strings against the source
+ * markup. Return the exit code: 0 for PASS, 1 for FAIL.
+ */
 fun verify(
     beforePath: File,
     afterPath: File,
@@ -375,6 +402,7 @@ fun verifyString(
     return failures
 }
 
+/** Run the command named in [argv] and return the process exit code (2 for bad usage). */
 fun main(argv: Array<String>): Int {
     if (argv.size >= 2 && argv[0] == "audit") {
         return audit(File(argv[1]))
