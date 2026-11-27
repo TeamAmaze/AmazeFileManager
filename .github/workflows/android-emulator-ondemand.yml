@@ -3,11 +3,6 @@ name: Android Emulator On-Demand
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to run CI on'
-        required: true
-        default: 'master'
-        type: string
       api-levels:
         description: 'API levels to test (comma-separated, e.g. "23,28")'
         required: false
@@ -25,8 +20,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.branch }}
       - name: Java 21
         uses: actions/setup-java@v5
         with:
