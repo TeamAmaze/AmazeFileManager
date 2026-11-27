@@ -668,8 +668,14 @@ Bạn chỉ cần làm điều này một lần cho đến lần tiếp theo b�
     <string name="select_by_date">Chọn theo ngày</string>
     <string name="select_similar">Chọn tương tự</string>
     <string name="error_fetching_google_play_product_list">Lỗi khi lấy danh sách sản phẩm từ Google Play.</string>
-    <string name="grant_all_files_permission"><html><body>Amaze cần quyền truy cập tất cả tệp để tiếp tục.
-        \nỞ màn hình tiếp theo, vui lòng chọn <b>Amaze</b> và chọn tuỳ chọn <b>Cho phép quản lý tất cả tệp</b>.
-            \n\n<font color='#ff6347'><i>Việc huỷ hộp thoại này sẽ thoát ứng dụng.</i></font></body></html></string>
+    <string name="grant_all_files_permission"><![CDATA[
+        <html>
+            <body>
+                Amaze cần quyền truy cập tất cả tệp để tiếp tục.<br/><br/>
+                Ở màn hình tiếp theo, vui lòng chọn <b>Amaze</b> và chọn tuỳ chọn <b>Cho phép quản lý tất cả tệp</b>.<br/><br/>
+                <font color=&apos;#ff6347&apos;><i>Việc huỷ hộp thoại này sẽ thoát ứng dụng.</i></font>
+            </body>
+        </html>
+    ]]></string>
 </resources>
 

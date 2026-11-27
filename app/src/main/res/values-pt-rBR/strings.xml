@@ -352,7 +352,7 @@
                         <b>Configurações adicionais de compartilhamento de arquivos</b>
                         <br/>
                     </li>
-                    <p style=\"margin-left: 40px\"> 
+                    <p style=&quot;margin-left: 40px&quot;> 
                         Você também pode configurar as outras opções avançadas de compartilhamento aqui.
                         <br/>
                         Por exemplo, você pode habilitar o acesso aos seus arquivos sem senha se confiar em todos 
@@ -369,11 +369,11 @@
                         <b>Certifique-se de que ambos os dispositivos estejam conectados à mesma rede Wi-Fi.</b>
                         <br/>
                     </li>
-                    <p style=\"margin-left: 40px\"> 
+                    <p style=&quot;margin-left: 40px&quot;> 
                         Este recurso disponibiliza arquivos na rede local, portanto, seu PC e dispositivos móveis 
                         precisam estar na mesma rede local. Você não pode acessar uma pasta compartilhada do Windows 
                         pela Internet ou quando seu smartphone estiver conectado aos dados móveis — ele 
-                        precisa estar conectado ao Wi-Fi. </p>
+                        precisa estar conectado ao Wi-Fi.
                         <br/>
                         <br/>
                     </p>
@@ -383,6 +383,7 @@
                         <br/>
                     </li>
 
+                    <p style=&quot;margin-left: 40px&quot;>
                         Abra o Prompt de Comando. Digite \"ipconfig\" e pressione Enter. Procure por \"Gateway Padrão\" 
                         nas configurações do seu adaptador de rede para encontrar o endereço IP do seu roteador. Procure por                     \" 
                         Endereço IPv4\" na mesma seção do adaptador para encontrar o endereço IP do seu computador 

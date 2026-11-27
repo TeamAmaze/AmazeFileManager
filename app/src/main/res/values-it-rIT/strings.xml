@@ -763,7 +763,15 @@
     <string name="select_similar">Seleziona simili</string>
     <string name="select_fill">Seleziona il riempimento</string>
     <string name="error_fetching_google_play_product_list">Errore durante la ricezione della lista prodotti da Google Play.</string>
-    <string name="grant_all_files_permission"><![CDATA[<html><body>Da Android 11, Google necessita che i File Manager chiedano il permesso dell\'utente per gestire tutti i file del dispositivo. Dettagli <a href=\"https://developer.android.com/training/data-storage/manage-all-files\" target=\"_blank\">qui</a>.        Anche Amaze File Manager necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.        \n\n<font color=\'#ff6347\'><i>Annullando questa richiesta, l\'app terminerà.</i></font></body></html>]]></string>
+    <string name="grant_all_files_permission"><![CDATA[
+        <html>
+            <body>
+                Da Android 11, Google necessita che i File Manager chiedano il permesso dell\'utente per gestire tutti i file del dispositivo. Dettagli <a href=&quot;https://developer.android.com/training/data-storage/manage-all-files&quot; target=&quot;_blank&quot;>qui</a>.<br/><br/>
+                Anche Amaze File Manager necessita di questo permesso. Dopo aver premuto &quot;Consenti&quot;, seleziona <b>Consenti l\'accesso per gestire tutti i file</b> sulla prossima schermata.<br/><br/>
+                <font color=&apos;#ff6347&apos;><i>Annullando questa richiesta, l\'app terminerà.</i></font>
+            </body>
+        </html>
+    ]]></string>
     <string name="user_apps">App utente</string>
     <string name="appearance">Aspetto</string>
     <string name="behavior">Comportamento</string>

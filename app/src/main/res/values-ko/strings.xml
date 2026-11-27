@@ -655,7 +655,7 @@
     <string name="encrypt_option_use_aze">Amaze 암호화 형식 사용</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>AESCrypt는 AES 암호화를 기반으로 하는 오픈 소스 파일 암호화 형식입니다. 다른 플랫폼에서도 AESCrypt 프로그램을 사용해 복호화할 수 있어 호환성이 좋습니다.</p>
-        <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt 웹사이트</a></p>]]>\n    </string>
+        <p><a href=&quot;https://www.aescrypt.com&quot; target=&quot;_blank&quot;>AESCrypt 웹사이트</a></p>]]>\n    </string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
         <p>Amaze의 암호화 형식은 AES 암호화를 기반으로 하지만 AESCrypt 형식과 달리 이 기기에서만 복호화할 수 있습니다. 또한 암호화된 파일을 복구할 수 없게 될 수 있으므로 이 기기에서 Amaze 파일 관리자를 제거하거나 화면 잠금 방식을 변경하지 마세요.</p>.
 ]]></string>

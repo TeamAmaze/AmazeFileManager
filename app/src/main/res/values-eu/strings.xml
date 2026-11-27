@@ -656,7 +656,7 @@ moldagailu beraren azpian zure ordenagailuaren IP helbidea jakiteko.
     <string name="encrypt_option_use_aze">Erabili Amaze zifratze-formatua</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
         <p>Aescrypt-ek iturburu irekiko fitxategien zifratze formatua da AES zifratzean oinarrituta. Gainera, eramangarria da, beste plataformetan AESCRIPT programekin deszifratu daiteke.</p>
-        <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt webgunea</a></p>]]>\n    </string>
+        <p><a href=&quot;https://www.aescrypt.com&quot; target=&quot;_blank&quot;>AESCrypt webgunea</a></p>]]>\n    </string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
         <p>Amazen zifratze formatua AES zifratzean oinarrituta dago; baina AESCrypt formatuaren aldean, bakarrik deszifratu daiteke gailu honekin; gainera, ez duzu Amaze fitxategi kudeatzailea desinstalatu behar gailu honetatik, ezta aldatu pantaila blokeatzeko modua, bestela ez duzu izango zifratutako fitxategia berreskuratzeko modurik.</p>.
 ]]></string>
