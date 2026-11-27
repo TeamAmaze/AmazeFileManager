@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 #
-# This filepath was generated automatically by Sonnet 4.6.
-#
 # convert_fastlane_locale_folders.sh
 #
 # Renames subdirectories named using Android's locale-folder convention
@@ -29,6 +27,10 @@ DRY_RUN=0
 VERBOSE=0
 TARGET_DIR=""
 
+# Files every subfolder must contain. Folders missing any of these are
+# deleted.
+REQUIRED_FILES=(title.txt short_description.txt full_description.txt)
+
 # print_usage: Print help text to stdout.
 print_usage() {
   cat <<EOF
@@ -37,7 +39,12 @@ Usage: ${SCRIPT_NAME} [-n] [-v] <target_directory>
 Renames subdirectories of <target_directory> from the Android locale-folder
 naming convention (en-rUS, pt-rBR, zh-rCN, ...) to the convention expected
 by fastlane (en-US, pt-BR, zh-CN, ...). Folders already in fastlane format,
-or that don't look like locale folders, are left untouched.
+or that don't look like locale folders, are not renamed.
+
+Every subfolder that is empty, or that is missing any of title.txt,
+short_description.txt or long_description.txt, is deleted, whatever its
+name. If a folder with the fastlane name already exists, it is deleted and
+replaced.
 
 Options:
   -n    Dry run: show what would happen, make no changes.
@@ -97,20 +104,60 @@ android_locale_to_fastlane() {
 }
 
 # convert_locale_folders: Walk every immediate subdirectory of a target
-# directory and rename any Android-style locale folders to fastlane-style
-# names. Skips folders that are already correctly named and refuses to
-# overwrite an existing folder at the destination name.
+# directory. Any subfolder that is empty or missing a file in
+# REQUIRED_FILES is deleted. Remaining Android-style locale folders are
+# renamed to fastlane-style names; if the destination name already exists,
+# the existing folder is deleted first and then replaced.
 #
 # Arguments:
 #   $1 - path to the directory containing locale subfolders
 convert_locale_folders() {
   local target_dir="$1"
-  local entry base_name new_name new_path
+  local entry base_name new_name new_path required missing
   local renamed_count=0
   local skipped_count=0
+  local removed_count=0
+  local incomplete_count=0
 
   for entry in "${target_dir}"/*/; do
+    entry="${entry%/}"
+
+    # A folder may have been replaced earlier in this run.
+    [[ -d "${entry}" ]] || continue
+
     base_name="$(basename "${entry}")"
+
+    # Empty folder: delete it.
+    if [[ -z "$(ls -A -- "${entry}")" ]]; then
+      if [[ "${DRY_RUN}" -eq 1 ]]; then
+        log "[dry-run] '${base_name}' is empty, would delete it" force
+      else
+        rmdir -- "${entry}"
+        log "'${base_name}' is empty, deleted it" force
+      fi
+      removed_count=$((removed_count + 1))
+      continue
+    fi
+
+    # Incomplete folder: delete it.
+    missing=""
+    for required in "${REQUIRED_FILES[@]}"; do
+      if [[ ! -f "${entry}/${required}" ]]; then
+        missing="${missing:+${missing}, }${required}"
+      fi
+    done
+
+    if [[ -n "${missing}" ]]; then
+      if [[ "${DRY_RUN}" -eq 1 ]]; then
+        log "[dry-run] '${base_name}' is missing ${missing}, would delete it" force
+      else
+        rm -rf -- "${entry}"
+        log "'${base_name}' is missing ${missing}, deleted it" force
+      fi
+      incomplete_count=$((incomplete_count + 1))
+      continue
+    fi
+
     new_name="$(android_locale_to_fastlane "${base_name}")"
 
     if [[ "${new_name}" == "${base_name}" ]]; then
@@ -121,27 +168,23 @@ convert_locale_folders() {
 
     new_path="${target_dir}/${new_name}"
 
-    if [[ -e "${new_path}" ]]; then
-      log "Warning: '${new_name}' already exists, overwriting in '${target_dir}'" force
-    fi
-
-    for filepath in ${entry}*; do
-      local new_filepath
-      new_filepath="${new_path}/$(basename "${filepath}")"
-
-      if [[ "${DRY_RUN}" -eq 1 ]]; then
-        log "[dry-run] Would try to create '${new_path}'"
-        log "[dry-run] Would move '${filepath}' -> '${new_filepath}" force
-      else
-        mkdir -p "${new_path}"
-        mv -- "${filepath}" "${new_filepath}" && rm -r -- "${entry}"
-        log "Moved '${filepath}' -> '${new_filepath}'" force
+    if [[ "${DRY_RUN}" -eq 1 ]]; then
+      if [[ -e "${new_path}" ]]; then
+        log "[dry-run] '${new_name}' already exists, would delete it" force
       fi
-    done
+      log "[dry-run] Would rename '${base_name}' -> '${new_name}'" force
+    else
+      if [[ -e "${new_path}" ]]; then
+        log "Warning: '${new_name}' already exists, deleting it before rename" force
+        rm -rf -- "${new_path}"
+      fi
+      mv -- "${entry}" "${new_path}"
+      log "Renamed '${base_name}' -> '${new_name}'" force
+    fi
     renamed_count=$((renamed_count + 1))
   done
 
-  log "Done. ${renamed_count} folder(s) renamed, ${skipped_count} skipped." force
+  log "Done. ${renamed_count} folder(s) renamed, ${removed_count} empty folder(s) deleted, ${incomplete_count} incomplete folder(s) deleted, ${skipped_count} skipped." force
 }
 
 # parse_args: Parse command-line flags and the required target directory
