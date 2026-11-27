@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2026 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    and Contributors.
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    -->
+
+<!--
+ Compact folder cell used in grid view. Folders are laid out as icon + name + date rows that
+ sit flush inside a single rounded "section container" (background is built at runtime in
+ RecyclerAdapter#createGridSectionBackground, so the cells read as one panel with dividers).
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/second"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/grid_folder_cell_height"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/grid_folder_cell_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/list_card_content_padding"
+        android:paddingLeft="@dimen/list_card_content_padding"
+        android:paddingEnd="2dp"
+        android:paddingRight="2dp">
+
+        <RelativeLayout
+            android:id="@+id/icon_frame_grid"
+            android:layout_width="@dimen/grid_folder_icon_size"
+            android:layout_height="@dimen/grid_folder_icon_size"
+            android:focusable="false">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/generic_icon"
+                android:layout_width="@dimen/grid_folder_icon_size"
+                android:layout_height="@dimen/grid_folder_icon_size"
+                android:background="@drawable/circle_shape"
+                android:padding="6dp"
+                android:contentDescription="@string/icon" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/check_icon_grid"
+                android:layout_width="@dimen/grid_folder_icon_size"
+                android:layout_height="@dimen/grid_folder_icon_size"
+                android:padding="@dimen/check_icon_padding"
+                app:srcCompat="@drawable/ic_checkmark_selected"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <com.amaze.filemanager.ui.views.ThemedTextView
+                android:id="@+id/firstline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="15sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorTertiary"
+                android:textSize="12sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/secondLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/permis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/properties"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ripple"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:contentDescription="@string/properties"
+            app:srcCompat="@drawable/ic_more_vert_black_48dp" />
+    </LinearLayout>
+</FrameLayout>
