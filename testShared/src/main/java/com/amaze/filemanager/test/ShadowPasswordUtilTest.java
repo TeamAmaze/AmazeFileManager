@@ -75,13 +75,8 @@ public class ShadowPasswordUtilTest {
   @Test
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
-    String encrypted =
-        PasswordUtil.INSTANCE.encryptPassword(
-            ApplicationProvider.getApplicationContext(), text, Base64.DEFAULT);
-    assertEquals(
-        text,
-        PasswordUtil.INSTANCE.decryptPassword(
-            ApplicationProvider.getApplicationContext(), encrypted, Base64.DEFAULT));
+    String encrypted = PasswordUtil.INSTANCE.encryptPassword(text, Base64.DEFAULT);
+    assertEquals(text, PasswordUtil.INSTANCE.decryptPassword(encrypted, Base64.DEFAULT));
   }
 
   @Test

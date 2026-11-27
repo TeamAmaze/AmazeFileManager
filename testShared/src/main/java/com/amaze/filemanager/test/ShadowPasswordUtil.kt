@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.test
 
-import android.content.Context
 import android.util.Base64
 import com.amaze.filemanager.utils.PasswordUtil
 import org.robolectric.annotation.Implementation
@@ -46,7 +45,6 @@ class ShadowPasswordUtil {
     @Implementation
     @Throws(GeneralSecurityException::class, IOException::class)
     fun encryptPassword(
-        context: Context?,
         plainText: String,
         base64Options: Int = Base64.URL_SAFE,
     ): String {
@@ -57,7 +55,6 @@ class ShadowPasswordUtil {
     @Implementation
     @Throws(GeneralSecurityException::class, IOException::class)
     fun decryptPassword(
-        context: Context?,
         cipherText: String,
         base64Options: Int = Base64.URL_SAFE,
     ): String {

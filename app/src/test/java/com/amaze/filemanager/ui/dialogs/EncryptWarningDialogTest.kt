@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.dialogs
 
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -63,6 +64,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
                     .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 
@@ -82,6 +84,7 @@ class EncryptWarningDialogTest : AbstractEncryptDialogTests() {
                 PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
                     .getBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, false),
             )
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 }

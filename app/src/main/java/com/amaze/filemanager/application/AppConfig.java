@@ -41,6 +41,7 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -108,6 +109,8 @@ public class AppConfig extends GlideApplication {
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
     runInBackground(Config::registerSmbURLHandler);
+    // Force Kotlin object NetCopyClientConnectionPool to initialize
+    NetCopyClientConnectionPool.INSTANCE.initialize();
 
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();

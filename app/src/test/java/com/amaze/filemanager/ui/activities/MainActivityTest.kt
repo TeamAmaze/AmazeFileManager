@@ -109,11 +109,7 @@ class MainActivityTest : AbstractMainActivityTestBase() {
         scenario.moveToState(Lifecycle.State.STARTED)
         scenario.onActivity { activity: MainActivity ->
             val path = "smb://root:toor@192.168.1.1"
-            val encryptedPath =
-                getSmbEncryptedPath(
-                    ApplicationProvider.getApplicationContext(),
-                    path,
-                )
+            val encryptedPath = getSmbEncryptedPath(path)
             val oldName = "SMB connection"
             val newName = "root@192.168.1.1"
             try {
@@ -148,7 +144,7 @@ class MainActivityTest : AbstractMainActivityTestBase() {
                 val verify: List<Array<String>> = AppConfig.getInstance().utilsHandler.smbList
                 assertEquals(1, verify.size.toLong())
                 val entry = verify[0]
-                assertEquals(path, getSmbDecryptedPath(AppConfig.getInstance(), entry[1]))
+                assertEquals(path, getSmbDecryptedPath(entry[1]))
             } finally {
                 scenario.moveToState(Lifecycle.State.DESTROYED)
                 scenario.close()

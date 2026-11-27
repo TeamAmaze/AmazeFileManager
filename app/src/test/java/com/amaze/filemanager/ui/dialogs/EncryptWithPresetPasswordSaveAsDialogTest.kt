@@ -27,6 +27,7 @@ import android.view.View.VISIBLE
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -358,6 +359,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
                     }
                 } ?: fail("Dialog cannot be seen?")
             }
+            scenario.moveToState(Lifecycle.State.DESTROYED)
         }
     }
 }
