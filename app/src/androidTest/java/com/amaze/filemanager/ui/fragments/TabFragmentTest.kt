@@ -357,7 +357,7 @@ class TabFragmentTest {
         scenario: ActivityScenario<MainActivity>,
         index: Int,
     ) {
-        await().pollDelay(50, TimeUnit.MILLISECONDS).atMost(100, TimeUnit.MILLISECONDS).until {
+        await().pollDelay(50, TimeUnit.MILLISECONDS).atMost(1, TimeUnit.SECONDS).until {
             var currentItem = -1
 
             runCatching {

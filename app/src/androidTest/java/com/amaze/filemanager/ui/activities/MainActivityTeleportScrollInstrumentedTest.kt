@@ -40,11 +40,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.espresso.util.TreeIterables
 import androidx.test.filters.LargeTest
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.R
+import com.amaze.filemanager.test.StoragePermissionHelper
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import java.util.concurrent.TimeoutException
@@ -66,6 +69,11 @@ class MainActivityTeleportScrollInstrumentedTest {
     private lateinit var testDir: File
     private lateinit var targetFile: File
 
+    @Rule
+    @JvmField
+    val storagePermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     /**
      * Creates a directory in the shared storage root with enough files that the target
      * file starts off-screen and a real scroll is required to bring it into view.
@@ -75,14 +83,15 @@ class MainActivityTeleportScrollInstrumentedTest {
         // Use the shared storage root (NOT getExternalFilesDir / Android/data), since Amaze
         // treats any path under Android/data specially (Scoped Storage) and prompts for SAF
         // access before browsing there, even for its own app-specific folder. The shared
-        // root instead relies on MANAGE_EXTERNAL_STORAGE, which must be pre-granted via:
-        //   adb shell appops set <applicationId> MANAGE_EXTERNAL_STORAGE allow
+        // root needs WRITE_EXTERNAL_STORAGE below Android 11 and MANAGE_EXTERNAL_STORAGE
+        // from Android 11 on, which the rule above and this helper grant respectively.
+        StoragePermissionHelper.grantManageStoragePermission()
         testDir = File(android.os.Environment.getExternalStorageDirectory(), "AmazeTeleportScrollTest")
         val created = testDir.mkdirs()
         check(created || testDir.isDirectory) {
             "Failed to create test directory at ${testDir.absolutePath} " +
                 "(mkdirs() returned $created, exists=${testDir.exists()}, isDirectory=${testDir.isDirectory}). " +
-                "Did you run: adb shell appops set <applicationId> MANAGE_EXTERNAL_STORAGE allow ?"
+                "Was storage permission granted to the app?"
         }
 
         for (i in 1..40) {
