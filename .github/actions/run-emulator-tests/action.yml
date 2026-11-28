@@ -1,0 +1,131 @@
+name: Run emulator tests
+description: >
+  Boot a cached Android emulator, run :app:connectedCheck on it, print
+  the test failures and optionally upload a screen recording.
+  Java, the NDK and the Rust toolchain must already be set up.
+
+inputs:
+  api-level:
+    description: 'Android API level of the emulator (e.g. "28")'
+    required: true
+  record-video:
+    description: 'Record the emulator screen and upload it as an artifact kept for 1 day ("true" or "false")'
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Enable KVM
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+    - name: AVD cache
+      uses: actions/cache@v5
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+          ~/.android/debug.keystore
+        key: avd-${{ inputs.api-level }}
+    - name: create AVD and generate snapshot for caching
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: ${{ inputs.api-level }}
+        force-avd-creation: false
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: false
+        sdcard-path-or-size: 100M
+        arch: x86_64
+        ram-size: 2048M
+        channel: canary
+        script: echo "Generated AVD snapshot for caching."
+    - name: run tests
+      uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+      env:
+        RECORD_VIDEO: ${{ inputs.record-video }}
+        SCREENRECORD_DIR: /data/local/tmp/screenrecord
+      with:
+        api-level: ${{ inputs.api-level }}
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
+        sdcard-path-or-size: 100M
+        arch: x86_64
+        ram-size: 2048M
+        channel: canary
+        script: |
+          # We have to explicitly set the parameters to disable animations and then restart
+          # the emulator, see https://github.com/ReactiveCircus/android-emulator-runner/issues/158
+          # this seems to be a problem only on older APIs (tested on 23)
+          adb shell settings put global window_animation_scale 0.0
+          adb shell settings put global transition_animation_scale 0.0
+          adb shell settings put global animator_duration_scale 0.0
+          sleep 3 # gives the settings time to be written to disk before the reboot.
+          adb reboot # stops the boot check from reading the old, still-running system before it shuts down.
+          sleep 15 # dismisses the lock screen again, as the action did after the first boot.
+          adb wait-for-device shell 'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done'
+          adb shell input keyevent 82
+          
+          adb logcat -c
+          adb logcat *:E &
+          
+          
+          # Each line runs in its own shell, and the first failing line ends the script,
+          # so the videos are pulled on the same line as the tests to survive a failure.
+          # screenrecord stops by itself after at most 180 s, so it records 30 s segments
+          # in a loop; stopping lets the current segment finish so its mp4 stays playable.
+          # The device does the waiting because adb shell drops exit codes before API 24.
+          if [ "$RECORD_VIDEO" = "true" ]; then adb shell "mkdir -p $SCREENRECORD_DIR; i=100; while [ ! -f $SCREENRECORD_DIR/stop ]; do screenrecord --size 360x640 --bit-rate 1000000 --time-limit 30 $SCREENRECORD_DIR/segment_\$i.mp4; i=\$((i+1)); done; touch $SCREENRECORD_DIR/done" > /dev/null 2>&1 & fi
+          ./gradlew :app:connectedCheck; status=$?; if [ "$RECORD_VIDEO" = "true" ]; then adb shell "touch $SCREENRECORD_DIR/stop; n=0; while [ ! -f $SCREENRECORD_DIR/done ] && [ \$n -lt 45 ]; do sleep 1; n=\$((n+1)); done"; adb pull $SCREENRECORD_DIR app/build/outputs/ || echo "Could not pull the screen recording"; fi; exit $status
+    - name: Print test failures
+      # Print errors without having them cut off (as the logs sometimes do)
+      if: failure()
+      shell: python3 {0}
+      run: |
+        import glob
+        import xml.etree.ElementTree as ET
+
+        paths = glob.glob("app/build/outputs/androidTest-results/**/TEST-*.xml", recursive=True)
+        if not paths:
+            print("No androidTest result XML found (did the build fail before the tests ran?)")
+        for path in paths:
+            for case in ET.parse(path).iter("testcase"):
+                for problem in case.findall("failure") + case.findall("error"):
+                    print(f"=== {case.get('classname')}.{case.get('name')}")
+                    print(problem.text or problem.get("message"))
+    - name: Join Video Segments
+      # Join whether the tests passed or failed.
+      # Action inputs are strings, so "false" must be compared explicitly.
+      if: ${{ !cancelled() && inputs.record-video == 'true' }}
+      shell: bash
+      env:
+        SEGMENTS_DIR: app/build/outputs/screenrecord
+        VIDEO_FILE: app/build/outputs/emulator-video-api${{ inputs.api-level }}-run${{ github.run_id }}-attempt${{ github.run_attempt }}.mp4
+      run: |
+        shopt -s nullglob
+        segments=("$SEGMENTS_DIR"/segment_*.mp4)
+        if [ ${#segments[@]} -eq 0 ]; then
+          echo "::warning::No screen recording segments were pulled from the emulator"
+          exit 0
+        fi
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq --no-install-recommends ffmpeg
+        # The concat demuxer resolves these names relative to the list file.
+        printf "file '%s'\n" "${segments[@]##*/}" > "$SEGMENTS_DIR/segments.txt"
+        # All segments share one encoder setup, so the streams are copied without re-encoding.
+        ffmpeg -nostdin -loglevel error -f concat -safe 0 -i "$SEGMENTS_DIR/segments.txt" -c copy "$VIDEO_FILE"
+    - name: Upload Video Recording
+      # Upload whether the tests passed or failed.
+      if: ${{ !cancelled() && inputs.record-video == 'true' }}
+      uses: actions/upload-artifact@v7
+      with:
+        # Without an archive the file name is the artifact name, and only one file is allowed.
+        path: app/build/outputs/emulator-video-api${{ inputs.api-level }}-run${{ github.run_id }}-attempt${{ github.run_attempt }}.mp4
+        archive: false
+        retention-days: 1
+        if-no-files-found: warn

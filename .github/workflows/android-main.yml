@@ -156,47 +156,7 @@ jobs:
             echo "❌ .cargo/config.toml missing"
             exit 1
           fi
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-      - name: AVD cache
-        uses: actions/cache@v5
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-            ~/.android/debug.keystore
-          key: avd-${{ matrix.api-level }}
-      - name: create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
+      - name: Run emulator tests
+        uses: ./.github/actions/run-emulator-tests
         with:
           api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          sdcard-path-or-size: 100M
-          arch: x86_64
-          ram-size: 2048M
-          channel: canary
-          script: echo "Generated AVD snapshot for caching."
-
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          sdcard-path-or-size: 100M
-          arch: x86_64
-          ram-size: 2048M
-          channel: canary
-          script: |
-            adb logcat -c
-            adb logcat *:E &
-            ./gradlew :app:connectedCheck
-
