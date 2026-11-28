@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.fragments
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.graphics.Rect
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.view.View
@@ -30,6 +29,10 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.GeneralLocation
+import androidx.test.espresso.action.GeneralSwipeAction
+import androidx.test.espresso.action.Press
+import androidx.test.espresso.action.Swipe
 import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -192,45 +195,42 @@ class TabFragmentTest {
     }
 
     /**
-     * Hack that works like swipeLeft or swipeRight on smaller screens
+     * Works like [swipeLeft] or [swipeRight] on smaller screens, swiping across the visible part
+     * of the view from [startOffsetX] to [endOffsetX], given as fractions of the view's width
+     * from its visible center.
      */
-    private fun swipeHack(
-        interpolatorX: Float,
-        interpolatorY: Float,
+    private fun swipeAcrossVisiblePart(
         viewMatcher: Matcher<View>,
+        startOffsetX: Float,
+        endOffsetX: Float,
     ) {
         /* HACK
          If the View items are contained inside a ScrollView, and the screen's height is not
           enough to show 90% of the ScrollView, an error is thrown. This is a problem for smaller
-          screens, to fix this we simply run the swipe "manually".
+          screens, to fix this we run the same swipe without that constraint.
           See https://stackoverflow.com/a/74361805/3124150
          */
+        val swipe =
+            GeneralSwipeAction(
+                Swipe.FAST,
+                GeneralLocation.translate(GeneralLocation.VISIBLE_CENTER, startOffsetX, 0f),
+                GeneralLocation.translate(GeneralLocation.VISIBLE_CENTER, endOffsetX, 0f),
+                Press.FINGER,
+            )
 
         onView(viewMatcher).perform(
             object : ViewAction {
                 override fun getConstraints(): Matcher<View> = isDisplayed()
 
-                override fun getDescription(): String = "Swipe without checking rect availability"
+                override fun getDescription(): String = "${swipe.description} across the visible part"
 
+                // ViewActions run on the main thread, so inject through Espresso's UiController:
+                // UiDevice waits for the app to handle each event, which deadlocks the main thread.
                 override fun perform(
                     uiController: UiController,
                     view: View,
                 ) {
-                    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-                    val visibleRect = Rect()
-                    view.getGlobalVisibleRect(visibleRect)
-
-                    val endX = visibleRect.left + (visibleRect.right * interpolatorX).toInt()
-                    val endY = visibleRect.top + (visibleRect.bottom * interpolatorY).toInt()
-
-                    // Swipe up from the center, at 5ms per step
-                    device.swipe(
-                        visibleRect.centerX(),
-                        visibleRect.centerY(),
-                        endX,
-                        endY,
-                        10,
-                    )
+                    swipe.perform(uiController, view)
                 }
             },
         )
@@ -239,7 +239,7 @@ class TabFragmentTest {
     private fun swipeLeftCompat(viewMatcher: Matcher<View>) {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         if (device.displayHeight <= 1280) {
-            swipeHack(0.95f, 0.5f, viewMatcher)
+            swipeAcrossVisiblePart(viewMatcher, SWIPE_HALF_SPAN, -SWIPE_HALF_SPAN)
         } else {
             onView(viewMatcher).perform(swipeLeft())
         }
@@ -248,7 +248,7 @@ class TabFragmentTest {
     private fun swipeRightCompat(viewMatcher: Matcher<View>) {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         if (device.displayHeight <= 1280) {
-            swipeHack(0.05f, 0.5f, viewMatcher)
+            swipeAcrossVisiblePart(viewMatcher, -SWIPE_HALF_SPAN, SWIPE_HALF_SPAN)
         } else {
             onView(viewMatcher).perform(swipeRight())
         }
@@ -357,7 +357,7 @@ class TabFragmentTest {
         scenario: ActivityScenario<MainActivity>,
         index: Int,
     ) {
-        await().pollDelay(50, TimeUnit.MILLISECONDS).atMost(100, TimeUnit.MILLISECONDS).until {
+        await().pollDelay(50, TimeUnit.MILLISECONDS).atMost(1, TimeUnit.SECONDS).until {
             var currentItem = -1
 
             runCatching {
@@ -368,5 +368,13 @@ class TabFragmentTest {
 
             currentItem == index
         }
+    }
+
+    private companion object {
+        /**
+         * How far from the visible center, as a fraction of the view's width, the swipes on
+         * smaller screens start and end: far enough to switch tabs, short of the view's edges.
+         */
+        const val SWIPE_HALF_SPAN = 0.4f
     }
 }

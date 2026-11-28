@@ -8,6 +8,7 @@ ndk = "30.0.16248370" #r30
 
 jacocoAndroid = "0.2.1"
 gradle = "8.13.2"
+desugarJdkLibs = "2.1.5"
 
 easylauncher = "6.1.0"
 legacySupportV13 = "1.0.0"
@@ -80,6 +81,7 @@ rustAndroidGradle = "0.9.6"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 jacoco-android-plugin = { module = "com.mxalbert.gradle:jacoco-android", version.ref = "jacocoAndroid" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 rust-android-gradle = { module = "org.mozilla.rust-android-gradle.rust-android:org.mozilla.rust-android-gradle.rust-android.gradle.plugin", version.ref = "rustAndroidGradle" }

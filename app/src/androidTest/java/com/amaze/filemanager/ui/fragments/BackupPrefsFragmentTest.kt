@@ -220,7 +220,10 @@ class BackupPrefsFragmentTest {
      */
     private fun import(exportFile: File) {
         val activityScenario = ActivityScenario.launch(PreferencesActivity::class.java)
-        activityScenario.moveToState(Lifecycle.State.STARTED)
+        // Stay RESUMED: reaching STARTED pauses the activity, and below Android P its state may
+        // then be saved, making commitNow() below throw IllegalStateException ("Can not
+        // perform this action after onSaveInstanceState").
+        activityScenario.moveToState(Lifecycle.State.RESUMED)
 
         val backupPrefsFragment = BackupPrefsFragment()
 
